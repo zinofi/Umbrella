@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-*",
+  "description": "Umbrella.DataAccess Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": { },
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.20.0"
+      }
+    }
+  },
+  "dependencies": {
+    "EntityFramework.SqlServer": "7.0.0-beta7",
+    "Umbrella.Utilities": "1.0.0-*"
+  }
+}

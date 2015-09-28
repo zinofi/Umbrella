@@ -1,0 +1,96 @@
+﻿.divLinksProperty
+{
+    border:1px solid #aaa;
+    width:200px;
+    height:20px;
+    float:left;
+    padding:3px 10px;
+}
+
+.btnViewLinks
+{
+    float:left;
+    display:block;
+    margin-left:5px;
+    height:28px;
+}
+
+.lnkClearAllItems
+{
+    float:left;
+    display:block;
+    height:28px;
+    line-height:28px;
+    vertical-align:middle;
+    margin-left:5px;
+}
+
+.linksPopup
+{
+    padding: 5px 15px;
+}
+
+.linksPopup .inner
+{
+    overflow:auto;
+    height:250px;
+}
+
+.linksPopup table
+{
+    width:100%;
+}
+
+.linksPopup table td
+{
+    word-break:break-word;
+}
+
+    .linksPopup table th
+    {
+        text-align:left;
+    }
+
+.lnkMoveUp,
+.lnkMoveDown
+{
+    width: 18px;
+    height: 20px;
+    display:block;
+}
+
+.editLinkItemPopup
+{
+    padding:15px;
+}
+
+    .editLinkItemPopup table tr td:first-child
+    {
+        width:120px;
+    }
+
+.editLinkItemPopup fieldset
+{
+    padding-top:10px;
+    margin-bottom:0px !important;
+}
+
+.validationSummary
+{
+    margin: 0 0 10px 10px;
+}
+
+.validationSummary ul
+{
+    margin:5px 0 10px 30px;
+}
+
+.validationSummary li
+{
+    color: #ff0000;
+}
+
+#divButtonOptions
+{
+    margin-bottom:10px;
+}

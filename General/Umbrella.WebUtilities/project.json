@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0-*",
+  "description": "Umbrella.WebUtilities Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": {
+      "dependencies": {
+      },
+      "frameworkAssemblies": {
+        "PresentationCore": "4.0.0.0",
+        "System.Configuration": "4.0.0.0",
+        "System.ServiceModel": "4.0.0.0",
+        "System.Xml": "4.0.0.0",
+        "WindowsBase": "4.0.0.0"
+      }
+    },
+    "net46": {
+      "frameworkAssemblies": {
+        "PresentationCore": "4.0.0.0",
+        "System.Configuration": "4.0.0.0",
+        "System.ServiceModel": "4.0.0.0",
+        "System.Xml": "4.0.0.0",
+        "WindowsBase": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "AutoMapper": "4.0.4",
+    "DynamicImage": "3.1.1",
+    "log4net": "2.0.3",
+    "Umbrella.Utilities": "1.0.0-*"
+  }
+}

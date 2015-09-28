@@ -1,0 +1,348 @@
+{
+  "locked": false,
+  "version": 1,
+  "targets": {
+    "DNX,Version=v4.6": {
+      "AutoMapper/4.0.4": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net45/AutoMapper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/AutoMapper.dll": {}
+        }
+      },
+      "DynamicImage/3.1.1": {
+        "type": "package",
+        "dependencies": {
+          "WebActivatorEx": "2.0.2"
+        },
+        "compile": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        },
+        "runtime": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        }
+      },
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Microsoft.Web.Infrastructure/1.0.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      },
+      "Umbrella.Utilities/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Newtonsoft.Json": "7.0.1",
+          "Ninject": "3.2.2"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration",
+          "System.Drawing",
+          "System.Runtime.Caching"
+        ]
+      },
+      "WebActivatorEx/2.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Web.Infrastructure": "1.0.0.0"
+        },
+        "compile": {
+          "lib/net40/WebActivatorEx.dll": {}
+        },
+        "runtime": {
+          "lib/net40/WebActivatorEx.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6": {
+      "AutoMapper/4.0.4": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net45/AutoMapper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/AutoMapper.dll": {}
+        }
+      },
+      "DynamicImage/3.1.1": {
+        "type": "package",
+        "dependencies": {
+          "WebActivatorEx": "2.0.2"
+        },
+        "compile": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        },
+        "runtime": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        }
+      },
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Microsoft.Web.Infrastructure/1.0.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      },
+      "Umbrella.Utilities/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Newtonsoft.Json": "7.0.1",
+          "Ninject": "3.2.2"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration",
+          "System.Drawing",
+          "System.Runtime.Caching"
+        ]
+      },
+      "WebActivatorEx/2.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Web.Infrastructure": "1.0.0.0"
+        },
+        "compile": {
+          "lib/net40/WebActivatorEx.dll": {}
+        },
+        "runtime": {
+          "lib/net40/WebActivatorEx.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Umbrella.Utilities/1.0.0": {
+      "type": "project",
+      "path": "../Umbrella.Utilities/project.json"
+    },
+    "AutoMapper/4.0.4": {
+      "type": "package",
+      "sha512": "7EJaXSD7mI/T1nwlAgsUcxiuSW4zAY8cQy52/onmc8+lM4T9XqVlDqvFuY9pzcNxI1c2X3GD47G8qDO0hcip1g==",
+      "files": [
+        "AutoMapper.4.0.4.nupkg",
+        "AutoMapper.4.0.4.nupkg.sha512",
+        "AutoMapper.nuspec",
+        "lib/dotnet/AutoMapper.dll",
+        "lib/dotnet/AutoMapper.xml",
+        "lib/MonoAndroid/AutoMapper.dll",
+        "lib/MonoAndroid/AutoMapper.XML",
+        "lib/MonoTouch/AutoMapper.dll",
+        "lib/MonoTouch/AutoMapper.XML",
+        "lib/net40/AutoMapper.dll",
+        "lib/net40/AutoMapper.xml",
+        "lib/net45/AutoMapper.dll",
+        "lib/net45/AutoMapper.xml",
+        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.dll",
+        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.xml",
+        "lib/sl50/AutoMapper.dll",
+        "lib/sl50/AutoMapper.xml",
+        "lib/win/AutoMapper.dll",
+        "lib/win/AutoMapper.xml",
+        "lib/wp80/AutoMapper.dll",
+        "lib/wp80/AutoMapper.xml",
+        "lib/wpa81/AutoMapper.dll",
+        "lib/wpa81/AutoMapper.xml",
+        "lib/Xamarin.iOS10/AutoMapper.dll",
+        "lib/Xamarin.iOS10/AutoMapper.XML"
+      ]
+    },
+    "DynamicImage/3.1.1": {
+      "type": "package",
+      "sha512": "q6XNf72G/8p8aG1j7CbyOcOs4naKb+URvC9rA0hA/Ub+xestPoRVOrhJZi/Dx5Vgh2a37NLp3FfCjThsM9ztuQ==",
+      "files": [
+        "content/App_Start/DynamicImage.cs.pp",
+        "DynamicImage.3.1.1.nupkg",
+        "DynamicImage.3.1.1.nupkg.sha512",
+        "DynamicImage.nuspec",
+        "lib/net40/SoundInTheory.DynamicImage.dll"
+      ]
+    },
+    "log4net/2.0.3": {
+      "type": "package",
+      "sha512": "rxMHzK5efGPo5XtRnuUGO4tfW5l74Aji6kVmtMAt2SgcB5PHBNtNY7yj2LCI2VtKrLPO7kCKR6kH6lIZggq3Gg==",
+      "files": [
+        "lib/net10-full/log4net.dll",
+        "lib/net10-full/log4net.xml",
+        "lib/net11-full/log4net.dll",
+        "lib/net11-full/log4net.xml",
+        "lib/net20-full/log4net.dll",
+        "lib/net20-full/log4net.xml",
+        "lib/net35-client/log4net.dll",
+        "lib/net35-client/log4net.xml",
+        "lib/net35-full/log4net.dll",
+        "lib/net35-full/log4net.xml",
+        "lib/net40-client/log4net.dll",
+        "lib/net40-client/log4net.xml",
+        "lib/net40-full/log4net.dll",
+        "lib/net40-full/log4net.xml",
+        "log4net.2.0.3.nupkg",
+        "log4net.2.0.3.nupkg.sha512",
+        "log4net.nuspec"
+      ]
+    },
+    "Microsoft.Web.Infrastructure/1.0.0.0": {
+      "type": "package",
+      "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
+      "files": [
+        "lib/net40/Microsoft.Web.Infrastructure.dll",
+        "Microsoft.Web.Infrastructure.1.0.0.nupkg",
+        "Microsoft.Web.Infrastructure.1.0.0.nupkg.sha512",
+        "Microsoft.Web.Infrastructure.nuspec"
+      ]
+    },
+    "Newtonsoft.Json/7.0.1": {
+      "type": "package",
+      "sha512": "q3V4KLetMLnt1gpAVWgtXnHjKs0UG/RalBc29u2ZKxd5t5Ze4JBL5WiiYIklJyK/5CRiIiNwigVQUo0FgbsuWA==",
+      "files": [
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
+        "Newtonsoft.Json.7.0.1.nupkg",
+        "Newtonsoft.Json.7.0.1.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
+        "tools/install.ps1"
+      ]
+    },
+    "Ninject/3.2.2.0": {
+      "type": "package",
+      "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
+      "files": [
+        "lib/net35/Ninject.dll",
+        "lib/net35/Ninject.xml",
+        "lib/net40/Ninject.dll",
+        "lib/net40/Ninject.xml",
+        "lib/net45-full/Ninject.dll",
+        "lib/net45-full/Ninject.xml",
+        "lib/sl2/Ninject.dll",
+        "lib/sl2/Ninject.xml",
+        "lib/sl3/Ninject.dll",
+        "lib/sl3/Ninject.xml",
+        "lib/sl3-wp/Ninject.dll",
+        "lib/sl3-wp/Ninject.xml",
+        "lib/sl4/Ninject.dll",
+        "lib/sl4/Ninject.xml",
+        "lib/sl4-windowsphone71/Ninject.dll",
+        "lib/sl4-windowsphone71/Ninject.xml",
+        "lib/sl5/Ninject.dll",
+        "lib/sl5/Ninject.xml",
+        "Ninject.3.2.2.nupkg",
+        "Ninject.3.2.2.nupkg.sha512",
+        "Ninject.nuspec"
+      ]
+    },
+    "WebActivatorEx/2.0.2": {
+      "type": "package",
+      "sha512": "eVe2RmaNWYkgDvtWSthTLCv3zIQ6xcfxNLNPbCNe8IIiZcYet/A7tKG/HlyLdIz73wUvjyIDCmhK6wGODFtXlQ==",
+      "files": [
+        "lib/net40/WebActivatorEx.dll",
+        "WebActivatorEx.2.0.2.nupkg",
+        "WebActivatorEx.2.0.2.nupkg.sha512",
+        "WebActivatorEx.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "": [
+      "AutoMapper >= 4.0.4",
+      "DynamicImage >= 3.1.1",
+      "log4net >= 2.0.3",
+      "Umbrella.Utilities >= 1.0.0-*"
+    ],
+    "DNX,Version=v4.6": [
+      "fx/PresentationCore >= 4.0.0.0",
+      "fx/System.Configuration >= 4.0.0.0",
+      "fx/System.ServiceModel >= 4.0.0.0",
+      "fx/System.Xml >= 4.0.0.0",
+      "fx/WindowsBase >= 4.0.0.0"
+    ],
+    ".NETFramework,Version=v4.6": [
+      "fx/PresentationCore >= 4.0.0.0",
+      "fx/System.Configuration >= 4.0.0.0",
+      "fx/System.ServiceModel >= 4.0.0.0",
+      "fx/System.Xml >= 4.0.0.0",
+      "fx/WindowsBase >= 4.0.0.0"
+    ]
+  }
+}

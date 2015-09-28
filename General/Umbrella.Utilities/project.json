@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0-*",
+  "description": "Umbrella.Utilities Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": {
+      "frameworkAssemblies": {
+        "System.Configuration": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Runtime.Caching": "4.0.0.0"
+      }
+    },
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Configuration": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Runtime.Caching": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "log4net": "2.0.3",
+    "Newtonsoft.Json": "7.0.1",
+    "Ninject": "3.2.2"
+  }
+}

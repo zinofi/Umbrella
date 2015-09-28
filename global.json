@@ -1,0 +1,6 @@
+﻿{
+  "projects": [ "General", "N2CMS", "DNX", "Legacy", "Test" ],
+  "sdk": {
+    "version": "1.0.0-beta7"
+  }
+}

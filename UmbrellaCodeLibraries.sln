@@ -1,0 +1,83 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		NuGet.Config = NuGet.Config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{9EA3F4AE-0260-4B8A-98AD-25803026D4E5}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities", "General\Umbrella.Utilities\Umbrella.Utilities.xproj", "{8E28E28C-BE21-4707-B32B-02246D62EE79}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities", "General\Umbrella.WebUtilities\Umbrella.WebUtilities.xproj", "{51D68721-517F-4A5C-91EF-1C5EFC18798E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAccess", "General\Umbrella.DataAccess\Umbrella.DataAccess.xproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DNX", "DNX", "{1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.WebUtilities", "DNX\Umbrella.DNX.WebUtilities\Umbrella.DNX.WebUtilities.xproj", "{77381917-4C02-4708-AA5A-4DE03CDEED46}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "N2CMS", "N2CMS", "{1EBEFC37-2819-4585-8667-21F1D84755EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{32ADE78B-DA1F-4286-ACCB-C83EB2390041}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.WebUtilities.Test", "Test\Umbrella.DNX.WebUtilities.Test\Umbrella.DNX.WebUtilities.Test.xproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities", "Legacy\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.xproj", "{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.N2", "N2CMS\Umbrella.N2.Utilities\Umbrella.N2.xproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E28E28C-BE21-4707-B32B-02246D62EE79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E28E28C-BE21-4707-B32B-02246D62EE79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E28E28C-BE21-4707-B32B-02246D62EE79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E28E28C-BE21-4707-B32B-02246D62EE79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51D68721-517F-4A5C-91EF-1C5EFC18798E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51D68721-517F-4A5C-91EF-1C5EFC18798E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51D68721-517F-4A5C-91EF-1C5EFC18798E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51D68721-517F-4A5C-91EF-1C5EFC18798E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38863552-10BC-4F81-B281-74435D4C7485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38863552-10BC-4F81-B281-74435D4C7485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38863552-10BC-4F81-B281-74435D4C7485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38863552-10BC-4F81-B281-74435D4C7485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8E28E28C-BE21-4707-B32B-02246D62EE79} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{51D68721-517F-4A5C-91EF-1C5EFC18798E} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{38863552-10BC-4F81-B281-74435D4C7485} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{77381917-4C02-4708-AA5A-4DE03CDEED46} = {1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}
+		{650A5A85-5956-491E-9312-5E25A27D1108} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
+		{5926B995-BF16-40E7-960B-E7F12BC8B74B} = {1EBEFC37-2819-4585-8667-21F1D84755EC}
+	EndGlobalSection
+EndGlobal

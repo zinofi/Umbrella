@@ -1,0 +1,20 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Umbrella.DNX.WebUtilities.Test test project",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "xunit": "2.1.0-beta4-build3109",
+    "xunit.runner.dnx": "2.1.0-beta4-build134"
+  },
+  "commands": {
+    "test": "xunit.runner.dnx"
+  },
+
+  "frameworks" : {
+    "dnx46": { }
+  }
+}

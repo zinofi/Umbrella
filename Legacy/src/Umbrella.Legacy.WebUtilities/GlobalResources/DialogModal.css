@@ -1,0 +1,80 @@
+﻿.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+.dialog-modal *
+{
+    font-family: 'Segoe UI', Helvetia, sans-serif !important;
+}
+
+.dialog-modal
+{
+    border: 1px solid #fff;
+    outline: 0 !important;
+    border-radius: 0 !important;
+}
+
+    .dialog-modal .ui-dialog-titlebar
+    {
+        background: #18a0de;
+        border-radius: 0;
+        color: #fff;
+        padding-left: 15px;
+        font-size:20px;
+        cursor:move;
+    }
+
+    .dialog-modal .ui-dialog-titlebar-close
+    {
+        float: right;
+        border: 0;
+        background: #000;
+        color:#fff;
+        font-size:14px;
+        text-align:center;
+        outline:none;
+        cursor:pointer;
+    }
+
+    .dialog-modal .ui-dialog-titlebar-close .ui-button-text
+    {
+        display:none;
+    }
+
+    .dialog-modal .ui-dialog-buttonset
+    {
+        padding: 15px;
+    }
+
+    .dialog-modal input[type="button"]
+    {
+        margin-bottom:10px;
+    }
+
+    .dialog-modal input[type="button"][disabled]
+    {
+        border:1px solid #ccc;
+        cursor:not-allowed;
+    }
+
+    .dialog-modal .ui-widget-content
+    {
+        border:0;
+    }

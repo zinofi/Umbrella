@@ -1,0 +1,15 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Umbrella.DNX.WebUtilities Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": { }
+  },
+  "dependencies": {
+    "Microsoft.AspNet.Http": "1.0.0-beta7",
+    "Umbrella.WebUtilities": "1.0.0-*"
+  }
+}
