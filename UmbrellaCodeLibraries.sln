@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{13C6F0
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities", "Legacy\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.xproj", "{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.N2", "N2CMS\Umbrella.N2.Utilities\Umbrella.N2.xproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.N2", "N2CMS\Umbrella.N2\Umbrella.N2.xproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
