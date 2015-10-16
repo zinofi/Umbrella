@@ -14,7 +14,7 @@
     }
   },
   "dependencies": {
-    "EntityFramework.SqlServer": "7.0.0-beta7",
+    "EntityFramework.SqlServer": "7.0.0-beta8",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }

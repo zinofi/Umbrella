@@ -1,5 +1,6 @@
 ﻿using Umbrella.WebUtilities.RequestStateHelpers.Interfaces;
 using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Http.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,8 @@ namespace Umbrella.DNX.WebUtilities.RequestStateHelpers
         #region IRequestState Members
         public T Get<T>() where T : class
         {
-            return m_Context.GetFeature<T>();
+            //TODO: Check this is ok
+            return m_Context.Features.Get<T>();
         }
 
         public T Get<T>(string key) where T : class
