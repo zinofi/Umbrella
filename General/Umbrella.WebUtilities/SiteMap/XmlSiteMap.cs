@@ -21,7 +21,7 @@ namespace Umbrella.WebUtilities.SiteMap
         public XmlSiteMap Add(string url, ChangeFrequency? changeFrequency = null, DateTime? lastModified = null, double? priority = null)
         {
             url = url.ToLower();
-
+            
             //Ensure the list doesn't already include this URL
             if (!Urls.Any(x => x.Url == url))
             {

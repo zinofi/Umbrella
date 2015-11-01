@@ -67,9 +67,8 @@ namespace Umbrella.Utilities.Caching
 
 				return default(U);
 			}
-			catch (Exception exc)
+			catch (Exception exc) when (Log.LogError(exc, key))
 			{
-				Log.LogError(exc, key);
 				throw;
 			}
 		}
@@ -101,9 +100,8 @@ namespace Umbrella.Utilities.Caching
 
 				return result;
 			}
-			catch (Exception exc)
+			catch (Exception exc) when (Log.LogError(exc, key))
 			{
-				Log.LogError(exc, key);
 				throw;
 			}
 		}
@@ -117,9 +115,8 @@ namespace Umbrella.Utilities.Caching
 				if (p_Cache.TryGetValue(typeof(U), out cache))
 					cache.Remove(key.ToString());
 			}
-			catch (Exception exc)
+			catch (Exception exc) when (Log.LogError(exc, key))
 			{
-				Log.LogError(exc, key);
 				throw;
 			}
 		}

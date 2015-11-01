@@ -6,22 +6,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Umbrella.Legacy.WebUtilities.Mvc;
 using Umbrella.Legacy.WebUtilities.Mvc.Results;
 using Umbrella.N2.BaseModels;
+using Umbrella.N2.Utilities;
 
-namespace Umbrella.N2.Utilities.Mvc.Controllers
+namespace Umbrella.N2.Mvc.Controllers
 {
-    public partial class GenericErrorController : Controller
+    public partial class GenericErrorController : UmbrellaController
     {
         public virtual ActionResult Index()
         {
-            //Need to find the 404 error page
-            ContentItem errorPage = SiteSettings.Instance.NotFoundPageInstance;
+            try
+            {
+                //Need to find the 404 error page
+                ContentItem errorPage = SiteSettings.Instance.NotFoundPageInstance;
 
-            HttpContext.Response.TrySkipIisCustomErrors = true;
-            HttpContext.Response.StatusCode = 404;
-            string url = errorPage.FindPath(PathData.DefaultAction).GetRewrittenUrl();
-            return new TransferResult(url);
+                HttpContext.Response.TrySkipIisCustomErrors = true;
+                HttpContext.Response.StatusCode = 404;
+                string url = errorPage.FindPath(PathData.DefaultAction).GetRewrittenUrl();
+
+                return new TransferResult(url);
+            }
+            catch(Exception exc) when (LogError(exc))
+            {
+                throw;
+            }
         }
     }
 }

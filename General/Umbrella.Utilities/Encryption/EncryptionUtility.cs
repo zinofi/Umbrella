@@ -50,12 +50,9 @@ namespace Umbrella.Utilities.Encryption
                 p_Encryptor = p_Algorithm.CreateEncryptor(key, iV);
                 p_Decryptor = p_Algorithm.CreateDecryptor(key, iV);
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                // Throw security exception if an exception has occured
-                string errorId = DateTime.Now.Ticks.ToString();
-                Log.LogError(exc, message: errorId);
-                throw new ApplicationException(errorId);
+                throw;
             }
         }
         #endregion
@@ -79,12 +76,9 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, value))
             {
-                // Throw security exception if an exception has occured
-                string errorId = DateTime.Now.Ticks.ToString();
-				Log.LogError(exc, value, errorId);
-                throw new ApplicationException(errorId);
+                throw;
             }
         }
 
@@ -110,12 +104,9 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, value))
             {
-                // Throw security exception if an exception has occured
-                string errorId = DateTime.Now.Ticks.ToString();
-				Log.LogError(exc, value, errorId);
-                throw new ApplicationException(errorId);
+                throw;
             }
         }
 
@@ -134,12 +125,9 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                // Throw security exception if an exception has occured
-                string errorId = DateTime.Now.Ticks.ToString();
-				Log.LogError(exc, value, errorId);
-                throw new ApplicationException(errorId);
+                throw;
             }
         }
 
@@ -165,12 +153,9 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, value))
             {
-                // Throw security exception if an exception has occured
-                string errorId = DateTime.Now.Ticks.ToString();
-				Log.LogError(exc, value, errorId);
-                throw new ApplicationException(errorId);
+                throw;
             }
         }
 

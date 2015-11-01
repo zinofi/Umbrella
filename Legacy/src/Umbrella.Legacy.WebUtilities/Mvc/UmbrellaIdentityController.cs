@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc
 {
-	public class UmbrellaIdentityController<TUserManager, TUser, TKey> : Controller
+	public class UmbrellaIdentityController<TUserManager, TUser, TKey> : UmbrellaController
 		where TUserManager : UserManager<TUser, TKey>
 		where TUser : class, IUser<TKey>
 		where TKey : IEquatable<TKey>

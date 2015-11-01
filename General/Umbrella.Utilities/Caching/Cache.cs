@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Caching
 {
@@ -78,9 +79,8 @@ namespace Umbrella.Utilities.Caching
 
                 return p_Cache[key];
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                Log.Error("Find() failed", exc);
                 throw;
             }
         }

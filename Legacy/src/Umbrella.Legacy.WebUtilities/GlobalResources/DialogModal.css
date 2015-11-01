@@ -41,16 +41,27 @@ html[xmlns] .clearfix {
         cursor:move;
     }
 
+    .dialog-modal .ui-dialog-titlebar .ui-dialog-title
+    {
+        padding:3px 0;
+    }
+
     .dialog-modal .ui-dialog-titlebar-close
     {
         float: right;
         border: 0;
-        background: #000;
+        background: none;
         color:#fff;
-        font-size:14px;
+        font-size:20px;
         text-align:center;
         outline:none;
         cursor:pointer;
+        font-family:FontAwesome !important;
+    }
+
+    .dialog-modal .ui-dialog-titlebar-close:before
+    {
+        content:"\f00d";
     }
 
     .dialog-modal .ui-dialog-titlebar-close .ui-button-text

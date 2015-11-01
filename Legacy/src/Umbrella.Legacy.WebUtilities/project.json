@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-beta8-build00016",
   "description": "Umbrella.Legacy.WebUtilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -24,5 +24,9 @@
     "Microsoft.Owin.StaticFiles": "3.0.1",
     "Umbrella.Utilities": "1.0.0-*",
     "Umbrella.WebUtilities": "1.0.0-*"
-  }
+  },
+  "resourceFiles": [
+    "GlobalResources/DialogModal.css",
+    "GlobalResources/DialogModal.js"
+  ]
 }

@@ -16,7 +16,7 @@ namespace Umbrella.N2.Utilities.Caching
         /// <summary>
         /// The global cache instance
         /// </summary>
-        public static N2MemoryCache<T, U> Global
+        public static new N2MemoryCache<T, U> Global
         {
             get { return s_Cache; }
         }

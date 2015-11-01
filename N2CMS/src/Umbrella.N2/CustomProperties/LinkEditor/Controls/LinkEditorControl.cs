@@ -16,6 +16,8 @@ using Umbrella.N2.CustomProperties.LinkEditor.Controls.Templates;
 using N2;
 using Newtonsoft.Json;
 using Umbrella.Legacy.WebUtilities.Controls;
+using Umbrella.Legacy.WebUtilities.Extensions;
+using N2.Web.UI.WebControls;
 
 namespace Umbrella.N2.CustomProperties.LinkEditor.Controls
 {
@@ -51,20 +53,20 @@ namespace Umbrella.N2.CustomProperties.LinkEditor.Controls
             Page.ClientScript.RegisterClientScriptBlock(GetType(), "VirtualApplicationUrlPrefix", string.Format("virtualAppUrlPrefix = \"{0}\";", HttpRuntime.AppDomainAppVirtualPath), true);
 
             //We need to ensure that there is only a single instance of this control per edit page!
-            LinkListPopup ctrl = Page.Form.FindControl("ucLinkList") as LinkListPopup;
+            LinkListPopup ctrl = Page.FindFirstControl<ItemEditor>().FindControl("ucLinkList") as LinkListPopup;
             if (ctrl == null)
             {
                 ctrl = new LinkListPopup();
                 ctrl.ID = "ucLinkList";
-                Page.Form.Controls.Add(ctrl);
+                Page.FindFirstControl<ItemEditor>().Controls.Add(ctrl);
 
                 //Register stylesheets and scripts - in theory these registrations will not be duplicated
-				this.Page.StyleSheet("~/Content/themes/base/all.css");
+                this.Page.StyleSheet("~/Content/themes/base/all.css");
 
                 Page.StyleSheet(Page.ClientScript.GetWebResourceUrl(GetType(), "Umbrella.N2.CustomProperties.LinkEditor.Resources.LinkEditor.css"));
-                Page.StyleSheet(Page.ClientScript.GetWebResourceUrl(typeof(EmbeddedUserControl), "Umbrella.WebUtilities.GlobalResources.DialogModal.css"));
+                Page.StyleSheet(Page.ClientScript.GetWebResourceUrl(typeof(EmbeddedUserControl), "Umbrella.Legacy.WebUtilities.GlobalResources.DialogModal.css"));
                 Page.JavaScript("~/N2/Resources/Js/UrlSelection.js");
-                Page.JavaScript(Page.ClientScript.GetWebResourceUrl(typeof(EmbeddedUserControl), "Umbrella.WebUtilities.GlobalResources.DialogModal.js"));
+                Page.JavaScript(Page.ClientScript.GetWebResourceUrl(typeof(EmbeddedUserControl), "Umbrella.Legacy.WebUtilities.GlobalResources.DialogModal.js"));
                 Page.JavaScript(Page.ClientScript.GetWebResourceUrl(GetType(), "Umbrella.N2.CustomProperties.LinkEditor.Resources.LinkEditor.js"));
 
                 Page.ClientScript.RegisterClientScriptBlock(GetType(), "up-arrow", string.Format("upArrowUrl = \"{0}\";", Page.ClientScript.GetWebResourceUrl(GetType(), "Umbrella.N2.CustomProperties.LinkEditor.Resources.up-arrow.png")), true);
@@ -78,8 +80,8 @@ namespace Umbrella.N2.CustomProperties.LinkEditor.Controls
             {
                 buttons.Add(new PopupButton { Name = "Link", FriendlyName = "Link" });
 
-                if (Page.Form.Controls.OfType<Control>().FirstOrDefault(x => x is LinkEditorPopup) == null)
-                    Page.Form.Controls.Add(new LinkEditorPopup());
+                if (Page.FindFirstControl<ItemEditor>().Controls.OfType<Control>().FirstOrDefault(x => x is LinkEditorPopup) == null)
+                    Page.FindFirstControl<ItemEditor>().Controls.Add(new LinkEditorPopup());
             }
 
             //Only add the Image Editor Popup if we need it, and we haven't already registered it
@@ -87,19 +89,19 @@ namespace Umbrella.N2.CustomProperties.LinkEditor.Controls
             {
                 buttons.Add(new PopupButton { Name = "Image", FriendlyName = "Image" });
 
-                if (Page.Form.Controls.OfType<Control>().FirstOrDefault(x => x is ImageEditorPopup) == null)
-                    Page.Form.Controls.Add(new ImageEditorPopup());
+                if (Page.FindFirstControl<ItemEditor>().Controls.OfType<Control>().FirstOrDefault(x => x is ImageEditorPopup) == null)
+                    Page.FindFirstControl<ItemEditor>().Controls.Add(new ImageEditorPopup());
             }
 
             //Register all the plugin controls - but only if they haven't already been registered
             foreach (ILinkItemCollectionPlugin plugin in plugins)
             {
-                if (Page.Form.Controls.OfType<Control>().FirstOrDefault(x => x.GetType() == plugin.GetPluginControl().GetType()) == null)
+                if (Page.FindFirstControl<ItemEditor>().Controls.OfType<Control>().FirstOrDefault(x => x.GetType() == plugin.GetPluginControl().GetType()) == null)
                 {
                     LinkItemCollectionUserControlBase control = plugin.GetPluginControl();
                     control.CurrentItem = editItem;
 
-                    Page.Form.Controls.Add(control);
+                    Page.FindFirstControl<ItemEditor>().Controls.Add(control);
                     RegisterPluginJavaScript(plugin);
                 }
 

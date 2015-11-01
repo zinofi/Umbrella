@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
-using Umbrella.N2.Utilities.Mvc.Controllers;
+using Umbrella.N2.Mvc.Controllers;
 
 namespace Umbrella.N2.Utilities.Mvc
 {

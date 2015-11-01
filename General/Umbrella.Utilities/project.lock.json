@@ -1,6 +1,6 @@
 {
   "locked": false,
-  "version": 1,
+  "version": 2,
   "targets": {
     "DNX,Version=v4.6": {
       "log4net/2.0.3": {
@@ -21,7 +21,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2.0": {
+      "Ninject/3.2.2": {
         "type": "package",
         "compile": {
           "lib/net45-full/Ninject.dll": {}
@@ -50,7 +50,123 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2.0": {
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      }
+    },
+    "DNX,Version=v4.6/win7-x86": {
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      }
+    },
+    "DNX,Version=v4.6/win7-x64": {
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6/win7-x86": {
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6/win7-x64": {
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
         "type": "package",
         "compile": {
           "lib/net45-full/Ninject.dll": {}
@@ -107,7 +223,7 @@
         "tools/install.ps1"
       ]
     },
-    "Ninject/3.2.2.0": {
+    "Ninject/3.2.2": {
       "type": "package",
       "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
       "files": [
@@ -142,14 +258,14 @@
       "Ninject >= 3.2.2"
     ],
     "DNX,Version=v4.6": [
-      "fx/System.Configuration >= 4.0.0.0",
-      "fx/System.Drawing >= 4.0.0.0",
-      "fx/System.Runtime.Caching >= 4.0.0.0"
+      "fx/System.Configuration >= 4.0.0",
+      "fx/System.Drawing >= 4.0.0",
+      "fx/System.Runtime.Caching >= 4.0.0"
     ],
     ".NETFramework,Version=v4.6": [
-      "fx/System.Configuration >= 4.0.0.0",
-      "fx/System.Drawing >= 4.0.0.0",
-      "fx/System.Runtime.Caching >= 4.0.0.0"
+      "fx/System.Configuration >= 4.0.0",
+      "fx/System.Drawing >= 4.0.0",
+      "fx/System.Runtime.Caching >= 4.0.0"
     ]
   }
 }

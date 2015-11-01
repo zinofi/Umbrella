@@ -6,7 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		gulpfile.js = gulpfile.js
 		NuGet.Config = NuGet.Config
+		package.json = package.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{9EA3F4AE-0260-4B8A-98AD-25803026D4E5}"
@@ -33,6 +35,18 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilitie
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.N2", "N2CMS\Umbrella.N2\Umbrella.N2.xproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAnnotations", "General\Umbrella.DataAnnotations\Umbrella.DataAnnotations.xproj", "{89194FB0-E735-4A79-91E5-C02B8E631DA0}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAnnotations.Test", "Test\Umbrella.DataAnnotations.Test\Umbrella.DataAnnotations.Test.xproj", "{EF7FC951-650A-4B87-87CA-E1350B24AB66}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities.DynamicImage", "General\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.xproj", "{C3BBA42E-29A0-41B8-B22C-C47A416D531A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities.DynamicImage", "Legacy\Umbrella.Legacy.WebUtilities.DynamicImage\Umbrella.Legacy.WebUtilities.DynamicImage.xproj", "{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities.Test", "Test\Umbrella.Utilities.Test\Umbrella.Utilities.Test.xproj", "{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities.DataAnnotations", "Legacy\Umbrella.Legacy.WebUtilities.DataAnnotations\Umbrella.Legacy.WebUtilities.DataAnnotations.xproj", "{EDCADC38-86E4-478E-9F0C-374F523D7FC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +69,7 @@ Global
 		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77381917-4C02-4708-AA5A-4DE03CDEED46}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{650A5A85-5956-491E-9312-5E25A27D1108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{650A5A85-5956-491E-9312-5E25A27D1108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{650A5A85-5956-491E-9312-5E25A27D1108}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,6 +82,30 @@ Global
 		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5926B995-BF16-40E7-960B-E7F12BC8B74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89194FB0-E735-4A79-91E5-C02B8E631DA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89194FB0-E735-4A79-91E5-C02B8E631DA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89194FB0-E735-4A79-91E5-C02B8E631DA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89194FB0-E735-4A79-91E5-C02B8E631DA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF7FC951-650A-4B87-87CA-E1350B24AB66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF7FC951-650A-4B87-87CA-E1350B24AB66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF7FC951-650A-4B87-87CA-E1350B24AB66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF7FC951-650A-4B87-87CA-E1350B24AB66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3BBA42E-29A0-41B8-B22C-C47A416D531A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BBA42E-29A0-41B8-B22C-C47A416D531A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3BBA42E-29A0-41B8-B22C-C47A416D531A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BBA42E-29A0-41B8-B22C-C47A416D531A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,5 +118,11 @@ Global
 		{650A5A85-5956-491E-9312-5E25A27D1108} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
 		{5926B995-BF16-40E7-960B-E7F12BC8B74B} = {1EBEFC37-2819-4585-8667-21F1D84755EC}
+		{89194FB0-E735-4A79-91E5-C02B8E631DA0} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{EF7FC951-650A-4B87-87CA-E1350B24AB66} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{C3BBA42E-29A0-41B8-B22C-C47A416D531A} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{37315368-C0EF-4DEA-BA1D-D514B9FB7F42} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
+		{90EE8E03-55F4-4EBB-8AB5-35848CECA09C} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{EDCADC38-86E4-478E-9F0C-374F523D7FC1} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
 	EndGlobalSection
 EndGlobal

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Caching
 {
@@ -26,9 +27,8 @@ namespace Umbrella.Utilities.Caching
                 if (s_Cache.ContainsKey(key))
                     return s_Cache[key];
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, key))
             {
-                Log.Error(string.Format("Get({0}) failed", key), exc);
                 throw;
             }
             finally
@@ -57,9 +57,8 @@ namespace Umbrella.Utilities.Caching
                     s_Lock.ExitWriteLock();
                 }
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { key = key, value = value }))
             {
-                Log.Error(string.Format("Add({0}, {1}) failed", key, value), exc);
                 throw;
             }
             finally
@@ -76,9 +75,8 @@ namespace Umbrella.Utilities.Caching
             {
                 s_Cache.Clear();
             }
-            catch(Exception exc)
+            catch(Exception exc) when (Log.LogError(exc))
             {
-                Log.Error("Clear() failed", exc);
                 throw;
             }
             finally

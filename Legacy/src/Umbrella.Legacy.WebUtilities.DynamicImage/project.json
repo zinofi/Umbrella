@@ -1,0 +1,29 @@
+﻿{
+  "version": "1.0.0-beta8-build00016",
+  "description": "Umbrella.Legacy.WebUtilities.DynamicImage Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": {
+      "frameworkAssemblies": {
+        "PresentationCore": "4.0.0.0",
+        "System.Web": "4.0.0.0"
+      }
+    },
+    "net46": {
+      "frameworkAssemblies": {
+        "PresentationCore": "4.0.0.0",
+        "System.Web": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "Microsoft.AspNet.Mvc": "5.2.3",
+    "Microsoft.Owin": "3.0.1",
+    "Ninject": "3.2.2",
+    "Umbrella.Legacy.WebUtilities": "1.0.0-*",
+    "Umbrella.WebUtilities.DynamicImage": "1.0.0-*"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.0-beta8-build00016",
   "description": "Umbrella.WebUtilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -28,9 +28,8 @@
     }
   },
   "dependencies": {
-    "AutoMapper": "4.0.4",
-    "DynamicImage": "3.1.1",
     "log4net": "2.0.3",
-    "Umbrella.Utilities": "1.0.0-*"
+    "Umbrella.Utilities": "1.0.0-*",
+    "WebActivatorEx": "2.0.6"
   }
 }

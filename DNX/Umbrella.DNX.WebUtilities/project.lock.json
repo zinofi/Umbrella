@@ -1,35 +1,8 @@
 {
   "locked": false,
-  "version": 1,
+  "version": 2,
   "targets": {
     "DNX,Version=v4.6": {
-      "AutoMapper/4.0.4": {
-        "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
-        "compile": {
-          "lib/net45/AutoMapper.dll": {}
-        },
-        "runtime": {
-          "lib/net45/AutoMapper.dll": {}
-        }
-      },
-      "DynamicImage/3.1.1": {
-        "type": "package",
-        "dependencies": {
-          "WebActivatorEx": "2.0.2"
-        },
-        "compile": {
-          "lib/net40/SoundInTheory.DynamicImage.dll": {}
-        },
-        "runtime": {
-          "lib/net40/SoundInTheory.DynamicImage.dll": {}
-        }
-      },
       "log4net/2.0.3": {
         "type": "package",
         "compile": {
@@ -160,7 +133,7 @@
           "lib/dnx451/Microsoft.Net.Http.Headers.dll": {}
         }
       },
-      "Microsoft.Web.Infrastructure/1.0.0.0": {
+      "Microsoft.Web.Infrastructure/1.0.0": {
         "type": "package",
         "compile": {
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
@@ -178,7 +151,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2.0": {
+      "Ninject/3.2.2": {
         "type": "package",
         "compile": {
           "lib/net45-full/Ninject.dll": {}
@@ -187,8 +160,9 @@
           "lib/net45-full/Ninject.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0": {
+      "Umbrella.Utilities/1.0.0-beta8-build00001": {
         "type": "project",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.3",
           "Newtonsoft.Json": "7.0.1",
@@ -200,13 +174,13 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0": {
+      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
         "type": "project",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "AutoMapper": "4.0.4",
-          "DynamicImage": "3.1.1",
           "log4net": "2.0.3",
-          "Umbrella.Utilities": "1.0.0"
+          "Umbrella.Utilities": "1.0.0",
+          "WebActivatorEx": "2.0.6"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -216,10 +190,412 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.2": {
+      "WebActivatorEx/2.0.6": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0.0"
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "lib/net40/WebActivatorEx.dll": {}
+        },
+        "runtime": {
+          "lib/net40/WebActivatorEx.dll": {}
+        }
+      }
+    },
+    "DNX,Version=v4.6/win7-x86": {
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-beta8",
+          "Microsoft.AspNet.WebUtilities": "1.0.0-beta8",
+          "Microsoft.Net.Http.Headers": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Http.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Http.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Abstractions/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Features": "1.0.0-beta8",
+          "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Http.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Http.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Features/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Framework.Primitives": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Http.Features.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Http.Features.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebUtilities/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Framework.Primitives": "1.0.0-beta8",
+          "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.WebUtilities.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.WebUtilities.dll": {}
+        }
+      },
+      "Microsoft.Framework.Primitives/1.0.0-beta8": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.Framework.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.Framework.Primitives.dll": {}
+        }
+      },
+      "Microsoft.Framework.WebEncoders.Core/1.0.0-beta8": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.Framework.WebEncoders.Core.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.Framework.WebEncoders.Core.dll": {}
+        }
+      },
+      "Microsoft.Net.Http.Headers/1.0.0-beta8": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.Net.Http.Headers.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.Net.Http.Headers.dll": {}
+        }
+      },
+      "Microsoft.Web.Infrastructure/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      },
+      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": "DNX,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Newtonsoft.Json": "7.0.1",
+          "Ninject": "3.2.2"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration",
+          "System.Drawing",
+          "System.Runtime.Caching"
+        ]
+      },
+      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": "DNX,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Umbrella.Utilities": "1.0.0",
+          "WebActivatorEx": "2.0.6"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "System.ServiceModel",
+          "System.Xml",
+          "WindowsBase"
+        ]
+      },
+      "WebActivatorEx/2.0.6": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "lib/net40/WebActivatorEx.dll": {}
+        },
+        "runtime": {
+          "lib/net40/WebActivatorEx.dll": {}
+        }
+      }
+    },
+    "DNX,Version=v4.6/win7-x64": {
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-beta8",
+          "Microsoft.AspNet.WebUtilities": "1.0.0-beta8",
+          "Microsoft.Net.Http.Headers": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Http.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Http.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Abstractions/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Features": "1.0.0-beta8",
+          "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Http.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Http.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Http.Features/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Framework.Primitives": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Http.Features.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Http.Features.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebUtilities/1.0.0-beta8": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Framework.Primitives": "1.0.0-beta8",
+          "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta8"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.WebUtilities.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.WebUtilities.dll": {}
+        }
+      },
+      "Microsoft.Framework.Primitives/1.0.0-beta8": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.Framework.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.Framework.Primitives.dll": {}
+        }
+      },
+      "Microsoft.Framework.WebEncoders.Core/1.0.0-beta8": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.Framework.WebEncoders.Core.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.Framework.WebEncoders.Core.dll": {}
+        }
+      },
+      "Microsoft.Net.Http.Headers/1.0.0-beta8": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.Net.Http.Headers.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.Net.Http.Headers.dll": {}
+        }
+      },
+      "Microsoft.Web.Infrastructure/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      },
+      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": "DNX,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Newtonsoft.Json": "7.0.1",
+          "Ninject": "3.2.2"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration",
+          "System.Drawing",
+          "System.Runtime.Caching"
+        ]
+      },
+      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": "DNX,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Umbrella.Utilities": "1.0.0",
+          "WebActivatorEx": "2.0.6"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "System.ServiceModel",
+          "System.Xml",
+          "WindowsBase"
+        ]
+      },
+      "WebActivatorEx/2.0.6": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Web.Infrastructure": "1.0.0"
         },
         "compile": {
           "lib/net40/WebActivatorEx.dll": {}
@@ -231,55 +607,13 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0": {
+    "Umbrella.Utilities/1.0.0-beta8-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0": {
+    "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.WebUtilities/project.json"
-    },
-    "AutoMapper/4.0.4": {
-      "type": "package",
-      "sha512": "7EJaXSD7mI/T1nwlAgsUcxiuSW4zAY8cQy52/onmc8+lM4T9XqVlDqvFuY9pzcNxI1c2X3GD47G8qDO0hcip1g==",
-      "files": [
-        "AutoMapper.4.0.4.nupkg",
-        "AutoMapper.4.0.4.nupkg.sha512",
-        "AutoMapper.nuspec",
-        "lib/dotnet/AutoMapper.dll",
-        "lib/dotnet/AutoMapper.xml",
-        "lib/MonoAndroid/AutoMapper.dll",
-        "lib/MonoAndroid/AutoMapper.XML",
-        "lib/MonoTouch/AutoMapper.dll",
-        "lib/MonoTouch/AutoMapper.XML",
-        "lib/net40/AutoMapper.dll",
-        "lib/net40/AutoMapper.xml",
-        "lib/net45/AutoMapper.dll",
-        "lib/net45/AutoMapper.xml",
-        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.dll",
-        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.xml",
-        "lib/sl50/AutoMapper.dll",
-        "lib/sl50/AutoMapper.xml",
-        "lib/win/AutoMapper.dll",
-        "lib/win/AutoMapper.xml",
-        "lib/wp80/AutoMapper.dll",
-        "lib/wp80/AutoMapper.xml",
-        "lib/wpa81/AutoMapper.dll",
-        "lib/wpa81/AutoMapper.xml",
-        "lib/Xamarin.iOS10/AutoMapper.dll",
-        "lib/Xamarin.iOS10/AutoMapper.XML"
-      ]
-    },
-    "DynamicImage/3.1.1": {
-      "type": "package",
-      "sha512": "q6XNf72G/8p8aG1j7CbyOcOs4naKb+URvC9rA0hA/Ub+xestPoRVOrhJZi/Dx5Vgh2a37NLp3FfCjThsM9ztuQ==",
-      "files": [
-        "content/App_Start/DynamicImage.cs.pp",
-        "DynamicImage.3.1.1.nupkg",
-        "DynamicImage.3.1.1.nupkg.sha512",
-        "DynamicImage.nuspec",
-        "lib/net40/SoundInTheory.DynamicImage.dll"
-      ]
     },
     "log4net/2.0.3": {
       "type": "package",
@@ -410,7 +744,7 @@
         "Microsoft.Net.Http.Headers.nuspec"
       ]
     },
-    "Microsoft.Web.Infrastructure/1.0.0.0": {
+    "Microsoft.Web.Infrastructure/1.0.0": {
       "type": "package",
       "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
       "files": [
@@ -442,7 +776,7 @@
         "tools/install.ps1"
       ]
     },
-    "Ninject/3.2.2.0": {
+    "Ninject/3.2.2": {
       "type": "package",
       "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
       "files": [
@@ -469,13 +803,13 @@
         "Ninject.nuspec"
       ]
     },
-    "WebActivatorEx/2.0.2": {
+    "WebActivatorEx/2.0.6": {
       "type": "package",
-      "sha512": "eVe2RmaNWYkgDvtWSthTLCv3zIQ6xcfxNLNPbCNe8IIiZcYet/A7tKG/HlyLdIz73wUvjyIDCmhK6wGODFtXlQ==",
+      "sha512": "RrQATGFRXQHehwXdCGNFZ0n4MAWsNVAdtI0SWpIhqNE0tErRQhj6KuAcH57XUJ5MaV3cbHO+nnu9lUJIXd+Z6w==",
       "files": [
         "lib/net40/WebActivatorEx.dll",
-        "WebActivatorEx.2.0.2.nupkg",
-        "WebActivatorEx.2.0.2.nupkg.sha512",
+        "WebActivatorEx.2.0.6.nupkg",
+        "WebActivatorEx.2.0.6.nupkg.sha512",
         "WebActivatorEx.nuspec"
       ]
     }

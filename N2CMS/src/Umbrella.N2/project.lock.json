@@ -1,16 +1,10 @@
 {
   "locked": false,
-  "version": 1,
+  "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6": {
-      "AutoMapper/4.0.4": {
+      "AutoMapper/4.1.1": {
         "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
         "compile": {
           "lib/net45/AutoMapper.dll": {}
         },
@@ -144,7 +138,7 @@
         "dependencies": {
           "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)",
           "Microsoft.Owin": "2.0.2",
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/System.Web.Http.Owin.dll": {}
@@ -169,7 +163,7 @@
         "type": "package",
         "dependencies": {
           "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
-          "Microsoft.Web.Infrastructure": "1.0.0.0"
+          "Microsoft.Web.Infrastructure": "1.0.0"
         },
         "compile": {
           "lib/net45/System.Web.Helpers.dll": {},
@@ -187,7 +181,7 @@
       "Microsoft.Owin/3.0.1": {
         "type": "package",
         "dependencies": {
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/Microsoft.Owin.dll": {}
@@ -209,7 +203,7 @@
         "type": "package",
         "dependencies": {
           "Microsoft.Owin": "3.0.1",
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
@@ -222,7 +216,7 @@
         "type": "package",
         "dependencies": {
           "Microsoft.Owin": "2.1.0",
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/Microsoft.Owin.Security.dll": {}
@@ -236,7 +230,7 @@
         "dependencies": {
           "Microsoft.Owin": "2.1.0",
           "Microsoft.Owin.Security": "2.1.0",
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
@@ -251,7 +245,7 @@
           "Microsoft.Owin": "2.1.0",
           "Microsoft.Owin.Security": "2.1.0",
           "Newtonsoft.Json": "4.5.11",
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
@@ -265,7 +259,7 @@
         "dependencies": {
           "Microsoft.Owin": "3.0.1",
           "Microsoft.Owin.FileSystems": "3.0.1",
-          "Owin": "1.0"
+          "Owin": "1.0.0"
         },
         "compile": {
           "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
@@ -274,7 +268,7 @@
           "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
         }
       },
-      "Microsoft.Web.Infrastructure/1.0.0.0": {
+      "Microsoft.Web.Infrastructure/1.0.0": {
         "type": "package",
         "compile": {
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
@@ -283,19 +277,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.7.5": {
+      "N2CMS/2.8.4": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.7.5",
-          "N2CMS.Management": "2.7.5",
-          "N2CMS.Search.Lucene": "2.7.5"
+          "N2CMS.Library": "2.8.4",
+          "N2CMS.Management": "2.8.4",
+          "N2CMS.Search.Lucene": "2.8.4"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.7.5": {
+      "N2CMS.Library/2.8.4": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -307,31 +301,29 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.7.5": {
+      "N2CMS.Management/2.8.4": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.7.5",
+          "N2CMS.Library": "2.8.4",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
           "lib/N2.Extensions.dll": {},
           "lib/N2.Management.dll": {},
-          "lib/N2.Management.Targeting.dll": {},
           "lib/N2.Packaging.dll": {}
         },
         "runtime": {
           "lib/N2.Extensions.dll": {},
           "lib/N2.Management.dll": {},
-          "lib/N2.Management.Targeting.dll": {},
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.7.5": {
+      "N2CMS.Search.Lucene/2.8.4": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.7.5"
+          "N2CMS.Library": "2.8.4"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -352,7 +344,7 @@
       "NHibernate/4.0.3.4000": {
         "type": "package",
         "dependencies": {
-          "Iesi.Collections": "[4.0, 5.0)"
+          "Iesi.Collections": "[4.0.0, 5.0.0)"
         },
         "compile": {
           "lib/net40/NHibernate.dll": {}
@@ -361,7 +353,7 @@
           "lib/net40/NHibernate.dll": {}
         }
       },
-      "Ninject/3.2.2.0": {
+      "Ninject/3.2.2": {
         "type": "package",
         "compile": {
           "lib/net45-full/Ninject.dll": {}
@@ -370,7 +362,7 @@
           "lib/net45-full/Ninject.dll": {}
         }
       },
-      "Owin/1.0": {
+      "Owin/1.0.0": {
         "type": "package",
         "compile": {
           "lib/net40/Owin.dll": {}
@@ -388,8 +380,9 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
         "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.3",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
@@ -407,8 +400,24 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
         "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Ninject": "3.2.2",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.3",
           "Newtonsoft.Json": "7.0.1",
@@ -420,13 +429,13 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0": {
+      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
         "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "AutoMapper": "4.0.4",
-          "DynamicImage": "3.1.1",
           "log4net": "2.0.3",
-          "Umbrella.Utilities": "1.0.0"
+          "Umbrella.Utilities": "1.0.0",
+          "WebActivatorEx": "2.0.6"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -436,10 +445,970 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.2": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "AutoMapper": "4.1.1",
+          "DynamicImage": "3.1.1",
+          "log4net": "2.0.3",
+          "Ninject": "3.2.2",
+          "Umbrella.Utilities": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "WindowsBase"
+        ]
+      },
+      "WebActivatorEx/2.0.6": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0.0"
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "lib/net40/WebActivatorEx.dll": {}
+        },
+        "runtime": {
+          "lib/net40/WebActivatorEx.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6/win7-x86": {
+      "AutoMapper/4.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/AutoMapper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/AutoMapper.dll": {}
+        }
+      },
+      "DynamicImage/3.1.1": {
+        "type": "package",
+        "dependencies": {
+          "WebActivatorEx": "2.0.2"
+        },
+        "compile": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        },
+        "runtime": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        }
+      },
+      "Iesi.Collections/4.0.0.4000": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Iesi.Collections.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Iesi.Collections.dll": {}
+        }
+      },
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Lucene.Net/3.0.3": {
+        "type": "package",
+        "dependencies": {
+          "SharpZipLib": "0.86.0"
+        },
+        "compile": {
+          "lib/NET40/Lucene.Net.dll": {}
+        },
+        "runtime": {
+          "lib/NET40/Lucene.Net.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Identity.Core/2.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Identity.Owin/2.2.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Identity.Core": "2.2.1",
+          "Microsoft.Owin.Security": "2.1.0",
+          "Microsoft.Owin.Security.Cookies": "2.1.0",
+          "Microsoft.Owin.Security.OAuth": "2.1.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
+          "Microsoft.AspNet.WebPages": "[3.2.3, 3.3.0)"
+        },
+        "compile": {
+          "lib/net45/System.Web.Mvc.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Mvc.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Razor/3.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/net45/System.Web.Razor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Razor.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.WebHost": "[5.2.3, 5.3.0)"
+        }
+      },
+      "Microsoft.AspNet.WebApi.Client/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.4"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http"
+        ],
+        "compile": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.Core/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Client": "5.2.3"
+        },
+        "compile": {
+          "lib/net45/System.Web.Http.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Http.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.Owin/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)",
+          "Microsoft.Owin": "2.0.2",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/System.Web.Http.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Http.Owin.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.WebHost/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)"
+        },
+        "compile": {
+          "lib/net45/System.Web.Http.WebHost.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Http.WebHost.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebPages/3.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/System.Web.Helpers.dll": {},
+          "lib/net45/System.Web.WebPages.Deployment.dll": {},
+          "lib/net45/System.Web.WebPages.dll": {},
+          "lib/net45/System.Web.WebPages.Razor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Helpers.dll": {},
+          "lib/net45/System.Web.WebPages.Deployment.dll": {},
+          "lib/net45/System.Web.WebPages.dll": {},
+          "lib/net45/System.Web.WebPages.Razor.dll": {}
+        }
+      },
+      "Microsoft.Owin/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.dll": {}
+        }
+      },
+      "Microsoft.Owin.FileSystems/3.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
+        }
+      },
+      "Microsoft.Owin.Host.SystemWeb/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "2.1.0",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security.Cookies/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "2.1.0",
+          "Microsoft.Owin.Security": "2.1.0",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security.OAuth/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "2.1.0",
+          "Microsoft.Owin.Security": "2.1.0",
+          "Newtonsoft.Json": "4.5.11",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
+        }
+      },
+      "Microsoft.Owin.StaticFiles/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.FileSystems": "3.0.1",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
+        }
+      },
+      "Microsoft.Web.Infrastructure/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        }
+      },
+      "N2CMS/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "N2CMS.Config": "2.6.2",
+          "N2CMS.Library": "2.8.4",
+          "N2CMS.Management": "2.8.4",
+          "N2CMS.Search.Lucene": "2.8.4"
+        }
+      },
+      "N2CMS.Config/2.6.2": {
+        "type": "package"
+      },
+      "N2CMS.Library/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "NHibernate": "4.0.3.4000"
+        },
+        "compile": {
+          "lib/net45/N2.dll": {}
+        },
+        "runtime": {
+          "lib/net45/N2.dll": {}
+        }
+      },
+      "N2CMS.Management/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "N2CMS.Config": "2.6.2",
+          "N2CMS.Library": "2.8.4",
+          "SharpZipLib": "0.86.0"
+        },
+        "compile": {
+          "lib/N2.Extensions.dll": {},
+          "lib/N2.Management.dll": {},
+          "lib/N2.Packaging.dll": {}
+        },
+        "runtime": {
+          "lib/N2.Extensions.dll": {},
+          "lib/N2.Management.dll": {},
+          "lib/N2.Packaging.dll": {}
+        }
+      },
+      "N2CMS.Search.Lucene/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "Lucene.Net": "3.0.3",
+          "N2CMS.Library": "2.8.4"
+        },
+        "compile": {
+          "lib/N2.Search.Lucene.dll": {}
+        },
+        "runtime": {
+          "lib/N2.Search.Lucene.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "NHibernate/4.0.3.4000": {
+        "type": "package",
+        "dependencies": {
+          "Iesi.Collections": "[4.0.0, 5.0.0)"
+        },
+        "compile": {
+          "lib/net40/NHibernate.dll": {}
+        },
+        "runtime": {
+          "lib/net40/NHibernate.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      },
+      "Owin/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Owin.dll": {}
+        }
+      },
+      "SharpZipLib/0.86.0": {
+        "type": "package",
+        "compile": {
+          "lib/20/ICSharpCode.SharpZipLib.dll": {}
+        },
+        "runtime": {
+          "lib/20/ICSharpCode.SharpZipLib.dll": {}
+        }
+      },
+      "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Microsoft.AspNet.Identity.Owin": "2.2.1",
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.AspNet.WebApi": "5.2.3",
+          "Microsoft.AspNet.WebApi.Owin": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.Host.SystemWeb": "3.0.1",
+          "Microsoft.Owin.StaticFiles": "3.0.1",
+          "Umbrella.Utilities": "1.0.0",
+          "Umbrella.WebUtilities": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "System.ComponentModel.DataAnnotations",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Ninject": "3.2.2",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Newtonsoft.Json": "7.0.1",
+          "Ninject": "3.2.2"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration",
+          "System.Drawing",
+          "System.Runtime.Caching"
+        ]
+      },
+      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Umbrella.Utilities": "1.0.0",
+          "WebActivatorEx": "2.0.6"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "System.ServiceModel",
+          "System.Xml",
+          "WindowsBase"
+        ]
+      },
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "AutoMapper": "4.1.1",
+          "DynamicImage": "3.1.1",
+          "log4net": "2.0.3",
+          "Ninject": "3.2.2",
+          "Umbrella.Utilities": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "WindowsBase"
+        ]
+      },
+      "WebActivatorEx/2.0.6": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "lib/net40/WebActivatorEx.dll": {}
+        },
+        "runtime": {
+          "lib/net40/WebActivatorEx.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.6/win7-x64": {
+      "AutoMapper/4.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/AutoMapper.dll": {}
+        },
+        "runtime": {
+          "lib/net45/AutoMapper.dll": {}
+        }
+      },
+      "DynamicImage/3.1.1": {
+        "type": "package",
+        "dependencies": {
+          "WebActivatorEx": "2.0.2"
+        },
+        "compile": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        },
+        "runtime": {
+          "lib/net40/SoundInTheory.DynamicImage.dll": {}
+        }
+      },
+      "Iesi.Collections/4.0.0.4000": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Iesi.Collections.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Iesi.Collections.dll": {}
+        }
+      },
+      "log4net/2.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net40-full/log4net.dll": {}
+        },
+        "runtime": {
+          "lib/net40-full/log4net.dll": {}
+        }
+      },
+      "Lucene.Net/3.0.3": {
+        "type": "package",
+        "dependencies": {
+          "SharpZipLib": "0.86.0"
+        },
+        "compile": {
+          "lib/NET40/Lucene.Net.dll": {}
+        },
+        "runtime": {
+          "lib/NET40/Lucene.Net.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Identity.Core/2.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Identity.Owin/2.2.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Identity.Core": "2.2.1",
+          "Microsoft.Owin.Security": "2.1.0",
+          "Microsoft.Owin.Security.Cookies": "2.1.0",
+          "Microsoft.Owin.Security.OAuth": "2.1.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
+          "Microsoft.AspNet.WebPages": "[3.2.3, 3.3.0)"
+        },
+        "compile": {
+          "lib/net45/System.Web.Mvc.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Mvc.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Razor/3.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/net45/System.Web.Razor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Razor.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.WebHost": "[5.2.3, 5.3.0)"
+        }
+      },
+      "Microsoft.AspNet.WebApi.Client/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.4"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http"
+        ],
+        "compile": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.Core/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Client": "5.2.3"
+        },
+        "compile": {
+          "lib/net45/System.Web.Http.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Http.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.Owin/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)",
+          "Microsoft.Owin": "2.0.2",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/System.Web.Http.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Http.Owin.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.WebHost/5.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)"
+        },
+        "compile": {
+          "lib/net45/System.Web.Http.WebHost.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Http.WebHost.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebPages/3.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
+          "Microsoft.Web.Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/System.Web.Helpers.dll": {},
+          "lib/net45/System.Web.WebPages.Deployment.dll": {},
+          "lib/net45/System.Web.WebPages.dll": {},
+          "lib/net45/System.Web.WebPages.Razor.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Web.Helpers.dll": {},
+          "lib/net45/System.Web.WebPages.Deployment.dll": {},
+          "lib/net45/System.Web.WebPages.dll": {},
+          "lib/net45/System.Web.WebPages.Razor.dll": {}
+        }
+      },
+      "Microsoft.Owin/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.dll": {}
+        }
+      },
+      "Microsoft.Owin.FileSystems/3.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
+        }
+      },
+      "Microsoft.Owin.Host.SystemWeb/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "2.1.0",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security.Cookies/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "2.1.0",
+          "Microsoft.Owin.Security": "2.1.0",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security.OAuth/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "2.1.0",
+          "Microsoft.Owin.Security": "2.1.0",
+          "Newtonsoft.Json": "4.5.11",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
+        }
+      },
+      "Microsoft.Owin.StaticFiles/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.FileSystems": "3.0.1",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
+        }
+      },
+      "Microsoft.Web.Infrastructure/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
+        }
+      },
+      "N2CMS/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "N2CMS.Config": "2.6.2",
+          "N2CMS.Library": "2.8.4",
+          "N2CMS.Management": "2.8.4",
+          "N2CMS.Search.Lucene": "2.8.4"
+        }
+      },
+      "N2CMS.Config/2.6.2": {
+        "type": "package"
+      },
+      "N2CMS.Library/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "NHibernate": "4.0.3.4000"
+        },
+        "compile": {
+          "lib/net45/N2.dll": {}
+        },
+        "runtime": {
+          "lib/net45/N2.dll": {}
+        }
+      },
+      "N2CMS.Management/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "N2CMS.Config": "2.6.2",
+          "N2CMS.Library": "2.8.4",
+          "SharpZipLib": "0.86.0"
+        },
+        "compile": {
+          "lib/N2.Extensions.dll": {},
+          "lib/N2.Management.dll": {},
+          "lib/N2.Packaging.dll": {}
+        },
+        "runtime": {
+          "lib/N2.Extensions.dll": {},
+          "lib/N2.Management.dll": {},
+          "lib/N2.Packaging.dll": {}
+        }
+      },
+      "N2CMS.Search.Lucene/2.8.4": {
+        "type": "package",
+        "dependencies": {
+          "Lucene.Net": "3.0.3",
+          "N2CMS.Library": "2.8.4"
+        },
+        "compile": {
+          "lib/N2.Search.Lucene.dll": {}
+        },
+        "runtime": {
+          "lib/N2.Search.Lucene.dll": {}
+        }
+      },
+      "Newtonsoft.Json/7.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "NHibernate/4.0.3.4000": {
+        "type": "package",
+        "dependencies": {
+          "Iesi.Collections": "[4.0.0, 5.0.0)"
+        },
+        "compile": {
+          "lib/net40/NHibernate.dll": {}
+        },
+        "runtime": {
+          "lib/net40/NHibernate.dll": {}
+        }
+      },
+      "Ninject/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45-full/Ninject.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Ninject.dll": {}
+        }
+      },
+      "Owin/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Owin.dll": {}
+        }
+      },
+      "SharpZipLib/0.86.0": {
+        "type": "package",
+        "compile": {
+          "lib/20/ICSharpCode.SharpZipLib.dll": {}
+        },
+        "runtime": {
+          "lib/20/ICSharpCode.SharpZipLib.dll": {}
+        }
+      },
+      "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Microsoft.AspNet.Identity.Owin": "2.2.1",
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.AspNet.WebApi": "5.2.3",
+          "Microsoft.AspNet.WebApi.Owin": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.Host.SystemWeb": "3.0.1",
+          "Microsoft.Owin.StaticFiles": "3.0.1",
+          "Umbrella.Utilities": "1.0.0",
+          "Umbrella.WebUtilities": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "System.ComponentModel.DataAnnotations",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Ninject": "3.2.2",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Newtonsoft.Json": "7.0.1",
+          "Ninject": "3.2.2"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration",
+          "System.Drawing",
+          "System.Runtime.Caching"
+        ]
+      },
+      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "log4net": "2.0.3",
+          "Umbrella.Utilities": "1.0.0",
+          "WebActivatorEx": "2.0.6"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "System.ServiceModel",
+          "System.Xml",
+          "WindowsBase"
+        ]
+      },
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "AutoMapper": "4.1.1",
+          "DynamicImage": "3.1.1",
+          "log4net": "2.0.3",
+          "Ninject": "3.2.2",
+          "Umbrella.Utilities": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
+          "System.Configuration",
+          "WindowsBase"
+        ]
+      },
+      "WebActivatorEx/2.0.6": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Web.Infrastructure": "1.0.0"
         },
         "compile": {
           "lib/net40/WebActivatorEx.dll": {}
@@ -451,24 +1420,32 @@
     }
   },
   "libraries": {
-    "Umbrella.Legacy.WebUtilities/1.0.0": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Utilities/1.0.0": {
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "type": "project",
+      "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json"
+    },
+    "Umbrella.Utilities/1.0.0-beta8-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0": {
+    "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.WebUtilities/project.json"
     },
-    "AutoMapper/4.0.4": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "type": "project",
+      "path": "../../General/Umbrella.WebUtilities.DynamicImage/project.json"
+    },
+    "AutoMapper/4.1.1": {
       "type": "package",
-      "sha512": "7EJaXSD7mI/T1nwlAgsUcxiuSW4zAY8cQy52/onmc8+lM4T9XqVlDqvFuY9pzcNxI1c2X3GD47G8qDO0hcip1g==",
+      "sha512": "wTNIFaF21i0heEEOMOLn4Ki991I+b6Ls+tiwTvmzVhkLo5PmSJcNLuf2eGJEtUnQ3UDBTAAdZEaXAgbTqOe2pg==",
       "files": [
-        "AutoMapper.4.0.4.nupkg",
-        "AutoMapper.4.0.4.nupkg.sha512",
+        "AutoMapper.4.1.1.nupkg",
+        "AutoMapper.4.1.1.nupkg.sha512",
         "AutoMapper.nuspec",
         "lib/dotnet/AutoMapper.dll",
         "lib/dotnet/AutoMapper.xml",
@@ -483,7 +1460,7 @@
         "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.dll",
         "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.xml",
         "lib/sl50/AutoMapper.dll",
-        "lib/sl50/AutoMapper.xml",
+        "lib/sl50/AutoMapper.XML",
         "lib/win/AutoMapper.dll",
         "lib/win/AutoMapper.xml",
         "lib/wp80/AutoMapper.dll",
@@ -768,7 +1745,7 @@
         "Microsoft.Owin.StaticFiles.nuspec"
       ]
     },
-    "Microsoft.Web.Infrastructure/1.0.0.0": {
+    "Microsoft.Web.Infrastructure/1.0.0": {
       "type": "package",
       "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
       "files": [
@@ -778,9 +1755,9 @@
         "Microsoft.Web.Infrastructure.nuspec"
       ]
     },
-    "N2CMS/2.7.5": {
+    "N2CMS/2.8.4": {
       "type": "package",
-      "sha512": "TB4n4sGVx+ulgbCoVy+LmqAnmQQkdHG5lEK3O2UzW5WwMDH4mEklvAQm1Y8dic3nJ3agyVmn7uIaK4Y+pW4SSg==",
+      "sha512": "ZiXKV5xUAjSP3pUIkP20h0uu7Q9A7dP+FIru3rmWRT5nllkCaVkYlaqnI1V7C024FWVUz5yBv0NNr+rS8niOPg==",
       "files": [
         "Content/N2/history.txt",
         "Content/N2/howto_develop.txt",
@@ -789,8 +1766,8 @@
         "Content/N2/n2_readme.txt",
         "Content/N2/n2cms.configuration.xsd",
         "Content/N2/upgrade.txt",
-        "N2CMS.2.7.5.nupkg",
-        "N2CMS.2.7.5.nupkg.sha512",
+        "N2CMS.2.8.4.nupkg",
+        "N2CMS.2.8.4.nupkg.sha512",
         "N2CMS.nuspec"
       ]
     },
@@ -806,24 +1783,21 @@
         "N2CMS.Config.nuspec"
       ]
     },
-    "N2CMS.Library/2.7.5": {
+    "N2CMS.Library/2.8.4": {
       "type": "package",
-      "sha512": "bP87j4VHogAVjZY3dzifGhSXhENWyGTp70Ao+SQWRSrSmz1FcfBh4+tOhcpRhcGaGNMlJVcgryI2DPsTt/iWqg==",
+      "sha512": "+PvhDzOgYfo2aE3qnxUPvB/J1k7stB5YV1N2ooPn8T0QjFaZKowPKmr7hhpCYe5Rxd5cYL7PiNbPVJGWaStrig==",
       "files": [
-        "lib/net40/N2.dll",
-        "lib/net40/N2.pdb",
-        "lib/net40/N2.xml",
         "lib/net45/N2.dll",
         "lib/net45/N2.pdb",
-        "lib/net45/N2.xml",
-        "N2CMS.Library.2.7.5.nupkg",
-        "N2CMS.Library.2.7.5.nupkg.sha512",
+        "lib/net45/N2.XML",
+        "N2CMS.Library.2.8.4.nupkg",
+        "N2CMS.Library.2.8.4.nupkg.sha512",
         "N2CMS.Library.nuspec"
       ]
     },
-    "N2CMS.Management/2.7.5": {
+    "N2CMS.Management/2.8.4": {
       "type": "package",
-      "sha512": "kxjYSExgwZIYjf2iYX9q90AjznyAprCBpt22WCoWE9UgC/aMLN36uMCj+uL0OiXi3WI2EjFSoWeG12upn6GDMg==",
+      "sha512": "EBoEg+kpRc70uKySkqK7U5+B7g8YAsaIuj7s7ArjKNXEXyXcqVW3jjt6CJZT6vUHtklUTm6v4ZZVXT6sDhS5yw==",
       "files": [
         "content/N2/history.txt",
         "content/N2/howto_develop.txt",
@@ -839,22 +1813,20 @@
         "lib/N2.Extensions.dll",
         "lib/N2.Extensions.pdb",
         "lib/N2.Management.dll",
-        "lib/N2.Management.dll.config",
         "lib/N2.Management.pdb",
-        "lib/N2.Management.Targeting.dll",
         "lib/N2.Packaging.dll",
-        "N2CMS.Management.2.7.5.nupkg",
-        "N2CMS.Management.2.7.5.nupkg.sha512",
+        "N2CMS.Management.2.8.4.nupkg",
+        "N2CMS.Management.2.8.4.nupkg.sha512",
         "N2CMS.Management.nuspec"
       ]
     },
-    "N2CMS.Search.Lucene/2.7.5": {
+    "N2CMS.Search.Lucene/2.8.4": {
       "type": "package",
-      "sha512": "fS1wFhfl61yOmGcpN6DXJMpH+IvHxI8xBPjzfiC1jA+rvllFvPa1zfxBVH8cRFopN9h2bS3p1rrN6E9XBKH19w==",
+      "sha512": "rzwqC2lFnMX9BbPe2HQBVpbOTuoHsjrfHcRwWZOADHkBbdj+HcGaYD9urVqPj2v0NSYciZa31Z0sLsfIefbfXQ==",
       "files": [
         "lib/N2.Search.Lucene.dll",
-        "N2CMS.Search.Lucene.2.7.5.nupkg",
-        "N2CMS.Search.Lucene.2.7.5.nupkg.sha512",
+        "N2CMS.Search.Lucene.2.8.4.nupkg",
+        "N2CMS.Search.Lucene.2.8.4.nupkg.sha512",
         "N2CMS.Search.Lucene.nuspec"
       ]
     },
@@ -904,7 +1876,7 @@
         "nhibernate-mapping.xsd"
       ]
     },
-    "Ninject/3.2.2.0": {
+    "Ninject/3.2.2": {
       "type": "package",
       "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
       "files": [
@@ -931,7 +1903,7 @@
         "Ninject.nuspec"
       ]
     },
-    "Owin/1.0": {
+    "Owin/1.0.0": {
       "type": "package",
       "sha512": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw==",
       "files": [
@@ -954,27 +1926,29 @@
         "SharpZipLib.nuspec"
       ]
     },
-    "WebActivatorEx/2.0.2": {
+    "WebActivatorEx/2.0.6": {
       "type": "package",
-      "sha512": "eVe2RmaNWYkgDvtWSthTLCv3zIQ6xcfxNLNPbCNe8IIiZcYet/A7tKG/HlyLdIz73wUvjyIDCmhK6wGODFtXlQ==",
+      "sha512": "RrQATGFRXQHehwXdCGNFZ0n4MAWsNVAdtI0SWpIhqNE0tErRQhj6KuAcH57XUJ5MaV3cbHO+nnu9lUJIXd+Z6w==",
       "files": [
         "lib/net40/WebActivatorEx.dll",
-        "WebActivatorEx.2.0.2.nupkg",
-        "WebActivatorEx.2.0.2.nupkg.sha512",
+        "WebActivatorEx.2.0.6.nupkg",
+        "WebActivatorEx.2.0.6.nupkg.sha512",
         "WebActivatorEx.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "N2CMS >= 2.7.5",
+      "N2CMS >= 2.8.4",
       "Newtonsoft.Json >= 7.0.1",
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
+      "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",
       "Umbrella.Utilities >= 1.0.0-*",
-      "Umbrella.WebUtilities >= 1.0.0-*"
+      "Umbrella.WebUtilities >= 1.0.0-*",
+      "Umbrella.WebUtilities.DynamicImage >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": [
-      "fx/System.Web >= 4.0.0.0"
+      "fx/System.Web >= 4.0.0"
     ]
   }
 }

@@ -28,21 +28,28 @@ namespace Umbrella.N2.Utilities.WebApi
             );
         }
 
-        public HttpResponseMessage Get()
+        public IHttpActionResult Get()
         {
-            //Build the sitemap
-            XmlSiteMap sitemap = new XmlSiteMap();
-
-            foreach (ContentPageModelBase page in Find.Query<ContentPageModelBase>().Where(x => x.State == ContentState.Published).AsEnumerable().Where(x => !x.NoIndex))
+            try
             {
-                sitemap.Add(page.Url.ToAbsoluteUrl(), ChangeFrequency.Weekly, page.Published.Value);
+                //Build the sitemap
+                XmlSiteMap sitemap = new XmlSiteMap();
+
+                foreach (ContentPageModelBase page in Find.Query<ContentPageModelBase>().Where(x => x.State == ContentState.Published).AsEnumerable().Where(x => !x.NoIndex))
+                {
+                    sitemap.Add(page.Url.ToAbsoluteUrl(), ChangeFrequency.Weekly, page.Published.Value);
+                }
+
+                HttpResponseMessage response = new HttpResponseMessage();
+                response.Content = new StringContent(sitemap.ToString());
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
+
+                return ResponseMessage(response);
             }
-
-            HttpResponseMessage response = new HttpResponseMessage();
-            response.Content = new StringContent(sitemap.ToString());
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
-
-            return response;
+            catch(Exception exc) when (LogError(exc))
+            {
+                throw;
+            }
         }
     }
 }

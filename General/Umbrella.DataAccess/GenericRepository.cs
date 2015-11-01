@@ -192,14 +192,12 @@ namespace Umbrella.DataAccess
                     AfterContextSavedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Concurrency Exception for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Concurrency Exception for Id");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Failed for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Failed for Id");
                 throw;
             }
         }
@@ -229,14 +227,12 @@ namespace Umbrella.DataAccess
                     await AfterContextSavedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Concurrency Exception for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Concurrency Exception for Id");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Failed for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Failed for Id");
                 throw;
             }
         }
@@ -299,14 +295,12 @@ namespace Umbrella.DataAccess
                 //Additional process after all changes have been committed to the database
                 AfterContextSavedChangesMultiple(entities);
             }
-            catch (DbUpdateConcurrencyException exc)
-            {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }, "Concurrency Exception");
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }, "Concurrency Exception"))
+            {   
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic });
                 throw;
             }
         }
@@ -330,14 +324,12 @@ namespace Umbrella.DataAccess
                 //Additional process after all changes have been committed to the database
                 await AfterContextSavedChangesMultipleAsync(entities);
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }, "Concurrency Exception"))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }, "Concurrency Exception");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic });
                 throw;
             }
         }
@@ -362,14 +354,12 @@ namespace Umbrella.DataAccess
                     AfterContextDeletedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Concurrency Exception for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Concurrency Exception for Id");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Failed for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Failed for Id");
                 throw;
             }
         }
@@ -392,14 +382,12 @@ namespace Umbrella.DataAccess
                     await AfterContextDeletedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Concurrency Exception for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Concurrency Exception for Id");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Failed for Id"))
             {
-                Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Failed for Id");
                 throw;
             }
         }
@@ -431,14 +419,12 @@ namespace Umbrella.DataAccess
 
                 AfterContextDeletedChangesMultiple(entities);
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }, "Concurrency Exception"))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }, "Concurrency Exception");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation });
                 throw;
             }
         }
@@ -457,14 +443,12 @@ namespace Umbrella.DataAccess
 
                 await AfterContextDeletedChangesMultipleAsync(entities);
             }
-            catch (DbUpdateConcurrencyException exc)
+            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }, "Concurrency Exception"))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }, "Concurrency Exception");
                 throw;
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }))
             {
-                Log.LogError(exc, new { enableEntityValidation = enableEntityValidation });
                 throw;
             }
         }
@@ -707,9 +691,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.ToList();
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                Log.LogError(exc);
                 throw;
             }
         }
@@ -720,9 +703,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.ToListAsync();
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                Log.LogError(exc);
                 throw;
             }
         }
@@ -733,9 +715,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.Where(x => ids.Contains(x.Id)).ToList();
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, ids))
             {
-                Log.LogError(exc, ids);
                 throw;
             }
         }
@@ -746,9 +727,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.Where(x => ids.Contains(x.Id)).ToListAsync();
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, ids))
             {
-                Log.LogError(exc, ids);
                 throw;
             }
         }
@@ -759,9 +739,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.SingleOrDefault(x => x.Id.ToString() == id.ToString());
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, id))
             {
-                Log.LogError(exc, id);
                 throw;
             }
         }
@@ -772,9 +751,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.SingleOrDefaultAsync(x => x.Id.ToString() == id.ToString());
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc, id))
             {
-                Log.LogError(exc, id);
                 throw;
             }
         }
@@ -785,9 +763,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.Count();
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                Log.LogError(exc);
                 throw;
             }
         }
@@ -798,9 +775,8 @@ namespace Umbrella.DataAccess
             {
                 return Items.CountAsync();
             }
-            catch (Exception exc)
+            catch (Exception exc) when (Log.LogError(exc))
             {
-                Log.LogError(exc);
                 throw;
             }
         }

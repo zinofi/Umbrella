@@ -70,17 +70,50 @@ namespace Umbrella.Utilities.Extensions
         }
 
         public static string ToCamelCase(this string value)
-		{
+        {
             if (string.IsNullOrWhiteSpace(value))
                 return value;
 
             if (value.Length == 1)
                 return value.ToLower();
 
-            return char.ToLower(value[0]) + value.Substring(1, value.Length - 1);
+            //If 1st char is already in lowercase, return the value untouched
+            if (char.IsLower(value[0]))
+                return value;
+
+            char[] buffer = new char[value.Length];
+
+            bool stop = false;
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!stop)
+                {
+                    if (char.IsUpper(value[i]))
+                    {
+                        buffer[i] = char.ToLower(value[i]);
+                        continue;
+                    }
+                    else if (i > 1)
+                    {
+                        //Encountered first lowercase char
+                        //Check previous char and see if that was uppercase before we made it lowercase
+                        char previous = value[i - 1];
+                        if (char.IsUpper(previous))
+                        {
+                            buffer[i - 1] = previous;
+                            stop = true;
+                        }
+                    }
+                }
+
+                buffer[i] = value[i];
+            }
+
+            return new string(buffer);
         }
 
-		private static string AppendEllipsis(string value)
+        private static string AppendEllipsis(string value)
 		{
             if (string.IsNullOrEmpty(value))
                 return value;

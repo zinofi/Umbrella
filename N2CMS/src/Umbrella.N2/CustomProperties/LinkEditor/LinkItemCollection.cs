@@ -144,7 +144,7 @@ namespace Umbrella.N2.CustomProperties.LinkEditor
         {
             LinkItemCollection coll = new LinkItemCollection();
 
-            object[] jsonItems = JsonConvert.DeserializeObject(json) as object[];
+            Dictionary<string, object>[] jsonItems = JsonConvert.DeserializeObject<Dictionary<string, object>[]>(json);
 
             LinkItemBase[] arrLinkItemBase = new LinkItemBase[jsonItems.Length];
 

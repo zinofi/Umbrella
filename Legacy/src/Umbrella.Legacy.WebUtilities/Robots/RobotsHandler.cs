@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using Umbrella.WebUtilities.Robots;
+using System.Web.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.Robots
 {
@@ -30,10 +31,13 @@ namespace Umbrella.Legacy.WebUtilities.Robots
             //Firstly, determine the hostname of the site
             string hostName = context.Request.Url.Host;
 
+            System.Configuration.Configuration config = WebConfigurationManager.OpenWebConfiguration("~/web.config");
+            RobotsConfig robotsConfig = new RobotsConfig(config);
+
             //Check if there is a config entry for this hostname in the robots section
-            if (RobotsConfig.Settings != null)
+            if (robotsConfig.Settings != null)
             {
-                List<RobotElement> lstRobots = RobotsConfig.Settings.Robots.OfType<RobotElement>().ToList();
+                List<RobotElement> lstRobots = robotsConfig.Settings.Robots.OfType<RobotElement>().ToList();
 
                 RobotElement robot = lstRobots.FirstOrDefault(x => x.HostName.ToLower() == hostName);
                 if (robot != null)

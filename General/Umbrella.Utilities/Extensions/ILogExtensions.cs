@@ -11,30 +11,27 @@ namespace Umbrella.Utilities.Extensions
 {
 	public static class ILogExtensions
 	{
-		#region Public Static Methods
-		public static bool LogError(this ILog log, Exception exc, object model = null, string message = null, [CallerMemberName]string methodName = "")
-		{
-			LogErrorDetails(log, exc, model, message, methodName);
+        #region Public Static Methods
+        public static bool LogError(this ILog log, Exception exc, object model = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "")
+        {
+            LogErrorDetails(log, exc, model, message, methodName);
 
-			AggregateException aggregateException = exc as AggregateException;
+            AggregateException aggregateException = exc as AggregateException;
 
-			if (aggregateException != null)
-			{
-				if (aggregateException.InnerExceptions != null && aggregateException.InnerExceptions.Count > 0)
-				{
-					foreach (Exception excInner in aggregateException.InnerExceptions)
-					{
-						LogErrorDetails(log, excInner, model, message, methodName);
-					}
-				}
-			}
+            if (aggregateException?.InnerExceptions != null && aggregateException.InnerExceptions.Count > 0)
+            {
+                foreach (Exception excInner in aggregateException.InnerExceptions)
+                {
+                    LogErrorDetails(log, excInner, model, message, methodName);
+                }
+            }
 
-            return false;
-		}
+            return returnValue;
+        }
 		#endregion
 
 		#region Private Static Methods
-		private static void LogErrorDetails(ILog log, Exception exc, object model = null, string message = null, [CallerMemberName]string methodName = "")
+		private static void LogErrorDetails(ILog log, Exception exc, object model, string message, string methodName)
 		{
 			StringBuilder messageBuilder = new StringBuilder();
 

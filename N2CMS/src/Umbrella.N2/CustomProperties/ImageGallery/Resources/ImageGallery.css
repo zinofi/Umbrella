@@ -23,28 +23,61 @@
             cursor:move;
         }
 
+        .image-gallery-items li > .thumb-overlay
+        {
+            position:absolute;
+            width:100%;
+            height:100%;
+            background:#fff;
+            opacity:0.5;
+            display:none;
+        }
+
+        .image-gallery-items li:hover > .thumb-overlay
+        {
+            display:block;
+            cursor:move;
+        }
+
 .image-gallery-items li a
 {
     position:absolute;
     outline:0;
-    opacity:0.5;
 }
 
         .image-gallery-items li a:hover
         {
-            opacity:1;
+            text-decoration:none;
         }
 
     .image-gallery-items li .edit-item
     {
         top:0;
         right:23px;
+        font-family:FontAwesome !important;
+        font-size:14px;
+        text-decoration:none;
+        color:#000;
+    }
+
+    .image-gallery-items li .edit-item:before
+    {
+        content:"\f040";
     }
 
     .image-gallery-items li .delete-item
     {
         top:0;
         right:3px;
+        font-family:FontAwesome !important;
+        font-size:14px;
+        text-decoration:none;
+        color:#ff0000;
+    }
+
+    .image-gallery-items li .delete-item:before
+    {
+        content:"\f1f8";
     }
 
 .image-gallery-edit-image

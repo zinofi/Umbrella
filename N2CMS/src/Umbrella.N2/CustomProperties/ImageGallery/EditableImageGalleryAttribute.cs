@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.UI;
 using Umbrella.N2.CustomProperties.ImageGallery.Controls;
 using Umbrella.N2.CustomProperties.LinkEditor;
@@ -20,9 +21,11 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
         #region Constructors
 		static EditableImageGalleryAttribute()
 		{
-			//Add in the Dynamic Image mappings we need to allow the images to be
-			//generated without being blocked
-			DynamicImageMapping thumbnailMapping = new DynamicImageMapping
+            DynamicImageMappingsConfig mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
+
+            //Add in the Dynamic Image mappings we need to allow the images to be
+            //generated without being blocked
+            DynamicImageMapping thumbnailMapping = new DynamicImageMapping
 			{
 				Width = 150,
 				Height = 150,
@@ -38,8 +41,8 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
 				Format = DynamicImageFormat.Jpeg
 			};
 
-			DynamicImageMappingsConfig.Settings.Add(thumbnailMapping);
-			DynamicImageMappingsConfig.Settings.Add(previewMapping);
+            mappingsConfig.Settings.Add(thumbnailMapping);
+            mappingsConfig.Settings.Add(previewMapping);
 		}
 
         public EditableImageGalleryAttribute(string title, int sortOrder)

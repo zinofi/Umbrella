@@ -30,7 +30,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi
         protected NegotiatedContentResult<string> Forbidden(string reason) => Content(HttpStatusCode.Forbidden, reason);
         protected NegotiatedContentResult<string> MethodNotAllowed(string reason) => Content(HttpStatusCode.MethodNotAllowed, reason);
         protected StatusCodeResult NoContent() => new StatusCodeResult(HttpStatusCode.NoContent, this);
-        protected bool LogError(Exception exc, object model = null, string message = "", [CallerMemberName]string methodName = "") => Log.LogError(exc, model, message, methodName);
+        protected bool LogError(Exception exc, object model = null, string message = "", bool returnValue = false, [CallerMemberName]string methodName = "") => Log.LogError(exc, model, message, returnValue, methodName);
         #endregion
     }
 }

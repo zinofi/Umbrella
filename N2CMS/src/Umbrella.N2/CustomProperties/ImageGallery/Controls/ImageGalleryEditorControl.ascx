@@ -11,8 +11,9 @@
         <ul class="clearfix">
             {{#each this}}
             <li>
-                <a href="#" title="Edit" class="edit-item"><img src="<asp:Literal ID='litEditIconUrl' runat='server' />" /></a>
-                <a href="#" title="Delete" class="delete-item"><img src="<asp:Literal ID='litDeleteIconUrl' runat='server' />" /></a>
+                <div class="thumb-overlay"></div>
+                <a href="#" title="Edit" class="edit-item"></a>
+                <a href="#" title="Delete" class="delete-item"></a>
                 <img src="{{ThumbnailUrl}}" alt="{{AltText}}" />
             </li>
             {{/each}}
@@ -24,7 +25,7 @@
 <script id="tmplImageGalleryEditImage" type="text/x-handlebars-template">
     <img src="{{PreviewUrl}}" />
     <div class="field">
-        <input id="txtImageGalleryAlt" name="txtImageGalleryAlt" type="text" value="{{AltText}}" />
+        <input id="txtImageGalleryAlt" name="txtImageGalleryAlt" type="text" value="{{AltText}}" placeholder="Enter a description of the image" />
     </div>
 </script>
 
