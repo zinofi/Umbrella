@@ -138,7 +138,7 @@ namespace Umbrella.N2.BaseModels
                 StringBuilder sb = new StringBuilder();
 
                 if (NoIndex)
-                    sb.Append("No Index");
+                    sb.Append("NoIndex");
 
                 if(NoFollow)
                 {
