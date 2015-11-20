@@ -33,13 +33,13 @@
           "lib/net40/Iesi.Collections.dll": {}
         }
       },
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Lucene.Net/3.0.3": {
@@ -277,19 +277,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.8.4": {
+      "N2CMS/2.9.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.8.4",
-          "N2CMS.Management": "2.8.4",
-          "N2CMS.Search.Lucene": "2.8.4"
+          "N2CMS.Library": "2.9.3",
+          "N2CMS.Management": "2.9.3",
+          "N2CMS.Search.Lucene": "2.9.3"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.8.4": {
+      "N2CMS.Library/2.9.3": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -301,11 +301,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.8.4": {
+      "N2CMS.Management/2.9.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.8.4",
+          "N2CMS.Library": "2.9.3",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -319,11 +319,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.8.4": {
+      "N2CMS.Search.Lucene/2.9.3": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.8.4"
+          "N2CMS.Library": "2.9.3"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -380,11 +380,11 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
           "Microsoft.AspNet.Mvc": "5.2.3",
           "Microsoft.AspNet.WebApi": "5.2.3",
@@ -400,7 +400,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -415,11 +415,11 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
           "Ninject": "3.2.2"
         },
@@ -429,11 +429,11 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
           "WebActivatorEx": "2.0.6"
         },
@@ -445,13 +445,13 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "AutoMapper": "4.1.1",
           "DynamicImage": "3.1.1",
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Ninject": "3.2.2",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -505,13 +505,13 @@
           "lib/net40/Iesi.Collections.dll": {}
         }
       },
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Lucene.Net/3.0.3": {
@@ -749,19 +749,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.8.4": {
+      "N2CMS/2.9.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.8.4",
-          "N2CMS.Management": "2.8.4",
-          "N2CMS.Search.Lucene": "2.8.4"
+          "N2CMS.Library": "2.9.3",
+          "N2CMS.Management": "2.9.3",
+          "N2CMS.Search.Lucene": "2.9.3"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.8.4": {
+      "N2CMS.Library/2.9.3": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -773,11 +773,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.8.4": {
+      "N2CMS.Management/2.9.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.8.4",
+          "N2CMS.Library": "2.9.3",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -791,11 +791,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.8.4": {
+      "N2CMS.Search.Lucene/2.9.3": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.8.4"
+          "N2CMS.Library": "2.9.3"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -852,11 +852,11 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
           "Microsoft.AspNet.Mvc": "5.2.3",
           "Microsoft.AspNet.WebApi": "5.2.3",
@@ -872,7 +872,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -887,11 +887,11 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
           "Ninject": "3.2.2"
         },
@@ -901,11 +901,11 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
           "WebActivatorEx": "2.0.6"
         },
@@ -917,13 +917,13 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "AutoMapper": "4.1.1",
           "DynamicImage": "3.1.1",
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Ninject": "3.2.2",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -977,13 +977,13 @@
           "lib/net40/Iesi.Collections.dll": {}
         }
       },
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Lucene.Net/3.0.3": {
@@ -1221,19 +1221,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.8.4": {
+      "N2CMS/2.9.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.8.4",
-          "N2CMS.Management": "2.8.4",
-          "N2CMS.Search.Lucene": "2.8.4"
+          "N2CMS.Library": "2.9.3",
+          "N2CMS.Management": "2.9.3",
+          "N2CMS.Search.Lucene": "2.9.3"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.8.4": {
+      "N2CMS.Library/2.9.3": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -1245,11 +1245,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.8.4": {
+      "N2CMS.Management/2.9.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.8.4",
+          "N2CMS.Library": "2.9.3",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -1263,11 +1263,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.8.4": {
+      "N2CMS.Search.Lucene/2.9.3": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.8.4"
+          "N2CMS.Library": "2.9.3"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -1324,11 +1324,11 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
           "Microsoft.AspNet.Mvc": "5.2.3",
           "Microsoft.AspNet.WebApi": "5.2.3",
@@ -1344,7 +1344,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1359,11 +1359,11 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-beta8-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
           "Ninject": "3.2.2"
         },
@@ -1373,11 +1373,11 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
           "WebActivatorEx": "2.0.6"
         },
@@ -1389,13 +1389,13 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "AutoMapper": "4.1.1",
           "DynamicImage": "3.1.1",
-          "log4net": "2.0.3",
+          "log4net": "2.0.4",
           "Ninject": "3.2.2",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -1420,23 +1420,23 @@
     }
   },
   "libraries": {
-    "Umbrella.Legacy.WebUtilities/1.0.0-beta8-build00001": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00001": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json"
     },
-    "Umbrella.Utilities/1.0.0-beta8-build00001": {
+    "Umbrella.Utilities/1.0.0-rc1-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-beta8-build00001": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.WebUtilities/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-beta8-build00001": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.WebUtilities.DynamicImage/project.json"
     },
@@ -1493,9 +1493,9 @@
         "lib/net40/Iesi.Collections.xml"
       ]
     },
-    "log4net/2.0.3": {
+    "log4net/2.0.4": {
       "type": "package",
-      "sha512": "rxMHzK5efGPo5XtRnuUGO4tfW5l74Aji6kVmtMAt2SgcB5PHBNtNY7yj2LCI2VtKrLPO7kCKR6kH6lIZggq3Gg==",
+      "sha512": "t0S0jxtcEQQRYUfWSyxE96NPXo4uH6EHvVtRkp17u16jGslooCqjN2WIaw74N3etYF7a/2VOxW6Z/a5cDRVmNw==",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -1511,8 +1511,10 @@
         "lib/net40-client/log4net.xml",
         "lib/net40-full/log4net.dll",
         "lib/net40-full/log4net.xml",
-        "log4net.2.0.3.nupkg",
-        "log4net.2.0.3.nupkg.sha512",
+        "lib/net45-full/log4net.dll",
+        "lib/net45-full/log4net.xml",
+        "log4net.2.0.4.nupkg",
+        "log4net.2.0.4.nupkg.sha512",
         "log4net.nuspec"
       ]
     },
@@ -1755,9 +1757,9 @@
         "Microsoft.Web.Infrastructure.nuspec"
       ]
     },
-    "N2CMS/2.8.4": {
+    "N2CMS/2.9.3": {
       "type": "package",
-      "sha512": "ZiXKV5xUAjSP3pUIkP20h0uu7Q9A7dP+FIru3rmWRT5nllkCaVkYlaqnI1V7C024FWVUz5yBv0NNr+rS8niOPg==",
+      "sha512": "GDtZ4yvuaBi7/foRp/zKv5YjIB/dg6n8pU6KWvJZvt78xlX3pbqcfAD+W+9iD6JQQ2ziAlh6xsdRSDvye8Jyuw==",
       "files": [
         "Content/N2/history.txt",
         "Content/N2/howto_develop.txt",
@@ -1766,8 +1768,8 @@
         "Content/N2/n2_readme.txt",
         "Content/N2/n2cms.configuration.xsd",
         "Content/N2/upgrade.txt",
-        "N2CMS.2.8.4.nupkg",
-        "N2CMS.2.8.4.nupkg.sha512",
+        "N2CMS.2.9.3.nupkg",
+        "N2CMS.2.9.3.nupkg.sha512",
         "N2CMS.nuspec"
       ]
     },
@@ -1783,21 +1785,21 @@
         "N2CMS.Config.nuspec"
       ]
     },
-    "N2CMS.Library/2.8.4": {
+    "N2CMS.Library/2.9.3": {
       "type": "package",
-      "sha512": "+PvhDzOgYfo2aE3qnxUPvB/J1k7stB5YV1N2ooPn8T0QjFaZKowPKmr7hhpCYe5Rxd5cYL7PiNbPVJGWaStrig==",
+      "sha512": "YguZhWpnjdwLNBFLbRYvhy8P+gBwQ2GFxxQ4wFgyCnHPUQkdKMIL5SIMW/NgP35fYiqnDnjgn1Nr7Bj6aHW4Qw==",
       "files": [
         "lib/net45/N2.dll",
         "lib/net45/N2.pdb",
         "lib/net45/N2.XML",
-        "N2CMS.Library.2.8.4.nupkg",
-        "N2CMS.Library.2.8.4.nupkg.sha512",
+        "N2CMS.Library.2.9.3.nupkg",
+        "N2CMS.Library.2.9.3.nupkg.sha512",
         "N2CMS.Library.nuspec"
       ]
     },
-    "N2CMS.Management/2.8.4": {
+    "N2CMS.Management/2.9.3": {
       "type": "package",
-      "sha512": "EBoEg+kpRc70uKySkqK7U5+B7g8YAsaIuj7s7ArjKNXEXyXcqVW3jjt6CJZT6vUHtklUTm6v4ZZVXT6sDhS5yw==",
+      "sha512": "nOL2r6CgNRiXULAfJNU/oOZa+KaDWMx0Jh8u42GCmyEB0DaSlVnLi3SpiPN1Cnn98DhGG66CwCZHkZBDxpG17A==",
       "files": [
         "content/N2/history.txt",
         "content/N2/howto_develop.txt",
@@ -1815,18 +1817,18 @@
         "lib/N2.Management.dll",
         "lib/N2.Management.pdb",
         "lib/N2.Packaging.dll",
-        "N2CMS.Management.2.8.4.nupkg",
-        "N2CMS.Management.2.8.4.nupkg.sha512",
+        "N2CMS.Management.2.9.3.nupkg",
+        "N2CMS.Management.2.9.3.nupkg.sha512",
         "N2CMS.Management.nuspec"
       ]
     },
-    "N2CMS.Search.Lucene/2.8.4": {
+    "N2CMS.Search.Lucene/2.9.3": {
       "type": "package",
-      "sha512": "rzwqC2lFnMX9BbPe2HQBVpbOTuoHsjrfHcRwWZOADHkBbdj+HcGaYD9urVqPj2v0NSYciZa31Z0sLsfIefbfXQ==",
+      "sha512": "sIELCPZYd6a3ERjUYzGDgDwx8N/vaZBcZkkR0tqloXpa0aYLcgCtSDhJSIi6TqnCdT7l03Ckyjbm3VL+OtpPVA==",
       "files": [
         "lib/N2.Search.Lucene.dll",
-        "N2CMS.Search.Lucene.2.8.4.nupkg",
-        "N2CMS.Search.Lucene.2.8.4.nupkg.sha512",
+        "N2CMS.Search.Lucene.2.9.3.nupkg",
+        "N2CMS.Search.Lucene.2.9.3.nupkg.sha512",
         "N2CMS.Search.Lucene.nuspec"
       ]
     },
@@ -1939,7 +1941,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "N2CMS >= 2.8.4",
+      "N2CMS >= 2.9.3",
       "Newtonsoft.Json >= 7.0.1",
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
       "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",

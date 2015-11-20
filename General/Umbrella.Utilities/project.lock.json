@@ -3,13 +3,13 @@
   "version": 2,
   "targets": {
     "DNX,Version=v4.6": {
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Newtonsoft.Json/7.0.1": {
@@ -32,13 +32,13 @@
       }
     },
     ".NETFramework,Version=v4.6": {
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Newtonsoft.Json/7.0.1": {
@@ -61,13 +61,13 @@
       }
     },
     "DNX,Version=v4.6/win7-x86": {
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Newtonsoft.Json/7.0.1": {
@@ -90,13 +90,13 @@
       }
     },
     "DNX,Version=v4.6/win7-x64": {
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Newtonsoft.Json/7.0.1": {
@@ -119,13 +119,13 @@
       }
     },
     ".NETFramework,Version=v4.6/win7-x86": {
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Newtonsoft.Json/7.0.1": {
@@ -148,13 +148,13 @@
       }
     },
     ".NETFramework,Version=v4.6/win7-x64": {
-      "log4net/2.0.3": {
+      "log4net/2.0.4": {
         "type": "package",
         "compile": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         },
         "runtime": {
-          "lib/net40-full/log4net.dll": {}
+          "lib/net45-full/log4net.dll": {}
         }
       },
       "Newtonsoft.Json/7.0.1": {
@@ -178,9 +178,9 @@
     }
   },
   "libraries": {
-    "log4net/2.0.3": {
+    "log4net/2.0.4": {
       "type": "package",
-      "sha512": "rxMHzK5efGPo5XtRnuUGO4tfW5l74Aji6kVmtMAt2SgcB5PHBNtNY7yj2LCI2VtKrLPO7kCKR6kH6lIZggq3Gg==",
+      "sha512": "t0S0jxtcEQQRYUfWSyxE96NPXo4uH6EHvVtRkp17u16jGslooCqjN2WIaw74N3etYF7a/2VOxW6Z/a5cDRVmNw==",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -196,8 +196,10 @@
         "lib/net40-client/log4net.xml",
         "lib/net40-full/log4net.dll",
         "lib/net40-full/log4net.xml",
-        "log4net.2.0.3.nupkg",
-        "log4net.2.0.3.nupkg.sha512",
+        "lib/net45-full/log4net.dll",
+        "lib/net45-full/log4net.xml",
+        "log4net.2.0.4.nupkg",
+        "log4net.2.0.4.nupkg.sha512",
         "log4net.nuspec"
       ]
     },
@@ -253,7 +255,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "log4net >= 2.0.3",
+      "log4net >= 2.0.4",
       "Newtonsoft.Json >= 7.0.1",
       "Ninject >= 3.2.2"
     ],

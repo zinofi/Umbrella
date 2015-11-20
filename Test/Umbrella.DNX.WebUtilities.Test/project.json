@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-beta8-build00017",
+  "version": "1.0.0-rc1-build00001",
   "description": "Umbrella.DNX.WebUtilities.Test test project",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -9,7 +9,7 @@
   "dependencies": {
     "Umbrella.DNX.WebUtilities": "1.0.0-*",
     "xunit": "2.1.0",
-    "xunit.runner.dnx": "2.1.0-beta6-build191"
+    "xunit.runner.dnx": "2.1.0-rc1-build204"
   },
   "commands": {
     "test": "xunit.runner.dnx"
