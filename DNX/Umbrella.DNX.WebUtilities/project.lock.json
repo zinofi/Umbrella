@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    "DNX,Version=v4.6": {
+    "DNX,Version=v4.6.1": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -929,7 +929,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -943,7 +943,7 @@
       },
       "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
@@ -970,7 +970,7 @@
         }
       }
     },
-    "DNX,Version=v4.6/win7-x86": {
+    "DNX,Version=v4.6.1/win7-x86": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -1897,7 +1897,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -1911,7 +1911,7 @@
       },
       "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
@@ -1938,7 +1938,7 @@
         }
       }
     },
-    "DNX,Version=v4.6/win7-x64": {
+    "DNX,Version=v4.6.1/win7-x64": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -2865,7 +2865,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -2879,7 +2879,7 @@
       },
       "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
@@ -3834,6 +3834,6 @@
       "Microsoft.AspNet.Mvc.ViewFeatures >= 6.0.0-rc1-final",
       "Umbrella.WebUtilities >= 1.0.0-*"
     ],
-    "DNX,Version=v4.6": []
+    "DNX,Version=v4.6.1": []
   }
 }

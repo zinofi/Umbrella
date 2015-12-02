@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    ".NETFramework,Version=v4.6": {
+    ".NETFramework,Version=v4.6.1": {
       "Microsoft.AspNet.Mvc/5.2.3": {
         "type": "package",
         "dependencies": {
@@ -53,15 +53,15 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-beta8-build-3": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
+        "framework": ".NETFramework,Version=v4.6.1",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
         ]
       }
     },
-    ".NETFramework,Version=v4.6/win7-x86": {
+    ".NETFramework,Version=v4.6.1/win7-x86": {
       "Microsoft.AspNet.Mvc/5.2.3": {
         "type": "package",
         "dependencies": {
@@ -112,15 +112,15 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-beta8-build-3": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
+        "framework": ".NETFramework,Version=v4.6.1",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
         ]
       }
     },
-    ".NETFramework,Version=v4.6/win7-x64": {
+    ".NETFramework,Version=v4.6.1/win7-x64": {
       "Microsoft.AspNet.Mvc/5.2.3": {
         "type": "package",
         "dependencies": {
@@ -171,9 +171,9 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-beta8-build-3": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
+        "framework": ".NETFramework,Version=v4.6.1",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
         ]
@@ -181,7 +181,7 @@
     }
   },
   "libraries": {
-    "Umbrella.DataAnnotations/1.0.0-beta8-build-3": {
+    "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
       "type": "project",
       "path": "../../General/Umbrella.DataAnnotations/project.json"
     },
@@ -247,6 +247,6 @@
       "Microsoft.AspNet.Mvc >= 5.2.3",
       "Umbrella.DataAnnotations >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.6": []
+    ".NETFramework,Version=v4.6.1": []
   }
 }

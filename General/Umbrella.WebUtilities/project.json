@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0-rc1-build00001",
+  "version": "1.0.0-rc1-build00002",
   "description": "Umbrella.WebUtilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
-    "dnx46": {
+    "dnx461": {
       "dependencies": {
       },
       "frameworkAssemblies": {
@@ -17,7 +17,7 @@
         "WindowsBase": "4.0.0.0"
       }
     },
-    "net46": {
+    "net461": {
       "frameworkAssemblies": {
         "PresentationCore": "4.0.0.0",
         "System.Configuration": "4.0.0.0",

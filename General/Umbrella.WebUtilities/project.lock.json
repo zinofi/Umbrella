@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    "DNX,Version=v4.6": {
+    "DNX,Version=v4.6.1": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -41,7 +41,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -66,7 +66,7 @@
         }
       }
     },
-    ".NETFramework,Version=v4.6": {
+    ".NETFramework,Version=v4.6.1": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -105,7 +105,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
+        "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -130,7 +130,7 @@
         }
       }
     },
-    "DNX,Version=v4.6/win7-x86": {
+    "DNX,Version=v4.6.1/win7-x86": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -169,7 +169,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -194,7 +194,7 @@
         }
       }
     },
-    "DNX,Version=v4.6/win7-x64": {
+    "DNX,Version=v4.6.1/win7-x64": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -233,7 +233,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": "DNX,Version=v4.6",
+        "framework": "DNX,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -258,7 +258,7 @@
         }
       }
     },
-    ".NETFramework,Version=v4.6/win7-x86": {
+    ".NETFramework,Version=v4.6.1/win7-x86": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -297,7 +297,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
+        "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -322,7 +322,7 @@
         }
       }
     },
-    ".NETFramework,Version=v4.6/win7-x64": {
+    ".NETFramework,Version=v4.6.1/win7-x64": {
       "log4net/2.0.4": {
         "type": "package",
         "compile": {
@@ -361,7 +361,7 @@
       },
       "Umbrella.Utilities/1.0.0-rc1-build00001": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
+        "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.4",
           "Newtonsoft.Json": "7.0.1",
@@ -493,14 +493,14 @@
       "Umbrella.Utilities >= 1.0.0-*",
       "WebActivatorEx >= 2.0.6"
     ],
-    "DNX,Version=v4.6": [
+    "DNX,Version=v4.6.1": [
       "fx/PresentationCore >= 4.0.0",
       "fx/System.Configuration >= 4.0.0",
       "fx/System.ServiceModel >= 4.0.0",
       "fx/System.Xml >= 4.0.0",
       "fx/WindowsBase >= 4.0.0"
     ],
-    ".NETFramework,Version=v4.6": [
+    ".NETFramework,Version=v4.6.1": [
       "fx/PresentationCore >= 4.0.0",
       "fx/System.Configuration >= 4.0.0",
       "fx/System.ServiceModel >= 4.0.0",
