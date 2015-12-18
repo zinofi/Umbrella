@@ -36,19 +36,19 @@ namespace Umbrella.WebUtilities.RequestStateHelpers
                 : null;
         }
 
-        public void Store<T>(string key, T something)
-        {
-            State[key] = something;
-        }
-
         public T Get<T>() where T : class
         {
             return Get<T>(typeof(T).FullName);
         }
 
-        public void Store<T>(T something)
+        public void Store<T>(string key, T value)
         {
-            Store(typeof(T).FullName, something);
+            State[key] = value;
+        }
+
+        public void Store<T>(T value)
+        {
+            Store(typeof(T).FullName, value);
         }
         #endregion
     }

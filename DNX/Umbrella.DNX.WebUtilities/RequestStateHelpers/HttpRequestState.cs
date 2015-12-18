@@ -24,23 +24,24 @@ namespace Umbrella.DNX.WebUtilities.RequestStateHelpers
         #region IRequestState Members
         public T Get<T>() where T : class
         {
-            //TODO: Check this is ok
-            return m_Context.Features.Get<T>();
+            return Get<T>(typeof(T).FullName);
         }
 
         public T Get<T>(string key) where T : class
         {
-            return m_Context.Items[key] as T;
+            return m_Context.Items.Keys.Contains(key)
+                ? m_Context.Items[key] as T
+                : null;
         }
 
-        public void Store<T>(T something)
+        public void Store<T>(T value)
         {
-            throw new NotImplementedException();
+            Store(typeof(T).FullName, value);
         }
 
-        public void Store<T>(string key, T something)
+        public void Store<T>(string key, T value)
         {
-            throw new NotImplementedException();
+            m_Context.Items[key] = value;
         }
         #endregion
     }
