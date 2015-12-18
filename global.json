@@ -1,5 +1,5 @@
 {
-  "projects": [ "General", "N2CMS", "DNX", "Legacy", "Test" ],
+  "projects": [ "Core", "N2CMS", "DNX", "Legacy", "Test" ],
   "sdk": {
     "version": "1.0.0-rc1-update1"
   }

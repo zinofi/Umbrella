@@ -14,11 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{9EA3F4AE-0260-4B8A-98AD-25803026D4E5}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities", "General\Umbrella.Utilities\Umbrella.Utilities.xproj", "{8E28E28C-BE21-4707-B32B-02246D62EE79}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities", "Core\Umbrella.Utilities\Umbrella.Utilities.xproj", "{8E28E28C-BE21-4707-B32B-02246D62EE79}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities", "General\Umbrella.WebUtilities\Umbrella.WebUtilities.xproj", "{51D68721-517F-4A5C-91EF-1C5EFC18798E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities", "Core\Umbrella.WebUtilities\Umbrella.WebUtilities.xproj", "{51D68721-517F-4A5C-91EF-1C5EFC18798E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAccess", "General\Umbrella.DataAccess\Umbrella.DataAccess.xproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAccess", "Core\Umbrella.DataAccess\Umbrella.DataAccess.xproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DNX", "DNX", "{1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}"
 EndProject
@@ -36,11 +36,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilitie
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.N2", "N2CMS\Umbrella.N2\Umbrella.N2.xproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAnnotations", "General\Umbrella.DataAnnotations\Umbrella.DataAnnotations.xproj", "{89194FB0-E735-4A79-91E5-C02B8E631DA0}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAnnotations", "Core\Umbrella.DataAnnotations\Umbrella.DataAnnotations.xproj", "{89194FB0-E735-4A79-91E5-C02B8E631DA0}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAnnotations.Test", "Test\Umbrella.DataAnnotations.Test\Umbrella.DataAnnotations.Test.xproj", "{EF7FC951-650A-4B87-87CA-E1350B24AB66}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities.DynamicImage", "General\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.xproj", "{C3BBA42E-29A0-41B8-B22C-C47A416D531A}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities.DynamicImage", "Core\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.xproj", "{C3BBA42E-29A0-41B8-B22C-C47A416D531A}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities.DynamicImage", "Legacy\Umbrella.Legacy.WebUtilities.DynamicImage\Umbrella.Legacy.WebUtilities.DynamicImage.xproj", "{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}"
 EndProject
@@ -48,7 +48,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities.Test", "
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities.DataAnnotations", "Legacy\Umbrella.Legacy.WebUtilities.DataAnnotations\Umbrella.Legacy.WebUtilities.DataAnnotations.xproj", "{EDCADC38-86E4-478E-9F0C-374F523D7FC1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.log4net", "General\Umbrella.Utilities.log4net\Umbrella.log4net.xproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.log4net", "Core\Umbrella.Utilities.log4net\Umbrella.log4net.xproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.log4net", "DNX\Umbrella.DNX.log4net\Umbrella.DNX.log4net.xproj", "{0E80E191-7917-4671-967D-E7CC07914303}"
 EndProject
