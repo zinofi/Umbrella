@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities.log4net;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
@@ -32,9 +33,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				//Ensure any disposable objects are disposed correctly before the end of the request
 				context.Environment.AsParallel().Select(x => x.Value).OfType<IDisposable>().ForAll(x => x.Dispose());
 			}
-			catch(Exception exc)
+			catch(Exception exc) when(Log.LogError(exc))
 			{
-				Log.Error("Invoke() failed", exc);
+                throw;
 			}
 		}
 	}

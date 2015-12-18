@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,24 +14,73 @@ namespace Umbrella.Utilities.Encryption
 	public abstract class EncryptionUtility<T> : IEncryptionUtility, IDisposable
 		where T : SymmetricAlgorithm, new()
 	{
-		#region Protected Static Members
-		//TODO: protected static readonly ILog Log = LogManager.GetLogger(typeof(EncryptionUtility<T>));
-		#endregion
-
 		#region Protected Members
 		protected SymmetricAlgorithm p_Algorithm;
 		protected ICryptoTransform p_Encryptor;
 		protected ICryptoTransform p_Decryptor;
+        protected readonly ILogger m_Logger;
 		#endregion
 
 		#region Constructors
+        public EncryptionUtility(ILogger logger)
+        {
+            m_Logger = logger;   
+        }
+        #endregion
 
+        #region Internal Methods
+        internal byte[] Encrypt(string value)
+        {
+            try
+            {
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, p_Encryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] converted = ConvertStringToByteArray(value);
+
+                        csEncrypt.Write(converted, 0, converted.Length);
+                        csEncrypt.FlushFinalBlock();
+
+                        return msEncrypt.ToArray();
+                    }
+                }
+            }
+            catch (Exception exc) when (m_Logger.LogError(exc, value))
+            {
+                throw;
+            }
+        }
+
+        internal string Decrypt(byte[] value)
+        {
+            try
+            {
+                using (MemoryStream msDecrypt = new MemoryStream())
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, p_Decryptor, CryptoStreamMode.Write))
+                    {
+                        csDecrypt.Write(value, 0, value.Length);
+                        csDecrypt.Close();
+
+                        return ConvertByteArrayToString(msDecrypt.ToArray());
+                    }
+                }
+            }
+            catch (Exception exc) when (m_Logger.LogError(exc))
+            {
+                throw;
+            }
+        }
+        #endregion
+
+        #region Public Methods
         /// <summary>
-        /// Constructor with default values for the Key and IV.
+        /// Initializes the encryption utility with values for the Key and IV.
         /// </summary>
         /// <param name="encryptionKey">The encryption key to use</param>
         /// <param name="initializationVector">The initialization vector to use</param>
-        public EncryptionUtility(string encryptionKey, string initializationVector)
+        public void Initialize(string encryptionKey, string initializationVector)
         {
             try
             {
@@ -49,33 +99,7 @@ namespace Umbrella.Utilities.Encryption
                 p_Encryptor = p_Algorithm.CreateEncryptor(key, iV);
                 p_Decryptor = p_Algorithm.CreateDecryptor(key, iV);
             }
-            catch (Exception exc) //TODO: when (Log.LogError(exc))
-            {
-                throw;
-            }
-        }
-        #endregion
-
-        #region Public Methods
-
-        internal byte[] Encrypt(string value)
-        {
-            try
-            {
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, p_Encryptor, CryptoStreamMode.Write))
-                    {
-                        byte[] converted = ConvertStringToByteArray(value);
-
-                        csEncrypt.Write(converted, 0, converted.Length);
-                        csEncrypt.FlushFinalBlock();
-
-                        return msEncrypt.ToArray();
-                    }
-                }
-            }
-            catch (Exception exc) //TODO: when (Log.LogError(exc, value))
+            catch (Exception exc) when (m_Logger.LogError(exc))
             {
                 throw;
             }
@@ -103,32 +127,13 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) //TODO: when (Log.LogError(exc, value))
+            catch (Exception exc) when (m_Logger.LogError(exc, value))
             {
                 throw;
             }
         }
 
-        internal string Decrypt(byte[] value)
-        {
-            try
-            {
-                using (MemoryStream msDecrypt = new MemoryStream())
-                {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, p_Decryptor, CryptoStreamMode.Write))
-                    {
-                        csDecrypt.Write(value, 0, value.Length);
-                        csDecrypt.Close();
-
-                        return ConvertByteArrayToString(msDecrypt.ToArray());
-                    }
-                }
-            }
-            catch (Exception exc) //TODO: when (Log.LogError(exc))
-            {
-                throw;
-            }
-        }
+        
 
         /// <summary>
         /// Method to decrypt a given byte array.
@@ -152,7 +157,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) //TODO: when (Log.LogError(exc, value))
+            catch (Exception exc) when (m_Logger.LogError(exc, value))
             {
                 throw;
             }
@@ -197,14 +202,14 @@ namespace Umbrella.Utilities.Encryption
 
         #endregion
 
-        #region Private Static Methods
+        #region Private Methods
 
         /// <summary>
         /// Method to convert a string to a unicode byte array.
         /// </summary>
         /// <param name="str">The string to convert.</param>
         /// <returns>The converted byte array.</returns>
-        private static byte[] ConvertStringToByteArray(string str)
+        private byte[] ConvertStringToByteArray(string str)
         {
             return Encoding.Default.GetBytes(str);
         }
@@ -214,7 +219,7 @@ namespace Umbrella.Utilities.Encryption
         /// </summary>
         /// <param name="bytes">The byte array to convert.</param>
         /// <returns>The converted string.</returns>
-        private static string ConvertByteArrayToString(byte[] bytes)
+        private string ConvertByteArrayToString(byte[] bytes)
         {
             return Encoding.Default.GetString(bytes);
         }

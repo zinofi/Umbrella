@@ -94,9 +94,8 @@ namespace Umbrella.WebUtilities.DynamicImage
 
                 return dynamicImage;
             }
-            catch (Exception exc)
+            catch (Exception exc) when(m_Logger.LogError(exc, new { virtualPath, width, height, resizeMode, imageFormat }))
             {
-                m_Logger.LogError(exc, new { virtualPath, width, height, resizeMode, imageFormat });
                 throw;
             }
         } 

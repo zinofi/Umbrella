@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using Umbrella.Utilities.Encryption.Interfaces;
 
 namespace Umbrella.Utilities.Encryption
 {
@@ -13,8 +15,8 @@ namespace Umbrella.Utilities.Encryption
         /// </summary>
         /// <param name="encryptionKey">The encryption key to use</param>
         /// <param name="initializationVector">The initialization vector to use</param>
-		public AesEncryptionUtility(string encryptionKey, string initializationVector)
-			: base(encryptionKey, initializationVector)
+		public AesEncryptionUtility(ILogger logger)
+			: base(logger)
 		{
 		}
         #endregion

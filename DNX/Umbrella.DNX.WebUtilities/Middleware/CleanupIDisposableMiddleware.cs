@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DNX.WebUtilities.Middleware
@@ -15,18 +17,16 @@ namespace Umbrella.DNX.WebUtilities.Middleware
 	/// </summary>
 	public class CleanupIDisposableMiddleware
 	{
-        #region Private Static Members
-        //TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(CleanupIDisposableMiddleware));
-        #endregion
-
         #region Private Members
         private readonly RequestDelegate m_Next;
+        private readonly ILogger<CleanupIDisposableMiddleware> m_Logger;
         #endregion
 
         #region Constructors
-        public CleanupIDisposableMiddleware(RequestDelegate next)
+        public CleanupIDisposableMiddleware(RequestDelegate next, ILogger<CleanupIDisposableMiddleware> logger)
 		{
             m_Next = next;
+            m_Logger = logger;
 		}
         #endregion
 
@@ -43,9 +43,9 @@ namespace Umbrella.DNX.WebUtilities.Middleware
                     context.Items.AsParallel().Select(x => x.Value).OfType<IDisposable>().ForAll(x => x.Dispose());
                 }));
             }
-			catch(Exception exc)
+			catch(Exception exc) when (m_Logger.LogError(exc, returnValue: DebugUtility.IsDebugMode))
 			{
-				//TODO: Log.LogError(exc);
+                throw;
 			}
 		}
         #endregion

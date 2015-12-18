@@ -8,7 +8,8 @@ namespace Umbrella.Utilities.Encryption.Interfaces
 {
 	public interface IEncryptionUtility
 	{
-		string DecryptString(string value);
+        void Initialize(string encryptionKey, string initializationVector);
+        string DecryptString(string value);
 		string EncryptString(string value);
 	}
 }
