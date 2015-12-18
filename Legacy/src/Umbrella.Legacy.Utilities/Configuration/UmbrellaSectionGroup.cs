@@ -6,9 +6,8 @@ using System.Configuration;
 using System.Reflection;
 using System.ComponentModel;
 using System.Globalization;
-using Umbrella.Utilities.Configuration.Exceptions;
 
-namespace Umbrella.Utilities.Configuration
+namespace Umbrella.Legacy.Utilities.Configuration
 {
     public class UmbrellaSectionGroup : ConfigurationSectionGroup
     {

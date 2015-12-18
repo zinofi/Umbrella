@@ -1,23 +1,24 @@
 ﻿using log4net;
 using Microsoft.Owin;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.DynamicImage.Configuration;
 using Umbrella.WebUtilities.DynamicImage;
-using System.IO;
 using Umbrella.Legacy.WebUtilities.Extensions;
 using System.Net;
 using System.Web.Configuration;
+using Umbrella.Utilities.log4net;
+using Umbrella.Legacy.Utilities;
+using Umbrella.WebUtilities.DynamicImage.Interfaces;
+using Ninject;
+using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
-	public class DynamicImageMiddleware : OwinMiddleware
+    public class DynamicImageMiddleware : OwinMiddleware
 	{
 		private static readonly ILog Log = LogManager.GetLogger(typeof(DynamicImageMiddleware));
 
@@ -30,8 +31,6 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 		public override async Task Invoke(IOwinContext context)
 		{
-			bool exceptionOccurred = false;
-
             DynamicImageMappingsConfig mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
 
 			try
@@ -51,8 +50,10 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 					}
 					else
 					{
-						//Ignore the first 2 segments
-						int width = int.Parse(segments[2]);
+                        IDynamicImageUtility dynamicImageUtility = LibraryBindings.DependencyResolver.Get<IDynamicImageUtility>();
+
+                        //Ignore the first 2 segments
+                        int width = int.Parse(segments[2]);
 						int height = int.Parse(segments[3]);
 						DynamicResizeMode mode = segments[4].ToEnum<DynamicResizeMode>();
 						string originalExtension = segments[5];
@@ -69,7 +70,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 								Width = width,
 								Height = height,
 								ResizeMode = mode,
-								Format = DynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
+								Format = dynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
 							};
 
 							//If the mapping is invalid, return a 404
@@ -80,7 +81,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 							}
 						}
 
-                        Umbrella.WebUtilities.DynamicImage.DynamicImage image = DynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
+                        Umbrella.WebUtilities.DynamicImage.DynamicImage image = dynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
 
 						if (!string.IsNullOrEmpty(image.CachedVirtualPath))
 						{

@@ -2,16 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    "DNX,Version=v4.6.1": {
-      "log4net/2.0.4": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
+    "DNX,Version=v4.6": {
       "Microsoft.AspNet.Antiforgery/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -915,15 +906,6 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
       "System.Diagnostics.DiagnosticSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
@@ -965,9 +947,9 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
           "Microsoft.AspNet.Http": "1.0.0-rc1-final",
@@ -975,13 +957,12 @@
           "Umbrella.WebUtilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -989,13 +970,12 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.0.6"
+          "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -1005,7 +985,7 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.6": {
+      "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Web.Infrastructure": "1.0.0"
@@ -1127,16 +1107,7 @@
         }
       }
     },
-    "DNX,Version=v4.6.1/win7-x86": {
-      "log4net/2.0.4": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
+    "DNX,Version=v4.6/win7-x86": {
       "Microsoft.AspNet.Antiforgery/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -2040,15 +2011,6 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
       "System.Diagnostics.DiagnosticSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
@@ -2090,9 +2052,9 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
           "Microsoft.AspNet.Http": "1.0.0-rc1-final",
@@ -2100,13 +2062,12 @@
           "Umbrella.WebUtilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -2114,13 +2075,12 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.0.6"
+          "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -2130,7 +2090,7 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.6": {
+      "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Web.Infrastructure": "1.0.0"
@@ -2252,16 +2212,7 @@
         }
       }
     },
-    "DNX,Version=v4.6.1/win7-x64": {
-      "log4net/2.0.4": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
+    "DNX,Version=v4.6/win7-x64": {
       "Microsoft.AspNet.Antiforgery/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -3165,15 +3116,6 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
       "System.Diagnostics.DiagnosticSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
@@ -3215,9 +3157,9 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
           "Microsoft.AspNet.Http": "1.0.0-rc1-final",
@@ -3225,13 +3167,12 @@
           "Umbrella.WebUtilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -3239,13 +3180,12 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
           "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.0.6"
+          "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -3255,7 +3195,7 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.6": {
+      "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Web.Infrastructure": "1.0.0"
@@ -3379,42 +3319,17 @@
     }
   },
   "libraries": {
-    "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00001": {
+    "Umbrella.DNX.WebUtilities/1.0.0-rc1-build00003": {
       "type": "project",
       "path": "../../DNX/Umbrella.DNX.WebUtilities/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00001": {
+    "Umbrella.Utilities/1.0.0-rc1-build00003": {
       "type": "project",
       "path": "../../General/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
       "type": "project",
       "path": "../../General/Umbrella.WebUtilities/project.json"
-    },
-    "log4net/2.0.4": {
-      "type": "package",
-      "sha512": "t0S0jxtcEQQRYUfWSyxE96NPXo4uH6EHvVtRkp17u16jGslooCqjN2WIaw74N3etYF7a/2VOxW6Z/a5cDRVmNw==",
-      "files": [
-        "lib/net10-full/log4net.dll",
-        "lib/net10-full/log4net.xml",
-        "lib/net11-full/log4net.dll",
-        "lib/net11-full/log4net.xml",
-        "lib/net20-full/log4net.dll",
-        "lib/net20-full/log4net.xml",
-        "lib/net35-client/log4net.dll",
-        "lib/net35-client/log4net.xml",
-        "lib/net35-full/log4net.dll",
-        "lib/net35-full/log4net.xml",
-        "lib/net40-client/log4net.dll",
-        "lib/net40-client/log4net.xml",
-        "lib/net40-full/log4net.dll",
-        "lib/net40-full/log4net.xml",
-        "lib/net45-full/log4net.dll",
-        "lib/net45-full/log4net.xml",
-        "log4net.2.0.4.nupkg",
-        "log4net.2.0.4.nupkg.sha512",
-        "log4net.nuspec"
-      ]
     },
     "Microsoft.AspNet.Antiforgery/1.0.0-rc1-final": {
       "type": "package",
@@ -4137,33 +4052,6 @@
         "tools/install.ps1"
       ]
     },
-    "Ninject/3.2.2": {
-      "type": "package",
-      "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
-      "files": [
-        "lib/net35/Ninject.dll",
-        "lib/net35/Ninject.xml",
-        "lib/net40/Ninject.dll",
-        "lib/net40/Ninject.xml",
-        "lib/net45-full/Ninject.dll",
-        "lib/net45-full/Ninject.xml",
-        "lib/sl2/Ninject.dll",
-        "lib/sl2/Ninject.xml",
-        "lib/sl3/Ninject.dll",
-        "lib/sl3/Ninject.xml",
-        "lib/sl3-wp/Ninject.dll",
-        "lib/sl3-wp/Ninject.xml",
-        "lib/sl4/Ninject.dll",
-        "lib/sl4/Ninject.xml",
-        "lib/sl4-windowsphone71/Ninject.dll",
-        "lib/sl4-windowsphone71/Ninject.xml",
-        "lib/sl5/Ninject.dll",
-        "lib/sl5/Ninject.xml",
-        "Ninject.3.2.2.nupkg",
-        "Ninject.3.2.2.nupkg.sha512",
-        "Ninject.nuspec"
-      ]
-    },
     "System.Diagnostics.DiagnosticSource/4.0.0-beta-23516": {
       "type": "package",
       "serviceable": true,
@@ -4320,13 +4208,13 @@
         "System.Threading.nuspec"
       ]
     },
-    "WebActivatorEx/2.0.6": {
+    "WebActivatorEx/2.1.0": {
       "type": "package",
-      "sha512": "RrQATGFRXQHehwXdCGNFZ0n4MAWsNVAdtI0SWpIhqNE0tErRQhj6KuAcH57XUJ5MaV3cbHO+nnu9lUJIXd+Z6w==",
+      "sha512": "0HJ6DpxcTzSGIgcN6Q0jKAwLX1bWKnbeDOvT7vFXB/e4MIrwWc+1XwzihQp0Sr91EUK2N7j5cjZ1cIvWCraeJg==",
       "files": [
         "lib/net40/WebActivatorEx.dll",
-        "WebActivatorEx.2.0.6.nupkg",
-        "WebActivatorEx.2.0.6.nupkg.sha512",
+        "WebActivatorEx.2.1.0.nupkg",
+        "WebActivatorEx.2.1.0.nupkg.sha512",
         "WebActivatorEx.nuspec"
       ]
     },
@@ -4500,6 +4388,6 @@
       "xunit >= 2.1.0",
       "xunit.runner.dnx >= 2.1.0-rc1-build204"
     ],
-    "DNX,Version=v4.6.1": []
+    "DNX,Version=v4.6": []
   }
 }

@@ -5,7 +5,7 @@ using System.Web;
 using System.Configuration;
 
 
-namespace Umbrella.WebUtilities.Robots
+namespace Umbrella.Legacy.WebUtilities.Robots
 {
     public class RobotMappingsSection : ConfigurationSection
     {

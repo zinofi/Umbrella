@@ -1,5 +1,4 @@
-﻿using log4net;
-using Microsoft.AspNet.Builder;
+﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace Umbrella.DNX.WebUtilities.Middleware
 	public class CleanupIDisposableMiddleware
 	{
         #region Private Static Members
-        private static readonly ILog Log = LogManager.GetLogger(typeof(CleanupIDisposableMiddleware));
+        //TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(CleanupIDisposableMiddleware));
         #endregion
 
         #region Private Members
@@ -46,7 +45,7 @@ namespace Umbrella.DNX.WebUtilities.Middleware
             }
 			catch(Exception exc)
 			{
-				Log.LogError(exc);
+				//TODO: Log.LogError(exc);
 			}
 		}
         #endregion

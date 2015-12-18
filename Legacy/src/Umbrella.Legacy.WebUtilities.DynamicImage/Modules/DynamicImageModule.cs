@@ -1,20 +1,18 @@
 ﻿using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
-using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using System.IO;
-using Umbrella.Utilities;
 using log4net;
 using System.Threading;
-using Umbrella.WebUtilities.DynamicImage.Configuration;
 using System.Web.Configuration;
+using Umbrella.Utilities.log4net;
+using Umbrella.WebUtilities.DynamicImage.Interfaces;
+using Umbrella.Legacy.Utilities;
+using Ninject;
+using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Modules
 {
@@ -45,6 +43,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Modules
                             }
                             else
                             {
+                                IDynamicImageUtility dynamicImageUtility = LibraryBindings.DependencyResolver.Get<IDynamicImageUtility>();
+
                                 //Ignore the first 2 segments
                                 int width = int.Parse(segments[2]);
                                 int height = int.Parse(segments[3]);
@@ -63,7 +63,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Modules
 										Width = width,
 										Height = height,
 										ResizeMode = mode,
-										Format = DynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
+										Format = dynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
 									};
 
 									//If the mapping is invalid, return a 404
@@ -74,7 +74,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Modules
 									}
 								}
 
-                                Umbrella.WebUtilities.DynamicImage.DynamicImage image = DynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
+                                Umbrella.WebUtilities.DynamicImage.DynamicImage image = dynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
 
                                 if (!string.IsNullOrEmpty(image.CachedVirtualPath))
                                 {

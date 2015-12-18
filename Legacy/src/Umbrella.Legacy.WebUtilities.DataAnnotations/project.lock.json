@@ -53,7 +53,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "frameworkAssemblies": [
@@ -112,7 +112,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "frameworkAssemblies": [
@@ -171,7 +171,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "frameworkAssemblies": [
@@ -181,7 +181,7 @@
     }
   },
   "libraries": {
-    "Umbrella.DataAnnotations/1.0.0-rc1-build00001": {
+    "Umbrella.DataAnnotations/1.0.0-rc1-build00002": {
       "type": "project",
       "path": "../../General/Umbrella.DataAnnotations/project.json"
     },

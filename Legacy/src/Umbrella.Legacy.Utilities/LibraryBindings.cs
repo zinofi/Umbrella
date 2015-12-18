@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Hosting;
 
-namespace Umbrella.Utilities
+namespace Umbrella.Legacy.Utilities
 {
     public static class LibraryBindings
     {

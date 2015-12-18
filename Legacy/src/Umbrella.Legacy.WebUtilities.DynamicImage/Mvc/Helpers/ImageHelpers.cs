@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Ninject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Umbrella.Legacy.Utilities;
 using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
+using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 {
@@ -21,7 +24,9 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 
 		public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, string path, string altText, int width, int height, DynamicResizeMode resizeMode, string cssClass = "", DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
 		{
-			string imageUrl = DynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
+            IDynamicImageUtility dynamicImageUtility = LibraryBindings.DependencyResolver.Get<IDynamicImageUtility>();
+
+			string imageUrl = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
 			return helper.Image(imageUrl, altText, cssClass);
 		}

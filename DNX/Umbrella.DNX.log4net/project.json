@@ -1,0 +1,15 @@
+﻿{
+  "version": "1.0.0-rc1-build00003",
+  "description": "Umbrella.DNX.log4net Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "dnx46": { }
+  },
+  "dependencies": {
+    "log4net": "2.0.5",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final"
+  }
+}

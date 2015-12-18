@@ -9,8 +9,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Ninject;
-using log4net;
 using System.Runtime.Caching;
 using Umbrella.Utilities.Hosting;
 
@@ -23,18 +21,15 @@ namespace Umbrella.WebUtilities.DynamicImage
         #endregion
 
         #region Private Members
-        private Func<CacheItemPolicy> m_DefaultPolicyFunc;
-        private IHostingEnvironment m_HostingEnvironment;
+        private readonly Func<CacheItemPolicy> m_DefaultPolicyFunc;
+        private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
         #endregion
 
         #region Constructors
-        public DynamicImageMemoryCache(Func<CacheItemPolicy> defaultPolicyFunc = null, IHostingEnvironment hostingEnvironment = null)
+        public DynamicImageMemoryCache(Func<CacheItemPolicy> defaultPolicyFunc = null, IUmbrellaHostingEnvironment hostingEnvironment = null)
         {
             m_DefaultPolicyFunc = defaultPolicyFunc ?? (() => new CacheItemPolicy());
             m_HostingEnvironment = hostingEnvironment;
-
-            if (m_HostingEnvironment == null)
-                m_HostingEnvironment = LibraryBindings.DependencyResolver.Get<IHostingEnvironment>();
         }
         #endregion
 
@@ -48,7 +43,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch(Exception exc)
             {
-                Log.Error("Add() failed", exc);
+                //TODO: Log.Error("Add() failed", exc);
                 throw;
             }
         }
@@ -81,7 +76,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch(Exception exc)
             {
-                Log.Error(string.Format("Get({0}, {1}, {2}) failed", key, originalFilePhysicalPath, fileExtension), exc);
+                //TODO: Log.Error(string.Format("Get({0}, {1}, {2}) failed", key, originalFilePhysicalPath, fileExtension), exc);
                 throw;
             }
         }
@@ -94,7 +89,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch(Exception exc)
             {
-                Log.Error(string.Format("Remove({0}, {1}) failed", key, fileExtension), exc);
+                //TODO: Log.Error(string.Format("Remove({0}, {1}) failed", key, fileExtension), exc);
                 throw;
             }
         }

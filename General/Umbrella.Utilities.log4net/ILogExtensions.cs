@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Utilities.Extensions
+namespace Umbrella.Utilities.log4net
 {
 	public static class ILogExtensions
 	{

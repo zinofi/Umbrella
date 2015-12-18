@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.DataAccess.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DataAccess
 {
@@ -12,8 +13,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
     {
-        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<int> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
         }
     }
@@ -22,8 +23,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
     {
-        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
         }
     }
@@ -32,8 +33,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<TEntityKey>
         where TDbContext : DbContext, new()
     {
-        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
         }
     }
@@ -48,8 +49,8 @@ namespace Umbrella.DataAccess
         protected static List<TEntity> s_EntityList = new List<TEntity>();
         protected static Dictionary<int, TEntity> s_EntityDictionary = new Dictionary<int, TEntity>();
 
-        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericCachedRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
             //AfterContextSavedChanges += (repo, entity) => AddOrUpdateCache(new[] { entity });
             //AfterContextSavedChangesMultiple += (repo, entities) => AddOrUpdateCache(entities.ToArray());

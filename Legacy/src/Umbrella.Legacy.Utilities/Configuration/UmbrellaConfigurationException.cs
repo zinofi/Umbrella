@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Umbrella.Utilities.Configuration.Exceptions
+namespace Umbrella.Legacy.Utilities.Configuration.Exceptions
 {
     public class UmbrellaConfigurationException : ApplicationException
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Hosting
 {
-	public interface IHostingEnvironment
+	public interface IUmbrellaHostingEnvironment
 	{
 		string MapPath(string virtualPath);
 		string MapWebPath(string virtualPath, string scheme = "http");

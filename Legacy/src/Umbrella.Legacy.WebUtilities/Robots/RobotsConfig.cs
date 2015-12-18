@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
-using Umbrella.Utilities.Configuration;
+using Umbrella.Legacy.Utilities.Configuration;
 
-namespace Umbrella.WebUtilities.Robots
+namespace Umbrella.Legacy.WebUtilities.Robots
 {
     public class RobotsConfig
     {

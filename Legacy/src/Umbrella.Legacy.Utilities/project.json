@@ -1,0 +1,20 @@
+﻿{
+  "version": "1.0.0-rc1-build00003",
+  "description": "Umbrella.Legacy.Utilities Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "frameworks": {
+    "net461": {
+      "frameworkAssemblies": {
+        "System.Configuration": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "Ninject": "3.2.2",
+    "Umbrella.Utilities": "1.0.0-rc1-build00003"
+  }
+}

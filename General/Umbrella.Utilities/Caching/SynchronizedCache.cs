@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,7 @@ namespace Umbrella.Utilities.Caching
     public class SynchronizedCache<T, U>
     {
         #region Private Static Members
-        private static readonly ILog Log = LogManager.GetLogger(typeof(SynchronizedCache<T, U>));
+        //TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(SynchronizedCache<T, U>));
         private readonly Dictionary<T, U> s_Cache = new Dictionary<T, U>();
         private readonly ReaderWriterLockSlim s_Lock = new ReaderWriterLockSlim();
         #endregion
@@ -27,7 +26,7 @@ namespace Umbrella.Utilities.Caching
                 if (s_Cache.ContainsKey(key))
                     return s_Cache[key];
             }
-            catch (Exception exc) when (Log.LogError(exc, key))
+            catch (Exception exc) //TODO: when (Log.LogError(exc, key))
             {
                 throw;
             }
@@ -57,7 +56,7 @@ namespace Umbrella.Utilities.Caching
                     s_Lock.ExitWriteLock();
                 }
             }
-            catch (Exception exc) when (Log.LogError(exc, new { key = key, value = value }))
+            catch (Exception exc) //TODO: when (Log.LogError(exc, new { key = key, value = value }))
             {
                 throw;
             }
@@ -75,7 +74,7 @@ namespace Umbrella.Utilities.Caching
             {
                 s_Cache.Clear();
             }
-            catch(Exception exc) when (Log.LogError(exc))
+            catch(Exception exc) //TODO: when (Log.LogError(exc))
             {
                 throw;
             }

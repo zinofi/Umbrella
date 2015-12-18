@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6.1": {
-      "log4net/2.0.4": {
+      "log4net/2.0.5": {
         "type": "package",
         "compile": {
           "lib/net45-full/log4net.dll": {}
@@ -136,6 +136,21 @@
           "lib/net45/System.Web.WebPages.Razor.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
       "Microsoft.Owin/3.0.1": {
         "type": "package",
         "dependencies": {
@@ -262,13 +277,23 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00003": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Ninject": "3.2.2",
+          "Umbrella.Utilities": "1.0.0-rc1-build00003"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration"
+        ]
+      },
+      "Umbrella.Utilities/1.0.0-rc1-build00003": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -276,13 +301,21 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities.log4net/1.0.0-rc1-build00003": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
+          "log4net": "2.0.5",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
+        }
+      },
+      "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
           "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.0.6"
+          "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -292,7 +325,7 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.6": {
+      "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Web.Infrastructure": "1.0.0"
@@ -306,7 +339,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x86": {
-      "log4net/2.0.4": {
+      "log4net/2.0.5": {
         "type": "package",
         "compile": {
           "lib/net45-full/log4net.dll": {}
@@ -439,6 +472,21 @@
           "lib/net45/System.Web.WebPages.Razor.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
       "Microsoft.Owin/3.0.1": {
         "type": "package",
         "dependencies": {
@@ -565,13 +613,23 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00003": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Ninject": "3.2.2",
+          "Umbrella.Utilities": "1.0.0-rc1-build00003"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration"
+        ]
+      },
+      "Umbrella.Utilities/1.0.0-rc1-build00003": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -579,13 +637,21 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities.log4net/1.0.0-rc1-build00003": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
+          "log4net": "2.0.5",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
+        }
+      },
+      "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
           "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.0.6"
+          "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -595,7 +661,7 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.6": {
+      "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Web.Infrastructure": "1.0.0"
@@ -609,7 +675,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x64": {
-      "log4net/2.0.4": {
+      "log4net/2.0.5": {
         "type": "package",
         "compile": {
           "lib/net45-full/log4net.dll": {}
@@ -742,6 +808,21 @@
           "lib/net45/System.Web.WebPages.Razor.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
       "Microsoft.Owin/3.0.1": {
         "type": "package",
         "dependencies": {
@@ -868,13 +949,23 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00003": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Ninject": "3.2.2",
+          "Umbrella.Utilities": "1.0.0-rc1-build00003"
+        },
+        "frameworkAssemblies": [
+          "System.Configuration"
+        ]
+      },
+      "Umbrella.Utilities/1.0.0-rc1-build00003": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -882,13 +973,21 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities.log4net/1.0.0-rc1-build00003": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
+          "log4net": "2.0.5",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
+        }
+      },
+      "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
           "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.0.6"
+          "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
           "PresentationCore",
@@ -898,7 +997,7 @@
           "WindowsBase"
         ]
       },
-      "WebActivatorEx/2.0.6": {
+      "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Web.Infrastructure": "1.0.0"
@@ -913,17 +1012,25 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00001": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00003": {
+      "type": "project",
+      "path": "../Umbrella.Legacy.Utilities/project.json"
+    },
+    "Umbrella.Utilities/1.0.0-rc1-build00003": {
       "type": "project",
       "path": "../../General/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00001": {
+    "Umbrella.Utilities.log4net/1.0.0-rc1-build00003": {
+      "type": "project",
+      "path": "../../General/Umbrella.Utilities.log4net/project.json"
+    },
+    "Umbrella.WebUtilities/1.0.0-rc1-build00003": {
       "type": "project",
       "path": "../../General/Umbrella.WebUtilities/project.json"
     },
-    "log4net/2.0.4": {
+    "log4net/2.0.5": {
       "type": "package",
-      "sha512": "t0S0jxtcEQQRYUfWSyxE96NPXo4uH6EHvVtRkp17u16jGslooCqjN2WIaw74N3etYF7a/2VOxW6Z/a5cDRVmNw==",
+      "sha512": "AEqPZz+v+OikfnR2SqRVdQPnSaLq5y9Iz1CfRQZ9kTKPYCXHG6zYmDHb7wJotICpDLMr/JqokyjiqKAjUKp0ng==",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -941,8 +1048,8 @@
         "lib/net40-full/log4net.xml",
         "lib/net45-full/log4net.dll",
         "lib/net45-full/log4net.xml",
-        "log4net.2.0.4.nupkg",
-        "log4net.2.0.4.nupkg.sha512",
+        "log4net.2.0.5.nupkg",
+        "log4net.2.0.5.nupkg.sha512",
         "log4net.nuspec"
       ]
     },
@@ -1074,6 +1181,22 @@
         "Microsoft.AspNet.WebPages.3.2.3.nupkg",
         "Microsoft.AspNet.WebPages.3.2.3.nupkg.sha512",
         "Microsoft.AspNet.WebPages.nuspec"
+      ]
+    },
+    "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "ejGO1JhPXMsCCSyH12xwkOYsb9oBv2gHc3LLaT2jevrD//xuQizWaxpVk0/rHGdORkWdp+kT2Qmuz/sLyNWW/g==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.Abstractions.xml",
+        "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/net451/Microsoft.Extensions.Logging.Abstractions.xml",
+        "lib/netcore50/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/netcore50/Microsoft.Extensions.Logging.Abstractions.xml",
+        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg",
+        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.Extensions.Logging.Abstractions.nuspec"
       ]
     },
     "Microsoft.Owin/3.0.1": {
@@ -1229,20 +1352,20 @@
         "Owin.nuspec"
       ]
     },
-    "WebActivatorEx/2.0.6": {
+    "WebActivatorEx/2.1.0": {
       "type": "package",
-      "sha512": "RrQATGFRXQHehwXdCGNFZ0n4MAWsNVAdtI0SWpIhqNE0tErRQhj6KuAcH57XUJ5MaV3cbHO+nnu9lUJIXd+Z6w==",
+      "sha512": "0HJ6DpxcTzSGIgcN6Q0jKAwLX1bWKnbeDOvT7vFXB/e4MIrwWc+1XwzihQp0Sr91EUK2N7j5cjZ1cIvWCraeJg==",
       "files": [
         "lib/net40/WebActivatorEx.dll",
-        "WebActivatorEx.2.0.6.nupkg",
-        "WebActivatorEx.2.0.6.nupkg.sha512",
+        "WebActivatorEx.2.1.0.nupkg",
+        "WebActivatorEx.2.1.0.nupkg.sha512",
         "WebActivatorEx.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "log4net >= 2.0.4",
+      "log4net >= 2.0.5",
       "Microsoft.AspNet.Identity.Owin >= 2.2.1",
       "Microsoft.AspNet.Mvc >= 5.2.3",
       "Microsoft.AspNet.WebApi >= 5.2.3",
@@ -1250,7 +1373,9 @@
       "Microsoft.Owin >= 3.0.1",
       "Microsoft.Owin.Host.SystemWeb >= 3.0.1",
       "Microsoft.Owin.StaticFiles >= 3.0.1",
+      "Umbrella.Legacy.Utilities >= 1.0.0-*",
       "Umbrella.Utilities >= 1.0.0-*",
+      "Umbrella.Utilities.log4net >= 1.0.0-*",
       "Umbrella.WebUtilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6.1": [

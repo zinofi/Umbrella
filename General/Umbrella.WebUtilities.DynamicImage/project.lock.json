@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    "DNX,Version=v4.6.1": {
+    "DNX,Version=v4.6": {
       "AutoMapper/4.1.1": {
         "type": "package",
         "compile": {
@@ -24,13 +24,19 @@
           "lib/net40/SoundInTheory.DynamicImage.dll": {}
         }
       },
-      "log4net/2.0.4": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
         "compile": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
       "Microsoft.Web.Infrastructure/1.0.0": {
@@ -51,22 +57,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00002": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -109,13 +105,19 @@
           "lib/net40/SoundInTheory.DynamicImage.dll": {}
         }
       },
-      "log4net/2.0.4": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
         "compile": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
       "Microsoft.Web.Infrastructure/1.0.0": {
@@ -136,22 +138,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -172,7 +164,7 @@
         }
       }
     },
-    "DNX,Version=v4.6.1/win7-x86": {
+    "DNX,Version=v4.6/win7-x86": {
       "AutoMapper/4.1.1": {
         "type": "package",
         "compile": {
@@ -194,13 +186,19 @@
           "lib/net40/SoundInTheory.DynamicImage.dll": {}
         }
       },
-      "log4net/2.0.4": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
         "compile": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
       "Microsoft.Web.Infrastructure/1.0.0": {
@@ -221,22 +219,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00002": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -257,7 +245,7 @@
         }
       }
     },
-    "DNX,Version=v4.6.1/win7-x64": {
+    "DNX,Version=v4.6/win7-x64": {
       "AutoMapper/4.1.1": {
         "type": "package",
         "compile": {
@@ -279,13 +267,19 @@
           "lib/net40/SoundInTheory.DynamicImage.dll": {}
         }
       },
-      "log4net/2.0.4": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
         "compile": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
       "Microsoft.Web.Infrastructure/1.0.0": {
@@ -306,22 +300,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00002": {
         "type": "project",
-        "framework": "DNX,Version=v4.6.1",
+        "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -364,13 +348,19 @@
           "lib/net40/SoundInTheory.DynamicImage.dll": {}
         }
       },
-      "log4net/2.0.4": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
         "compile": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
       "Microsoft.Web.Infrastructure/1.0.0": {
@@ -391,22 +381,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -449,13 +429,19 @@
           "lib/net40/SoundInTheory.DynamicImage.dll": {}
         }
       },
-      "log4net/2.0.4": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
         "compile": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net45-full/log4net.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
       "Microsoft.Web.Infrastructure/1.0.0": {
@@ -476,22 +462,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00001": {
+      "Umbrella.Utilities/1.0.0-rc1-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "log4net": "2.0.4",
-          "Newtonsoft.Json": "7.0.1",
-          "Ninject": "3.2.2"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Newtonsoft.Json": "7.0.1"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -514,7 +490,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00001": {
+    "Umbrella.Utilities/1.0.0-rc1-build00002": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json"
     },
@@ -560,29 +536,20 @@
         "lib/net40/SoundInTheory.DynamicImage.dll"
       ]
     },
-    "log4net/2.0.4": {
+    "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
       "type": "package",
-      "sha512": "t0S0jxtcEQQRYUfWSyxE96NPXo4uH6EHvVtRkp17u16jGslooCqjN2WIaw74N3etYF7a/2VOxW6Z/a5cDRVmNw==",
+      "serviceable": true,
+      "sha512": "ejGO1JhPXMsCCSyH12xwkOYsb9oBv2gHc3LLaT2jevrD//xuQizWaxpVk0/rHGdORkWdp+kT2Qmuz/sLyNWW/g==",
       "files": [
-        "lib/net10-full/log4net.dll",
-        "lib/net10-full/log4net.xml",
-        "lib/net11-full/log4net.dll",
-        "lib/net11-full/log4net.xml",
-        "lib/net20-full/log4net.dll",
-        "lib/net20-full/log4net.xml",
-        "lib/net35-client/log4net.dll",
-        "lib/net35-client/log4net.xml",
-        "lib/net35-full/log4net.dll",
-        "lib/net35-full/log4net.xml",
-        "lib/net40-client/log4net.dll",
-        "lib/net40-client/log4net.xml",
-        "lib/net40-full/log4net.dll",
-        "lib/net40-full/log4net.xml",
-        "lib/net45-full/log4net.dll",
-        "lib/net45-full/log4net.xml",
-        "log4net.2.0.4.nupkg",
-        "log4net.2.0.4.nupkg.sha512",
-        "log4net.nuspec"
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.Abstractions.xml",
+        "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/net451/Microsoft.Extensions.Logging.Abstractions.xml",
+        "lib/netcore50/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/netcore50/Microsoft.Extensions.Logging.Abstractions.xml",
+        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg",
+        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.Extensions.Logging.Abstractions.nuspec"
       ]
     },
     "Microsoft.Web.Infrastructure/1.0.0": {
@@ -617,33 +584,6 @@
         "tools/install.ps1"
       ]
     },
-    "Ninject/3.2.2": {
-      "type": "package",
-      "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
-      "files": [
-        "lib/net35/Ninject.dll",
-        "lib/net35/Ninject.xml",
-        "lib/net40/Ninject.dll",
-        "lib/net40/Ninject.xml",
-        "lib/net45-full/Ninject.dll",
-        "lib/net45-full/Ninject.xml",
-        "lib/sl2/Ninject.dll",
-        "lib/sl2/Ninject.xml",
-        "lib/sl3/Ninject.dll",
-        "lib/sl3/Ninject.xml",
-        "lib/sl3-wp/Ninject.dll",
-        "lib/sl3-wp/Ninject.xml",
-        "lib/sl4/Ninject.dll",
-        "lib/sl4/Ninject.xml",
-        "lib/sl4-windowsphone71/Ninject.dll",
-        "lib/sl4-windowsphone71/Ninject.xml",
-        "lib/sl5/Ninject.dll",
-        "lib/sl5/Ninject.xml",
-        "Ninject.3.2.2.nupkg",
-        "Ninject.3.2.2.nupkg.sha512",
-        "Ninject.nuspec"
-      ]
-    },
     "WebActivatorEx/2.0.2": {
       "type": "package",
       "sha512": "eVe2RmaNWYkgDvtWSthTLCv3zIQ6xcfxNLNPbCNe8IIiZcYet/A7tKG/HlyLdIz73wUvjyIDCmhK6wGODFtXlQ==",
@@ -659,11 +599,9 @@
     "": [
       "AutoMapper >= 4.1.1",
       "DynamicImage >= 3.1.1",
-      "log4net >= 2.0.4",
-      "Ninject >= 3.2.2",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
-    "DNX,Version=v4.6.1": [
+    "DNX,Version=v4.6": [
       "fx/PresentationCore >= 4.0.0",
       "fx/System.Configuration >= 4.0.0",
       "fx/WindowsBase >= 4.0.0"

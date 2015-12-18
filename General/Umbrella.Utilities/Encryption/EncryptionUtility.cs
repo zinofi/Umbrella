@@ -1,5 +1,4 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace Umbrella.Utilities.Encryption
 		where T : SymmetricAlgorithm, new()
 	{
 		#region Protected Static Members
-		protected static readonly ILog Log = LogManager.GetLogger(typeof(EncryptionUtility<T>));
+		//TODO: protected static readonly ILog Log = LogManager.GetLogger(typeof(EncryptionUtility<T>));
 		#endregion
 
 		#region Protected Members
@@ -50,7 +49,7 @@ namespace Umbrella.Utilities.Encryption
                 p_Encryptor = p_Algorithm.CreateEncryptor(key, iV);
                 p_Decryptor = p_Algorithm.CreateDecryptor(key, iV);
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) //TODO: when (Log.LogError(exc))
             {
                 throw;
             }
@@ -76,7 +75,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (Log.LogError(exc, value))
+            catch (Exception exc) //TODO: when (Log.LogError(exc, value))
             {
                 throw;
             }
@@ -104,7 +103,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (Log.LogError(exc, value))
+            catch (Exception exc) //TODO: when (Log.LogError(exc, value))
             {
                 throw;
             }
@@ -125,7 +124,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) //TODO: when (Log.LogError(exc))
             {
                 throw;
             }
@@ -153,7 +152,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (Log.LogError(exc, value))
+            catch (Exception exc) //TODO: when (Log.LogError(exc, value))
             {
                 throw;
             }
@@ -205,7 +204,7 @@ namespace Umbrella.Utilities.Encryption
         /// </summary>
         /// <param name="str">The string to convert.</param>
         /// <returns>The converted byte array.</returns>
-        private static byte[] ConvertStringToByteArray(String str)
+        private static byte[] ConvertStringToByteArray(string str)
         {
             return Encoding.Default.GetBytes(str);
         }
@@ -215,7 +214,7 @@ namespace Umbrella.Utilities.Encryption
         /// </summary>
         /// <param name="bytes">The byte array to convert.</param>
         /// <returns>The converted string.</returns>
-        private static String ConvertByteArrayToString(byte[] bytes)
+        private static string ConvertByteArrayToString(byte[] bytes)
         {
             return Encoding.Default.GetString(bytes);
         }

@@ -11,7 +11,6 @@ using System.Web.Http;
 using Umbrella.Legacy.WebUtilities.Robots;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using System.Web.Http.Description;
-using Umbrella.WebUtilities.Robots;
 using System.Web.Configuration;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(RobotsController), "RegisterRoutes")]

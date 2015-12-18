@@ -12,7 +12,7 @@ namespace Umbrella.Legacy.WebUtilities
     {
         public override void Load()
         {
-            Bind<IHostingEnvironment>().To<HostingEnvironment>();
+            Bind<IUmbrellaHostingEnvironment>().To<UmbrellaHostingEnvironment>();
         }
     }
 }

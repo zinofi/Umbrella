@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0-rc1-build00002",
+  "version": "1.0.0-rc1-build00003",
   "description": "Umbrella.WebUtilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
-    "dnx461": {
+    "dnx46": {
       "dependencies": {
       },
       "frameworkAssemblies": {
@@ -28,8 +28,7 @@
     }
   },
   "dependencies": {
-    "log4net": "2.0.4",
     "Umbrella.Utilities": "1.0.0-*",
-    "WebActivatorEx": "2.0.6"
+    "WebActivatorEx": "2.1.0"
   }
 }

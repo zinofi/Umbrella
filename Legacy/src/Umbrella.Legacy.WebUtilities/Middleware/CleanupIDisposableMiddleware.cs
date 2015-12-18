@@ -14,13 +14,13 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 	/// </summary>
 	public class CleanupIDisposableMiddleware : OwinMiddleware
 	{
-		private static readonly ILog s_Log = LogManager.GetLogger(typeof(CleanupIDisposableMiddleware));
+		private static readonly ILog Log = LogManager.GetLogger(typeof(CleanupIDisposableMiddleware));
 
 		public CleanupIDisposableMiddleware(OwinMiddleware next)
 			: base(next)
 		{
-			if (s_Log.IsDebugEnabled)
-				s_Log.Debug("CleanupIDisposableMiddleware registered successfully");
+			if (Log.IsDebugEnabled)
+				Log.Debug("CleanupIDisposableMiddleware registered successfully");
 		}
 
 		public override async Task Invoke(IOwinContext context)
@@ -34,7 +34,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			}
 			catch(Exception exc)
 			{
-				s_Log.Error("Invoke() failed", exc);
+				Log.Error("Invoke() failed", exc);
 			}
 		}
 	}

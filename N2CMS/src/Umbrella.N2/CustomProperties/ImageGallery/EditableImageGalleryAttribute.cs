@@ -7,10 +7,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
+using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Umbrella.N2.CustomProperties.ImageGallery.Controls;
 using Umbrella.N2.CustomProperties.LinkEditor;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
-using Umbrella.WebUtilities.DynamicImage.Configuration;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery

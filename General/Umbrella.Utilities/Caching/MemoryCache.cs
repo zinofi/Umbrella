@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Caching;
-using log4net;
 using Umbrella.Utilities.Extensions;
 using System.Collections.Concurrent;
 
@@ -14,7 +13,7 @@ namespace Umbrella.Utilities.Caching
     public class MemoryCache<T, U>
     {
 		#region Private Static Members
-		private static readonly ILog Log = LogManager.GetLogger(typeof(MemoryCache<T, U>));
+		//TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(MemoryCache<T, U>));
 		private static readonly MemoryCache<T, U> s_Cache = new MemoryCache<T, U>();
 		#endregion
 
@@ -67,7 +66,7 @@ namespace Umbrella.Utilities.Caching
 
 				return default(U);
 			}
-			catch (Exception exc) when (Log.LogError(exc, key))
+			catch (Exception exc) //TODO: when (Log.LogError(exc, key))
 			{
 				throw;
 			}
@@ -100,7 +99,7 @@ namespace Umbrella.Utilities.Caching
 
 				return result;
 			}
-			catch (Exception exc) when (Log.LogError(exc, key))
+			catch (Exception exc) //TODO: when (Log.LogError(exc, key))
 			{
 				throw;
 			}
@@ -115,7 +114,7 @@ namespace Umbrella.Utilities.Caching
 				if (p_Cache.TryGetValue(typeof(U), out cache))
 					cache.Remove(key.ToString());
 			}
-			catch (Exception exc) when (Log.LogError(exc, key))
+			catch (Exception exc) //TODO: when (Log.LogError(exc, key))
 			{
 				throw;
 			}

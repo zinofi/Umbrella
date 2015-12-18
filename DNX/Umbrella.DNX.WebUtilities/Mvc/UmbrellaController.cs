@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using log4net;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DNX.WebUtilities.Mvc
 {
     public class UmbrellaController : Controller
     {
-        #region Protected Static Members
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(UmbrellaController));
+        #region Protected Members
+        protected readonly ILogger Log;
+        #endregion
+
+        #region Constructors
+        public UmbrellaController(ILogger logger)
+        {
+            Log = logger;
+        }
         #endregion
 
         #region Protected Methods

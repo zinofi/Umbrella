@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.WebUtilities.DynamicImage.Configuration
+namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 {
 	public class DynamicImageMappingsSection : ConfigurationSection
     {

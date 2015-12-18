@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00002",
+  "version": "1.0.0-rc1-build00003",
   "description": "Umbrella.DNX.WebUtilities.Test test project",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -16,6 +16,6 @@
   },
 
   "frameworks" : {
-    "dnx461": { }
+    "dnx46": { }
   }
 }

@@ -1,21 +1,15 @@
 ﻿using log4net;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Umbrella.Legacy.WebUtilities.WebApi.Filters;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.log4net;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi
 {
-	[ValidationActionFilter]
+    [ValidationActionFilter]
     public abstract class UmbrellaApiController : ApiController
     {
         #region Protected Static Members

@@ -17,7 +17,7 @@ namespace Umbrella.Legacy.WebUtilities.Modules
     /// </summary>
     public class HttpContextDisposableModule : IHttpModule
     {
-        private static readonly ILog s_Log = LogManager.GetLogger(typeof(HttpContextDisposableModule));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(HttpContextDisposableModule));
 
         public static void PreStart()
         {
@@ -26,8 +26,8 @@ namespace Umbrella.Legacy.WebUtilities.Modules
 			{
 				DynamicModuleUtility.RegisterModule(typeof(HttpContextDisposableModule));
 
-				if (s_Log.IsDebugEnabled)
-					s_Log.Debug("HttpContextDisposableModule PreStart() method called successfully");
+				if (Log.IsDebugEnabled)
+					Log.Debug("HttpContextDisposableModule PreStart() method called successfully");
 			}
         }
 
@@ -46,13 +46,13 @@ namespace Umbrella.Legacy.WebUtilities.Modules
                 {
                     disposable.Dispose();
 
-                    if (s_Log.IsDebugEnabled)
-                        s_Log.Debug("HttpContextDisposableModule HttpApplication.EndRequest event handled for type " + disposable.GetType().FullName);
+                    if (Log.IsDebugEnabled)
+                        Log.Debug("HttpContextDisposableModule HttpApplication.EndRequest event handled for type " + disposable.GetType().FullName);
                 }
             };
 
-            if (s_Log.IsDebugEnabled)
-                s_Log.Debug("HttpContextDisposableModule Init() method called successfully");
+            if (Log.IsDebugEnabled)
+                Log.Debug("HttpContextDisposableModule Init() method called successfully");
         }
 
         #endregion

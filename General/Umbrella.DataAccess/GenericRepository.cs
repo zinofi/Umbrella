@@ -8,15 +8,14 @@ using System.Data.Common;
 using Microsoft.Data.Entity;
 using System.Linq.Expressions;
 using Umbrella.DataAccess.Interfaces;
-using log4net;
 using Microsoft.Data.Entity.Infrastructure;
-using Ninject;
 using Umbrella.Utilities;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Enumerations;
 using Umbrella.Utilities.Extensions;
 using Umbrella.DataAccess.Exceptions;
 using Microsoft.Data.Entity.ChangeTracking;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DataAccess
 {
@@ -24,8 +23,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
     {
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<int> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
         }
     }
@@ -34,8 +33,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
     {
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
         }
     }
@@ -44,8 +43,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<TEntityKey>
         where TDbContext : DbContext, new()
     {
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory)
-            : base(dataContextFactory, userAuditDataFactory)
+        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dataContextFactory, userAuditDataFactory, logger)
         {
         }
     }
@@ -67,7 +66,6 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Private Static Members
-        protected static ILog Log;
         private static readonly object s_Lock = new object();
         #endregion
 
@@ -75,6 +73,10 @@ namespace Umbrella.DataAccess
         private IDataContextFactory<TDbContext> m_DataContextFactory;
         private IUserAuditDataFactory<TUserAuditKey> m_UserAuditDataFactory;
         private IIncludeMap<TEntity> m_IncludeMap;
+        #endregion
+
+        #region Protected Members
+        protected readonly ILogger m_Loggger;
         #endregion
 
         #region Protected Properties
@@ -148,22 +150,11 @@ namespace Umbrella.DataAccess
         /// is created by a dependency resolver. This can also be manually injected.
         /// </summary>
         /// <param name="dataContextFactory">The type of the DataContextFactory to inject.</param>
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory)
+        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
         {
-            //Try and create the log instance but only for the first instance of this class
-            if (Log == null)
-            {
-                lock (s_Lock)
-                {
-                    if (Log == null)
-                    {
-                        Log = LogManager.GetLogger(this.GetType());
-                    }
-                }
-            }
-
             m_DataContextFactory = dataContextFactory;
             m_UserAuditDataFactory = userAuditDataFactory;
+            m_Loggger = logger;
         }
         #endregion
 
@@ -192,11 +183,11 @@ namespace Umbrella.DataAccess
                     AfterContextSavedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Concurrency Exception for Id"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Failed for Id"))
             {
                 throw;
             }
@@ -227,11 +218,11 @@ namespace Umbrella.DataAccess
                     await AfterContextSavedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Concurrency Exception for Id"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation, addToContext = addToContext }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Failed for Id"))
             {
                 throw;
             }
@@ -295,11 +286,11 @@ namespace Umbrella.DataAccess
                 //Additional process after all changes have been committed to the database
                 AfterContextSavedChangesMultiple(entities);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }, "Concurrency Exception"))
             {   
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }))
             {
                 throw;
             }
@@ -324,11 +315,11 @@ namespace Umbrella.DataAccess
                 //Additional process after all changes have been committed to the database
                 await AfterContextSavedChangesMultipleAsync(entities);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }, "Concurrency Exception"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation, bypassSaveLogic = bypassSaveLogic }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }))
             {
                 throw;
             }
@@ -354,11 +345,11 @@ namespace Umbrella.DataAccess
                     AfterContextDeletedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Concurrency Exception for Id"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Failed for Id"))
             {
                 throw;
             }
@@ -382,11 +373,11 @@ namespace Umbrella.DataAccess
                     await AfterContextDeletedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Concurrency Exception for Id"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { id = entity.Id, pushChangesToDb = pushChangesToDb, enableEntityValidation = enableEntityValidation }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Failed for Id"))
             {
                 throw;
             }
@@ -419,11 +410,11 @@ namespace Umbrella.DataAccess
 
                 AfterContextDeletedChangesMultiple(entities);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }, "Concurrency Exception"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }))
             {
                 throw;
             }
@@ -443,11 +434,11 @@ namespace Umbrella.DataAccess
 
                 await AfterContextDeletedChangesMultipleAsync(entities);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }, "Concurrency Exception"))
             {
                 throw;
             }
-            catch (Exception exc) when (Log.LogError(exc, new { enableEntityValidation = enableEntityValidation }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }))
             {
                 throw;
             }
@@ -691,7 +682,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.ToList();
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) when (m_Loggger.LogError(exc))
             {
                 throw;
             }
@@ -703,7 +694,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.ToListAsync();
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) when (m_Loggger.LogError(exc))
             {
                 throw;
             }
@@ -715,7 +706,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.Where(x => ids.Contains(x.Id)).ToList();
             }
-            catch (Exception exc) when (Log.LogError(exc, ids))
+            catch (Exception exc) when (m_Loggger.LogError(exc, ids))
             {
                 throw;
             }
@@ -727,7 +718,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.Where(x => ids.Contains(x.Id)).ToListAsync();
             }
-            catch (Exception exc) when (Log.LogError(exc, ids))
+            catch (Exception exc) when (m_Loggger.LogError(exc, ids))
             {
                 throw;
             }
@@ -739,7 +730,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.SingleOrDefault(x => x.Id.ToString() == id.ToString());
             }
-            catch (Exception exc) when (Log.LogError(exc, id))
+            catch (Exception exc) when (m_Loggger.LogError(exc, id))
             {
                 throw;
             }
@@ -751,7 +742,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.SingleOrDefaultAsync(x => x.Id.ToString() == id.ToString());
             }
-            catch (Exception exc) when (Log.LogError(exc, id))
+            catch (Exception exc) when (m_Loggger.LogError(exc, id))
             {
                 throw;
             }
@@ -763,7 +754,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.Count();
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) when (m_Loggger.LogError(exc))
             {
                 throw;
             }
@@ -775,7 +766,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.CountAsync();
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) when (m_Loggger.LogError(exc))
             {
                 throw;
             }

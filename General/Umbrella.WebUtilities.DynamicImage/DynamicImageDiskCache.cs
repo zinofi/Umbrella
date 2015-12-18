@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ninject;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using System.IO;
 using System.Runtime.Caching;
 using Umbrella.Utilities.Hosting;
+using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
@@ -20,21 +21,20 @@ namespace Umbrella.WebUtilities.DynamicImage
         #endregion
 
         #region Private Members
-        private IHostingEnvironment m_HostingEnvironment;
+        private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
+        private readonly ILogger m_Logger;
         #endregion
 
         #region Constructors
-        public DynamicImageDiskCache()
-            : this(null)
-        {
-        }
+        //TODO: public DynamicImageDiskCache()
+        //    : this(null, null)
+        //{
+        //}
 
-        public DynamicImageDiskCache(IHostingEnvironment hostingEnvironment)
+        public DynamicImageDiskCache(IUmbrellaHostingEnvironment hostingEnvironment, ILogger logger)
         {
             m_HostingEnvironment = hostingEnvironment;
-
-            if (m_HostingEnvironment == null)
-                m_HostingEnvironment = LibraryBindings.DependencyResolver.Get<IHostingEnvironment>();
+            m_Logger = logger;
         }
         #endregion
 
@@ -64,7 +64,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch(Exception exc)
             {
-                Log.Error("Add() failed", exc);
+                m_Logger.LogError(exc);
                 throw;
             }
         }
@@ -109,7 +109,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch(Exception exc)
             {
-                Log.Error(string.Format("Get({0}, {1}, {2}) failed", key, originalFilePhysicalPath, fileExtension), exc);
+                m_Logger.LogError(exc, new { key, originalFilePhysicalPath, fileExtension });
                 throw;
             }
         }
@@ -126,7 +126,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch (Exception exc)
             {
-                Log.Error(string.Format("Remove({0}, {1}) failed", key, fileExtension), exc);
+                m_Logger.LogError(exc, new { key, fileExtension });
                 throw;
             }
         }

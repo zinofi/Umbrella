@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Configuration;
 
-namespace Umbrella.WebUtilities.Robots
+namespace Umbrella.Legacy.WebUtilities.Robots
 {
     public class RobotElement : ConfigurationElement
     {

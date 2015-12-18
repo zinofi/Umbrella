@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00002",
+  "version": "1.0.0-rc1-build00003",
   "description": "Umbrella.N2.Utilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -13,11 +13,12 @@
     }
   },
   "dependencies": {
-    "N2CMS": "2.9.5.2",
+    "N2CMS": "2.9.6.2",
     "Newtonsoft.Json": "7.0.1",
     "Umbrella.Legacy.WebUtilities": "1.0.0-*",
     "Umbrella.Legacy.WebUtilities.DynamicImage": "1.0.0-*",
     "Umbrella.Utilities": "1.0.0-*",
+    "Umbrella.Utilities.log4net": "1.0.0-*",
     "Umbrella.WebUtilities": "1.0.0-*",
     "Umbrella.WebUtilities.DynamicImage": "1.0.0-*"
   },

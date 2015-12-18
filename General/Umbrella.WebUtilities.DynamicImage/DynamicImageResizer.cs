@@ -1,5 +1,4 @@
 ﻿using Umbrella.Utilities;
-using log4net;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using SoundInTheory.DynamicImage;
@@ -12,41 +11,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Ninject;
 using Umbrella.Utilities.Hosting;
+using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
     public class DynamicImageResizer : IDynamicImageResizer
     {
-        #region Private Static Members
-        private static readonly ILog Log = LogManager.GetLogger(typeof(DynamicImageResizer));
-        #endregion
-
         #region Private Members
-        private IDynamicImageCache m_DynamicImageCache;
-        private IHostingEnvironment m_HostingEnvironment;
+        private readonly IDynamicImageCache m_DynamicImageCache;
+        private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
+        private readonly ILogger m_Logger;
         #endregion
 
         #region Constructors
-        public DynamicImageResizer()
-            : this(null, null)
-        {
+        //TODO: public DynamicImageResizer()
+        //    : this(null, null)
+        //{
 
-        }
+        //}
 
-        public DynamicImageResizer(IDynamicImageCache dynamicImageCache, IHostingEnvironment hostingEnvironment)
+        public DynamicImageResizer(IDynamicImageCache dynamicImageCache,
+            IUmbrellaHostingEnvironment hostingEnvironment,
+            ILogger logger)
         {
             m_DynamicImageCache = dynamicImageCache;
             m_HostingEnvironment = hostingEnvironment;
-
-            //Fallback to DI container implementations
-            if (m_DynamicImageCache == null)
-                m_DynamicImageCache = LibraryBindings.DependencyResolver.Get<IDynamicImageCache>();
-
-            if (m_HostingEnvironment == null)
-                m_HostingEnvironment = LibraryBindings.DependencyResolver.Get<IHostingEnvironment>();
-        } 
+            m_Logger = logger;
+        }
         #endregion
 
         #region IDynamicImageResizer Members
@@ -80,7 +73,7 @@ namespace Umbrella.WebUtilities.DynamicImage
                 }
 
                 //Item cannot be found in the cache - build a new image
-                
+
                 ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceFile(physicalPath);
 
                 ResizeMode dynamicResizeMode = (ResizeMode)(int)resizeMode;
@@ -103,7 +96,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             }
             catch (Exception exc)
             {
-                Log.Error(string.Format("GenerateImage({0}, {1}, {2}, {3}, {4}) failed", virtualPath, width, height, resizeMode, imageFormat), exc);
+                m_Logger.LogError(exc, new { virtualPath, width, height, resizeMode, imageFormat });
                 throw;
             }
         } 
@@ -118,16 +111,16 @@ namespace Umbrella.WebUtilities.DynamicImage
 
             switch (imageFormat)
             {
-                case Umbrella.WebUtilities.DynamicImage.Enumerations.DynamicImageFormat.Bmp:
+                case Enumerations.DynamicImageFormat.Bmp:
                     encoder = new BmpBitmapEncoder();
                     break;
-                case Umbrella.WebUtilities.DynamicImage.Enumerations.DynamicImageFormat.Gif:
+                case Enumerations.DynamicImageFormat.Gif:
                     encoder = new GifBitmapEncoder();
                     break;
-                case Umbrella.WebUtilities.DynamicImage.Enumerations.DynamicImageFormat.Jpeg:
+                case Enumerations.DynamicImageFormat.Jpeg:
                     encoder = new JpegBitmapEncoder();
                     break;
-                case Umbrella.WebUtilities.DynamicImage.Enumerations.DynamicImageFormat.Png:
+                case Enumerations.DynamicImageFormat.Png:
                     encoder = new PngBitmapEncoder();
                     break;
             }

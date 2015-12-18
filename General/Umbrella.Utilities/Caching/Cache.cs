@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using log4net;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Caching
@@ -15,7 +14,7 @@ namespace Umbrella.Utilities.Caching
     /// <typeparam name="U">The type of the item being stored</typeparam>
     public class Cache<T, U>
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Cache<T, U>));
+        //TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(Cache<T, U>));
         private static readonly Cache<T, U> s_Cache = new Cache<T, U>();
 
         protected readonly object p_Lock = new object();
@@ -79,7 +78,7 @@ namespace Umbrella.Utilities.Caching
 
                 return p_Cache[key];
             }
-            catch (Exception exc) when (Log.LogError(exc))
+            catch (Exception exc) //TODO: when (Log.LogError(exc))
             {
                 throw;
             }

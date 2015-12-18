@@ -1,18 +1,11 @@
-﻿using log4net;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
 namespace Umbrella.Utilities.Encryption
 {
-	/// <summary>
-	/// Utility to provide string encryption capabilities
-	/// </summary>
-	public class AesEncryptionUtility : EncryptionUtility<AesManaged>
+    /// <summary>
+    /// Utility to provide string encryption capabilities
+    /// </summary>
+    public class AesEncryptionUtility : EncryptionUtility<AesManaged>
 	{
 		#region Constructors
         /// <summary>

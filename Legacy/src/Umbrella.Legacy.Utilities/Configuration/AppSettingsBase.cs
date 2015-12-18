@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Caching;
 
-namespace Umbrella.Utilities.Configuration
+namespace Umbrella.Legacy.Utilities.Configuration
 {
     public abstract class AppSettingsBase
     {

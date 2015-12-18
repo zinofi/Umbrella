@@ -1,0 +1,18 @@
+﻿{
+  "version": "1.0.0-rc1-build00003",
+  "description": "Umbrella.Utilities.log4net Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "frameworks": {
+    "net461": { },
+    "dnx46": { }
+  },
+  "dependencies": {
+    "log4net": "2.0.5",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+    "Newtonsoft.Json": "7.0.1"
+  }
+}

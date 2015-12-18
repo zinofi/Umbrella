@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0-rc1-build00002",
+  "version": "1.0.0-rc1-build00003",
   "description": "Umbrella.DataAccess Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
-    "dnx461": { },
+    "dnx46": { },
     "net461": {
       "frameworkAssemblies": {
         "System.Runtime": "4.0.20.0"
@@ -14,7 +14,7 @@
     }
   },
   "dependencies": {
-    "EntityFramework.SqlServer": "7.0.0-beta8",
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }

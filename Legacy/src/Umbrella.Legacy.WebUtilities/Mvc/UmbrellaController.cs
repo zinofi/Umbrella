@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.log4net;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc
 {

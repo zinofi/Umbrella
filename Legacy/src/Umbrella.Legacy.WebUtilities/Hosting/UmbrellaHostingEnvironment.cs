@@ -7,7 +7,7 @@ using Umbrella.Utilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Hosting
 {
-    public class HostingEnvironment : IHostingEnvironment
+    public class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
     {
         public string MapPath(string virtualPath)
         {

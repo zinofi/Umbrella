@@ -1,18 +1,16 @@
 ﻿using AutoMapper;
-using log4net;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Configuration;
+using Umbrella.Legacy.Utilities.Configuration;
 
-namespace Umbrella.WebUtilities.DynamicImage.Configuration
+namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 {
 	public class DynamicImageMappingsConfig
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof(DynamicImageMappingsConfig));
 		private static readonly object s_Lock = new object();
 		private static List<DynamicImageMapping> s_DynamicImageMappingList;
 		private static DynamicImageMappingsSection s_Section;

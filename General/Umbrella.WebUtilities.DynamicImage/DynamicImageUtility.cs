@@ -8,16 +8,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
-using Ninject;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
-    public static class DynamicImageUtility
+    public class DynamicImageUtility
     {
-        public static DynamicImage GetImage(int width, int height, DynamicResizeMode mode, string originalExtension, string path)
-        {
-            IDynamicImageResizer resizer = LibraryBindings.DependencyResolver.Get<IDynamicImageResizer>();
+        #region Private Members
+        private readonly IDynamicImageResizer m_DynamicImageResizer;
+        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
+        #endregion
 
+        #region Constructors
+        public DynamicImageUtility(IDynamicImageResizer dynamicImageResizer,
+            IDynamicImageUrlGenerator dynamicImageUrlGenerator)
+        {
+            m_DynamicImageResizer = dynamicImageResizer;
+            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
+        }
+        #endregion
+
+        #region Public Methods
+        public DynamicImage GetImage(int width, int height, DynamicResizeMode mode, string originalExtension, string path)
+        {
             StringBuilder pathBuilder = new StringBuilder(path);
 
             //Replace the extension with the extension of the source file
@@ -41,13 +53,11 @@ namespace Umbrella.WebUtilities.DynamicImage
 
             string updatedPath = pathBuilder.ToString().ToLower();
 
-            return resizer.GenerateImage("~" + updatedPath, width, height, mode, ParseImageFormat(extension));
+            return m_DynamicImageResizer.GenerateImage("~" + updatedPath, width, height, mode, ParseImageFormat(extension));
         }
 
-        public static string GetResizedUrl(string path, int width, int height, DynamicResizeMode mode, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public string GetResizedUrl(string path, int width, int height, DynamicResizeMode mode, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
         {
-            IDynamicImageUrlGenerator urlGenerator = LibraryBindings.DependencyResolver.Get<IDynamicImageUrlGenerator>();
-
             DynamicImageOptions options = new DynamicImageOptions
             {
                 Format = format,
@@ -57,10 +67,10 @@ namespace Umbrella.WebUtilities.DynamicImage
                 Width = width
             };
 
-            return urlGenerator.GenerateUrl(options, toAbsolutePath);
+            return m_DynamicImageUrlGenerator.GenerateUrl(options, toAbsolutePath);
         }
 
-        public static DynamicImageFormat ParseImageFormat(string format)
+        public DynamicImageFormat ParseImageFormat(string format)
         {
             switch (format)
             {
@@ -75,5 +85,6 @@ namespace Umbrella.WebUtilities.DynamicImage
                     return DynamicImageFormat.Gif;
             }
         }
+        #endregion
     }
 }

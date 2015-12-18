@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.log4net;
 
 namespace Umbrella.N2.Mvc.Controllers
 {

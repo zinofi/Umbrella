@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Prebuild.ps1 = Prebuild.ps1
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{9EA3F4AE-0260-4B8A-98AD-25803026D4E5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{9EA3F4AE-0260-4B8A-98AD-25803026D4E5}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities", "General\Umbrella.Utilities\Umbrella.Utilities.xproj", "{8E28E28C-BE21-4707-B32B-02246D62EE79}"
 EndProject
@@ -47,6 +47,12 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities.Test", "Test\Umbrella.Utilities.Test\Umbrella.Utilities.Test.xproj", "{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities.DataAnnotations", "Legacy\Umbrella.Legacy.WebUtilities.DataAnnotations\Umbrella.Legacy.WebUtilities.DataAnnotations.xproj", "{EDCADC38-86E4-478E-9F0C-374F523D7FC1}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.log4net", "General\Umbrella.Utilities.log4net\Umbrella.log4net.xproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.log4net", "DNX\Umbrella.DNX.log4net\Umbrella.DNX.log4net.xproj", "{0E80E191-7917-4671-967D-E7CC07914303}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.Utilities", "Legacy\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.xproj", "{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +113,18 @@ Global
 		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDCADC38-86E4-478E-9F0C-374F523D7FC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15E0827C-6AED-4295-B5F9-9EB564B41DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15E0827C-6AED-4295-B5F9-9EB564B41DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15E0827C-6AED-4295-B5F9-9EB564B41DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15E0827C-6AED-4295-B5F9-9EB564B41DC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E80E191-7917-4671-967D-E7CC07914303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E80E191-7917-4671-967D-E7CC07914303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E80E191-7917-4671-967D-E7CC07914303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E80E191-7917-4671-967D-E7CC07914303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,5 +143,8 @@ Global
 		{37315368-C0EF-4DEA-BA1D-D514B9FB7F42} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
 		{90EE8E03-55F4-4EBB-8AB5-35848CECA09C} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{EDCADC38-86E4-478E-9F0C-374F523D7FC1} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
+		{15E0827C-6AED-4295-B5F9-9EB564B41DC0} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{0E80E191-7917-4671-967D-E7CC07914303} = {1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}
+		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
 	EndGlobalSection
 EndGlobal
