@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Umbrella.Legacy.WebUtilities.WebApi.Filters;
-using Umbrella.Utilities.log4net;
+using Umbrella.Utilities.Log4Net;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi
 {

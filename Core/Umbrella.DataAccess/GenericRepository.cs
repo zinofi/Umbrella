@@ -23,8 +23,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
     {
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
-            : base(dataContextFactory, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
+            : base(dbContext, userAuditDataFactory, logger)
         {
         }
     }
@@ -33,8 +33,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
     {
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
-            : base(dataContextFactory, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dbContext, userAuditDataFactory, logger)
         {
         }
     }
@@ -43,8 +43,8 @@ namespace Umbrella.DataAccess
         where TEntity : class, IEntity<TEntityKey>
         where TDbContext : DbContext, new()
     {
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
-            : base(dataContextFactory, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+            : base(dbContext, userAuditDataFactory, logger)
         {
         }
     }
@@ -70,7 +70,7 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Private Members
-        private IDataContextFactory<TDbContext> m_DataContextFactory;
+        private TDbContext m_DbContext;
         private IUserAuditDataFactory<TUserAuditKey> m_UserAuditDataFactory;
         private IIncludeMap<TEntity> m_IncludeMap;
         #endregion
@@ -80,43 +80,9 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Protected Properties
-        protected TDbContext Context
-        {
-            get
-            {
-                TDbContext contextInstance = m_DataContextFactory.ContextInstance;
+        protected TDbContext Context => m_DbContext;
 
-                if (contextInstance != null)
-                {
-                    //Try and get the ObjectContext
-                    try
-                    {
-                        //Trying to execute this line will throw an InvalidOperationException if the underlying
-                        //ObjectContext has been disposed. I have added this to workaround some weird behaviour
-                        //where it looks like OwinContext items get left behind on used threads even when their
-                        //context items have been disposed.
-                        //TODO: ObjectContext objectContext = ((IObjectContextAdapter)contextInstance).ObjectContext;
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        contextInstance = null;
-                    }
-                }
-
-                if (contextInstance == null)
-                {
-                    contextInstance = new TDbContext();
-                    m_DataContextFactory.ContextInstance = contextInstance;
-                }
-
-                return contextInstance;
-            }
-        }
-
-        protected TUserAuditKey CurrentUserId
-        {
-            get { return m_UserAuditDataFactory.CurrentUserId; }
-        }
+        protected TUserAuditKey CurrentUserId => m_UserAuditDataFactory.CurrentUserId;
 
         protected IQueryable<TEntity> Items
         {
@@ -145,14 +111,9 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Constructors
-        /// <summary>
-        /// This constructor allows the IDataContextFactory to be injected dynamically when the repository
-        /// is created by a dependency resolver. This can also be manually injected.
-        /// </summary>
-        /// <param name="dataContextFactory">The type of the DataContextFactory to inject.</param>
-        public GenericRepository(IDataContextFactory<TDbContext> dataContextFactory, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
         {
-            m_DataContextFactory = dataContextFactory;
+            m_DbContext = dbContext;
             m_UserAuditDataFactory = userAuditDataFactory;
             m_Loggger = logger;
         }
@@ -267,7 +228,7 @@ namespace Umbrella.DataAccess
         /// <param name="entities">The entities to be saved in a single transaction</param>
         /// <param name="enableEntityValidation">Determines if entity validation should be performed</param>
         /// <param name="bypassSaveLogic">This should almost always be set to true - you should never have to bypass the default logic except in exceptional cases! When bypassing, you'll have to do the work yourself!</param>
-        public void SaveAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false)
+        public void SaveAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false, bool pushChangesToDb = true)
         {
             try
             {
@@ -280,11 +241,14 @@ namespace Umbrella.DataAccess
                     }
                 }
 
-                //Commit changes to the database as a single transaction
-                Context.SaveChanges();
+                if (pushChangesToDb)
+                {
+                    //Commit changes to the database as a single transaction
+                    Context.SaveChanges();
 
-                //Additional process after all changes have been committed to the database
-                AfterContextSavedChangesMultiple(entities);
+                    //Additional process after all changes have been committed to the database
+                    AfterContextSavedChangesMultiple(entities);
+                }
             }
             catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }, "Concurrency Exception"))
             {   
@@ -296,7 +260,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public async Task SaveAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false)
+        public async Task SaveAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false, bool pushChangesToDb = true)
         {
             try
             {
@@ -309,11 +273,14 @@ namespace Umbrella.DataAccess
                     }
                 }
 
-                //Commit changes to the database as a single transaction
-                await Context.SaveChangesAsync();
+                if (pushChangesToDb)
+                {
+                    //Commit changes to the database as a single transaction
+                    await Context.SaveChangesAsync();
 
-                //Additional process after all changes have been committed to the database
-                await AfterContextSavedChangesMultipleAsync(entities);
+                    //Additional process after all changes have been committed to the database
+                    await AfterContextSavedChangesMultipleAsync(entities);
+                }
             }
             catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }, "Concurrency Exception"))
             {
@@ -396,7 +363,7 @@ namespace Umbrella.DataAccess
         /// </summary>
         /// <param name="entities">The entities to be deleted</param>
         /// <param name="enableEntityValidation">Perform entity validation</param>
-        public void DeleteAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true)
+        public void DeleteAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool pushChangesToDb = true)
         {
             try
             {
@@ -405,10 +372,13 @@ namespace Umbrella.DataAccess
                     Delete(entity, false, enableEntityValidation);
                 }
 
-                //Commit changes to the database as a single transaction
-                Context.SaveChanges();
+                if (pushChangesToDb)
+                {
+                    //Commit changes to the database as a single transaction
+                    Context.SaveChanges();
 
-                AfterContextDeletedChangesMultiple(entities);
+                    AfterContextDeletedChangesMultiple(entities);
+                }
             }
             catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }, "Concurrency Exception"))
             {
@@ -420,7 +390,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true)
+        public async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool pushChangesToDb = true)
         {
             try
             {
@@ -429,10 +399,13 @@ namespace Umbrella.DataAccess
                     await DeleteAsync(entity, false, enableEntityValidation);
                 }
 
-                //Commit changes to the database as a single transaction
-                await Context.SaveChangesAsync();
+                if (pushChangesToDb)
+                {
+                    //Commit changes to the database as a single transaction
+                    await Context.SaveChangesAsync();
 
-                await AfterContextDeletedChangesMultipleAsync(entities);
+                    await AfterContextDeletedChangesMultipleAsync(entities);
+                }
             }
             catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }, "Concurrency Exception"))
             {

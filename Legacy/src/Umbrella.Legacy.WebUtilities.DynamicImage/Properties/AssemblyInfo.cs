@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Umbrella.Legacy.WebUtilities.DynamicImage")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Zinofi Digital Ltd")]
 [assembly: AssemblyProduct("Umbrella.Legacy.WebUtilities.DynamicImage")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © Zinofi Digital Ltd 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,3 +21,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("37315368-c0ef-4dea-ba1d-d514b9fb7f42")]
+
+[assembly: AssemblyVersion("1.0.0.0")]

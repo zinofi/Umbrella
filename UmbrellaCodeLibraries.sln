@@ -20,15 +20,15 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.WebUtilities", "Co
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAccess", "Core\Umbrella.DataAccess\Umbrella.DataAccess.xproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DNX", "DNX", "{1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CLI", "CLI", "{1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.WebUtilities", "DNX\Umbrella.DNX.WebUtilities\Umbrella.DNX.WebUtilities.xproj", "{77381917-4C02-4708-AA5A-4DE03CDEED46}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.CLI.WebUtilities", "CLI\Umbrella.CLI.WebUtilities\Umbrella.CLI.WebUtilities.xproj", "{77381917-4C02-4708-AA5A-4DE03CDEED46}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "N2CMS", "N2CMS", "{1EBEFC37-2819-4585-8667-21F1D84755EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{32ADE78B-DA1F-4286-ACCB-C83EB2390041}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.WebUtilities.Test", "Test\Umbrella.DNX.WebUtilities.Test\Umbrella.DNX.WebUtilities.Test.xproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.CLI.WebUtilities.Test", "Test\Umbrella.CLI.WebUtilities.Test\Umbrella.CLI.WebUtilities.Test.xproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}"
 EndProject
@@ -48,11 +48,15 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities.Test", "
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WebUtilities.DataAnnotations", "Legacy\Umbrella.Legacy.WebUtilities.DataAnnotations\Umbrella.Legacy.WebUtilities.DataAnnotations.xproj", "{EDCADC38-86E4-478E-9F0C-374F523D7FC1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.log4net", "Core\Umbrella.Utilities.log4net\Umbrella.log4net.xproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Extensions.Logging.Log4Net", "Core\Umbrella.Extensions.Logging.Log4Net\Umbrella.Extensions.Logging.Log4Net.xproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DNX.log4net", "DNX\Umbrella.DNX.log4net\Umbrella.DNX.log4net.xproj", "{0E80E191-7917-4671-967D-E7CC07914303}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.CLI.Log4Net", "CLI\Umbrella.CLI.Log4Net\Umbrella.CLI.Log4Net.xproj", "{0E80E191-7917-4671-967D-E7CC07914303}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.Utilities", "Legacy\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.xproj", "{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Extensions.DependencyInjection.WCF", "Core\Umbrella.Extensions.DependencyInjection.WCF\Umbrella.Extensions.DependencyInjection.WCF.xproj", "{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Utilities.Log4Net", "Core\Umbrella.Utilities.Log4Net\Umbrella.Utilities.Log4Net.xproj", "{C32F4651-FA81-494A-A7DE-AAE67FB98894}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +129,14 @@ Global
 		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C32F4651-FA81-494A-A7DE-AAE67FB98894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C32F4651-FA81-494A-A7DE-AAE67FB98894}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C32F4651-FA81-494A-A7DE-AAE67FB98894}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C32F4651-FA81-494A-A7DE-AAE67FB98894}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,5 +158,7 @@ Global
 		{15E0827C-6AED-4295-B5F9-9EB564B41DC0} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{0E80E191-7917-4671-967D-E7CC07914303} = {1FD5D965-89BD-4DAB-AD31-DA22CCDA3EEE}
 		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
+		{B9E9EE53-0ACA-4277-A330-BF6FC378D78C} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{C32F4651-FA81-494A-A7DE-AAE67FB98894} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 	EndGlobalSection
 EndGlobal

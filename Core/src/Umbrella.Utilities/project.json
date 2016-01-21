@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00003",
+  "version": "1.0.0-rc1-build00004",
   "description": "Umbrella.Utilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-    "Newtonsoft.Json": "7.0.1"
+    "Newtonsoft.Json": "8.0.2"
   }
 }

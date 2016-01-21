@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Umbrella.Utilities.log4net")]
+[assembly: AssemblyTitle("Umbrella.Utilities.Log4Net")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Umbrella.Utilities.log4net")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Zinofi Digital Ltd")]
+[assembly: AssemblyProduct("Umbrella.Utilities.Log4Net")]
+[assembly: AssemblyCopyright("Copyright © Zinofi Digital Ltd 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,4 +20,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("15e0827c-6aed-4295-b5f9-9eb564b41dc0")]
+[assembly: Guid("c32f4651-fa81-494a-a7de-aae67fb98894")]
+
+[assembly: AssemblyVersion("1.0.0.0")]

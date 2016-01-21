@@ -7,10 +7,10 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("Umbrella.DataAnnotations")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration("Zinofi Digital Ltd")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Umbrella.DataAnnotations")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © Zinofi Digital Ltd 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,3 +21,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("89194fb0-e735-4a79-91e5-c02b8e631da0")]
+
+[assembly: AssemblyVersion("1.0.0.0")]

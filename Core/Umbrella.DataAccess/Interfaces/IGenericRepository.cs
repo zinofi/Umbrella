@@ -16,12 +16,12 @@ namespace Umbrella.DataAccess.Interfaces
         void RemoveEmptyEntities(ICollection<TEntity> entities);
         void Save(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true, bool addToContext = true);
         Task SaveAsync(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true, bool addToContext = true);
-        void SaveAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false);
-        Task SaveAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false);
+        void SaveAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false, bool pushChangesToDb = true);
+        Task SaveAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false, bool pushChangesToDb = true);
         void Delete(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true);
         Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true);
-        void DeleteAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true);
-        Task DeleteAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true);
+        void DeleteAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool pushChangesToDb = true);
+        Task DeleteAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool pushChangesToDb = true);
         List<TEntity> FindAll();
         Task<List<TEntity>> FindAllAsync();
         List<TEntity> FindAllByIdList(IEnumerable<TKey> ids);

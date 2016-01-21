@@ -11,7 +11,7 @@ using N2;
 using N2.Details;
 using log4net;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.log4net;
+using Umbrella.Utilities.Log4Net;
 
 namespace Umbrella.N2.Utilities
 {

@@ -10,7 +10,7 @@ using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.Legacy.WebUtilities.Extensions;
 using System.Net;
 using System.Web.Configuration;
-using Umbrella.Utilities.log4net;
+using Umbrella.Utilities.Log4Net;
 using Umbrella.Legacy.Utilities;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using Ninject;

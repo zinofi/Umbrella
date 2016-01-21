@@ -183,7 +183,7 @@
   "libraries": {
     "Umbrella.DataAnnotations/1.0.0-rc1-build00002": {
       "type": "project",
-      "path": "../../General/Umbrella.DataAnnotations/project.json"
+      "path": "../../Core/Umbrella.DataAnnotations/project.json"
     },
     "Microsoft.AspNet.Mvc/5.2.3": {
       "type": "package",

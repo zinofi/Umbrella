@@ -8,7 +8,7 @@ using System.IO;
 using log4net;
 using System.Threading;
 using System.Web.Configuration;
-using Umbrella.Utilities.log4net;
+using Umbrella.Utilities.Log4Net;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using Umbrella.Legacy.Utilities;
 using Ninject;

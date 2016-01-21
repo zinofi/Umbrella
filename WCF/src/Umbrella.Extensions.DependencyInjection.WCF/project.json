@@ -1,0 +1,25 @@
+﻿{
+  "version": "1.0.0-rc1-build00004",
+  "description": "Umbrella.Extensions.DependencyInjection.WCF Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net461": {
+      "frameworkAssemblies": {
+        "System.ServiceModel": "4.0.0.0",
+        "System.ServiceModel.Activation": "4.0.0.0"
+      }
+    },
+    "dnx46": {
+      "frameworkAssemblies": {
+        "System.ServiceModel": "4.0.0.0",
+        "System.ServiceModel.Activation": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final"
+  }
+}

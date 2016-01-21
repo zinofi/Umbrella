@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
+using Umbrella.WebUtilities.TypeScript.Attributes;
 using Umbrella.WebUtilities.TypeScript.Enumerations;
 using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
 
@@ -23,6 +24,12 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
 
             List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, TypeScriptOutputModelType.Interface, true);
 
+            if (lstInterface.Contains(generatedName))
+            {
+                //List of interfaces already contains the name - strip the leading 'I' from the generatedName
+                generatedName = generatedName.TrimStart('I');
+            }
+
             StringBuilder builder = new StringBuilder();
             builder.Append(string.Format("\texport class {0}", generatedName));
 
@@ -32,7 +39,7 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
             builder.AppendLine();
             builder.AppendLine("\t{");
 
-            foreach (PropertyInfo pi in modelType.GetProperties().OrderBy(x => x.Name))
+            foreach (PropertyInfo pi in modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name))
             {
                 Type propertyType = pi.PropertyType;
 
