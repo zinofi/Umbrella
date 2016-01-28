@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-rc1-build00004",
+  "version": "1.0.0-rc1-build00005",
   "description": "Umbrella.Legacy.Utilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "Ninject": "3.2.2",
-    "Umbrella.Utilities": "1.0.0-rc1-build00004"
+    "Umbrella.Utilities": "1.0.0-*"
   }
 }

@@ -36,7 +36,7 @@
           "lib/net45-full/Ninject.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -84,7 +84,7 @@
           "lib/net45-full/Ninject.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -132,7 +132,7 @@
           "lib/net45-full/Ninject.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -148,7 +148,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00004": {
+    "Umbrella.Utilities/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
@@ -221,7 +221,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Ninject >= 3.2.2",
-      "Umbrella.Utilities >= 1.0.0-rc1-build00004"
+      "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6.1": [
       "fx/System.Configuration >= 4.0.0"

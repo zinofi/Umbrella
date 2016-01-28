@@ -395,18 +395,18 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Ninject": "3.2.2",
-          "Umbrella.Utilities": "1.0.0-rc1-build00004"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -419,16 +419,16 @@
           "Microsoft.Owin.Host.SystemWeb": "3.0.1",
           "Microsoft.Owin.StaticFiles": "3.0.1",
           "Ninject": "3.2.2",
-          "Umbrella.Legacy.Utilities": "1.0.0-rc1-build00004",
+          "Umbrella.Legacy.Utilities": "1.0.0",
           "Umbrella.Utilities.Log4Net": "1.0.0",
-          "Umbrella.WebUtilities": "1.0.0-rc1-build00004"
+          "Umbrella.WebUtilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -443,7 +443,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -456,7 +456,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -464,7 +464,7 @@
           "Newtonsoft.Json": "8.0.2"
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00004": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -479,7 +479,7 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -899,18 +899,18 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Ninject": "3.2.2",
-          "Umbrella.Utilities": "1.0.0-rc1-build00004"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -923,16 +923,16 @@
           "Microsoft.Owin.Host.SystemWeb": "3.0.1",
           "Microsoft.Owin.StaticFiles": "3.0.1",
           "Ninject": "3.2.2",
-          "Umbrella.Legacy.Utilities": "1.0.0-rc1-build00004",
+          "Umbrella.Legacy.Utilities": "1.0.0",
           "Umbrella.Utilities.Log4Net": "1.0.0",
-          "Umbrella.WebUtilities": "1.0.0-rc1-build00004"
+          "Umbrella.WebUtilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -947,7 +947,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -960,7 +960,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -968,7 +968,7 @@
           "Newtonsoft.Json": "8.0.2"
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00004": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -983,7 +983,7 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1403,18 +1403,18 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Ninject": "3.2.2",
-          "Umbrella.Utilities": "1.0.0-rc1-build00004"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1427,16 +1427,16 @@
           "Microsoft.Owin.Host.SystemWeb": "3.0.1",
           "Microsoft.Owin.StaticFiles": "3.0.1",
           "Ninject": "3.2.2",
-          "Umbrella.Legacy.Utilities": "1.0.0-rc1-build00004",
+          "Umbrella.Legacy.Utilities": "1.0.0",
           "Umbrella.Utilities.Log4Net": "1.0.0",
-          "Umbrella.WebUtilities": "1.0.0-rc1-build00004"
+          "Umbrella.WebUtilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1451,7 +1451,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1464,7 +1464,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00004": {
+      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1472,7 +1472,7 @@
           "Newtonsoft.Json": "8.0.2"
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00004": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1487,7 +1487,7 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1516,31 +1516,31 @@
     }
   },
   "libraries": {
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00004": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00004": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00004": {
+    "Umbrella.Utilities/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00004": {
+    "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities.Log4Net/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00004": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00004": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00005": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json"
     },

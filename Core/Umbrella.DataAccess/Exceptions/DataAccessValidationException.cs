@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Exceptions
 {
-	public class DataValidationException : ApplicationException
+	public class DataAccessValidationException : ApplicationException
 	{
 		public DataValidationType ValidationType { get; internal set; }
 
-		public DataValidationException(string message, DataValidationType validationType = DataValidationType.Invalid)
+		public DataAccessValidationException(string message, DataValidationType validationType = DataValidationType.Invalid)
 			: base(message)
 		{
 			ValidationType = validationType;
 		}
 
-		public DataValidationException(string message, Exception innerException, DataValidationType validationType = DataValidationType.Invalid)
+		public DataAccessValidationException(string message, Exception innerException, DataValidationType validationType = DataValidationType.Invalid)
 			: base(message, innerException)
 		{
 			ValidationType = validationType;

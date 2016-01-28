@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.Common;
 using Microsoft.Data.Entity;
 using System.Linq.Expressions;
 using Umbrella.DataAccess.Interfaces;
-using Microsoft.Data.Entity.Infrastructure;
-using Umbrella.Utilities;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Enumerations;
 using Umbrella.Utilities.Extensions;
 using Umbrella.DataAccess.Exceptions;
 using Microsoft.Data.Entity.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace Umbrella.DataAccess
 {
@@ -32,6 +27,7 @@ namespace Umbrella.DataAccess
     public abstract class GenericRepository<TEntity, TDbContext, TUserAuditKey> : GenericRepository<TEntity, TDbContext, int, TUserAuditKey, IEntity<int>>
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext, new()
+        where TUserAuditKey : IEquatable<TUserAuditKey>
     {
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
             : base(dbContext, userAuditDataFactory, logger)
@@ -42,6 +38,8 @@ namespace Umbrella.DataAccess
     public abstract class GenericRepository<TEntity, TDbContext, TEntityKey, TUserAuditKey> : GenericRepository<TEntity, TDbContext, TEntityKey, TUserAuditKey, IEntity<TEntityKey>>
         where TEntity : class, IEntity<TEntityKey>
         where TDbContext : DbContext, new()
+        where TEntityKey : IEquatable<TEntityKey>
+        where TUserAuditKey : IEquatable<TUserAuditKey>
     {
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
             : base(dbContext, userAuditDataFactory, logger)
@@ -54,15 +52,19 @@ namespace Umbrella.DataAccess
     /// </summary>
     /// <typeparam name="TEntity">The type of the generated entity, e.g. Person, Car</typeparam>
     /// <typeparam name="TDbContext">The type of the data context</typeparam>
-    /// <typeparam name="TEntityBase">The entity interface implemented by the generated entities. Must derive from IEntity</typeparam>
+    /// <typeparam name="TEntityBase">The entity interface implemented by the generated entities. Must derive from <see cref="IEntity{TEntityKey}"/></typeparam>
     public abstract class GenericRepository<TEntity, TDbContext, TEntityKey, TUserAuditKey, TEntityBase> : IGenericRepository<TEntity, TEntityKey>
         where TEntity : class, TEntityBase
         where TDbContext : DbContext, new()
+        where TEntityKey : IEquatable<TEntityKey>
+        where TUserAuditKey : IEquatable<TUserAuditKey>
         where TEntityBase : IEntity<TEntityKey>
     {
         #region Private Constants
         private const string c_InvalidPropertyStringLengthErrorMessageFormat = "The {0} value must be between {1} and {2} characters in length.";
         private const string c_InvalidPropertyNumberRangeErrorMessageFormat = "The {0} value must be between {1} and {2}.";
+        private const string c_BulkActionConcurrencyExceptionErrorMessage = "A concurrency error has occurred whilst trying to update the items.";
+        private const string c_ConcurrencyExceptionErrorMessageFormat = "A concurrency error has occurred whilst trying to save the item with id {0} or one of its depedants.";
         #endregion
 
         #region Private Static Members
@@ -120,7 +122,7 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Save
-        public void Save(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true, bool addToContext = true)
+        public void Save(TEntity entity, bool pushChangesToDb = true, bool addToContext = true)
         {
             try
             {
@@ -130,7 +132,7 @@ namespace Umbrella.DataAccess
                 ValidateEntity(entity);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
-                PreSaveWork(entity, enableEntityValidation, addToContext);
+                PreSaveWork(entity, addToContext);
 
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 AfterContextSaving(entity);
@@ -144,20 +146,22 @@ namespace Umbrella.DataAccess
                     AfterContextSavedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
             {
-                throw;
+                throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
             {
                 throw;
             }
         }
 
-        public async Task SaveAsync(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true, bool addToContext = true)
+        public async Task SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity);
 
@@ -165,7 +169,7 @@ namespace Umbrella.DataAccess
                 await ValidateEntityAsync(entity);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
-                PreSaveWork(entity, enableEntityValidation, addToContext);
+                PreSaveWork(entity, addToContext);
 
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 await AfterContextSavingAsync(entity);
@@ -173,23 +177,23 @@ namespace Umbrella.DataAccess
                 if (pushChangesToDb)
                 {
                     //Push changes to the database
-                    await Context.SaveChangesAsync();
+                    await Context.SaveChangesAsync(cancellationToken);
 
                     //Additional processing after changes have been successfully committed to the database
                     await AfterContextSavedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
             {
-                throw;
+                throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation, addToContext }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
             {
                 throw;
             }
         }
 
-        private void PreSaveWork(TEntity entity, bool enableEntityValidation, bool addToContext)
+        private void PreSaveWork(TEntity entity, bool addToContext)
         {
             //Look for the entity in the context - this action will allow us to determine it's state
             EntityEntry<TEntity> dbEntity = Context.Entry<TEntity>(entity);
@@ -218,17 +222,14 @@ namespace Umbrella.DataAccess
                 if (userAuditEntity != null)
                     userAuditEntity.UpdatedById = m_UserAuditDataFactory.CurrentUserId;
             }
-
-            //TODO: Context.Configuration.ValidateOnSaveEnabled = enableEntityValidation;
         }
 
         /// <summary>
         /// Save All entities in a single transaction
         /// </summary>
         /// <param name="entities">The entities to be saved in a single transaction</param>
-        /// <param name="enableEntityValidation">Determines if entity validation should be performed</param>
         /// <param name="bypassSaveLogic">This should almost always be set to true - you should never have to bypass the default logic except in exceptional cases! When bypassing, you'll have to do the work yourself!</param>
-        public void SaveAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false, bool pushChangesToDb = true)
+        public void SaveAll(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, bool pushChangesToDb = true)
         {
             try
             {
@@ -237,7 +238,7 @@ namespace Umbrella.DataAccess
                 {
                     foreach (TEntity entity in entities)
                     {
-                        Save(entity, false, enableEntityValidation);
+                        Save(entity, false);
                     }
                 }
 
@@ -250,43 +251,45 @@ namespace Umbrella.DataAccess
                     AfterContextSavedChangesMultiple(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }, "Concurrency Exception"))
-            {   
-                throw;
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { bypassSaveLogic, pushChangesToDb }, "Bulk Save Concurrency Exception", true))
+            {
+                throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { bypassSaveLogic, pushChangesToDb }))
             {
                 throw;
             }
         }
 
-        public async Task SaveAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool bypassSaveLogic = false, bool pushChangesToDb = true)
+        public async Task SaveAllAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 //Save all changes - do not push to the database yet
                 if (!bypassSaveLogic)
                 {
                     foreach (TEntity entity in entities)
                     {
-                        await SaveAsync(entity, false, enableEntityValidation);
+                        await SaveAsync(entity, false, cancellationToken: cancellationToken);
                     }
                 }
 
                 if (pushChangesToDb)
                 {
                     //Commit changes to the database as a single transaction
-                    await Context.SaveChangesAsync();
+                    await Context.SaveChangesAsync(cancellationToken);
 
                     //Additional process after all changes have been committed to the database
                     await AfterContextSavedChangesMultipleAsync(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { bypassSaveLogic, pushChangesToDb }, "Bulk Save Concurrency Exception", true))
             {
-                throw;
+                throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation, bypassSaveLogic }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { bypassSaveLogic, pushChangesToDb }))
             {
                 throw;
             }
@@ -294,13 +297,13 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Delete
-        public void Delete(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true)
+        public void Delete(TEntity entity, bool pushChangesToDb = true)
         {
             try
             {
                 BeforeContextDeleting(entity);
 
-                PreDeleteWork(entity, enableEntityValidation);
+                Context.Remove(entity);
 
                 AfterContextDeleting(entity);
 
@@ -312,50 +315,44 @@ namespace Umbrella.DataAccess
                     AfterContextDeletedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb }, "Concurrency Exception for Id", true))
             {
-                throw;
+                throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Failed for Id"))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb }, "Failed for Id"))
             {
                 throw;
             }
         }
 
-        public async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, bool enableEntityValidation = true)
+        public async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 await BeforeContextDeletingAsync(entity);
 
-                PreDeleteWork(entity, enableEntityValidation);
+                Context.Remove(entity);
 
                 await AfterContextDeletingAsync(entity);
 
                 if (pushChangesToDb)
                 {
                     //Push changes to the database
-                    await Context.SaveChangesAsync();
+                    await Context.SaveChangesAsync(cancellationToken);
 
                     await AfterContextDeletedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Concurrency Exception for Id"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb }, "Concurrency Exception for Id", true))
+            {
+                throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+            }
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb }, "Failed for Id"))
             {
                 throw;
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { entity.Id, pushChangesToDb, enableEntityValidation }, "Failed for Id"))
-            {
-                throw;
-            }
-        }
-
-        private void PreDeleteWork(TEntity entity, bool enableEntityValidation)
-        {
-            Context.Set<TEntity>().Remove(entity);
-            Context.Entry(entity).State = EntityState.Deleted;
-
-            //TODO: Context.Configuration.ValidateOnSaveEnabled = enableEntityValidation;
         }
 
         /// <summary>
@@ -363,13 +360,13 @@ namespace Umbrella.DataAccess
         /// </summary>
         /// <param name="entities">The entities to be deleted</param>
         /// <param name="enableEntityValidation">Perform entity validation</param>
-        public void DeleteAll(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool pushChangesToDb = true)
+        public void DeleteAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true)
         {
             try
             {
                 foreach (TEntity entity in entities)
                 {
-                    Delete(entity, false, enableEntityValidation);
+                    Delete(entity, false);
                 }
 
                 if (pushChangesToDb)
@@ -380,38 +377,40 @@ namespace Umbrella.DataAccess
                     AfterContextDeletedChangesMultiple(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { pushChangesToDb }, "Bulk Delete Concurrency Exception", true))
             {
-                throw;
+                throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { pushChangesToDb }))
             {
                 throw;
             }
         }
 
-        public async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool enableEntityValidation = true, bool pushChangesToDb = true)
+        public async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 foreach (TEntity entity in entities)
                 {
-                    await DeleteAsync(entity, false, enableEntityValidation);
+                    await DeleteAsync(entity, false, cancellationToken);
                 }
 
                 if (pushChangesToDb)
                 {
                     //Commit changes to the database as a single transaction
-                    await Context.SaveChangesAsync();
+                    await Context.SaveChangesAsync(cancellationToken);
 
                     await AfterContextDeletedChangesMultipleAsync(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }, "Concurrency Exception"))
+            catch (DbUpdateConcurrencyException exc) when (m_Loggger.LogError(exc, new { pushChangesToDb }, "Bulk Delete Concurrency Exception", true))
             {
-                throw;
+                throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.LogError(exc, new { enableEntityValidation }))
+            catch (Exception exc) when (m_Loggger.LogError(exc, new { pushChangesToDb }))
             {
                 throw;
             }
@@ -427,7 +426,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task ValidateEntityAsync(TEntity entity)
         {
-            return Task.Run(() => ValidateEntity(entity));
+            ValidateEntity(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void BeforeContextSaving(TEntity entity)
@@ -436,7 +437,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task BeforeContextSavingAsync(TEntity entity)
         {
-            return Task.Run(() => BeforeContextSaving(entity));
+            BeforeContextSaving(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void AfterContextSaving(TEntity entity)
@@ -445,7 +448,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task AfterContextSavingAsync(TEntity entity)
         {
-            return Task.Run(() => AfterContextSaving(entity));
+            AfterContextSaving(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void AfterContextSavedChanges(TEntity entity)
@@ -454,7 +459,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task AfterContextSavedChangesAsync(TEntity entity)
         {
-            return Task.Run(() => AfterContextSavedChanges(entity));
+            AfterContextSavedChanges(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void AfterContextSavedChangesMultiple(IEnumerable<TEntity> entities)
@@ -463,7 +470,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task AfterContextSavedChangesMultipleAsync(IEnumerable<TEntity> entities)
         {
-            return Task.Run(() => AfterContextSavedChangesMultiple(entities));
+            AfterContextSavedChangesMultiple(entities);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void BeforeContextDeleting(TEntity entity)
@@ -472,7 +481,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task BeforeContextDeletingAsync(TEntity entity)
         {
-            return Task.Run(() => BeforeContextDeleting(entity));
+            BeforeContextDeleting(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void AfterContextDeleting(TEntity entity)
@@ -481,7 +492,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task AfterContextDeletingAsync(TEntity entity)
         {
-            return Task.Run(() => AfterContextDeleting(entity));
+            AfterContextDeleting(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void AfterContextDeletedChanges(TEntity entity)
@@ -490,7 +503,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task AfterContextDeletedChangesAsync(TEntity entity)
         {
-            return Task.Run(() => AfterContextDeletedChanges(entity));
+            AfterContextDeletedChanges(entity);
+
+            return Task.FromResult(0);
         }
 
         protected virtual void AfterContextDeletedChangesMultiple(IEnumerable<TEntity> entities)
@@ -499,7 +514,9 @@ namespace Umbrella.DataAccess
 
         protected virtual Task AfterContextDeletedChangesMultipleAsync(IEnumerable<TEntity> entities)
         {
-            return Task.Run(() => AfterContextDeletedChangesMultiple(entities));
+            AfterContextDeletedChangesMultiple(entities);
+
+            return Task.FromResult(0);
         }
         #endregion
 
@@ -520,7 +537,7 @@ namespace Umbrella.DataAccess
                 if (!alteredColl.Contains(entity))
                 {
                     //Delete the dependency, but do not push changes to the database
-                    repository.Delete(entity, false, false);
+                    repository.Delete(entity, false);
                 }
             }
 
@@ -540,15 +557,17 @@ namespace Umbrella.DataAccess
                     //logic on the entity, but it also means that should something go wrong that means
                     //persisting the parent entity is not valid, we don't end up in a situation where we have
                     //child objects as part of the context that shouldn't be saved.
-                    repository.Save(entity, false, false, false);
+                    repository.Save(entity, false, false);
                 }
             }
         }
 
-        protected async Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func)
+        protected async Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken = default(CancellationToken))
             where TTargetEntity : class, TEntityBase
             where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey>
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             //Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
             //but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
             //any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
@@ -561,7 +580,7 @@ namespace Umbrella.DataAccess
                 if (!alteredColl.Contains(entity))
                 {
                     //Delete the dependency, but do not push changes to the database
-                    await repository.DeleteAsync(entity, false, false);
+                    await repository.DeleteAsync(entity, false, cancellationToken);
                 }
             }
 
@@ -581,7 +600,7 @@ namespace Umbrella.DataAccess
                     //logic on the entity, but it also means that should something go wrong that means
                     //persisting the parent entity is not valid, we don't end up in a situation where we have
                     //child objects as part of the context that shouldn't be saved.
-                    await repository.SaveAsync(entity, false, false, false);
+                    await repository.SaveAsync(entity, false, false, cancellationToken);
                 }
             }
         }
@@ -592,14 +611,14 @@ namespace Umbrella.DataAccess
         protected void ValidatePropertyStringLength(string value, Expression<Func<TEntity, string>> propertyAccessor, int minLength, int maxLength, bool required = true)
         {
             if (!value.IsValidLength(minLength, maxLength, !required))
-                throw new DataValidationException(string.Format(c_InvalidPropertyStringLengthErrorMessageFormat, propertyAccessor.GetMemberName(), minLength, maxLength));
+                throw new DataAccessValidationException(string.Format(c_InvalidPropertyStringLengthErrorMessageFormat, propertyAccessor.GetMemberName(), minLength, maxLength));
         }
 
         protected void ValidatePropertyNumberRange<TProperty>(TProperty? value, Expression<Func<TEntity, TProperty?>> propertyAccessor, TProperty min, TProperty max, bool required = true)
             where TProperty : struct, IComparable<TProperty>
         {
             if (!value.IsValidRange(min, max, !required))
-                throw new DataValidationException(string.Format(c_InvalidPropertyNumberRangeErrorMessageFormat, propertyAccessor.GetMemberName(), min, max));
+                throw new DataAccessValidationException(string.Format(c_InvalidPropertyNumberRangeErrorMessageFormat, propertyAccessor.GetMemberName(), min, max));
         }
 
         #endregion
@@ -640,7 +659,7 @@ namespace Umbrella.DataAccess
             foreach (TEntity entity in lstToRemove)
             {
                 entities.Remove(entity);
-
+                
                 //Make sure it is removed from the Context if it has just been added - make it detached
                 EntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
 
@@ -661,11 +680,13 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllAsync()
+        public virtual Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                return Items.ToListAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Items.ToListAsync(cancellationToken);
             }
             catch (Exception exc) when (m_Loggger.LogError(exc))
             {
@@ -685,11 +706,13 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids)
+        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                return Items.Where(x => ids.Contains(x.Id)).ToListAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Items.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
             }
             catch (Exception exc) when (m_Loggger.LogError(exc, ids))
             {
@@ -701,7 +724,7 @@ namespace Umbrella.DataAccess
         {
             try
             {
-                return Items.SingleOrDefault(x => x.Id.ToString() == id.ToString());
+                return Items.SingleOrDefault(x => x.Id.Equals(id));
             }
             catch (Exception exc) when (m_Loggger.LogError(exc, id))
             {
@@ -709,11 +732,13 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<TEntity> FindByIdAsync(TEntityKey id)
+        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                return Items.SingleOrDefaultAsync(x => x.Id.ToString() == id.ToString());
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Items.SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
             }
             catch (Exception exc) when (m_Loggger.LogError(exc, id))
             {
@@ -733,11 +758,13 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<int> FindTotalCountAsync()
+        public virtual Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                return Items.CountAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Items.CountAsync(cancellationToken);
             }
             catch (Exception exc) when (m_Loggger.LogError(exc))
             {
