@@ -28,7 +28,7 @@ namespace Umbrella.CLI.WebUtilities.Robots
 
         #region Constructors
         public RobotsController(
-            ILogger logger,
+            ILogger<RobotsController> logger,
             IOptions<RobotsConfig> robotsConfig,
             IHostingEnvironment hostingEnvironment)
             : base(logger)

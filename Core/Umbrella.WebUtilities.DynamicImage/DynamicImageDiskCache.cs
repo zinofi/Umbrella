@@ -22,19 +22,13 @@ namespace Umbrella.WebUtilities.DynamicImage
 
         #region Private Members
         private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
-        private readonly ILogger m_Logger;
         #endregion
 
         #region Constructors
-        //TODO: public DynamicImageDiskCache()
-        //    : this(null, null)
-        //{
-        //}
-
-        public DynamicImageDiskCache(IUmbrellaHostingEnvironment hostingEnvironment, ILogger logger)
+        public DynamicImageDiskCache(IUmbrellaHostingEnvironment hostingEnvironment, ILogger<DynamicImageDiskCache> logger)
+            : base(logger)
         {
             m_HostingEnvironment = hostingEnvironment;
-            m_Logger = logger;
         }
         #endregion
 

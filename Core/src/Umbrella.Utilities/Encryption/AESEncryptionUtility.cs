@@ -15,7 +15,7 @@ namespace Umbrella.Utilities.Encryption
         /// </summary>
         /// <param name="encryptionKey">The encryption key to use</param>
         /// <param name="initializationVector">The initialization vector to use</param>
-		public AesEncryptionUtility(ILogger logger)
+		public AesEncryptionUtility(ILogger<AesEncryptionUtility> logger)
 			: base(logger)
 		{
 		}

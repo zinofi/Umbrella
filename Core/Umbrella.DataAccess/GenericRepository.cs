@@ -198,8 +198,12 @@ namespace Umbrella.DataAccess
             //Look for the entity in the context - this action will allow us to determine it's state
             EntityEntry<TEntity> dbEntity = Context.Entry<TEntity>(entity);
 
+            IConcurrencyStamp concurrencyStampEntity = entity as IConcurrencyStamp;
             IDateAuditEntity datedEntity = entity as IDateAuditEntity;
             IUserAuditEntity<TUserAuditKey> userAuditEntity = entity as IUserAuditEntity<TUserAuditKey>;
+
+            if (concurrencyStampEntity != null)
+                concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
 
             //Check if this entity is in the context, i.e. is it new
             if (entity.Id.Equals(default(TEntityKey)) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)))

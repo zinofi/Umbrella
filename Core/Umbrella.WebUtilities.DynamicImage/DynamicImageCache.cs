@@ -6,11 +6,19 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
     public abstract class DynamicImageCache
     {
+        protected readonly ILogger m_Logger;
+
+        public DynamicImageCache(ILogger logger)
+        {
+            m_Logger = logger;
+        }
+
         public string GenerateCacheKey(DynamicImageOptions options)
         {
             string key = string.Format("{0}-W-{1}-H-{2}-M-{3}-F-{4}-P", options.Width, options.Height, options.Mode, options.Format, options.OriginalVirtualPath);

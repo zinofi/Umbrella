@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Caching;
 using Umbrella.Utilities.Hosting;
+using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
@@ -26,7 +28,10 @@ namespace Umbrella.WebUtilities.DynamicImage
         #endregion
 
         #region Constructors
-        public DynamicImageMemoryCache(Func<CacheItemPolicy> defaultPolicyFunc = null, IUmbrellaHostingEnvironment hostingEnvironment = null)
+        public DynamicImageMemoryCache(ILogger<DynamicImageMemoryCache> logger,
+            Func<CacheItemPolicy> defaultPolicyFunc = null,
+            IUmbrellaHostingEnvironment hostingEnvironment = null)
+            : base(logger)
         {
             m_DefaultPolicyFunc = defaultPolicyFunc ?? (() => new CacheItemPolicy());
             m_HostingEnvironment = hostingEnvironment;
@@ -41,9 +46,8 @@ namespace Umbrella.WebUtilities.DynamicImage
                 string key = GenerateCacheKey(dynamicImage.ImageOptions);
                 s_Cache.AddOrGet(key, () => dynamicImage, policyFunc ?? m_DefaultPolicyFunc);
             }
-            catch(Exception exc)
+            catch(Exception exc) when (m_Logger.LogError(exc))
             {
-                //TODO: Log.Error("Add() failed", exc);
                 throw;
             }
         }
@@ -74,9 +78,8 @@ namespace Umbrella.WebUtilities.DynamicImage
 
                 return item;
             }
-            catch(Exception exc)
+            catch(Exception exc) when (m_Logger.LogError(exc, new { key, originalFilePhysicalPath, fileExtension }))
             {
-                //TODO: Log.Error(string.Format("Get({0}, {1}, {2}) failed", key, originalFilePhysicalPath, fileExtension), exc);
                 throw;
             }
         }
@@ -87,9 +90,8 @@ namespace Umbrella.WebUtilities.DynamicImage
             {
                 s_Cache.Remove(key);
             }
-            catch(Exception exc)
+            catch(Exception exc) when (m_Logger.LogError(exc, new { key, fileExtension }))
             {
-                //TODO: Log.Error(string.Format("Remove({0}, {1}) failed", key, fileExtension), exc);
                 throw;
             }
         }

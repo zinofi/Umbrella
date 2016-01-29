@@ -22,19 +22,13 @@ namespace Umbrella.WebUtilities.DynamicImage
         #region Private Members
         private readonly IDynamicImageCache m_DynamicImageCache;
         private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
-        private readonly ILogger m_Logger;
+        private readonly ILogger<DynamicImageResizer> m_Logger;
         #endregion
 
         #region Constructors
-        //TODO: public DynamicImageResizer()
-        //    : this(null, null)
-        //{
-
-        //}
-
         public DynamicImageResizer(IDynamicImageCache dynamicImageCache,
             IUmbrellaHostingEnvironment hostingEnvironment,
-            ILogger logger)
+            ILogger<DynamicImageResizer> logger)
         {
             m_DynamicImageCache = dynamicImageCache;
             m_HostingEnvironment = hostingEnvironment;
