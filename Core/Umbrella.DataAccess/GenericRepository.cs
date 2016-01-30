@@ -16,7 +16,7 @@ namespace Umbrella.DataAccess
 {
     public abstract class GenericRepository<TEntity, TDbContext> : GenericRepository<TEntity, TDbContext, int, int, IEntity<int>>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext, new()
+        where TDbContext : DbContext
     {
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
             : base(dbContext, userAuditDataFactory, logger)
@@ -26,7 +26,7 @@ namespace Umbrella.DataAccess
 
     public abstract class GenericRepository<TEntity, TDbContext, TUserAuditKey> : GenericRepository<TEntity, TDbContext, int, TUserAuditKey, IEntity<int>>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext, new()
+        where TDbContext : DbContext
         where TUserAuditKey : IEquatable<TUserAuditKey>
     {
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
@@ -37,7 +37,7 @@ namespace Umbrella.DataAccess
 
     public abstract class GenericRepository<TEntity, TDbContext, TEntityKey, TUserAuditKey> : GenericRepository<TEntity, TDbContext, TEntityKey, TUserAuditKey, IEntity<TEntityKey>>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext, new()
+        where TDbContext : DbContext
         where TEntityKey : IEquatable<TEntityKey>
         where TUserAuditKey : IEquatable<TUserAuditKey>
     {
@@ -55,7 +55,7 @@ namespace Umbrella.DataAccess
     /// <typeparam name="TEntityBase">The entity interface implemented by the generated entities. Must derive from <see cref="IEntity{TEntityKey}"/></typeparam>
     public abstract class GenericRepository<TEntity, TDbContext, TEntityKey, TUserAuditKey, TEntityBase> : IGenericRepository<TEntity, TEntityKey>
         where TEntity : class, TEntityBase
-        where TDbContext : DbContext, new()
+        where TDbContext : DbContext
         where TEntityKey : IEquatable<TEntityKey>
         where TUserAuditKey : IEquatable<TUserAuditKey>
         where TEntityBase : IEntity<TEntityKey>
