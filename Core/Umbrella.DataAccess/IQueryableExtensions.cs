@@ -23,7 +23,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IIncludeMap<TEntity> map) where TEntity : class
+        public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity> map) where TEntity : class
         {
             if (map == null)
                 return items;

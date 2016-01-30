@@ -21,12 +21,12 @@ namespace Umbrella.DataAccess.Interfaces
         Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken));
         void DeleteAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true);
         Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken));
-        List<TEntity> FindAll(IIncludeMap<TEntity> map = null);
-        Task<List<TEntity>> FindAllAsync(IIncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken));
-        List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, IIncludeMap<TEntity> map = null);
-        Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, IIncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken));
-        TEntity FindById(TEntityKey id, IIncludeMap<TEntity> map = null);
-        Task<TEntity> FindByIdAsync(TEntityKey id, IIncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken));
+        List<TEntity> FindAll(IncludeMap<TEntity> map = null);
+        Task<List<TEntity>> FindAllAsync(IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken));
+        List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, IncludeMap<TEntity> map = null);
+        Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken));
+        TEntity FindById(TEntityKey id, IncludeMap<TEntity> map = null);
+        Task<TEntity> FindByIdAsync(TEntityKey id, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken));
         int FindTotalCount();
         Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken));
     }

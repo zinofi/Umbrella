@@ -8,7 +8,7 @@ using Umbrella.DataAccess.Interfaces;
 
 namespace Umbrella.DataAccess
 {
-    public class IncludeMap<TEntity> : IIncludeMap<TEntity>
+    public class IncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
     {
         #region Private Members
         private readonly HashSet<Expression<Func<TEntity, object>>> m_Includes = new HashSet<Expression<Func<TEntity, object>>>();

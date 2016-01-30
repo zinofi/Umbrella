@@ -632,7 +632,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual List<TEntity> FindAll(IIncludeMap<TEntity> map = null)
+        public virtual List<TEntity> FindAll(IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -644,7 +644,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllAsync(IIncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<List<TEntity>> FindAllAsync(IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -658,7 +658,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, IIncludeMap<TEntity> map = null)
+        public virtual List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -670,7 +670,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, IIncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -684,7 +684,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual TEntity FindById(TEntityKey id, IIncludeMap<TEntity> map = null)
+        public virtual TEntity FindById(TEntityKey id, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -696,7 +696,7 @@ namespace Umbrella.DataAccess
             }
         }
 
-        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, IIncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
