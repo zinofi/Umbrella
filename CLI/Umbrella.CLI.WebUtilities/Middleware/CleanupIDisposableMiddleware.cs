@@ -43,7 +43,7 @@ namespace Umbrella.CLI.WebUtilities.Middleware
                     context.Items.AsParallel().Select(x => x.Value).OfType<IDisposable>().ForAll(x => x.Dispose());
                 }));
             }
-			catch(Exception exc) when (m_Logger.LogError(exc, returnValue: DebugUtility.IsDebugMode))
+			catch(Exception exc) when (m_Logger.WriteError(exc, returnValue: DebugUtility.IsDebugMode))
 			{
                 throw;
 			}

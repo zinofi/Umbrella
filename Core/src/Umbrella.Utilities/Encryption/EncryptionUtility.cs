@@ -46,7 +46,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.LogError(exc, value))
+            catch (Exception exc) when (m_Logger.WriteError(exc, value))
             {
                 throw;
             }
@@ -67,7 +67,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.LogError(exc))
+            catch (Exception exc) when (m_Logger.WriteError(exc))
             {
                 throw;
             }
@@ -99,7 +99,7 @@ namespace Umbrella.Utilities.Encryption
                 p_Encryptor = p_Algorithm.CreateEncryptor(key, iV);
                 p_Decryptor = p_Algorithm.CreateDecryptor(key, iV);
             }
-            catch (Exception exc) when (m_Logger.LogError(exc))
+            catch (Exception exc) when (m_Logger.WriteError(exc))
             {
                 throw;
             }
@@ -127,7 +127,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.LogError(exc, value))
+            catch (Exception exc) when (m_Logger.WriteError(exc, value))
             {
                 throw;
             }
@@ -157,7 +157,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.LogError(exc, value))
+            catch (Exception exc) when (m_Logger.WriteError(exc, value))
             {
                 throw;
             }

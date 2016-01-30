@@ -46,7 +46,7 @@ namespace Umbrella.WebUtilities.DynamicImage
                 string key = GenerateCacheKey(dynamicImage.ImageOptions);
                 s_Cache.AddOrGet(key, () => dynamicImage, policyFunc ?? m_DefaultPolicyFunc);
             }
-            catch(Exception exc) when (m_Logger.LogError(exc))
+            catch(Exception exc) when (m_Logger.WriteError(exc))
             {
                 throw;
             }
@@ -78,7 +78,7 @@ namespace Umbrella.WebUtilities.DynamicImage
 
                 return item;
             }
-            catch(Exception exc) when (m_Logger.LogError(exc, new { key, originalFilePhysicalPath, fileExtension }))
+            catch(Exception exc) when (m_Logger.WriteError(exc, new { key, originalFilePhysicalPath, fileExtension }))
             {
                 throw;
             }
@@ -90,7 +90,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             {
                 s_Cache.Remove(key);
             }
-            catch(Exception exc) when (m_Logger.LogError(exc, new { key, fileExtension }))
+            catch(Exception exc) when (m_Logger.WriteError(exc, new { key, fileExtension }))
             {
                 throw;
             }

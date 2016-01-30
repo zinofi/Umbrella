@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Interfaces
 {
-    public interface IIncludeMap<TEntity>
+    public interface IIncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
     {
         HashSet<Expression<Func<TEntity, object>>> Includes { get; }
     }

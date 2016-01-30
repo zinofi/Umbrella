@@ -20,7 +20,7 @@ namespace Umbrella.CLI.WebUtilities.Mvc
         #endregion
 
         #region Protected Methods
-        protected bool LogError(Exception exc, object model = null, string message = "", bool returnValue = false, [CallerMemberName]string methodName = "") => Log.LogError(exc, model, message, returnValue, methodName);
+        protected bool LogError(Exception exc, object model = null, string message = "", bool returnValue = false, [CallerMemberName]string methodName = "") => Log.WriteError(exc, model, message, returnValue, methodName);
         #endregion
     }
 }
