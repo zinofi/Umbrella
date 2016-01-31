@@ -12,7 +12,7 @@ namespace Umbrella.DataAccess
     public class UmbrellaDbContext : DbContext
     {
         #region Private Static Members
-        private static readonly Type s_ConcurrencyTypeStamp;
+        private static readonly Type s_ConcurrencyTypeStamp = typeof(IConcurrencyStamp);
         #endregion
 
         #region Protected Members
