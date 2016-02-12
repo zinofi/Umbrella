@@ -72,10 +72,9 @@ namespace Umbrella.Utilities.Email
         /// <param name="isRawHtml">Indicates whether the source is a file or raw html</param>
         public EmailBuilder UsingTemplate(string source = "GenericTemplate", bool isRawHtml = false)
         {
-            if (isRawHtml)
-                m_Builder = new StringBuilder(source);
-            else
-                m_Builder = new StringBuilder(s_EmailTemplateDictionary[source]);
+            m_Builder = isRawHtml
+                ? new StringBuilder(source)
+                : new StringBuilder(s_EmailTemplateDictionary[source]);
 
             //Make sure the date is shown in the correct format
             m_Builder.Replace("{datetime}", DateTime.Now.ToString(s_CultureInfo));
@@ -106,14 +105,21 @@ namespace Umbrella.Utilities.Email
 
 		public EmailBuilder ReplaceToken(string tokenName, string value)
 		{
+            ThrowIfNotInitialized();
+
 			m_Builder.Replace("{" + tokenName + "}", value);
 
 			return this;
 		}
-		#endregion
+        #endregion
 
-		#region Overridden Methods
-		public override string ToString() => m_Builder.Replace("{rows}", m_RowsBuilder.ToString()).ToString();
+        #region Overridden Methods
+        public override string ToString()
+        {
+            ThrowIfNotInitialized();
+
+            return m_Builder.Replace("{rows}", m_RowsBuilder.ToString()).ToString();
+        }
         #endregion
 
         #region Private Methods
