@@ -112,11 +112,16 @@ namespace Umbrella.Utilities.Email
 		}
 		#endregion
 
-		#region Overrides
-		public override string ToString()
-		{
-			return m_Builder.Replace("{rows}", m_RowsBuilder.ToString()).ToString();
-		}
-		#endregion
-	}
+		#region Overridden Methods
+		public override string ToString() => m_Builder.Replace("{rows}", m_RowsBuilder.ToString()).ToString();
+        #endregion
+
+        #region Private Methods
+        private void ThrowIfNotInitialized()
+        {
+            if (m_Builder == null)
+                throw new InvalidOperationException($"This builder has not been initialized properly. You need to call the {nameof(UsingTemplate)} method before using it.");
+        }
+        #endregion
+    }
 }

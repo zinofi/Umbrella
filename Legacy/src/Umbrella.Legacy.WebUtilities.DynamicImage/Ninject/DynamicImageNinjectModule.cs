@@ -12,10 +12,10 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Ninject
     {
         public override void Load()
         {
-            Bind<IDynamicImageCache>().To<DynamicImageNullCache>();
-            Bind<IDynamicImageResizer>().To<DynamicImageResizer>();
-            Bind<IDynamicImageUtility>().To<DynamicImageUtility>();
-            Bind<IDynamicImageUrlGenerator>().To<DynamicImageUrlGenerator>();
+            Bind<IDynamicImageCache>().To<DynamicImageNullCache>().InSingletonScope();
+            Bind<IDynamicImageResizer>().To<DynamicImageResizer>().InSingletonScope();
+            Bind<IDynamicImageUtility>().To<DynamicImageUtility>().InSingletonScope();
+            Bind<IDynamicImageUrlGenerator>().To<DynamicImageUrlGenerator>().InSingletonScope();
         }
     }
 }
