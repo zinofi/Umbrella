@@ -14,6 +14,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Ninject
         {
             Bind<IDynamicImageCache>().To<DynamicImageNullCache>();
             Bind<IDynamicImageResizer>().To<DynamicImageResizer>();
+            Bind<IDynamicImageUtility>().To<DynamicImageUtility>();
+            Bind<IDynamicImageUrlGenerator>().To<DynamicImageUrlGenerator>();
         }
     }
 }

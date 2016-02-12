@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Microsoft.Extensions.Logging;
 using N2;
 using N2.Web.Mvc;
 using System;
@@ -13,12 +14,15 @@ namespace Umbrella.N2.Mvc.Controllers
 {
     public class UmbrellaContentController<T> : ContentController<T> where T : ContentItem
     {
-        #region Protected Static Members
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(UmbrellaContentController<T>));
+        #region Protected Members
+        protected readonly ILogger Log;
         #endregion
 
-        #region Protected Methods
-        protected bool LogError(Exception exc, object model = null, string message = "", bool returnValue = false, [CallerMemberName]string methodName = "") => Log.LogError(exc, model, message, returnValue, methodName);
+        #region Constructors
+        public UmbrellaContentController(ILogger logger)
+        {
+            Log = logger;
+        }
         #endregion
     }
 }
