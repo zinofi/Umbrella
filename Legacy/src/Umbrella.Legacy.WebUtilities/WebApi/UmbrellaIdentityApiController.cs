@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.Owin;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi
 {
@@ -18,10 +19,16 @@ namespace Umbrella.Legacy.WebUtilities.WebApi
 		#region Private Members
 		private TUserManager m_UserManager;
 		private IAuthenticationManager m_AuthenticationManager;
-		#endregion
+        #endregion
 
-		#region Protected Properties
-		protected TUserManager UserManager
+        #region Constructors
+        public UmbrellaIdentityApiController(ILogger logger) : base(logger)
+        {
+        }
+        #endregion
+
+        #region Protected Properties
+        protected TUserManager UserManager
 		{
 			get
 			{

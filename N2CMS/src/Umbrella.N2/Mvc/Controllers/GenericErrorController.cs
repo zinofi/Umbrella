@@ -10,11 +10,17 @@ using Umbrella.Legacy.WebUtilities.Mvc;
 using Umbrella.Legacy.WebUtilities.Mvc.Results;
 using Umbrella.N2.BaseModels;
 using Umbrella.N2.Utilities;
+using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.N2.Mvc.Controllers
 {
     public partial class GenericErrorController : UmbrellaController
     {
+        public GenericErrorController(ILogger<GenericErrorController> logger) : base(logger)
+        {
+        }
+
         public virtual ActionResult Index()
         {
             try
@@ -28,7 +34,7 @@ namespace Umbrella.N2.Mvc.Controllers
 
                 return new TransferResult(url);
             }
-            catch(Exception exc) when (LogError(exc))
+            catch(Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }

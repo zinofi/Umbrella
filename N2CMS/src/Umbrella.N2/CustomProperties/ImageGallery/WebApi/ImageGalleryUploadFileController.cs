@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
+using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
@@ -19,7 +21,9 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
         #endregion
 
         #region Constructors
-        public ImageGalleryUploadFileController(IDynamicImageUtility dynamicImageUtility)
+        public ImageGalleryUploadFileController(ILogger<ImageGalleryUploadFileController> logger,
+            IDynamicImageUtility dynamicImageUtility)
+            : base(logger)
         {
             m_DynamicImageUtility = dynamicImageUtility;
         }
@@ -37,7 +41,7 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
                     PreviewUrl = m_DynamicImageUtility.GetResizedUrl(path, 400, 400, DynamicResizeMode.UniformFill, toAbsolutePath: true)
                 };
             }
-            catch(Exception exc) when (LogError(exc, path))
+            catch(Exception exc) when (Log.WriteError(exc, new { path }))
             {
                 throw;
             }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using N2;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
+using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
@@ -23,7 +25,9 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
         #endregion
 
         #region Constructors
-        public ImageGalleryUploadFolderController(IDynamicImageUtility dynamicImageUtility)
+        public ImageGalleryUploadFolderController(ILogger<ImageGalleryUploadFolderController> logger,
+            IDynamicImageUtility dynamicImageUtility)
+            : base(logger)
         {
             m_DynamicImageUtility = dynamicImageUtility;
         }
@@ -57,7 +61,7 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
 
                 return NotFound();
             }
-            catch(Exception exc) when (LogError(exc, folderPath))
+            catch(Exception exc) when (Log.WriteError(exc, new { folderPath }))
             {
                 throw;
             }

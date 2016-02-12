@@ -75,16 +75,16 @@ namespace Umbrella.Utilities.Extensions
             switch (level)
             {
                 case LogLevel.Debug:
-                    log.WriteDebug(output);
+                    log.LogDebug(output);
                     break;
                 case LogLevel.Verbose:
-                    log.WriteVerbose(output);
+                    log.LogVerbose(output);
                     break;
                 case LogLevel.Information:
-                    log.WriteInformation(output);
+                    log.LogInformation(output);
                     break;
                 case LogLevel.Warning:
-                    log.WriteWarning(output, exc);
+                    log.LogWarning(output, exc);
                     break;
                 case LogLevel.Error:
                     log.LogError(output, exc);

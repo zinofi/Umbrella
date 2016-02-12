@@ -12,20 +12,18 @@ using Umbrella.N2.Utilities.WebApi;
 using Umbrella.WebUtilities.SiteMap;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using Umbrella.Legacy.WebUtilities.Extensions;
-
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SitemapController), "RegisterRoutes")]
+using Microsoft.Extensions.Logging;
+using System.Web.Http.Description;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.N2.Utilities.WebApi
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Route("sitemap.xml")]
     public class SitemapController : UmbrellaApiController
     {
-        public static void RegisterRoutes()
+        public SitemapController(ILogger<SitemapController> logger) : base(logger)
         {
-            GlobalConfiguration.Configuration.Routes.MapHttpRoute(
-                name: "SitemapRoute",
-                routeTemplate: "sitemap.xml",
-                defaults: new { controller = "Sitemap" }
-            );
         }
 
         public IHttpActionResult Get()
@@ -46,7 +44,7 @@ namespace Umbrella.N2.Utilities.WebApi
 
                 return ResponseMessage(response);
             }
-            catch(Exception exc) when (LogError(exc))
+            catch(Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }

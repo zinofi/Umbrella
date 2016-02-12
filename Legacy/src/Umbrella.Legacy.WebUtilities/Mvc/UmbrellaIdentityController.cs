@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Extensions.Logging;
 using Microsoft.Owin.Security;
 using System;
 using System.Web;
@@ -15,10 +16,16 @@ namespace Umbrella.Legacy.WebUtilities.Mvc
 		#region Private Members
 		private TUserManager m_UserManager;
 		private IAuthenticationManager m_AuthenticationManager;
-		#endregion
+        #endregion
 
-		#region Protected Properties
-		protected TUserManager UserManager
+        #region Constructors
+        public UmbrellaIdentityController(ILogger logger) : base(logger)
+        {
+        }
+        #endregion
+
+        #region Protected Properties
+        protected TUserManager UserManager
 		{
 			get
 			{

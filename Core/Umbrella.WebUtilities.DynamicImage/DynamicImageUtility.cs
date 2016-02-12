@@ -11,7 +11,7 @@ using Umbrella.WebUtilities.DynamicImage.Enumerations;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
-    public class DynamicImageUtility
+    public class DynamicImageUtility : IDynamicImageUtility
     {
         #region Private Members
         private readonly IDynamicImageResizer m_DynamicImageResizer;

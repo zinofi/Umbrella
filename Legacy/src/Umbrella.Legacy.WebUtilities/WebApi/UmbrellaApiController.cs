@@ -1,19 +1,27 @@
 ﻿using log4net;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Umbrella.Legacy.WebUtilities.WebApi.Filters;
-using Umbrella.Utilities.Log4Net;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi
 {
     [ValidationActionFilter]
     public abstract class UmbrellaApiController : ApiController
     {
-        #region Protected Static Members
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(UmbrellaApiController));
+        #region Protected Members
+        protected readonly ILogger Log;
+        #endregion
+
+        #region Constructors
+        public UmbrellaApiController(ILogger logger)
+        {
+            Log = logger;
+        }
         #endregion
 
         #region Protected Methods
@@ -24,7 +32,6 @@ namespace Umbrella.Legacy.WebUtilities.WebApi
         protected NegotiatedContentResult<string> Forbidden(string reason) => Content(HttpStatusCode.Forbidden, reason);
         protected NegotiatedContentResult<string> MethodNotAllowed(string reason) => Content(HttpStatusCode.MethodNotAllowed, reason);
         protected StatusCodeResult NoContent() => new StatusCodeResult(HttpStatusCode.NoContent, this);
-        protected bool LogError(Exception exc, object model = null, string message = "", bool returnValue = false, [CallerMemberName]string methodName = "") => Log.LogError(exc, model, message, returnValue, methodName);
         #endregion
     }
 }

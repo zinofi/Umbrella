@@ -7,12 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Umbrella.Legacy.WebUtilities.WebApi;
+using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.N2.Utilities.WebApi
 {
     [Authorize]
     public class PageIdFromUrlController : UmbrellaApiController
     {
+        public PageIdFromUrlController(ILogger<PageIdFromUrlController> logger) : base(logger)
+        {
+        }
+
         public IHttpActionResult Get(string url)
         {
             try
@@ -27,7 +33,7 @@ namespace Umbrella.N2.Utilities.WebApi
 
                 return NotFound("A page cannot be found with the specified url");
             }
-            catch (Exception exc) when (LogError(exc, url))
+            catch (Exception exc) when (Log.WriteError(exc, url))
             {
                 throw;
             }

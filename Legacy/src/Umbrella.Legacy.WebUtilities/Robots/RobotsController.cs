@@ -12,23 +12,19 @@ using Umbrella.Legacy.WebUtilities.Robots;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using System.Web.Http.Description;
 using System.Web.Configuration;
-
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(RobotsController), "RegisterRoutes")]
+using Umbrella.Utilities.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Legacy.WebUtilities.Robots
 {
     [ApiExplorerSettings(IgnoreApi = true)]
+    [Route("robots.txt")]
     public class RobotsController : UmbrellaApiController
     {
         private const string c_RobotsNoIndex = "User-agent: *\r\nDisallow: /";
 
-        public static void RegisterRoutes()
+        public RobotsController(ILogger<RobotsController> logger) : base(logger)
         {
-            GlobalConfiguration.Configuration.Routes.MapHttpRoute(
-                name: "RobotsRoute",
-                routeTemplate: "robots.txt",
-                defaults: new { controller = "Robots" }
-            );
         }
 
         public IHttpActionResult Get()
@@ -82,7 +78,7 @@ namespace Umbrella.Legacy.WebUtilities.Robots
 
                 return ResponseMessage(message);
             }
-            catch(Exception exc) when (LogError(exc))
+            catch(Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }

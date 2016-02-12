@@ -1,22 +1,26 @@
 ﻿using log4net;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Umbrella.Utilities.Log4Net;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc
 {
     public class UmbrellaController : Controller
     {
-        #region Protected Static Members
-        protected static readonly ILog Log = LogManager.GetLogger(typeof(UmbrellaController));
+        #region Private Members
+        protected readonly ILogger Log;
         #endregion
 
-        #region Protected Methods
-        protected bool LogError(Exception exc, object model = null, string message = "", bool returnValue = false, [CallerMemberName]string methodName = "") => Log.LogError(exc, model, message, returnValue, methodName);
+        #region Constructors
+        public UmbrellaController(ILogger logger)
+        {
+            Log = logger;
+        }
         #endregion
     }
 }

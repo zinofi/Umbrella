@@ -12,6 +12,7 @@ namespace Umbrella.Utilities.Log4Net
 	public static class ILogExtensions
 	{
         #region Public Static Methods
+        [Obsolete("The use of these methods will be deprecated in future versions in favour of using the Microsoft.Extensions.Logging abstractions.")]
         public static bool LogError(this ILog log, Exception exc, object model = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "")
         {
             LogErrorDetails(log, exc, model, message, methodName);
