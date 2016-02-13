@@ -1,0 +1,16 @@
+﻿{
+  "version": "1.0.0-rc1-build00017",
+  "description": "Umbrella.Legacy.WebUtilities.DynamicImage.SimpleInjector Class Library",
+  "authors": [ "richardedwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net461": { }
+  },
+  "dependencies": {
+    "SimpleInjector": "3.1.2",
+    "Umbrella.Legacy.WebUtilities.DynamicImage": "1.0.0-*",
+    "Umbrella.WebUtilities.DynamicImage.SimpleInjector": "1.0.0-*"
+  }
+}

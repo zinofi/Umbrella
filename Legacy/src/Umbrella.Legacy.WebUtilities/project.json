@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00016",
+  "version": "1.0.0-rc1-build00017",
   "description": "Umbrella.Legacy.WebUtilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -24,7 +24,6 @@
     "Microsoft.Owin.StaticFiles": "3.0.1",
     "Umbrella.Extensions.Logging.Log4Net": "1.0.0-*",
     "Umbrella.Legacy.Utilities": "1.0.0-*",
-    "Umbrella.Utilities.Log4Net": "1.0.0-*",
     "Umbrella.WebUtilities": "1.0.0-*"
   },
   "resourceFiles": [

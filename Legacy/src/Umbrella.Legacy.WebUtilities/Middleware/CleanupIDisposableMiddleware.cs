@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Log4Net;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {

@@ -268,7 +268,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00015": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -277,7 +277,7 @@
           "Newtonsoft.Json": "8.0.2"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -287,7 +287,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Utilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -300,15 +300,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00015": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Newtonsoft.Json": "8.0.2"
-        }
-      },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00015": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -602,7 +594,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00015": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -611,7 +603,7 @@
           "Newtonsoft.Json": "8.0.2"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -621,7 +613,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Utilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -634,15 +626,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00015": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Newtonsoft.Json": "8.0.2"
-        }
-      },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00015": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -936,7 +920,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00015": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -945,7 +929,7 @@
           "Newtonsoft.Json": "8.0.2"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -955,7 +939,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Utilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -968,15 +952,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00015": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Newtonsoft.Json": "8.0.2"
-        }
-      },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00015": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1006,23 +982,19 @@
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00015": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00015": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00015": {
+    "Umbrella.Utilities/1.0.0-rc1-build00016": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.Utilities.Log4Net/1.0.0-rc1-build00015": {
-      "type": "project",
-      "path": "../../Core/Umbrella.Utilities.Log4Net/project.json"
-    },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00015": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
@@ -1346,7 +1318,6 @@
       "Microsoft.Owin.StaticFiles >= 3.0.1",
       "Umbrella.Extensions.Logging.Log4Net >= 1.0.0-*",
       "Umbrella.Legacy.Utilities >= 1.0.0-*",
-      "Umbrella.Utilities.Log4Net >= 1.0.0-*",
       "Umbrella.WebUtilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6.1": [

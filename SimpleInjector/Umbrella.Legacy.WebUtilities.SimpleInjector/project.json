@@ -1,15 +1,15 @@
 ﻿{
   "version": "1.0.0-rc1-build00017",
-  "description": "Umbrella.CLI.Log4Net Class Library",
+  "description": "Umbrella.Legacy.WebUtilities.SimpleInjector Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
-    "dnx46": { }
+    "net461": { }
   },
   "dependencies": {
-    "log4net": "2.0.5",
-    "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final"
+    "SimpleInjector": "3.1.2",
+    "Umbrella.Legacy.WebUtilities": "1.0.0-*"
   }
 }

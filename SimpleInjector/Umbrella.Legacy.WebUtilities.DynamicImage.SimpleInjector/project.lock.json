@@ -295,6 +295,15 @@
           "lib/net40/Owin.dll": {}
         }
       },
+      "SimpleInjector/3.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45/SimpleInjector.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SimpleInjector.dll": {}
+        }
+      },
       "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
@@ -332,6 +341,20 @@
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
           "System.Web"
         ]
       },
@@ -376,6 +399,14 @@
           "System.Configuration",
           "WindowsBase"
         ]
+      },
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00016": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "SimpleInjector": "3.1.2",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        }
       },
       "WebActivatorEx/2.1.0": {
         "type": "package",
@@ -683,6 +714,15 @@
           "lib/net40/Owin.dll": {}
         }
       },
+      "SimpleInjector/3.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45/SimpleInjector.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SimpleInjector.dll": {}
+        }
+      },
       "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
@@ -720,6 +760,20 @@
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
           "System.Web"
         ]
       },
@@ -764,6 +818,14 @@
           "System.Configuration",
           "WindowsBase"
         ]
+      },
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00016": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "SimpleInjector": "3.1.2",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        }
       },
       "WebActivatorEx/2.1.0": {
         "type": "package",
@@ -1071,6 +1133,15 @@
           "lib/net40/Owin.dll": {}
         }
       },
+      "SimpleInjector/3.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45/SimpleInjector.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SimpleInjector.dll": {}
+        }
+      },
       "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
@@ -1108,6 +1179,20 @@
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
+          "System.Web"
+        ]
+      },
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "Microsoft.AspNet.Mvc": "5.2.3",
+          "Microsoft.Owin": "3.0.1",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "PresentationCore",
           "System.Web"
         ]
       },
@@ -1153,6 +1238,14 @@
           "WindowsBase"
         ]
       },
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00016": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6.1",
+        "dependencies": {
+          "SimpleInjector": "3.1.2",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        }
+      },
       "WebActivatorEx/2.1.0": {
         "type": "package",
         "dependencies": {
@@ -1174,11 +1267,15 @@
     },
     "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
       "type": "project",
-      "path": "../Umbrella.Legacy.Utilities/project.json"
+      "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json"
     },
     "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
       "type": "project",
-      "path": "../Umbrella.Legacy.WebUtilities/project.json"
+      "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
+    },
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "type": "project",
+      "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json"
     },
     "Umbrella.Utilities/1.0.0-rc1-build00016": {
       "type": "project",
@@ -1191,6 +1288,10 @@
     "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json"
+    },
+    "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00016": {
+      "type": "project",
+      "path": "../Umbrella.WebUtilities.DynamicImage.SimpleInjector/project.json"
     },
     "AutoMapper/4.2.0": {
       "type": "package",
@@ -1515,6 +1616,23 @@
         "Owin.nuspec"
       ]
     },
+    "SimpleInjector/3.1.2": {
+      "type": "package",
+      "sha512": "nJVFKygDGBMaubMThDmrxGIdhTTYsYq1A+qRTroR+l8EpwKIbQ0Iv/8BZ3TdKbVJb5x1hD8EjZlRyfCWZZIzmg==",
+      "files": [
+        "lib/dotnet/SimpleInjector.dll",
+        "lib/dotnet/SimpleInjector.xml",
+        "lib/net40-client/SimpleInjector.dll",
+        "lib/net40-client/SimpleInjector.xml",
+        "lib/net45/SimpleInjector.dll",
+        "lib/net45/SimpleInjector.xml",
+        "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.dll",
+        "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.xml",
+        "SimpleInjector.3.1.2.nupkg",
+        "SimpleInjector.3.1.2.nupkg.sha512",
+        "SimpleInjector.nuspec"
+      ]
+    },
     "WebActivatorEx/2.1.0": {
       "type": "package",
       "sha512": "0HJ6DpxcTzSGIgcN6Q0jKAwLX1bWKnbeDOvT7vFXB/e4MIrwWc+1XwzihQp0Sr91EUK2N7j5cjZ1cIvWCraeJg==",
@@ -1528,14 +1646,10 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.AspNet.Mvc >= 5.2.3",
-      "Microsoft.Owin >= 3.0.1",
-      "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
-      "Umbrella.WebUtilities.DynamicImage >= 1.0.0-*"
+      "SimpleInjector >= 3.1.2",
+      "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.6.1": [
-      "fx/PresentationCore >= 4.0.0",
-      "fx/System.Web >= 4.0.0"
-    ]
+    ".NETFramework,Version=v4.6.1": []
   }
 }
