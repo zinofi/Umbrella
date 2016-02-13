@@ -11,11 +11,25 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 {
 	public class DynamicImageMappingsConfig
 	{
-		private static readonly object s_Lock = new object();
+        #region Private Static Members
+        private static readonly object s_Lock = new object();
 		private static List<DynamicImageMapping> s_DynamicImageMappingList;
 		private static DynamicImageMappingsSection s_Section;
+        private static readonly IMapper s_AutoMapperMappings;
+        #endregion
 
-		public DynamicImageMappingsConfig(System.Configuration.Configuration config)
+        #region Constructors
+        static DynamicImageMappingsConfig()
+        {
+            MapperConfiguration mapperConfig = new MapperConfiguration(x =>
+            {
+                x.CreateMap<DynamicImageMappingElement, DynamicImageMapping>();
+            });
+
+            s_AutoMapperMappings = mapperConfig.CreateMapper();
+        }
+
+        public DynamicImageMappingsConfig(System.Configuration.Configuration config)
 		{
             UmbrellaSectionGroup group = UmbrellaSectionGroup.GetSectionGroup(config);
 			if (group != null)
@@ -23,8 +37,10 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 				s_Section = group.GetConfigurationSection<DynamicImageMappingsSection>("dynamicImageMappings");
 			}
 		}
+        #endregion
 
-		public List<DynamicImageMapping> Settings
+        #region Public Properties
+        public List<DynamicImageMapping> Settings
 		{
 			get
 			{
@@ -36,7 +52,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 						{
 							if (s_Section != null)
 							{
-								s_DynamicImageMappingList = s_Section.Mappings.OfType<DynamicImageMappingElement>().Select(x => Mapper.DynamicMap<DynamicImageMapping>(x)).ToList();
+								s_DynamicImageMappingList = s_Section.Mappings.OfType<DynamicImageMappingElement>().Select(x => s_AutoMapperMappings.Map<DynamicImageMapping>(x)).ToList();
 							}
 
 							//If no config settings can be found, initialize as empty
@@ -50,9 +66,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 			}
 		}
 
-		public bool Enabled
-		{
-			get { return s_Section != null ? s_Section.Enabled : true; }
-		}
-	}
+		public bool Enabled => s_Section != null ? s_Section.Enabled : true;
+        #endregion
+    }
 }

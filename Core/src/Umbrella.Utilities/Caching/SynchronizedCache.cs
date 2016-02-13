@@ -11,7 +11,6 @@ namespace Umbrella.Utilities.Caching
     public class SynchronizedCache<T, U>
     {
         #region Private Static Members
-        //TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(SynchronizedCache<T, U>));
         private readonly Dictionary<T, U> s_Cache = new Dictionary<T, U>();
         private readonly ReaderWriterLockSlim s_Lock = new ReaderWriterLockSlim();
         #endregion
@@ -25,10 +24,6 @@ namespace Umbrella.Utilities.Caching
             {
                 if (s_Cache.ContainsKey(key))
                     return s_Cache[key];
-            }
-            catch (Exception exc) //TODO: when (Log.LogError(exc, key))
-            {
-                throw;
             }
             finally
             {
@@ -56,10 +51,6 @@ namespace Umbrella.Utilities.Caching
                     s_Lock.ExitWriteLock();
                 }
             }
-            catch (Exception exc) //TODO: when (Log.LogError(exc, new { key = key, value = value }))
-            {
-                throw;
-            }
             finally
             {
                 s_Lock.ExitUpgradeableReadLock();
@@ -73,10 +64,6 @@ namespace Umbrella.Utilities.Caching
             try
             {
                 s_Cache.Clear();
-            }
-            catch(Exception exc) //TODO: when (Log.LogError(exc))
-            {
-                throw;
             }
             finally
             {

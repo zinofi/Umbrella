@@ -27,16 +27,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00005": {
+      "Umbrella.Utilities/1.0.0-rc1-build00015": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -75,16 +66,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00005": {
+      "Umbrella.Utilities/1.0.0-rc1-build00015": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -123,16 +105,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Ninject/3.2.2": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/Ninject.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/Ninject.dll": {}
-        }
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00005": {
+      "Umbrella.Utilities/1.0.0-rc1-build00015": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -148,7 +121,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00005": {
+    "Umbrella.Utilities/1.0.0-rc1-build00015": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
@@ -189,38 +162,10 @@
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
-    },
-    "Ninject/3.2.2": {
-      "type": "package",
-      "sha512": "vDyKaDZ1RgmPxD87u3om3La34r4RHBZfap3tCsJtUbSGkIWjQJ8La1s61BR/C0LgO1+3xGEC6UfI7D594MNl5Q==",
-      "files": [
-        "lib/net35/Ninject.dll",
-        "lib/net35/Ninject.xml",
-        "lib/net40/Ninject.dll",
-        "lib/net40/Ninject.xml",
-        "lib/net45-full/Ninject.dll",
-        "lib/net45-full/Ninject.xml",
-        "lib/sl2/Ninject.dll",
-        "lib/sl2/Ninject.xml",
-        "lib/sl3/Ninject.dll",
-        "lib/sl3/Ninject.xml",
-        "lib/sl3-wp/Ninject.dll",
-        "lib/sl3-wp/Ninject.xml",
-        "lib/sl4/Ninject.dll",
-        "lib/sl4/Ninject.xml",
-        "lib/sl4-windowsphone71/Ninject.dll",
-        "lib/sl4-windowsphone71/Ninject.xml",
-        "lib/sl5/Ninject.dll",
-        "lib/sl5/Ninject.xml",
-        "Ninject.3.2.2.nupkg",
-        "Ninject.3.2.2.nupkg.sha512",
-        "Ninject.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "Ninject >= 3.2.2",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6.1": [

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00015",
+  "version": "1.0.0-rc1-build00016",
   "description": "Umbrella.Legacy.WebUtilities Class Library",
   "authors": [ "richardedwards" ],
   "tags": [ "" ],
@@ -22,7 +22,6 @@
     "Microsoft.Owin": "3.0.1",
     "Microsoft.Owin.Host.SystemWeb": "3.0.1",
     "Microsoft.Owin.StaticFiles": "3.0.1",
-    "Ninject": "3.2.2",
     "Umbrella.Extensions.Logging.Log4Net": "1.0.0-*",
     "Umbrella.Legacy.Utilities": "1.0.0-*",
     "Umbrella.Utilities.Log4Net": "1.0.0-*",

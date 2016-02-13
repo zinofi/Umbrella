@@ -13,20 +13,26 @@ using System.Web.Configuration;
 using Umbrella.Utilities.Log4Net;
 using Umbrella.Legacy.Utilities;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
-using Ninject;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
     public class DynamicImageMiddleware : OwinMiddleware
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof(DynamicImageMiddleware));
+        private readonly ILogger Log;
+        private readonly IDynamicImageUtility m_DynamicImageUtility;
 
-		public DynamicImageMiddleware(OwinMiddleware next)
+		public DynamicImageMiddleware(OwinMiddleware next,
+            ILogger<DynamicImageMiddleware> logger,
+            IDynamicImageUtility dynamicImageUtility)
 			: base(next)
 		{
-			if (Log.IsDebugEnabled)
-				Log.Debug("DynamicImageMiddleware registered successfully");
+            Log = logger;
+            m_DynamicImageUtility = dynamicImageUtility;
+
+			if (Log.IsEnabled(LogLevel.Debug))
+				Log.WriteDebug($"{nameof(DynamicImageMiddleware)} registered successfully");
 		}
 
 		public override async Task Invoke(IOwinContext context)
@@ -50,8 +56,6 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 					}
 					else
 					{
-                        IDynamicImageUtility dynamicImageUtility = LibraryBindings.DependencyResolver.Get<IDynamicImageUtility>();
-
                         //Ignore the first 2 segments
                         int width = int.Parse(segments[2]);
 						int height = int.Parse(segments[3]);
@@ -70,7 +74,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 								Width = width,
 								Height = height,
 								ResizeMode = mode,
-								Format = dynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
+								Format = m_DynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
 							};
 
 							//If the mapping is invalid, return a 404
@@ -81,7 +85,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 							}
 						}
 
-                        Umbrella.WebUtilities.DynamicImage.DynamicImage image = dynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
+                        Umbrella.WebUtilities.DynamicImage.DynamicImage image = m_DynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
 
 						if (!string.IsNullOrEmpty(image.CachedVirtualPath))
 						{
@@ -113,7 +117,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 					}
 				}
 			}
-			catch (Exception exc) when (Log.LogError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
 			{
                 await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                 return;

@@ -1,27 +1,25 @@
 ﻿using AutoMapper;
-using N2.Plugin;
-using Ninject;
-using Umbrella.Legacy.Utilities;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
-using Umbrella.WebUtilities.DynamicImage;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery
 {
-    [AutoInitialize]
-    public class AutoMapperMappings : IPluginInitializer
+    public static class ImageGalleryAutoMapperMappings
     {
-        public void Initialize(global::N2.Engine.IEngine engine)
+        #region Public Properties
+        public static IMapper Instance { get; private set; }
+        #endregion
+
+        #region Constructors
+        static ImageGalleryAutoMapperMappings()
         {
-            IDynamicImageUtility dynamicImageUtility = LibraryBindings.DependencyResolver.Get<IDynamicImageUtility>();
+            MapperConfiguration config = new MapperConfiguration(x =>
+            {
+                x.CreateMap<ImageItem, ImageGalleryItemEditDTO>();
+                x.CreateMap<ImageGalleryItemEditDTO, ImageItem>();
+            });
 
-            Mapper.CreateMap<ImageItem, ImageGalleryItemEditDTO>().AfterMap((item, dto) =>
-                {
-                    dto.ThumbnailUrl = dynamicImageUtility.GetResizedUrl(dto.Url, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true);
-                });
-
-            Mapper.CreateMap<ImageGalleryItemEditDTO, ImageItem>();
+            Instance = config.CreateMapper();
         }
+        #endregion
     }
 }

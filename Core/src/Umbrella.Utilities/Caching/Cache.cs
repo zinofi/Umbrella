@@ -14,7 +14,6 @@ namespace Umbrella.Utilities.Caching
     /// <typeparam name="U">The type of the item being stored</typeparam>
     public class Cache<T, U>
     {
-        //TODO: private static readonly ILog Log = LogManager.GetLogger(typeof(Cache<T, U>));
         private static readonly Cache<T, U> s_Cache = new Cache<T, U>();
 
         protected readonly object p_Lock = new object();
@@ -52,36 +51,29 @@ namespace Umbrella.Utilities.Caching
         /// <returns>Returns the item from the cache</returns>
         public U AddOrGet(T key, Func<U> adder)
         {
-            try
+            if (!p_Cache.ContainsKey(key))
             {
+                //Invoke the adder() delegate here outside of the lock
+                //If the method takes a long time to execute, there could potentially
+                //be many threads waiting on the lock if this cache is being used
+                //by a high volume of threads
+                U result = adder();
+
+                //Recheck if the item is in the dictionary - another thread
+                //may have beaten us to it
                 if (!p_Cache.ContainsKey(key))
                 {
-                    //Invoke the adder() delegate here outside of the lock
-                    //If the method takes a long time to execute, there could potentially
-                    //be many threads waiting on the lock if this cache is being used
-                    //by a high volume of threads
-                    U result = adder();
-
-                    //Recheck if the item is in the dictionary - another thread
-                    //may have beaten us to it
-                    if (!p_Cache.ContainsKey(key))
+                    lock (p_Lock)
                     {
-                        lock (p_Lock)
+                        if (!p_Cache.ContainsKey(key))
                         {
-                            if (!p_Cache.ContainsKey(key))
-                            {
-                                p_Cache.Add(key, result);
-                            }
+                            p_Cache.Add(key, result);
                         }
                     }
                 }
+            }
 
-                return p_Cache[key];
-            }
-            catch (Exception exc) //TODO: when (Log.LogError(exc))
-            {
-                throw;
-            }
+            return p_Cache[key];
         }
 
         /// <summary>

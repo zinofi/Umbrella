@@ -1,10 +1,12 @@
 ﻿using log4net;
+using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Log4Net;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
@@ -15,13 +17,15 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 	/// </summary>
 	public class CleanupIDisposableMiddleware : OwinMiddleware
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof(CleanupIDisposableMiddleware));
+        private readonly ILogger Log;
 
-		public CleanupIDisposableMiddleware(OwinMiddleware next)
+		public CleanupIDisposableMiddleware(OwinMiddleware next, ILogger<CleanupIDisposableMiddleware> logger)
 			: base(next)
 		{
-			if (Log.IsDebugEnabled)
-				Log.Debug("CleanupIDisposableMiddleware registered successfully");
+            Log = logger;
+
+			if (Log.IsEnabled(LogLevel.Debug))
+				Log.WriteDebug($"{nameof(CleanupIDisposableMiddleware)} registered successfully");
 		}
 
 		public override async Task Invoke(IOwinContext context)
@@ -33,7 +37,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				//Ensure any disposable objects are disposed correctly before the end of the request
 				context.Environment.AsParallel().Select(x => x.Value).OfType<IDisposable>().ForAll(x => x.Dispose());
 			}
-			catch(Exception exc) when(Log.LogError(exc))
+			catch(Exception exc) when(Log.WriteError(exc))
 			{
                 throw;
 			}

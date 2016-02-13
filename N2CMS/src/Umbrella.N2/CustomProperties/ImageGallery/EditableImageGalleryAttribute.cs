@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using N2.Details;
+﻿using N2.Details;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,14 +12,24 @@ using Umbrella.N2.CustomProperties.ImageGallery.Controls;
 using Umbrella.N2.CustomProperties.LinkEditor;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
+using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class EditableImageGalleryAttribute : AbstractEditableAttribute, IRelativityTransformer
     {
+        #region Private Static Members
+        private static readonly Type s_IDynamicImageUtilityResolverType = typeof(IDynamicImageUtilityResolver);
+        private static readonly ConcurrentDictionary<Type, IDynamicImageUtilityResolver> s_ResolverDictionary = new ConcurrentDictionary<Type, IDynamicImageUtilityResolver>();
+        #endregion
+
+        #region Private Members
+        private readonly Type m_IDynamicImageUtilityResolverType;
+        #endregion
+
         #region Constructors
-		static EditableImageGalleryAttribute()
+        static EditableImageGalleryAttribute()
 		{
             DynamicImageMappingsConfig mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
 
@@ -45,9 +55,19 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
             mappingsConfig.Settings.Add(previewMapping);
 		}
 
-        public EditableImageGalleryAttribute(string title, int sortOrder)
+        /// <summary>
+        /// Used to mark a N2 property as being an image gallery. In Edit Mode, the Image Gallery interface will be rendered.
+        /// </summary>
+        /// <param name="title">The title of the property displayed in edit mode</param>
+        /// <param name="sortOrder">The sort order of the property in edit mode</param>
+        /// <param name="dynamicImageUtilityResolverType">A type which implements <see cref="IDynamicImageUtilityResolver"/>. A singleton instance of this type will be created for the lifetime of the application.</param>
+        public EditableImageGalleryAttribute(string title, int sortOrder, Type dynamicImageUtilityResolverType)
             : base(title, sortOrder)
         {
+            if (!s_IDynamicImageUtilityResolverType.IsAssignableFrom(dynamicImageUtilityResolverType))
+                throw new ArgumentException($"The specified type cannot be assigned to {nameof(IDynamicImageUtilityResolver)}", nameof(dynamicImageUtilityResolverType));
+
+            m_IDynamicImageUtilityResolverType = dynamicImageUtilityResolverType;
         }
         #endregion
 
@@ -65,8 +85,17 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
 
             ImageGalleryControl ctrl = ((ImageGalleryControl)editor);
 
+            IDynamicImageUtility dynamicImageUtility = GetDynamicImageUtility();
+
             //Need to convert the ImageItem objects to ImageGalleryItemEditDTO objects
-            List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = Mapper.Map<List<ImageGalleryItemEditDTO>>(coll.Cast<ImageItem>());
+            List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = ImageGalleryAutoMapperMappings.Instance.Map<List<ImageGalleryItemEditDTO>>(coll.Cast<ImageItem>(), x =>
+            {
+                x.AfterMap((y, z) =>
+                {
+                    var dto = (ImageGalleryItemEditDTO)z;
+                    dto.ThumbnailUrl = dynamicImageUtility.GetResizedUrl(dto.Url, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true);
+                });
+            });
 
             ctrl.Initialize(JsonConvert.SerializeObject(lstImageGalleryItemEditDTO), coll.Count);
         }
@@ -83,7 +112,7 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
                 List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = JsonConvert.DeserializeObject<List<ImageGalleryItemEditDTO>>(value);
 
                 //Now convert the items
-                List<ImageItem> lstImageItem = Mapper.Map<List<ImageItem>>(lstImageGalleryItemEditDTO);
+                List<ImageItem> lstImageItem = ImageGalleryAutoMapperMappings.Instance.Map<List<ImageItem>>(lstImageGalleryItemEditDTO);
 
                 //Now convert to JSON for storage in the N2 database
                 jsonSave = JsonConvert.SerializeObject(lstImageItem);
@@ -109,9 +138,15 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
             return coll.ToJSONString();
         }
 
-        public RelativityMode RelativeWhen
+        public RelativityMode RelativeWhen => RelativityMode.Always;
+
+        #region Private Methods
+        private IDynamicImageUtility GetDynamicImageUtility()
         {
-            get { return RelativityMode.Always; }
+            IDynamicImageUtilityResolver resolver = s_ResolverDictionary.GetOrAdd(m_IDynamicImageUtilityResolverType, x => (IDynamicImageUtilityResolver)Activator.CreateInstance(x));
+
+            return resolver.GetInstance();
         }
+        #endregion
     }
 }
