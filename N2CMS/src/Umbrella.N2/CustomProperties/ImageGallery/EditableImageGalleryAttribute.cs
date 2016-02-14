@@ -88,14 +88,13 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
             IDynamicImageUtility dynamicImageUtility = GetDynamicImageUtility();
 
             //Need to convert the ImageItem objects to ImageGalleryItemEditDTO objects
-            List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = ImageGalleryAutoMapperMappings.Instance.Map<List<ImageGalleryItemEditDTO>>(coll.Cast<ImageItem>(), x =>
+            List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = coll.Cast<ImageItem>().Select(x =>
             {
-                x.AfterMap((y, z) =>
-                {
-                    var dto = (ImageGalleryItemEditDTO)z;
-                    dto.ThumbnailUrl = dynamicImageUtility.GetResizedUrl(dto.Url, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true);
-                });
-            });
+                var dto = ImageGalleryAutoMapperMappings.Instance.Map<ImageGalleryItemEditDTO>(x);
+                dto.ThumbnailUrl = dynamicImageUtility.GetResizedUrl(dto.Url, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true);
+
+                return dto;
+            }).ToList();
 
             ctrl.Initialize(JsonConvert.SerializeObject(lstImageGalleryItemEditDTO), coll.Count);
         }

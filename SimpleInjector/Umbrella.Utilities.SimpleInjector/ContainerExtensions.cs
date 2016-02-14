@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Interfaces;
 
-namespace Umbrella.Utilities.SimpleInjector
+namespace SimpleInjector
 {
     public static class ContainerExtensions
     {

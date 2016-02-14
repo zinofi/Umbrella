@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Utilities.Hosting;
 
-namespace Umbrella.Legacy.WebUtilities.SimpleInjector
+namespace SimpleInjector
 {
     public static class ContainerExtensions
     {
