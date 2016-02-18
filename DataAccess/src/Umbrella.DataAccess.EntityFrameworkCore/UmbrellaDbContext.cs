@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Umbrella.DataAccess.Interfaces;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.DataAccess
+namespace Umbrella.DataAccess.EntityFrameworkCore
 {
     public class UmbrellaDbContext : DbContext
     {

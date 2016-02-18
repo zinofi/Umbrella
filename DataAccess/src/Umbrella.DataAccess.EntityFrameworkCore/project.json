@@ -1,6 +1,6 @@
 ﻿{
   "version": "1.0.0-rc1-build00019",
-  "description": "Umbrella.Extensions.Logging.Log4Net Class Library",
+  "description": "Umbrella.DataAccess.EntityFrameworkCore Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
   "projectUrl": "",
@@ -10,9 +10,9 @@
     "net461": { },
     "dnx46": { }
   },
+
   "dependencies": {
-    "log4net": "2.0.5",
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-    "Newtonsoft.Json": "8.0.2"
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
+    "Umbrella.DataAccess": "1.0.0-*"
   }
 }

@@ -12,7 +12,7 @@ using Microsoft.Data.Entity.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 
-namespace Umbrella.DataAccess
+namespace Umbrella.DataAccess.EntityFrameworkCore
 {
     public abstract class GenericRepository<TEntity, TDbContext> : GenericRepository<TEntity, TDbContext, int, int, IEntity<int>>
         where TEntity : class, IEntity<int>
@@ -77,7 +77,7 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Protected Members
-        protected readonly ILogger m_Loggger;
+        protected readonly ILogger Log;
         #endregion
 
         #region Protected Properties
@@ -93,7 +93,7 @@ namespace Umbrella.DataAccess
         {
             m_DbContext = dbContext;
             m_UserAuditDataFactory = userAuditDataFactory;
-            m_Loggger = logger;
+            Log = logger;
         }
         #endregion
 
@@ -122,11 +122,11 @@ namespace Umbrella.DataAccess
                     AfterContextSavedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
+            catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
             {
                 throw;
             }
@@ -159,11 +159,11 @@ namespace Umbrella.DataAccess
                     await AfterContextSavedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
+            catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
             {
                 throw;
             }
@@ -231,11 +231,11 @@ namespace Umbrella.DataAccess
                     AfterContextSavedChangesMultiple(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }, "Bulk Save Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }, "Bulk Save Concurrency Exception", true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }))
+            catch (Exception exc) when (Log.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }))
             {
                 throw;
             }
@@ -265,11 +265,11 @@ namespace Umbrella.DataAccess
                     await AfterContextSavedChangesMultipleAsync(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }, "Bulk Save Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }, "Bulk Save Concurrency Exception", true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }))
+            catch (Exception exc) when (Log.WriteError(exc, new { bypassSaveLogic, pushChangesToDb }))
             {
                 throw;
             }
@@ -295,11 +295,11 @@ namespace Umbrella.DataAccess
                     AfterContextDeletedChanges(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb }, "Concurrency Exception for Id", true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb }, "Failed for Id"))
+            catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb }, "Failed for Id"))
             {
                 throw;
             }
@@ -325,11 +325,11 @@ namespace Umbrella.DataAccess
                     await AfterContextDeletedChangesAsync(entity);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb }, "Concurrency Exception for Id", true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { entity.Id, pushChangesToDb }, "Failed for Id"))
+            catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb }, "Failed for Id"))
             {
                 throw;
             }
@@ -357,11 +357,11 @@ namespace Umbrella.DataAccess
                     AfterContextDeletedChangesMultiple(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { pushChangesToDb }, "Bulk Delete Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { pushChangesToDb }, "Bulk Delete Concurrency Exception", true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { pushChangesToDb }))
+            catch (Exception exc) when (Log.WriteError(exc, new { pushChangesToDb }))
             {
                 throw;
             }
@@ -386,11 +386,11 @@ namespace Umbrella.DataAccess
                     await AfterContextDeletedChangesMultipleAsync(entities);
                 }
             }
-            catch (DbUpdateConcurrencyException exc) when (m_Loggger.WriteError(exc, new { pushChangesToDb }, "Bulk Delete Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { pushChangesToDb }, "Bulk Delete Concurrency Exception", true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, new { pushChangesToDb }))
+            catch (Exception exc) when (Log.WriteError(exc, new { pushChangesToDb }))
             {
                 throw;
             }
@@ -638,7 +638,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.IncludeMap(map).ToList();
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
@@ -652,7 +652,7 @@ namespace Umbrella.DataAccess
 
                 return Items.IncludeMap(map).ToListAsync(cancellationToken);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
@@ -664,7 +664,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.IncludeMap(map).Where(x => ids.Contains(x.Id)).ToList();
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, ids))
+            catch (Exception exc) when (Log.WriteError(exc, ids))
             {
                 throw;
             }
@@ -678,7 +678,7 @@ namespace Umbrella.DataAccess
 
                 return Items.IncludeMap(map).Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, ids))
+            catch (Exception exc) when (Log.WriteError(exc, ids))
             {
                 throw;
             }
@@ -690,7 +690,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.IncludeMap(map).SingleOrDefault(x => x.Id.Equals(id));
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, id))
+            catch (Exception exc) when (Log.WriteError(exc, id))
             {
                 throw;
             }
@@ -704,7 +704,7 @@ namespace Umbrella.DataAccess
 
                 return Items.IncludeMap(map).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc, id))
+            catch (Exception exc) when (Log.WriteError(exc, id))
             {
                 throw;
             }
@@ -716,7 +716,7 @@ namespace Umbrella.DataAccess
             {
                 return Items.Count();
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
@@ -730,7 +730,7 @@ namespace Umbrella.DataAccess
 
                 return Items.CountAsync(cancellationToken);
             }
-            catch (Exception exc) when (m_Loggger.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }

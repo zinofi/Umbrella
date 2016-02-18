@@ -9,8 +9,7 @@ using Microsoft.Extensions.OptionsModel;
 using Microsoft.AspNet.Hosting;
 using System.IO;
 using System.Threading;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.CLI.WebUtilities.Robots
 {
@@ -71,7 +70,7 @@ namespace Umbrella.CLI.WebUtilities.Robots
                 //Render the default no index string
                 return Ok(c_RobotsNoIndex);
             }
-            catch(Exception exc) when (LogError(exc))
+            catch(Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
