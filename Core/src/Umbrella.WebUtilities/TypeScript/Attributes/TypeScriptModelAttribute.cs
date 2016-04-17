@@ -8,7 +8,7 @@ using Umbrella.WebUtilities.TypeScript.Enumerations;
 
 namespace Umbrella.WebUtilities.TypeScript.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
     public class TypeScriptModelAttribute : Attribute
     {
         public TypeScriptOutputModelType OutputModelTypes { get; set; }

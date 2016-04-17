@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
+//Set the namespace here to SimpleInjector so that the extension methods will appear automatically
 namespace SimpleInjector
 {
     public static class ContainerExtensions
     {
-        public static void UseUmbrellaDynamicImage(this Container container)
+        public static void AddUmbrellaDynamicImage(this Container container)
         {
             container.Register<IDynamicImageCache, DynamicImageDiskCache>(Lifestyle.Singleton);
             container.Register<IDynamicImageResizer, DynamicImageResizer>(Lifestyle.Singleton);

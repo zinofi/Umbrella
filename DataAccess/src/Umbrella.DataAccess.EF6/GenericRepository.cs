@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Data.Entity;
 using System.Linq.Expressions;
 using Umbrella.DataAccess.Interfaces;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Enumerations;
 using Umbrella.Utilities.Extensions;
 using Umbrella.DataAccess.Exceptions;
-using Microsoft.Data.Entity.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
-namespace Umbrella.DataAccess.EntityFrameworkCore
+namespace Umbrella.DataAccess.EF6
 {
     public abstract class GenericRepository<TEntity, TDbContext> : GenericRepository<TEntity, TDbContext, int, int, IEntity<int>>
         where TEntity : class, IEntity<int>
@@ -173,7 +173,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
         protected virtual void PreSaveWork(TEntity entity, bool addToContext)
         {
             //Look for the entity in the context - this action will allow us to determine it's state
-            EntityEntry<TEntity> dbEntity = Context.Entry<TEntity>(entity);
+            DbEntityEntry<TEntity> dbEntity = Context.Entry<TEntity>(entity);
 
             IConcurrencyStamp concurrencyStampEntity = entity as IConcurrencyStamp;
             IDateAuditEntity datedEntity = entity as IDateAuditEntity;
@@ -285,7 +285,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
             {
                 BeforeContextDeleting(entity);
 
-                Context.Remove(entity);
+                //Common work shared between the synchronous and asynchronous version of the Delete method
+                PreDeleteWork(entity);
 
                 AfterContextDeleting(entity);
 
@@ -315,7 +316,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
                 await BeforeContextDeletingAsync(entity);
 
-                Context.Remove(entity);
+                //Common work shared between the synchronous and asynchronous version of the Delete method
+                PreDeleteWork(entity);
 
                 await AfterContextDeletingAsync(entity);
 
@@ -367,6 +369,12 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
             {
                 throw;
             }
+        }
+
+        private void PreDeleteWork(TEntity entity)
+        {
+            Context.Set<TEntity>().Remove(entity);
+            Context.Entry(entity).State = EntityState.Deleted;
         }
 
         public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken))
@@ -592,7 +600,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
             foreach (TTargetEntity entity in alteredColl)
             {
                 //Look for the entity in the context - this action will allow us to determine it's state
-                EntityEntry<TTargetEntity> dbEntity = Context.Entry<TTargetEntity>(entity);
+                DbEntityEntry<TTargetEntity> dbEntity = Context.Entry<TTargetEntity>(entity);
 
                 //Determine entities that have been added or modified - in these cases we need to call Save so that any custom
                 //repository logic is executed
@@ -635,7 +643,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
             foreach (TTargetEntity entity in alteredColl)
             {
                 //Look for the entity in the context - this action will allow us to determine it's state
-                EntityEntry<TTargetEntity> dbEntity = Context.Entry<TTargetEntity>(entity);
+                DbEntityEntry<TTargetEntity> dbEntity = Context.Entry<TTargetEntity>(entity);
 
                 //Determine entities that have been added or modified - in these cases we need to call Save so that any custom
                 //repository logic is executed
@@ -693,7 +701,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
                 entities.Remove(entity);
                 
                 //Make sure it is removed from the Context if it has just been added - make it detached
-                EntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
+                DbEntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
 
                 if (dbEntityEntry.State == EntityState.Added)
                     dbEntityEntry.State = EntityState.Detached;

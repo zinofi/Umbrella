@@ -4,6 +4,11 @@ using System.Threading;
 
 namespace Umbrella.DataAccess.Interfaces
 {
+    public interface IGenericRepository<TEntity> : IGenericRepository<TEntity, int>
+        where TEntity : class, IEntity<int>
+    {
+    }
+
     public interface IGenericRepository<TEntity, TEntityKey> where TEntity : class, IEntity<TEntityKey>
     {
         bool IsEmptyEntity(TEntity entity);
@@ -11,8 +16,8 @@ namespace Umbrella.DataAccess.Interfaces
         void RemoveEmptyEntities(ICollection<TEntity> entities);
         void Save(TEntity entity, bool pushChangesToDb = true, bool addToContext = true);
         Task SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, CancellationToken cancellationToken = default(CancellationToken));
-        void SaveAll(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, bool pushChangesToDb = true);
-        Task SaveAllAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken));
+        void SaveAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false);
+        Task SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, CancellationToken cancellationToken = default(CancellationToken));
         void Delete(TEntity entity, bool pushChangesToDb = true);
         Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken));
         void DeleteAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true);

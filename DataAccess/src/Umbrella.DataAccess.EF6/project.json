@@ -1,0 +1,24 @@
+﻿{
+  "version": "1.0.0-rc1-build00020",
+  "description": "Umbrella.DataAccess.EF6 Class Library",
+  "authors": [ "Richard Edwards" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net461": {
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0"
+      }
+    },
+    "dnx46": {
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "EntityFramework": "6.1.3",
+    "Umbrella.DataAccess": "1.0.0-rc1-*"
+  }
+}

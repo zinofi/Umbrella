@@ -40,9 +40,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 			try
 			{
-				string requestedPath = VirtualPathUtility.ToAppRelative(context.Request.Path.Value).ToLower();
+				string requestedPath = context.Request.Path.Value.ToLowerInvariant();
 
-				if (requestedPath.StartsWith("~/dynamicimage/"))
+				if (requestedPath.StartsWith("/dynamicimage/"))
 				{
 					//Break down the url into segments
 					string[] segments = requestedPath.Split('/');
@@ -88,7 +88,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 						if (!string.IsNullOrEmpty(image.CachedVirtualPath))
 						{
-							await context.Response.SendFileAsync(image.CachedVirtualPath.TrimStart('~'));
+							await context.Response.SendFileAsync(image.CachedVirtualPath);
 							return;
 						}
 						else if (image.Content != null && image.Content.Length > 0)

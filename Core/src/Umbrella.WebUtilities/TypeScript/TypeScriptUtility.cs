@@ -20,7 +20,7 @@ namespace Umbrella.WebUtilities.TypeScript
             if (!memberType.IsInterface && (outputModelType == TypeScriptOutputModelType.Interface || outputModelType == TypeScriptOutputModelType.KnockoutInterface))
                 generatedName = "I" + generatedName;
 
-            if(outputModelType == TypeScriptOutputModelType.KnockoutClass || outputModelType == TypeScriptOutputModelType.KnockoutInterface)
+            if (outputModelType == TypeScriptOutputModelType.KnockoutClass || outputModelType == TypeScriptOutputModelType.KnockoutInterface)
             {
                 int idxModelString = generatedName.LastIndexOf("Model");
 
@@ -58,6 +58,10 @@ namespace Umbrella.WebUtilities.TypeScript
                 {
                     info.TypeName = "string";
                 }
+                else if (memberType == typeof(decimal))
+                {
+                    info.TypeName = "number";
+                }
                 else if (memberType.IsNullableType())
                 {
                     //Get the underlying primitive type or struct
@@ -70,7 +74,7 @@ namespace Umbrella.WebUtilities.TypeScript
                 {
                     info.TypeName = "any";
                 }
-                else if(memberType.IsArray)
+                else if (memberType.IsArray)
                 {
                     //Strip the [] from the name and try and get the type
                     string arrayTypeName = memberType.FullName.Replace("[]", "");
@@ -82,9 +86,9 @@ namespace Umbrella.WebUtilities.TypeScript
                     //Set the type name correctly
                     info.TypeName += "[]";
                 }
-                else if(typeof(IEnumerable).IsAssignableFrom(memberType))
+                else if (typeof(IEnumerable).IsAssignableFrom(memberType))
                 {
-                    if(memberType.IsGenericType)
+                    if (memberType.IsGenericType)
                     {
                         //Determine the type of the collection
                         Type genericEnumerableType = memberType.GetGenericArguments().First();
@@ -102,7 +106,7 @@ namespace Umbrella.WebUtilities.TypeScript
 
                     info.IsNullable = true;
                 }
-                else if(memberType.IsEnum)
+                else if (memberType.IsEnum)
                 {
                     //Output the fully qualified name of the Enum in case it resides in another TypeScript namespace
                     info.TypeName = memberType.FullName;
@@ -135,7 +139,9 @@ namespace Umbrella.WebUtilities.TypeScript
             }
             else
             {
-                info.InitialOutputValue = Activator.CreateInstance(info.CLRType).ToString();
+                object instance = Activator.CreateInstance(info.CLRType);
+
+                info.InitialOutputValue = instance.ToString();
 
                 //If we are dealing with a date, ensure it wrapped in quotes
                 if (info.CLRType == typeof(DateTime))
@@ -144,10 +150,12 @@ namespace Umbrella.WebUtilities.TypeScript
                 }
                 else if (info.CLRType.IsEnum)
                 {
+                    string name = Enum.GetValues(info.CLRType).GetValue(0).ToString();
+
                     //Ensure the full namespace of the type is prefixed to the initial output value
-                    info.InitialOutputValue = info.CLRType.FullName + "." + info.InitialOutputValue;
+                    info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
                 }
-                else if(info.CLRType == typeof(bool))
+                else if (info.CLRType == typeof(bool))
                 {
                     info.InitialOutputValue = info.InitialOutputValue.ToLowerInvariant();
                 }
@@ -173,7 +181,7 @@ namespace Umbrella.WebUtilities.TypeScript
                 string interfaceName = tInterface.Namespace == modelType.Namespace
                     ? tInterface.Name
                     : tInterface.FullName;
-                
+
                 lstInterfaceName.Add(GenerateTypeName(interfaceName, tInterface, outputType));
             }
 

@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Interfaces;
 
+//Set the namespace here to SimpleInjector so that the extension methods will appear automatically
 namespace SimpleInjector
 {
     public static class ContainerExtensions
     {
-        public static void UseUmbrellaUtilities(this Container container)
+        public static void AddUmbrellaUtilities(this Container container)
         {
-            container.Register<IEmailBuilder, EmailBuilder>(Lifestyle.Singleton);
+            container.Register<IEmailBuilder, EmailBuilder>();
         }
     }
 }
