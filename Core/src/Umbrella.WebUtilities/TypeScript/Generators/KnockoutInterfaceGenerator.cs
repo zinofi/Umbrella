@@ -11,54 +11,31 @@ using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
 
 namespace Umbrella.WebUtilities.TypeScript.Generators
 {
-    public class KnockoutInterfaceGenerator : IGenerator
+    public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
     {
-        public TypeScriptOutputModelType OutputModelType
+        public override TypeScriptOutputModelType OutputModelType
         {
             get { return TypeScriptOutputModelType.KnockoutInterface; }
         }
 
-        public string Generate(Type modelType)
+        protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
         {
-            string generatedName = TypeScriptUtility.GenerateTypeName(modelType.Name, modelType, OutputModelType);
-
-            List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, TypeScriptOutputModelType.KnockoutInterface, false);
-
-            StringBuilder builder = new StringBuilder();
-            builder.Append(string.Format("\texport interface {0}", generatedName));
-
-            if (lstInterface.Count > 0)
-                builder.Append(string.Format(" extends {0}", string.Join(", ", lstInterface)));
-
-            builder.AppendLine();
-            builder.AppendLine("\t{");
-
-            foreach (PropertyInfo pi in modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name))
+            if (!string.IsNullOrEmpty(tsInfo.TypeName))
             {
-                Type propertyType = pi.PropertyType;
+                string formatString = "\t\t{0}: ";
 
-                TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(propertyType, pi.Name.ToCamelCase(), OutputModelType);
-
-                if (!string.IsNullOrEmpty(tsInfo.TypeName))
+                if (tsInfo.TypeName.EndsWith("[]"))
                 {
-                    string formatString = "\t\t{0}: ";
-
-                    if (tsInfo.TypeName.EndsWith("[]"))
-                    {
-                        formatString += "KnockoutObservableArray<{1}>;";
-                        tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
-                    }
-                    else
-                    {
-                        formatString += "KnockoutObservable<{1}>;";
-                    }
-
-                    builder.AppendLine(string.Format(formatString, tsInfo.Name, tsInfo.TypeName));
+                    formatString += "KnockoutObservableArray<{1}>;";
+                    tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
                 }
-            }
+                else
+                {
+                    formatString += "KnockoutObservable<{1}>;";
+                }
 
-            builder.AppendLine("\t}");
-            return builder.ToString();
+                builder.AppendLine(string.Format(formatString, tsInfo.Name, tsInfo.TypeName));
+            }
         }
     }
 }

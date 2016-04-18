@@ -11,60 +11,29 @@ using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
 
 namespace Umbrella.WebUtilities.TypeScript.Generators
 {
-    public class KnockoutClassGenerator : IGenerator
+    public class KnockoutClassGenerator : BaseClassGenerator
     {
-        public TypeScriptOutputModelType OutputModelType
+        public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutClass;
+        protected override TypeScriptOutputModelType InterfaceModelType => TypeScriptOutputModelType.KnockoutInterface;
+
+        protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
         {
-            get { return TypeScriptOutputModelType.KnockoutClass; }
-        }
-
-        public string Generate(Type modelType)
-        {
-            string generatedName = TypeScriptUtility.GenerateTypeName(modelType.Name, modelType, OutputModelType);
-
-            List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, TypeScriptOutputModelType.KnockoutInterface, true);
-
-            if (lstInterface.Contains(generatedName))
+            if (!string.IsNullOrEmpty(tsInfo.TypeName))
             {
-                //List of interfaces already contains the name - strip the leading 'I' from the generatedName
-                generatedName = generatedName.TrimStart('I');
-            }
+                string formatString = "\t\t{0}: ";
 
-            StringBuilder builder = new StringBuilder();
-            builder.Append(string.Format("\texport class {0}", generatedName));
-
-            if (lstInterface.Count > 0)
-                builder.Append(string.Format(" implements {0}", string.Join(", ", lstInterface)));
-
-            builder.AppendLine();
-            builder.AppendLine("\t{");
-
-            foreach (PropertyInfo pi in modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name))
-            {
-                Type propertyType = pi.PropertyType;
-
-                TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(propertyType, pi.Name.ToCamelCase(), OutputModelType);
-
-                if (!string.IsNullOrEmpty(tsInfo.TypeName))
+                if (tsInfo.TypeName.EndsWith("[]"))
                 {
-                    string formatString = "\t\t{0}: ";
-
-                    if (tsInfo.TypeName.EndsWith("[]"))
-                    {
-                        formatString += "KnockoutObservableArray<{1}> = ko.observableArray<{1}>({2});";
-                        tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
-                    }
-                    else
-                    {
-                        formatString += "KnockoutObservable<{1}> = ko.observable<{1}>({2});";
-                    }
-
-                    builder.AppendLine(string.Format(formatString, tsInfo.Name, tsInfo.TypeName, tsInfo.InitialOutputValue));
+                    formatString += "KnockoutObservableArray<{1}> = ko.observableArray<{1}>({2});";
+                    tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
                 }
-            }
+                else
+                {
+                    formatString += "KnockoutObservable<{1}> = ko.observable<{1}>({2});";
+                }
 
-            builder.AppendLine("\t}");
-            return builder.ToString();
+                builder.AppendLine(string.Format(formatString, tsInfo.Name, tsInfo.TypeName, tsInfo.InitialOutputValue));
+            }
         }
     }
 }

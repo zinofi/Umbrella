@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     "DNX,Version=v4.6": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -54,7 +54,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -63,12 +63,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00007": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -90,7 +90,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -141,7 +141,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -150,12 +150,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00007": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -177,7 +177,7 @@
       }
     },
     "DNX,Version=v4.6/win7-x86": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -228,7 +228,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -237,12 +237,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00007": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -264,7 +264,7 @@
       }
     },
     "DNX,Version=v4.6/win7-x64": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -315,7 +315,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -324,12 +324,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00007": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -351,7 +351,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x86": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -402,7 +402,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -411,12 +411,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00007": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -438,7 +438,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x64": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -489,7 +489,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -498,12 +498,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00007": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -526,16 +526,16 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00007": {
+    "Umbrella.Utilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json"
     },
-    "AutoMapper/4.2.0": {
+    "AutoMapper/4.2.1": {
       "type": "package",
-      "sha512": "8U0T1cD7z1oQRaKvaFTp2ufN3mG10Hbmoq30AHPhy4uWLl3Vx1/7BV6QhYtFo7rKrMkTKWgUAVDUDlc9Pd5TSA==",
+      "sha512": "BxAMt0Sl9dQIPPualuMv6IhJ5QrWmWSgyYZ/QxcQcR2IBu57/CXG5IP+73sFIr4FMNtcrUugWnuOWkYnlrLVWQ==",
       "files": [
-        "AutoMapper.4.2.0.nupkg",
-        "AutoMapper.4.2.0.nupkg.sha512",
+        "AutoMapper.4.2.1.nupkg",
+        "AutoMapper.4.2.1.nupkg.sha512",
         "AutoMapper.nuspec",
         "lib/dotnet5.1/AutoMapper.dll",
         "lib/dotnet5.1/AutoMapper.xml",
@@ -582,9 +582,9 @@
         "Microsoft.Web.Infrastructure.nuspec"
       ]
     },
-    "Newtonsoft.Json/8.0.2": {
+    "Newtonsoft.Json/8.0.3": {
       "type": "package",
-      "sha512": "e5yWmEfu68rmtG431zl9N/7PlNKQDIuiDW5MHlEFAZcecakcxrIGnKqrPAtWNILzK2oNanRB5cD150MYhECK3g==",
+      "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
       "files": [
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
@@ -598,8 +598,8 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.8.0.2.nupkg",
-        "Newtonsoft.Json.8.0.2.nupkg.sha512",
+        "Newtonsoft.Json.8.0.3.nupkg",
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
@@ -617,7 +617,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "AutoMapper >= 4.2.0",
+      "AutoMapper >= 4.2.1",
       "DynamicImage >= 3.1.1",
       "Umbrella.Utilities >= 1.0.0-*"
     ],

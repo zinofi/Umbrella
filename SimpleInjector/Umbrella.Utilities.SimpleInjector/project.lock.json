@@ -27,7 +27,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "SimpleInjector/3.1.2": {
+      "SimpleInjector/3.1.3": {
         "type": "package",
         "compile": {
           "lib/net45/SimpleInjector.dll": {}
@@ -36,7 +36,7 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -75,7 +75,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "SimpleInjector/3.1.2": {
+      "SimpleInjector/3.1.3": {
         "type": "package",
         "compile": {
           "lib/net45/SimpleInjector.dll": {}
@@ -84,7 +84,7 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -123,7 +123,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "SimpleInjector/3.1.2": {
+      "SimpleInjector/3.1.3": {
         "type": "package",
         "compile": {
           "lib/net45/SimpleInjector.dll": {}
@@ -132,7 +132,7 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -148,7 +148,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00016": {
+    "Umbrella.Utilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
@@ -190,9 +190,9 @@
         "tools/install.ps1"
       ]
     },
-    "SimpleInjector/3.1.2": {
+    "SimpleInjector/3.1.3": {
       "type": "package",
-      "sha512": "nJVFKygDGBMaubMThDmrxGIdhTTYsYq1A+qRTroR+l8EpwKIbQ0Iv/8BZ3TdKbVJb5x1hD8EjZlRyfCWZZIzmg==",
+      "sha512": "vmuyYQ0kGzPQ/BM73uNrweHaW1yqxGCeZkP/LteF5D/NOQrTrXtUgX618lTOtpWntuNyqwW/5GB7R1IjsHhvYA==",
       "files": [
         "lib/dotnet/SimpleInjector.dll",
         "lib/dotnet/SimpleInjector.xml",
@@ -202,15 +202,15 @@
         "lib/net45/SimpleInjector.xml",
         "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.dll",
         "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.xml",
-        "SimpleInjector.3.1.2.nupkg",
-        "SimpleInjector.3.1.2.nupkg.sha512",
+        "SimpleInjector.3.1.3.nupkg",
+        "SimpleInjector.3.1.3.nupkg.sha512",
         "SimpleInjector.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "SimpleInjector >= 3.1.2",
+      "SimpleInjector >= 3.1.3",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6.1": []

@@ -27,6 +27,10 @@ namespace Umbrella.WebUtilities.TypeScript
         private readonly List<IGenerator> m_GeneratorList;
         #endregion
 
+        #region Public Properties
+        public List<IGenerator> Generators => m_GeneratorList;
+        #endregion
+
         #region Constructors
         public TypeScriptGenerator()
         {

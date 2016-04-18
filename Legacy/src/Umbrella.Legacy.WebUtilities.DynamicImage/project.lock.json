@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6.1": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -277,7 +277,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -295,16 +295,16 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -314,7 +314,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -335,12 +335,12 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -348,7 +348,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -363,11 +363,11 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "AutoMapper": "4.2.0",
+          "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -391,7 +391,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x86": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -665,7 +665,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -683,16 +683,16 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -702,7 +702,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -723,12 +723,12 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -736,7 +736,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -751,11 +751,11 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "AutoMapper": "4.2.0",
+          "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -779,7 +779,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x64": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -1053,7 +1053,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -1071,16 +1071,16 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1090,7 +1090,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1111,12 +1111,12 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -1124,7 +1124,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1139,11 +1139,11 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "AutoMapper": "4.2.0",
+          "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -1168,36 +1168,36 @@
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00016": {
+    "Umbrella.Utilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json"
     },
-    "AutoMapper/4.2.0": {
+    "AutoMapper/4.2.1": {
       "type": "package",
-      "sha512": "8U0T1cD7z1oQRaKvaFTp2ufN3mG10Hbmoq30AHPhy4uWLl3Vx1/7BV6QhYtFo7rKrMkTKWgUAVDUDlc9Pd5TSA==",
+      "sha512": "BxAMt0Sl9dQIPPualuMv6IhJ5QrWmWSgyYZ/QxcQcR2IBu57/CXG5IP+73sFIr4FMNtcrUugWnuOWkYnlrLVWQ==",
       "files": [
-        "AutoMapper.4.2.0.nupkg",
-        "AutoMapper.4.2.0.nupkg.sha512",
+        "AutoMapper.4.2.1.nupkg",
+        "AutoMapper.4.2.1.nupkg.sha512",
         "AutoMapper.nuspec",
         "lib/dotnet5.1/AutoMapper.dll",
         "lib/dotnet5.1/AutoMapper.xml",
@@ -1483,9 +1483,9 @@
         "Microsoft.Web.Infrastructure.nuspec"
       ]
     },
-    "Newtonsoft.Json/8.0.2": {
+    "Newtonsoft.Json/8.0.3": {
       "type": "package",
-      "sha512": "e5yWmEfu68rmtG431zl9N/7PlNKQDIuiDW5MHlEFAZcecakcxrIGnKqrPAtWNILzK2oNanRB5cD150MYhECK3g==",
+      "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
       "files": [
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
@@ -1499,8 +1499,8 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.8.0.2.nupkg",
-        "Newtonsoft.Json.8.0.2.nupkg.sha512",
+        "Newtonsoft.Json.8.0.3.nupkg",
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]

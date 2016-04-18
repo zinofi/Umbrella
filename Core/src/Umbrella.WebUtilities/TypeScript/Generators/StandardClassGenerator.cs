@@ -11,48 +11,10 @@ using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
 
 namespace Umbrella.WebUtilities.TypeScript.Generators
 {
-    public class StandardClassGenerator : IGenerator
+    public class StandardClassGenerator : BaseClassGenerator
     {
-        public TypeScriptOutputModelType OutputModelType
-        {
-            get { return TypeScriptOutputModelType.Class; }
-        }
+        public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.Class;
 
-        public string Generate(Type modelType)
-        {
-            string generatedName = TypeScriptUtility.GenerateTypeName(modelType.Name, modelType, OutputModelType);
-
-            List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, TypeScriptOutputModelType.Interface, true);
-
-            if (lstInterface.Contains(generatedName))
-            {
-                //List of interfaces already contains the name - strip the leading 'I' from the generatedName
-                generatedName = generatedName.TrimStart('I');
-            }
-
-            StringBuilder builder = new StringBuilder();
-            builder.Append(string.Format("\texport class {0}", generatedName));
-
-            if (lstInterface.Count > 0)
-                builder.Append(string.Format(" implements {0}", string.Join(", ", lstInterface)));
-
-            builder.AppendLine();
-            builder.AppendLine("\t{");
-
-            foreach (PropertyInfo pi in modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name))
-            {
-                Type propertyType = pi.PropertyType;
-
-                TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(propertyType, pi.Name.ToCamelCase(), OutputModelType);
-
-                if (!string.IsNullOrEmpty(tsInfo.TypeName))
-                {
-                    builder.AppendLine(string.Format("\t\t{0}: {1} = {2};", tsInfo.Name, tsInfo.TypeName, tsInfo.InitialOutputValue));
-                }
-            }
-
-            builder.AppendLine("\t}");
-            return builder.ToString();
-        }
+        protected override TypeScriptOutputModelType InterfaceModelType => TypeScriptOutputModelType.Interface;
     }
 }

@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6.1": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -298,19 +298,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.9.6.2": {
+      "N2CMS/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.2",
-          "N2CMS.Management": "2.9.6.2",
-          "N2CMS.Search.Lucene": "2.9.6.2"
+          "N2CMS.Library": "2.9.6.3",
+          "N2CMS.Management": "2.9.6.3",
+          "N2CMS.Search.Lucene": "2.9.6.3"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.9.6.2": {
+      "N2CMS.Library/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -322,11 +322,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.9.6.2": {
+      "N2CMS.Management/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.2",
+          "N2CMS.Library": "2.9.6.3",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -340,11 +340,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.9.6.2": {
+      "N2CMS.Search.Lucene/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.9.6.2"
+          "N2CMS.Library": "2.9.6.3"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -353,7 +353,7 @@
           "lib/N2.Search.Lucene.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -392,16 +392,16 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -411,7 +411,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -432,7 +432,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -446,12 +446,12 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -459,7 +459,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -474,11 +474,11 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "AutoMapper": "4.2.0",
+          "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -502,7 +502,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x86": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -797,19 +797,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.9.6.2": {
+      "N2CMS/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.2",
-          "N2CMS.Management": "2.9.6.2",
-          "N2CMS.Search.Lucene": "2.9.6.2"
+          "N2CMS.Library": "2.9.6.3",
+          "N2CMS.Management": "2.9.6.3",
+          "N2CMS.Search.Lucene": "2.9.6.3"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.9.6.2": {
+      "N2CMS.Library/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -821,11 +821,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.9.6.2": {
+      "N2CMS.Management/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.2",
+          "N2CMS.Library": "2.9.6.3",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -839,11 +839,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.9.6.2": {
+      "N2CMS.Search.Lucene/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.9.6.2"
+          "N2CMS.Library": "2.9.6.3"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -852,7 +852,7 @@
           "lib/N2.Search.Lucene.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -891,16 +891,16 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -910,7 +910,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -931,7 +931,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -945,12 +945,12 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -958,7 +958,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -973,11 +973,11 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "AutoMapper": "4.2.0",
+          "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -1001,7 +1001,7 @@
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x64": {
-      "AutoMapper/4.2.0": {
+      "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -1296,19 +1296,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.9.6.2": {
+      "N2CMS/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.2",
-          "N2CMS.Management": "2.9.6.2",
-          "N2CMS.Search.Lucene": "2.9.6.2"
+          "N2CMS.Library": "2.9.6.3",
+          "N2CMS.Management": "2.9.6.3",
+          "N2CMS.Search.Lucene": "2.9.6.3"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.9.6.2": {
+      "N2CMS.Library/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -1320,11 +1320,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.9.6.2": {
+      "N2CMS.Management/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.2",
+          "N2CMS.Library": "2.9.6.3",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -1338,11 +1338,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.9.6.2": {
+      "N2CMS.Search.Lucene/2.9.6.3": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.9.6.2"
+          "N2CMS.Library": "2.9.6.3"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -1351,7 +1351,7 @@
           "lib/N2.Search.Lucene.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -1390,16 +1390,16 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1409,7 +1409,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1430,7 +1430,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1444,12 +1444,12 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00016": {
+      "Umbrella.Utilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -1457,7 +1457,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
@@ -1472,11 +1472,11 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6.1",
         "dependencies": {
-          "AutoMapper": "4.2.0",
+          "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -1501,40 +1501,40 @@
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00016": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00016": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00016": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00016": {
+    "Umbrella.Utilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00016": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00016": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json"
     },
-    "AutoMapper/4.2.0": {
+    "AutoMapper/4.2.1": {
       "type": "package",
-      "sha512": "8U0T1cD7z1oQRaKvaFTp2ufN3mG10Hbmoq30AHPhy4uWLl3Vx1/7BV6QhYtFo7rKrMkTKWgUAVDUDlc9Pd5TSA==",
+      "sha512": "BxAMt0Sl9dQIPPualuMv6IhJ5QrWmWSgyYZ/QxcQcR2IBu57/CXG5IP+73sFIr4FMNtcrUugWnuOWkYnlrLVWQ==",
       "files": [
-        "AutoMapper.4.2.0.nupkg",
-        "AutoMapper.4.2.0.nupkg.sha512",
+        "AutoMapper.4.2.1.nupkg",
+        "AutoMapper.4.2.1.nupkg.sha512",
         "AutoMapper.nuspec",
         "lib/dotnet5.1/AutoMapper.dll",
         "lib/dotnet5.1/AutoMapper.xml",
@@ -1846,9 +1846,9 @@
         "Microsoft.Web.Infrastructure.nuspec"
       ]
     },
-    "N2CMS/2.9.6.2": {
+    "N2CMS/2.9.6.3": {
       "type": "package",
-      "sha512": "xU82vxuiZbr+JyYWsxI4VutEQklynQd3at1t/odW0BoASdS0Vzm0UqJnxcvfQmD/mohGCdm5nltN9lRbOSlgxw==",
+      "sha512": "hSPEEUfTFS3xVesS8LQzjviocuCzXL1PfiFKXpSOcrqEvlDV0/KIquEHruwGl11j6AMvabO2+gwguXEqXm4QxQ==",
       "files": [
         "Content/N2/history.txt",
         "Content/N2/howto_develop.txt",
@@ -1857,8 +1857,8 @@
         "Content/N2/n2_readme.txt",
         "Content/N2/n2cms.configuration.xsd",
         "Content/N2/upgrade.txt",
-        "N2CMS.2.9.6.2.nupkg",
-        "N2CMS.2.9.6.2.nupkg.sha512",
+        "N2CMS.2.9.6.3.nupkg",
+        "N2CMS.2.9.6.3.nupkg.sha512",
         "N2CMS.nuspec"
       ]
     },
@@ -1874,21 +1874,21 @@
         "N2CMS.Config.nuspec"
       ]
     },
-    "N2CMS.Library/2.9.6.2": {
+    "N2CMS.Library/2.9.6.3": {
       "type": "package",
-      "sha512": "tvdyKyHvOK15PxbkoLO2+gjtG3OlBDfp3qS9b30zSeFujMQZm48a0+9DzH5SAlurFhbntqCSZgrBQiTNyNUuFg==",
+      "sha512": "pQ4OsVQpvjhzsbYalJUAtZYDUvItQDX1qqV6Pws1MZ1RL0C1EYBNAxDt7guu2eGrTCuoF72q4upmZCqqZmJjPA==",
       "files": [
         "lib/net45/N2.dll",
         "lib/net45/N2.pdb",
         "lib/net45/N2.XML",
-        "N2CMS.Library.2.9.6.2.nupkg",
-        "N2CMS.Library.2.9.6.2.nupkg.sha512",
+        "N2CMS.Library.2.9.6.3.nupkg",
+        "N2CMS.Library.2.9.6.3.nupkg.sha512",
         "N2CMS.Library.nuspec"
       ]
     },
-    "N2CMS.Management/2.9.6.2": {
+    "N2CMS.Management/2.9.6.3": {
       "type": "package",
-      "sha512": "JBC7UZ7uJ4AQloN8PwVTaYmYvQ1r1HXFCwbPWEhvtXysCvMU+jFEyHwO7NkFNHAwEtgiNH8L9z7ouCgjqrvXYw==",
+      "sha512": "jUrsGOCaZndYD4FH2Pngr6j92jbNVBy2vJpJIip7/fXNfttHQt5uxaFYGbg7xLSgIqx/eCE32rEaNyqhlwPv3Q==",
       "files": [
         "content/N2/history.txt",
         "content/N2/howto_develop.txt",
@@ -1906,24 +1906,24 @@
         "lib/N2.Management.dll",
         "lib/N2.Management.pdb",
         "lib/N2.Packaging.dll",
-        "N2CMS.Management.2.9.6.2.nupkg",
-        "N2CMS.Management.2.9.6.2.nupkg.sha512",
+        "N2CMS.Management.2.9.6.3.nupkg",
+        "N2CMS.Management.2.9.6.3.nupkg.sha512",
         "N2CMS.Management.nuspec"
       ]
     },
-    "N2CMS.Search.Lucene/2.9.6.2": {
+    "N2CMS.Search.Lucene/2.9.6.3": {
       "type": "package",
-      "sha512": "oZ5jRtmQfh92k8ZRpqh67BdRl2bMmvdgNtSfiHv4ajJZL0kqBlopjyIkvkVCV4Y550SrOvsxDLf9git3nHXRdg==",
+      "sha512": "PyRCk5sryKygckdJyC1pyRXfHPteHEozAw27dsRa+4mMqVF7kQXW8kuQGog+QWyB7LUJ+0jU6KfPUEqfxqIAQQ==",
       "files": [
         "lib/N2.Search.Lucene.dll",
-        "N2CMS.Search.Lucene.2.9.6.2.nupkg",
-        "N2CMS.Search.Lucene.2.9.6.2.nupkg.sha512",
+        "N2CMS.Search.Lucene.2.9.6.3.nupkg",
+        "N2CMS.Search.Lucene.2.9.6.3.nupkg.sha512",
         "N2CMS.Search.Lucene.nuspec"
       ]
     },
-    "Newtonsoft.Json/8.0.2": {
+    "Newtonsoft.Json/8.0.3": {
       "type": "package",
-      "sha512": "e5yWmEfu68rmtG431zl9N/7PlNKQDIuiDW5MHlEFAZcecakcxrIGnKqrPAtWNILzK2oNanRB5cD150MYhECK3g==",
+      "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
       "files": [
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
@@ -1937,8 +1937,8 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.8.0.2.nupkg",
-        "Newtonsoft.Json.8.0.2.nupkg.sha512",
+        "Newtonsoft.Json.8.0.3.nupkg",
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
@@ -2003,8 +2003,8 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "N2CMS >= 2.9.6.2",
-      "Newtonsoft.Json >= 8.0.2",
+      "N2CMS >= 2.9.6.3",
+      "Newtonsoft.Json >= 8.0.3",
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
       "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",
       "Umbrella.Utilities >= 1.0.0-*",

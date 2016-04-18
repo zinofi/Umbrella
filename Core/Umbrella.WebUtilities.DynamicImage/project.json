@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00020",
+  "version": "1.0.0-rc1-build00021",
   "description": "Umbrella.WebUtilities.DynamicImage Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
@@ -22,7 +22,7 @@
     }
   },
   "dependencies": {
-    "AutoMapper": "4.2.0",
+    "AutoMapper": "4.2.1",
     "DynamicImage": "3.1.1",
     "Umbrella.Utilities": "1.0.0-*"
   }

@@ -17,8 +17,12 @@ namespace Umbrella.WebUtilities.TypeScript
         {
             string generatedName = memberName;
 
-            if (!memberType.IsInterface && (outputModelType == TypeScriptOutputModelType.Interface || outputModelType == TypeScriptOutputModelType.KnockoutInterface))
+            if (!memberType.IsInterface && (outputModelType == TypeScriptOutputModelType.Interface
+                || outputModelType == TypeScriptOutputModelType.KnockoutInterface
+                || outputModelType == TypeScriptOutputModelType.AureliaInterface))
+            {
                 generatedName = "I" + generatedName;
+            }
 
             if (outputModelType == TypeScriptOutputModelType.KnockoutClass || outputModelType == TypeScriptOutputModelType.KnockoutInterface)
             {
