@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.CLI.WebUtilities.Mvc.Filters
 {
-    public class ValidationActionFilterAttribute : ActionFilterAttribute
+    public class ValidateModelStateAttribute : ActionFilterAttribute
     {
         #region Private Static Members
         private static readonly JsonSerializerSettings s_JsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };

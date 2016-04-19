@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0-rc1-build00025",
+  "version": "1.0.0-rc1-build00026",
   "description": "Umbrella.Legacy.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
-    "net461": {
+    "net46": {
       "frameworkAssemblies": {
         "System.ComponentModel.DataAnnotations": "4.0.0.0",
         "System.Web": "4.0.0.0"

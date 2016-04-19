@@ -45,7 +45,7 @@ namespace Umbrella.WebUtilities.TypeScript
         #endregion
 
         #region Public Methods
-        public string GenerateAll()
+        public string GenerateAll(bool outputAsModuleExport)
         {
             StringBuilder sbNamespaces = new StringBuilder();
 
@@ -57,8 +57,12 @@ namespace Umbrella.WebUtilities.TypeScript
             {
                 string nsName = group.Key;
 
-                //Start of TypeScript namespace
-                sbNamespaces.AppendLine("namespace " + nsName)
+                //Start of TypeScript namespace or module export
+                string namespaceOrModuleStart = outputAsModuleExport
+                    ? "export module"
+                    : "namespace";
+
+                sbNamespaces.AppendLine($"{namespaceOrModuleStart} {nsName}")
                     .AppendLine("{");
 
                 //Generate enum definitions for this namespace if any exist

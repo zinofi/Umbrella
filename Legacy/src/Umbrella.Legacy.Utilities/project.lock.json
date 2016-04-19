@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    ".NETFramework,Version=v4.6.1": {
+    ".NETFramework,Version=v4.6": {
       "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "frameworkAssemblies": [
@@ -18,7 +18,7 @@
           "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -27,12 +27,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Utilities/1.0.0-rc1-build00025": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -41,7 +41,7 @@
         ]
       }
     },
-    ".NETFramework,Version=v4.6.1/win7-x86": {
+    ".NETFramework,Version=v4.6/win7-x86": {
       "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "frameworkAssemblies": [
@@ -57,7 +57,7 @@
           "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -66,12 +66,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Utilities/1.0.0-rc1-build00025": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -80,7 +80,7 @@
         ]
       }
     },
-    ".NETFramework,Version=v4.6.1/win7-x64": {
+    ".NETFramework,Version=v4.6/win7-x64": {
       "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "frameworkAssemblies": [
@@ -96,7 +96,7 @@
           "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
-      "Newtonsoft.Json/8.0.2": {
+      "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -105,12 +105,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00015": {
+      "Umbrella.Utilities/1.0.0-rc1-build00025": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.2"
+          "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
@@ -121,7 +121,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00015": {
+    "Umbrella.Utilities/1.0.0-rc1-build00025": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
@@ -141,9 +141,9 @@
         "Microsoft.Extensions.Logging.Abstractions.nuspec"
       ]
     },
-    "Newtonsoft.Json/8.0.2": {
+    "Newtonsoft.Json/8.0.3": {
       "type": "package",
-      "sha512": "e5yWmEfu68rmtG431zl9N/7PlNKQDIuiDW5MHlEFAZcecakcxrIGnKqrPAtWNILzK2oNanRB5cD150MYhECK3g==",
+      "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
       "files": [
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
@@ -157,8 +157,8 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.8.0.2.nupkg",
-        "Newtonsoft.Json.8.0.2.nupkg.sha512",
+        "Newtonsoft.Json.8.0.3.nupkg",
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
@@ -168,7 +168,7 @@
     "": [
       "Umbrella.Utilities >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.6.1": [
+    ".NETFramework,Version=v4.6": [
       "fx/System.Configuration >= 4.0.0"
     ]
   }

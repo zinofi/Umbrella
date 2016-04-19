@@ -133,7 +133,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rc1-build00003": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00025": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "frameworkAssemblies": [
@@ -381,7 +381,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rc1-build00003": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00025": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "frameworkAssemblies": [
@@ -629,7 +629,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rc1-build00003": {
+      "Umbrella.DataAnnotations/1.0.0-rc1-build00025": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "frameworkAssemblies": [
@@ -748,7 +748,7 @@
     }
   },
   "libraries": {
-    "Umbrella.DataAnnotations/1.0.0-rc1-build00003": {
+    "Umbrella.DataAnnotations/1.0.0-rc1-build00025": {
       "type": "project",
       "path": "../../Core/Umbrella.DataAnnotations/project.json"
     },

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00025",
+  "version": "1.0.0-rc1-build00026",
   "description": "Umbrella.WebUtilities.DynamicImage Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
@@ -13,7 +13,7 @@
         "WindowsBase": "4.0.0.0"
       }
     },
-    "net461": {
+    "net46": {
       "frameworkAssemblies": {
         "PresentationCore": "4.0.0.0",
         "System.Configuration": "4.0.0.0",

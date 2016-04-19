@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    ".NETFramework,Version=v4.6.1": {
+    ".NETFramework,Version=v4.6": {
       "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -295,18 +295,18 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         },
@@ -314,9 +314,9 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
@@ -335,9 +335,9 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00020": {
+      "Umbrella.Utilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.3"
@@ -348,9 +348,9 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0",
           "WebActivatorEx": "2.1.0"
@@ -363,9 +363,9 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
@@ -390,7 +390,7 @@
         }
       }
     },
-    ".NETFramework,Version=v4.6.1/win7-x86": {
+    ".NETFramework,Version=v4.6/win7-x86": {
       "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -683,18 +683,18 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         },
@@ -702,9 +702,9 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
@@ -723,9 +723,9 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00020": {
+      "Umbrella.Utilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.3"
@@ -736,9 +736,9 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0",
           "WebActivatorEx": "2.1.0"
@@ -751,9 +751,9 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
@@ -778,7 +778,7 @@
         }
       }
     },
-    ".NETFramework,Version=v4.6.1/win7-x64": {
+    ".NETFramework,Version=v4.6/win7-x64": {
       "AutoMapper/4.2.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -1071,18 +1071,18 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         },
@@ -1090,9 +1090,9 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "log4net": "2.0.5",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
@@ -1111,9 +1111,9 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00020": {
+      "Umbrella.Utilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.3"
@@ -1124,9 +1124,9 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0",
           "WebActivatorEx": "2.1.0"
@@ -1139,9 +1139,9 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00026": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.6.1",
+        "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "AutoMapper": "4.2.1",
           "DynamicImage": "3.1.1",
@@ -1168,27 +1168,27 @@
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00020": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00026": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00020": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00026": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00020": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00026": {
       "type": "project",
       "path": "../Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00020": {
+    "Umbrella.Utilities/1.0.0-rc1-build00026": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00020": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00020": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00026": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json"
     },
@@ -1533,7 +1533,7 @@
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
       "Umbrella.WebUtilities.DynamicImage >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.6.1": [
+    ".NETFramework,Version=v4.6": [
       "fx/PresentationCore >= 4.0.0",
       "fx/System.Web >= 4.0.0"
     ]

@@ -7,7 +7,7 @@ using Umbrella.CLI.WebUtilities.Mvc.Filters;
 
 namespace Umbrella.CLI.WebUtilities.Mvc
 {
-    [ValidationActionFilter]
+    [ValidateModelState]
     public abstract class UmbrellaApiController : UmbrellaController
     {
         public UmbrellaApiController(ILogger logger)
