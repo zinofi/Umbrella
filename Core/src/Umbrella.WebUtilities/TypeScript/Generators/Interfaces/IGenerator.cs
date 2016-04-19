@@ -10,6 +10,6 @@ namespace Umbrella.WebUtilities.TypeScript.Generators.Interfaces
     public interface IGenerator
     {
         TypeScriptOutputModelType OutputModelType { get; }
-        string Generate(Type modelType);
+        string Generate(Type modelType, bool generateValidationRules);
     }
 }

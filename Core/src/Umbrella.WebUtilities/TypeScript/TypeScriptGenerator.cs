@@ -87,9 +87,11 @@ namespace Umbrella.WebUtilities.TypeScript
                     //Generate the models using the registered generators
                     foreach (IGenerator generator in m_GeneratorList)
                     {
-                        if(item.ModelAttribute.OutputModelTypes.HasFlag(generator.OutputModelType))
+                        TypeScriptModelAttribute attribute = item.ModelAttribute;
+
+                        if(attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
                         {
-                            string generatorOutput = generator.Generate(item.ModelType);
+                            string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules);
 
                             sbNamespaces.AppendLine(generatorOutput);
                         }

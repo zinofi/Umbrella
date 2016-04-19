@@ -15,7 +15,7 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
     {
         public abstract TypeScriptOutputModelType OutputModelType { get; }
 
-        public virtual string Generate(Type modelType)
+        public virtual string Generate(Type modelType, bool generateValidationRules)
         {
             StringBuilder builder = new StringBuilder();
 
