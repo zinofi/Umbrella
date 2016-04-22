@@ -14,6 +14,7 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
     public class KnockoutClassGenerator : BaseClassGenerator
     {
         public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutClass;
+        protected override bool SupportsValidationRules => false;
         protected override TypeScriptOutputModelType InterfaceModelType => TypeScriptOutputModelType.KnockoutInterface;
 
         protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)

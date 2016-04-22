@@ -170,7 +170,6 @@ namespace Umbrella.WebUtilities.TypeScript
 
         public static List<string> GetInterfaceNames(Type modelType, TypeScriptOutputModelType outputType, bool includeSelf)
         {
-
             List<string> lstInterfaceName = new List<string>();
 
             //This interface is the primary interface which corresponds exactly to the modelType

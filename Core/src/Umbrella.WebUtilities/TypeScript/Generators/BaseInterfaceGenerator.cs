@@ -13,6 +13,8 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
 {
     public abstract class BaseInterfaceGenerator : BaseGenerator
     {
+        protected override bool SupportsValidationRules => false;
+
         protected override void WriteStart(Type modelType, StringBuilder builder)
         {
             string generatedName = TypeScriptUtility.GenerateTypeName(modelType.Name, modelType, OutputModelType);
