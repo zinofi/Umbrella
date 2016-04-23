@@ -27,7 +27,7 @@ namespace Umbrella.TypeScript.Generators
             WriteStart(modelType, typeBuilder);
 
             //Write all properties. This may or may not generate validation rules.
-            WriteAllProperties(modelType, GetModelProperties(modelType), typeBuilder, validationBuilder);
+            WriteAllProperties(GetModelProperties(modelType), typeBuilder, validationBuilder);
 
             //Write the end of the type. We pass in the validationBuilder here so that the content
             //of the validationBuilder can be written to the type in a way that is specific to the generator.
@@ -38,7 +38,7 @@ namespace Umbrella.TypeScript.Generators
 
         protected abstract void WriteStart(Type modelType, StringBuilder builder);
 
-        protected virtual void WriteAllProperties(Type modelType, IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
+        protected virtual void WriteAllProperties(IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
         {
             foreach (PropertyInfo pi in properties)
             {
@@ -51,13 +51,13 @@ namespace Umbrella.TypeScript.Generators
                 //We are generating the validation rules here so that this work can be done in the same step
                 //as the work to generate the property itself.
                 if (validationBuilder != null)
-                    WriteValidationRules(modelType, tsInfo, validationBuilder);
+                    WriteValidationRules(pi, tsInfo, validationBuilder);
             }
         }
 
         protected abstract void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder);
 
-        protected virtual void WriteValidationRules(Type modelType, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
+        protected virtual void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
         {
             //If the generator implementation supports validation rules but they haven't been implmented
             //throw an exception to indicate this.
