@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.WebUtilities.TypeScript
+namespace Umbrella.TypeScript
 {
     public class TypeScriptMemberInfo
     {

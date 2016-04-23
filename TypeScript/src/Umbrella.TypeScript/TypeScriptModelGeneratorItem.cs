@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.WebUtilities.TypeScript.Attributes;
+using Umbrella.TypeScript.Attributes;
 
-namespace Umbrella.WebUtilities.TypeScript
+namespace Umbrella.TypeScript
 {
     public class TypeScriptModelGeneratorItem
     {

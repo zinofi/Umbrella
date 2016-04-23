@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.TypeScript.Attributes;
-using Umbrella.WebUtilities.TypeScript.Enumerations;
-using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
+using Umbrella.TypeScript.Attributes;
+using Umbrella.TypeScript.Enumerations;
+using Umbrella.TypeScript.Generators.Interfaces;
 
-namespace Umbrella.WebUtilities.TypeScript.Generators
+namespace Umbrella.TypeScript.Generators
 {
     public abstract class BaseGenerator : IGenerator
     {
@@ -27,7 +27,7 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
             WriteStart(modelType, typeBuilder);
 
             //Write all properties. This may or may not generate validation rules.
-            WriteAllProperties(GetModelProperties(modelType), typeBuilder, validationBuilder);
+            WriteAllProperties(modelType, GetModelProperties(modelType), typeBuilder, validationBuilder);
 
             //Write the end of the type. We pass in the validationBuilder here so that the content
             //of the validationBuilder can be written to the type in a way that is specific to the generator.
@@ -38,7 +38,7 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
 
         protected abstract void WriteStart(Type modelType, StringBuilder builder);
 
-        protected virtual void WriteAllProperties(IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
+        protected virtual void WriteAllProperties(Type modelType, IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
         {
             foreach (PropertyInfo pi in properties)
             {
@@ -51,13 +51,13 @@ namespace Umbrella.WebUtilities.TypeScript.Generators
                 //We are generating the validation rules here so that this work can be done in the same step
                 //as the work to generate the property itself.
                 if (validationBuilder != null)
-                    WriteValidationRules(tsInfo, validationBuilder);
+                    WriteValidationRules(modelType, tsInfo, validationBuilder);
             }
         }
 
         protected abstract void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder);
 
-        protected virtual void WriteValidationRules(TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder)
+        protected virtual void WriteValidationRules(Type modelType, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
         {
             //If the generator implementation supports validation rules but they haven't been implmented
             //throw an exception to indicate this.

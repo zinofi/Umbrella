@@ -909,7 +909,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00026": {
+      "Umbrella.Utilities/1.0.0-rc1-build00028": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -922,7 +922,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -933,8 +933,7 @@
           "PresentationCore",
           "System.Configuration",
           "System.ServiceModel",
-          "System.Xml",
-          "WindowsBase"
+          "System.Xml"
         ]
       },
       "WebActivatorEx/2.1.0": {
@@ -1857,7 +1856,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00026": {
+      "Umbrella.Utilities/1.0.0-rc1-build00028": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -1870,7 +1869,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -1881,8 +1880,7 @@
           "PresentationCore",
           "System.Configuration",
           "System.ServiceModel",
-          "System.Xml",
-          "WindowsBase"
+          "System.Xml"
         ]
       },
       "WebActivatorEx/2.1.0": {
@@ -2805,7 +2803,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00026": {
+      "Umbrella.Utilities/1.0.0-rc1-build00028": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -2818,7 +2816,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -2829,8 +2827,7 @@
           "PresentationCore",
           "System.Configuration",
           "System.ServiceModel",
-          "System.Xml",
-          "WindowsBase"
+          "System.Xml"
         ]
       },
       "WebActivatorEx/2.1.0": {
@@ -2848,11 +2845,11 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00026": {
+    "Umbrella.Utilities/1.0.0-rc1-build00028": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00026": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },

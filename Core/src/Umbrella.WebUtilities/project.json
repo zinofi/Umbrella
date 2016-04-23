@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00028",
+  "version": "1.0.0-rc1-build00029",
   "description": "Umbrella.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
@@ -13,8 +13,7 @@
         "PresentationCore": "4.0.0.0",
         "System.Configuration": "4.0.0.0",
         "System.ServiceModel": "4.0.0.0",
-        "System.Xml": "4.0.0.0",
-        "WindowsBase": "4.0.0.0"
+        "System.Xml": "4.0.0.0"
       }
     },
     "net46": {
@@ -22,8 +21,7 @@
         "PresentationCore": "4.0.0.0",
         "System.Configuration": "4.0.0.0",
         "System.ServiceModel": "4.0.0.0",
-        "System.Xml": "4.0.0.0",
-        "WindowsBase": "4.0.0.0"
+        "System.Xml": "4.0.0.0"
       }
     }
   },

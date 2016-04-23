@@ -5,12 +5,13 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.TypeScript.Attributes;
+using Umbrella.TypeScript.Generators;
+using Umbrella.TypeScript.Generators.Interfaces;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.TypeScript.Attributes;
-using Umbrella.WebUtilities.TypeScript.Generators;
-using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
+using Umbrella.Utilities.Comparers;
 
-namespace Umbrella.WebUtilities.TypeScript
+namespace Umbrella.TypeScript
 {
     //This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
     //e.g. a type that is part of the .NET framework other than a primitive, DateTime or string
@@ -23,28 +24,27 @@ namespace Umbrella.WebUtilities.TypeScript
                 .ToList();
         #endregion
 
-        #region Private Members
-        private readonly List<IGenerator> m_GeneratorList;
-        #endregion
-
         #region Public Properties
-        public List<IGenerator> Generators => m_GeneratorList;
-        #endregion
-
-        #region Constructors
-        public TypeScriptGenerator()
-        {
-            m_GeneratorList = new List<IGenerator>
-            {
-                new StandardInterfaceGenerator(),
-                new StandardClassGenerator(),
-                new KnockoutInterfaceGenerator(),
-                new KnockoutClassGenerator()
-            };
-        }
+        public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator>(x => x.GetType()));
         #endregion
 
         #region Public Methods
+        public TypeScriptGenerator IncludeStandardGenerators()
+        {
+            Generators.Add(new StandardInterfaceGenerator());
+            Generators.Add(new StandardClassGenerator());
+
+            return this;
+        }
+
+        public TypeScriptGenerator IncludeKnockoutGenerators()
+        {
+            Generators.Add(new KnockoutInterfaceGenerator());
+            Generators.Add(new KnockoutClassGenerator());
+
+            return this;
+        }
+
         public string GenerateAll(bool outputAsModuleExport)
         {
             StringBuilder sbNamespaces = new StringBuilder();
@@ -85,7 +85,7 @@ namespace Umbrella.WebUtilities.TypeScript
                 foreach (TypeScriptModelGeneratorItem item in group)
                 {
                     //Generate the models using the registered generators
-                    foreach (IGenerator generator in m_GeneratorList)
+                    foreach (IGenerator generator in Generators)
                     {
                         TypeScriptModelAttribute attribute = item.ModelAttribute;
 

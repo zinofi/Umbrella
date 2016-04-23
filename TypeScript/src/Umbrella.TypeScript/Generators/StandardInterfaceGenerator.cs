@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.TypeScript.Attributes;
-using Umbrella.WebUtilities.TypeScript.Enumerations;
-using Umbrella.WebUtilities.TypeScript.Generators.Interfaces;
+using Umbrella.TypeScript.Attributes;
+using Umbrella.TypeScript.Enumerations;
+using Umbrella.TypeScript.Generators.Interfaces;
 
-namespace Umbrella.WebUtilities.TypeScript.Generators
+namespace Umbrella.TypeScript.Generators
 {
     public class StandardInterfaceGenerator : BaseInterfaceGenerator
     {

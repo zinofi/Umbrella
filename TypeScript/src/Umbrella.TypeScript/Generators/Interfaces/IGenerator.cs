@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.WebUtilities.TypeScript.Enumerations;
+using Umbrella.TypeScript.Enumerations;
 
-namespace Umbrella.WebUtilities.TypeScript.Generators.Interfaces
+namespace Umbrella.TypeScript.Generators.Interfaces
 {
     public interface IGenerator
     {

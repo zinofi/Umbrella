@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.TypeScript.Enumerations;
+using Umbrella.TypeScript.Enumerations;
 
-namespace Umbrella.WebUtilities.TypeScript
+namespace Umbrella.TypeScript
 {
     public static class TypeScriptUtility
     {

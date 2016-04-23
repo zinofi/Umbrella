@@ -1,15 +1,19 @@
 ﻿{
   "version": "1.0.0-rc1-build00029",
-  "description": "Umbrella.Legacy.Utilities Class Library",
+  "description": "Umbrella.TypeScript Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
-
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
-        "System.Configuration": "4.0.0.0"
+        "System.ComponentModel.DataAnnotations": "4.0.0.0"
+      }
+    },
+    "dnx46": {
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": "4.0.0.0"
       }
     }
   },
