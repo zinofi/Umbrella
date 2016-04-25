@@ -40,9 +40,6 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         private readonly ILogger Log;
         private readonly int m_MaxSecrets;
 
-        private ClientAssertionCertificate m_Assertion;
-        private ClientCredential m_ClientCredential;
-
         private readonly ClientAuthenticationMode m_AuthMode;
 
         /// <summary>

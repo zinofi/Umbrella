@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-rc1-build00032",
+  "version": "1.0.0-rc1-build00033",
   "description": "Umbrella.DataAccess.EntityFrameworkCore Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
@@ -7,7 +7,11 @@
   "licenseUrl": "",
 
   "frameworks": {
-    "net46": { },
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.20.0"
+      }
+    },
     "dnx46": { }
   },
 

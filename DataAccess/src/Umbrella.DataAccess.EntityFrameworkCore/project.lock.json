@@ -346,14 +346,14 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+      "Umbrella.DataAccess/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00031": {
+      "Umbrella.Utilities/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -725,14 +725,14 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+      "Umbrella.DataAccess/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00031": {
+      "Umbrella.Utilities/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -1090,14 +1090,14 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+      "Umbrella.DataAccess/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00031": {
+      "Umbrella.Utilities/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1455,14 +1455,14 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+      "Umbrella.DataAccess/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00031": {
+      "Umbrella.Utilities/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1834,14 +1834,14 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+      "Umbrella.DataAccess/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00031": {
+      "Umbrella.Utilities/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -2213,14 +2213,14 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+      "Umbrella.DataAccess/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
           "Umbrella.Utilities": "1.0.0"
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00031": {
+      "Umbrella.Utilities/1.0.0-rc1-build00032": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -2236,11 +2236,11 @@
     }
   },
   "libraries": {
-    "Umbrella.DataAccess/1.0.0-rc1-build00031": {
+    "Umbrella.DataAccess/1.0.0-rc1-build00032": {
       "type": "project",
       "path": "../Umbrella.DataAccess/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00031": {
+    "Umbrella.Utilities/1.0.0-rc1-build00032": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json"
     },
@@ -2699,7 +2699,9 @@
       "EntityFramework.MicrosoftSqlServer >= 7.0.0-rc1-final",
       "Umbrella.DataAccess >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.6": [],
+    ".NETFramework,Version=v4.6": [
+      "fx/System.Runtime >= 4.0.20"
+    ],
     "DNX,Version=v4.6": []
   }
 }
