@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00031",
+  "version": "1.0.0-rc1-build00032",
   "description": "Umbrella.DataAccess Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
@@ -7,11 +7,7 @@
   "licenseUrl": "",
   "frameworks": {
     "dnx46": { },
-    "net46": {
-      "frameworkAssemblies": {
-        "System.Runtime": "4.0.20.0"
-      }
-    }
+    "net46": { }
   },
   "dependencies": {
     "Umbrella.Utilities": "1.0.0-*"

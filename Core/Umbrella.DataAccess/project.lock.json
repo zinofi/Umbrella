@@ -27,7 +27,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00025": {
+      "Umbrella.Utilities/1.0.0-rc1-build00031": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -66,7 +66,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00025": {
+      "Umbrella.Utilities/1.0.0-rc1-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -105,7 +105,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00025": {
+      "Umbrella.Utilities/1.0.0-rc1-build00031": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -144,7 +144,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00025": {
+      "Umbrella.Utilities/1.0.0-rc1-build00031": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -183,7 +183,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00025": {
+      "Umbrella.Utilities/1.0.0-rc1-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -222,7 +222,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00025": {
+      "Umbrella.Utilities/1.0.0-rc1-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -238,7 +238,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00025": {
+    "Umbrella.Utilities/1.0.0-rc1-build00031": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json"
     },
@@ -286,8 +286,6 @@
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     "DNX,Version=v4.6": [],
-    ".NETFramework,Version=v4.6": [
-      "fx/System.Runtime >= 4.0.20"
-    ]
+    ".NETFramework,Version=v4.6": []
   }
 }
