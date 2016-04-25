@@ -36,7 +36,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -96,7 +96,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -156,7 +156,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -216,7 +216,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -276,7 +276,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -336,7 +336,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -364,7 +364,7 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00028": {
+    "Umbrella.Utilities/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json"
     },
@@ -433,13 +433,11 @@
       "WebActivatorEx >= 2.1.0"
     ],
     "DNX,Version=v4.6": [
-      "fx/PresentationCore >= 4.0.0",
       "fx/System.Configuration >= 4.0.0",
       "fx/System.ServiceModel >= 4.0.0",
       "fx/System.Xml >= 4.0.0"
     ],
     ".NETFramework,Version=v4.6": [
-      "fx/PresentationCore >= 4.0.0",
       "fx/System.Configuration >= 4.0.0",
       "fx/System.ServiceModel >= 4.0.0",
       "fx/System.Xml >= 4.0.0"

@@ -304,7 +304,7 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00028": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -313,7 +313,7 @@
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -323,7 +323,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -344,7 +344,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -358,7 +358,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -371,7 +371,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -379,13 +379,12 @@
           "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
-          "PresentationCore",
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -399,7 +398,7 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -722,7 +721,7 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00028": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -731,7 +730,7 @@
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -741,7 +740,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -762,7 +761,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -776,7 +775,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -789,7 +788,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -797,13 +796,12 @@
           "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
-          "PresentationCore",
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -817,7 +815,7 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1140,7 +1138,7 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00028": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1149,7 +1147,7 @@
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1159,7 +1157,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1180,7 +1178,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1194,7 +1192,7 @@
           "System.Web"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00028": {
+      "Umbrella.Utilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1207,7 +1205,7 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1215,13 +1213,12 @@
           "WebActivatorEx": "2.1.0"
         },
         "frameworkAssemblies": [
-          "PresentationCore",
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1235,7 +1232,7 @@
           "WindowsBase"
         ]
       },
-      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00028": {
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00030": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1258,35 +1255,35 @@
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00028": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00028": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00028": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
     },
-    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00028": {
+    "Umbrella.Utilities/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00028": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00028": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json"
     },
-    "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00028": {
+    "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rc1-build00030": {
       "type": "project",
       "path": "../Umbrella.WebUtilities.DynamicImage.SimpleInjector/project.json"
     },

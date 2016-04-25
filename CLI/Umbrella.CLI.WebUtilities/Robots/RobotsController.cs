@@ -21,14 +21,14 @@ namespace Umbrella.CLI.WebUtilities.Robots
         #endregion
 
         #region Private Members
-        private readonly RobotsConfig m_RobotsConfig;
+        private readonly RobotsOptions m_RobotsConfig;
         private readonly IHostingEnvironment m_HostingEnvironment;
         #endregion
 
         #region Constructors
         public RobotsController(
             ILogger<RobotsController> logger,
-            IOptions<RobotsConfig> robotsConfig,
+            IOptions<RobotsOptions> robotsConfig,
             IHostingEnvironment hostingEnvironment)
             : base(logger)
         {

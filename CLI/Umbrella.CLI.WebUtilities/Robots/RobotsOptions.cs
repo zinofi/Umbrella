@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.CLI.WebUtilities.Robots
 {
-    public class RobotsConfig
+    public class RobotsOptions
     {
         public Dictionary<string, string> RobotMappings { get; set; }
     }
