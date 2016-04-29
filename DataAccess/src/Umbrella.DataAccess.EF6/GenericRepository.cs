@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -127,6 +128,11 @@ namespace Umbrella.DataAccess.EF6
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
+            catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Data Validation Exception for Id", true))
+            {
+                LogDbEntityValidationExceptionDetails(exc);
+                throw;
+            }
             catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
             {
                 throw;
@@ -163,6 +169,11 @@ namespace Umbrella.DataAccess.EF6
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Concurrency Exception for Id", true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+            }
+            catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Data Validation Exception for Id", true))
+            {
+                LogDbEntityValidationExceptionDetails(exc);
+                throw;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext }, "Failed for Id"))
             {
@@ -203,6 +214,19 @@ namespace Umbrella.DataAccess.EF6
 
                 if (userAuditEntity != null)
                     userAuditEntity.UpdatedById = m_UserAuditDataFactory.CurrentUserId;
+            }
+        }
+
+        private void LogDbEntityValidationExceptionDetails(DbEntityValidationException exc)
+        {
+            foreach (var item in exc.EntityValidationErrors)
+            {
+                string entityType = item.Entry.Entity.GetType().BaseType.FullName;
+
+                Dictionary<string, object> currentValues = item.Entry.CurrentValues.PropertyNames.ToDictionary(x => x, x => item.Entry.CurrentValues.GetValue<object>(x));
+                Dictionary<string, object> originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, x => item.Entry.OriginalValues.GetValue<object>(x));
+
+                Log.WriteError(exc, new { entityType, item.IsValid, item.ValidationErrors, originalValues, currentValues, state = item.Entry.State.ToString() });
             }
         }
 

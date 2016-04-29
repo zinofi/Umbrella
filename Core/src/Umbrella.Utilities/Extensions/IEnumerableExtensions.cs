@@ -17,11 +17,10 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>A nested collection split into groups</returns>
 		public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> source, int itemsPerGroup)
 		{
-			return source
-				.Select((x, i) => new { Index = i, Value = x })
-				.GroupBy(x => x.Index / itemsPerGroup)
-				.Select(x => x.Select(v => v.Value).ToList())
-				.ToList();
+            return source
+                .Select((x, i) => new { Index = i, Value = x })
+                .GroupBy(x => x.Index / itemsPerGroup)
+                .Select(x => x.Select(v => v.Value));
 		}
 	}
 }

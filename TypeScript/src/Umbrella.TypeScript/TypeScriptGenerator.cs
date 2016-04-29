@@ -14,14 +14,11 @@ using Umbrella.Utilities.Comparers;
 namespace Umbrella.TypeScript
 {
     //This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
-    //e.g. a type that is part of the .NET framework other than a primitive, DateTime or string
+    //i.e. a type that is part of the .NET framework other than a primitive, DateTime or string, array or IEnumerable
     public class TypeScriptGenerator
     {
-        #region Private Static Members
-        private static readonly List<Type> m_AllAppDomainTypes =
-            AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .ToList();
+        #region Private Members
+        private readonly List<Type> m_Types;
         #endregion
 
         #region Public Properties
@@ -29,6 +26,24 @@ namespace Umbrella.TypeScript
         #endregion
 
         #region Public Methods
+        /// <summary>
+        /// Create a new <see cref="TypeScriptGenerator"/> instance.
+        /// </summary>
+        /// <param name="onlyNamedAssemblies">
+        /// A list of assembly names to scan for <see cref="TypeScriptModelAttribute"/> declarations.
+        /// If no names are specified then all assemblies in the current <see cref="AppDomain"/> will be loaded
+        /// and scanned.
+        /// </param>
+        public TypeScriptGenerator(params string[] onlyNamedAssemblies)
+        {
+            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            if (onlyNamedAssemblies?.Length > 0)
+                assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.FullName));
+
+            m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
+        }
+
         public TypeScriptGenerator IncludeStandardGenerators()
         {
             Generators.Add(new StandardInterfaceGenerator());
@@ -142,7 +157,7 @@ namespace Umbrella.TypeScript
 
         private IEnumerable<TypeScriptModelGeneratorItem> GetModelItems()
         {
-            foreach (Type type in m_AllAppDomainTypes)
+            foreach (Type type in m_Types)
             {
                 TypeScriptModelAttribute modelAttribute = type.GetCustomAttribute<TypeScriptModelAttribute>();
 
@@ -155,7 +170,7 @@ namespace Umbrella.TypeScript
 
         private IEnumerable<Type> GetEnumItems()
         {
-            foreach(Type type in m_AllAppDomainTypes)
+            foreach(Type type in m_Types)
             {
                 if (!type.IsEnum)
                     continue;
