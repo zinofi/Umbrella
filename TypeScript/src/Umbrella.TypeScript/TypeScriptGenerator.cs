@@ -39,7 +39,7 @@ namespace Umbrella.TypeScript
             IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             if (onlyNamedAssemblies?.Length > 0)
-                assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.FullName));
+                assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.GetName().Name));
 
             m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
         }

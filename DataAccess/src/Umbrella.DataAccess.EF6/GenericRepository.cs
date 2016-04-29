@@ -217,7 +217,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        private void LogDbEntityValidationExceptionDetails(DbEntityValidationException exc)
+        protected virtual void LogDbEntityValidationExceptionDetails(DbEntityValidationException exc)
         {
             foreach (var item in exc.EntityValidationErrors)
             {
