@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc1-build00035",
+  "version": "1.0.0-rc1-build00036",
   "description": "Umbrella.Extensions.Logging.Log4Net Class Library",
   "authors": [ "Richard Edwards" ],
   "tags": [ "" ],
@@ -13,6 +13,7 @@
   "dependencies": {
     "log4net": "2.0.5",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
     "Newtonsoft.Json": "8.0.3"
   }
 }

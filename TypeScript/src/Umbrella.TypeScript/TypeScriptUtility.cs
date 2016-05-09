@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.TypeScript.Enumerations;
 
 namespace Umbrella.TypeScript
 {

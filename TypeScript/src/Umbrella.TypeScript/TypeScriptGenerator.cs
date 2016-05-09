@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.TypeScript.Attributes;
 using Umbrella.TypeScript.Generators;
 using Umbrella.TypeScript.Generators.Interfaces;
 using Umbrella.Utilities.Extensions;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.TypeScript.Enumerations;
 
 namespace Umbrella.TypeScript.Generators.Interfaces
 {

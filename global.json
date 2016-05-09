@@ -1,5 +1,5 @@
 {
-  "projects": [ "Core", "N2CMS", "CLI", "Legacy", "Test", "SimpleInjector" ],
+  "projects": [ "Core", "N2CMS", "CLI", "Legacy", "Test", "SimpleInjector", "AspNetCore" ],
   "sdk": {
     "version": "1.0.0-rc1-update1"
   }
