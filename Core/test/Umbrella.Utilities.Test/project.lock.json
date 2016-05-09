@@ -124,15 +124,6 @@
           "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
         }
       },
-      "Microsoft.Web.Infrastructure/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        }
-      },
       "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
@@ -142,7 +133,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00030": {
+      "Umbrella.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -155,30 +146,17 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.1.0"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
-      },
-      "WebActivatorEx/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net40/WebActivatorEx.dll": {}
-        },
-        "runtime": {
-          "lib/net40/WebActivatorEx.dll": {}
-        }
       },
       "xunit/2.2.0-beta1-build3239": {
         "type": "package",
@@ -412,15 +390,6 @@
           "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
         }
       },
-      "Microsoft.Web.Infrastructure/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        }
-      },
       "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
@@ -430,7 +399,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00030": {
+      "Umbrella.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -443,30 +412,17 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.1.0"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
-      },
-      "WebActivatorEx/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net40/WebActivatorEx.dll": {}
-        },
-        "runtime": {
-          "lib/net40/WebActivatorEx.dll": {}
-        }
       },
       "xunit/2.2.0-beta1-build3239": {
         "type": "package",
@@ -700,15 +656,6 @@
           "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
         }
       },
-      "Microsoft.Web.Infrastructure/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        }
-      },
       "Newtonsoft.Json/8.0.3": {
         "type": "package",
         "compile": {
@@ -718,7 +665,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00030": {
+      "Umbrella.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
@@ -731,30 +678,17 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": "DNX,Version=v4.6",
         "dependencies": {
-          "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.1.0"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
-      },
-      "WebActivatorEx/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net40/WebActivatorEx.dll": {}
-        },
-        "runtime": {
-          "lib/net40/WebActivatorEx.dll": {}
-        }
       },
       "xunit/2.2.0-beta1-build3239": {
         "type": "package",
@@ -868,11 +802,11 @@
     }
   },
   "libraries": {
-    "Umbrella.Utilities/1.0.0-rc1-build00030": {
+    "Umbrella.Utilities/1.0.0-rc1-build00037": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00030": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
@@ -981,16 +915,6 @@
         "Microsoft.Extensions.PlatformAbstractions.nuspec"
       ]
     },
-    "Microsoft.Web.Infrastructure/1.0.0": {
-      "type": "package",
-      "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
-      "files": [
-        "lib/net40/Microsoft.Web.Infrastructure.dll",
-        "Microsoft.Web.Infrastructure.1.0.0.nupkg",
-        "Microsoft.Web.Infrastructure.1.0.0.nupkg.sha512",
-        "Microsoft.Web.Infrastructure.nuspec"
-      ]
-    },
     "Newtonsoft.Json/8.0.3": {
       "type": "package",
       "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
@@ -1011,16 +935,6 @@
         "Newtonsoft.Json.8.0.3.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
-      ]
-    },
-    "WebActivatorEx/2.1.0": {
-      "type": "package",
-      "sha512": "0HJ6DpxcTzSGIgcN6Q0jKAwLX1bWKnbeDOvT7vFXB/e4MIrwWc+1XwzihQp0Sr91EUK2N7j5cjZ1cIvWCraeJg==",
-      "files": [
-        "lib/net40/WebActivatorEx.dll",
-        "WebActivatorEx.2.1.0.nupkg",
-        "WebActivatorEx.2.1.0.nupkg.sha512",
-        "WebActivatorEx.nuspec"
       ]
     },
     "xunit/2.2.0-beta1-build3239": {

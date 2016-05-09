@@ -283,7 +283,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00035": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -293,7 +293,7 @@
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00035": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -303,7 +303,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00035": {
+      "Umbrella.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -316,30 +316,17 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00035": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.1.0"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
-      },
-      "WebActivatorEx/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net40/WebActivatorEx.dll": {}
-        },
-        "runtime": {
-          "lib/net40/WebActivatorEx.dll": {}
-        }
       }
     },
     ".NETFramework,Version=v4.6/win7-x86": {
@@ -623,7 +610,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00035": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -633,7 +620,7 @@
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00035": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -643,7 +630,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00035": {
+      "Umbrella.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -656,30 +643,17 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00035": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.1.0"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
-      },
-      "WebActivatorEx/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net40/WebActivatorEx.dll": {}
-        },
-        "runtime": {
-          "lib/net40/WebActivatorEx.dll": {}
-        }
       }
     },
     ".NETFramework,Version=v4.6/win7-x64": {
@@ -963,7 +937,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00035": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -973,7 +947,7 @@
           "Newtonsoft.Json": "8.0.3"
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00035": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -983,7 +957,7 @@
           "System.Configuration"
         ]
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00035": {
+      "Umbrella.Utilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -996,47 +970,34 @@
           "System.Runtime.Caching"
         ]
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00035": {
+      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "Umbrella.Utilities": "1.0.0",
-          "WebActivatorEx": "2.1.0"
+          "Umbrella.Utilities": "1.0.0"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
         ]
-      },
-      "WebActivatorEx/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net40/WebActivatorEx.dll": {}
-        },
-        "runtime": {
-          "lib/net40/WebActivatorEx.dll": {}
-        }
       }
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00035": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00035": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json"
     },
-    "Umbrella.Utilities/1.0.0-rc1-build00035": {
+    "Umbrella.Utilities/1.0.0-rc1-build00037": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json"
     },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00035": {
+    "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json"
     },
@@ -1349,16 +1310,6 @@
         "Owin.1.0.0.nupkg",
         "Owin.1.0.0.nupkg.sha512",
         "Owin.nuspec"
-      ]
-    },
-    "WebActivatorEx/2.1.0": {
-      "type": "package",
-      "sha512": "0HJ6DpxcTzSGIgcN6Q0jKAwLX1bWKnbeDOvT7vFXB/e4MIrwWc+1XwzihQp0Sr91EUK2N7j5cjZ1cIvWCraeJg==",
-      "files": [
-        "lib/net40/WebActivatorEx.dll",
-        "WebActivatorEx.2.1.0.nupkg",
-        "WebActivatorEx.2.1.0.nupkg.sha512",
-        "WebActivatorEx.nuspec"
       ]
     }
   },
