@@ -4,9 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.TypeScript.Enumerations;
 
-namespace Umbrella.TypeScript.Attributes
+namespace Umbrella.TypeScript
 {
     /// <summary>
     /// Used to mark models (classes or interfaces) to be output by the TypeScript generator.

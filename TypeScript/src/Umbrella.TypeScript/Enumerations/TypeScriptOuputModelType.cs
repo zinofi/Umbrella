@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Umbrella.TypeScript.Enumerations
+namespace Umbrella.TypeScript
 {
     [Flags]
     public enum TypeScriptOutputModelType

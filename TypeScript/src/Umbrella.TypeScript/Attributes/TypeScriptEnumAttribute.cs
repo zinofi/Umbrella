@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.TypeScript.Attributes
+namespace Umbrella.TypeScript
 {
     /// <summary>
     /// Used to mark enum types to be output by the TypeScript generator.
