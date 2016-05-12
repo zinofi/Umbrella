@@ -136,7 +136,7 @@ namespace Umbrella.Utilities.Extensions
             return sb.ToString();
         }
 
-        public static string Clean(this string value, bool convertBrTagsToNl = false, bool trim = true, bool trimNewLines = true, bool stripHtml = true, bool stripNbsp = true)
+        public static string Clean(this string value, bool convertBrTagsToNl = false, bool trim = true, bool trimNewLines = true, bool stripHtml = true, bool stripNbsp = true, bool decodeHtmlEncodedLineBreaks = true)
         {
             if (string.IsNullOrEmpty(value))
                 return value;
@@ -152,6 +152,12 @@ namespace Umbrella.Utilities.Extensions
                 sb.Trim();
 
             bool trimAgain = false;
+
+            if (decodeHtmlEncodedLineBreaks)
+            {
+                sb.Replace("&#10;", "\n")
+                    .Replace("&#13;", "\r");
+            }
 
             if (trimNewLines)
             {
