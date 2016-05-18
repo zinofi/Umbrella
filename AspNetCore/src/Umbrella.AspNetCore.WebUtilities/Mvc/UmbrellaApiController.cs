@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -21,13 +21,18 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
         }
         #endregion
 
-        #region Protected Methods
-        protected IActionResult NoContent() => new NoContentResult();
-        protected IActionResult Forbidden(string message = null) => HttpObjectOrStatusResult(message, 403);
-        protected IActionResult Conflict(string message = null) => HttpObjectOrStatusResult(message, 409);
-        protected IActionResult InternalServerError(string message = null) => HttpObjectOrStatusResult(message, 500, true);
+        #region Public Methods
+        [NonAction]
+        public virtual IActionResult Forbidden(string message = null) => HttpObjectOrStatusResult(message, 403);
 
-        protected IActionResult HttpObjectOrStatusResult(string message, int statusCode, bool wrapMessage = false)
+        [NonAction]
+        public virtual IActionResult Conflict(string message = null) => HttpObjectOrStatusResult(message, 409);
+
+        [NonAction]
+        public virtual IActionResult InternalServerError(string message = null) => HttpObjectOrStatusResult(message, 500, true);
+
+        [NonAction]
+        public virtual IActionResult HttpObjectOrStatusResult(string message, int statusCode, bool wrapMessage = false)
         {
             if (!string.IsNullOrWhiteSpace(message))
             {
@@ -36,10 +41,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
                 if (wrapMessage)
                     value = new { message };
 
-                return new ObjectResult(value) { StatusCode = statusCode };
+                return StatusCode(statusCode, value);
             }
 
-            return new HttpStatusCodeResult(statusCode);
+            return StatusCode(statusCode);
         }
         #endregion
     }

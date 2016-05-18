@@ -126,39 +126,37 @@
         "compile": {
           "lib/net45/System.Web.Helpers.dll": {},
           "lib/net45/System.Web.WebPages.Deployment.dll": {},
-          "lib/net45/System.Web.WebPages.dll": {},
-          "lib/net45/System.Web.WebPages.Razor.dll": {}
+          "lib/net45/System.Web.WebPages.Razor.dll": {},
+          "lib/net45/System.Web.WebPages.dll": {}
         },
         "runtime": {
           "lib/net45/System.Web.Helpers.dll": {},
           "lib/net45/System.Web.WebPages.Deployment.dll": {},
-          "lib/net45/System.Web.WebPages.dll": {},
-          "lib/net45/System.Web.WebPages.Razor.dll": {}
+          "lib/net45/System.Web.WebPages.Razor.dll": {},
+          "lib/net45/System.Web.WebPages.dll": {}
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
+      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc2-final": {
         "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
+        "dependencies": {
+          "System.Collections": "4.0.11-rc2-24027",
+          "System.Collections.Concurrent": "4.0.12-rc2-24027",
+          "System.Globalization": "4.0.11-rc2-24027",
+          "System.Linq": "4.1.0-rc2-24027",
+          "System.Reflection": "4.1.0-rc2-24027",
+          "System.Resources.ResourceManager": "4.0.1-rc2-24027",
+          "System.Runtime.Extensions": "4.1.0-rc2-24027",
+          "System.Runtime.InteropServices": "4.1.0-rc2-24027"
+        },
         "compile": {
-          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+          "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll": {}
         },
         "runtime": {
-          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+          "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc1-final": {
+      "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc2-final": {
         "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
         "compile": {
           "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
         },
@@ -292,17 +290,98 @@
           "lib/net45/SimpleInjector.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
+      "System.Collections/4.0.11-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Collections.Concurrent/4.0.12-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Globalization/4.0.11-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Linq/4.1.0-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Reflection/4.1.0-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Resources.ResourceManager/4.0.1-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Runtime.Extensions/4.1.0-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "System.Runtime.InteropServices/4.1.0-rc2-24027": {
+        "type": "package",
+        "compile": {
+          "ref/net45/_._": {}
+        },
+        "runtime": {
+          "lib/net45/_._": {}
+        }
+      },
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc2-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.5",
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.3"
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc2-final",
+          "Newtonsoft.Json": "8.0.3",
+          "log4net": "2.0.5"
+        },
+        "frameworkAssemblies": [
+          "System.Runtime"
+        ],
+        "compile": {
+          "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
+        },
+        "runtime": {
+          "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc2-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -310,13 +389,18 @@
         },
         "frameworkAssemblies": [
           "System.Configuration"
-        ]
+        ],
+        "compile": {
+          "net46/Umbrella.Legacy.Utilities.dll": {}
+        },
+        "runtime": {
+          "net46/Umbrella.Legacy.Utilities.dll": {}
+        }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00037": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rc2-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "log4net": "2.0.5",
           "Microsoft.AspNet.Identity.Owin": "2.2.1",
           "Microsoft.AspNet.Mvc": "5.2.3",
           "Microsoft.AspNet.WebApi": "5.2.3",
@@ -326,27 +410,41 @@
           "Microsoft.Owin.StaticFiles": "3.0.1",
           "Umbrella.Extensions.Logging.Log4Net": "1.0.0",
           "Umbrella.Legacy.Utilities": "1.0.0",
-          "Umbrella.WebUtilities": "1.0.0"
+          "Umbrella.WebUtilities": "1.0.0",
+          "log4net": "2.0.5"
         },
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations",
           "System.Web"
-        ]
+        ],
+        "compile": {
+          "net46/Umbrella.Legacy.WebUtilities.dll": {}
+        },
+        "runtime": {
+          "net46/Umbrella.Legacy.WebUtilities.dll": {}
+        }
       },
-      "Umbrella.Utilities/1.0.0-rc1-build00037": {
+      "Umbrella.Utilities/1.0.0-rc2-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final",
           "Newtonsoft.Json": "8.0.3"
         },
         "frameworkAssemblies": [
           "System.Configuration",
           "System.Drawing",
+          "System.Runtime",
           "System.Runtime.Caching"
-        ]
+        ],
+        "compile": {
+          "net46/Umbrella.Utilities.dll": {}
+        },
+        "runtime": {
+          "net46/Umbrella.Utilities.dll": {}
+        }
       },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
+      "Umbrella.WebUtilities/1.0.0-rc2-build00001": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -356,748 +454,20 @@
           "System.Configuration",
           "System.ServiceModel",
           "System.Xml"
-        ]
-      }
-    },
-    ".NETFramework,Version=v4.6/win7-x86": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Identity.Core/2.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Identity.Owin/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.Identity.Core": "2.2.1",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Microsoft.Owin.Security.Cookies": "2.1.0",
-          "Microsoft.Owin.Security.OAuth": "2.1.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Mvc/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
-          "Microsoft.AspNet.WebPages": "[3.2.3, 3.3.0)"
-        },
-        "compile": {
-          "lib/net45/System.Web.Mvc.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Mvc.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Razor/3.2.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/System.Web.Razor.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Razor.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.WebHost": "[5.2.3, 5.3.0)"
-        }
-      },
-      "Microsoft.AspNet.WebApi.Client/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "6.0.4"
-        },
-        "frameworkAssemblies": [
-          "System.Net.Http"
         ],
         "compile": {
-          "lib/net45/System.Net.Http.Formatting.dll": {}
+          "net46/Umbrella.WebUtilities.dll": {}
         },
         "runtime": {
-          "lib/net45/System.Net.Http.Formatting.dll": {}
+          "net46/Umbrella.WebUtilities.dll": {}
         }
-      },
-      "Microsoft.AspNet.WebApi.Core/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Client": "5.2.3"
-        },
-        "compile": {
-          "lib/net45/System.Web.Http.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Http.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi.Owin/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)",
-          "Microsoft.Owin": "2.0.2",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/System.Web.Http.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Http.Owin.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi.WebHost/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)"
-        },
-        "compile": {
-          "lib/net45/System.Web.Http.WebHost.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Http.WebHost.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebPages/3.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/System.Web.Helpers.dll": {},
-          "lib/net45/System.Web.WebPages.Deployment.dll": {},
-          "lib/net45/System.Web.WebPages.dll": {},
-          "lib/net45/System.Web.WebPages.Razor.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Helpers.dll": {},
-          "lib/net45/System.Web.WebPages.Deployment.dll": {},
-          "lib/net45/System.Web.WebPages.dll": {},
-          "lib/net45/System.Web.WebPages.Razor.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
-        "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
-        "compile": {
-          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
-        }
-      },
-      "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc1-final": {
-        "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
-        "compile": {
-          "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
-        }
-      },
-      "Microsoft.Owin/3.0.1": {
-        "type": "package",
-        "dependencies": {
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.dll": {}
-        }
-      },
-      "Microsoft.Owin.FileSystems/3.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
-        }
-      },
-      "Microsoft.Owin.Host.SystemWeb/3.0.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "3.0.1",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
-        }
-      },
-      "Microsoft.Owin.Security/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.dll": {}
-        }
-      },
-      "Microsoft.Owin.Security.Cookies/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
-        }
-      },
-      "Microsoft.Owin.Security.OAuth/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Newtonsoft.Json": "4.5.11",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
-        }
-      },
-      "Microsoft.Owin.StaticFiles/3.0.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "3.0.1",
-          "Microsoft.Owin.FileSystems": "3.0.1",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
-        }
-      },
-      "Microsoft.Web.Infrastructure/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      },
-      "Owin/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Owin.dll": {}
-        }
-      },
-      "SimpleInjector/3.1.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/SimpleInjector.dll": {}
-        },
-        "runtime": {
-          "lib/net45/SimpleInjector.dll": {}
-        }
-      },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.3"
-        }
-      },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Umbrella.Utilities": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Configuration"
-        ]
-      },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Microsoft.AspNet.Identity.Owin": "2.2.1",
-          "Microsoft.AspNet.Mvc": "5.2.3",
-          "Microsoft.AspNet.WebApi": "5.2.3",
-          "Microsoft.AspNet.WebApi.Owin": "5.2.3",
-          "Microsoft.Owin": "3.0.1",
-          "Microsoft.Owin.Host.SystemWeb": "3.0.1",
-          "Microsoft.Owin.StaticFiles": "3.0.1",
-          "Umbrella.Extensions.Logging.Log4Net": "1.0.0",
-          "Umbrella.Legacy.Utilities": "1.0.0",
-          "Umbrella.WebUtilities": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.ComponentModel.DataAnnotations",
-          "System.Web"
-        ]
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.3"
-        },
-        "frameworkAssemblies": [
-          "System.Configuration",
-          "System.Drawing",
-          "System.Runtime.Caching"
-        ]
-      },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Umbrella.Utilities": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Configuration",
-          "System.ServiceModel",
-          "System.Xml"
-        ]
-      }
-    },
-    ".NETFramework,Version=v4.6/win7-x64": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Identity.Core/2.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Identity.Owin/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.Identity.Core": "2.2.1",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Microsoft.Owin.Security.Cookies": "2.1.0",
-          "Microsoft.Owin.Security.OAuth": "2.1.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.Identity.Owin.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Mvc/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
-          "Microsoft.AspNet.WebPages": "[3.2.3, 3.3.0)"
-        },
-        "compile": {
-          "lib/net45/System.Web.Mvc.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Mvc.dll": {}
-        }
-      },
-      "Microsoft.AspNet.Razor/3.2.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/System.Web.Razor.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Razor.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.WebHost": "[5.2.3, 5.3.0)"
-        }
-      },
-      "Microsoft.AspNet.WebApi.Client/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "6.0.4"
-        },
-        "frameworkAssemblies": [
-          "System.Net.Http"
-        ],
-        "compile": {
-          "lib/net45/System.Net.Http.Formatting.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Net.Http.Formatting.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi.Core/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Client": "5.2.3"
-        },
-        "compile": {
-          "lib/net45/System.Web.Http.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Http.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi.Owin/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)",
-          "Microsoft.Owin": "2.0.2",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/System.Web.Http.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Http.Owin.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebApi.WebHost/5.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.WebApi.Core": "[5.2.3, 5.3.0)"
-        },
-        "compile": {
-          "lib/net45/System.Web.Http.WebHost.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Http.WebHost.dll": {}
-        }
-      },
-      "Microsoft.AspNet.WebPages/3.2.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNet.Razor": "[3.2.3, 3.3.0)",
-          "Microsoft.Web.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/System.Web.Helpers.dll": {},
-          "lib/net45/System.Web.WebPages.Deployment.dll": {},
-          "lib/net45/System.Web.WebPages.dll": {},
-          "lib/net45/System.Web.WebPages.Razor.dll": {}
-        },
-        "runtime": {
-          "lib/net45/System.Web.Helpers.dll": {},
-          "lib/net45/System.Web.WebPages.Deployment.dll": {},
-          "lib/net45/System.Web.WebPages.dll": {},
-          "lib/net45/System.Web.WebPages.Razor.dll": {}
-        }
-      },
-      "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
-        "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
-        "compile": {
-          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
-        }
-      },
-      "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc1-final": {
-        "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Core"
-        ],
-        "compile": {
-          "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll": {}
-        }
-      },
-      "Microsoft.Owin/3.0.1": {
-        "type": "package",
-        "dependencies": {
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.dll": {}
-        }
-      },
-      "Microsoft.Owin.FileSystems/3.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.FileSystems.dll": {}
-        }
-      },
-      "Microsoft.Owin.Host.SystemWeb/3.0.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "3.0.1",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Host.SystemWeb.dll": {}
-        }
-      },
-      "Microsoft.Owin.Security/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.dll": {}
-        }
-      },
-      "Microsoft.Owin.Security.Cookies/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
-        }
-      },
-      "Microsoft.Owin.Security.OAuth/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Newtonsoft.Json": "4.5.11",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.OAuth.dll": {}
-        }
-      },
-      "Microsoft.Owin.StaticFiles/3.0.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "3.0.1",
-          "Microsoft.Owin.FileSystems": "3.0.1",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.StaticFiles.dll": {}
-        }
-      },
-      "Microsoft.Web.Infrastructure/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Microsoft.Web.Infrastructure.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      },
-      "Owin/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Owin.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Owin.dll": {}
-        }
-      },
-      "SimpleInjector/3.1.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/SimpleInjector.dll": {}
-        },
-        "runtime": {
-          "lib/net45/SimpleInjector.dll": {}
-        }
-      },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.3"
-        }
-      },
-      "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Umbrella.Utilities": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Configuration"
-        ]
-      },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "log4net": "2.0.5",
-          "Microsoft.AspNet.Identity.Owin": "2.2.1",
-          "Microsoft.AspNet.Mvc": "5.2.3",
-          "Microsoft.AspNet.WebApi": "5.2.3",
-          "Microsoft.AspNet.WebApi.Owin": "5.2.3",
-          "Microsoft.Owin": "3.0.1",
-          "Microsoft.Owin.Host.SystemWeb": "3.0.1",
-          "Microsoft.Owin.StaticFiles": "3.0.1",
-          "Umbrella.Extensions.Logging.Log4Net": "1.0.0",
-          "Umbrella.Legacy.Utilities": "1.0.0",
-          "Umbrella.WebUtilities": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.ComponentModel.DataAnnotations",
-          "System.Web"
-        ]
-      },
-      "Umbrella.Utilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
-          "Newtonsoft.Json": "8.0.3"
-        },
-        "frameworkAssemblies": [
-          "System.Configuration",
-          "System.Drawing",
-          "System.Runtime.Caching"
-        ]
-      },
-      "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
-        "type": "project",
-        "framework": ".NETFramework,Version=v4.6",
-        "dependencies": {
-          "Umbrella.Utilities": "1.0.0"
-        },
-        "frameworkAssemblies": [
-          "System.Configuration",
-          "System.ServiceModel",
-          "System.Xml"
-        ]
       }
     }
   },
   "libraries": {
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc1-build00037": {
-      "type": "project",
-      "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json"
-    },
-    "Umbrella.Legacy.Utilities/1.0.0-rc1-build00037": {
-      "type": "project",
-      "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json"
-    },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rc1-build00037": {
-      "type": "project",
-      "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json"
-    },
-    "Umbrella.Utilities/1.0.0-rc1-build00037": {
-      "type": "project",
-      "path": "../../Core/Umbrella.Utilities/project.json"
-    },
-    "Umbrella.WebUtilities/1.0.0-rc1-build00037": {
-      "type": "project",
-      "path": "../../Core/Umbrella.WebUtilities/project.json"
-    },
     "log4net/2.0.5": {
-      "type": "package",
       "sha512": "AEqPZz+v+OikfnR2SqRVdQPnSaLq5y9Iz1CfRQZ9kTKPYCXHG6zYmDHb7wJotICpDLMr/JqokyjiqKAjUKp0ng==",
+      "type": "package",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -1121,263 +491,232 @@
       ]
     },
     "Microsoft.AspNet.Identity.Core/2.2.1": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "jjurNglpmcv0SLBd4Fmar8ZoJ2yqfTf6iuP3p8wVH7Nvanfo8l3qTBzq3qRQz2BQlb6iXJiDWPjcnIImVz512g==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.AspNet.Identity.Core.dll",
-        "lib/net45/Microsoft.AspNet.Identity.Core.xml",
-        "Microsoft.AspNet.Identity.Core.2.2.1.nupkg",
         "Microsoft.AspNet.Identity.Core.2.2.1.nupkg.sha512",
-        "Microsoft.AspNet.Identity.Core.nuspec"
+        "Microsoft.AspNet.Identity.Core.nuspec",
+        "lib/net45/Microsoft.AspNet.Identity.Core.dll",
+        "lib/net45/Microsoft.AspNet.Identity.Core.xml"
       ]
     },
     "Microsoft.AspNet.Identity.Owin/2.2.1": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "Cz/dqC85+6bgPj9Mt1qGLJ+v8HdTqXTMe1ms4e8pzPXJjDJw3DK7XtimtDtWwiDs63vnIDgy195TByV9wxEwjA==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.AspNet.Identity.Owin.dll",
-        "lib/net45/Microsoft.AspNet.Identity.Owin.xml",
-        "Microsoft.AspNet.Identity.Owin.2.2.1.nupkg",
         "Microsoft.AspNet.Identity.Owin.2.2.1.nupkg.sha512",
-        "Microsoft.AspNet.Identity.Owin.nuspec"
+        "Microsoft.AspNet.Identity.Owin.nuspec",
+        "lib/net45/Microsoft.AspNet.Identity.Owin.dll",
+        "lib/net45/Microsoft.AspNet.Identity.Owin.xml"
       ]
     },
     "Microsoft.AspNet.Mvc/5.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "i8jZf5QrbcFmjiYWRD7o7qTak/oXKxV80MgP4cZ33A8GC0RBtBIdZ1VHaloGUg+qsHUz5rVkGpwenM+ugDz5PA==",
+      "type": "package",
       "files": [
         "Content/Web.config.install.xdt",
         "Content/Web.config.uninstall.xdt",
-        "lib/net45/System.Web.Mvc.dll",
-        "lib/net45/System.Web.Mvc.xml",
-        "Microsoft.AspNet.Mvc.5.2.3.nupkg",
         "Microsoft.AspNet.Mvc.5.2.3.nupkg.sha512",
-        "Microsoft.AspNet.Mvc.nuspec"
+        "Microsoft.AspNet.Mvc.nuspec",
+        "lib/net45/System.Web.Mvc.dll",
+        "lib/net45/System.Web.Mvc.xml"
       ]
     },
     "Microsoft.AspNet.Razor/3.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "leta+Q73O7+pR8ThTqXmwaNMSqwZQQ3BHfpUHd8S1XaUWe1jRVLitMHqo1AmY7wPNLyankPA1beiUKEGj8Q3Dw==",
+      "type": "package",
       "files": [
-        "lib/net45/System.Web.Razor.dll",
-        "lib/net45/System.Web.Razor.xml",
-        "Microsoft.AspNet.Razor.3.2.3.nupkg",
         "Microsoft.AspNet.Razor.3.2.3.nupkg.sha512",
-        "Microsoft.AspNet.Razor.nuspec"
+        "Microsoft.AspNet.Razor.nuspec",
+        "lib/net45/System.Web.Razor.dll",
+        "lib/net45/System.Web.Razor.xml"
       ]
     },
     "Microsoft.AspNet.WebApi/5.2.3": {
-      "type": "package",
       "sha512": "mGBfSy61+2dIdPwgguW8EaCVsbYTwwVHeCc/pVq1PhlZS87ColgJ++Hve40TrX6Dtqde0fo9M1Tt19rXlHC5GA==",
+      "type": "package",
       "files": [
-        "Microsoft.AspNet.WebApi.5.2.3.nupkg",
         "Microsoft.AspNet.WebApi.5.2.3.nupkg.sha512",
         "Microsoft.AspNet.WebApi.nuspec"
       ]
     },
     "Microsoft.AspNet.WebApi.Client/5.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "3kiI8peSXbXHDDrRuo+QaX0iCEVRe0nvn2dBDRw656uPX32UalbBlSIDUDlJxu05eau4tnuhsikiUuugvvoUoQ==",
+      "type": "package",
       "files": [
+        "Microsoft.AspNet.WebApi.Client.5.2.3.nupkg.sha512",
+        "Microsoft.AspNet.WebApi.Client.nuspec",
         "lib/net45/System.Net.Http.Formatting.dll",
         "lib/net45/System.Net.Http.Formatting.xml",
         "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll",
-        "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.xml",
-        "Microsoft.AspNet.WebApi.Client.5.2.3.nupkg",
-        "Microsoft.AspNet.WebApi.Client.5.2.3.nupkg.sha512",
-        "Microsoft.AspNet.WebApi.Client.nuspec"
+        "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.xml"
       ]
     },
     "Microsoft.AspNet.WebApi.Core/5.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "o90QYlRV8VKR1S7+EcJw9w8WSyVFLl+IIzN8ILZ+n2t6rsc/KS8kBxRzA7wCFPRUHhebCfLqilBk39phvanx3g==",
+      "type": "package",
       "files": [
         "Content/web.config.transform",
-        "lib/net45/System.Web.Http.dll",
-        "lib/net45/System.Web.Http.xml",
-        "Microsoft.AspNet.WebApi.Core.5.2.3.nupkg",
         "Microsoft.AspNet.WebApi.Core.5.2.3.nupkg.sha512",
-        "Microsoft.AspNet.WebApi.Core.nuspec"
+        "Microsoft.AspNet.WebApi.Core.nuspec",
+        "lib/net45/System.Web.Http.dll",
+        "lib/net45/System.Web.Http.xml"
       ]
     },
     "Microsoft.AspNet.WebApi.Owin/5.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "eMftC99BNMgnp/PDbfT6OCDW94n1uVBC6bF9Z0HkkC5h1hR4LSsKoy9jvw7aXBi6PN6tuK6uje5UjWvXodbKGA==",
+      "type": "package",
       "files": [
-        "lib/net45/System.Web.Http.Owin.dll",
-        "lib/net45/System.Web.Http.Owin.xml",
-        "Microsoft.AspNet.WebApi.Owin.5.2.3.nupkg",
         "Microsoft.AspNet.WebApi.Owin.5.2.3.nupkg.sha512",
-        "Microsoft.AspNet.WebApi.Owin.nuspec"
+        "Microsoft.AspNet.WebApi.Owin.nuspec",
+        "lib/net45/System.Web.Http.Owin.dll",
+        "lib/net45/System.Web.Http.Owin.xml"
       ]
     },
     "Microsoft.AspNet.WebApi.WebHost/5.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "bhm4/BKdS3t6nK2R3NjCpxulcwtMFiHqVBDLuN3W5So1PhZfE+RBs7eVazGOhsEKCk7PoSmiSnl9DG0cpyfHtA==",
+      "type": "package",
       "files": [
-        "lib/net45/System.Web.Http.WebHost.dll",
-        "lib/net45/System.Web.Http.WebHost.xml",
-        "Microsoft.AspNet.WebApi.WebHost.5.2.3.nupkg",
         "Microsoft.AspNet.WebApi.WebHost.5.2.3.nupkg.sha512",
-        "Microsoft.AspNet.WebApi.WebHost.nuspec"
+        "Microsoft.AspNet.WebApi.WebHost.nuspec",
+        "lib/net45/System.Web.Http.WebHost.dll",
+        "lib/net45/System.Web.Http.WebHost.xml"
       ]
     },
     "Microsoft.AspNet.WebPages/3.2.3": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "zbtxBERla5RE/mhftwbrXOzc0r6lh8WcnjpGW7QQe+PvSDDx1BgsTUGzfCXO/vJznHNpY5oCSYLt8Q5vUu7F0g==",
+      "type": "package",
       "files": [
         "Content/Web.config.install.xdt",
         "Content/Web.config.uninstall.xdt",
+        "Microsoft.AspNet.WebPages.3.2.3.nupkg.sha512",
+        "Microsoft.AspNet.WebPages.nuspec",
         "lib/net45/System.Web.Helpers.dll",
         "lib/net45/System.Web.Helpers.xml",
         "lib/net45/System.Web.WebPages.Deployment.dll",
         "lib/net45/System.Web.WebPages.Deployment.xml",
-        "lib/net45/System.Web.WebPages.dll",
         "lib/net45/System.Web.WebPages.Razor.dll",
         "lib/net45/System.Web.WebPages.Razor.xml",
-        "lib/net45/System.Web.WebPages.xml",
-        "Microsoft.AspNet.WebPages.3.2.3.nupkg",
-        "Microsoft.AspNet.WebPages.3.2.3.nupkg.sha512",
-        "Microsoft.AspNet.WebPages.nuspec"
+        "lib/net45/System.Web.WebPages.dll",
+        "lib/net45/System.Web.WebPages.xml"
       ]
     },
-    "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
+    "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc2-final": {
+      "sha512": "cuBUcNmHGLqG7zT4ZpGY21w0/zQNJzfw6tz3eIEU2PNLBeA0EfV2b9LHfgrIFhn74+xmgoKhwo/0Th3d28Cubw==",
       "type": "package",
-      "serviceable": true,
-      "sha512": "ejGO1JhPXMsCCSyH12xwkOYsb9oBv2gHc3LLaT2jevrD//xuQizWaxpVk0/rHGdORkWdp+kT2Qmuz/sLyNWW/g==",
       "files": [
-        "lib/dotnet5.4/Microsoft.Extensions.Logging.Abstractions.dll",
-        "lib/dotnet5.4/Microsoft.Extensions.Logging.Abstractions.xml",
-        "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll",
-        "lib/net451/Microsoft.Extensions.Logging.Abstractions.xml",
+        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc2-final.nupkg.sha512",
+        "Microsoft.Extensions.Logging.Abstractions.nuspec",
         "lib/netcore50/Microsoft.Extensions.Logging.Abstractions.dll",
         "lib/netcore50/Microsoft.Extensions.Logging.Abstractions.xml",
-        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg",
-        "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg.sha512",
-        "Microsoft.Extensions.Logging.Abstractions.nuspec"
+        "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll",
+        "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.xml"
       ]
     },
-    "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc1-final": {
+    "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc2-final": {
+      "sha512": "OjXClhPcccu39GNAs6SH6J2iC2R883Wco7LKvPqnjo1aKJQRp9vFVFVueutJFABncZO7BZINgZCwgLxVQN3yIg==",
       "type": "package",
-      "serviceable": true,
-      "sha512": "26HS4c6MBisN+D7XUr8HObOI/JJvSJQYQR//Bfw/hi9UqhqK3lFpNKjOuYHI+gTxYdXT46HqZiz4D+k7d+ob3A==",
       "files": [
-        "lib/dotnet5.4/Microsoft.Extensions.PlatformAbstractions.dll",
-        "lib/dotnet5.4/Microsoft.Extensions.PlatformAbstractions.xml",
+        "Microsoft.Extensions.PlatformAbstractions.1.0.0-rc2-final.nupkg.sha512",
+        "Microsoft.Extensions.PlatformAbstractions.nuspec",
         "lib/net451/Microsoft.Extensions.PlatformAbstractions.dll",
         "lib/net451/Microsoft.Extensions.PlatformAbstractions.xml",
-        "Microsoft.Extensions.PlatformAbstractions.1.0.0-rc1-final.nupkg",
-        "Microsoft.Extensions.PlatformAbstractions.1.0.0-rc1-final.nupkg.sha512",
-        "Microsoft.Extensions.PlatformAbstractions.nuspec"
+        "lib/netcore50/Microsoft.Extensions.PlatformAbstractions.dll",
+        "lib/netcore50/Microsoft.Extensions.PlatformAbstractions.xml",
+        "lib/netstandard1.3/Microsoft.Extensions.PlatformAbstractions.dll",
+        "lib/netstandard1.3/Microsoft.Extensions.PlatformAbstractions.xml"
       ]
     },
     "Microsoft.Owin/3.0.1": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "64yZsGN9uRnXNVAyAT4F6KWmdDUJ6yX4uqzxKTdGANKH1oMt0IKZ7THRRa3mXIOo8iSu4tq/DCBUycUY9pXZzw==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.dll",
-        "lib/net45/Microsoft.Owin.XML",
         "Microsoft.Owin.3.0.1.nupkg",
         "Microsoft.Owin.3.0.1.nupkg.sha512",
-        "Microsoft.Owin.nuspec"
+        "Microsoft.Owin.nuspec",
+        "lib/net45/Microsoft.Owin.XML",
+        "lib/net45/Microsoft.Owin.dll"
       ]
     },
     "Microsoft.Owin.FileSystems/3.0.1": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "eseUvNAPjfPDmBYNGz8IP7g5db5zNdapqYttSdagv4BG4PrRzukxqW0PAruM/rFM823XsJW52krnHbS9NmzKlQ==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.FileSystems.dll",
-        "lib/net45/Microsoft.Owin.FileSystems.XML",
         "Microsoft.Owin.FileSystems.3.0.1.nupkg",
         "Microsoft.Owin.FileSystems.3.0.1.nupkg.sha512",
-        "Microsoft.Owin.FileSystems.nuspec"
+        "Microsoft.Owin.FileSystems.nuspec",
+        "lib/net45/Microsoft.Owin.FileSystems.XML",
+        "lib/net45/Microsoft.Owin.FileSystems.dll"
       ]
     },
     "Microsoft.Owin.Host.SystemWeb/3.0.1": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "sNKJ7cPOnXpK5fr7upc77RF0MYUg1lKeR3hiMVhXWH9LLK7UZN7bKf2YwObT0wn+bAs3LRXdjbqDH48PF243Nw==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.Host.SystemWeb.dll",
-        "lib/net45/Microsoft.Owin.Host.SystemWeb.xml",
         "Microsoft.Owin.Host.SystemWeb.3.0.1.nupkg",
         "Microsoft.Owin.Host.SystemWeb.3.0.1.nupkg.sha512",
-        "Microsoft.Owin.Host.SystemWeb.nuspec"
+        "Microsoft.Owin.Host.SystemWeb.nuspec",
+        "lib/net45/Microsoft.Owin.Host.SystemWeb.dll",
+        "lib/net45/Microsoft.Owin.Host.SystemWeb.xml"
       ]
     },
     "Microsoft.Owin.Security/2.1.0": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "4n1V0p+O6W1L0xHUM8Cjp2Y+MmmUkiCZv6PvRNIDCJD9zlerBJa2HECo9lUiWC+KuasQJ3QxB1FmipNBxdXXIQ==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.Security.dll",
-        "lib/net45/Microsoft.Owin.Security.XML",
-        "Microsoft.Owin.Security.2.1.0.nupkg",
         "Microsoft.Owin.Security.2.1.0.nupkg.sha512",
-        "Microsoft.Owin.Security.nuspec"
+        "Microsoft.Owin.Security.nuspec",
+        "lib/net45/Microsoft.Owin.Security.XML",
+        "lib/net45/Microsoft.Owin.Security.dll"
       ]
     },
     "Microsoft.Owin.Security.Cookies/2.1.0": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "P+3cjwBpUDGF+5s+oMfyySG0qvLqb71M+1q9jGSsaF0qCg14ix0qF5pEV6IqhGUEgV40E/1K4hDcWjS+essVoQ==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.Security.Cookies.dll",
-        "lib/net45/Microsoft.Owin.Security.Cookies.xml",
-        "Microsoft.Owin.Security.Cookies.2.1.0.nupkg",
         "Microsoft.Owin.Security.Cookies.2.1.0.nupkg.sha512",
-        "Microsoft.Owin.Security.Cookies.nuspec"
+        "Microsoft.Owin.Security.Cookies.nuspec",
+        "lib/net45/Microsoft.Owin.Security.Cookies.dll",
+        "lib/net45/Microsoft.Owin.Security.Cookies.xml"
       ]
     },
     "Microsoft.Owin.Security.OAuth/2.1.0": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "jR/LoeV02Cne9IV6fG4L9KR+uofPLokq6sxGy4bBDxLAAmZ35y0H/NiV6riqXSee6PypNAcJzTytJpYb0xK6Hw==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.Security.OAuth.dll",
-        "lib/net45/Microsoft.Owin.Security.OAuth.XML",
-        "Microsoft.Owin.Security.OAuth.2.1.0.nupkg",
         "Microsoft.Owin.Security.OAuth.2.1.0.nupkg.sha512",
-        "Microsoft.Owin.Security.OAuth.nuspec"
+        "Microsoft.Owin.Security.OAuth.nuspec",
+        "lib/net45/Microsoft.Owin.Security.OAuth.XML",
+        "lib/net45/Microsoft.Owin.Security.OAuth.dll"
       ]
     },
     "Microsoft.Owin.StaticFiles/3.0.1": {
-      "type": "package",
-      "serviceable": true,
       "sha512": "0Yxz8sEFZVin5QMq0q2YX3wHdY9eA4akFA9PGpugTCJ2SFErow/W0qPJRJhT/SMs3g2k7JKbxUATLB5xiBhnTw==",
+      "type": "package",
       "files": [
-        "lib/net45/Microsoft.Owin.StaticFiles.dll",
-        "lib/net45/Microsoft.Owin.StaticFiles.XML",
         "Microsoft.Owin.StaticFiles.3.0.1.nupkg",
         "Microsoft.Owin.StaticFiles.3.0.1.nupkg.sha512",
-        "Microsoft.Owin.StaticFiles.nuspec"
+        "Microsoft.Owin.StaticFiles.nuspec",
+        "lib/net45/Microsoft.Owin.StaticFiles.XML",
+        "lib/net45/Microsoft.Owin.StaticFiles.dll"
       ]
     },
     "Microsoft.Web.Infrastructure/1.0.0": {
-      "type": "package",
       "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
+      "type": "package",
       "files": [
-        "lib/net40/Microsoft.Web.Infrastructure.dll",
-        "Microsoft.Web.Infrastructure.1.0.0.nupkg",
         "Microsoft.Web.Infrastructure.1.0.0.nupkg.sha512",
-        "Microsoft.Web.Infrastructure.nuspec"
+        "Microsoft.Web.Infrastructure.nuspec",
+        "lib/net40/Microsoft.Web.Infrastructure.dll"
       ]
     },
     "Newtonsoft.Json/8.0.3": {
-      "type": "package",
       "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
+      "type": "package",
       "files": [
+        "Newtonsoft.Json.8.0.3.nupkg",
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
         "lib/net35/Newtonsoft.Json.dll",
@@ -1390,26 +729,26 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.8.0.3.nupkg",
-        "Newtonsoft.Json.8.0.3.nupkg.sha512",
-        "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
     },
     "Owin/1.0.0": {
-      "type": "package",
       "sha512": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw==",
+      "type": "package",
       "files": [
-        "lib/net40/Owin.dll",
         "Owin.1.0.0.nupkg",
         "Owin.1.0.0.nupkg.sha512",
-        "Owin.nuspec"
+        "Owin.nuspec",
+        "lib/net40/Owin.dll"
       ]
     },
     "SimpleInjector/3.1.3": {
-      "type": "package",
       "sha512": "vmuyYQ0kGzPQ/BM73uNrweHaW1yqxGCeZkP/LteF5D/NOQrTrXtUgX618lTOtpWntuNyqwW/5GB7R1IjsHhvYA==",
+      "type": "package",
       "files": [
+        "SimpleInjector.3.1.3.nupkg",
+        "SimpleInjector.3.1.3.nupkg.sha512",
+        "SimpleInjector.nuspec",
         "lib/dotnet/SimpleInjector.dll",
         "lib/dotnet/SimpleInjector.xml",
         "lib/net40-client/SimpleInjector.dll",
@@ -1417,11 +756,594 @@
         "lib/net45/SimpleInjector.dll",
         "lib/net45/SimpleInjector.xml",
         "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.dll",
-        "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.xml",
-        "SimpleInjector.3.1.3.nupkg",
-        "SimpleInjector.3.1.3.nupkg.sha512",
-        "SimpleInjector.nuspec"
+        "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.xml"
       ]
+    },
+    "System.Collections/4.0.11-rc2-24027": {
+      "sha512": "wi4oT2B06Ev7vDPeJki7HVJ3qPYJIilzf+p81JuNaBD9L2wi9Y2L5BsQ6ToncW+lYZafuMea/hiK1xX1Ge1VWQ==",
+      "type": "package",
+      "files": [
+        "System.Collections.4.0.11-rc2-24027.nupkg.sha512",
+        "System.Collections.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/netcore50/System.Collections.dll",
+        "ref/netcore50/System.Collections.xml",
+        "ref/netcore50/de/System.Collections.xml",
+        "ref/netcore50/es/System.Collections.xml",
+        "ref/netcore50/fr/System.Collections.xml",
+        "ref/netcore50/it/System.Collections.xml",
+        "ref/netcore50/ja/System.Collections.xml",
+        "ref/netcore50/ko/System.Collections.xml",
+        "ref/netcore50/ru/System.Collections.xml",
+        "ref/netcore50/zh-hans/System.Collections.xml",
+        "ref/netcore50/zh-hant/System.Collections.xml",
+        "ref/netstandard1.0/System.Collections.dll",
+        "ref/netstandard1.0/System.Collections.xml",
+        "ref/netstandard1.0/de/System.Collections.xml",
+        "ref/netstandard1.0/es/System.Collections.xml",
+        "ref/netstandard1.0/fr/System.Collections.xml",
+        "ref/netstandard1.0/it/System.Collections.xml",
+        "ref/netstandard1.0/ja/System.Collections.xml",
+        "ref/netstandard1.0/ko/System.Collections.xml",
+        "ref/netstandard1.0/ru/System.Collections.xml",
+        "ref/netstandard1.0/zh-hans/System.Collections.xml",
+        "ref/netstandard1.0/zh-hant/System.Collections.xml",
+        "ref/netstandard1.3/System.Collections.dll",
+        "ref/netstandard1.3/System.Collections.xml",
+        "ref/netstandard1.3/de/System.Collections.xml",
+        "ref/netstandard1.3/es/System.Collections.xml",
+        "ref/netstandard1.3/fr/System.Collections.xml",
+        "ref/netstandard1.3/it/System.Collections.xml",
+        "ref/netstandard1.3/ja/System.Collections.xml",
+        "ref/netstandard1.3/ko/System.Collections.xml",
+        "ref/netstandard1.3/ru/System.Collections.xml",
+        "ref/netstandard1.3/zh-hans/System.Collections.xml",
+        "ref/netstandard1.3/zh-hant/System.Collections.xml",
+        "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Collections.Concurrent/4.0.12-rc2-24027": {
+      "sha512": "0XN+QpKMG5xHRZ50hV6Yn1ojqAhZ2CL8q4vT316ipEB3yEb/ROMjC18Html5QreF12ZS6Le1AWtIB1Qgi2FzvA==",
+      "type": "package",
+      "files": [
+        "System.Collections.Concurrent.4.0.12-rc2-24027.nupkg.sha512",
+        "System.Collections.Concurrent.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/netcore50/System.Collections.Concurrent.dll",
+        "lib/netstandard1.3/System.Collections.Concurrent.dll",
+        "lib/portable-net45+win8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/netcore50/System.Collections.Concurrent.dll",
+        "ref/netcore50/System.Collections.Concurrent.xml",
+        "ref/netcore50/de/System.Collections.Concurrent.xml",
+        "ref/netcore50/es/System.Collections.Concurrent.xml",
+        "ref/netcore50/fr/System.Collections.Concurrent.xml",
+        "ref/netcore50/it/System.Collections.Concurrent.xml",
+        "ref/netcore50/ja/System.Collections.Concurrent.xml",
+        "ref/netcore50/ko/System.Collections.Concurrent.xml",
+        "ref/netcore50/ru/System.Collections.Concurrent.xml",
+        "ref/netcore50/zh-hans/System.Collections.Concurrent.xml",
+        "ref/netcore50/zh-hant/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/System.Collections.Concurrent.dll",
+        "ref/netstandard1.1/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/de/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/es/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/fr/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/it/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/ja/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/ko/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/ru/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/zh-hans/System.Collections.Concurrent.xml",
+        "ref/netstandard1.1/zh-hant/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/System.Collections.Concurrent.dll",
+        "ref/netstandard1.3/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/de/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/es/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/fr/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/it/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/ja/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/ko/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/ru/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/zh-hans/System.Collections.Concurrent.xml",
+        "ref/netstandard1.3/zh-hant/System.Collections.Concurrent.xml",
+        "ref/portable-net45+win8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Globalization/4.0.11-rc2-24027": {
+      "sha512": "RDterYo6tAE2YslHrhvAdrAkTdhGkml7tg5JGX/XwgN2GGkB3NkiqigBSaUEV4S2ftCzCFDIhCxqQy57lAsEIA==",
+      "type": "package",
+      "files": [
+        "System.Globalization.4.0.11-rc2-24027.nupkg.sha512",
+        "System.Globalization.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/netcore50/System.Globalization.dll",
+        "ref/netcore50/System.Globalization.xml",
+        "ref/netcore50/de/System.Globalization.xml",
+        "ref/netcore50/es/System.Globalization.xml",
+        "ref/netcore50/fr/System.Globalization.xml",
+        "ref/netcore50/it/System.Globalization.xml",
+        "ref/netcore50/ja/System.Globalization.xml",
+        "ref/netcore50/ko/System.Globalization.xml",
+        "ref/netcore50/ru/System.Globalization.xml",
+        "ref/netcore50/zh-hans/System.Globalization.xml",
+        "ref/netcore50/zh-hant/System.Globalization.xml",
+        "ref/netstandard1.0/System.Globalization.dll",
+        "ref/netstandard1.0/System.Globalization.xml",
+        "ref/netstandard1.0/de/System.Globalization.xml",
+        "ref/netstandard1.0/es/System.Globalization.xml",
+        "ref/netstandard1.0/fr/System.Globalization.xml",
+        "ref/netstandard1.0/it/System.Globalization.xml",
+        "ref/netstandard1.0/ja/System.Globalization.xml",
+        "ref/netstandard1.0/ko/System.Globalization.xml",
+        "ref/netstandard1.0/ru/System.Globalization.xml",
+        "ref/netstandard1.0/zh-hans/System.Globalization.xml",
+        "ref/netstandard1.0/zh-hant/System.Globalization.xml",
+        "ref/netstandard1.3/System.Globalization.dll",
+        "ref/netstandard1.3/System.Globalization.xml",
+        "ref/netstandard1.3/de/System.Globalization.xml",
+        "ref/netstandard1.3/es/System.Globalization.xml",
+        "ref/netstandard1.3/fr/System.Globalization.xml",
+        "ref/netstandard1.3/it/System.Globalization.xml",
+        "ref/netstandard1.3/ja/System.Globalization.xml",
+        "ref/netstandard1.3/ko/System.Globalization.xml",
+        "ref/netstandard1.3/ru/System.Globalization.xml",
+        "ref/netstandard1.3/zh-hans/System.Globalization.xml",
+        "ref/netstandard1.3/zh-hant/System.Globalization.xml",
+        "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Linq/4.1.0-rc2-24027": {
+      "sha512": "uf9wbc/YWrM4xa6g0T8n1XpY/zRcTHSPw+sCwkdrL2aJbYyLFKs1Yeg8M0zjMX4SwmiNeDiZR2gkAHAPsIfKCg==",
+      "type": "package",
+      "files": [
+        "System.Linq.4.1.0-rc2-24027.nupkg.sha512",
+        "System.Linq.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/net462/System.Linq.dll",
+        "lib/netcore50/System.Linq.dll",
+        "lib/netstandard1.5/System.Linq.dll",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/net462/System.Linq.dll",
+        "ref/netcore50/System.Linq.dll",
+        "ref/netcore50/System.Linq.xml",
+        "ref/netcore50/de/System.Linq.xml",
+        "ref/netcore50/es/System.Linq.xml",
+        "ref/netcore50/fr/System.Linq.xml",
+        "ref/netcore50/it/System.Linq.xml",
+        "ref/netcore50/ja/System.Linq.xml",
+        "ref/netcore50/ko/System.Linq.xml",
+        "ref/netcore50/ru/System.Linq.xml",
+        "ref/netcore50/zh-hans/System.Linq.xml",
+        "ref/netcore50/zh-hant/System.Linq.xml",
+        "ref/netstandard1.0/System.Linq.dll",
+        "ref/netstandard1.0/System.Linq.xml",
+        "ref/netstandard1.0/de/System.Linq.xml",
+        "ref/netstandard1.0/es/System.Linq.xml",
+        "ref/netstandard1.0/fr/System.Linq.xml",
+        "ref/netstandard1.0/it/System.Linq.xml",
+        "ref/netstandard1.0/ja/System.Linq.xml",
+        "ref/netstandard1.0/ko/System.Linq.xml",
+        "ref/netstandard1.0/ru/System.Linq.xml",
+        "ref/netstandard1.0/zh-hans/System.Linq.xml",
+        "ref/netstandard1.0/zh-hant/System.Linq.xml",
+        "ref/netstandard1.5/System.Linq.dll",
+        "ref/netstandard1.5/System.Linq.xml",
+        "ref/netstandard1.5/de/System.Linq.xml",
+        "ref/netstandard1.5/es/System.Linq.xml",
+        "ref/netstandard1.5/fr/System.Linq.xml",
+        "ref/netstandard1.5/it/System.Linq.xml",
+        "ref/netstandard1.5/ja/System.Linq.xml",
+        "ref/netstandard1.5/ko/System.Linq.xml",
+        "ref/netstandard1.5/ru/System.Linq.xml",
+        "ref/netstandard1.5/zh-hans/System.Linq.xml",
+        "ref/netstandard1.5/zh-hant/System.Linq.xml",
+        "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Reflection/4.1.0-rc2-24027": {
+      "sha512": "RMJrRP3I71J5PLfsX2reWDPltwJs/pJ+CbIqa2ccDVop2WlBq6CuV7FOo7l77nuYFKODI6kpATLXZKiq8V8aEQ==",
+      "type": "package",
+      "files": [
+        "System.Reflection.4.1.0-rc2-24027.nupkg.sha512",
+        "System.Reflection.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/net462/System.Reflection.dll",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/net462/System.Reflection.dll",
+        "ref/netcore50/System.Reflection.dll",
+        "ref/netcore50/System.Reflection.xml",
+        "ref/netcore50/de/System.Reflection.xml",
+        "ref/netcore50/es/System.Reflection.xml",
+        "ref/netcore50/fr/System.Reflection.xml",
+        "ref/netcore50/it/System.Reflection.xml",
+        "ref/netcore50/ja/System.Reflection.xml",
+        "ref/netcore50/ko/System.Reflection.xml",
+        "ref/netcore50/ru/System.Reflection.xml",
+        "ref/netcore50/zh-hans/System.Reflection.xml",
+        "ref/netcore50/zh-hant/System.Reflection.xml",
+        "ref/netstandard1.0/System.Reflection.dll",
+        "ref/netstandard1.0/System.Reflection.xml",
+        "ref/netstandard1.0/de/System.Reflection.xml",
+        "ref/netstandard1.0/es/System.Reflection.xml",
+        "ref/netstandard1.0/fr/System.Reflection.xml",
+        "ref/netstandard1.0/it/System.Reflection.xml",
+        "ref/netstandard1.0/ja/System.Reflection.xml",
+        "ref/netstandard1.0/ko/System.Reflection.xml",
+        "ref/netstandard1.0/ru/System.Reflection.xml",
+        "ref/netstandard1.0/zh-hans/System.Reflection.xml",
+        "ref/netstandard1.0/zh-hant/System.Reflection.xml",
+        "ref/netstandard1.3/System.Reflection.dll",
+        "ref/netstandard1.3/System.Reflection.xml",
+        "ref/netstandard1.3/de/System.Reflection.xml",
+        "ref/netstandard1.3/es/System.Reflection.xml",
+        "ref/netstandard1.3/fr/System.Reflection.xml",
+        "ref/netstandard1.3/it/System.Reflection.xml",
+        "ref/netstandard1.3/ja/System.Reflection.xml",
+        "ref/netstandard1.3/ko/System.Reflection.xml",
+        "ref/netstandard1.3/ru/System.Reflection.xml",
+        "ref/netstandard1.3/zh-hans/System.Reflection.xml",
+        "ref/netstandard1.3/zh-hant/System.Reflection.xml",
+        "ref/netstandard1.5/System.Reflection.dll",
+        "ref/netstandard1.5/System.Reflection.xml",
+        "ref/netstandard1.5/de/System.Reflection.xml",
+        "ref/netstandard1.5/es/System.Reflection.xml",
+        "ref/netstandard1.5/fr/System.Reflection.xml",
+        "ref/netstandard1.5/it/System.Reflection.xml",
+        "ref/netstandard1.5/ja/System.Reflection.xml",
+        "ref/netstandard1.5/ko/System.Reflection.xml",
+        "ref/netstandard1.5/ru/System.Reflection.xml",
+        "ref/netstandard1.5/zh-hans/System.Reflection.xml",
+        "ref/netstandard1.5/zh-hant/System.Reflection.xml",
+        "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Resources.ResourceManager/4.0.1-rc2-24027": {
+      "sha512": "WFDuYprqRWAVcQzArAqgabw9bbGPBaogBG17sGtZ5Iyb7ddOcIs89QYdcxdatPkSYOFNWydwSY2fyOjhIKMIcA==",
+      "type": "package",
+      "files": [
+        "System.Resources.ResourceManager.4.0.1-rc2-24027.nupkg.sha512",
+        "System.Resources.ResourceManager.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/netcore50/System.Resources.ResourceManager.dll",
+        "ref/netcore50/System.Resources.ResourceManager.xml",
+        "ref/netcore50/de/System.Resources.ResourceManager.xml",
+        "ref/netcore50/es/System.Resources.ResourceManager.xml",
+        "ref/netcore50/fr/System.Resources.ResourceManager.xml",
+        "ref/netcore50/it/System.Resources.ResourceManager.xml",
+        "ref/netcore50/ja/System.Resources.ResourceManager.xml",
+        "ref/netcore50/ko/System.Resources.ResourceManager.xml",
+        "ref/netcore50/ru/System.Resources.ResourceManager.xml",
+        "ref/netcore50/zh-hans/System.Resources.ResourceManager.xml",
+        "ref/netcore50/zh-hant/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/System.Resources.ResourceManager.dll",
+        "ref/netstandard1.0/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/de/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/es/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/fr/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/it/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/ja/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/ko/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/ru/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/zh-hans/System.Resources.ResourceManager.xml",
+        "ref/netstandard1.0/zh-hant/System.Resources.ResourceManager.xml",
+        "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Runtime.Extensions/4.1.0-rc2-24027": {
+      "sha512": "rHmAgtQY8XlVd4tB/5ta8IzxAL9gpUlkTYQgUXDjdHux2MFmDSJv4vgm/atmwbKZcd0TnzjD2SYpnkWSqDWgFg==",
+      "type": "package",
+      "files": [
+        "System.Runtime.Extensions.4.1.0-rc2-24027.nupkg.sha512",
+        "System.Runtime.Extensions.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/net462/System.Runtime.Extensions.dll",
+        "lib/portable-net45+win8+wp8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/net462/System.Runtime.Extensions.dll",
+        "ref/netcore50/System.Runtime.Extensions.dll",
+        "ref/netcore50/System.Runtime.Extensions.xml",
+        "ref/netcore50/de/System.Runtime.Extensions.xml",
+        "ref/netcore50/es/System.Runtime.Extensions.xml",
+        "ref/netcore50/fr/System.Runtime.Extensions.xml",
+        "ref/netcore50/it/System.Runtime.Extensions.xml",
+        "ref/netcore50/ja/System.Runtime.Extensions.xml",
+        "ref/netcore50/ko/System.Runtime.Extensions.xml",
+        "ref/netcore50/ru/System.Runtime.Extensions.xml",
+        "ref/netcore50/zh-hans/System.Runtime.Extensions.xml",
+        "ref/netcore50/zh-hant/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/System.Runtime.Extensions.dll",
+        "ref/netstandard1.0/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/de/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/es/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/fr/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/it/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/ja/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/ko/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/ru/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/zh-hans/System.Runtime.Extensions.xml",
+        "ref/netstandard1.0/zh-hant/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/System.Runtime.Extensions.dll",
+        "ref/netstandard1.3/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/de/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/es/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/fr/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/it/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/ja/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/ko/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/ru/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/zh-hans/System.Runtime.Extensions.xml",
+        "ref/netstandard1.3/zh-hant/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/System.Runtime.Extensions.dll",
+        "ref/netstandard1.5/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/de/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/es/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/fr/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/it/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/ja/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/ko/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/ru/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/zh-hans/System.Runtime.Extensions.xml",
+        "ref/netstandard1.5/zh-hant/System.Runtime.Extensions.xml",
+        "ref/portable-net45+win8+wp8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.Runtime.InteropServices/4.1.0-rc2-24027": {
+      "sha512": "HMTGM3YyFBqDSP4STwC2YC51PInAQNMRj4V3rodwhaeAl+DnRKYqRFnd3eO2l99JqrcBIgg48SFGU9zglQC38w==",
+      "type": "package",
+      "files": [
+        "System.Runtime.InteropServices.4.1.0-rc2-24027.nupkg.sha512",
+        "System.Runtime.InteropServices.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/net462/System.Runtime.InteropServices.dll",
+        "lib/portable-net45+win8+wpa81/_._",
+        "lib/win8/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/net462/System.Runtime.InteropServices.dll",
+        "ref/netcore50/System.Runtime.InteropServices.dll",
+        "ref/netcore50/System.Runtime.InteropServices.xml",
+        "ref/netcore50/de/System.Runtime.InteropServices.xml",
+        "ref/netcore50/es/System.Runtime.InteropServices.xml",
+        "ref/netcore50/fr/System.Runtime.InteropServices.xml",
+        "ref/netcore50/it/System.Runtime.InteropServices.xml",
+        "ref/netcore50/ja/System.Runtime.InteropServices.xml",
+        "ref/netcore50/ko/System.Runtime.InteropServices.xml",
+        "ref/netcore50/ru/System.Runtime.InteropServices.xml",
+        "ref/netcore50/zh-hans/System.Runtime.InteropServices.xml",
+        "ref/netcore50/zh-hant/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/System.Runtime.InteropServices.dll",
+        "ref/netstandard1.1/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/de/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/es/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/fr/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/it/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/ja/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/ko/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/ru/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/zh-hans/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.1/zh-hant/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/System.Runtime.InteropServices.dll",
+        "ref/netstandard1.2/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/de/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/es/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/fr/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/it/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/ja/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/ko/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/ru/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/zh-hans/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.2/zh-hant/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/System.Runtime.InteropServices.dll",
+        "ref/netstandard1.3/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/de/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/es/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/fr/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/it/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/ja/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/ko/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/ru/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/zh-hans/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.3/zh-hant/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/System.Runtime.InteropServices.dll",
+        "ref/netstandard1.5/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/de/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/es/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/fr/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/it/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/ja/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/ko/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/ru/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/zh-hans/System.Runtime.InteropServices.xml",
+        "ref/netstandard1.5/zh-hant/System.Runtime.InteropServices.xml",
+        "ref/portable-net45+win8+wpa81/_._",
+        "ref/win8/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc2-build00001": {
+      "type": "project",
+      "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
+      "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
+    },
+    "Umbrella.Legacy.Utilities/1.0.0-rc2-build00001": {
+      "type": "project",
+      "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json",
+      "msbuildProject": "../../Legacy/Umbrella.Legacy.Utilities/Umbrella.Legacy.Utilities.xproj"
+    },
+    "Umbrella.Legacy.WebUtilities/1.0.0-rc2-build00001": {
+      "type": "project",
+      "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json",
+      "msbuildProject": "../../Legacy/Umbrella.Legacy.WebUtilities/Umbrella.Legacy.WebUtilities.xproj"
+    },
+    "Umbrella.Utilities/1.0.0-rc2-build00001": {
+      "type": "project",
+      "path": "../../Core/Umbrella.Utilities/project.json",
+      "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
+    },
+    "Umbrella.WebUtilities/1.0.0-rc2-build00001": {
+      "type": "project",
+      "path": "../../Core/Umbrella.WebUtilities/project.json",
+      "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -1430,5 +1352,7 @@
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": []
-  }
+  },
+  "tools": {},
+  "projectFileToolGroups": {}
 }

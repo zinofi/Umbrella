@@ -17,9 +17,9 @@ namespace Umbrella.Utilities.Extensions
             LogDetails(log, LogLevel.Debug, null, state, message, methodName, filePath, lineNumber);
         }
 
-        public static void WriteVerbose(this ILogger log, string message, object state = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static void WriteTrace(this ILogger log, string message, object state = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogDetails(log, LogLevel.Verbose, null, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Trace, null, state, message, methodName, filePath, lineNumber);
         }
 
         public static void WriteInformation(this ILogger log, string message, object state = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
@@ -77,8 +77,8 @@ namespace Umbrella.Utilities.Extensions
                 case LogLevel.Debug:
                     log.LogDebug(output);
                     break;
-                case LogLevel.Verbose:
-                    log.LogVerbose(output);
+                case LogLevel.Trace:
+                    log.LogTrace(output);
                     break;
                 case LogLevel.Information:
                     log.LogInformation(output);

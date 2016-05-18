@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Data.Entity;
 using System.Linq.Expressions;
 using Umbrella.DataAccess.Interfaces;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Enumerations;
 using Umbrella.Utilities.Extensions;
 using Umbrella.DataAccess.Exceptions;
-using Microsoft.Data.Entity.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore
 {

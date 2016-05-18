@@ -17,7 +17,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
     /// <summary>
     /// Asp.Net configuration provider to read secrets from key vault. This requires List and Get permissions on the vault.
     /// </summary>
-    public class AzureKeyVaultConfigurationProvider : ConfigurationProvider
+    public class AzureKeyVaultConfigurationProvider : ConfigurationProvider, IConfigurationSource
     {
         private enum ClientAuthenticationMode
         {
@@ -175,6 +175,11 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
             }
 
             return result.AccessToken;
+        }
+
+        public IConfigurationProvider Build(IConfigurationBuilder builder)
+        {
+            return this;
         }
     }
 }

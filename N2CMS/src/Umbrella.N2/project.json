@@ -1,10 +1,8 @@
 {
-  "version": "1.0.0-rc1-build00038",
+  "version": "1.0.0-rc2-build00001",
   "description": "Umbrella.N2.Utilities Class Library",
   "authors": [ "Richard Edwards" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
@@ -21,17 +19,19 @@
     "Umbrella.WebUtilities": "1.0.0-*",
     "Umbrella.WebUtilities.DynamicImage": "1.0.0-*"
   },
-  "resourceFiles": [
-    "CustomProperties/ImageGallery/Controls/ImageGalleryEditorControl.ascx",
-    "CustomProperties/ImageGallery/Controls/ImageGallerySummaryControl.ascx",
-    "CustomProperties/ImageGallery/Resources/ImageGallery.css",
-    "CustomProperties/ImageGallery/Resources/ImageGallery.js",
-    "CustomProperties/LinkEditor/Controls/ImageEditorPopup.ascx",
-    "CustomProperties/LinkEditor/Controls/LinkEditorPopup.ascx",
-    "CustomProperties/LinkEditor/Controls/LinkListPopup.ascx",
-    "CustomProperties/LinkEditor/Resources/down-arrow.png",
-    "CustomProperties/LinkEditor/Resources/LinkEditor.css",
-    "CustomProperties/LinkEditor/Resources/LinkEditor.js",
-    "CustomProperties/LinkEditor/Resources/up-arrow.png"
-  ]
+  "buildOptions": {
+    "embed": [
+      "CustomProperties/ImageGallery/Controls/ImageGalleryEditorControl.ascx",
+      "CustomProperties/ImageGallery/Controls/ImageGallerySummaryControl.ascx",
+      "CustomProperties/ImageGallery/Resources/ImageGallery.css",
+      "CustomProperties/ImageGallery/Resources/ImageGallery.js",
+      "CustomProperties/LinkEditor/Controls/ImageEditorPopup.ascx",
+      "CustomProperties/LinkEditor/Controls/LinkEditorPopup.ascx",
+      "CustomProperties/LinkEditor/Controls/LinkListPopup.ascx",
+      "CustomProperties/LinkEditor/Resources/down-arrow.png",
+      "CustomProperties/LinkEditor/Resources/LinkEditor.css",
+      "CustomProperties/LinkEditor/Resources/LinkEditor.js",
+      "CustomProperties/LinkEditor/Resources/up-arrow.png"
+    ]
+  }
 }

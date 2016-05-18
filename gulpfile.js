@@ -1,4 +1,4 @@
-/// <binding AfterBuild='copy' />
+/// <binding />
 var gulp = require("gulp");
 var flatten = require("gulp-flatten");
 

@@ -142,14 +142,13 @@ namespace Umbrella.TypeScript
             }
             else
             {
-                object instance = Activator.CreateInstance(info.CLRType);
+                //object instance = Activator.CreateInstance(info.CLRType);
 
-                info.InitialOutputValue = instance.ToString();
+                info.InitialOutputValue = "null"; //instance.ToString();
 
-                //If we are dealing with a date, ensure it wrapped in quotes
                 if (info.CLRType == typeof(DateTime))
                 {
-                    info.InitialOutputValue = string.Format("\"{0}\"", DateTime.MinValue.ToUniversalTime().ToString("o"));
+                    info.InitialOutputValue = "null";
                 }
                 else if (info.CLRType.IsEnum)
                 {

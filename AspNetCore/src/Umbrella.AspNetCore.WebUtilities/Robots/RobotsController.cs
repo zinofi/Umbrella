@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Mvc;
-using Microsoft.Extensions.OptionsModel;
-using Microsoft.AspNet.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Threading;
 using Umbrella.Utilities.Extensions;

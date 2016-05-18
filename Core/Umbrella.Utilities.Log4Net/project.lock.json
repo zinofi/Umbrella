@@ -21,112 +21,12 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       }
-    },
-    "DNX,Version=v4.6": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      }
-    },
-    ".NETFramework,Version=v4.6/win7-x86": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      }
-    },
-    ".NETFramework,Version=v4.6/win7-x64": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      }
-    },
-    "DNX,Version=v4.6/win7-x86": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      }
-    },
-    "DNX,Version=v4.6/win7-x64": {
-      "log4net/2.0.5": {
-        "type": "package",
-        "compile": {
-          "lib/net45-full/log4net.dll": {}
-        },
-        "runtime": {
-          "lib/net45-full/log4net.dll": {}
-        }
-      },
-      "Newtonsoft.Json/8.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      }
     }
   },
   "libraries": {
     "log4net/2.0.5": {
-      "type": "package",
       "sha512": "AEqPZz+v+OikfnR2SqRVdQPnSaLq5y9Iz1CfRQZ9kTKPYCXHG6zYmDHb7wJotICpDLMr/JqokyjiqKAjUKp0ng==",
+      "type": "package",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -150,9 +50,12 @@
       ]
     },
     "Newtonsoft.Json/8.0.3": {
-      "type": "package",
       "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
+      "type": "package",
       "files": [
+        "Newtonsoft.Json.8.0.3.nupkg",
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
         "lib/net35/Newtonsoft.Json.dll",
@@ -165,19 +68,17 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.8.0.3.nupkg",
-        "Newtonsoft.Json.8.0.3.nupkg.sha512",
-        "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
-      "log4net >= 2.0.5",
-      "Newtonsoft.Json >= 8.0.3"
+      "Newtonsoft.Json >= 8.0.3",
+      "log4net >= 2.0.5"
     ],
-    ".NETFramework,Version=v4.6": [],
-    "DNX,Version=v4.6": []
-  }
+    ".NETFramework,Version=v4.6": []
+  },
+  "tools": {},
+  "projectFileToolGroups": {}
 }

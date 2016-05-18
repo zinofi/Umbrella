@@ -13,7 +13,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
             _logger = LogManager.GetLogger(loggerName);
         }
 
-        public IDisposable BeginScopeImpl(object state)
+        public IDisposable BeginScope<TState>(TState state)
         {
             return null;
         }
@@ -22,7 +22,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
         {
             switch (logLevel)
             {
-                case LogLevel.Verbose:
+                case LogLevel.Trace:
                 case LogLevel.Debug:
                     return _logger.IsDebugEnabled;
                 case LogLevel.Information:
@@ -38,24 +38,31 @@ namespace Umbrella.Extensions.Logging.Log4Net
             }
         }
 
-        public void Log(LogLevel logLevel, int eventId, object state, Exception exception, Func<object, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {
                 return;
             }
+
             string message = null;
+
             if (null != formatter)
             {
                 message = formatter(state, exception);
             }
             else
             {
-                message = LogFormatter.Formatter(state, exception);
+                //TODO: RC2 - The LogFormatter class has disappeared in RC2. May need to find a replacement
+                //if this exception gets thrown.
+                //message = LogFormatter.Formatter(state, exception);
+
+                throw new InvalidOperationException();
             }
+
             switch (logLevel)
             {
-                case LogLevel.Verbose:
+                case LogLevel.Trace:
                 case LogLevel.Debug:
                     _logger.Debug(message, exception);
                     break;

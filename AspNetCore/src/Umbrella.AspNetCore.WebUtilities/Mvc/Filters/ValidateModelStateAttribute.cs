@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;

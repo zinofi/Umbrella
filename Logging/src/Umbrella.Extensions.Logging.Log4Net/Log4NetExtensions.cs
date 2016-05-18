@@ -25,8 +25,9 @@ namespace Umbrella.Extensions.Logging.Log4Net
         /// <param name="configFileRelativePath">The file path to the relative to the value of <see cref="IApplicationEnvironment.ApplicationBasePath"/>.
         /// This path is the root of your CLI application and is normally the parent directory of your wwwroot folder.
         /// </param>
-        public static void ConfigureLog4Net(this IApplicationEnvironment appEnv, string configFileRelativePath)
+        public static void ConfigureLog4Net(this ApplicationEnvironment appEnv, string configFileRelativePath)
         {
+            //TODO: RC2 - This might not work
             GlobalContext.Properties["appRoot"] = appEnv.ApplicationBasePath;
             XmlConfigurator.ConfigureAndWatch(new FileInfo(Path.Combine(appEnv.ApplicationBasePath, configFileRelativePath)));
         }

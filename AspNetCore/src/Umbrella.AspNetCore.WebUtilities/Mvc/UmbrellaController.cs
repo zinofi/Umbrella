@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Extensions;
 using Microsoft.Extensions.Logging;

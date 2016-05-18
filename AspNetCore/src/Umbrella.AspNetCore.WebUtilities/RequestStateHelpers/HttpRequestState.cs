@@ -1,6 +1,6 @@
 ﻿using Umbrella.WebUtilities.RequestStateHelpers.Interfaces;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;

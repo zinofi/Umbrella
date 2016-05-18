@@ -1,10 +1,8 @@
 {
-  "version": "1.0.0-rc1-build00038",
+  "version": "1.0.0-rc2-build00001",
   "description": "Umbrella.Legacy.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
@@ -26,8 +24,10 @@
     "Umbrella.Legacy.Utilities": "1.0.0-*",
     "Umbrella.WebUtilities": "1.0.0-*"
   },
-  "resourceFiles": [
-    "GlobalResources/DialogModal.css",
-    "GlobalResources/DialogModal.js"
-  ]
+  "buildOptions": {
+    "embed": [
+      "GlobalResources/DialogModal.css",
+      "GlobalResources/DialogModal.js"
+    ]
+  }
 }
