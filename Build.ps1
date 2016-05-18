@@ -16,5 +16,8 @@ else
 
 &$script -version $sdkVersion
 
- # run dotnet restore on all project.json files in the folder structure including 2>1 to redirect stderr to stdout for badly behaved tools
-Get-ChildItem -Path $PSScriptRoot -Filter project.json -Recurse | ForEach-Object { & dotnet restore $_.FullName 2>1 }
+ # run dotnet restore which will restore all packages by examing the global.json file and finding the project.json files automatically
+& dotnet restore
+
+# run dotnet build on all project.json files in the folder structure including 2>1 to redirect stderr to stdout for badly behaved tools
+Get-ChildItem -Path $PSScriptRoot -Filter project.json -Recurse | ForEach-Object { & dotnet build $_.FullName 2>1 }
