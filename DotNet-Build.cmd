@@ -1,1 +1,1 @@
-%LOCALAPPDATA%\Microsoft\DotNet\dotnet build **/project.json
+%LOCALAPPDATA%\Microsoft\DotNet\dotnet build **/project.json -c Release
