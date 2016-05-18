@@ -1,0 +1,1 @@
+%LOCALAPPDATA%\Microsoft\DotNet\dotnet restore
