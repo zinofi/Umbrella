@@ -15,7 +15,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
     public abstract class UmbrellaApiController : UmbrellaController
     {
         #region Constructors
-        public UmbrellaApiController(ILogger logger)
+        public UmbrellaApiController(ILoger logger)
             : base(logger)
         {
         }
