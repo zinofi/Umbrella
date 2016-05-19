@@ -353,7 +353,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc2-build00001": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -372,7 +372,7 @@
           "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rc2-build00001": {
+      "Umbrella.Legacy.Utilities/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -388,7 +388,7 @@
           "net46/Umbrella.Legacy.Utilities.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc2-build00001": {
+      "Umbrella.Utilities/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -408,7 +408,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rc2-build00001": {
+      "Umbrella.WebUtilities/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -566,7 +566,7 @@
       ]
     },
     "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc2-final": {
-      "sha512": "cuBUcNmHGLqG7zT4ZpGY21w0/zQNJzfw6tz3eIEU2PNLBeA0EfV2b9LHfgrIFhn74+xmgoKhwo/0Th3d28Cubw==",
+      "sha512": "VtbfWYt9+TFZJX6VMxRi69J2FJVVe+vXxt3bt6SU/Ogdt0EqKhYNASy+mbdwqehPCVUiLkE6cdoYzYvAIAEGSw==",
       "type": "package",
       "files": [
         "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc2-final.nupkg.sha512",
@@ -578,7 +578,7 @@
       ]
     },
     "Microsoft.Extensions.PlatformAbstractions/1.0.0-rc2-final": {
-      "sha512": "OjXClhPcccu39GNAs6SH6J2iC2R883Wco7LKvPqnjo1aKJQRp9vFVFVueutJFABncZO7BZINgZCwgLxVQN3yIg==",
+      "sha512": "fQSiG4u+IteQMY+D9XrQxCx96wq553EaXoANerD7mLu9+yFtgQXbiE53sSvJAldp7PfukDStz70WCanSOmPFxQ==",
       "type": "package",
       "files": [
         "Microsoft.Extensions.PlatformAbstractions.1.0.0-rc2-final.nupkg.sha512",
@@ -1267,22 +1267,22 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc2-build00001": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
       "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rc2-build00001": {
+    "Umbrella.Legacy.Utilities/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json",
       "msbuildProject": "../Umbrella.Legacy.Utilities/Umbrella.Legacy.Utilities.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rc2-build00001": {
+    "Umbrella.Utilities/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rc2-build00001": {
+    "Umbrella.WebUtilities/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"

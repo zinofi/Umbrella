@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Umbrella.AspNetCore.WebUtilities.Mvc.ModelState;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -14,10 +16,22 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
     [ServiceFilter(typeof(ValidateModelStateAttribute))]
     public abstract class UmbrellaApiController : UmbrellaController
     {
+        #region Private Members
+        private readonly IModelStateTransformer m_ModelStateTransformer; 
+        #endregion
+
         #region Constructors
-        public UmbrellaApiController(ILogger logger)
+        public UmbrellaApiController(ILogger logger, IModelStateTransformer modelStateTransformer)
             : base(logger)
         {
+            m_ModelStateTransformer = modelStateTransformer;
+        }
+        #endregion
+
+        #region Overridden Methods
+        public override BadRequestObjectResult BadRequest(ModelStateDictionary modelState)
+        {
+            return BadRequest(m_ModelStateTransformer.TransformToObject(ModelState));
         }
         #endregion
 

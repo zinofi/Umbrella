@@ -117,7 +117,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rc2-build00001": {
+      "Umbrella.DataAccess/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -130,7 +130,7 @@
           "net46/Umbrella.DataAccess.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rc2-build00001": {
+      "Umbrella.Utilities/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -775,12 +775,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.DataAccess/1.0.0-rc2-build00001": {
+    "Umbrella.DataAccess/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../Umbrella.DataAccess/project.json",
       "msbuildProject": "../Umbrella.DataAccess/Umbrella.DataAccess.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rc2-build00001": {
+    "Umbrella.Utilities/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
