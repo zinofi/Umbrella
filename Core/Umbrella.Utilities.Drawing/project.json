@@ -1,0 +1,15 @@
+﻿{
+  "version": "1.0.0-rc2-build00002",
+  "description": "Umbrella.Utilities Class Library",
+  "authors": [ "Richard Edwards" ],
+  "dependencies": {
+  },
+
+  "frameworks": {
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0"
+      }
+    }
+  }
+}

@@ -6,7 +6,6 @@
     "net46": {
       "frameworkAssemblies": {
         "System.Configuration": "4.0.0.0",
-        "System.Drawing": "4.0.0.0",
         "System.Runtime": "4.0.20.0",
         "System.Runtime.Caching": "4.0.0.0"
       }

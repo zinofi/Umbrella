@@ -1186,7 +1186,7 @@
           "lib/net35/xunit.runner.utility.desktop.dll": {}
         }
       },
-      "Umbrella.AspNetCore.WebUtilities/1.0.0-rc2-build00001": {
+      "Umbrella.AspNetCore.WebUtilities/1.0.0-rc2-build00002": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1211,7 +1211,6 @@
         },
         "frameworkAssemblies": [
           "System.Configuration",
-          "System.Drawing",
           "System.Runtime",
           "System.Runtime.Caching"
         ],
@@ -3596,7 +3595,7 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "Umbrella.AspNetCore.WebUtilities/1.0.0-rc2-build00001": {
+    "Umbrella.AspNetCore.WebUtilities/1.0.0-rc2-build00002": {
       "type": "project",
       "path": "../../AspNetCore/Umbrella.AspNetCore.WebUtilities/project.json",
       "msbuildProject": "../../AspNetCore/Umbrella.AspNetCore.WebUtilities/Umbrella.AspNetCore.WebUtilities.xproj"

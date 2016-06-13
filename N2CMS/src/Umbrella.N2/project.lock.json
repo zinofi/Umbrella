@@ -580,7 +580,6 @@
         },
         "frameworkAssemblies": [
           "System.Configuration",
-          "System.Drawing",
           "System.Runtime",
           "System.Runtime.Caching"
         ],
@@ -1692,6 +1691,7 @@
       "Umbrella.WebUtilities.DynamicImage >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": [
+      "System.Drawing >= 4.0.0",
       "System.Web >= 4.0.0"
     ]
   },

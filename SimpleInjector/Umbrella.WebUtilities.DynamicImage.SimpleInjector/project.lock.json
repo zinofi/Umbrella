@@ -169,7 +169,6 @@
         },
         "frameworkAssemblies": [
           "System.Configuration",
-          "System.Drawing",
           "System.Runtime",
           "System.Runtime.Caching"
         ],
