@@ -12,36 +12,38 @@ namespace Umbrella.Utilities.Extensions
     public static class ILoggerExtensions
     {
         #region Public Static Methods
-        public static void WriteDebug(this ILogger log, string message, object state = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static void WriteDebug(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Debug, null, state, message, methodName, filePath, lineNumber);
         }
 
-        public static void WriteTrace(this ILogger log, string message, object state = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static void WriteTrace(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Trace, null, state, message, methodName, filePath, lineNumber);
         }
 
-        public static void WriteInformation(this ILogger log, string message, object state = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static void WriteInformation(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Information, null, state, message, methodName, filePath, lineNumber);
         }
 
-        public static void WriteWarning(this ILogger log, string message = null, object state = null, Exception exc = null, [CallerMemberName]string methodName = null, [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static bool WriteWarning(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogDetails(log, LogLevel.Warning, exc, state, message, methodName, filePath, lineNumber);
+            LogWarningErrorOrCritical(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
+
+            return returnValue;
         }
 
         public static bool WriteError(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogErrorOrCritical(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
+            LogWarningErrorOrCritical(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
         public static bool WriteCritical(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogErrorOrCritical(log, LogLevel.Critical, exc, state, message, methodName, filePath, lineNumber);
+            LogWarningErrorOrCritical(log, LogLevel.Critical, exc, state, message, methodName, filePath, lineNumber);
 
             return returnValue;
         }
@@ -84,18 +86,18 @@ namespace Umbrella.Utilities.Extensions
                     log.LogInformation(output);
                     break;
                 case LogLevel.Warning:
-                    log.LogWarning(output, exc);
+                    log.LogWarning(new EventId(), exc, output);
                     break;
                 case LogLevel.Error:
-                    log.LogError(output, exc);
+                    log.LogError(new EventId(), exc, output);
                     break;
                 case LogLevel.Critical:
-                    log.LogCritical(output, exc);
+                    log.LogCritical(new EventId(), exc, output);
                     break;
             }
         }
 
-        private static void LogErrorOrCritical(ILogger log, LogLevel level, Exception exc, object state, string message, string methodName, string filePath, int lineNumber)
+        private static void LogWarningErrorOrCritical(ILogger log, LogLevel level, Exception exc, object state, string message, string methodName, string filePath, int lineNumber)
         {
             LogDetails(log, level, exc, state, message, methodName, filePath, lineNumber);
 
