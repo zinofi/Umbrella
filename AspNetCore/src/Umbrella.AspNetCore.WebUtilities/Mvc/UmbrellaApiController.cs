@@ -7,6 +7,7 @@ using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelState;
+using Umbrella.DataAccess.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -59,6 +60,20 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
             }
 
             return StatusCode(statusCode);
+        }
+        #endregion
+
+        #region Protected Methods
+        protected IActionResult HandleDataValidationException(DataAccessValidationException exc)
+        {
+            switch (exc.ValidationType)
+            {
+                case DataValidationType.Conflict:
+                    return Conflict(exc.Message);
+                case DataValidationType.Invalid:
+                default:
+                    return BadRequest(exc.Message);
+            }
         }
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-rc2-build00002",
   "description": "Umbrella.AspNetCore.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
@@ -11,6 +11,7 @@
     "Microsoft.AspNetCore.Hosting": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Http": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
+    "Umbrella.DataAccess": "1.0.0-rc2-build00002",
     "Umbrella.WebUtilities": "1.0.0-*"
   }
 }

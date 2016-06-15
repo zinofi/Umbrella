@@ -11,7 +11,7 @@ namespace Umbrella.DataAccess
     /// This type is useful when working with entities that do not implement the <see cref="IUserAuditEntity{T}"/> interface.
     /// </summary>
     /// <typeparam name="T">The type used for the user id</typeparam>
-    public class NoopUserAuditDataFactory<T> : IUserAuditDataFactory<T>
+    public sealed class NoopUserAuditDataFactory<T> : IUserAuditDataFactory<T>
     {
         public T CurrentUserId => default(T);
     }

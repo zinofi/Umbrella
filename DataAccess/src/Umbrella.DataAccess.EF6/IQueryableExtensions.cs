@@ -8,7 +8,8 @@ namespace Umbrella.DataAccess.EF6
 {
     public static class IQueryableExtensions
     {
-        public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity> map) where TEntity : class
+        public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity> map)
+            where TEntity : class
         {
             if (map == null)
                 return items;
@@ -22,5 +23,8 @@ namespace Umbrella.DataAccess.EF6
 
             return query;
         }
+
+        public static IQueryable<TEntity> AsNoTrackingIf<TEntity>(this IQueryable<TEntity> items, bool asNoTracking) where TEntity : class
+            => asNoTracking ? items.AsNoTracking() : items;
     }
 }

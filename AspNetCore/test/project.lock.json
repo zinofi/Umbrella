@@ -1193,6 +1193,7 @@
           "Microsoft.AspNetCore.Hosting": "1.0.0-rc2-final",
           "Microsoft.AspNetCore.Http": "1.0.0-rc2-final",
           "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0-rc2-final",
+          "Umbrella.DataAccess": "1.0.0-rc2-build00002",
           "Umbrella.WebUtilities": "1.0.0"
         },
         "compile": {
@@ -1200,6 +1201,19 @@
         },
         "runtime": {
           "net46/Umbrella.AspNetCore.WebUtilities.dll": {}
+        }
+      },
+      "Umbrella.DataAccess/1.0.0-rc2-build00002": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "Umbrella.Utilities": "1.0.0"
+        },
+        "compile": {
+          "net46/Umbrella.DataAccess.dll": {}
+        },
+        "runtime": {
+          "net46/Umbrella.DataAccess.dll": {}
         }
       },
       "Umbrella.Utilities/1.0.0-rc2-build00002": {
@@ -3599,6 +3613,11 @@
       "type": "project",
       "path": "../../AspNetCore/Umbrella.AspNetCore.WebUtilities/project.json",
       "msbuildProject": "../../AspNetCore/Umbrella.AspNetCore.WebUtilities/Umbrella.AspNetCore.WebUtilities.xproj"
+    },
+    "Umbrella.DataAccess/1.0.0-rc2-build00002": {
+      "type": "project",
+      "path": "../../Core/Umbrella.DataAccess/project.json",
+      "msbuildProject": "../../Core/Umbrella.DataAccess/Umbrella.DataAccess.xproj"
     },
     "Umbrella.Utilities/1.0.0-rc2-build00002": {
       "type": "project",

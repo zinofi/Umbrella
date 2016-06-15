@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Umbrella.DataAccess.Interfaces;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.DataAccess.EntityFrameworkCore
+namespace Umbrella.DataAccess.EF6
 {
     [Obsolete("Do not use this. This should only be used from Code First and it needs the implementation for applying concurrency tokens to columns sorting out properly.", true)]
     public class UmbrellaDbContext : DbContext

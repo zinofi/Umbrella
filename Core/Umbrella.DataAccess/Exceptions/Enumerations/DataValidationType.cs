@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.DataAccess.Exceptions.Enumerations
+namespace Umbrella.DataAccess.Exceptions
 {
 	public enum DataValidationType
 	{
