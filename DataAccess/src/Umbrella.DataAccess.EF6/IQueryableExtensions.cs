@@ -24,7 +24,7 @@ namespace Umbrella.DataAccess.EF6
             return query;
         }
 
-        public static IQueryable<TEntity> AsNoTrackingIf<TEntity>(this IQueryable<TEntity> items, bool asNoTracking) where TEntity : class
-            => asNoTracking ? items.AsNoTracking() : items;
+        public static IQueryable<TEntity> TrackChanges<TEntity>(this IQueryable<TEntity> items, bool trackChanges) where TEntity : class
+            => trackChanges ? items : items.AsNoTracking();
     }
 }

@@ -246,7 +246,7 @@ namespace Umbrella.DataAccess.EF6
             foreach (var item in exc.EntityValidationErrors)
             {
                 string entityType = item.Entry.Entity.GetType().BaseType.FullName;
-
+                
                 Dictionary<string, object> currentValues = item.Entry.CurrentValues.PropertyNames.ToDictionary(x => x, x => item.Entry.CurrentValues.GetValue<object>(x));
                 Dictionary<string, object> originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, x => item.Entry.OriginalValues.GetValue<object>(x));
 
@@ -803,11 +803,11 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual List<TEntity> FindAll(bool asNoTracking = true, IncludeMap<TEntity> map = null)
+        public virtual List<TEntity> FindAll(bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
-                return Items.AsNoTrackingIf(asNoTracking).IncludeMap(map).ToList();
+                return Items.TrackChanges(trackChanges).IncludeMap(map).ToList();
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -815,13 +815,13 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool asNoTracking = true, IncludeMap<TEntity> map = null)
+        public virtual Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return Items.AsNoTrackingIf(asNoTracking).IncludeMap(map).ToListAsync(cancellationToken);
+                return Items.TrackChanges(trackChanges).IncludeMap(map).ToListAsync(cancellationToken);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -829,11 +829,11 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool asNoTracking = true, IncludeMap<TEntity> map = null)
+        public virtual List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
-                return Items.AsNoTrackingIf(asNoTracking).IncludeMap(map).Where(x => ids.Contains(x.Id)).ToList();
+                return Items.TrackChanges(trackChanges).IncludeMap(map).Where(x => ids.Contains(x.Id)).ToList();
             }
             catch (Exception exc) when (Log.WriteError(exc, ids))
             {
@@ -841,13 +841,13 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool asNoTracking = true, IncludeMap<TEntity> map = null)
+        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return Items.AsNoTrackingIf(asNoTracking).IncludeMap(map).Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+                return Items.TrackChanges(trackChanges).IncludeMap(map).Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
             }
             catch (Exception exc) when (Log.WriteError(exc, ids))
             {
@@ -855,11 +855,11 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual TEntity FindById(TEntityKey id, bool asNoTracking = true, IncludeMap<TEntity> map = null)
+        public virtual TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
-                return Items.AsNoTrackingIf(asNoTracking).IncludeMap(map).SingleOrDefault(x => x.Id.Equals(id));
+                return Items.TrackChanges(trackChanges).IncludeMap(map).SingleOrDefault(x => x.Id.Equals(id));
             }
             catch (Exception exc) when (Log.WriteError(exc, id))
             {
@@ -867,13 +867,13 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool asNoTracking = true, IncludeMap<TEntity> map = null)
+        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return Items.AsNoTrackingIf(asNoTracking).IncludeMap(map).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+                return Items.TrackChanges(trackChanges).IncludeMap(map).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
             }
             catch (Exception exc) when (Log.WriteError(exc, id))
             {

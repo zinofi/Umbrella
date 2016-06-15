@@ -27,12 +27,12 @@ namespace Umbrella.DataAccess.Interfaces
         Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TSyncOptions syncOptions = null);
         void DeleteAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TSyncOptions syncOptions = null);
         Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TSyncOptions syncOptions = null);
-        List<TEntity> FindAll(bool asNoTracking = true, IncludeMap<TEntity> map = null);
-        Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool asNoTracking = true, IncludeMap<TEntity> map = null);
-        List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool asNoTracking = true, IncludeMap<TEntity> map = null);
-        Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool asNoTracking = true, IncludeMap<TEntity> map = null);
-        TEntity FindById(TEntityKey id, bool asNoTracking = true, IncludeMap<TEntity> map = null);
-        Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool asNoTracking = true, IncludeMap<TEntity> map = null);
+        List<TEntity> FindAll(bool trackChanges = false, IncludeMap<TEntity> map = null);
+        Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
+        List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null);
+        Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
+        TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null);
+        Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
         int FindTotalCount();
         Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
