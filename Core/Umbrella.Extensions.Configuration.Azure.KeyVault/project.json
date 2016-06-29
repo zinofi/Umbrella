@@ -1,14 +1,18 @@
-﻿{
-  "version": "1.0.0-rc2-build00005",
+{
+  "version": "1.0.0-rel-build00001",
   "description": "Umbrella.Extensions.Configuration.Azure.KeyVault Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
-    "net46": { }
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Threading.Tasks": "4.0.10.0"
+      }
+    }
   },
   "dependencies": {
     "Microsoft.Azure.KeyVault": "1.0.0",
-    "Microsoft.Extensions.Configuration": "1.0.0-rc2-final",
-    "Microsoft.IdentityModel.Clients.ActiveDirectory": "2.24.304111323",
+    "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.10.305231913",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }

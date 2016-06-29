@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc2-build00005",
+  "version": "1.0.0-rel-build00001",
   "testRunner": "xunit",
 
   "dependencies": {

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rc2-build00005",
+  "version": "1.0.0-rel-build00001",
   "description": "Umbrella.N2.Utilities Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -12,8 +12,8 @@
     }
   },
   "dependencies": {
-    "N2CMS": "2.9.6.3",
-    "Newtonsoft.Json": "8.0.3",
+    "N2CMS": "2.9.6.8",
+    "Newtonsoft.Json": "9.0.1",
     "Umbrella.Legacy.WebUtilities": "1.0.0-*",
     "Umbrella.Legacy.WebUtilities.DynamicImage": "1.0.0-*",
     "Umbrella.Utilities": "1.0.0-*",

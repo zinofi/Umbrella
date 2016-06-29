@@ -3,9 +3,6 @@
 ################################################################################
 
 /.vs
-artifacts
-node_modules
-/output
 *.user
 /TestResults
 bin
