@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Caching;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Umbrella.WebUtilities.DynamicImage.Interfaces
 {
     public interface IDynamicImageCache
     {
-        void Add(DynamicImage dynamicImage, Func<CacheItemPolicy> policyFunc = null);
+        void Add(DynamicImage dynamicImage, Func<MemoryCacheEntryOptions> options = null);
 
         /// <summary>
         /// 

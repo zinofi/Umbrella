@@ -461,13 +461,12 @@
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
+          "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
           "Newtonsoft.Json": "9.0.1"
         },
         "frameworkAssemblies": [
-          "System.Configuration",
-          "System.Runtime",
-          "System.Runtime.Caching"
+          "System.Runtime"
         ],
         "compile": {
           "net46/Umbrella.Utilities.dll": {}

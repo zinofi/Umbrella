@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using System.IO;
-using System.Runtime.Caching;
 using Umbrella.Utilities.Hosting;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
@@ -33,7 +33,7 @@ namespace Umbrella.WebUtilities.DynamicImage
         #endregion
 
         #region IDynamicImageCache Members
-        public void Add(DynamicImage dynamicImage, Func<CacheItemPolicy> policyFunc = null)
+        public void Add(DynamicImage dynamicImage, Func<MemoryCacheEntryOptions> options = null)
         {
             try
             {

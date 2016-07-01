@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.Caching;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Caching;
@@ -11,26 +11,39 @@ namespace Umbrella.Legacy.Utilities.Configuration
 {
     public abstract class AppSettingsBase
     {
-        #region Private Static Members
-        private static readonly MemoryCache<string, object> s_Cache = new MemoryCache<string, object>();
-        #endregion
+        private static readonly MemoryCacheEntryOptions s_DefaultMemoryCacheEntryOptions = new MemoryCacheEntryOptions();
+
+        private readonly IMemoryCache m_Cache;
+
+        public AppSettingsBase(IMemoryCache cache)
+        {
+            m_Cache = cache;
+        }
 
         #region Protected Methods
         protected abstract NameValueCollection GetConfigurationSettings();
         protected virtual string GenerateCacheKey(string settingKey) => settingKey;
-        protected virtual Func<CacheItemPolicy> GetCacheItemPolicyFunc() => null;
+        protected virtual Func<MemoryCacheEntryOptions> GetCacheEntryOptionsFunc() => null;
 
         protected T GetSetting<T>(T fallback = default(T), [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
         {
             return useCache
-                ? (T)s_Cache.AddOrGet(GetType().FullName + ":" + GenerateCacheKey(key), () => GetSetting(fallback, key, throwException), GetCacheItemPolicyFunc())
+                ? m_Cache.GetOrCreate(GetType().FullName + ":" + GenerateCacheKey(key), entry =>
+                {
+                    entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
+                    return GetSetting(fallback, key, throwException);
+                })
                 : GetSetting(fallback, key, throwException);
         }
 
         protected T GetSettingEnum<T>(T fallback = default(T), [CallerMemberName]string key = "", bool useCache = true, bool throwException = false) where T : struct
         {
             return useCache
-                ? (T)s_Cache.AddOrGet(GetType().FullName + ":" + GenerateCacheKey(key), () => GetSettingEnum(fallback, key, throwException), GetCacheItemPolicyFunc())
+                ? m_Cache.GetOrCreate(GetType().FullName + ":" + GenerateCacheKey(key), entry =>
+                {
+                    entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
+                    return GetSettingEnum(fallback, key, throwException);
+                })
                 : GetSettingEnum(fallback, key, throwException);
         }
         #endregion
@@ -65,7 +78,7 @@ namespace Umbrella.Legacy.Utilities.Configuration
             string value = settings[key];
 
             T output;
-            if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse<T>(value, true, out output))
+            if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out output))
                 return output;
             else if (throwException)
                 throw new ArgumentException(string.Format("The value for key: {0} is not valid. An appSetting with that key cannot be found", key));

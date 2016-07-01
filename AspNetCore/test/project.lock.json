@@ -463,6 +463,21 @@
           "lib/net451/Microsoft.DotNet.ProjectModel.dll": {}
         }
       },
+      "Microsoft.Extensions.Caching.Abstractions/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "1.0.0",
+          "System.Collections": "4.0.11",
+          "System.Threading": "4.0.11",
+          "System.Threading.Tasks": "4.0.11"
+        },
+        "compile": {
+          "lib/netstandard1.0/Microsoft.Extensions.Caching.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/Microsoft.Extensions.Caching.Abstractions.dll": {}
+        }
+      },
       "Microsoft.Extensions.Configuration/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1296,13 +1311,12 @@
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
+          "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
           "Newtonsoft.Json": "9.0.1"
         },
         "frameworkAssemblies": [
-          "System.Configuration",
-          "System.Runtime",
-          "System.Runtime.Caching"
+          "System.Runtime"
         ],
         "compile": {
           "net46/Umbrella.Utilities.dll": {}
@@ -1742,6 +1756,17 @@
         "Microsoft.DotNet.ProjectModel.nuspec",
         "lib/net451/Microsoft.DotNet.ProjectModel.dll",
         "lib/netstandard1.5/Microsoft.DotNet.ProjectModel.dll"
+      ]
+    },
+    "Microsoft.Extensions.Caching.Abstractions/1.0.0": {
+      "sha512": "IxlFDVOchL6tdR05bk7EiJvMtvZrVkZXBhkbXqc3GxOHOrHFGcN+92WoWFPeBpdpy8ot/Px5ZdXzt7k+2n1Bdg==",
+      "type": "package",
+      "path": "Microsoft.Extensions.Caching.Abstractions/1.0.0",
+      "files": [
+        "Microsoft.Extensions.Caching.Abstractions.1.0.0.nupkg.sha512",
+        "Microsoft.Extensions.Caching.Abstractions.nuspec",
+        "lib/netstandard1.0/Microsoft.Extensions.Caching.Abstractions.dll",
+        "lib/netstandard1.0/Microsoft.Extensions.Caching.Abstractions.xml"
       ]
     },
     "Microsoft.Extensions.Configuration/1.0.0": {

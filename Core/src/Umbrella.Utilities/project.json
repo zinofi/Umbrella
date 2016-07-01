@@ -5,13 +5,12 @@
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
-        "System.Configuration": "4.0.0.0",
-        "System.Runtime": "4.0.20.0",
-        "System.Runtime.Caching": "4.0.0.0"
+        "System.Runtime": "4.0.20.0"
       }
     }
   },
   "dependencies": {
+    "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
     "Newtonsoft.Json": "9.0.1"
   }
