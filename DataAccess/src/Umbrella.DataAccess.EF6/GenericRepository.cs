@@ -19,8 +19,8 @@ namespace Umbrella.DataAccess.EF6
         where TEntity : class, IEntity<int>
         where TDbContext : DbContext
     {
-        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
-            : base(dbContext, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
+            : base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
         {
         }
     }
@@ -30,8 +30,8 @@ namespace Umbrella.DataAccess.EF6
         where TDbContext : DbContext
         where TSyncOptions : class, new()
     {
-        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
-            : base(dbContext, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
+            : base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
         {
         }
     }
@@ -42,8 +42,8 @@ namespace Umbrella.DataAccess.EF6
         where TSyncOptions : class, new()
         where TEntityKey : IEquatable<TEntityKey>
     {
-        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger)
-            : base(dbContext, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
+            : base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
         {
         }
     }
@@ -55,8 +55,8 @@ namespace Umbrella.DataAccess.EF6
         where TEntityKey : IEquatable<TEntityKey>
         where TUserAuditKey : IEquatable<TUserAuditKey>
     {
-        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
-            : base(dbContext, userAuditDataFactory, logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
+            : base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
         {
         }
     }
@@ -83,33 +83,32 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region Private Static Members
-        private static readonly object s_Lock = new object();
         private static readonly TSyncOptions s_DefaultSyncOptions = new TSyncOptions();
         #endregion
 
         #region Private Members
-        private readonly TDbContext m_DbContext;
         private readonly IUserAuditDataFactory<TUserAuditKey> m_UserAuditDataFactory;
         #endregion
 
         #region Protected Members
+        protected readonly TDbContext Context;
         protected readonly ILogger Log;
+        protected readonly IDataAccessLookupNormalizer LookupNormalizer;
         #endregion
 
         #region Protected Properties
-        protected TDbContext Context => m_DbContext;
-
         protected TUserAuditKey CurrentUserId => m_UserAuditDataFactory.CurrentUserId;
 
         protected IQueryable<TEntity> Items => Context.Set<TEntity>();
         #endregion
 
         #region Constructors
-        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger)
+        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
         {
-            m_DbContext = dbContext;
+            Context = dbContext;
             m_UserAuditDataFactory = userAuditDataFactory;
             Log = logger;
+            LookupNormalizer = lookupNormalizer;
         }
         #endregion
 

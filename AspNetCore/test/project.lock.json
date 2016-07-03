@@ -1298,6 +1298,7 @@
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
           "Umbrella.Utilities": "1.0.0"
         },
         "compile": {
@@ -1312,6 +1313,7 @@
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
           "Newtonsoft.Json": "9.0.1"
         },

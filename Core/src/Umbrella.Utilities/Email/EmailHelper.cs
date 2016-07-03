@@ -8,7 +8,7 @@ using Umbrella.Utilities.Email.Interfaces;
 
 namespace Umbrella.Utilities.Email
 {
-    public class Emailer : IEmailHelper, IDisposable
+    public class EmailHelper : IEmailHelper, IDisposable
     {
         #region Private Members
         private SmtpClient m_SmtpClient;
@@ -17,7 +17,7 @@ namespace Umbrella.Utilities.Email
         #endregion Private Members
 
         #region Constructors
-        public Emailer()
+        public EmailHelper()
         {
             m_SmtpClient = null;
             m_Substitutions = null;

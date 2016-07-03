@@ -1,11 +1,12 @@
 {
-  "version": "1.0.0-rel-build00001",
+  "version": "1.0.0-rel-build00002",
   "description": "Umbrella.DataAccess Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
     "net46": { }
   },
   "dependencies": {
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }
