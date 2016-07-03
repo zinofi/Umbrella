@@ -10,7 +10,7 @@ namespace Umbrella.Utilities
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddUmbrellaUtilities(IServiceCollection services)
+        public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
         {
             services.AddTransient<IEmailBuilder, EmailBuilder>();
             services.AddTransient<IEmailHelper, EmailHelper>();
