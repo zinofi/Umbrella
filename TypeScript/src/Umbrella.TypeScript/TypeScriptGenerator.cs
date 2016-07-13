@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using Umbrella.TypeScript.Generators;
 using Umbrella.TypeScript.Generators.Interfaces;
 using Umbrella.Utilities.Extensions;
@@ -66,15 +64,15 @@ namespace Umbrella.TypeScript
             //Before processing the models, firstly find all the enums that need to be generated
             Dictionary<string, List<Type>> enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
 
+            //Start of TypeScript namespace or module export
+            string namespaceOrModuleStart = outputAsModuleExport
+                ? "export module"
+                : "namespace";
+
             //Generate the models
-            foreach(var group in GetModelItems().GroupBy(x => x.ModelType.Namespace))
+            foreach (var group in GetModelItems().GroupBy(x => x.ModelType.Namespace))
             {
                 string nsName = group.Key;
-
-                //Start of TypeScript namespace or module export
-                string namespaceOrModuleStart = outputAsModuleExport
-                    ? "export module"
-                    : "namespace";
 
                 sbNamespaces.AppendLine($"{namespaceOrModuleStart} {nsName}")
                     .AppendLine("{");
@@ -120,7 +118,7 @@ namespace Umbrella.TypeScript
             foreach(var group in enumGroups)
             {
                 //Start of TypeScript namespace
-                sbNamespaces.AppendLine("namespace " + group.Key)
+                sbNamespaces.AppendLine($"{namespaceOrModuleStart} {group.Key}")
                     .AppendLine("{");
 
                 foreach (Type enumType in group.Value)
@@ -142,12 +140,12 @@ namespace Umbrella.TypeScript
         private string GenerateEnumDefinition(Type enumType)
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine(string.Format("\texport enum {0}", enumType.Name));
+            builder.AppendLine($"\texport enum {enumType.Name}");
             builder.AppendLine("\t{");
 
             foreach(var enumItem in enumType.GetEnumDictionary())
             {
-                builder.AppendLine(string.Format("\t\t{0} = {1},", enumItem.Value, enumItem.Key));
+                builder.AppendLine($"\t\t{enumItem.Value} = {enumItem.Key},");
             }
 
             builder.AppendLine("\t}");
