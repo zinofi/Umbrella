@@ -89,6 +89,23 @@ namespace Umbrella.TypeScript
                     //Set the type name correctly
                     info.TypeName += "[]";
                 }
+                else if (memberType.IsAssignableToGenericType(typeof(IDictionary<,>)))
+                {
+                    Type[] genericArgs = memberType.GetGenericArguments();
+
+                    Type keyType = genericArgs[0];
+                    Type valueType = genericArgs[1];
+
+                    var keyInfo = GetTypeScriptMemberInfo(keyType, memberName, outputType);
+                    var valueInfo = GetTypeScriptMemberInfo(valueType, memberName, outputType);
+
+                    info = keyInfo;
+
+                    //Set the type name correctly
+                    info.TypeName = $"Map<{keyInfo.TypeName}, {valueInfo.TypeName}>";
+
+                    info.IsNullable = true;
+                }
                 else if (typeof(IEnumerable).IsAssignableFrom(memberType))
                 {
                     if (memberType.IsGenericType)
