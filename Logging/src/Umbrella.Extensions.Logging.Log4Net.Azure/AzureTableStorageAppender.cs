@@ -100,7 +100,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             ActivateOptions();
         }
 
-        public static void InitializeAllAppenders(AzureTableStorageLoggingOptions options)
+        public static void InitializeAllAppenders(AzureTableStorageLoggingOptions options, string connectionString)
         {
             Guard.ArgumentNotNull(options, nameof(options));
 
@@ -111,7 +111,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                 if (config == null)
                     throw new ApplicationException($"Configuration cannot be found for appender {appender.Name}");
 
-                appender.InitializeAppender(config, options.ConnectionString, options.LogErrorsToConsole);
+                appender.InitializeAppender(config, connectionString, options.LogErrorsToConsole);
             }
         }
         #endregion
