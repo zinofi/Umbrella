@@ -188,7 +188,7 @@
           "lib/netstandard1.0/Microsoft.Extensions.Primitives.dll": {}
         }
       },
-      "Microsoft.IdentityModel.Clients.ActiveDirectory/3.10.305231913": {
+      "Microsoft.IdentityModel.Clients.ActiveDirectory/3.12.0": {
         "type": "package",
         "compile": {
           "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll": {},
@@ -403,7 +403,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00001": {
+      "Umbrella.Utilities/1.0.0-rel-build00007": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -722,12 +722,12 @@
         "lib/netstandard1.0/Microsoft.Extensions.Primitives.xml"
       ]
     },
-    "Microsoft.IdentityModel.Clients.ActiveDirectory/3.10.305231913": {
-      "sha512": "UkQeX4LzrD99zlijW5w/uhg3fPocwEGzWz129U/OSi0Xho849UNpa72jlklcesY4Ug3iFm/UukdCzPj0LM9V9w==",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory/3.12.0": {
+      "sha512": "E4pF6+FGCiLm0swT5DszWykp91y0yOAVwZKzVNvYJ/zo6ZBr+wgIX/MhTieZgoXVyhwMeX3czmcVBgO2MJ/uEg==",
       "type": "package",
-      "path": "Microsoft.IdentityModel.Clients.ActiveDirectory/3.10.305231913",
+      "path": "Microsoft.IdentityModel.Clients.ActiveDirectory/3.12.0",
       "files": [
-        "Microsoft.IdentityModel.Clients.ActiveDirectory.3.10.305231913.nupkg.sha512",
+        "Microsoft.IdentityModel.Clients.ActiveDirectory.3.12.0.nupkg.sha512",
         "Microsoft.IdentityModel.Clients.ActiveDirectory.nuspec",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
@@ -740,12 +740,6 @@
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
-        "lib/dnxcore50/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
-        "lib/dnxcore50/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
-        "lib/dnxcore50/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
-        "lib/dnxcore50/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
-        "lib/dnxcore50/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/dnxcore50/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
@@ -758,6 +752,12 @@
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
         "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml"
@@ -1928,7 +1928,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00001": {
+    "Umbrella.Utilities/1.0.0-rel-build00007": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1938,7 +1938,7 @@
     "": [
       "Microsoft.Azure.KeyVault >= 1.0.0",
       "Microsoft.Extensions.Configuration >= 1.0.0",
-      "Microsoft.IdentityModel.Clients.ActiveDirectory >= 3.10.305231913",
+      "Microsoft.IdentityModel.Clients.ActiveDirectory >= 3.12.0",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": [

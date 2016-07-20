@@ -1,5 +1,5 @@
-﻿{
-  "version": "1.0.0-rel-build00007",
+{
+  "version": "1.0.0-rel-build00008",
   "description": "Umbrella.Extensions.Logging.Log4Net.Azure Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -10,6 +10,6 @@
   "dependencies": {
     "log4net": "2.0.5",
     "Umbrella.Utilities": "1.0.0-*",
-    "WindowsAzure.Storage": "7.0.0"
+    "WindowsAzure.Storage": "7.1.2"
   }
 }

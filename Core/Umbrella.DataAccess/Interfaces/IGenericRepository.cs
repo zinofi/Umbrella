@@ -9,24 +9,24 @@ namespace Umbrella.DataAccess.Interfaces
     {
     }
 
-    public interface IGenericRepository<TEntity, TEntityKey> : IGenericRepository<TEntity, TEntityKey, NoopSyncOptions>
+    public interface IGenericRepository<TEntity, TEntityKey> : IGenericRepository<TEntity, TEntityKey, RepoOptions>
         where TEntity : class, IEntity<TEntityKey>
     {
     }
 
-    public interface IGenericRepository<TEntity, TEntityKey, TSyncOptions>
+    public interface IGenericRepository<TEntity, TEntityKey, TRepoOptions>
         where TEntity : class, IEntity<TEntityKey>
-        where TSyncOptions : class, new()
+        where TRepoOptions : class, new()
     {
         void RemoveEmptyEntities(ICollection<TEntity> entities);
-        void Save(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, bool validateEntity = true, TSyncOptions syncOptions = null);
-        Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool addToContext = true, bool validateEntity = true, TSyncOptions syncOptions = null);
-        void SaveAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, bool validateEntities = true, TSyncOptions syncOptions = null);
-        Task SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool bypassSaveLogic = false, bool validateEntities = true, TSyncOptions syncOptions = null);
-        void Delete(TEntity entity, bool pushChangesToDb = true, TSyncOptions syncOptions = null);
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TSyncOptions syncOptions = null);
-        void DeleteAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TSyncOptions syncOptions = null);
-        Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TSyncOptions syncOptions = null);
+        void Save(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        void SaveAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        Task SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        void Delete(TEntity entity, bool pushChangesToDb = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        void DeleteAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
+        Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
         List<TEntity> FindAll(bool trackChanges = false, IncludeMap<TEntity> map = null);
         Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
         List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null);

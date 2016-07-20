@@ -3,15 +3,6 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6": {
-      "AutoMapper/5.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net45/AutoMapper.dll": {}
-        },
-        "runtime": {
-          "lib/net45/AutoMapper.dll": {}
-        }
-      },
       "DynamicImage/3.1.1": {
         "type": "package",
         "dependencies": {
@@ -293,7 +284,7 @@
           "lib/net40/WebActivatorEx.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00001": {
+      "Umbrella.Utilities/1.0.0-rel-build00007": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -312,11 +303,10 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00001": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00007": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "AutoMapper": "5.0.0",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -335,18 +325,6 @@
     }
   },
   "libraries": {
-    "AutoMapper/5.0.0": {
-      "sha512": "yG2ZCQ+RxpE+qSdW8/M8bRkg00GZYMmjyve07YnNwI6m7ct9QkmUVfxmhPnKp6DcjElcrfjN/RJ/qCXfkChPuA==",
-      "type": "package",
-      "path": "AutoMapper/5.0.0",
-      "files": [
-        "AutoMapper.5.0.0.nupkg.sha512",
-        "AutoMapper.nuspec",
-        "lib/net45/AutoMapper.dll",
-        "lib/netstandard1.1/AutoMapper.dll",
-        "lib/netstandard1.3/AutoMapper.dll"
-      ]
-    },
     "DynamicImage/3.1.1": {
       "sha512": "q6XNf72G/8p8aG1j7CbyOcOs4naKb+URvC9rA0hA/Ub+xestPoRVOrhJZi/Dx5Vgh2a37NLp3FfCjThsM9ztuQ==",
       "type": "package",
@@ -1462,12 +1440,12 @@
         "lib/net40/WebActivatorEx.dll"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00001": {
+    "Umbrella.Utilities/1.0.0-rel-build00007": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00001": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00007": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities.DynamicImage/Umbrella.WebUtilities.DynamicImage.xproj"

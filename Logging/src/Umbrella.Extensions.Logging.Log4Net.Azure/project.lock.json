@@ -419,7 +419,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WindowsAzure.Storage/7.0.0": {
+      "WindowsAzure.Storage/7.1.2": {
         "type": "package",
         "dependencies": {
           "Microsoft.Azure.KeyVault.Core": "1.0.0",
@@ -437,7 +437,7 @@
           "lib/net40/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00001": {
+      "Umbrella.Utilities/1.0.0-rel-build00007": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -487,8 +487,8 @@
     "Microsoft.Azure.KeyVault.Core/1.0.0": {
       "sha512": "iaA0E8xoVlqroQ7Iurg/VyAjfPdhzn+xN7JkdncmNoox/ez49uPbxp2vMrvhopBaUMuoBu38+8e0RvrV+X+BxA==",
       "type": "package",
+      "path": "Microsoft.Azure.KeyVault.Core/1.0.0",
       "files": [
-        "Microsoft.Azure.KeyVault.Core.1.0.0.nupkg",
         "Microsoft.Azure.KeyVault.Core.1.0.0.nupkg.sha512",
         "Microsoft.Azure.KeyVault.Core.nuspec",
         "lib/net40/Microsoft.Azure.KeyVault.Core.dll",
@@ -500,8 +500,8 @@
     "Microsoft.Data.Edm/5.6.4": {
       "sha512": "I9ea/CEOufddjjyRYIowshdeFj5SIqfWZ5conK/UIaFx2/jJ+PDRhQ5jcJTqTg/ediCa1C22TeRl/MmL9zwBew==",
       "type": "package",
+      "path": "Microsoft.Data.Edm/5.6.4",
       "files": [
-        "Microsoft.Data.Edm.5.6.4.nupkg",
         "Microsoft.Data.Edm.5.6.4.nupkg.sha512",
         "Microsoft.Data.Edm.nuspec",
         "lib/net40/Microsoft.Data.Edm.dll",
@@ -553,8 +553,8 @@
     "Microsoft.Data.OData/5.6.4": {
       "sha512": "Te71LAvjYppmBCLWomHvhVzKes3q8L5tmmDMSyLP7YrJMYG5/Ded8uJgxWWkUX/Vh11ZDpN2WXRByOg+BAHCYw==",
       "type": "package",
+      "path": "Microsoft.Data.OData/5.6.4",
       "files": [
-        "Microsoft.Data.OData.5.6.4.nupkg",
         "Microsoft.Data.OData.5.6.4.nupkg.sha512",
         "Microsoft.Data.OData.nuspec",
         "lib/net40/Microsoft.Data.OData.dll",
@@ -606,8 +606,8 @@
     "Microsoft.Data.Services.Client/5.6.4": {
       "sha512": "94XNZKwnpHuFAdR70kqNTMBv2ex9m+VVQX8dHknZgtlq+nTlZDgzFmahU0wsBaIqJWc3k8Z+FftQ2Voq9r0NWA==",
       "type": "package",
+      "path": "Microsoft.Data.Services.Client/5.6.4",
       "files": [
-        "Microsoft.Data.Services.Client.5.6.4.nupkg",
         "Microsoft.Data.Services.Client.5.6.4.nupkg.sha512",
         "Microsoft.Data.Services.Client.nuspec",
         "lib/net40/Microsoft.Data.Services.Client.dll",
@@ -1580,8 +1580,8 @@
     "System.Spatial/5.6.4": {
       "sha512": "BoXUQ0mHyeAbkR3qlhwXqUFxzJ7rZuFOrvFM/jZRk+S6JLI2JxXRKby6bxuWbmwYv2o/eRPQPbAOvEk5hB2Gmg==",
       "type": "package",
+      "path": "System.Spatial/5.6.4",
       "files": [
-        "System.Spatial.5.6.4.nupkg",
         "System.Spatial.5.6.4.nupkg.sha512",
         "System.Spatial.nuspec",
         "lib/net40/System.Spatial.dll",
@@ -1765,12 +1765,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "WindowsAzure.Storage/7.0.0": {
-      "sha512": "AKxGH6NpZN0fRc2eRKtlDdkk1JW5uqCMeHCF06Z/L5xkYajM7OWquzsjAkQsi2s5a2O0Y4iE6WZOcT5PLE0IMA==",
+    "WindowsAzure.Storage/7.1.2": {
+      "sha512": "m6rIEZmPMUfIpON+kC+Azfluv/IoJKaPcJKvaLZMx5tXvjQRGkpWoYiO3ktewg5HxYkA0cpO1E3zphjJp9lZsg==",
       "type": "package",
+      "path": "WindowsAzure.Storage/7.1.2",
       "files": [
-        "WindowsAzure.Storage.7.0.0.nupkg",
-        "WindowsAzure.Storage.7.0.0.nupkg.sha512",
+        "WindowsAzure.Storage.7.1.2.nupkg.sha512",
         "WindowsAzure.Storage.nuspec",
         "lib/net40/Microsoft.WindowsAzure.Storage.dll",
         "lib/net40/Microsoft.WindowsAzure.Storage.pdb",
@@ -1783,7 +1783,7 @@
         "lib/wpa/Microsoft.WindowsAzure.Storage.pdb"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00001": {
+    "Umbrella.Utilities/1.0.0-rel-build00007": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1792,7 +1792,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Umbrella.Utilities >= 1.0.0-*",
-      "WindowsAzure.Storage >= 7.0.0",
+      "WindowsAzure.Storage >= 7.1.2",
       "log4net >= 2.0.5"
     ],
     ".NETFramework,Version=v4.6": []
