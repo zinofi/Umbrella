@@ -48,32 +48,17 @@ namespace Umbrella.DataAccess.EF6
         }
     }
 
-    public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, IEntity<TEntityKey>>
-        where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
-        where TRepoOptions : RepoOptions, new()
-        where TEntityKey : IEquatable<TEntityKey>
-        where TUserAuditKey : IEquatable<TUserAuditKey>
-    {
-        public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
-            : base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
-        {
-        }
-    }
-
     /// <summary>
     /// A general purpose base class containing core repository functionality.
     /// </summary>
     /// <typeparam name="TEntity">The type of the generated entity, e.g. Person, Car</typeparam>
     /// <typeparam name="TDbContext">The type of the data context</typeparam>
-    /// <typeparam name="TEntityBase">The entity interface implemented by the generated entities. Must derive from <see cref="IEntity{TEntityKey}"/></typeparam>
-    public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TEntityBase> : IGenericRepository<TEntity, TEntityKey, TRepoOptions>
-        where TEntity : class, TEntityBase
+    public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IGenericRepository<TEntity, TEntityKey, TRepoOptions>
+        where TEntity : class, IEntity<TEntityKey>
         where TDbContext : DbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
         where TUserAuditKey : IEquatable<TUserAuditKey>
-        where TEntityBase : IEntity<TEntityKey>
     {
         #region Private Constants
         private const string c_InvalidPropertyStringLengthErrorMessageFormat = "The {0} value must be between {1} and {2} characters in length.";
@@ -671,9 +656,26 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region SyncDependencies
-        protected virtual void SyncDependencies<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, RepoOptions[] options)
-            where TTargetEntity : class, TEntityBase
-            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey, RepoOptions>
+        protected void SyncDependencies<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, RepoOptions[] options)
+            where TTargetEntity : class, IEntity
+            where TTargetRepository : IGenericRepository<TTargetEntity>
+        {
+            SyncDependencies<TTargetEntity, int, TTargetRepository>(alteredColl, repository, func, options);
+        }
+
+        protected void SyncDependencies<TTargetEntity, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, RepoOptions[] options)
+            where TTargetEntity : class, IEntity<TTargetEntityKey>
+            where TTargetEntityKey : IEquatable<TTargetEntityKey>
+            where TTargetRepository : IGenericRepository<TTargetEntity, TTargetEntityKey>
+        {
+            SyncDependencies<TTargetEntity, TTargetEntityKey, RepoOptions, TTargetRepository>(alteredColl, repository, func, options);
+        }
+
+        protected virtual void SyncDependencies<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, RepoOptions[] options)
+            where TTargetEntity : class, IEntity<TTargetEntityKey>
+            where TTargetEntityKey : IEquatable<TTargetEntityKey>
+            where TTargetEntityRepoOptions : RepoOptions, new()
+            where TTargetRepository : IGenericRepository<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions>
         {
             //Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
             //but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
@@ -682,7 +684,7 @@ namespace Umbrella.DataAccess.EF6
             alteredColl = new List<TTargetEntity>(alteredColl);
 
             //Find the RepoOptions for this repository if provided in the options collection
-            RepoOptions targetOptions = options?.OfType<RepoOptions>().FirstOrDefault();
+            TTargetEntityRepoOptions targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
             //Ensure we have deleted the dependencies (children) we no longer need
             foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))
@@ -715,9 +717,26 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
-            where TTargetEntity : class, TEntityBase
-            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey, RepoOptions>
+        protected Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
+            where TTargetEntity : class, IEntity
+            where TTargetRepository : IGenericRepository<TTargetEntity>
+        {
+            return SyncDependenciesAsync<TTargetEntity, int, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
+        }
+
+        protected Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
+            where TTargetEntity : class, IEntity<TTargetEntityKey>
+            where TTargetEntityKey : IEquatable<TTargetEntityKey>
+            where TTargetRepository : IGenericRepository<TTargetEntity, TTargetEntityKey>
+        {
+            return SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, RepoOptions, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
+        }
+
+        protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
+            where TTargetEntity : class, IEntity<TTargetEntityKey>
+            where TTargetEntityKey : IEquatable<TTargetEntityKey>
+            where TTargetEntityRepoOptions : RepoOptions, new()
+            where TTargetRepository : IGenericRepository<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -727,9 +746,8 @@ namespace Umbrella.DataAccess.EF6
             //to a new List first to stop this from happening.
             alteredColl = new List<TTargetEntity>(alteredColl);
 
-            //typeof(TTargetRepository).GetGenericArguments()
             //Find the RepoOptions for this repository if provided in the options collection
-            RepoOptions targetOptions = options?.OfType<RepoOptions>().FirstOrDefault();
+            TTargetEntityRepoOptions targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
             //Ensure we have deleted the dependencies (children) we no longer need
             foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))

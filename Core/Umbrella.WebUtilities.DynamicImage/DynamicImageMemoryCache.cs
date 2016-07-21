@@ -31,6 +31,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             IUmbrellaHostingEnvironment hostingEnvironment = null)
             : base(logger)
         {
+            m_Cache = cache;
             m_DefaultMemoryCacheEntryOptions = defaultMemoryCacheEntryOptions ?? new MemoryCacheEntryOptions();
             m_HostingEnvironment = hostingEnvironment;
         }
