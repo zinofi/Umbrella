@@ -14,7 +14,7 @@ namespace Umbrella.DataAccess.Interfaces
     {
     }
 
-    public interface IGenericRepository<TEntity, TEntityKey, TRepoOptions>
+    public interface IGenericRepository<TEntity, TEntityKey, in TRepoOptions>
         where TEntity : class, IEntity<TEntityKey>
         where TRepoOptions : class, new()
     {
