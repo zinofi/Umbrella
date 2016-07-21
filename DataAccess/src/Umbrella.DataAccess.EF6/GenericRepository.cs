@@ -673,7 +673,7 @@ namespace Umbrella.DataAccess.EF6
         #region SyncDependencies
         protected virtual void SyncDependencies<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, RepoOptions[] options)
             where TTargetEntity : class, TEntityBase
-            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey>
+            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey, TRepoOptions>
         {
             //Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
             //but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
@@ -682,9 +682,7 @@ namespace Umbrella.DataAccess.EF6
             alteredColl = new List<TTargetEntity>(alteredColl);
 
             //Find the RepoOptions for this repository if provided in the options collection
-            RepoOptions targetOptions = options != null
-                ? options.FirstOrDefault(x => x is TRepoOptions)
-                : null;
+            TRepoOptions targetOptions = options?.OfType<TRepoOptions>().FirstOrDefault();
 
             //Ensure we have deleted the dependencies (children) we no longer need
             foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))
@@ -719,7 +717,7 @@ namespace Umbrella.DataAccess.EF6
 
         protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
             where TTargetEntity : class, TEntityBase
-            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey>
+            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey, TRepoOptions>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -730,9 +728,7 @@ namespace Umbrella.DataAccess.EF6
             alteredColl = new List<TTargetEntity>(alteredColl);
 
             //Find the RepoOptions for this repository if provided in the options collection
-            RepoOptions targetOptions = options != null
-                ? options.FirstOrDefault(x => x is TRepoOptions)
-                : null;
+            TRepoOptions targetOptions = options?.OfType<TRepoOptions>().FirstOrDefault();
 
             //Ensure we have deleted the dependencies (children) we no longer need
             foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))
