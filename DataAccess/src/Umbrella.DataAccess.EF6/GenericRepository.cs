@@ -233,7 +233,11 @@ namespace Umbrella.DataAccess.EF6
                 string entityType = item.Entry.Entity.GetType().BaseType.FullName;
                 
                 Dictionary<string, object> currentValues = item.Entry.CurrentValues.PropertyNames.ToDictionary(x => x, x => item.Entry.CurrentValues.GetValue<object>(x));
-                Dictionary<string, object> originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, x => item.Entry.OriginalValues.GetValue<object>(x));
+                Dictionary<string, object> originalValues = null;
+
+                //Can only get the OriginalValues if the entity has been modified from a previously persisted version.
+                if(item.Entry.State.HasFlag(EntityState.Modified))
+                    originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, x => item.Entry.OriginalValues.GetValue<object>(x));
 
                 Log.WriteError(exc, new { entityType, item.IsValid, item.ValidationErrors, originalValues, currentValues, state = item.Entry.State.ToString() });
             }
