@@ -107,6 +107,9 @@ namespace Umbrella.DataAccess.EF6
                 //Ensure the default options are used when not explicitly provided.
                 options = options ?? s_DefaultRepoOptions;
 
+                if (options.SanitizeEntity)
+                    SanitizeEntity(entity);
+
                 //Additional processing before changes have been reflected in the database context
                 BeforeContextSaving(entity, options, childOptions);
 
@@ -153,6 +156,9 @@ namespace Umbrella.DataAccess.EF6
 
                 //Ensure the default options are used when not explicitly provided.
                 options = options ?? s_DefaultRepoOptions;
+
+                if (options.SanitizeEntity)
+                    SanitizeEntity(entity);
 
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -488,13 +494,11 @@ namespace Umbrella.DataAccess.EF6
 
         /// <summary>
         /// Overriding this method allows you to perform work before the state of the entity on the database context is affected.
-        /// The base implementation of this method makes a single call to <see cref="SanitizeEntity(TEntity)"/>.
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
         protected virtual void BeforeContextSaving(TEntity entity, TRepoOptions options, RepoOptions[] childOptions)
         {
-            SanitizeEntity(entity);
         }
 
         /// <summary>
