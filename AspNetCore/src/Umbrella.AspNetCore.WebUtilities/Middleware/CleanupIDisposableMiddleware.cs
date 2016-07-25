@@ -32,8 +32,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
         #region Public Methods
         public async Task Invoke(HttpContext context)
 		{
-			await m_Next.Invoke(context);
-
 			try
 			{
 				//Ensure any disposable objects are disposed correctly before the end of the request
@@ -42,10 +40,15 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
                     context.Items.AsParallel().Select(x => x.Value).OfType<IDisposable>().ForAll(x => x.Dispose());
                 }));
             }
-			catch(Exception exc) when (m_Logger.WriteError(exc, returnValue: DebugUtility.IsDebugMode))
+			catch(Exception exc) when (m_Logger.WriteError(exc, returnValue: !DebugUtility.IsDebugMode))
 			{
-                throw;
+                //Should enter here when in DebugMode. It's not critical if something goes wrong during resource disposal as the GC will
+                //sort us out eventually unless we've created something that can't be cleaned up automatically.
 			}
+            finally
+            {
+                await m_Next.Invoke(context);
+            }
 		}
         #endregion
     }

@@ -1,0 +1,17 @@
+﻿{
+  "version": "1.0.0-rel-build00015",
+  "description": "Umbrella.DataAccess.MultiTenant Class Library",
+  "authors": [ "Richard Edwards" ],
+
+  "frameworks": {
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.20.0"
+      }
+    }
+  },
+
+  "dependencies": {
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0"
+  }
+}

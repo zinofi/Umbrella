@@ -201,6 +201,7 @@ namespace Umbrella.DataAccess.EF6
             //Look for the entity in the context - this action will allow us to determine it's state
             DbEntityEntry<TEntity> dbEntity = Context.Entry(entity);
 
+            //TODO: Replace with C# 7 Pattern Matching when available
             IConcurrencyStamp concurrencyStampEntity = entity as IConcurrencyStamp;
             IDateAuditEntity datedEntity = entity as IDateAuditEntity;
             IUserAuditEntity<TUserAuditKey> userAuditEntity = entity as IUserAuditEntity<TUserAuditKey>;
