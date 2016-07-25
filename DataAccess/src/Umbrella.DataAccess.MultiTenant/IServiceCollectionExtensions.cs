@@ -8,7 +8,7 @@ namespace Umbrella.DataAccess.MultiTenant
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddBARcossBLManagement(this IServiceCollection services, string managementConnectionString)
+        public static IServiceCollection AddUmbrellaDataAccessMultiTenant(this IServiceCollection services, string managementConnectionString)
         {
             services.AddScoped(typeof(DbAppTenantSessionContext<>));
 

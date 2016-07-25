@@ -9,12 +9,12 @@ namespace Umbrella.AspNetCore.MultiTenant
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseMultiTenantSessionContext<TAppTenantKey>(this IApplicationBuilder builder, string tenantClaimType)
+        public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey>(this IApplicationBuilder builder, string tenantClaimType)
         {
             return builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey>>(tenantClaimType);
         }
 
-        public static IApplicationBuilder UseMultiTenantSessionContext<TAppTenantKey, TNullableAppTenantKey>(this IApplicationBuilder builder, string tenantClaimType)
+        public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey, TNullableAppTenantKey>(this IApplicationBuilder builder, string tenantClaimType)
         {
             return builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>>(tenantClaimType);
         }
