@@ -78,7 +78,6 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
         where TDbContext : DbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
-        where TUserAuditKey : IEquatable<TUserAuditKey>
     {
         private readonly DbAppTenantSessionContext<TAppTenantKey> m_DbAppTenantSessionContext;
 

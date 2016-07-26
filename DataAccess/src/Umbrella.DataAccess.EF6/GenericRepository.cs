@@ -58,7 +58,6 @@ namespace Umbrella.DataAccess.EF6
         where TDbContext : DbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
-        where TUserAuditKey : IEquatable<TUserAuditKey>
     {
         #region Private Constants
         private const string c_InvalidPropertyStringLengthErrorMessageFormat = "The {0} value must be between {1} and {2} characters in length.";
