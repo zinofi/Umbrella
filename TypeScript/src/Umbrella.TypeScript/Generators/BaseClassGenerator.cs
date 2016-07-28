@@ -17,7 +17,7 @@ namespace Umbrella.TypeScript.Generators
         {
             string generatedName = TypeScriptUtility.GenerateTypeName(modelType.Name, modelType, OutputModelType);
 
-            List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, TypeScriptOutputModelType.Interface, true);
+            List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, InterfaceModelType, true);
 
             if (lstInterface.Contains(generatedName))
             {

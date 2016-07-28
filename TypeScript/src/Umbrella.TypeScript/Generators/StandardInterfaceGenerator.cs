@@ -11,9 +11,6 @@ namespace Umbrella.TypeScript.Generators
 {
     public class StandardInterfaceGenerator : BaseInterfaceGenerator
     {
-        public override TypeScriptOutputModelType OutputModelType
-        {
-            get { return TypeScriptOutputModelType.Interface; }
-        }
+        public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.Interface;
     }
 }

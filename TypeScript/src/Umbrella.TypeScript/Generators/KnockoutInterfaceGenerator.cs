@@ -11,10 +11,7 @@ namespace Umbrella.TypeScript.Generators
 {
     public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
     {
-        public override TypeScriptOutputModelType OutputModelType
-        {
-            get { return TypeScriptOutputModelType.KnockoutInterface; }
-        }
+        public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutInterface;
 
         protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
         {
