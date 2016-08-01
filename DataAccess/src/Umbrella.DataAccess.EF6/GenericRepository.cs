@@ -819,6 +819,11 @@ namespace Umbrella.DataAccess.EF6
         {
             throw new NotImplementedException();
         }
+
+        protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #endregion
@@ -827,6 +832,28 @@ namespace Umbrella.DataAccess.EF6
         public virtual void RemoveEmptyEntities(ICollection<TEntity> entities)
         {
             List<TEntity> lstToRemove = entities.Where(x => IsEmptyEntity(x)).ToList();
+
+            foreach (TEntity entity in lstToRemove)
+            {
+                entities.Remove(entity);
+
+                //Make sure it is removed from the Context if it has just been added - make it detached
+                DbEntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
+
+                if (dbEntityEntry.State == EntityState.Added)
+                    dbEntityEntry.State = EntityState.Detached;
+            }
+        }
+
+        public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities)
+        {
+            List<TEntity> lstToRemove = new List<TEntity>();
+
+            foreach(TEntity entity in entities)
+            {
+                if (await IsEmptyEntityAsync(entity))
+                    lstToRemove.Add(entity);
+            }
 
             foreach (TEntity entity in lstToRemove)
             {
