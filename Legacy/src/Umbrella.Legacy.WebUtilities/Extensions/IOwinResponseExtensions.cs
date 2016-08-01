@@ -21,7 +21,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 				response.Body = Stream.Null;
 			}
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
 		}
 	}
 }

@@ -157,7 +157,7 @@ namespace Umbrella.DataAccess.EF6
                 options = options ?? s_DefaultRepoOptions;
 
                 if (options.SanitizeEntity)
-                    SanitizeEntity(entity);
+                    await SanitizeEntityAsync(entity);
 
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -489,7 +489,7 @@ namespace Umbrella.DataAccess.EF6
         {
             ValidateEntity(entity, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -510,7 +510,7 @@ namespace Umbrella.DataAccess.EF6
         {
             BeforeContextSaving(entity, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -533,7 +533,7 @@ namespace Umbrella.DataAccess.EF6
         {
             AfterContextSaving(entity, options, childOptions);
             
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace Umbrella.DataAccess.EF6
         {
             AfterContextSavedChanges(entity, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -575,7 +575,7 @@ namespace Umbrella.DataAccess.EF6
         {
             AfterContextSavedChangesMultiple(entities, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -596,7 +596,7 @@ namespace Umbrella.DataAccess.EF6
         {
             BeforeContextDeleting(entity, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -617,7 +617,7 @@ namespace Umbrella.DataAccess.EF6
         {
             AfterContextDeleting(entity, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -638,7 +638,7 @@ namespace Umbrella.DataAccess.EF6
         {
             AfterContextDeletedChanges(entity, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace Umbrella.DataAccess.EF6
         {
             AfterContextDeletedChangesMultiple(entities, options, childOptions);
 
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
         #endregion
 
@@ -808,6 +808,11 @@ namespace Umbrella.DataAccess.EF6
         #region Sanitize Methods
         protected virtual void SanitizeEntity(TEntity entity)
         {
+        }
+
+        protected virtual Task SanitizeEntityAsync(TEntity entity)
+        {
+            return Task.CompletedTask;
         }
 
         protected virtual bool IsEmptyEntity(TEntity entity)
