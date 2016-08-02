@@ -163,7 +163,7 @@ namespace Umbrella.DataAccess.EF6
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
 
                 if(options.ValidateEntity)
-                    await ValidateEntityAsync(entity, options, childOptions);
+                    await ValidateEntityAsync(entity, cancellationToken, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
                 PreSaveWork(entity, addToContext);
@@ -485,8 +485,10 @@ namespace Umbrella.DataAccess.EF6
         /// Overriding this method allows you to perform custom validation on the entity before its state on the database context is affected.
         /// </summary>
         /// <param name="entity">The entity to validate.</param>
-        protected virtual Task ValidateEntityAsync(TEntity entity, TRepoOptions options, RepoOptions[] childOptions)
+        protected virtual Task ValidateEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             ValidateEntity(entity, options, childOptions);
 
             return Task.CompletedTask;
