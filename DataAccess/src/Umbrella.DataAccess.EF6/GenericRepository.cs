@@ -107,7 +107,7 @@ namespace Umbrella.DataAccess.EF6
                 options = options ?? s_DefaultRepoOptions;
 
                 if (options.SanitizeEntity)
-                    SanitizeEntity(entity, options);
+                    SanitizeEntity(entity, options, childOptions);
 
                 //Additional processing before changes have been reflected in the database context
                 BeforeContextSaving(entity, options, childOptions);
@@ -157,7 +157,7 @@ namespace Umbrella.DataAccess.EF6
                 options = options ?? s_DefaultRepoOptions;
 
                 if (options.SanitizeEntity)
-                    await SanitizeEntityAsync(entity, cancellationToken, options);
+                    await SanitizeEntityAsync(entity, cancellationToken, options, childOptions);
 
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -808,21 +808,21 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region Sanitize Methods
-        protected virtual bool IsEmptyEntity(TEntity entity)
+        protected virtual bool IsEmptyEntity(TEntity entity, TRepoOptions options, RepoOptions[] childOptions)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken)
+        protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual void SanitizeEntity(TEntity entity, TRepoOptions options)
+        protected virtual void SanitizeEntity(TEntity entity, TRepoOptions options, RepoOptions[] childOptions)
         {
         }
 
-        protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options)
+        protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -833,9 +833,11 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region Public Methods
-        public virtual void RemoveEmptyEntities(ICollection<TEntity> entities)
+        public virtual void RemoveEmptyEntities(ICollection<TEntity> entities, RepoOptions[] options)
         {
-            List<TEntity> lstToRemove = entities.Where(x => IsEmptyEntity(x)).ToList();
+            TRepoOptions targetOptions = options?.OfType<TRepoOptions>().FirstOrDefault() ?? new TRepoOptions();
+
+            List<TEntity> lstToRemove = entities.Where(x => IsEmptyEntity(x, targetOptions, options)).ToList();
 
             foreach (TEntity entity in lstToRemove)
             {
@@ -849,15 +851,17 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, RepoOptions[] options)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            TRepoOptions targetOptions = options?.OfType<TRepoOptions>().FirstOrDefault() ?? new TRepoOptions();
 
             List<TEntity> lstToRemove = new List<TEntity>();
 
             foreach(TEntity entity in entities)
             {
-                if (await IsEmptyEntityAsync(entity, cancellationToken))
+                if (await IsEmptyEntityAsync(entity, cancellationToken, targetOptions, options))
                     lstToRemove.Add(entity);
             }
 

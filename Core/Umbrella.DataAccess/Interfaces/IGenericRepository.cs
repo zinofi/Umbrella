@@ -18,8 +18,8 @@ namespace Umbrella.DataAccess.Interfaces
         where TEntity : class, IEntity<TEntityKey>
         where TRepoOptions : class, new()
     {
-        void RemoveEmptyEntities(ICollection<TEntity> entities);
-        Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+        void RemoveEmptyEntities(ICollection<TEntity> entities, RepoOptions[] options);
+        Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, RepoOptions[] options);
         void Save(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
         Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
         void SaveAll(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions repoOptions = null, params RepoOptions[] childOptions);
