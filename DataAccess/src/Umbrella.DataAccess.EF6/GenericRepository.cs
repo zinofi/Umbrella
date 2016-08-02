@@ -157,7 +157,7 @@ namespace Umbrella.DataAccess.EF6
                 options = options ?? s_DefaultRepoOptions;
 
                 if (options.SanitizeEntity)
-                    await SanitizeEntityAsync(entity);
+                    await SanitizeEntityAsync(entity, cancellationToken);
 
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -806,23 +806,25 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region Sanitize Methods
-        protected virtual void SanitizeEntity(TEntity entity)
-        {
-        }
-
-        protected virtual Task SanitizeEntityAsync(TEntity entity)
-        {
-            return Task.CompletedTask;
-        }
-
         protected virtual bool IsEmptyEntity(TEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity)
+        protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        protected virtual void SanitizeEntity(TEntity entity)
+        {
+        }
+
+        protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.CompletedTask;
         }
         #endregion
 
@@ -836,7 +838,7 @@ namespace Umbrella.DataAccess.EF6
             foreach (TEntity entity in lstToRemove)
             {
                 entities.Remove(entity);
-
+                
                 //Make sure it is removed from the Context if it has just been added - make it detached
                 DbEntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
 
@@ -845,13 +847,15 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities)
+        public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             List<TEntity> lstToRemove = new List<TEntity>();
 
             foreach(TEntity entity in entities)
             {
-                if (await IsEmptyEntityAsync(entity))
+                if (await IsEmptyEntityAsync(entity, cancellationToken))
                     lstToRemove.Add(entity);
             }
 
