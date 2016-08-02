@@ -107,7 +107,7 @@ namespace Umbrella.DataAccess.EF6
                 options = options ?? s_DefaultRepoOptions;
 
                 if (options.SanitizeEntity)
-                    SanitizeEntity(entity);
+                    SanitizeEntity(entity, options);
 
                 //Additional processing before changes have been reflected in the database context
                 BeforeContextSaving(entity, options, childOptions);
@@ -157,7 +157,7 @@ namespace Umbrella.DataAccess.EF6
                 options = options ?? s_DefaultRepoOptions;
 
                 if (options.SanitizeEntity)
-                    await SanitizeEntityAsync(entity, cancellationToken);
+                    await SanitizeEntityAsync(entity, cancellationToken, options);
 
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -818,11 +818,11 @@ namespace Umbrella.DataAccess.EF6
             throw new NotImplementedException();
         }
 
-        protected virtual void SanitizeEntity(TEntity entity)
+        protected virtual void SanitizeEntity(TEntity entity, TRepoOptions options)
         {
         }
 
-        protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken)
+        protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
