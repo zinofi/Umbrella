@@ -8,7 +8,7 @@ namespace Umbrella.Utilities.Hosting
 {
 	public interface IUmbrellaHostingEnvironment
 	{
-		string MapPath(string virtualPath);
+		string MapPath(string virtualPath, bool fromContentRoot = true);
 		string MapWebPath(string virtualPath, string scheme = "http");
 	}
 }

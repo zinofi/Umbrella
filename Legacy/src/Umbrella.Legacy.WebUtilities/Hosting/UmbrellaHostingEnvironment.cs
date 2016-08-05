@@ -9,14 +9,14 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 {
     public class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
     {
-        public string MapPath(string virtualPath)
+        public string MapPath(string virtualPath, bool fromContentRoot = true)
         {
             return System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
         }
 
         public string MapWebPath(string virtualPath, string scheme = "http")
         {
-            string baseUrl = scheme + "://" + HttpContext.Current.Request.Url.Host;
+            string baseUrl = $"{scheme}://{HttpContext.Current.Request.Url.Host}";
 
             string appPath = HttpRuntime.AppDomainAppVirtualPath;
             if (appPath != "/")
