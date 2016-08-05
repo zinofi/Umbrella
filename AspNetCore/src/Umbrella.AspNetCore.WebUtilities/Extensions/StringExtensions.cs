@@ -15,7 +15,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
         /// <param name="relativeUrl">App-Relative path</param>
         /// <returns>Provided relativeUrl parameter as fully qualified Url</returns>
         /// <example>~/path/to/foo to http://www.web.com/path/to/foo</example>
-        [Obsolete("TODO: Not yet migrated this method!!")]
+        [Obsolete("TODO: Not yet migrated this method!!", true)]
         public static string ToAbsoluteUrl(this string relativeUrl, HttpRequest request)
         {
             //if (string.IsNullOrEmpty(relativeUrl))
