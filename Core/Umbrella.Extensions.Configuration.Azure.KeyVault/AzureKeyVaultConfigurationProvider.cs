@@ -11,6 +11,7 @@ using Umbrella.Utilities.Extensions;
 using System.Threading;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.ActiveDirectory;
 
 namespace Umbrella.Extensions.Configuration.Azure.KeyVault
 {
@@ -19,17 +20,11 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
     /// </summary>
     public class AzureKeyVaultConfigurationProvider : ConfigurationProvider, IConfigurationSource
     {
-        private enum ClientAuthenticationMode
-        {
-            ClientAssertionCertificate,
-            ClientCredential
-        }
-
         public const int DefaultMaxSecrets = 25;
         private const string c_ConfigKey = "ConfigKey";
         private const string c_VaultUrlFormat = "https://{0}.vault.azure.net:443/";
 
-        private readonly ICertificateUtility m_CertificateUtility;
+        private readonly IAuthenticationTokenUtility m_TokenUtility;
         private readonly string m_AppClientId;
         private readonly string m_AppClientSecret;
         private readonly string m_Vault;
@@ -50,7 +45,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// <param name="vaultName"></param>
         /// <param name="loggerFactory"></param>
         /// <param name="maxSecrets"></param>
-        public AzureKeyVaultConfigurationProvider(string appClientId, string appClientSecret, string vaultName, ILoggerFactory loggerFactory, int maxSecrets = DefaultMaxSecrets)
+        public AzureKeyVaultConfigurationProvider(IAuthenticationTokenUtility tokenUtility, string appClientId, string appClientSecret, string vaultName, ILoggerFactory loggerFactory, int maxSecrets = DefaultMaxSecrets)
         {
             Guard.ArgumentNotNullOrWhiteSpace(appClientId, nameof(appClientId));
             Guard.ArgumentNotNullOrWhiteSpace(appClientSecret, nameof(appClientSecret));
@@ -78,14 +73,14 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// <param name="storeName"></param>
         /// <param name="storeLocation"></param>
         /// <param name="maxSecrets"></param>
-        public AzureKeyVaultConfigurationProvider(ICertificateUtility certificateUtility, string appClientId, string vaultName, string certificateThumbprint, bool validateCertificate, ILoggerFactory loggerFactory, StoreName storeName = StoreName.My, StoreLocation storeLocation = StoreLocation.CurrentUser, int maxSecrets = DefaultMaxSecrets)
+        public AzureKeyVaultConfigurationProvider(IAuthenticationTokenUtility tokenUtility, string appClientId, string vaultName, string certificateThumbprint, bool validateCertificate, ILoggerFactory loggerFactory, StoreName storeName = StoreName.My, StoreLocation storeLocation = StoreLocation.CurrentUser, int maxSecrets = DefaultMaxSecrets)
         {
             Guard.ArgumentNotNullOrWhiteSpace(appClientId, nameof(appClientId));
             Guard.ArgumentNotNullOrWhiteSpace(vaultName, nameof(vaultName));
             Guard.ArgumentNotNullOrWhiteSpace(certificateThumbprint, nameof(certificateThumbprint));
             Guard.ArgumentNotNull(loggerFactory, nameof(loggerFactory));
 
-            m_CertificateUtility = certificateUtility;
+            m_TokenUtility = tokenUtility;
             m_AppClientId = appClientId;
             m_Vault = string.Format(c_VaultUrlFormat, vaultName);
             m_StoreName = storeName;
@@ -128,7 +123,11 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
             Data = new Dictionary<string, string>();
 
             // This returns a list of identifiers which are uris to the secret, you need to use the identifier to get the actual secrets again.
-            var kvClient = new KeyVaultClient(GetTokenAsync);
+            KeyVaultClient.AuthenticationCallback tokenCallback = (authority, resource, scope) => m_AuthMode == ClientAuthenticationMode.ClientCredential
+                ? m_TokenUtility.GetTokenAsyncUsingClientCredential(authority, resource, scope, m_AppClientId, m_AppClientSecret)
+                : m_TokenUtility.GetTokenAsyncUsingClientCertificate(authority, resource, scope, m_AppClientId, m_StoreName, m_StoreLocation, m_CertificateThumbprint, m_ValidateCertificate);
+
+            var kvClient = new KeyVaultClient(tokenCallback);
 
             var secretsResponseList = await kvClient.GetSecretsAsync(m_Vault, m_MaxSecrets, token);
             foreach (var secretItem in secretsResponseList.Value ?? new List<SecretItem>())
@@ -140,41 +139,6 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
                     Data.Add(secret.Tags[c_ConfigKey], secret.Value);
                 }
             }
-        }
-
-        private async Task<string> GetTokenAsync(string authority, string resource, string scope)
-        {
-            AuthenticationResult result = null;
-            try
-            {
-                var authContext = new AuthenticationContext(authority);
-
-                if (m_AuthMode == ClientAuthenticationMode.ClientAssertionCertificate)
-                {
-                    var cert = m_CertificateUtility.FindCertificateByThumbprint(m_StoreName, m_StoreLocation, m_CertificateThumbprint, m_ValidateCertificate);
-
-                    ClientAssertionCertificate assertion = new ClientAssertionCertificate(m_AppClientId, cert);
-
-                    result = await authContext.AcquireTokenAsync(resource, assertion);
-                }
-                else if(m_AuthMode == ClientAuthenticationMode.ClientCredential)
-                {
-                    ClientCredential credential = new ClientCredential(m_AppClientId, m_AppClientSecret);
-
-                    result = await authContext.AcquireTokenAsync(resource, credential);
-                }
-            }
-            catch (Exception exc) when (Log.WriteCritical(exc, new { m_AppClientId }))
-            {
-                throw;
-            }
-
-            if (result == null)
-            {
-                throw new InvalidOperationException("Bearer token acquisition needed to call KeyVault service failed");
-            }
-
-            return result.AccessToken;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)

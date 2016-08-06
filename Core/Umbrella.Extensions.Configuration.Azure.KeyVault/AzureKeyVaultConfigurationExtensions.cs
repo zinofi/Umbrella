@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Umbrella.ActiveDirectory;
 using Umbrella.Utilities.Encryption.Interfaces;
 
 namespace Umbrella.Extensions.Configuration.Azure.KeyVault
@@ -28,9 +29,9 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// <param name="storeLocation"></param>
         /// <param name="maxSecrets"></param>
         /// <returns></returns>
-        public static IConfigurationBuilder AddAzureKeyVaultSecrets(this IConfigurationBuilder configurationBuilder, ICertificateUtility certificateUtility, string appClientId, string vaultName, string certificateThumbprint, bool validateCertificate, ILoggerFactory loggerFactory, StoreName storeName = StoreName.My, StoreLocation storeLocation = StoreLocation.CurrentUser, int maxSecrets = AzureKeyVaultConfigurationProvider.DefaultMaxSecrets)
+        public static IConfigurationBuilder AddAzureKeyVaultSecrets(this IConfigurationBuilder configurationBuilder, IAuthenticationTokenUtility authTokenUtility, string appClientId, string vaultName, string certificateThumbprint, bool validateCertificate, ILoggerFactory loggerFactory, StoreName storeName = StoreName.My, StoreLocation storeLocation = StoreLocation.CurrentUser, int maxSecrets = AzureKeyVaultConfigurationProvider.DefaultMaxSecrets)
         {
-            configurationBuilder.Add(new AzureKeyVaultConfigurationProvider(certificateUtility, appClientId, vaultName, certificateThumbprint, validateCertificate, loggerFactory, storeName, storeLocation, maxSecrets));
+            configurationBuilder.Add(new AzureKeyVaultConfigurationProvider(authTokenUtility, appClientId, vaultName, certificateThumbprint, validateCertificate, loggerFactory, storeName, storeLocation, maxSecrets));
             return configurationBuilder;
         }
 
@@ -47,9 +48,9 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// <param name="loggerFactory"></param>
         /// <param name="maxSecrets"></param>
         /// <returns></returns>
-        public static IConfigurationBuilder AddAzureKeyVaultSecrets(this IConfigurationBuilder configurationBuilder, string appClientId, string appClientSecret, string vaultName, ILoggerFactory loggerFactory, int maxSecrets = AzureKeyVaultConfigurationProvider.DefaultMaxSecrets)
+        public static IConfigurationBuilder AddAzureKeyVaultSecrets(this IConfigurationBuilder configurationBuilder, IAuthenticationTokenUtility authTokenUtility, string appClientId, string appClientSecret, string vaultName, ILoggerFactory loggerFactory, int maxSecrets = AzureKeyVaultConfigurationProvider.DefaultMaxSecrets)
         {
-            configurationBuilder.Add(new AzureKeyVaultConfigurationProvider(appClientId, appClientSecret, vaultName, loggerFactory, maxSecrets));
+            configurationBuilder.Add(new AzureKeyVaultConfigurationProvider(authTokenUtility, appClientId, appClientSecret, vaultName, loggerFactory, maxSecrets));
             return configurationBuilder;
         }
     }

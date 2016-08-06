@@ -19,6 +19,7 @@ namespace Umbrella.Utilities
             services.AddTransient<IEmailHelper, EmailHelper>();
 
             //Encryption
+            services.AddSingleton<ICertificateUtility, CertificateUtility>();
             services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
 
             return services;
