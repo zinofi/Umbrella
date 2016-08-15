@@ -81,6 +81,8 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
     {
         private readonly DbAppTenantSessionContext<TAppTenantKey> m_DbAppTenantSessionContext;
 
+        protected DbAppTenantSessionContext<TAppTenantKey> AppTenantSessionContext => m_DbAppTenantSessionContext;
+
         public MultiTenantGenericRepository(TDbContext dbContext,
             IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory,
             ILogger logger,
