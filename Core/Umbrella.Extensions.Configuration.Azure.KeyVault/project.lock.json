@@ -403,7 +403,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.ActiveDirectory/1.0.0-rel-build00027": {
+      "Umbrella.ActiveDirectory/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -418,7 +418,7 @@
           "net46/Umbrella.ActiveDirectory.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00028": {
+      "Umbrella.Utilities/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1943,12 +1943,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.ActiveDirectory/1.0.0-rel-build00027": {
+    "Umbrella.ActiveDirectory/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../Umbrella.ActiveDirectory/project.json",
       "msbuildProject": "../Umbrella.ActiveDirectory/Umbrella.ActiveDirectory.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00028": {
+    "Umbrella.Utilities/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"

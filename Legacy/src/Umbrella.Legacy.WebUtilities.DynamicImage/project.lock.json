@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.6": {
-      "AutoMapper/5.0.2": {
+      "AutoMapper/5.1.1": {
         "type": "package",
         "compile": {
           "lib/net45/AutoMapper.dll": {}
@@ -525,7 +525,7 @@
           "lib/net40/WebActivatorEx.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00014": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -544,7 +544,7 @@
           "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rel-build00014": {
+      "Umbrella.Legacy.Utilities/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -560,7 +560,7 @@
           "net46/Umbrella.Legacy.Utilities.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00014": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -587,7 +587,7 @@
           "net46/Umbrella.Legacy.WebUtilities.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00014": {
+      "Umbrella.Utilities/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -606,7 +606,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rel-build00014": {
+      "Umbrella.WebUtilities/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -624,11 +624,11 @@
           "net46/Umbrella.WebUtilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00014": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "AutoMapper": "5.0.2",
+          "AutoMapper": "5.1.1",
           "DynamicImage": "3.1.1",
           "Umbrella.Utilities": "1.0.0"
         },
@@ -647,19 +647,21 @@
     }
   },
   "libraries": {
-    "AutoMapper/5.0.2": {
-      "sha512": "eHfVW+cn4X7c8iMUKqqR81PN7hOiT+WTSx5oW6cs+W8vlGrwkZp/SYLvalcUTxhbf5tF8VaW9s2gzWJTYj3DKA==",
+    "AutoMapper/5.1.1": {
+      "sha512": "Q3uFSWccBUE1Q9BW88C6RO2Y/iFkPztTKK1ciyx1jhWPdOi5+pvzZ2EwcJKPiV0cr2EXZUWqQOsSpA5jVjfQBg==",
       "type": "package",
-      "path": "AutoMapper/5.0.2",
+      "path": "AutoMapper/5.1.1",
       "files": [
-        "AutoMapper.5.0.2.nupkg.sha512",
+        "AutoMapper.5.1.1.nupkg.sha512",
         "AutoMapper.nuspec",
         "lib/net45/AutoMapper.dll",
         "lib/net45/AutoMapper.xml",
         "lib/netstandard1.1/AutoMapper.dll",
         "lib/netstandard1.1/AutoMapper.xml",
         "lib/netstandard1.3/AutoMapper.dll",
-        "lib/netstandard1.3/AutoMapper.xml"
+        "lib/netstandard1.3/AutoMapper.xml",
+        "lib/portable-net45+win8+wpa81/AutoMapper.dll",
+        "lib/portable-net45+win8+wpa81/AutoMapper.xml"
       ]
     },
     "DynamicImage/3.1.1": {
@@ -1993,32 +1995,32 @@
         "lib/net40/WebActivatorEx.dll"
       ]
     },
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00014": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
       "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rel-build00014": {
+    "Umbrella.Legacy.Utilities/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json",
       "msbuildProject": "../Umbrella.Legacy.Utilities/Umbrella.Legacy.Utilities.xproj"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00014": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../Umbrella.Legacy.WebUtilities/project.json",
       "msbuildProject": "../Umbrella.Legacy.WebUtilities/Umbrella.Legacy.WebUtilities.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00014": {
+    "Umbrella.Utilities/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rel-build00014": {
+    "Umbrella.WebUtilities/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00014": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities.DynamicImage/Umbrella.WebUtilities.DynamicImage.xproj"
@@ -2026,7 +2028,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "AutoMapper >= 5.0.2",
+      "AutoMapper >= 5.1.1",
       "Microsoft.AspNet.Mvc >= 5.2.3",
       "Microsoft.Owin >= 3.0.1",
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*",

@@ -419,7 +419,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WindowsAzure.Storage/7.1.2": {
+      "WindowsAzure.Storage/7.2.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Azure.KeyVault.Core": "1.0.0",
@@ -437,7 +437,7 @@
           "lib/net40/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00014": {
+      "Umbrella.Utilities/1.0.0-rel-build00029": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1765,16 +1765,18 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "WindowsAzure.Storage/7.1.2": {
-      "sha512": "m6rIEZmPMUfIpON+kC+Azfluv/IoJKaPcJKvaLZMx5tXvjQRGkpWoYiO3ktewg5HxYkA0cpO1E3zphjJp9lZsg==",
+    "WindowsAzure.Storage/7.2.0": {
+      "sha512": "EngH7mPZpFgBnkhLRMz4XQi1s2zZp+Yh9nnyv6Dr0ewxcVagyerdH/fp74vDIgaPpy/GTO3q6mqpwuW9WFkN/A==",
       "type": "package",
-      "path": "WindowsAzure.Storage/7.1.2",
+      "path": "WindowsAzure.Storage/7.2.0",
       "files": [
-        "WindowsAzure.Storage.7.1.2.nupkg.sha512",
+        "WindowsAzure.Storage.7.2.0.nupkg.sha512",
         "WindowsAzure.Storage.nuspec",
         "lib/net40/Microsoft.WindowsAzure.Storage.dll",
         "lib/net40/Microsoft.WindowsAzure.Storage.pdb",
         "lib/net40/Microsoft.WindowsAzure.Storage.xml",
+        "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll",
+        "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.pdb",
         "lib/win8/Microsoft.WindowsAzure.Storage.dll",
         "lib/win8/Microsoft.WindowsAzure.Storage.pdb",
         "lib/wp8/Microsoft.WindowsAzure.Storage.dll",
@@ -1783,7 +1785,7 @@
         "lib/wpa/Microsoft.WindowsAzure.Storage.pdb"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00014": {
+    "Umbrella.Utilities/1.0.0-rel-build00029": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1792,7 +1794,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Umbrella.Utilities >= 1.0.0-*",
-      "WindowsAzure.Storage >= 7.1.2",
+      "WindowsAzure.Storage >= 7.2.0",
       "log4net >= 2.0.5"
     ],
     ".NETFramework,Version=v4.6": []
