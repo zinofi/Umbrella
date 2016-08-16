@@ -116,7 +116,8 @@ namespace Umbrella.DataAccess.EF6
                     ValidateEntity(entity, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
-                PreSaveWork(entity, addToContext);
+                bool isNew;
+                PreSaveWork(entity, addToContext, out isNew);
 
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 AfterContextSaving(entity, options, childOptions);
@@ -127,7 +128,7 @@ namespace Umbrella.DataAccess.EF6
                     Context.SaveChanges();
 
                     //Additional processing after changes have been successfully committed to the database
-                    AfterContextSavedChanges(entity, options, childOptions);
+                    AfterContextSavedChanges(entity, isNew, options, childOptions);
                 }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", true))
@@ -166,7 +167,8 @@ namespace Umbrella.DataAccess.EF6
                     await ValidateEntityAsync(entity, cancellationToken, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
-                PreSaveWork(entity, addToContext);
+                bool isNew;
+                PreSaveWork(entity, addToContext, out isNew);
 
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 await AfterContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -177,7 +179,7 @@ namespace Umbrella.DataAccess.EF6
                     await Context.SaveChangesAsync(cancellationToken);
 
                     //Additional processing after changes have been successfully committed to the database
-                    await AfterContextSavedChangesAsync(entity, cancellationToken, options, childOptions);
+                    await AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions);
                 }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", true))
@@ -195,8 +197,11 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        protected virtual void PreSaveWork(TEntity entity, bool addToContext)
+        protected virtual void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
         {
+            //Assume the entity is not new initially
+            isNew = false;
+
             //Look for the entity in the context - this action will allow us to determine it's state
             DbEntityEntry<TEntity> dbEntity = Context.Entry(entity);
 
@@ -212,6 +217,8 @@ namespace Umbrella.DataAccess.EF6
             //Check if this entity is in the context, i.e. is it new
             if (entity.Id.Equals(default(TEntityKey)) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)))
             {
+                isNew = true;
+
                 if (datedEntity != null)
                     datedEntity.CreatedDate = DateTime.UtcNow;
 
@@ -543,7 +550,7 @@ namespace Umbrella.DataAccess.EF6
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
-        protected virtual void AfterContextSavedChanges(TEntity entity, TRepoOptions options, RepoOptions[] childOptions)
+        protected virtual void AfterContextSavedChanges(TEntity entity, bool isNew, TRepoOptions options, RepoOptions[] childOptions)
         {
         }
 
@@ -552,9 +559,9 @@ namespace Umbrella.DataAccess.EF6
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
-        protected virtual Task AfterContextSavedChangesAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+        protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
-            AfterContextSavedChanges(entity, options, childOptions);
+            AfterContextSavedChanges(entity, isNew, options, childOptions);
 
             return Task.CompletedTask;
         }

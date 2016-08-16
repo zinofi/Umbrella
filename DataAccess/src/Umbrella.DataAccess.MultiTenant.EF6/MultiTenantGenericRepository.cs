@@ -93,14 +93,14 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
             m_DbAppTenantSessionContext = dbAppTenantSessionContext;
         }
 
-        protected override void PreSaveWork(TEntity entity, bool addToContext)
+        protected override void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
         {
             IAppTenantEntity<TAppTenantKey> tenantEntity = entity as IAppTenantEntity<TAppTenantKey>;
 
             if (tenantEntity != null)
                 tenantEntity.AppTenantId = m_DbAppTenantSessionContext.AppTenantId;
 
-            base.PreSaveWork(entity, addToContext);
+            base.PreSaveWork(entity, addToContext, out isNew);
         }
     }
 }
