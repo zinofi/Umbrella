@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-rel-build00031",
   "description": "Umbrella.ActiveDirectory Class Library",
   "authors": [ "Richard Edwards" ],
@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-    "Umbrella.Utilities": "1.0.0-*",
-    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.1"
+    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.2",
+    "Umbrella.Utilities": "1.0.0-*"
   }
 }

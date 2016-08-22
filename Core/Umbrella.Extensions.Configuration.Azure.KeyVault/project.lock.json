@@ -188,7 +188,7 @@
           "lib/netstandard1.0/Microsoft.Extensions.Primitives.dll": {}
         }
       },
-      "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.1": {
+      "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.2": {
         "type": "package",
         "compile": {
           "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll": {},
@@ -403,12 +403,12 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.ActiveDirectory/1.0.0-rel-build00029": {
+      "Umbrella.ActiveDirectory/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-          "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.1",
+          "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.2",
           "Umbrella.Utilities": "1.0.0"
         },
         "compile": {
@@ -418,7 +418,7 @@
           "net46/Umbrella.ActiveDirectory.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Utilities/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -737,12 +737,12 @@
         "lib/netstandard1.0/Microsoft.Extensions.Primitives.xml"
       ]
     },
-    "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.1": {
-      "sha512": "GWN/xRdmuXBJ82NUSqKmtZnffWHZWTvqekbjm7AwgotWqrxBYPoktSYUtX6SkBReOzRT9zK/6InOUshjVujGXw==",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.2": {
+      "sha512": "8UbNnEUVwtdXtTmBCAqNpYVsfqt7utFMACt54G+RbWgIdUnlHw61n3NF5m/oCxuyigYCIvlbLNirpPvsOE1rEA==",
       "type": "package",
-      "path": "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.1",
+      "path": "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.2",
       "files": [
-        "Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.1.nupkg.sha512",
+        "Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.2.nupkg.sha512",
         "Microsoft.IdentityModel.Clients.ActiveDirectory.nuspec",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
@@ -1943,12 +1943,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.ActiveDirectory/1.0.0-rel-build00029": {
+    "Umbrella.ActiveDirectory/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../Umbrella.ActiveDirectory/project.json",
       "msbuildProject": "../Umbrella.ActiveDirectory/Umbrella.ActiveDirectory.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Utilities/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"

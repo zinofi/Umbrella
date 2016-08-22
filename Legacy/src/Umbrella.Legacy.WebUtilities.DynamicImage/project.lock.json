@@ -525,7 +525,7 @@
           "lib/net40/WebActivatorEx.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00029": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -544,7 +544,7 @@
           "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Legacy.Utilities/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -560,7 +560,7 @@
           "net46/Umbrella.Legacy.Utilities.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00029": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -587,7 +587,7 @@
           "net46/Umbrella.Legacy.WebUtilities.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Utilities/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -606,7 +606,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rel-build00029": {
+      "Umbrella.WebUtilities/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -624,7 +624,7 @@
           "net46/Umbrella.WebUtilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00029": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1995,32 +1995,32 @@
         "lib/net40/WebActivatorEx.dll"
       ]
     },
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00029": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
       "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Legacy.Utilities/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json",
       "msbuildProject": "../Umbrella.Legacy.Utilities/Umbrella.Legacy.Utilities.xproj"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00029": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../Umbrella.Legacy.WebUtilities/project.json",
       "msbuildProject": "../Umbrella.Legacy.WebUtilities/Umbrella.Legacy.WebUtilities.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Utilities/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rel-build00029": {
+    "Umbrella.WebUtilities/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00029": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities.DynamicImage/Umbrella.WebUtilities.DynamicImage.xproj"

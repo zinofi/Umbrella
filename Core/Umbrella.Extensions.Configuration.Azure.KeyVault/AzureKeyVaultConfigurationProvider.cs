@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
 using System.Security.Cryptography.X509Certificates;
@@ -9,8 +8,6 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using System.Threading;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Umbrella.Utilities.Encryption.Interfaces;
 using Umbrella.ActiveDirectory;
 
 namespace Umbrella.Extensions.Configuration.Azure.KeyVault
