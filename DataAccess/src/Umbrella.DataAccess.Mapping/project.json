@@ -1,13 +1,13 @@
 ﻿{
   "version": "1.0.0-rel-build00031",
-  "description": "Umbrella.ActiveDirectory Class Library",
+  "description": "Umbrella.DataAccess.Mapping Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
     "net46": {}
   },
   "dependencies": {
+    "AutoMapper": "5.0.2",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-    "Umbrella.Utilities": "1.0.0-*",
-    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.1"
+    "Umbrella.DataAccess": "1.0.0-*"
   }
 }

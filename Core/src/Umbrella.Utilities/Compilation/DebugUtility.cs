@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("Umbrella.AspNetCore.WebUtilities")]
 namespace Umbrella.Utilities.Compilation
 {
-    public static class DebugUtility
+    /// <summary>
+    /// This is an internal class used only for the purposes of debugging the library projects. Exposing this for use outside
+    /// of these projects would be pointless once the libraries have been compiled in release mode.
+    /// </summary>
+    internal static class DebugUtility
     {
         public static bool IsDebugMode
         {
