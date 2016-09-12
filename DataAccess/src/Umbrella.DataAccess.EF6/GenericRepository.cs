@@ -53,7 +53,7 @@ namespace Umbrella.DataAccess.EF6
     /// </summary>
     /// <typeparam name="TEntity">The type of the generated entity, e.g. Person, Car</typeparam>
     /// <typeparam name="TDbContext">The type of the data context</typeparam>
-    public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IGenericRepository<TEntity, TEntityKey, TRepoOptions>
+    public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey>, IGenericRepository<TEntity, TEntityKey, TRepoOptions>
         where TEntity : class, IEntity<TEntityKey>
         where TDbContext : DbContext
         where TRepoOptions : RepoOptions, new()
@@ -74,25 +74,17 @@ namespace Umbrella.DataAccess.EF6
         private readonly IUserAuditDataFactory<TUserAuditKey> m_UserAuditDataFactory;
         #endregion
 
-        #region Protected Members
-        protected readonly TDbContext Context;
-        protected readonly ILogger Log;
-        protected readonly IDataAccessLookupNormalizer LookupNormalizer;
-        #endregion
+
 
         #region Protected Properties
         protected TUserAuditKey CurrentUserId => m_UserAuditDataFactory.CurrentUserId;
-
-        protected IQueryable<TEntity> Items => Context.Set<TEntity>();
         #endregion
 
         #region Constructors
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
+            : base(dbContext, logger, lookupNormalizer)
         {
-            Context = dbContext;
             m_UserAuditDataFactory = userAuditDataFactory;
-            Log = logger;
-            LookupNormalizer = lookupNormalizer;
         }
         #endregion
 
@@ -112,7 +104,7 @@ namespace Umbrella.DataAccess.EF6
                 //Additional processing before changes have been reflected in the database context
                 BeforeContextSaving(entity, options, childOptions);
 
-                if(options.ValidateEntity)
+                if (options.ValidateEntity)
                     ValidateEntity(entity, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
@@ -163,7 +155,7 @@ namespace Umbrella.DataAccess.EF6
                 //Additional processing before changes have been reflected in the database context
                 await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions);
 
-                if(options.ValidateEntity)
+                if (options.ValidateEntity)
                     await ValidateEntityAsync(entity, cancellationToken, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
@@ -244,12 +236,12 @@ namespace Umbrella.DataAccess.EF6
             foreach (var item in exc.EntityValidationErrors)
             {
                 string entityType = item.Entry.Entity.GetType().BaseType.FullName;
-                
+
                 Dictionary<string, object> currentValues = item.Entry.CurrentValues.PropertyNames.ToDictionary(x => x, x => item.Entry.CurrentValues.GetValue<object>(x));
                 Dictionary<string, object> originalValues = null;
 
                 //Can only get the OriginalValues if the entity has been modified from a previously persisted version.
-                if(item.Entry.State.HasFlag(EntityState.Modified))
+                if (item.Entry.State.HasFlag(EntityState.Modified))
                     originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, x => item.Entry.OriginalValues.GetValue<object>(x));
 
                 Log.WriteError(exc, new { entityType, item.IsValid, item.ValidationErrors, originalValues, currentValues, state = item.Entry.State.ToString() });
@@ -541,7 +533,7 @@ namespace Umbrella.DataAccess.EF6
         protected virtual Task AfterContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
             AfterContextSaving(entity, options, childOptions);
-            
+
             return Task.CompletedTask;
         }
 
@@ -849,7 +841,7 @@ namespace Umbrella.DataAccess.EF6
             foreach (TEntity entity in lstToRemove)
             {
                 entities.Remove(entity);
-                
+
                 //Make sure it is removed from the Context if it has just been added - make it detached
                 DbEntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
 
@@ -866,7 +858,7 @@ namespace Umbrella.DataAccess.EF6
 
             List<TEntity> lstToRemove = new List<TEntity>();
 
-            foreach(TEntity entity in entities)
+            foreach (TEntity entity in entities)
             {
                 if (await IsEmptyEntityAsync(entity, cancellationToken, targetOptions, options))
                     lstToRemove.Add(entity);
@@ -881,110 +873,6 @@ namespace Umbrella.DataAccess.EF6
 
                 if (dbEntityEntry.State == EntityState.Added)
                     dbEntityEntry.State = EntityState.Detached;
-            }
-        }
-
-        public virtual List<TEntity> FindAll(bool trackChanges = false, IncludeMap<TEntity> map = null)
-        {
-            try
-            {
-                return Items.TrackChanges(trackChanges).IncludeMap(map).ToList();
-            }
-            catch (Exception exc) when (Log.WriteError(exc))
-            {
-                throw;
-            }
-        }
-
-        public virtual Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                return Items.TrackChanges(trackChanges).IncludeMap(map).ToListAsync(cancellationToken);
-            }
-            catch (Exception exc) when (Log.WriteError(exc))
-            {
-                throw;
-            }
-        }
-
-        public virtual List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null)
-        {
-            try
-            {
-                return Items.TrackChanges(trackChanges).IncludeMap(map).Where(x => ids.Contains(x.Id)).ToList();
-            }
-            catch (Exception exc) when (Log.WriteError(exc, ids))
-            {
-                throw;
-            }
-        }
-
-        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                return Items.TrackChanges(trackChanges).IncludeMap(map).Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
-            }
-            catch (Exception exc) when (Log.WriteError(exc, ids))
-            {
-                throw;
-            }
-        }
-
-        public virtual TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
-        {
-            try
-            {
-                return Items.TrackChanges(trackChanges).IncludeMap(map).SingleOrDefault(x => x.Id.Equals(id));
-            }
-            catch (Exception exc) when (Log.WriteError(exc, id))
-            {
-                throw;
-            }
-        }
-
-        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                return Items.TrackChanges(trackChanges).IncludeMap(map).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
-            }
-            catch (Exception exc) when (Log.WriteError(exc, id))
-            {
-                throw;
-            }
-        }
-
-        public virtual int FindTotalCount()
-        {
-            try
-            {
-                return Items.Count();
-            }
-            catch (Exception exc) when (Log.WriteError(exc))
-            {
-                throw;
-            }
-        }
-
-        public virtual Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            try
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                return Items.CountAsync(cancellationToken);
-            }
-            catch (Exception exc) when (Log.WriteError(exc))
-            {
-                throw;
             }
         }
         #endregion

@@ -1,6 +1,6 @@
 ﻿{
-  "version": "1.0.0-rel-build00031",
-  "description": "Umbrella.DataAccess.EntityFrameworkCore Class Library",
+  "version": "1.0.0-rel-build00032",
+  "description": "This package is a placeholder for a future EF Core port of the EF6 library.",
   "authors": [ "Richard Edwards" ],
 
   "frameworks": {
