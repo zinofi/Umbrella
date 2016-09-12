@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.2",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory": "3.13.4",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }

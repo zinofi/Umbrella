@@ -78,7 +78,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "SimpleInjector/3.2.0": {
+      "SimpleInjector/3.2.2": {
         "type": "package",
         "compile": {
           "lib/net45/SimpleInjector.dll": {}
@@ -251,7 +251,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Utilities/1.0.0-rel-build00031": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -341,19 +341,19 @@
         "tools/install.ps1"
       ]
     },
-    "SimpleInjector/3.2.0": {
-      "sha512": "porGEUX3fIfbxW5Sz8ooDzlkLt7rY4nrug01BcgPZWcKjU0fbDFxoeDBc0zin9ppxfY8bY0FRZceT27G2nDdkQ==",
+    "SimpleInjector/3.2.2": {
+      "sha512": "3TBiqZtS2JLnbl6/xcaRZ9ZsX2rlPhCofrW+rfEej/Qp4wbEI6/MAeTec3QX9Fuq6/t0rOEmkuSYBtudAtqUxA==",
       "type": "package",
-      "path": "SimpleInjector/3.2.0",
+      "path": "SimpleInjector/3.2.2",
       "files": [
-        "SimpleInjector.3.2.0.nupkg.sha512",
+        "SimpleInjector.3.2.2.nupkg.sha512",
         "SimpleInjector.nuspec",
         "lib/net40-client/SimpleInjector.dll",
         "lib/net40-client/SimpleInjector.xml",
         "lib/net45/SimpleInjector.dll",
         "lib/net45/SimpleInjector.xml",
-        "lib/netstandard1.6/SimpleInjector.dll",
-        "lib/netstandard1.6/SimpleInjector.xml",
+        "lib/netstandard1.0/SimpleInjector.dll",
+        "lib/netstandard1.0/SimpleInjector.xml",
         "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.dll",
         "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.xml"
       ]
@@ -1357,7 +1357,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Utilities/1.0.0-rel-build00031": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1365,7 +1365,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "SimpleInjector >= 3.2.0",
+      "SimpleInjector >= 3.2.2",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": []

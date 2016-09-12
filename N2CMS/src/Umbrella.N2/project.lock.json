@@ -352,19 +352,19 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "N2CMS/2.9.6.12": {
+      "N2CMS/2.9.6.13": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.12",
-          "N2CMS.Management": "2.9.6.12",
-          "N2CMS.Search.Lucene": "2.9.6.12"
+          "N2CMS.Library": "2.9.6.13",
+          "N2CMS.Management": "2.9.6.13",
+          "N2CMS.Search.Lucene": "2.9.6.13"
         }
       },
       "N2CMS.Config/2.6.2": {
         "type": "package"
       },
-      "N2CMS.Library/2.9.6.12": {
+      "N2CMS.Library/2.9.6.13": {
         "type": "package",
         "dependencies": {
           "NHibernate": "4.0.3.4000"
@@ -376,11 +376,11 @@
           "lib/net45/N2.dll": {}
         }
       },
-      "N2CMS.Management/2.9.6.12": {
+      "N2CMS.Management/2.9.6.13": {
         "type": "package",
         "dependencies": {
           "N2CMS.Config": "2.6.2",
-          "N2CMS.Library": "2.9.6.12",
+          "N2CMS.Library": "2.9.6.13",
           "SharpZipLib": "0.86.0"
         },
         "compile": {
@@ -394,11 +394,11 @@
           "lib/N2.Packaging.dll": {}
         }
       },
-      "N2CMS.Search.Lucene/2.9.6.12": {
+      "N2CMS.Search.Lucene/2.9.6.13": {
         "type": "package",
         "dependencies": {
           "Lucene.Net": "3.0.3",
-          "N2CMS.Library": "2.9.6.12"
+          "N2CMS.Library": "2.9.6.13"
         },
         "compile": {
           "lib/N2.Search.Lucene.dll": {}
@@ -1096,10 +1096,10 @@
         "lib/net40/Microsoft.Web.Infrastructure.dll"
       ]
     },
-    "N2CMS/2.9.6.12": {
-      "sha512": "Qd6U5JllQzrAd41hXNW985qBEhgurgdWippzd6x6kD+k99nYG0VrNSob0WDnNKbW9k2X5Qw+Wja0XnnzgBb/rw==",
+    "N2CMS/2.9.6.13": {
+      "sha512": "9j3Rv0pyrj/UWdO9JululrxPukn26AcGRtLki7Ij7fDBSdJv2edwbOS8g7Q3jPklvVtICO+6ylJbanUOWNF6bQ==",
       "type": "package",
-      "path": "N2CMS/2.9.6.12",
+      "path": "N2CMS/2.9.6.13",
       "files": [
         "Content/N2/history.txt",
         "Content/N2/howto_develop.txt",
@@ -1108,7 +1108,7 @@
         "Content/N2/n2_readme.txt",
         "Content/N2/n2cms.configuration.xsd",
         "Content/N2/upgrade.txt",
-        "N2CMS.2.9.6.12.nupkg.sha512",
+        "N2CMS.2.9.6.13.nupkg.sha512",
         "N2CMS.nuspec"
       ]
     },
@@ -1124,24 +1124,24 @@
         "N2CMS.Config.nuspec"
       ]
     },
-    "N2CMS.Library/2.9.6.12": {
-      "sha512": "QV+mUWd38dNeyb5xlJHAeyT+puwohav7vNQeJPMudpfZhfuT1EOzdi9ad/YX8ENUg3Wrf2DE4uew/PFFejKBPQ==",
+    "N2CMS.Library/2.9.6.13": {
+      "sha512": "+j4HMiKKqobhSKYumTuBmAIDN1n/12JVss0jvXXDh/D5O/Hop7CjZzajoi1ojZsCQeNkS5PgP4S7gqdTuth+uA==",
       "type": "package",
-      "path": "N2CMS.Library/2.9.6.12",
+      "path": "N2CMS.Library/2.9.6.13",
       "files": [
-        "N2CMS.Library.2.9.6.12.nupkg.sha512",
+        "N2CMS.Library.2.9.6.13.nupkg.sha512",
         "N2CMS.Library.nuspec",
         "lib/net45/N2.XML",
         "lib/net45/N2.dll",
         "lib/net45/N2.pdb"
       ]
     },
-    "N2CMS.Management/2.9.6.12": {
-      "sha512": "sP6NR7SrTC3lh8GEMZ2Vl/LzpQXvK0kAcMLCTxsAfuGKczAxAzr/5RVYV28Zygs94EzAy5MaH+h+uaf9GUE7uQ==",
+    "N2CMS.Management/2.9.6.13": {
+      "sha512": "bh3/9qCQwEOznmZLSeMH1Nuaoh3cTRb74fx6Y/8W0ojd2RTHWy1VSjclAh8cbQSbyZyklpY6Yju1fZkkWpa7qA==",
       "type": "package",
-      "path": "N2CMS.Management/2.9.6.12",
+      "path": "N2CMS.Management/2.9.6.13",
       "files": [
-        "N2CMS.Management.2.9.6.12.nupkg.sha512",
+        "N2CMS.Management.2.9.6.13.nupkg.sha512",
         "N2CMS.Management.nuspec",
         "content/N2/N2.zip",
         "content/N2/history.txt",
@@ -1161,12 +1161,12 @@
         "lib/N2.Packaging.dll"
       ]
     },
-    "N2CMS.Search.Lucene/2.9.6.12": {
-      "sha512": "9EzKxOYHLTPocAIUQ6j0do5UBp1YktylcDEGwyQK8AfegigN74eKltOqCtnaOciRvAS4ErUiCF6xCOLPkwGyqw==",
+    "N2CMS.Search.Lucene/2.9.6.13": {
+      "sha512": "jULlA0XQT2QzJ9ocfgxFVxfnTDsqzz82ldWh5PdIVRU4yjfue5K0twFDUccTcFnmAbGpfGEsZB0D4ycqD5udgw==",
       "type": "package",
-      "path": "N2CMS.Search.Lucene/2.9.6.12",
+      "path": "N2CMS.Search.Lucene/2.9.6.13",
       "files": [
-        "N2CMS.Search.Lucene.2.9.6.12.nupkg.sha512",
+        "N2CMS.Search.Lucene.2.9.6.13.nupkg.sha512",
         "N2CMS.Search.Lucene.nuspec",
         "lib/N2.Search.Lucene.dll"
       ]
@@ -2289,7 +2289,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "N2CMS >= 2.9.6.12",
+      "N2CMS >= 2.9.6.13",
       "Newtonsoft.Json >= 9.0.1",
       "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
       "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",
