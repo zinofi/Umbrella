@@ -1,1 +1,1 @@
-Get-ChildItem -Path $PSScriptRoot\project.json -Recurse | ForEach-Object { & $env:LOCALAPPDATA\Microsoft\DotNet\dotnet pack $_.FullName -c Release }
+Get-ChildItem -Path $PSScriptRoot\project.json -Recurse | ForEach-Object { & dotnet pack $_.FullName -c Release }
