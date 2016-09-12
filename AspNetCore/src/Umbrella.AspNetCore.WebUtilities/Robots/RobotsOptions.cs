@@ -7,6 +7,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Robots
 {
     public class RobotsOptions
     {
-        public Dictionary<string, string> RobotMappings { get; set; }
+        public Dictionary<string, string> RobotMappings { get; set; } = new Dictionary<string, string>();
     }
 }

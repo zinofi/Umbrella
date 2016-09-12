@@ -49,7 +49,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Robots
                 //Try and find a mapping entry for the host name
                 string robotsFileName = "";
 
-                if (m_RobotsConfig.RobotMappings.TryGetValue(hostName, out robotsFileName))
+                //Check there is a robots configuration - it may be that one is not configured
+                //in which case the default string will always be returned.
+                if (m_RobotsConfig != null && m_RobotsConfig.RobotMappings.TryGetValue(hostName, out robotsFileName))
                 {
                     string filePath = $@"{m_HostingEnvironment.WebRootPath}\{robotsFileName}";
 
