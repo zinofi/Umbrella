@@ -52,7 +52,7 @@ namespace Umbrella.DataAccess.EF6
 
             //For items we are loading to be cached lazy loading must be disabled so that entities can be serialized without
             //their children also being automatically serialized.
-            dbContext.Configuration.LazyLoadingEnabled = false;
+            //dbContext.Configuration.LazyLoadingEnabled = false;
         }
         #endregion
 
