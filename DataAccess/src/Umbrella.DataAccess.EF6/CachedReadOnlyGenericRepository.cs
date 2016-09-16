@@ -59,17 +59,14 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                EnsureValidArguments(trackChanges, map);
+                EnsureValidArguments(map);
 
-                return m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
+                //Disable Lazy Loading for this query
+                Context.Configuration.LazyLoadingEnabled = false;
+
+                List<TEntity> retVal = m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
                 {
-                    //Disable Lazy Loading for this query
-                    Context.Configuration.LazyLoadingEnabled = false;
-
                     List<TEntity> lstEntity = Items.AsNoTracking().ToList();
-
-                    //Change back to the initial value
-                    Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
 
                     //Also add cache entries for each entity for fast lookup
                     foreach (TEntity entity in lstEntity)
@@ -81,6 +78,11 @@ namespace Umbrella.DataAccess.EF6
 
                     return lstEntity;
                 });
+
+                //Change back to the initial value
+                Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
+
+                return retVal;
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -92,7 +94,7 @@ namespace Umbrella.DataAccess.EF6
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            EnsureValidArguments(trackChanges, map);
+            EnsureValidArguments(map);
 
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
             return Task.FromResult(FindAll());
@@ -102,19 +104,16 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                EnsureValidArguments(trackChanges, map);
+                EnsureValidArguments(map);
 
                 string key = GenerateCacheKey(id);
 
-                return m_Cache.GetOrSetAsJsonString(key, () =>
+                //Disable Lazy Loading for this query
+                Context.Configuration.LazyLoadingEnabled = false;
+
+                TEntity retVal = m_Cache.GetOrSetAsJsonString(key, () =>
                 {
-                    //Disable Lazy Loading for this query
-                    Context.Configuration.LazyLoadingEnabled = false;
-
                     TEntity entity = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
-
-                    //Change back to the initial value
-                    Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
 
                     if (entity != null)
                     {
@@ -127,6 +126,11 @@ namespace Umbrella.DataAccess.EF6
 
                     return entity;
                 });
+
+                //Change back to the initial value
+                Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
+
+                return retVal;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { id }))
             {
@@ -138,7 +142,7 @@ namespace Umbrella.DataAccess.EF6
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            EnsureValidArguments(trackChanges, map);
+            EnsureValidArguments(map);
 
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
             return Task.FromResult(FindById(id));
@@ -148,7 +152,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                EnsureValidArguments(trackChanges, map);
+                EnsureValidArguments(map);
 
                 return ids.Select(x => FindById(x)).ToList();
             }
@@ -160,6 +164,8 @@ namespace Umbrella.DataAccess.EF6
 
         public override Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
+            EnsureValidArguments(map);
+
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
             return Task.FromResult(FindAllByIdList(ids));
         }
@@ -188,11 +194,8 @@ namespace Umbrella.DataAccess.EF6
         #region Private Methods
         private string GenerateCacheKey(TEntityKey id) => $"{s_CacheKeyPrefix}:{id}";
 
-        private void EnsureValidArguments(bool trackChanges, IncludeMap<TEntity> map)
+        private void EnsureValidArguments(IncludeMap<TEntity> map)
         {
-            if (trackChanges)
-                throw new ArgumentException("Change tracking cannot be enabled for cached entities.", nameof(trackChanges));
-
             if (map != null)
                 throw new ArgumentException("An include map cannot be used for cached entities.", nameof(map));
         }
