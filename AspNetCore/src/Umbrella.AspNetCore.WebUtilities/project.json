@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00033",
+  "version": "1.0.0-rel-build00034",
   "description": "Umbrella.AspNetCore.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -10,7 +10,7 @@
   "dependencies": {
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Http": "1.0.0",
-    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.1",
     "Umbrella.DataAccess": "1.0.0-*",
     "Umbrella.WebUtilities": "1.0.0-*"
   }

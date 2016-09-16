@@ -38,6 +38,7 @@ namespace Umbrella.DataAccess.EF6
         #region Private Members
         private readonly IDistributedCache m_Cache;
         private readonly string m_CacheKeyPrefix;
+        private readonly bool m_InitialLazyLoadingStatus;
         #endregion
 
         #region Protected Properties
@@ -49,10 +50,7 @@ namespace Umbrella.DataAccess.EF6
             : base(dbContext, logger, lookupNormalizer)
         {
             m_Cache = cache;
-
-            //For items we are loading to be cached lazy loading must be disabled so that entities can be serialized without
-            //their children also being automatically serialized.
-            //dbContext.Configuration.LazyLoadingEnabled = false;
+            m_InitialLazyLoadingStatus = Context.Configuration.LazyLoadingEnabled;
         }
         #endregion
 
@@ -65,7 +63,13 @@ namespace Umbrella.DataAccess.EF6
 
                 return m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
                 {
+                    //Disable Lazy Loading for this query
+                    Context.Configuration.LazyLoadingEnabled = false;
+
                     List<TEntity> lstEntity = Items.AsNoTracking().ToList();
+
+                    //Change back to the initial value
+                    Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
 
                     //Also add cache entries for each entity for fast lookup
                     foreach (TEntity entity in lstEntity)
@@ -104,9 +108,15 @@ namespace Umbrella.DataAccess.EF6
 
                 return m_Cache.GetOrSetAsJsonString(key, () =>
                 {
+                    //Disable Lazy Loading for this query
+                    Context.Configuration.LazyLoadingEnabled = false;
+
                     TEntity entity = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
 
-                    if(entity != null)
+                    //Change back to the initial value
+                    Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
+
+                    if (entity != null)
                     {
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
