@@ -169,7 +169,7 @@ namespace Umbrella.DataAccess.EF6
                 {
                     //Push changes to the database
                     await Context.SaveChangesAsync(cancellationToken);
-
+                    
                     //Additional processing after changes have been successfully committed to the database
                     await AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions);
                 }

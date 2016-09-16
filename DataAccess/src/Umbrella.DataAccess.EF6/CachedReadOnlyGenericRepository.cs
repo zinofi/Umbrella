@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Caching;
 using System.Threading;
+using System.Data.Entity.Infrastructure;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -39,6 +40,7 @@ namespace Umbrella.DataAccess.EF6
         private readonly IDistributedCache m_Cache;
         private readonly string m_CacheKeyPrefix;
         private readonly bool m_InitialLazyLoadingStatus;
+        private readonly bool m_InitialProxyCreationStatus;
         #endregion
 
         #region Protected Properties
@@ -51,6 +53,7 @@ namespace Umbrella.DataAccess.EF6
         {
             m_Cache = cache;
             m_InitialLazyLoadingStatus = Context.Configuration.LazyLoadingEnabled;
+            m_InitialProxyCreationStatus = Context.Configuration.ProxyCreationEnabled;
         }
         #endregion
 
@@ -61,28 +64,34 @@ namespace Umbrella.DataAccess.EF6
             {
                 EnsureValidArguments(map);
 
-                //Disable Lazy Loading for this query
-                Context.Configuration.LazyLoadingEnabled = false;
+                DisableLazyLoadingAndProxying();
 
-                List<TEntity> retVal = m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
+                List<TEntity> lstEntity = m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
                 {
-                    List<TEntity> lstEntity = Items.AsNoTracking().ToList();
+                    List<TEntity> lstEntityFromDb = Items.AsNoTracking().ToList();
 
                     //Also add cache entries for each entity for fast lookup
-                    foreach (TEntity entity in lstEntity)
+                    foreach (TEntity entity in lstEntityFromDb)
                     {
                         string key = GenerateCacheKey(entity.Id);
 
                         m_Cache.SetAsJsonString(key, entity);
                     }
 
-                    return lstEntity;
+                    return lstEntityFromDb;
                 });
 
-                //Change back to the initial value
-                Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
+                RestoreLazyLoadingAndProxying();
 
-                return retVal;
+                if(trackChanges)
+                {
+                    foreach(TEntity entity in lstEntity)
+                    {
+                        Context.Entry(entity).State = EntityState.Unchanged;
+                    }
+                }
+
+                return lstEntity;
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -97,7 +106,7 @@ namespace Umbrella.DataAccess.EF6
             EnsureValidArguments(map);
 
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindAll());
+            return Task.FromResult(FindAll(trackChanges));
         }
 
         public override TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
@@ -108,14 +117,13 @@ namespace Umbrella.DataAccess.EF6
 
                 string key = GenerateCacheKey(id);
 
-                //Disable Lazy Loading for this query
-                Context.Configuration.LazyLoadingEnabled = false;
+                DisableLazyLoadingAndProxying();
 
-                TEntity retVal = m_Cache.GetOrSetAsJsonString(key, () =>
+                TEntity entity = m_Cache.GetOrSetAsJsonString(key, () =>
                 {
-                    TEntity entity = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
+                    TEntity entityFromDb = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
 
-                    if (entity != null)
+                    if (entityFromDb != null)
                     {
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
@@ -124,13 +132,15 @@ namespace Umbrella.DataAccess.EF6
                         m_Cache.Remove(s_AllCountCacheKey);
                     }
 
-                    return entity;
+                    return entityFromDb;
                 });
 
-                //Change back to the initial value
-                Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
+                RestoreLazyLoadingAndProxying();
 
-                return retVal;
+                if (trackChanges)
+                        Context.Entry(entity).State = EntityState.Unchanged;
+
+                return entity;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { id }))
             {
@@ -145,7 +155,7 @@ namespace Umbrella.DataAccess.EF6
             EnsureValidArguments(map);
 
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindById(id));
+            return Task.FromResult(FindById(id, trackChanges));
         }
 
         public override List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null)
@@ -154,7 +164,7 @@ namespace Umbrella.DataAccess.EF6
             {
                 EnsureValidArguments(map);
 
-                return ids.Select(x => FindById(x)).ToList();
+                return ids.Select(x => FindById(x, trackChanges)).ToList();
             }
             catch (Exception exc) when (Log.WriteError(exc, ids))
             {
@@ -167,7 +177,7 @@ namespace Umbrella.DataAccess.EF6
             EnsureValidArguments(map);
 
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindAllByIdList(ids));
+            return Task.FromResult(FindAllByIdList(ids, trackChanges));
         }
 
         public override int FindTotalCount()
@@ -198,6 +208,18 @@ namespace Umbrella.DataAccess.EF6
         {
             if (map != null)
                 throw new ArgumentException("An include map cannot be used for cached entities.", nameof(map));
+        }
+
+        private void DisableLazyLoadingAndProxying()
+        {
+            Context.Configuration.LazyLoadingEnabled = false;
+            Context.Configuration.ProxyCreationEnabled = false;
+        }
+
+        private void RestoreLazyLoadingAndProxying()
+        {
+            Context.Configuration.LazyLoadingEnabled = m_InitialLazyLoadingStatus;
+            Context.Configuration.ProxyCreationEnabled = m_InitialProxyCreationStatus;
         }
         #endregion
     }
