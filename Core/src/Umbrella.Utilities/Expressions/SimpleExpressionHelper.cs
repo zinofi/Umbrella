@@ -9,17 +9,17 @@ namespace Umbrella.Utilities.Expressions
 {
 	public static class SimpleExpressionHelper
 	{
-		public static string GetMemberName<T, U>(this Expression<Func<T, U>> expression)
+		public static string GetMemberName<T, U>(this Expression<Func<T, U>> expression, bool throwException = true)
 		{
 			MemberExpression memberExpression = (MemberExpression)null;
 			if (expression.Body is MemberExpression)
 				memberExpression = (MemberExpression)expression.Body;
 			else if (expression.Body is UnaryExpression)
 				memberExpression = ((UnaryExpression)expression.Body).Operand as MemberExpression;
-			if (memberExpression == null)
+			if (memberExpression == null && throwException)
 				throw new ApplicationException("The body of the expression must be either a MemberExpression or a UnaryExpression.");
 
-			return memberExpression.Member.Name;
+			return memberExpression?.Member?.Name;
 		}
 	}
 }

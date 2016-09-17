@@ -27,7 +27,11 @@ namespace Umbrella.DataAccess
             foreach (var path in paths)
             {
                 m_Includes.Add(path);
-                m_PropertyNames.Add(SimpleExpressionHelper.GetMemberName(path));
+
+                string propertyName = path.GetMemberName(false);
+
+                if(!string.IsNullOrEmpty(propertyName))
+                    m_PropertyNames.Add(propertyName);
             }
         }
         #endregion
