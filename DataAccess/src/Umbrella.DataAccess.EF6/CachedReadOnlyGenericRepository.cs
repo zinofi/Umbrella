@@ -62,36 +62,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                EnsureValidArguments(map);
-
-                DisableLazyLoadingAndProxying();
-
-                List<TEntity> lstEntity = m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
-                {
-                    List<TEntity> lstEntityFromDb = Items.AsNoTracking().ToList();
-
-                    //Also add cache entries for each entity for fast lookup
-                    foreach (TEntity entity in lstEntityFromDb)
-                    {
-                        string key = GenerateCacheKey(entity.Id);
-
-                        m_Cache.SetAsJsonString(key, entity);
-                    }
-
-                    return lstEntityFromDb;
-                });
-
-                RestoreLazyLoadingAndProxying();
-
-                if(trackChanges)
-                {
-                    foreach(TEntity entity in lstEntity)
-                    {
-                        Context.Entry(entity).State = EntityState.Unchanged;
-                    }
-                }
-
-                return lstEntity;
+                return CacheFindAll(trackChanges, map).Select(x => x.Item).ToList();
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -103,44 +74,15 @@ namespace Umbrella.DataAccess.EF6
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            EnsureValidArguments(map);
-
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindAll(trackChanges));
+            return Task.FromResult(FindAll(trackChanges, map));
         }
 
         public override TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
-                EnsureValidArguments(map);
-
-                string key = GenerateCacheKey(id);
-
-                DisableLazyLoadingAndProxying();
-
-                TEntity entity = m_Cache.GetOrSetAsJsonString(key, () =>
-                {
-                    TEntity entityFromDb = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
-
-                    if (entityFromDb != null)
-                    {
-                        //We need to ensure that the All items cache is cleared to force it to be repopulated
-                        //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
-                        //environment otherwise.
-                        m_Cache.Remove(s_AllCacheKey);
-                        m_Cache.Remove(s_AllCountCacheKey);
-                    }
-
-                    return entityFromDb;
-                });
-
-                RestoreLazyLoadingAndProxying();
-
-                if (trackChanges)
-                        Context.Entry(entity).State = EntityState.Unchanged;
-
-                return entity;
+                return CacheFindById(id, trackChanges, map)?.Item;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { id }))
             {
@@ -152,10 +94,8 @@ namespace Umbrella.DataAccess.EF6
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            EnsureValidArguments(map);
-
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindById(id, trackChanges));
+            return Task.FromResult(FindById(id, trackChanges, map));
         }
 
         public override List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null)
@@ -198,6 +138,121 @@ namespace Umbrella.DataAccess.EF6
 
             //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
             return Task.FromResult(FindTotalCount());
+        }
+        #endregion
+
+        #region Protected Methods
+        protected List<CacheEntry<TEntity>> CacheFindAll(bool trackChanges = false, IncludeMap<TEntity> map = null)
+        {
+            try
+            {
+                EnsureValidArguments(map);
+
+                DisableLazyLoadingAndProxying();
+
+                List<CacheEntry<TEntity>> lstCacheEntry = m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
+                {
+                    List<TEntity> lstEntityFromDb = Items.AsNoTracking().ToList();
+                    List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
+
+                    //Also add cache entries for each entity for fast lookup
+                    foreach (TEntity entity in lstEntityFromDb)
+                    {
+                        string key = GenerateCacheKey(entity.Id);
+
+                        var entry = new CacheEntry<TEntity>(entity);
+                        PopulateCacheEntryMetaData(entry);
+
+                        m_Cache.SetAsJsonString(key, entry);
+                    }
+
+                    return lstCacheEntryFromDb;
+                });
+
+                RestoreLazyLoadingAndProxying();
+
+                if (trackChanges)
+                {
+                    foreach (TEntity entity in lstCacheEntry.Select(x => x.Item))
+                    {
+                        Context.Entry(entity).State = EntityState.Unchanged;
+                    }
+                }
+
+                return lstCacheEntry;
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
+        }
+
+        public Task<List<CacheEntry<TEntity>>> CacheFindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            EnsureValidArguments(map);
+
+            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
+            return Task.FromResult(CacheFindAll(trackChanges, map));
+        }
+
+        public CacheEntry<TEntity> CacheFindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
+        {
+            try
+            {
+                EnsureValidArguments(map);
+
+                string key = GenerateCacheKey(id);
+
+                DisableLazyLoadingAndProxying();
+
+                CacheEntry<TEntity> cacheEntry = m_Cache.GetOrSetAsJsonString(key, () =>
+                {
+                    TEntity entityFromDb = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
+
+                    if (entityFromDb != null)
+                    {
+                        var cacheEntryFromDb = new CacheEntry<TEntity>(entityFromDb);
+                        PopulateCacheEntryMetaData(cacheEntryFromDb);
+
+                        //We need to ensure that the All items cache is cleared to force it to be repopulated
+                        //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
+                        //environment otherwise.
+                        m_Cache.Remove(s_AllCacheKey);
+                        m_Cache.Remove(s_AllCountCacheKey);
+
+                        return cacheEntryFromDb;
+                    }
+
+                    return null;
+                });
+
+                RestoreLazyLoadingAndProxying();
+
+                if (trackChanges && cacheEntry != null)
+                    Context.Entry(cacheEntry.Item).State = EntityState.Unchanged;
+
+                return cacheEntry;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { id }))
+            {
+                throw;
+            }
+        }
+
+        public Task<CacheEntry<TEntity>> CacheFindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            EnsureValidArguments(map);
+
+            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
+            return Task.FromResult(CacheFindById(id, trackChanges));
+        }
+
+        protected virtual void PopulateCacheEntryMetaData(CacheEntry<TEntity> cacheEntry)
+        {   
         }
         #endregion
 
