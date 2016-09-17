@@ -164,6 +164,7 @@ namespace Umbrella.DataAccess.EF6
                         PopulateCacheEntryMetaData(entry);
 
                         m_Cache.SetAsJsonString(key, entry);
+                        lstCacheEntryFromDb.Add(entry);
                     }
 
                     return lstCacheEntryFromDb;
