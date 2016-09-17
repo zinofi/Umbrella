@@ -10,6 +10,7 @@ using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Caching;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
+using Newtonsoft.Json;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -21,7 +22,7 @@ namespace Umbrella.DataAccess.EF6
         public CachedReadOnlyGenericRepository(TDbContext dbContext, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer, IDistributedCache cache)
             : base(dbContext, logger, lookupNormalizer, cache)
         {
-        } 
+        }
         #endregion
     }
 
@@ -45,6 +46,8 @@ namespace Umbrella.DataAccess.EF6
 
         #region Protected Properties
         protected IDistributedCache Cache => m_Cache;
+        protected virtual DistributedCacheEntryOptions CacheOptions { get; }
+        protected virtual JsonSerializerSettings JsonSettings { get; }
         #endregion
 
         #region Constructors
@@ -163,12 +166,12 @@ namespace Umbrella.DataAccess.EF6
                         var entry = new CacheEntry<TEntity>(entity);
                         PopulateCacheEntryMetaData(entry);
 
-                        m_Cache.SetAsJsonString(key, entry);
+                        m_Cache.SetAsJsonString(key, entry, CacheOptions, JsonSettings);
                         lstCacheEntryFromDb.Add(entry);
                     }
 
                     return lstCacheEntryFromDb;
-                });
+                }, CacheOptions, JsonSettings);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -227,7 +230,7 @@ namespace Umbrella.DataAccess.EF6
                     }
 
                     return null;
-                });
+                }, CacheOptions, JsonSettings);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -253,7 +256,7 @@ namespace Umbrella.DataAccess.EF6
         }
 
         protected virtual void PopulateCacheEntryMetaData(CacheEntry<TEntity> cacheEntry)
-        {   
+        {
         }
         #endregion
 
