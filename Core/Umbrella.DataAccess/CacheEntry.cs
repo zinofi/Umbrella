@@ -19,6 +19,7 @@ namespace Umbrella.DataAccess
 
         public CacheEntry(TItem item)
         {
+            Item = item;
         }
         #endregion
 
