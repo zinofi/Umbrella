@@ -389,22 +389,12 @@ namespace Umbrella.DataAccess.EF6
         {
             return Task.CompletedTask;
         }
-        #endregion
 
-        #region Private Methods
-        private string GenerateCacheKey(TEntityKey id) => $"{CacheKeyPrefix}:{id}";
-
-        private void EnsureValidArguments(IncludeMap<TEntity> map)
-        {
-            if (map != null)
-                throw new ArgumentException("An include map cannot be used for cached entities.", nameof(map));
-        }
-
-        private void AttachToContext(CacheEntry<TEntity> cacheEntry)
+        protected void AttachToContext(CacheEntry<TEntity> cacheEntry)
         {
             var entity = cacheEntry.Item;
 
-            ObjectContext objectContext = Context as ObjectContext;
+            ObjectContext objectContext = ((IObjectContextAdapter)Context).ObjectContext;
 
             bool attach = false;
 
@@ -421,6 +411,16 @@ namespace Umbrella.DataAccess.EF6
 
             if (attach)
                 Context.Entry(entity).State = EntityState.Unchanged;
+        }
+        #endregion
+
+        #region Private Methods
+        private string GenerateCacheKey(TEntityKey id) => $"{CacheKeyPrefix}:{id}";
+
+        private void EnsureValidArguments(IncludeMap<TEntity> map)
+        {
+            if (map != null)
+                throw new ArgumentException("An include map cannot be used for cached entities.", nameof(map));
         }
 
         private void DisableLazyLoadingAndProxying()
