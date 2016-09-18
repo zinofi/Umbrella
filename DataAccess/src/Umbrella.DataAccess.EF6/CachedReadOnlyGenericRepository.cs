@@ -11,6 +11,7 @@ using Umbrella.Utilities.Caching;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;
+using Umbrella.Utilities.JsonConverters;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -39,7 +40,6 @@ namespace Umbrella.DataAccess.EF6
 
         #region Private Members
         private readonly IDistributedCache m_Cache;
-        private readonly string m_CacheKeyPrefix;
         private readonly bool m_InitialLazyLoadingStatus;
         private readonly bool m_InitialProxyCreationStatus;
         #endregion
@@ -47,7 +47,7 @@ namespace Umbrella.DataAccess.EF6
         #region Protected Properties
         protected IDistributedCache Cache => m_Cache;
         protected virtual DistributedCacheEntryOptions CacheOptions { get; }
-        protected virtual JsonSerializerSettings JsonSettings { get; }
+        protected JsonSerializerSettings JsonSettings { get; } = new JsonSerializerSettings();
         #endregion
 
         #region Constructors
@@ -57,6 +57,8 @@ namespace Umbrella.DataAccess.EF6
             m_Cache = cache;
             m_InitialLazyLoadingStatus = Context.Configuration.LazyLoadingEnabled;
             m_InitialProxyCreationStatus = Context.Configuration.ProxyCreationEnabled;
+
+            JsonSettings.Converters.Add(new ArrayConverter());
         }
         #endregion
 
@@ -73,12 +75,20 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public override Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public override async Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindAll(trackChanges, map));
+                var lstCacheEntry = await CacheFindAllAsync(cancellationToken, trackChanges, map);
+
+                return lstCacheEntry.Select(x => x.Item).ToList();
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
         }
 
         public override TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
@@ -93,12 +103,20 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public override Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public override async Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindById(id, trackChanges, map));
+                var entry = await CacheFindByIdAsync(id, cancellationToken, trackChanges, map);
+
+                return entry != null ? entry.Item : null;
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
         }
 
         public override List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null)
@@ -137,10 +155,21 @@ namespace Umbrella.DataAccess.EF6
 
         public override Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindTotalCount());
+                return m_Cache.GetOrSetAsJsonStringAsync(s_AllCountCacheKey, async () =>
+                {
+                    var allItems = await FindAllAsync();
+
+                    return allItems.Count;
+                });
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
         }
         #endregion
 
@@ -191,14 +220,52 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public Task<List<CacheEntry<TEntity>>> CacheFindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public async Task<List<CacheEntry<TEntity>>> CacheFindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            EnsureValidArguments(map);
+                EnsureValidArguments(map);
 
-            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(CacheFindAll(trackChanges, map));
+                DisableLazyLoadingAndProxying();
+
+                List<CacheEntry<TEntity>> lstCacheEntry = await m_Cache.GetOrSetAsJsonStringAsync(s_AllCacheKey, async () =>
+                {
+                    List<TEntity> lstEntityFromDb = await Items.AsNoTracking().ToListAsync();
+                    List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
+
+                    //Also add cache entries for each entity for fast lookup
+                    foreach (TEntity entity in lstEntityFromDb)
+                    {
+                        string key = GenerateCacheKey(entity.Id);
+
+                        var entry = new CacheEntry<TEntity>(entity);
+                        await PopulateCacheEntryMetaDataAsync(entry);
+
+                        await m_Cache.SetAsJsonStringAsync(key, entry, CacheOptions, JsonSettings);
+                        lstCacheEntryFromDb.Add(entry);
+                    }
+
+                    return lstCacheEntryFromDb;
+                }, CacheOptions, JsonSettings);
+
+                RestoreLazyLoadingAndProxying();
+
+                if (trackChanges)
+                {
+                    foreach (TEntity entity in lstCacheEntry.Select(x => x.Item))
+                    {
+                        Context.Entry(entity).State = EntityState.Unchanged;
+                    }
+                }
+
+                return lstCacheEntry;
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
         }
 
         public CacheEntry<TEntity> CacheFindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null)
@@ -245,18 +312,57 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public Task<CacheEntry<TEntity>> CacheFindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public async Task<CacheEntry<TEntity>> CacheFindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                EnsureValidArguments(map);
 
-            EnsureValidArguments(map);
+                string key = GenerateCacheKey(id);
 
-            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(CacheFindById(id, trackChanges));
+                DisableLazyLoadingAndProxying();
+
+                CacheEntry<TEntity> cacheEntry = await m_Cache.GetOrSetAsJsonStringAsync(key, async () =>
+                {
+                    TEntity entityFromDb = await Items.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id));
+
+                    if (entityFromDb != null)
+                    {
+                        var cacheEntryFromDb = new CacheEntry<TEntity>(entityFromDb);
+                        await PopulateCacheEntryMetaDataAsync(cacheEntryFromDb);
+
+                        //We need to ensure that the All items cache is cleared to force it to be repopulated
+                        //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
+                        //environment otherwise.
+                        await m_Cache.RemoveAsync(s_AllCacheKey);
+                        await m_Cache.RemoveAsync(s_AllCountCacheKey);
+
+                        return cacheEntryFromDb;
+                    }
+
+                    return null;
+                }, CacheOptions, JsonSettings);
+
+                RestoreLazyLoadingAndProxying();
+
+                if (trackChanges && cacheEntry != null)
+                    Context.Entry(cacheEntry.Item).State = EntityState.Unchanged;
+
+                return cacheEntry;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { id }))
+            {
+                throw;
+            }
         }
 
         protected virtual void PopulateCacheEntryMetaData(CacheEntry<TEntity> cacheEntry)
         {
+        }
+
+        protected virtual Task PopulateCacheEntryMetaDataAsync(CacheEntry<TEntity> cacheEntry)
+        {
+            return Task.CompletedTask;
         }
         #endregion
 

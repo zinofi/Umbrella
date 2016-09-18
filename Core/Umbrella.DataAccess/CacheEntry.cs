@@ -9,7 +9,7 @@ namespace Umbrella.DataAccess
     {
         #region Public Properties
         public TItem Item { get; set; }
-        public Dictionary<string, object> MetaData { get; set; } = new Dictionary<string, object>(); 
+        public Dictionary<string, object> MetaData { get; set; } = new Dictionary<string, object>();
         #endregion
 
         #region Constructors
@@ -24,16 +24,23 @@ namespace Umbrella.DataAccess
         #endregion
 
         #region Public Methods
-        public TMetaData GetMetaDataEntry<TMetaData>(string key)
+        public T GetMetaDataObjectEntry<T>(string key)
         {
             object entry;
             if (MetaData.TryGetValue(key, out entry))
             {
                 if (entry != null)
-                    return (TMetaData)entry;
+                    return (T)entry;
             }
 
-            return default(TMetaData);
+            return default(T);
+        }
+
+        public List<T> GetMetaDataListEntry<T>(string key)
+        {
+            List<object> lstObject = GetMetaDataObjectEntry<List<object>>(key);
+
+            return lstObject != null ? lstObject.Cast<T>().ToList() : null;
         }
         #endregion
     }

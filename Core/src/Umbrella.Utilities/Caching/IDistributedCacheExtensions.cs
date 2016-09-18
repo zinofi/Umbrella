@@ -81,7 +81,9 @@ namespace Umbrella.Utilities.Caching
             {
                 try
                 {
-                    TItem item = JsonConvert.DeserializeObject<TItem>(result);
+                    TItem item = settings != null
+                        ? JsonConvert.DeserializeObject<TItem>(result, settings)
+                        : JsonConvert.DeserializeObject<TItem>(result);
 
                     return item;
                 }
@@ -110,7 +112,9 @@ namespace Umbrella.Utilities.Caching
             {
                 try
                 {
-                    TItem item = JsonConvert.DeserializeObject<TItem>(result);
+                    TItem item = settings != null
+                        ? JsonConvert.DeserializeObject<TItem>(result, settings)
+                        : JsonConvert.DeserializeObject<TItem>(result);
 
                     return item;
                 }
