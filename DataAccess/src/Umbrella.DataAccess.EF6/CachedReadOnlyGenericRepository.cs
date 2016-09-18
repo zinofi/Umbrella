@@ -57,8 +57,6 @@ namespace Umbrella.DataAccess.EF6
             m_Cache = cache;
             m_InitialLazyLoadingStatus = Context.Configuration.LazyLoadingEnabled;
             m_InitialProxyCreationStatus = Context.Configuration.ProxyCreationEnabled;
-
-            JsonSettings.Converters.Add(new ArrayConverter());
         }
         #endregion
 

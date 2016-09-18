@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,9 +39,15 @@ namespace Umbrella.DataAccess
 
         public List<T> GetMetaDataListEntry<T>(string key)
         {
-            List<object> lstObject = GetMetaDataObjectEntry<List<object>>(key);
+            object lstObject = GetMetaDataObjectEntry<object>(key);
 
-            return lstObject != null ? lstObject.Cast<T>().ToList() : null;
+            if (lstObject is List<T>)
+                return lstObject as List<T>;
+
+            if (lstObject is JArray)
+                return ((JArray)lstObject).Select(x => x.Value<T>()).ToList();
+
+            return null;
         }
         #endregion
     }
