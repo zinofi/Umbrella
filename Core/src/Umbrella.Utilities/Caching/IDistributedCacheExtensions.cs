@@ -90,6 +90,7 @@ namespace Umbrella.Utilities.Caching
                 catch (Exception)
                 {
                     cache.Remove(key);
+                    throw;
                 }
             }
 
@@ -121,6 +122,7 @@ namespace Umbrella.Utilities.Caching
                 catch (Exception)
                 {
                     await cache.RemoveAsync(key);
+                    throw;
                 }
             }
 
