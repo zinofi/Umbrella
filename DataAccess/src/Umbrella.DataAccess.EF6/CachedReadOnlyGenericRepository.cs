@@ -11,7 +11,7 @@ using Umbrella.Utilities.Caching;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;
-using Umbrella.Utilities.JsonConverters;
+using System.Data.Entity.Core.Objects;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -32,22 +32,23 @@ namespace Umbrella.DataAccess.EF6
         where TDbContext : DbContext
         where TEntityKey : IEquatable<TEntityKey>
     {
-        #region Private Static Members
-        private static readonly string s_CacheKeyPrefix = typeof(CachedReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey>).FullName;
-        private static readonly string s_AllCacheKey = $"{s_CacheKeyPrefix}:All";
-        private static readonly string s_AllCountCacheKey = $"{s_CacheKeyPrefix}:AllCount";
-        #endregion
-
         #region Private Members
         private readonly IDistributedCache m_Cache;
         private readonly bool m_InitialLazyLoadingStatus;
         private readonly bool m_InitialProxyCreationStatus;
         #endregion
 
+        #region Protected Static Properties
+        protected static string CacheKeyPrefix => typeof(CachedReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey>).FullName;
+        protected static string AllCacheKey => $"{CacheKeyPrefix}:All";
+        protected static string AllCountCacheKey => $"{CacheKeyPrefix}:AllCount";
+        #endregion
+
         #region Protected Properties
         protected IDistributedCache Cache => m_Cache;
         protected virtual DistributedCacheEntryOptions CacheOptions { get; }
-        protected JsonSerializerSettings JsonSettings { get; } = new JsonSerializerSettings();
+        protected virtual JsonSerializerSettings JsonSettings { get; }
+        protected abstract string EntitySetName { get; }
         #endregion
 
         #region Constructors
@@ -65,6 +66,8 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
+                EnsureValidArguments(map);
+
                 return CacheFindAll(trackChanges, map).Select(x => x.Item).ToList();
             }
             catch (Exception exc) when (Log.WriteError(exc))
@@ -78,6 +81,8 @@ namespace Umbrella.DataAccess.EF6
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
+
+                EnsureValidArguments(map);
 
                 var lstCacheEntry = await CacheFindAllAsync(cancellationToken, trackChanges, map);
 
@@ -93,6 +98,8 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
+                EnsureValidArguments(map);
+
                 return CacheFindById(id, trackChanges, map)?.Item;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { id }))
@@ -106,6 +113,8 @@ namespace Umbrella.DataAccess.EF6
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
+
+                EnsureValidArguments(map);
 
                 var entry = await CacheFindByIdAsync(id, cancellationToken, trackChanges, map);
 
@@ -123,27 +132,45 @@ namespace Umbrella.DataAccess.EF6
             {
                 EnsureValidArguments(map);
 
-                return ids.Select(x => FindById(x, trackChanges)).ToList();
+                return ids.Select(x => FindById(x, trackChanges, map)).Where(x => x != null).ToList();
             }
-            catch (Exception exc) when (Log.WriteError(exc, ids))
+            catch (Exception exc) when (Log.WriteError(exc, new { ids }))
             {
                 throw;
             }
         }
 
-        public override Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public override async Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
-            EnsureValidArguments(map);
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            //TODO: Need to re-implement this using the proper async / await pattern by replicating the code from the synchronous method.
-            return Task.FromResult(FindAllByIdList(ids, trackChanges));
+                EnsureValidArguments(map);
+
+                List<TEntity> lstMatches = new List<TEntity>();
+
+                foreach (var id in ids)
+                {
+                    var match = await FindByIdAsync(id, cancellationToken, trackChanges, map);
+
+                    if (match != null)
+                        lstMatches.Add(match);
+                }
+
+                return lstMatches;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { ids }))
+            {
+                throw;
+            }
         }
 
         public override int FindTotalCount()
         {
             try
             {
-                return m_Cache.GetOrSetAsJsonString(s_AllCountCacheKey, () => FindAll().Count);
+                return m_Cache.GetOrSetAsJsonString(AllCountCacheKey, () => FindAll().Count);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -157,7 +184,7 @@ namespace Umbrella.DataAccess.EF6
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return m_Cache.GetOrSetAsJsonStringAsync(s_AllCountCacheKey, async () =>
+                return m_Cache.GetOrSetAsJsonStringAsync(AllCountCacheKey, async () =>
                 {
                     var allItems = await FindAllAsync();
 
@@ -180,7 +207,7 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                List<CacheEntry<TEntity>> lstCacheEntry = m_Cache.GetOrSetAsJsonString(s_AllCacheKey, () =>
+                List<CacheEntry<TEntity>> lstCacheEntry = m_Cache.GetOrSetAsJsonString(AllCacheKey, () =>
                 {
                     List<TEntity> lstEntityFromDb = Items.AsNoTracking().ToList();
                     List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
@@ -204,9 +231,9 @@ namespace Umbrella.DataAccess.EF6
 
                 if (trackChanges)
                 {
-                    foreach (TEntity entity in lstCacheEntry.Select(x => x.Item))
+                    foreach (var cacheEntry in lstCacheEntry)
                     {
-                        Context.Entry(entity).State = EntityState.Unchanged;
+                        AttachToContext(cacheEntry);
                     }
                 }
 
@@ -228,7 +255,7 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                List<CacheEntry<TEntity>> lstCacheEntry = await m_Cache.GetOrSetAsJsonStringAsync(s_AllCacheKey, async () =>
+                List<CacheEntry<TEntity>> lstCacheEntry = await m_Cache.GetOrSetAsJsonStringAsync(AllCacheKey, async () =>
                 {
                     List<TEntity> lstEntityFromDb = await Items.AsNoTracking().ToListAsync();
                     List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
@@ -252,9 +279,9 @@ namespace Umbrella.DataAccess.EF6
 
                 if (trackChanges)
                 {
-                    foreach (TEntity entity in lstCacheEntry.Select(x => x.Item))
+                    foreach (var cacheEntry in lstCacheEntry)
                     {
-                        Context.Entry(entity).State = EntityState.Unchanged;
+                        AttachToContext(cacheEntry);
                     }
                 }
 
@@ -288,8 +315,8 @@ namespace Umbrella.DataAccess.EF6
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
                         //environment otherwise.
-                        m_Cache.Remove(s_AllCacheKey);
-                        m_Cache.Remove(s_AllCountCacheKey);
+                        m_Cache.Remove(AllCacheKey);
+                        m_Cache.Remove(AllCountCacheKey);
 
                         return cacheEntryFromDb;
                     }
@@ -300,7 +327,7 @@ namespace Umbrella.DataAccess.EF6
                 RestoreLazyLoadingAndProxying();
 
                 if (trackChanges && cacheEntry != null)
-                    Context.Entry(cacheEntry.Item).State = EntityState.Unchanged;
+                    AttachToContext(cacheEntry);
 
                 return cacheEntry;
             }
@@ -332,8 +359,8 @@ namespace Umbrella.DataAccess.EF6
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
                         //environment otherwise.
-                        await m_Cache.RemoveAsync(s_AllCacheKey);
-                        await m_Cache.RemoveAsync(s_AllCountCacheKey);
+                        await m_Cache.RemoveAsync(AllCacheKey);
+                        await m_Cache.RemoveAsync(AllCountCacheKey);
 
                         return cacheEntryFromDb;
                     }
@@ -344,7 +371,7 @@ namespace Umbrella.DataAccess.EF6
                 RestoreLazyLoadingAndProxying();
 
                 if (trackChanges && cacheEntry != null)
-                    Context.Entry(cacheEntry.Item).State = EntityState.Unchanged;
+                    AttachToContext(cacheEntry);
 
                 return cacheEntry;
             }
@@ -365,12 +392,35 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region Private Methods
-        private string GenerateCacheKey(TEntityKey id) => $"{s_CacheKeyPrefix}:{id}";
+        private string GenerateCacheKey(TEntityKey id) => $"{CacheKeyPrefix}:{id}";
 
         private void EnsureValidArguments(IncludeMap<TEntity> map)
         {
             if (map != null)
                 throw new ArgumentException("An include map cannot be used for cached entities.", nameof(map));
+        }
+
+        private void AttachToContext(CacheEntry<TEntity> cacheEntry)
+        {
+            var entity = cacheEntry.Item;
+
+            ObjectContext objectContext = Context as ObjectContext;
+
+            bool attach = false;
+
+            ObjectStateEntry stateEntry;
+            if (objectContext.ObjectStateManager.TryGetObjectStateEntry(objectContext.CreateEntityKey(EntitySetName, entity), out stateEntry))
+            {
+                attach = stateEntry.State == EntityState.Detached;
+                entity = cacheEntry.Item = (TEntity)stateEntry.Entity;
+            }
+            else
+            {
+                attach = true;
+            }
+
+            if (attach)
+                Context.Entry(entity).State = EntityState.Unchanged;
         }
 
         private void DisableLazyLoadingAndProxying()
