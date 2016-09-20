@@ -49,6 +49,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
             Guard.ArgumentNotNullOrWhiteSpace(vaultName, nameof(vaultName));
             Guard.ArgumentNotNull(loggerFactory, nameof(loggerFactory));
 
+            m_TokenUtility = tokenUtility;
             m_AppClientId = appClientId;
             m_AppClientSecret = appClientSecret;
             m_Vault = string.Format(c_VaultUrlFormat, vaultName);
