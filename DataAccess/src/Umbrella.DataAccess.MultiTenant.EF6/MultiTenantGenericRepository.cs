@@ -97,7 +97,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
         {
             IAppTenantEntity<TAppTenantKey> tenantEntity = entity as IAppTenantEntity<TAppTenantKey>;
 
-            if (tenantEntity != null)
+            if (tenantEntity != null && m_DbAppTenantSessionContext.IsAuthenticated)
                 tenantEntity.AppTenantId = m_DbAppTenantSessionContext.AppTenantId;
 
             base.PreSaveWork(entity, addToContext, out isNew);
