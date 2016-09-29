@@ -138,8 +138,8 @@ namespace Umbrella.Utilities.Extensions
 
         public static string Clean(this string value, bool convertBrTagsToNl = false, bool trim = true, bool trimNewLines = true, bool stripHtml = true, bool stripNbsp = true, bool decodeHtmlEncodedLineBreaks = true)
         {
-            if (string.IsNullOrEmpty(value))
-                return value;
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
 
             StringBuilder sb = new StringBuilder(value);
 
@@ -158,6 +158,10 @@ namespace Umbrella.Utilities.Extensions
                 sb.Replace("&#10;", "\n")
                     .Replace("&#13;", "\r");
             }
+
+            //Replace the following in strings
+            sb.Replace("&amp;", "&");
+            sb.Replace("&#39;", "'");
 
             if (trimNewLines)
             {
