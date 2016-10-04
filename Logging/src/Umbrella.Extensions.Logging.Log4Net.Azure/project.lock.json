@@ -419,7 +419,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WindowsAzure.Storage/7.2.0": {
+      "WindowsAzure.Storage/7.2.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.Azure.KeyVault.Core": "1.0.0",
@@ -437,7 +437,7 @@
           "lib/net40/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00050": {
+      "Umbrella.Utilities/1.0.0-rel-build00051": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1765,12 +1765,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "WindowsAzure.Storage/7.2.0": {
-      "sha512": "EngH7mPZpFgBnkhLRMz4XQi1s2zZp+Yh9nnyv6Dr0ewxcVagyerdH/fp74vDIgaPpy/GTO3q6mqpwuW9WFkN/A==",
+    "WindowsAzure.Storage/7.2.1": {
+      "sha512": "PWSqaIFaUvi2DgHeDotoRtv1new1m3jfwsb+T6nZfpVdYYIzyYUOFPBxJ0f8yHUq8C9Na8avNc08YsdgDIoTZg==",
       "type": "package",
-      "path": "WindowsAzure.Storage/7.2.0",
+      "path": "WindowsAzure.Storage/7.2.1",
       "files": [
-        "WindowsAzure.Storage.7.2.0.nupkg.sha512",
+        "WindowsAzure.Storage.7.2.1.nupkg.sha512",
         "WindowsAzure.Storage.nuspec",
         "lib/net40/Microsoft.WindowsAzure.Storage.dll",
         "lib/net40/Microsoft.WindowsAzure.Storage.pdb",
@@ -1785,7 +1785,7 @@
         "lib/wpa/Microsoft.WindowsAzure.Storage.pdb"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00050": {
+    "Umbrella.Utilities/1.0.0-rel-build00051": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1794,7 +1794,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Umbrella.Utilities >= 1.0.0-*",
-      "WindowsAzure.Storage >= 7.2.0",
+      "WindowsAzure.Storage >= 7.2.1",
       "log4net >= 2.0.5"
     ],
     ".NETFramework,Version=v4.6": []
