@@ -437,7 +437,7 @@
           "lib/net40/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00030": {
+      "Umbrella.Utilities/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1785,7 +1785,7 @@
         "lib/wpa/Microsoft.WindowsAzure.Storage.pdb"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00030": {
+    "Umbrella.Utilities/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"

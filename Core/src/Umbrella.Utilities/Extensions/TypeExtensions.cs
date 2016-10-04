@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET46
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -64,3 +65,4 @@ namespace Umbrella.Utilities.Extensions
         #endregion
     }
 }
+#endif

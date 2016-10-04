@@ -5,6 +5,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Globalization;
 
+#if NET46
 namespace Umbrella.Utilities.TypeConverters
 {
     public class CLRTypeConverter : TypeConverter
@@ -49,3 +50,4 @@ namespace Umbrella.Utilities.TypeConverters
         #endregion
     }
 }
+#endif

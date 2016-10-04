@@ -47,11 +47,14 @@ namespace Umbrella.Utilities.Email
                         foreach (string filename in Directory.EnumerateFiles(absolutePath, "*.html", SearchOption.TopDirectoryOnly))
                         {
                             //Read all template files into memory and store in the dictionary
-                            using (StreamReader reader = new StreamReader(filename))
+                            using (var fileStream = new FileStream(filename, FileMode.Open))
                             {
-                                string template = reader.ReadToEnd();
+                                using (var reader = new StreamReader(fileStream))
+                                {
+                                    string template = reader.ReadToEnd();
 
-                                dicItems.Add(Path.GetFileNameWithoutExtension(filename), template);
+                                    dicItems.Add(Path.GetFileNameWithoutExtension(filename), template);
+                                }
                             }
                         }
 

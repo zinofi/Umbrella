@@ -16,11 +16,12 @@ namespace Umbrella.Utilities
         {
             //Email
             services.AddTransient<IEmailBuilder, EmailBuilder>();
-            services.AddTransient<IEmailHelper, EmailHelper>();
 
             //Encryption
+#if NET46
             services.AddSingleton<ICertificateUtility, CertificateUtility>();
             services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
+#endif
 
             return services;
         }

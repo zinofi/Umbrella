@@ -492,7 +492,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00029": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -511,7 +511,7 @@
           "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Legacy.Utilities/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -527,7 +527,7 @@
           "net46/Umbrella.Legacy.Utilities.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Utilities/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -546,7 +546,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rel-build00029": {
+      "Umbrella.WebUtilities/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1876,22 +1876,22 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00029": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
       "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Legacy.Utilities/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../Umbrella.Legacy.Utilities/project.json",
       "msbuildProject": "../Umbrella.Legacy.Utilities/Umbrella.Legacy.Utilities.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Utilities/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rel-build00029": {
+    "Umbrella.WebUtilities/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"

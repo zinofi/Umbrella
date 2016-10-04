@@ -1,11 +1,16 @@
 {
-  "version": "1.0.0-rel-build00050",
+  "version": "1.0.0-rel-build00051",
   "description": "Umbrella.Utilities Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
         "System.Runtime": "4.0.20.0"
+      }
+    },
+    "netstandard1.6": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
       }
     }
   },

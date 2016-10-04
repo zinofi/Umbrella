@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Umbrella.DataAccess.Interfaces;
-using Umbrella.Utilities.Expressions;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess
 {

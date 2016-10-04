@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#if NET46
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +94,8 @@ namespace Umbrella.Utilities.Encryption
             // Add min to the scaled difference between max and min.
             return (int)(min + (max - min) *
                 (scale / (double)uint.MaxValue));
-        } 
+        }
         #endregion
     }
 }
+#endif

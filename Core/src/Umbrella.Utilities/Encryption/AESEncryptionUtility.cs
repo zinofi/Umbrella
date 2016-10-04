@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#if NET46
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using Umbrella.Utilities.Encryption.Interfaces;
 
@@ -9,7 +10,7 @@ namespace Umbrella.Utilities.Encryption
     /// </summary>
     public class AesEncryptionUtility : EncryptionUtility<AesManaged>
 	{
-		#region Constructors
+        #region Constructors
         /// <summary>
         /// Constructor with values for the Key and IV.
         /// </summary>
@@ -22,3 +23,4 @@ namespace Umbrella.Utilities.Encryption
         #endregion
 	}
 }
+#endif

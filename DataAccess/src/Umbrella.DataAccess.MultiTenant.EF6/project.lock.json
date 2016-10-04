@@ -256,7 +256,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rel-build00029": {
+      "Umbrella.DataAccess/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -270,7 +270,7 @@
           "net46/Umbrella.DataAccess.dll": {}
         }
       },
-      "Umbrella.DataAccess.EF6/1.0.0-rel-build00029": {
+      "Umbrella.DataAccess.EF6/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -287,7 +287,7 @@
           "net46/Umbrella.DataAccess.EF6.dll": {}
         }
       },
-      "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00029": {
+      "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -303,7 +303,7 @@
           "net46/Umbrella.DataAccess.MultiTenant.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00029": {
+      "Umbrella.Utilities/1.0.0-rel-build00050": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1419,22 +1419,22 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.DataAccess/1.0.0-rel-build00029": {
+    "Umbrella.DataAccess/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../Umbrella.DataAccess/project.json",
       "msbuildProject": "../Umbrella.DataAccess/Umbrella.DataAccess.xproj"
     },
-    "Umbrella.DataAccess.EF6/1.0.0-rel-build00029": {
+    "Umbrella.DataAccess.EF6/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../Umbrella.DataAccess.EF6/project.json",
       "msbuildProject": "../Umbrella.DataAccess.EF6/Umbrella.DataAccess.EF6.xproj"
     },
-    "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00029": {
+    "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../Umbrella.DataAccess.MultiTenant/project.json",
       "msbuildProject": "../Umbrella.DataAccess.MultiTenant/Umbrella.DataAccess.MultiTenant.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00029": {
+    "Umbrella.Utilities/1.0.0-rel-build00050": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
