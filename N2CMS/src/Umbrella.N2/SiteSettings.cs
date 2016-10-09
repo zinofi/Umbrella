@@ -56,9 +56,9 @@ namespace Umbrella.N2.Utilities
                     {
                         List<T> lstSiteSettingsPage = Find.StartPage.Children.OfType<T>().ToList();
                         if (lstSiteSettingsPage.Count == 0)
-                            throw new ApplicationException("A site settings page does not exist for the site. Please create one under the home page.");
+                            throw new Exception("A site settings page does not exist for the site. Please create one under the home page.");
                         else if (lstSiteSettingsPage.Count > 1)
-                            throw new ApplicationException("There are multiple site settings pages for the site. This is not allowed.");
+                            throw new Exception("There are multiple site settings pages for the site. This is not allowed.");
 
                         s_SiteSettingsPage = lstSiteSettingsPage.First();
                     }

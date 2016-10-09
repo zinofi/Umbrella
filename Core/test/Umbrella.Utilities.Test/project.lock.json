@@ -561,7 +561,7 @@
           "lib/net35/xunit.runner.utility.desktop.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00050": {
+      "Umbrella.Utilities/1.0.0-rel-build00051": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -580,7 +580,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rel-build00050": {
+      "Umbrella.WebUtilities/1.0.0-rel-build00051": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -835,7 +835,7 @@
       ]
     },
     "System.Collections/4.0.11": {
-      "sha512": "b5vnzbe1/6jxSYxNnBzihKSg0ryGzd0UVp+sLmGxBuVYnb5kzJm+7lZIXQ2iXHgax7HER5djw67Bqj1PyGLAbw==",
+      "sha512": "YUJGz6eFKqS0V//mLt25vFGrrCvOnsXjlvFQs+KimpwNxug9x0Pzy4PlFMU3Q2IzqAa9G2L4LsK3+9vCBK7oTg==",
       "type": "package",
       "path": "System.Collections/4.0.11",
       "files": [
@@ -901,7 +901,7 @@
       ]
     },
     "System.Collections.Concurrent/4.0.12": {
-      "sha512": "YuUaFyOqylqqB6O5hHeY0hn0ofZaLV+DGggKOrncCU6j/9dYBDHf+V6/KkBAgFCFXZzSQQ+m8Ie/bo9ru0N/2g==",
+      "sha512": "2gBcbb3drMLgxlI0fBfxMA31ec6AEyYCHygGse4vxceJan8mRIWeKJ24BFzN7+bi/NFTgdIgufzb94LWO5EERQ==",
       "type": "package",
       "path": "System.Collections.Concurrent/4.0.12",
       "files": [
@@ -981,7 +981,7 @@
       ]
     },
     "System.ComponentModel/4.0.1": {
-      "sha512": "//rhqX2MGlv+jbDpsViz3r43O0Y31r3j+MRpTfduhSsMsV6o8QqVxFVKcBG33Hx1kNDOxuxNzHlGJKSzrlBGug==",
+      "sha512": "oBZFnm7seFiVfugsIyOvQCWobNZs7FzqDV/B7tx20Ep/l3UUFCPDkdTnCNaJZTU27zjeODmy2C/cP60u3D4c9w==",
       "type": "package",
       "path": "System.ComponentModel/4.0.1",
       "files": [
@@ -1038,7 +1038,7 @@
       ]
     },
     "System.Diagnostics.Debug/4.0.11": {
-      "sha512": "lvJ6QPBm7i8Xg1X715fnE1yHIhvqDHmTZ+06N6uHLFWyh7qQpA+b22TwjLLEwrsZhFQBbT1mPvSHgTP7mA6+1A==",
+      "sha512": "w5U95fVKHY4G8ASs/K5iK3J5LY+/dLFd4vKejsnI/ZhBsWS9hQakfx3Zr7lRWKg4tAw9r4iktyvsTagWkqYCiw==",
       "type": "package",
       "path": "System.Diagnostics.Debug/4.0.11",
       "files": [
@@ -1104,7 +1104,7 @@
       ]
     },
     "System.Globalization/4.0.11": {
-      "sha512": "lR4TiK2zdbsoMC3nsDenmoN/gTAX7V8svPwG2VQeL3wPTz15hvPCRB3kxrmO49oLqF13kmaPh8zdkAwkcprxTg==",
+      "sha512": "B95h0YLEL2oSnwF/XjqSWKnwKOy/01VWkNlsCeMTFJLLabflpGV26nK164eRs5GiaRSBGpOxQ3pKoSnnyZN5pg==",
       "type": "package",
       "path": "System.Globalization/4.0.11",
       "files": [
@@ -1170,7 +1170,7 @@
       ]
     },
     "System.Linq/4.1.0": {
-      "sha512": "in5TR5EAfMkqbpC+7BtFHtGhXr12XBa/lDcHQr3103fpHvViHrK4y9Pm/CdDidR0WbtAquvrGybOt4bk3BEAwQ==",
+      "sha512": "bQ0iYFOQI0nuTnt+NQADns6ucV4DUvMdwN6CbkB1yj8i7arTGiTN5eok1kQwdnnNWSDZfIUySQY+J3d5KjWn0g==",
       "type": "package",
       "path": "System.Linq/4.1.0",
       "files": [
@@ -1240,7 +1240,7 @@
       ]
     },
     "System.Linq.Expressions/4.1.0": {
-      "sha512": "EmrPZ6viwAxwhhH7yRWRb3D6PI+nVAI7m9H9WTlnxEGakiBElF2LkxkhCjpxudcCfklsw4iepPXKsm9+u+ihvw==",
+      "sha512": "I+y02iqkgmCAyfbqOmSDOgqdZQ5tTj80Akm5BPSS8EeB0VGWdy6X1KCoYe8Pk6pwDoAKZUOdLVxnTJcExiv5zw==",
       "type": "package",
       "path": "System.Linq.Expressions/4.1.0",
       "files": [
@@ -1322,7 +1322,7 @@
       ]
     },
     "System.Reflection/4.1.0": {
-      "sha512": "OBJ4WOIS6Cw/81WUp9o+9JawjNcztz7PiTYk415nmDPT91NX5pl5gc7IS699sbyEDtO4fUiEllUB09ziDcNVNg==",
+      "sha512": "JCKANJ0TI7kzoQzuwB/OoJANy1Lg338B6+JVacPl4TpUwi3cReg3nMLplMq2uqYfHFQpKIlHAUVAJlImZz/4ng==",
       "type": "package",
       "path": "System.Reflection/4.1.0",
       "files": [
@@ -1415,7 +1415,7 @@
       ]
     },
     "System.Resources.ResourceManager/4.0.1": {
-      "sha512": "VvJEOOtMUFvVPQxAibK4RV3MHCzaDoL4xaM3iQRpgreVngL917veVPLqx/I58j5q7iIOz5VBcuLsDI3Q4B/IOA==",
+      "sha512": "TxwVeUNoTgUOdQ09gfTjvW411MF+w9MBYL7AtNVc+HtBCFlutPLhUCdZjNkjbhj3bNQWMdHboF0KIWEOjJssbA==",
       "type": "package",
       "path": "System.Resources.ResourceManager/4.0.1",
       "files": [
@@ -1470,7 +1470,7 @@
       ]
     },
     "System.Runtime/4.1.0": {
-      "sha512": "R2sln2JDgnDbUx7Ok3kjYJ3rV2UUhuqrKVBd5sB7j2xvEXgoYCoM6xPoKlpmSY98JZQESHJ/UGKYa2WQ+8LIiQ==",
+      "sha512": "v6c/4Yaa9uWsq+JMhnOFewrYkgdNHNG2eMKuNqRn8P733rNXeRCGvV5FkkjBXn2dbVkPXOsO0xjsEeM1q2zC0g==",
       "type": "package",
       "path": "System.Runtime/4.1.0",
       "files": [
@@ -1560,7 +1560,7 @@
       ]
     },
     "System.Runtime.Extensions/4.1.0": {
-      "sha512": "O9Lb5N1jSIuE9hBdNiqxJCFhxRS+i4VQJHAqTOnLo1SveErdHjH0mEnbpe0If/3pxm5aqMMior1T/cQ/gU/oGQ==",
+      "sha512": "CUOHjTT/vgP0qGW22U4/hDlOqXmcPq5YicBaXdUR2UiUoLwBT+olO6we4DVbq57jeX5uXH2uerVZhf0qGj+sVQ==",
       "type": "package",
       "path": "System.Runtime.Extensions/4.1.0",
       "files": [
@@ -1639,7 +1639,7 @@
       ]
     },
     "System.Runtime.InteropServices/4.1.0": {
-      "sha512": "yqILS/URP2j1CDcvcNIb+Vw2ebiSHrpctWQsEt+cfIEmz1tiAOh43rRNI+q7nOvqs3i9pU9JIXRC6VciMuv4Sg==",
+      "sha512": "16eu3kjHS633yYdkjwShDHZLRNMKVi/s0bY8ODiqJ2RfMhDMAwxZaUaWVnZ2P71kr/or+X9o/xFWtNqz8ivieQ==",
       "type": "package",
       "path": "System.Runtime.InteropServices/4.1.0",
       "files": [
@@ -1727,7 +1727,7 @@
       ]
     },
     "System.Threading/4.0.11": {
-      "sha512": "mOKVOUtQ8KqPVkMjpQiJFcoJcWAtSe9psnkt6fDLoo2Z2Ox5NA8Y5pQ1y0XZCHzYoGTKXEUM5Uzqyk6CG2iy5g==",
+      "sha512": "N+3xqIcg3VDKyjwwCGaZ9HawG9aC6cSDI+s7ROma310GQo8vilFZa86hqKppwTHleR/G0sfOzhvgnUxWCR/DrQ==",
       "type": "package",
       "path": "System.Threading/4.0.11",
       "files": [
@@ -1796,7 +1796,7 @@
       ]
     },
     "System.Threading.Tasks/4.0.11": {
-      "sha512": "oZ8e91qm0aUuFA1Wi39wOBLuTnZFP43746DHtSNzy0v91yZylEejc+2unO/CyBRbK/qjkDVZVCije0SBKJbYRQ==",
+      "sha512": "k1S4Gc6IGwtHGT8188RSeGaX86Qw/wnrgNLshJvsdNUOPP9etMmo8S07c+UlOAx4K/xLuN9ivA1bD0LVurtIxQ==",
       "type": "package",
       "path": "System.Threading.Tasks/4.0.11",
       "files": [
@@ -2004,12 +2004,12 @@
         "xunit.runner.utility.nuspec"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00050": {
+    "Umbrella.Utilities/1.0.0-rel-build00051": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rel-build00050": {
+    "Umbrella.WebUtilities/1.0.0-rel-build00051": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"

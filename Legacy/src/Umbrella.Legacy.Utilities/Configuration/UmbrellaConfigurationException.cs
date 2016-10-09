@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Umbrella.Legacy.Utilities.Configuration.Exceptions
 {
-    public class UmbrellaConfigurationException : ApplicationException
+    public class UmbrellaConfigurationException : Exception
     {
         public UmbrellaConfigurationException()
             : base("A generic Umbrella configuration section has occurred.")

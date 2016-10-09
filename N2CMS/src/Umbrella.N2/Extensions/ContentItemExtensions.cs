@@ -43,7 +43,7 @@ namespace Umbrella.N2.Extensions
             else if (expression.Body is UnaryExpression)
                 memberExpression = ((UnaryExpression)expression.Body).Operand as MemberExpression;
             if (memberExpression == null)
-                throw new ApplicationException("The body of the expression must be either a MemberExpression or a UnaryExpression.");
+                throw new Exception("The body of the expression must be either a MemberExpression or a UnaryExpression.");
 
             if (value is LinkItemCollection)
             {
@@ -130,7 +130,7 @@ namespace Umbrella.N2.Extensions
             }
 
             if (memberExpression == null)
-                throw new ApplicationException("The body of the expression must be either a MemberExpression or a UnaryExpression.");
+                throw new Exception("The body of the expression must be either a MemberExpression or a UnaryExpression.");
             else
                 return memberExpression;
         }
@@ -142,7 +142,7 @@ namespace Umbrella.N2.Extensions
             if (typeof(TProperty) == typeof(bool))
                 return default(TProperty);
             if (!TypeExtensions.CanBeNull(typeof(TProperty)))
-                throw new ApplicationException("The property value is null and the requested type is a value type. \r\n Consider using nullable as type or make the property mandatory.");
+                throw new Exception("The property value is null and the requested type is a value type. \r\n Consider using nullable as type or make the property mandatory.");
             else
                 return (TProperty)value;
         }

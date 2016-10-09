@@ -23,10 +23,10 @@ namespace Umbrella.N2.CustomProperties.LinkEditor.Extensions
             foreach (ILinkItemCollectionPlugin plugin in plugins)
             {
                 if (plugin.PluginType == null || !typeof(LinkItemBase).IsAssignableFrom(plugin.PluginType))
-                    throw new ApplicationException("The PluginType of the following plugin must inherit from LinkItemBase: " + plugin.GetType().FullName);
+                    throw new Exception("The PluginType of the following plugin must inherit from LinkItemBase: " + plugin.GetType().FullName);
 
                 if (string.IsNullOrEmpty(plugin.Name) || plugin.Name.Contains(" "))
-                    throw new ApplicationException("The Name of the following plugin must not contain spaces: " + plugin.GetType().FullName);
+                    throw new Exception("The Name of the following plugin must not contain spaces: " + plugin.GetType().FullName);
             }
             
             //Now add these plugins to the list of plugins for the LinkItemCollection

@@ -24,7 +24,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         public string Properties { get; set; }
         public string ThreadName { get; set; }
 
-        public AzureLoggingServerEventEntity(LoggingEvent e, string partitionKey)
+        public AzureLoggingServerEventEntity(LoggingEvent e)
         {
             Level = e.Level.ToString();
 
@@ -39,7 +39,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             Properties = sb.ToString();
             Message = e.RenderedMessage + Environment.NewLine + e.GetExceptionString();
             ThreadName = e.ThreadName;
-            EventTimeStamp = e.TimeStamp;
+            EventTimeStamp = e.TimeStamp.ToUniversalTime();
             Location = e.LocationInformation.FullInfo;
             ClassName = e.LocationInformation.ClassName;
             FileName = e.LocationInformation.FileName;
@@ -50,11 +50,11 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             if (e.ExceptionObject != null)
                 Exception = e.ExceptionObject.ToString();
 
-            PartitionKey = partitionKey;
+            PartitionKey = $"{EventTimeStamp.Hour}-Hours"; ;
 
             //The row key will be the current date and time in a format that will ensure items are ordered
             //in ascending date order. GUID on the end is to ensure the RowKey is unique where the datetime string clashes with another RowKey.
-            RowKey = DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss.ffffff") + "-" + Guid.NewGuid().ToString();
+            RowKey = EventTimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffffff") + "-" + Guid.NewGuid().ToString();
         }
     }
 }

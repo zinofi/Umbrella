@@ -6,7 +6,6 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
@@ -41,25 +40,30 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             try
             {
                 if (m_Config == null)
-                    throw new ApplicationException($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
+                    throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
                 //Get the table we need to write stuff to and create it if needed
                 CloudTable table = m_Client.GetTableReference($"{m_Config.TablePrefix}xxxxxx{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
                 table.CreateIfNotExists();
 
-                string partitionKey = $"{DateTime.Now.Hour}-Hours";
-
-                foreach (var batch in events.Split(100))
+                //Create the required table entities to write to storage and group them by PartitionKey.
+                //This is because entities written in a batch must all have the same PartitionKey.
+                var paritionKeyGroups = events.Select(x => GetLogEntity(x)).GroupBy(x => x.PartitionKey);
+                
+                foreach(var group in paritionKeyGroups)
                 {
-                    var batchOperation = new TableBatchOperation();
-
-                    foreach (var item in batch.Select(x => GetLogEntity(x, partitionKey)))
+                    foreach(var batch in group.Split(100))
                     {
-                        if (item != null)
-                            batchOperation.Insert(item);
-                    }
+                        var batchOperation = new TableBatchOperation();
 
-                    table.ExecuteBatch(batchOperation);
+                        foreach(var item in batch)
+                        {
+                            if (item != null)
+                                batchOperation.Insert(item);
+                        }
+
+                        table.ExecuteBatch(batchOperation);
+                    }
                 }
             }
             catch (StorageException exc)
@@ -109,7 +113,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                 var config = options.Appenders.SingleOrDefault(x => x.Name == appender.Name);
 
                 if (config == null)
-                    throw new ApplicationException($"Configuration cannot be found for appender {appender.Name}");
+                    throw new Exception($"Configuration cannot be found for appender {appender.Name}");
 
                 appender.InitializeAppender(config, connectionString, options.LogErrorsToConsole);
             }
@@ -117,14 +121,14 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         #endregion
 
         #region Private Methods
-        private ITableEntity GetLogEntity(LoggingEvent e, string partitionKey)
+        private ITableEntity GetLogEntity(LoggingEvent e)
         {
             switch (m_Config.AppenderType)
             {
                 case AzureTableStorageLogAppenderType.Client:
-                    return new AzureLoggingClientEventEntity(e, partitionKey);
+                    return new AzureLoggingClientEventEntity(e);
                 case AzureTableStorageLogAppenderType.Server:
-                    return new AzureLoggingServerEventEntity(e, partitionKey);
+                    return new AzureLoggingServerEventEntity(e);
             }
 
             return null;

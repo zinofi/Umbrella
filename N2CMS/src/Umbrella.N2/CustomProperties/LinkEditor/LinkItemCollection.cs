@@ -186,7 +186,7 @@ namespace Umbrella.N2.CustomProperties.LinkEditor
                         {
                             itemBase = JsonConvert.DeserializeObject(json2, plugin.PluginType) as LinkItemBase;
                             if (itemBase == null)
-                                throw new ApplicationException("The following json string for linkType " + linkType + " could not be parsed: " + json2);
+                                throw new Exception("The following json string for linkType " + linkType + " could not be parsed: " + json2);
                         }
                     }
                 }

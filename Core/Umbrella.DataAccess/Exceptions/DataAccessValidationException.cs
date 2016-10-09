@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Exceptions
 {
-	public class DataAccessValidationException : ApplicationException
+	public class DataAccessValidationException : Exception
 	{
 		public DataValidationType ValidationType { get; internal set; }
 
