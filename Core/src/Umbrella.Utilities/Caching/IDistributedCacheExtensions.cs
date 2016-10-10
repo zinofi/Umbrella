@@ -49,6 +49,57 @@ namespace Umbrella.Utilities.Caching
             return result;
         }
 
+        public static Tuple<bool, TItem> TryGetFromJsonString<TItem>(this IDistributedCache cache, string key)
+        {
+            Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+            string result = cache.GetString(key);
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                try
+                {
+                    var item = JsonConvert.DeserializeObject<TItem>(result);
+
+                    return new Tuple<bool, TItem>(true, item);
+                }
+                catch (Exception)
+                {
+                    cache.Remove(key);
+                    throw;
+                }
+            }
+
+            return new Tuple<bool, TItem>(false, default(TItem));
+        }
+
+        public static async Task<Tuple<bool, TItem>> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
+        {
+            Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+            string result = await cache.GetStringAsync(key);
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                try
+                {
+                    var item = JsonConvert.DeserializeObject<TItem>(result);
+
+                    return new Tuple<bool, TItem>(true, item);
+                }
+                catch (Exception)
+                {
+                    await cache.RemoveAsync(key);
+                    throw;
+                }
+            }
+
+            return new Tuple<bool, TItem>(false, default(TItem));
+        }
+
+        public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).Item2;
+        public static async Task<TItem> GetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetFromJsonStringAsync<TItem>(key)).Item2;
+
         public static void SetAsJsonString(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
         {
             Guard.ArgumentNotNull(item, nameof(item));
@@ -56,7 +107,7 @@ namespace Umbrella.Utilities.Caching
             string json = settings == null
                 ? JsonConvert.SerializeObject(item)
                 : JsonConvert.SerializeObject(item, settings);
-
+            
             cache.SetString(key, json, options ?? s_DefaultOptions);
         }
 
@@ -75,22 +126,10 @@ namespace Umbrella.Utilities.Caching
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-            string result = cache.GetString(key);
+            var result = cache.TryGetFromJsonString<TItem>(key);
 
-            if (!string.IsNullOrWhiteSpace(result))
-            {
-                try
-                {
-                    TItem item = JsonConvert.DeserializeObject<TItem>(result);
-
-                    return item;
-                }
-                catch (Exception)
-                {
-                    cache.Remove(key);
-                    throw;
-                }
-            }
+            if (result.Item1)
+                return result.Item2;
 
             // If we get this far then we haven't found the cached item
             TItem createdItem = factory();
@@ -105,22 +144,10 @@ namespace Umbrella.Utilities.Caching
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-            string result = await cache.GetStringAsync(key);
+            var result = await cache.TryGetFromJsonStringAsync<TItem>(key);
 
-            if (!string.IsNullOrWhiteSpace(result))
-            {
-                try
-                {
-                    TItem item = JsonConvert.DeserializeObject<TItem>(result);
-
-                    return item;
-                }
-                catch (Exception)
-                {
-                    await cache.RemoveAsync(key);
-                    throw;
-                }
-            }
+            if (result.Item1)
+                return result.Item2;
 
             // If we get this far then we haven't found the cached item
             TItem createdItem = await factory();
