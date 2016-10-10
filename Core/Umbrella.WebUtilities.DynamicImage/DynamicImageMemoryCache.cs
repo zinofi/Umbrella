@@ -1,5 +1,4 @@
 ﻿using Umbrella.Utilities;
-using Umbrella.Utilities.Caching;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using System;

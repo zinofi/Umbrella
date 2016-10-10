@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Enumerations;
 
 namespace Umbrella.Utilities.Extensions
 {
@@ -22,5 +24,17 @@ namespace Umbrella.Utilities.Extensions
                 .GroupBy(x => x.Index / itemsPerGroup)
                 .Select(x => x.Select(v => v.Value));
 		}
-	}
+
+        public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction)
+        {
+            switch (direction)
+            {
+                default:
+                case SortDirection.Ascending:
+                    return source.OrderBy(keySelector);
+                case SortDirection.Descending:
+                    return source.OrderByDescending(keySelector);
+            }
+        }
+    }
 }

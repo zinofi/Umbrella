@@ -7,15 +7,15 @@ namespace Umbrella.DataAccess
 {
     public static class IQueryableExtensions
     {
-        public static IOrderedQueryable<TEntity> ApplySortOrder<TEntity, TProperty>(this IQueryable<TEntity> unsorted, Expression<Func<TEntity, TProperty>> expression, SortDirection direction) where TEntity : class
+        public static IOrderedQueryable<TSource> OrderBySortDirection<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction)
         {
             switch (direction)
             {
                 default:
                 case SortDirection.Ascending:
-                    return unsorted.OrderBy(expression);
+                    return source.OrderBy(keySelector);
                 case SortDirection.Descending:
-                    return unsorted.OrderByDescending(expression);
+                    return source.OrderByDescending(keySelector);
             }
         }
     }

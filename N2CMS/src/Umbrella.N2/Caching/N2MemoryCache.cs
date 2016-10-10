@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Caching;
 
 namespace Umbrella.N2.Utilities.Caching
 {

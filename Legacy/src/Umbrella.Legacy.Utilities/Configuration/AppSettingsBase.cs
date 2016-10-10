@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Caching;
 
 namespace Umbrella.Legacy.Utilities.Configuration
 {
