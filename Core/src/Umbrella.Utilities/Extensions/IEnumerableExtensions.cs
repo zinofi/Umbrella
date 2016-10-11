@@ -25,31 +25,17 @@ namespace Umbrella.Utilities.Extensions
                 .Select(x => x.Select(v => v.Value));
 		}
 
-        /// <summary>
-        /// This is a convenience method to allow ordering of collections to be expressed succinctly. However, this method internally
-        /// compiles the supplied <paramref name="keySelector"/> expression to a delegate which is not cached so this method is slower
-        /// than writing out a tertiary statement longhand to call either <see cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})"/>
-        /// or <see cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})"/>
-        /// based on the value of <paramref name="direction"/>.
-        /// If performance is ultra critical in the place you want to call this method consider going with the manual longhand approach instead!
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="keySelector"></param>
-        /// <param name="direction"></param>
-        /// <returns></returns>
-        public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction)
+        public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
         {
-            var func = keySelector.Compile();
+            
 
             switch (direction)
             {
                 default:
                 case SortDirection.Ascending:
-                    return source.OrderBy(func);
+                    return comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer);
                 case SortDirection.Descending:
-                    return source.OrderByDescending(func);
+                    return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
             }
         }
     }
