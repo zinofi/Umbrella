@@ -93,6 +93,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.ActiveDirectory", 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.DataAccess.Mapping", "Core\Umbrella.DataAccess.Mapping\Umbrella.DataAccess.Mapping.xproj", "{90EC7DCA-8B0F-4833-A60C-223EC3138E36}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Umbrella.Legacy.WCF", "Legacy\Umbrella.Legacy.WCF\Umbrella.Legacy.WCF.xproj", "{FCED5D85-E986-4613-AB53-482B919B5B4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,6 +229,10 @@ Global
 		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCED5D85-E986-4613-AB53-482B919B5B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCED5D85-E986-4613-AB53-482B919B5B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCED5D85-E986-4613-AB53-482B919B5B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCED5D85-E986-4613-AB53-482B919B5B4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -264,5 +270,6 @@ Global
 		{0A2DD608-EDFF-446F-87D4-A99141E90EB1} = {57500288-3639-445F-8E6E-D66057C5CD99}
 		{907E51AA-0997-4E70-A28C-23DB4374E406} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{90EC7DCA-8B0F-4833-A60C-223EC3138E36} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{FCED5D85-E986-4613-AB53-482B919B5B4C} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
 	EndGlobalSection
 EndGlobal

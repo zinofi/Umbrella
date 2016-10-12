@@ -11,6 +11,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 {
     public class AzureLoggingServerEventEntity : TableEntity
     {
+        #region Public Properties
         public DateTime EventTimeStamp { get; set; }
         public StackFrameItem[] StackFrames { get; set; }
         public string ClassName { get; set; }
@@ -23,6 +24,12 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         public string MethodName { get; set; }
         public string Properties { get; set; }
         public string ThreadName { get; set; }
+        #endregion
+
+        #region Constructors
+        public AzureLoggingServerEventEntity()
+        {
+        }
 
         public AzureLoggingServerEventEntity(LoggingEvent e)
         {
@@ -55,6 +62,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             //The row key will be the current date and time in a format that will ensure items are ordered
             //in ascending date order. GUID on the end is to ensure the RowKey is unique where the datetime string clashes with another RowKey.
             RowKey = EventTimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffffff") + "-" + Guid.NewGuid().ToString();
-        }
+        } 
+        #endregion
     }
 }

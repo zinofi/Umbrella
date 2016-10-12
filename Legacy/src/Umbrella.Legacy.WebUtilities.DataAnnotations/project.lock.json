@@ -53,7 +53,7 @@
           "lib/net40/Microsoft.Web.Infrastructure.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rel-build00051": {
+      "Umbrella.DataAnnotations/1.0.0-rel-build00056": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "frameworkAssemblies": [
@@ -118,7 +118,7 @@
         "lib/net40/Microsoft.Web.Infrastructure.dll"
       ]
     },
-    "Umbrella.DataAnnotations/1.0.0-rel-build00051": {
+    "Umbrella.DataAnnotations/1.0.0-rel-build00056": {
       "type": "project",
       "path": "../../Core/Umbrella.DataAnnotations/project.json",
       "msbuildProject": "../../Core/Umbrella.DataAnnotations/Umbrella.DataAnnotations.xproj"

@@ -293,7 +293,7 @@
           "lib/net40/WebActivatorEx.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00051": {
+      "Umbrella.Utilities/1.0.0-rel-build00056": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -312,7 +312,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00051": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00056": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1467,12 +1467,12 @@
         "lib/net40/WebActivatorEx.dll"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00051": {
+    "Umbrella.Utilities/1.0.0-rel-build00056": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00051": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00056": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities.DynamicImage/Umbrella.WebUtilities.DynamicImage.xproj"

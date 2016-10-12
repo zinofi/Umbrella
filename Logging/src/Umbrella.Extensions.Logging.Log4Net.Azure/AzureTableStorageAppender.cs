@@ -6,6 +6,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
@@ -34,51 +35,57 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 
         protected override void SendBuffer(LoggingEvent[] events)
         {
-            if (m_LogErrorsToConsole)
-                Console.WriteLine("SendBuffer started.");
-
-            try
-            {
-                if (m_Config == null)
-                    throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
-
-                //Get the table we need to write stuff to and create it if needed
-                CloudTable table = m_Client.GetTableReference($"{m_Config.TablePrefix}xxxxxx{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
-                table.CreateIfNotExists();
-
-                //Create the required table entities to write to storage and group them by PartitionKey.
-                //This is because entities written in a batch must all have the same PartitionKey.
-                var paritionKeyGroups = events.Select(x => GetLogEntity(x)).GroupBy(x => x.PartitionKey);
-                
-                foreach(var group in paritionKeyGroups)
-                {
-                    foreach(var batch in group.Split(100))
-                    {
-                        var batchOperation = new TableBatchOperation();
-
-                        foreach(var item in batch)
-                        {
-                            if (item != null)
-                                batchOperation.Insert(item);
-                        }
-
-                        table.ExecuteBatch(batchOperation);
-                    }
-                }
-            }
-            catch (StorageException exc)
+            //Executing this code asynchronously on a worker thread to avoid blocking the main thread
+            //If there are a lot of threads trying to write to the logs then this could have been a bottleneck
+            //if executed synchronously.
+            Task.Run(() =>
             {
                 if (m_LogErrorsToConsole)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(exc.Message);
-                    Console.WriteLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ExtendedErrorInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}");
-                    Console.WriteLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
-                    Console.ResetColor();
-                }
+                    Console.WriteLine("SendBuffer started.");
 
-                throw;
-            }
+                try
+                {
+                    if (m_Config == null)
+                        throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
+
+                    //Get the table we need to write stuff to and create it if needed
+                    CloudTable table = m_Client.GetTableReference($"{m_Config.TablePrefix}xxxxxx{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
+                    table.CreateIfNotExists();
+
+                    //Create the required table entities to write to storage and group them by PartitionKey.
+                    //This is because entities written in a batch must all have the same PartitionKey.
+                    var paritionKeyGroups = events.Select(x => GetLogEntity(x)).GroupBy(x => x.PartitionKey);
+
+                    foreach (var group in paritionKeyGroups)
+                    {
+                        foreach (var batch in group.Split(100))
+                        {
+                            var batchOperation = new TableBatchOperation();
+
+                            foreach (var item in batch)
+                            {
+                                if (item != null)
+                                    batchOperation.Insert(item);
+                            }
+
+                            table.ExecuteBatch(batchOperation);
+                        }
+                    }
+                }
+                catch (StorageException exc)
+                {
+                    if (m_LogErrorsToConsole)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(exc.Message);
+                        Console.WriteLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ExtendedErrorInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}");
+                        Console.WriteLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
+                        Console.ResetColor();
+                    }
+
+                    throw;
+                }
+            });
         }
         #endregion
 

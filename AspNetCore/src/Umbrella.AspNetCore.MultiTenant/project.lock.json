@@ -276,7 +276,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00051": {
+      "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00056": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -292,7 +292,7 @@
           "net46/Umbrella.DataAccess.MultiTenant.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00051": {
+      "Umbrella.Utilities/1.0.0-rel-build00056": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -1420,12 +1420,12 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00051": {
+    "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00056": {
       "type": "project",
       "path": "../../Core/Umbrella.DataAccess.MultiTenant/project.json",
       "msbuildProject": "../../Core/Umbrella.DataAccess.MultiTenant/Umbrella.DataAccess.MultiTenant.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00051": {
+    "Umbrella.Utilities/1.0.0-rel-build00056": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"

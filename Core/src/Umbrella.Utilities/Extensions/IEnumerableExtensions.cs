@@ -27,8 +27,6 @@ namespace Umbrella.Utilities.Extensions
 
         public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
         {
-            
-
             switch (direction)
             {
                 default:
