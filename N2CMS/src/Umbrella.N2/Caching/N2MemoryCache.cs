@@ -14,7 +14,7 @@ namespace Umbrella.N2.Caching
         #region Private Static Members
         private static readonly string s_CacheKeyPrefix = typeof(N2MemoryCache).FullName;
         private static readonly MemoryCacheEntryOptions s_DefaultMemoryCacheEntryOptions = new MemoryCacheEntryOptions();
-        private static readonly ConcurrentDictionary<int, string> s_CacheKeyDictionary = new ConcurrentDictionary<int, string>();
+        private static readonly ConcurrentDictionary<int, ConcurrentBag<string>> s_CacheKeyDictionary = new ConcurrentDictionary<int, ConcurrentBag<string>>();
         #endregion
 
         #region Private Members
@@ -32,13 +32,13 @@ namespace Umbrella.N2.Caching
         #endregion
 
         #region Public Methods
-        public object Get(int id) => m_Cache.Get(GenerateCacheKey(id));
-        public TItem Get<TItem>(int id) => m_Cache.Get<TItem>(GenerateCacheKey(id));
-        public TItem GetOrCreate<TItem>(int id, Func<ICacheEntry, TItem> factory) => m_Cache.GetOrCreate(GenerateCacheKey(id), factory);
-        public Task<TItem> GetOrCreateAsync<TItem>(int id, Func<ICacheEntry, Task<TItem>> factory) => m_Cache.GetOrCreateAsync(GenerateCacheKey(id), factory);
-        public void Set<TItem>(int id, TItem value, MemoryCacheEntryOptions options = null) => m_Cache.Set(GenerateCacheKey(id), value, options ?? s_DefaultMemoryCacheEntryOptions);
-        public bool TryGetValue(int id, out object value) => m_Cache.TryGetValue(GenerateCacheKey(id), out value);
-        public bool TryGetValue<TItem>(int id, out TItem value) => m_Cache.TryGetValue(GenerateCacheKey(id), out value);
+        public object Get(int contentItemId, string key) => m_Cache.Get(GenerateCacheKey(contentItemId, key));
+        public TItem Get<TItem>(int contentItemId, string key) => m_Cache.Get<TItem>(GenerateCacheKey(contentItemId, key));
+        public TItem GetOrCreate<TItem>(int contentItemid, string key, Func<ICacheEntry, TItem> factory) => m_Cache.GetOrCreate(GenerateCacheKey(contentItemid, key), factory);
+        public Task<TItem> GetOrCreateAsync<TItem>(int contentItemid, string key, Func<ICacheEntry, Task<TItem>> factory) => m_Cache.GetOrCreateAsync(GenerateCacheKey(contentItemid, key), factory);
+        public void Set<TItem>(int contentItemid, string key, TItem value, MemoryCacheEntryOptions options = null) => m_Cache.Set(GenerateCacheKey(contentItemid, key), value, options ?? s_DefaultMemoryCacheEntryOptions);
+        public bool TryGetValue(int contentItemid, string key, out object value) => m_Cache.TryGetValue(GenerateCacheKey(contentItemid, key), out value);
+        public bool TryGetValue<TItem>(int contentItemid, string key, out TItem value) => m_Cache.TryGetValue(GenerateCacheKey(contentItemid, key), out value);
         #endregion
 
         #region Event Handlers
@@ -46,20 +46,33 @@ namespace Umbrella.N2.Caching
         {
             int id = e.AffectedItem.ID;
 
-            string cacheKey = GenerateCacheKey(id);
-
-            m_Cache.Remove(cacheKey);
-
-            if (e.AffectedItem.State == ContentState.Deleted)
+            ConcurrentBag<string> lstCacheKey;
+            if (s_CacheKeyDictionary.TryGetValue(id, out lstCacheKey))
             {
-                string value;
-                s_CacheKeyDictionary.TryRemove(id, out value);
+                foreach(string cacheKey in lstCacheKey)
+                {
+                    m_Cache.Remove(cacheKey);
+                }
+
+                if (e.AffectedItem.State == ContentState.Deleted)
+                {
+                    ConcurrentBag<string> value;
+                    s_CacheKeyDictionary.TryRemove(id, out value);
+                }
             }
         }
         #endregion
 
         #region Private Methods
-        private string GenerateCacheKey(int id) => s_CacheKeyDictionary.GetOrAdd(id, x => $"{s_CacheKeyPrefix}:{x}"); 
+        private string GenerateCacheKey(int contentItemId, string key)
+        {
+            var cacheKey = $"{s_CacheKeyPrefix}:{contentItemId}:{key}";
+
+            var keys = s_CacheKeyDictionary.GetOrAdd(contentItemId, new ConcurrentBag<string>());
+            keys.Add(cacheKey);
+
+            return cacheKey;
+        }
         #endregion
     }
 }
