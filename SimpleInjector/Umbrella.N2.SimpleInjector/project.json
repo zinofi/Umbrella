@@ -1,14 +1,14 @@
-{
+﻿{
   "version": "1.0.0-rel-build00058",
-  "description": "Umbrella.Utilities.SimpleInjector Class Library",
+  "description": "Umbrella.N2.SimpleInjector Class Library",
   "authors": [ "Richard Edwards" ],
 
   "frameworks": {
-    "net46": { }
+    "net46": {}
   },
 
   "dependencies": {
     "SimpleInjector": "3.2.2",
-    "Umbrella.Utilities": "1.0.0-*"
+    "Umbrella.N2": "1.0.0-*"
   }
 }

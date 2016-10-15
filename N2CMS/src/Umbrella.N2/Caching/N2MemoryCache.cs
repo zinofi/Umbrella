@@ -1,36 +1,65 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using N2;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.N2.Utilities.Caching
+namespace Umbrella.N2.Caching
 {
-    //TODO: Sort this out using the new caching abstractions
-    [Obsolete("DO NOT USE!", true)]
-    public class N2MemoryCache<T, U> //: MemoryCache<T, U>
+    public class N2MemoryCache
     {
-   //     private static readonly N2MemoryCache<T, U> s_Cache = new N2MemoryCache<T, U>();
+        #region Private Static Members
+        private static readonly string s_CacheKeyPrefix = typeof(N2MemoryCache).FullName;
+        private static readonly MemoryCacheEntryOptions s_DefaultMemoryCacheEntryOptions = new MemoryCacheEntryOptions();
+        private static readonly ConcurrentDictionary<int, string> s_CacheKeyDictionary = new ConcurrentDictionary<int, string>();
+        #endregion
 
-   //     /// <summary>
-   //     /// The global cache instance
-   //     /// </summary>
-   //     public static new N2MemoryCache<T, U> Global
-   //     {
-   //         get { return s_Cache; }
-   //     }
+        #region Private Members
+        private readonly IMemoryCache m_Cache;
+        #endregion
 
-   //     public N2MemoryCache(Func<CacheItemPolicy> defaultPolicyFunc = null)
-   //         : base(defaultPolicyFunc)
-   //     {
-   //         global::N2.Context.Persister.ItemSaved += Persister_ItemChanged;
-   //         global::N2.Context.Persister.ItemDeleted += Persister_ItemChanged;
-   //     }
+        #region Constructors
+        public N2MemoryCache(IMemoryCache memoryCache)
+        {
+            m_Cache = memoryCache;
 
-   //     private void Persister_ItemChanged(object sender, global::N2.ItemEventArgs e)
-   //     {
-			//p_Cache.Clear();
-   //     }
+            Context.Persister.ItemSaved += Persister_ItemChanged;
+            Context.Persister.ItemDeleted += Persister_ItemChanged;
+        }
+        #endregion
+
+        #region Public Methods
+        public object Get(int id) => m_Cache.Get(GenerateCacheKey(id));
+        public TItem Get<TItem>(int id) => m_Cache.Get<TItem>(GenerateCacheKey(id));
+        public TItem GetOrCreate<TItem>(int id, Func<ICacheEntry, TItem> factory) => m_Cache.GetOrCreate(GenerateCacheKey(id), factory);
+        public Task<TItem> GetOrCreateAsync<TItem>(int id, Func<ICacheEntry, Task<TItem>> factory) => m_Cache.GetOrCreateAsync(GenerateCacheKey(id), factory);
+        public void Set<TItem>(int id, TItem value, MemoryCacheEntryOptions options = null) => m_Cache.Set(GenerateCacheKey(id), value, options ?? s_DefaultMemoryCacheEntryOptions);
+        public bool TryGetValue(int id, out object value) => m_Cache.TryGetValue(GenerateCacheKey(id), out value);
+        public bool TryGetValue<TItem>(int id, out TItem value) => m_Cache.TryGetValue(GenerateCacheKey(id), out value);
+        #endregion
+
+        #region Event Handlers
+        private void Persister_ItemChanged(object sender, ItemEventArgs e)
+        {
+            int id = e.AffectedItem.ID;
+
+            string cacheKey = GenerateCacheKey(id);
+
+            m_Cache.Remove(cacheKey);
+
+            if (e.AffectedItem.State == ContentState.Deleted)
+            {
+                string value;
+                s_CacheKeyDictionary.TryRemove(id, out value);
+            }
+        }
+        #endregion
+
+        #region Private Methods
+        private string GenerateCacheKey(int id) => s_CacheKeyDictionary.GetOrAdd(id, x => $"{s_CacheKeyPrefix}:{x}"); 
+        #endregion
     }
 }

@@ -446,6 +446,15 @@
           "lib/20/ICSharpCode.SharpZipLib.dll": {}
         }
       },
+      "SimpleInjector/3.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net45/SimpleInjector.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SimpleInjector.dll": {}
+        }
+      },
       "System.Collections/4.0.11": {
         "type": "package",
         "frameworkAssemblies": [
@@ -705,6 +714,29 @@
           "net46/Umbrella.Legacy.WebUtilities.DynamicImage.dll": {}
         }
       },
+      "Umbrella.N2/1.0.0-rel-build00057": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.6",
+        "dependencies": {
+          "N2CMS": "2.9.6.14",
+          "Newtonsoft.Json": "9.0.1",
+          "Umbrella.Legacy.WebUtilities": "1.0.0",
+          "Umbrella.Legacy.WebUtilities.DynamicImage": "1.0.0",
+          "Umbrella.Utilities": "1.0.0",
+          "Umbrella.WebUtilities": "1.0.0",
+          "Umbrella.WebUtilities.DynamicImage": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "System.Drawing",
+          "System.Web"
+        ],
+        "compile": {
+          "net46/Umbrella.N2.dll": {}
+        },
+        "runtime": {
+          "net46/Umbrella.N2.dll": {}
+        }
+      },
       "Umbrella.Utilities/1.0.0-rel-build00057": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
@@ -783,8 +815,8 @@
     "DynamicImage/3.1.1": {
       "sha512": "q6XNf72G/8p8aG1j7CbyOcOs4naKb+URvC9rA0hA/Ub+xestPoRVOrhJZi/Dx5Vgh2a37NLp3FfCjThsM9ztuQ==",
       "type": "package",
+      "path": "DynamicImage/3.1.1",
       "files": [
-        "DynamicImage.3.1.1.nupkg",
         "DynamicImage.3.1.1.nupkg.sha512",
         "DynamicImage.nuspec",
         "content/App_Start/DynamicImage.cs.pp",
@@ -805,6 +837,7 @@
     "log4net/2.0.5": {
       "sha512": "AEqPZz+v+OikfnR2SqRVdQPnSaLq5y9Iz1CfRQZ9kTKPYCXHG6zYmDHb7wJotICpDLMr/JqokyjiqKAjUKp0ng==",
       "type": "package",
+      "path": "log4net/2.0.5",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -822,7 +855,6 @@
         "lib/net40-full/log4net.xml",
         "lib/net45-full/log4net.dll",
         "lib/net45-full/log4net.xml",
-        "log4net.2.0.5.nupkg",
         "log4net.2.0.5.nupkg.sha512",
         "log4net.nuspec"
       ]
@@ -845,6 +877,7 @@
     "Microsoft.AspNet.Identity.Core/2.2.1": {
       "sha512": "jjurNglpmcv0SLBd4Fmar8ZoJ2yqfTf6iuP3p8wVH7Nvanfo8l3qTBzq3qRQz2BQlb6iXJiDWPjcnIImVz512g==",
       "type": "package",
+      "path": "Microsoft.AspNet.Identity.Core/2.2.1",
       "files": [
         "Microsoft.AspNet.Identity.Core.2.2.1.nupkg.sha512",
         "Microsoft.AspNet.Identity.Core.nuspec",
@@ -855,6 +888,7 @@
     "Microsoft.AspNet.Identity.Owin/2.2.1": {
       "sha512": "Cz/dqC85+6bgPj9Mt1qGLJ+v8HdTqXTMe1ms4e8pzPXJjDJw3DK7XtimtDtWwiDs63vnIDgy195TByV9wxEwjA==",
       "type": "package",
+      "path": "Microsoft.AspNet.Identity.Owin/2.2.1",
       "files": [
         "Microsoft.AspNet.Identity.Owin.2.2.1.nupkg.sha512",
         "Microsoft.AspNet.Identity.Owin.nuspec",
@@ -865,6 +899,7 @@
     "Microsoft.AspNet.Mvc/5.2.3": {
       "sha512": "i8jZf5QrbcFmjiYWRD7o7qTak/oXKxV80MgP4cZ33A8GC0RBtBIdZ1VHaloGUg+qsHUz5rVkGpwenM+ugDz5PA==",
       "type": "package",
+      "path": "Microsoft.AspNet.Mvc/5.2.3",
       "files": [
         "Content/Web.config.install.xdt",
         "Content/Web.config.uninstall.xdt",
@@ -877,6 +912,7 @@
     "Microsoft.AspNet.Razor/3.2.3": {
       "sha512": "leta+Q73O7+pR8ThTqXmwaNMSqwZQQ3BHfpUHd8S1XaUWe1jRVLitMHqo1AmY7wPNLyankPA1beiUKEGj8Q3Dw==",
       "type": "package",
+      "path": "Microsoft.AspNet.Razor/3.2.3",
       "files": [
         "Microsoft.AspNet.Razor.3.2.3.nupkg.sha512",
         "Microsoft.AspNet.Razor.nuspec",
@@ -887,6 +923,7 @@
     "Microsoft.AspNet.WebApi/5.2.3": {
       "sha512": "mGBfSy61+2dIdPwgguW8EaCVsbYTwwVHeCc/pVq1PhlZS87ColgJ++Hve40TrX6Dtqde0fo9M1Tt19rXlHC5GA==",
       "type": "package",
+      "path": "Microsoft.AspNet.WebApi/5.2.3",
       "files": [
         "Microsoft.AspNet.WebApi.5.2.3.nupkg.sha512",
         "Microsoft.AspNet.WebApi.nuspec"
@@ -895,6 +932,7 @@
     "Microsoft.AspNet.WebApi.Client/5.2.3": {
       "sha512": "3kiI8peSXbXHDDrRuo+QaX0iCEVRe0nvn2dBDRw656uPX32UalbBlSIDUDlJxu05eau4tnuhsikiUuugvvoUoQ==",
       "type": "package",
+      "path": "Microsoft.AspNet.WebApi.Client/5.2.3",
       "files": [
         "Microsoft.AspNet.WebApi.Client.5.2.3.nupkg.sha512",
         "Microsoft.AspNet.WebApi.Client.nuspec",
@@ -907,6 +945,7 @@
     "Microsoft.AspNet.WebApi.Core/5.2.3": {
       "sha512": "o90QYlRV8VKR1S7+EcJw9w8WSyVFLl+IIzN8ILZ+n2t6rsc/KS8kBxRzA7wCFPRUHhebCfLqilBk39phvanx3g==",
       "type": "package",
+      "path": "Microsoft.AspNet.WebApi.Core/5.2.3",
       "files": [
         "Content/web.config.transform",
         "Microsoft.AspNet.WebApi.Core.5.2.3.nupkg.sha512",
@@ -918,6 +957,7 @@
     "Microsoft.AspNet.WebApi.Owin/5.2.3": {
       "sha512": "eMftC99BNMgnp/PDbfT6OCDW94n1uVBC6bF9Z0HkkC5h1hR4LSsKoy9jvw7aXBi6PN6tuK6uje5UjWvXodbKGA==",
       "type": "package",
+      "path": "Microsoft.AspNet.WebApi.Owin/5.2.3",
       "files": [
         "Microsoft.AspNet.WebApi.Owin.5.2.3.nupkg.sha512",
         "Microsoft.AspNet.WebApi.Owin.nuspec",
@@ -928,6 +968,7 @@
     "Microsoft.AspNet.WebApi.WebHost/5.2.3": {
       "sha512": "bhm4/BKdS3t6nK2R3NjCpxulcwtMFiHqVBDLuN3W5So1PhZfE+RBs7eVazGOhsEKCk7PoSmiSnl9DG0cpyfHtA==",
       "type": "package",
+      "path": "Microsoft.AspNet.WebApi.WebHost/5.2.3",
       "files": [
         "Microsoft.AspNet.WebApi.WebHost.5.2.3.nupkg.sha512",
         "Microsoft.AspNet.WebApi.WebHost.nuspec",
@@ -938,6 +979,7 @@
     "Microsoft.AspNet.WebPages/3.2.3": {
       "sha512": "zbtxBERla5RE/mhftwbrXOzc0r6lh8WcnjpGW7QQe+PvSDDx1BgsTUGzfCXO/vJznHNpY5oCSYLt8Q5vUu7F0g==",
       "type": "package",
+      "path": "Microsoft.AspNet.WebPages/3.2.3",
       "files": [
         "Content/Web.config.install.xdt",
         "Content/Web.config.uninstall.xdt",
@@ -1013,8 +1055,8 @@
     "Microsoft.Owin/3.0.1": {
       "sha512": "64yZsGN9uRnXNVAyAT4F6KWmdDUJ6yX4uqzxKTdGANKH1oMt0IKZ7THRRa3mXIOo8iSu4tq/DCBUycUY9pXZzw==",
       "type": "package",
+      "path": "Microsoft.Owin/3.0.1",
       "files": [
-        "Microsoft.Owin.3.0.1.nupkg",
         "Microsoft.Owin.3.0.1.nupkg.sha512",
         "Microsoft.Owin.nuspec",
         "lib/net45/Microsoft.Owin.XML",
@@ -1024,8 +1066,8 @@
     "Microsoft.Owin.FileSystems/3.0.1": {
       "sha512": "eseUvNAPjfPDmBYNGz8IP7g5db5zNdapqYttSdagv4BG4PrRzukxqW0PAruM/rFM823XsJW52krnHbS9NmzKlQ==",
       "type": "package",
+      "path": "Microsoft.Owin.FileSystems/3.0.1",
       "files": [
-        "Microsoft.Owin.FileSystems.3.0.1.nupkg",
         "Microsoft.Owin.FileSystems.3.0.1.nupkg.sha512",
         "Microsoft.Owin.FileSystems.nuspec",
         "lib/net45/Microsoft.Owin.FileSystems.XML",
@@ -1035,8 +1077,8 @@
     "Microsoft.Owin.Host.SystemWeb/3.0.1": {
       "sha512": "sNKJ7cPOnXpK5fr7upc77RF0MYUg1lKeR3hiMVhXWH9LLK7UZN7bKf2YwObT0wn+bAs3LRXdjbqDH48PF243Nw==",
       "type": "package",
+      "path": "Microsoft.Owin.Host.SystemWeb/3.0.1",
       "files": [
-        "Microsoft.Owin.Host.SystemWeb.3.0.1.nupkg",
         "Microsoft.Owin.Host.SystemWeb.3.0.1.nupkg.sha512",
         "Microsoft.Owin.Host.SystemWeb.nuspec",
         "lib/net45/Microsoft.Owin.Host.SystemWeb.dll",
@@ -1046,6 +1088,7 @@
     "Microsoft.Owin.Security/2.1.0": {
       "sha512": "4n1V0p+O6W1L0xHUM8Cjp2Y+MmmUkiCZv6PvRNIDCJD9zlerBJa2HECo9lUiWC+KuasQJ3QxB1FmipNBxdXXIQ==",
       "type": "package",
+      "path": "Microsoft.Owin.Security/2.1.0",
       "files": [
         "Microsoft.Owin.Security.2.1.0.nupkg.sha512",
         "Microsoft.Owin.Security.nuspec",
@@ -1056,6 +1099,7 @@
     "Microsoft.Owin.Security.Cookies/2.1.0": {
       "sha512": "P+3cjwBpUDGF+5s+oMfyySG0qvLqb71M+1q9jGSsaF0qCg14ix0qF5pEV6IqhGUEgV40E/1K4hDcWjS+essVoQ==",
       "type": "package",
+      "path": "Microsoft.Owin.Security.Cookies/2.1.0",
       "files": [
         "Microsoft.Owin.Security.Cookies.2.1.0.nupkg.sha512",
         "Microsoft.Owin.Security.Cookies.nuspec",
@@ -1066,6 +1110,7 @@
     "Microsoft.Owin.Security.OAuth/2.1.0": {
       "sha512": "jR/LoeV02Cne9IV6fG4L9KR+uofPLokq6sxGy4bBDxLAAmZ35y0H/NiV6riqXSee6PypNAcJzTytJpYb0xK6Hw==",
       "type": "package",
+      "path": "Microsoft.Owin.Security.OAuth/2.1.0",
       "files": [
         "Microsoft.Owin.Security.OAuth.2.1.0.nupkg.sha512",
         "Microsoft.Owin.Security.OAuth.nuspec",
@@ -1076,8 +1121,8 @@
     "Microsoft.Owin.StaticFiles/3.0.1": {
       "sha512": "0Yxz8sEFZVin5QMq0q2YX3wHdY9eA4akFA9PGpugTCJ2SFErow/W0qPJRJhT/SMs3g2k7JKbxUATLB5xiBhnTw==",
       "type": "package",
+      "path": "Microsoft.Owin.StaticFiles/3.0.1",
       "files": [
-        "Microsoft.Owin.StaticFiles.3.0.1.nupkg",
         "Microsoft.Owin.StaticFiles.3.0.1.nupkg.sha512",
         "Microsoft.Owin.StaticFiles.nuspec",
         "lib/net45/Microsoft.Owin.StaticFiles.XML",
@@ -1087,8 +1132,8 @@
     "Microsoft.Web.Infrastructure/1.0.0": {
       "sha512": "FNmvLn5m2LTU/Rs2KWVo0SIIh9Ek+U0ojex7xeDaSHw/zgEP77A8vY5cVWgUtBGS8MJfDGNn8rpXJWEIQaPwTg==",
       "type": "package",
+      "path": "Microsoft.Web.Infrastructure/1.0.0",
       "files": [
-        "Microsoft.Web.Infrastructure.1.0.0.nupkg",
         "Microsoft.Web.Infrastructure.1.0.0.nupkg.sha512",
         "Microsoft.Web.Infrastructure.nuspec",
         "lib/net40/Microsoft.Web.Infrastructure.dll"
@@ -1220,8 +1265,8 @@
     "Owin/1.0.0": {
       "sha512": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw==",
       "type": "package",
+      "path": "Owin/1.0.0",
       "files": [
-        "Owin.1.0.0.nupkg",
         "Owin.1.0.0.nupkg.sha512",
         "Owin.nuspec",
         "lib/net40/Owin.dll"
@@ -1238,6 +1283,23 @@
         "lib/20/ICSharpCode.SharpZipLib.dll",
         "lib/SL3/SharpZipLib.Silverlight3.dll",
         "lib/SL4/SharpZipLib.Silverlight4.dll"
+      ]
+    },
+    "SimpleInjector/3.2.2": {
+      "sha512": "3TBiqZtS2JLnbl6/xcaRZ9ZsX2rlPhCofrW+rfEej/Qp4wbEI6/MAeTec3QX9Fuq6/t0rOEmkuSYBtudAtqUxA==",
+      "type": "package",
+      "path": "SimpleInjector/3.2.2",
+      "files": [
+        "SimpleInjector.3.2.2.nupkg.sha512",
+        "SimpleInjector.nuspec",
+        "lib/net40-client/SimpleInjector.dll",
+        "lib/net40-client/SimpleInjector.xml",
+        "lib/net45/SimpleInjector.dll",
+        "lib/net45/SimpleInjector.xml",
+        "lib/netstandard1.0/SimpleInjector.dll",
+        "lib/netstandard1.0/SimpleInjector.xml",
+        "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.dll",
+        "lib/portable-net4+sl4+wp8+win8+wpa81/SimpleInjector.xml"
       ]
     },
     "System.Collections/4.0.11": {
@@ -2242,8 +2304,8 @@
     "WebActivatorEx/2.0.2": {
       "sha512": "eVe2RmaNWYkgDvtWSthTLCv3zIQ6xcfxNLNPbCNe8IIiZcYet/A7tKG/HlyLdIz73wUvjyIDCmhK6wGODFtXlQ==",
       "type": "package",
+      "path": "WebActivatorEx/2.0.2",
       "files": [
-        "WebActivatorEx.2.0.2.nupkg",
         "WebActivatorEx.2.0.2.nupkg.sha512",
         "WebActivatorEx.nuspec",
         "lib/net40/WebActivatorEx.dll"
@@ -2269,6 +2331,11 @@
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/Umbrella.Legacy.WebUtilities.DynamicImage.xproj"
     },
+    "Umbrella.N2/1.0.0-rel-build00057": {
+      "type": "project",
+      "path": "../../N2CMS/Umbrella.N2/project.json",
+      "msbuildProject": "../../N2CMS/Umbrella.N2/Umbrella.N2.xproj"
+    },
     "Umbrella.Utilities/1.0.0-rel-build00057": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
@@ -2287,18 +2354,10 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "N2CMS >= 2.9.6.14",
-      "Newtonsoft.Json >= 9.0.1",
-      "Umbrella.Legacy.WebUtilities >= 1.0.0-*",
-      "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",
-      "Umbrella.Utilities >= 1.0.0-*",
-      "Umbrella.WebUtilities >= 1.0.0-*",
-      "Umbrella.WebUtilities.DynamicImage >= 1.0.0-*"
+      "SimpleInjector >= 3.2.2",
+      "Umbrella.N2 >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.6": [
-      "System.Drawing >= 4.0.0",
-      "System.Web >= 4.0.0"
-    ]
+    ".NETFramework,Version=v4.6": []
   },
   "tools": {},
   "projectFileToolGroups": {}
