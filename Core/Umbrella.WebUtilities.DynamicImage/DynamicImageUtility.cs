@@ -1,18 +1,20 @@
-﻿using Umbrella.Utilities;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
+﻿using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
+using System.Text.RegularExpressions;
 
 namespace Umbrella.WebUtilities.DynamicImage
 {
     public class DynamicImageUtility : IDynamicImageUtility
     {
+        #region Private Static Members
+        private static readonly Regex s_DensityRegex = new Regex("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        #endregion
+
         #region Private Members
         private readonly IDynamicImageResizer m_DynamicImageResizer;
         private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
@@ -36,16 +38,24 @@ namespace Umbrella.WebUtilities.DynamicImage
             string extension = Path.GetExtension(path);
             pathBuilder.Remove(pathBuilder.Length - extension.Length, extension.Length);
 
-            //Check to see if the path has an @2x at the end of the filename to indicate we need a retina version of the image
-            //i.e. at 2x the requested resolution - Do this before adding the original extension
-            if (pathBuilder.EndsWith("@2x"))
-            {
-                //Remove the @2x from the filename
-                pathBuilder.Remove(pathBuilder.Length - 3, 3);
+            //Check to see if the path has a density identifier at the end
+            Match densityMatch = s_DensityRegex.Match(pathBuilder.ToString());
 
-                //Double the dimensions
-                width = width * 2;
-                height = height * 2;
+            if (densityMatch.Success)
+            {
+                //Get the density from the 2nd group
+                if (densityMatch.Groups.Count == 2)
+                {
+                    int density = int.Parse(densityMatch.Groups[1].Value);
+                    int densityIdentifierLength = densityMatch.Value.Length;
+
+                    //Remove the density identifier from the path
+                    pathBuilder.Remove(pathBuilder.Length - densityIdentifierLength, densityIdentifierLength);
+
+                    //Double the dimensions
+                    width = width * density;
+                    height = height * density;
+                }
             }
 
             //Now add the original file extension to the path
