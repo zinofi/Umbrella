@@ -12,18 +12,32 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 {
     public static class ImageHelpers
     {
-        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, string cssClass = "")
+        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, object htmlAttributes = null)
+        {
+            var attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
+
+            return helper.Image(path, altText, attributesDictionary);
+        }
+
+        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, IDictionary<string, object> htmlAttributes = null)
         {
             UrlHelper urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
 
-            return new ResponsiveImageTag(path, altText, cssClass, urlHelper.Content);
+            return new ResponsiveImageTag(path, altText, htmlAttributes, urlHelper.Content);
         }
 
-        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, string cssClass = "", DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        {
+            var attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
+
+            return helper.DynamicImage(dynamicImageUtility, path, altText, width, height, resizeMode, attributesDictionary, format, toAbsolutePath);
+        }
+
+        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
         {
             string imageUrl = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
-            return helper.Image(imageUrl, altText, cssClass);
+            return helper.Image(imageUrl, altText, htmlAttributes);
         }
     }
 
@@ -32,20 +46,20 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
         private readonly string m_Path;
         private readonly Func<string, string> m_MapVirtualPathFunc;
         private readonly HashSet<int> m_PixelDensities;
-        private readonly Dictionary<string, string> m_HtmlAttributes;
+        private readonly IDictionary<string, string> m_HtmlAttributes;
 
-        public ResponsiveImageTag(string path, string altText, string cssClass, Func<string, string> mapVirtualPath)
+        public ResponsiveImageTag(string path, string altText, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPath)
         {
             m_Path = path;
             m_MapVirtualPathFunc = mapVirtualPath;
 
             m_PixelDensities = new HashSet<int> { 1 };
-            m_HtmlAttributes = new Dictionary<string, string>
-            {
-                ["src"] = mapVirtualPath(path),
-                ["alt"] = altText,
-                ["class"] = cssClass
-            };
+
+            if (htmlAttributes == null)
+                htmlAttributes = new Dictionary<string, object>();
+
+            htmlAttributes.Add("src", mapVirtualPath(path));
+            htmlAttributes.Add("alt", altText);
         }
 
         public string ToHtmlString()
@@ -54,12 +68,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 
             if (m_PixelDensities.Count > 1)
                 AddSrcsetAttribute(imgTag);
-
-            foreach (KeyValuePair<string, string> attribute in m_HtmlAttributes)
-            {
-                if (!string.IsNullOrWhiteSpace(attribute.Value))
-                    imgTag.Attributes[attribute.Key] = attribute.Value;
-            }
+            
+            imgTag.MergeAttributes(m_HtmlAttributes);
 
             return imgTag.ToString(TagRenderMode.SelfClosing);
         }
