@@ -46,7 +46,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
         private readonly string m_Path;
         private readonly Func<string, string> m_MapVirtualPathFunc;
         private readonly HashSet<int> m_PixelDensities;
-        private readonly IDictionary<string, string> m_HtmlAttributes;
+        private readonly Dictionary<string, string> m_HtmlAttributes;
 
         public ResponsiveImageTag(string path, string altText, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPath)
         {
@@ -56,10 +56,12 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
             m_PixelDensities = new HashSet<int> { 1 };
 
             if (htmlAttributes == null)
-                htmlAttributes = new Dictionary<string, object>();
+                m_HtmlAttributes = new Dictionary<string, string>();
+            else
+                m_HtmlAttributes = htmlAttributes.ToDictionary(x => x.Key, x => x.Value.ToString());
 
-            htmlAttributes.Add("src", mapVirtualPath(path));
-            htmlAttributes.Add("alt", altText);
+            m_HtmlAttributes.Add("src", mapVirtualPath(path));
+            m_HtmlAttributes.Add("alt", altText);
         }
 
         public string ToHtmlString()
