@@ -78,7 +78,7 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "SimpleInjector/3.2.2": {
+      "SimpleInjector/3.2.3": {
         "type": "package",
         "compile": {
           "lib/net45/SimpleInjector.dll": {}
@@ -251,7 +251,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00056": {
+      "Umbrella.Utilities/1.0.0-rel-build00060": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -341,12 +341,12 @@
         "tools/install.ps1"
       ]
     },
-    "SimpleInjector/3.2.2": {
-      "sha512": "3TBiqZtS2JLnbl6/xcaRZ9ZsX2rlPhCofrW+rfEej/Qp4wbEI6/MAeTec3QX9Fuq6/t0rOEmkuSYBtudAtqUxA==",
+    "SimpleInjector/3.2.3": {
+      "sha512": "K+sanT0SyWF6ZfkzNne0yYmTUgKo4KEFKccrgngJkGMqLxkYyXhT9V4/tN3G6J1GR0ucvPwNVop0RuU+J+4jMg==",
       "type": "package",
-      "path": "SimpleInjector/3.2.2",
+      "path": "SimpleInjector/3.2.3",
       "files": [
-        "SimpleInjector.3.2.2.nupkg.sha512",
+        "SimpleInjector.3.2.3.nupkg.sha512",
         "SimpleInjector.nuspec",
         "lib/net40-client/SimpleInjector.dll",
         "lib/net40-client/SimpleInjector.xml",
@@ -1357,7 +1357,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00056": {
+    "Umbrella.Utilities/1.0.0-rel-build00060": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1365,7 +1365,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "SimpleInjector >= 3.2.2",
+      "SimpleInjector >= 3.2.3",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": []
