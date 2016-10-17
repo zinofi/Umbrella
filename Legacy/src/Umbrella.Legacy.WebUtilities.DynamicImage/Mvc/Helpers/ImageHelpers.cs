@@ -19,7 +19,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
             return helper.Image(path, altText, attributesDictionary);
         }
 
-        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, IDictionary<string, object> htmlAttributes = null)
+        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, IDictionary<string, object> htmlAttributes)
         {
             UrlHelper urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
 
@@ -33,7 +33,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
             return helper.DynamicImage(dynamicImageUtility, path, altText, width, height, resizeMode, attributesDictionary, format, toAbsolutePath);
         }
 
-        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
         {
             string imageUrl = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
