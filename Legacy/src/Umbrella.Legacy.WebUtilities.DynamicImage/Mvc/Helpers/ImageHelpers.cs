@@ -31,7 +31,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 	{
 		private readonly string m_Path;
 		private readonly Func<string, string> m_MapVirtualPathFunc;
-		private readonly HashSet<int> m_PixelDensities;
+        private readonly HashSet<int> m_PixelDensities = new HashSet<int> { 1 };
 		private readonly Dictionary<string, string> m_HtmlAttributes;
 
 		public ResponsiveImageTag(string path, string altText, string cssClass, Func<string, string> mapVirtualPath)
@@ -52,7 +52,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 		{
 			var imgTag = new TagBuilder("img");
 
-			if (m_PixelDensities.Count > 0)
+			if (m_PixelDensities.Count > 1)
 				AddSrcsetAttribute(imgTag);
 
 			foreach (KeyValuePair<string, string> attribute in m_HtmlAttributes)
