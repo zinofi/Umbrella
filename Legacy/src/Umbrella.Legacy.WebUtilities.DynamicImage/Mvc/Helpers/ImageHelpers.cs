@@ -49,7 +49,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
             m_Format = format;
             m_ToAbsolutePath = toAbsolutePath;
 
-            m_Ratio = width / height;
+            m_Ratio = width / (float)height;
 
             string x1Url = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
@@ -116,6 +116,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
                     int imgHeight = (int)Math.Ceiling(imgWidth / m_Ratio);
 
                     string imgUrl = m_DynamicImageUtility.GetResizedUrl(p_Path, imgWidth, imgHeight, m_ResizeMode, m_Format, m_ToAbsolutePath);
+
+                    imgUrl = p_MapVirtualPathFunc(imgUrl);
 
                     yield return $"{imgUrl} {imgWidth}w";
                 }
