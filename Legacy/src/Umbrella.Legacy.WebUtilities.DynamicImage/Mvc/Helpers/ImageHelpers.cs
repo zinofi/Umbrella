@@ -5,104 +5,122 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Umbrella.Legacy.WebUtilities.Mvc.Helpers;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
-namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
+namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
 {
     public static class ImageHelpers
     {
-        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, object htmlAttributes = null)
-        {
-            var attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
-
-            return helper.Image(path, altText, attributesDictionary);
-        }
-
-        public static ResponsiveImageTag Image(this HtmlHelper helper, string path, string altText, IDictionary<string, object> htmlAttributes)
-        {
-            UrlHelper urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
-
-            return new ResponsiveImageTag(path, altText, htmlAttributes, urlHelper.Content);
-        }
-
-        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveDynamicImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
         {
             var attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
             return helper.DynamicImage(dynamicImageUtility, path, altText, width, height, resizeMode, attributesDictionary, format, toAbsolutePath);
         }
 
-        public static ResponsiveImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveDynamicImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
         {
-            string imageUrl = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
+            UrlHelper urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
 
-            return helper.Image(imageUrl, altText, htmlAttributes);
+            return new ResponsiveDynamicImageTag(dynamicImageUtility, path, altText, width, height, resizeMode, htmlAttributes, format, toAbsolutePath, urlHelper.Content);
         }
     }
 
-    public class ResponsiveImageTag : IHtmlString
+    public class ResponsiveDynamicImageTag : ResponsiveImageTag
     {
-        private readonly string m_Path;
-        private readonly Func<string, string> m_MapVirtualPathFunc;
-        private readonly HashSet<int> m_PixelDensities;
-        private readonly Dictionary<string, string> m_HtmlAttributes;
+        #region Private Members
+        private readonly HashSet<int> m_SizeWidths = new HashSet<int>();
+        private string m_SizeAttributeValue;
+        private readonly float m_Ratio;
+        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly DynamicResizeMode m_ResizeMode;
+        private readonly DynamicImageFormat m_Format;
+        private readonly bool m_ToAbsolutePath;
+        #endregion
 
-        public ResponsiveImageTag(string path, string altText, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPath)
+        #region Constructors
+        public ResponsiveDynamicImageTag(IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format, bool toAbsolutePath, Func<string, string> mapVirtualPathFunc)
+            : base(path, altText, htmlAttributes, mapVirtualPathFunc)
         {
-            m_Path = path;
-            m_MapVirtualPathFunc = mapVirtualPath;
+            m_DynamicImageUtility = dynamicImageUtility;
+            m_ResizeMode = resizeMode;
+            m_Format = format;
+            m_ToAbsolutePath = toAbsolutePath;
 
-            m_PixelDensities = new HashSet<int> { 1 };
+            m_Ratio = width / height;
 
-            if (htmlAttributes == null)
-                m_HtmlAttributes = new Dictionary<string, string>();
-            else
-                m_HtmlAttributes = htmlAttributes.ToDictionary(x => x.Key, x => x.Value.ToString());
+            string x1Url = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
-            m_HtmlAttributes.Add("src", mapVirtualPath(path));
-            m_HtmlAttributes.Add("alt", altText);
+            p_HtmlAttributes["src"] = x1Url;
         }
+        #endregion
 
-        public string ToHtmlString()
+        #region Overridden Methods
+        public override string ToHtmlString()
         {
             var imgTag = new TagBuilder("img");
 
-            if (m_PixelDensities.Count > 1)
-                AddSrcsetAttribute(imgTag);
-            
-            imgTag.MergeAttributes(m_HtmlAttributes);
+            AddSrcsetAttribute(imgTag);
 
+            imgTag.MergeAttributes(p_HtmlAttributes);
+
+            //TODO: Need to add a caching layer
             return imgTag.ToString(TagRenderMode.SelfClosing);
         }
 
-        private void AddSrcsetAttribute(TagBuilder imgTag)
+        protected override void AddSrcsetAttribute(TagBuilder imgTag)
         {
-            int densityIndex = m_Path.LastIndexOf('.');
+            //If we don't have any size information just call into the base method
+            //but only if we also have some density information
+            if (m_SizeWidths.Count == 0 && p_PixelDensities.Count > 1)
+            {
+                base.AddSrcsetAttribute(imgTag);
+            }
+            else if (m_SizeWidths.Count > 0)
+            {
+                if (!string.IsNullOrWhiteSpace(m_SizeAttributeValue))
+                    imgTag.Attributes["sizes"] = m_SizeAttributeValue;
 
-            IEnumerable<string> srcsetImagePaths =
-                from density in m_PixelDensities
-                let densityX = $"{density}x"
-                let highResImagePath = m_Path.Insert(densityIndex, $"@{densityX}") + $" {densityX}"
-                select m_MapVirtualPathFunc(highResImagePath);
-
-            imgTag.Attributes["srcset"] = string.Join(", ", srcsetImagePaths);
+                imgTag.Attributes["srcset"] = string.Join(",", GetSizeStrings());
+            }
         }
+        #endregion
 
-        public ResponsiveImageTag WithDensities(params int[] densities)
+        #region Public Methods
+        public ResponsiveDynamicImageTag WithSizes(params int[] x1Widths)
         {
-            foreach (int density in densities)
-                m_PixelDensities.Add(density);
+            foreach (int size in x1Widths)
+                m_SizeWidths.Add(size);
 
             return this;
         }
 
-        public ResponsiveImageTag WithSize(int width, int? height = null)
+        public ResponsiveDynamicImageTag WithSizesAttributeValue(string value)
         {
-            m_HtmlAttributes["width"] = width.ToString();
-            m_HtmlAttributes["height"] = (height ?? width).ToString();
+            m_SizeAttributeValue = value;
 
             return this;
         }
+        #endregion
+
+        #region Private Methods
+        private IEnumerable<string> GetSizeStrings()
+        {
+            foreach (int sizeWidth in m_SizeWidths)
+            {
+                foreach (int density in p_PixelDensities)
+                {
+                    int imgWidth = sizeWidth * density;
+                    int imgHeight = (int)Math.Ceiling(imgWidth / m_Ratio);
+
+                    string imgUrl = m_DynamicImageUtility.GetResizedUrl(p_Path, imgWidth, imgHeight, m_ResizeMode, m_Format, m_ToAbsolutePath);
+
+                    yield return $"{imgUrl} {imgWidth}w";
+                }
+            }
+        }
+        #endregion
     }
 }
