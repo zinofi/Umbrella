@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using System.Web;
 using Umbrella.WebUtilities.DynamicImage;
+using System.Text.RegularExpressions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage
 {
     public class DynamicImageUrlGenerator : IDynamicImageUrlGenerator
     {
         private const string c_UrlFormat = "~/DynamicImage/{0}/{1}/{2}/{3}/{4}";
+
+        private static readonly Regex m_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public string GenerateUrl(DynamicImageOptions options, bool toAbsolutePath = false)
         {
@@ -27,6 +30,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage
                 options.Mode,
                 originalExtension,
                 path.Replace(originalExtension, options.Format.ToFileExtensionString()));
+
+            virtualPath = m_Regex.Replace(virtualPath, "/");
 
             if (toAbsolutePath)
                 virtualPath = VirtualPathUtility.ToAbsolute(virtualPath);

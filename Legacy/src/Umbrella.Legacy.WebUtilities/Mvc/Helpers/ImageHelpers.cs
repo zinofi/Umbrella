@@ -95,12 +95,14 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
         #region Protected Methods
         protected virtual void AddSrcsetAttribute(TagBuilder imgTag)
         {
-            int densityIndex = p_Path.LastIndexOf('.');
+            string path = p_HtmlAttributes["src"];
+
+            int densityIndex = path.LastIndexOf('.');
 
             IEnumerable<string> srcsetImagePaths =
                 from density in p_PixelDensities
                 let densityX = $"{density}x"
-                let highResImagePath = p_Path.Insert(densityIndex, $"@{densityX}") + $" {densityX}"
+                let highResImagePath = path.Insert(densityIndex, $"@{densityX}") + $" {densityX}"
                 select p_MapVirtualPathFunc(highResImagePath);
 
             imgTag.Attributes["srcset"] = string.Join(", ", srcsetImagePaths);

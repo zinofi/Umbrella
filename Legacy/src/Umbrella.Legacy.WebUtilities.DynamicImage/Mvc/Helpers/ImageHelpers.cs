@@ -53,7 +53,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
 
             string x1Url = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
-            p_HtmlAttributes["src"] = x1Url;
+            p_HtmlAttributes["src"] = mapVirtualPathFunc(x1Url);
         }
         #endregion
 
