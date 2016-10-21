@@ -9,8 +9,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
     public class ResponsiveDynamicImagePictureSourceTag : ResponsiveImageTag
     {
         #region Constructors
-        public ResponsiveDynamicImagePictureSourceTag(string path, string altText, string mediaAttributeValue, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPathFunc)
-            : base(path, altText, htmlAttributes, mapVirtualPathFunc)
+        public ResponsiveDynamicImagePictureSourceTag(string path, string mediaAttributeValue, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPathFunc)
+            : base(path, string.Empty, htmlAttributes, mapVirtualPathFunc)
         {
             p_HtmlAttributes["media"] = mediaAttributeValue;
         } 
@@ -22,6 +22,10 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
             var tag = new TagBuilder("source");
 
             AddSrcsetAttribute(tag);
+
+            //Remove obsolete values
+            p_HtmlAttributes.Remove("alt");
+            p_HtmlAttributes.Remove("src");
 
             tag.MergeAttributes(p_HtmlAttributes);
 
