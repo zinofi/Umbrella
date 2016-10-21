@@ -69,7 +69,7 @@ namespace Umbrella.WebUtilities.DynamicImage
                 //Item cannot be found in the cache - build a new image
 
                 ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceFile(physicalPath);
-
+                
                 ResizeMode dynamicResizeMode = (ResizeMode)(int)resizeMode;
                 SoundInTheory.DynamicImage.DynamicImageFormat dynamicImageFormat = (SoundInTheory.DynamicImage.DynamicImageFormat)(int)imageFormat;
 
@@ -81,7 +81,7 @@ namespace Umbrella.WebUtilities.DynamicImage
                 dynamicImage = new DynamicImage();
                 dynamicImage.ImageOptions = options;
                 dynamicImage.Content = BitmapSourceToByte(image.Image, imageFormat);
-                dynamicImage.LastModified = DateTime.Now;
+                dynamicImage.LastModified = DateTime.UtcNow;
 
                 //Now add to the cache
                 m_DynamicImageCache.Add(dynamicImage);
@@ -96,7 +96,7 @@ namespace Umbrella.WebUtilities.DynamicImage
         #endregion
 
         #region Private Static Methods
-        private static byte[] BitmapSourceToByte(BitmapSource source, Umbrella.WebUtilities.DynamicImage.Enumerations.DynamicImageFormat imageFormat)
+        private static byte[] BitmapSourceToByte(BitmapSource source, Enumerations.DynamicImageFormat imageFormat)
         {
             BitmapFrame frame = BitmapFrame.Create(source);
 

@@ -45,7 +45,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
             AddSrcsetAttribute(imgTag);
 
             imgTag.MergeAttributes(p_HtmlAttributes);
-
+            
             //TODO: Need to add a caching layer
             return imgTag.ToString(TagRenderMode.SelfClosing);
         }
