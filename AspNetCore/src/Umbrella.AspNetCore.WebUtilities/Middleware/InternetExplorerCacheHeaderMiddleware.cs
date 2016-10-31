@@ -43,7 +43,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
                 string method = context.Request.Method;
                 string userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
 
-                bool addHeaders = (m_Options.UserAgentKeywords.Count == 0 || m_Options.UserAgentKeywords.Any(x => userAgent.Contains(x)))
+                bool addHeaders = !string.IsNullOrWhiteSpace(userAgent)
+                    && (m_Options.UserAgentKeywords.Count == 0 || m_Options.UserAgentKeywords.Any(x => userAgent.Contains(x)))
                     && (m_Options.Methods.Count == 0 || m_Options.Methods.Any(x => method.Contains(x)));
 
                 if (addHeaders)
