@@ -12,8 +12,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc
 {
     public class UmbrellaController : Controller
     {
-        #region Private Members
-        protected readonly ILogger Log;
+        #region Protected Properties
+        protected ILogger Log { get; }
         #endregion
 
         #region Constructors

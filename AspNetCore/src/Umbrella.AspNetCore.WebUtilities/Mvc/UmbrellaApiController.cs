@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelState;
 using Umbrella.DataAccess.Exceptions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -18,14 +19,25 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
     public abstract class UmbrellaApiController : UmbrellaController
     {
         #region Private Members
-        private readonly IModelStateTransformer m_ModelStateTransformer; 
+        private readonly IModelStateTransformer m_ModelStateTransformer;
+        #endregion
+
+        #region Protected Properties
+        protected IHostingEnvironment HostingEnvironment { get; }
+        protected bool IsDevelopment
+        {
+            get { return HostingEnvironment.IsDevelopment(); }
+        }
         #endregion
 
         #region Constructors
-        public UmbrellaApiController(ILogger logger, IModelStateTransformer modelStateTransformer)
+        public UmbrellaApiController(ILogger logger,
+            IModelStateTransformer modelStateTransformer,
+            IHostingEnvironment hostingEnvironment)
             : base(logger)
         {
             m_ModelStateTransformer = modelStateTransformer;
+            HostingEnvironment = hostingEnvironment;
         }
         #endregion
 

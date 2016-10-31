@@ -28,13 +28,10 @@ namespace Umbrella.DataAccess.EF6
         where TDbContext : DbContext
         where TEntityKey : IEquatable<TEntityKey>
     {
-        #region Protected Members
-        protected readonly TDbContext Context;
-        protected readonly ILogger Log;
-        protected readonly IDataAccessLookupNormalizer LookupNormalizer;
-        #endregion
-
         #region Protected Properties
+        protected TDbContext Context { get; }
+        protected ILogger Log { get; }
+        protected IDataAccessLookupNormalizer LookupNormalizer { get; }
         protected IQueryable<TEntity> Items => Context.Set<TEntity>();
         #endregion
 

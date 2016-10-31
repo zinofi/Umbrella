@@ -16,8 +16,8 @@ namespace Umbrella.DataAccess.EF6
         private static readonly Type s_ConcurrencyTypeStamp = typeof(IConcurrencyStamp);
         #endregion
 
-        #region Protected Members
-        protected readonly ILogger Log;
+        #region Protected Properties
+        protected ILogger Log { get; }
         #endregion
 
         #region Constructors

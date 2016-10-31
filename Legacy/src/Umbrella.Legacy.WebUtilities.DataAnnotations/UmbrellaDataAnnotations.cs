@@ -13,30 +13,34 @@ namespace Umbrella.WebUtilities.Mvc.DataAnnotations
 
     public abstract class UmbrellaDataAnnotations<T> where T : UmbrellaValidator
     {
-        public static void Attribute(Type foolprooftAttributeType)
+        public static void Attribute<TAttribute>()
         {
-            DataAnnotationsModelValidatorProvider.RegisterAdapter(foolprooftAttributeType, typeof(T));
+            DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(TAttribute), typeof(T));
         }
 
         public static void RegisterAll()
         {
-            Attribute(typeof(IsAttribute));
-            Attribute(typeof(EqualToAttribute));
-            Attribute(typeof(NotEqualToAttribute));
-            Attribute(typeof(GreaterThanAttribute));
-            Attribute(typeof(LessThanAttribute));
-            Attribute(typeof(GreaterThanOrEqualToAttribute));
-            Attribute(typeof(LessThanOrEqualToAttribute));
-            Attribute(typeof(RequiredIfAttribute));
-            Attribute(typeof(RequiredIfTrueAttribute));
-            Attribute(typeof(RequiredIfFalseAttribute));
-            Attribute(typeof(RequiredIfEmptyAttribute));
-            Attribute(typeof(RequiredIfNotEmptyAttribute));
-            Attribute(typeof(RequiredIfNotAttribute));
-            Attribute(typeof(RegularExpressionIfAttribute));
-            Attribute(typeof(RequiredIfRegExMatchAttribute));
-            Attribute(typeof(RequiredIfNotRegExMatchAttribute));
-            Attribute(typeof(MinDateAttribute)); 
+            Attribute<IsAttribute>();
+            Attribute<EqualToAttribute>();
+            Attribute<NotEqualToAttribute>();
+            Attribute<GreaterThanAttribute>();
+            Attribute<LessThanAttribute>();
+            Attribute<GreaterThanOrEqualToAttribute>();
+            Attribute<LessThanOrEqualToAttribute>();
+            Attribute<RequiredIfAttribute>();
+            Attribute<RequiredIfTrueAttribute>();
+            Attribute<RequiredIfFalseAttribute>();
+            Attribute<RequiredIfEmptyAttribute>();
+            Attribute<RequiredIfNotEmptyAttribute>();
+            Attribute<RequiredIfNotAttribute>();
+            Attribute<RegularExpressionIfAttribute>();
+            Attribute<RequiredIfRegExMatchAttribute>();
+            Attribute<RequiredIfNotRegExMatchAttribute>();
+            Attribute<MinDateAttribute>();
+            Attribute<MaxDateAttribute>();
+            Attribute<UmbrellaEmailAttribute>();
+            Attribute<UmbrellaPostcodeAttribute>();
+            Attribute<UmbrellaTelephoneAttribute>();
         }
     }
 }

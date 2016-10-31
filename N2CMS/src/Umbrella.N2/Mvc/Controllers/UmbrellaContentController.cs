@@ -13,8 +13,8 @@ namespace Umbrella.N2.Mvc.Controllers
 {
     public class UmbrellaContentController<T> : ContentController<T> where T : ContentItem
     {
-        #region Protected Members
-        protected readonly ILogger Log;
+        #region Protected Properties
+        protected ILogger Log { get; }
         #endregion
 
         #region Constructors

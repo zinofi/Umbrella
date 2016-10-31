@@ -11,25 +11,25 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
     public class ResponsiveImageTag : IHtmlString
     {
         #region Protected Members
-        protected readonly string p_Path;
-        protected readonly Func<string, string> p_MapVirtualPathFunc;
-        protected readonly HashSet<int> p_PixelDensities = new HashSet<int> { 1 };
-        protected readonly Dictionary<string, string> p_HtmlAttributes;
+        protected string Path { get; }
+        protected Func<string, string> MapVirtualPathFunc { get; }
+        protected HashSet<int> PixelDensities { get; } = new HashSet<int> { 1 };
+        protected Dictionary<string, string> HtmlAttributes { get; }
         #endregion
 
         #region Constructors
         public ResponsiveImageTag(string path, string altText, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPath)
         {
-            p_Path = path;
-            p_MapVirtualPathFunc = mapVirtualPath;
+            Path = path;
+            MapVirtualPathFunc = mapVirtualPath;
 
             if (htmlAttributes == null)
-                p_HtmlAttributes = new Dictionary<string, string>();
+                HtmlAttributes = new Dictionary<string, string>();
             else
-                p_HtmlAttributes = htmlAttributes.ToDictionary(x => x.Key, x => x.Value.ToString());
+                HtmlAttributes = htmlAttributes.ToDictionary(x => x.Key, x => x.Value.ToString());
 
-            p_HtmlAttributes.Add("src", mapVirtualPath(path));
-            p_HtmlAttributes.Add("alt", altText);
+            HtmlAttributes.Add("src", mapVirtualPath(path));
+            HtmlAttributes.Add("alt", altText);
         }
         #endregion
 
@@ -38,10 +38,10 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
         {
             var imgTag = new TagBuilder("img");
 
-            if (p_PixelDensities.Count > 1)
+            if (PixelDensities.Count > 1)
                 AddSrcsetAttribute(imgTag);
 
-            imgTag.MergeAttributes(p_HtmlAttributes);
+            imgTag.MergeAttributes(HtmlAttributes);
 
             //TODO: Need to add a caching layer
             return imgTag.ToString(TagRenderMode.SelfClosing);
@@ -52,7 +52,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
         public ResponsiveImageTag WithDensities(params int[] densities)
         {
             foreach (int density in densities)
-                p_PixelDensities.Add(density);
+                PixelDensities.Add(density);
 
             return this;
         }
@@ -61,16 +61,16 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
         {
             string strWidth = width.ToString();
 
-            p_HtmlAttributes["width"] = strWidth;
-            p_HtmlAttributes["height"] = strWidth;
+            HtmlAttributes["width"] = strWidth;
+            HtmlAttributes["height"] = strWidth;
 
             return this;
         }
 
         public ResponsiveImageTag WithFixedSize(int width, int height)
         {
-            p_HtmlAttributes["width"] = width.ToString();
-            p_HtmlAttributes["height"] = height.ToString();
+            HtmlAttributes["width"] = width.ToString();
+            HtmlAttributes["height"] = height.ToString();
 
             return this;
         }
@@ -79,15 +79,15 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
         #region Protected Methods
         protected virtual void AddSrcsetAttribute(TagBuilder imgTag)
         {
-            string path = p_HtmlAttributes["src"];
+            string path = HtmlAttributes["src"];
 
             int densityIndex = path.LastIndexOf('.');
 
             IEnumerable<string> srcsetImagePaths =
-                from density in p_PixelDensities
+                from density in PixelDensities
                 let densityX = $"{density}x"
                 let highResImagePath = path.Insert(densityIndex, $"@{densityX}") + $" {densityX}"
-                select p_MapVirtualPathFunc(highResImagePath);
+                select MapVirtualPathFunc(highResImagePath);
 
             imgTag.Attributes["srcset"] = string.Join(", ", srcsetImagePaths);
         }

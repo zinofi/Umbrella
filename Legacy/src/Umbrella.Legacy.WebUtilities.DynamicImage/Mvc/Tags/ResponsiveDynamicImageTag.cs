@@ -33,7 +33,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 
             string x1Url = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
 
-            p_HtmlAttributes["src"] = mapVirtualPathFunc(x1Url);
+            HtmlAttributes["src"] = mapVirtualPathFunc(x1Url);
         }
         #endregion
 
@@ -44,7 +44,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 
             AddSrcsetAttribute(imgTag);
 
-            imgTag.MergeAttributes(p_HtmlAttributes);
+            imgTag.MergeAttributes(HtmlAttributes);
             
             //TODO: Need to add a caching layer
             return imgTag.ToString(TagRenderMode.SelfClosing);
@@ -54,7 +54,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
         {
             //If we don't have any size information just call into the base method
             //but only if we also have some density information
-            if (m_SizeWidths.Count == 0 && p_PixelDensities.Count > 1)
+            if (m_SizeWidths.Count == 0 && PixelDensities.Count > 1)
             {
                 base.AddSrcsetAttribute(imgTag);
             }
@@ -90,14 +90,14 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
         {
             foreach (int sizeWidth in m_SizeWidths)
             {
-                foreach (int density in p_PixelDensities)
+                foreach (int density in PixelDensities)
                 {
                     int imgWidth = sizeWidth * density;
                     int imgHeight = (int)Math.Ceiling(imgWidth / m_Ratio);
 
-                    string imgUrl = m_DynamicImageUtility.GetResizedUrl(p_Path, imgWidth, imgHeight, m_ResizeMode, m_Format, m_ToAbsolutePath);
+                    string imgUrl = m_DynamicImageUtility.GetResizedUrl(Path, imgWidth, imgHeight, m_ResizeMode, m_Format, m_ToAbsolutePath);
 
-                    imgUrl = p_MapVirtualPathFunc(imgUrl);
+                    imgUrl = MapVirtualPathFunc(imgUrl);
 
                     yield return $"{imgUrl} {imgWidth}w";
                 }

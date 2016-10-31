@@ -12,11 +12,13 @@ namespace Umbrella.WebUtilities.DynamicImage
 {
     public abstract class DynamicImageCache
     {
-        protected readonly ILogger m_Logger;
+        #region Protected Properties
+        protected ILogger Log { get; } 
+        #endregion
 
         public DynamicImageCache(ILogger logger)
         {
-            m_Logger = logger;
+            Log = logger;
         }
 
         public string GenerateCacheKey(DynamicImageOptions options)

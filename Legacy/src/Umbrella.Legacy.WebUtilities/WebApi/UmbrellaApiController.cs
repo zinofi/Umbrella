@@ -13,8 +13,8 @@ namespace Umbrella.Legacy.WebUtilities.WebApi
     [ValidationActionFilter]
     public abstract class UmbrellaApiController : ApiController
     {
-        #region Protected Members
-        protected readonly ILogger Log;
+        #region Protected Properties
+        protected ILogger Log { get; }
         #endregion
 
         #region Constructors

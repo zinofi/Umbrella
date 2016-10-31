@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00070",
+  "version": "1.0.0-rel-build00071",
   "description": "Umbrella.Legacy.WebUtilities.SimpleInjector Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -8,7 +8,7 @@
   },
 
   "dependencies": {
-    "SimpleInjector": "3.2.3",
+    "SimpleInjector": "3.2.4",
     "Umbrella.Legacy.WebUtilities": "1.0.0-*"
   }
 }

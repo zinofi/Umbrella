@@ -2,14 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
+using Umbrella.AspNetCore.WebUtilities.Middleware.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseCleanupIDisposable(this IApplicationBuilder builder) => builder.UseMiddleware<CleanupIDisposableMiddleware>();
+        public static IApplicationBuilder UseUmbrellaCleanupIDisposable(this IApplicationBuilder builder) => builder.UseMiddleware<CleanupIDisposableMiddleware>();
 
         public static IApplicationBuilder UseUmbrellaQueryStringParameterToHttpHeader(this IApplicationBuilder builder,
             string queryStringParamaterName,
@@ -18,5 +18,7 @@ namespace Umbrella.AspNetCore.WebUtilities
         {
             return builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParamaterName, headerName, valueTransformer);
         }
+
+        public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder, Action<InternetExplorerCacheHeaderOptions> config) => builder.UseMiddleware<InternetExplorerCacheHeaderMiddleware>(config);
     }
 }

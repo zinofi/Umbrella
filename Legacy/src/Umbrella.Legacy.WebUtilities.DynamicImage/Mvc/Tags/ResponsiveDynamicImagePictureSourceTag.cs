@@ -12,7 +12,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
         public ResponsiveDynamicImagePictureSourceTag(string path, string mediaAttributeValue, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPathFunc)
             : base(path, string.Empty, htmlAttributes, mapVirtualPathFunc)
         {
-            p_HtmlAttributes["media"] = mediaAttributeValue;
+            HtmlAttributes["media"] = mediaAttributeValue;
         } 
         #endregion
 
@@ -24,10 +24,10 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
             AddSrcsetAttribute(tag);
 
             //Remove obsolete values
-            p_HtmlAttributes.Remove("alt");
-            p_HtmlAttributes.Remove("src");
+            HtmlAttributes.Remove("alt");
+            HtmlAttributes.Remove("src");
 
-            tag.MergeAttributes(p_HtmlAttributes);
+            tag.MergeAttributes(HtmlAttributes);
 
             //TODO: Need to add a caching layer
             return tag.ToString(TagRenderMode.SelfClosing);

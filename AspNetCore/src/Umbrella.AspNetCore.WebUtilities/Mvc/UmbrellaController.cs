@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -11,8 +12,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
     /// </summary>
     public abstract class UmbrellaController : Controller
     {
-        #region Protected Members
-        protected readonly ILogger Log;
+        #region Protected Properties
+        protected ILogger Log { get; }
         #endregion
 
         #region Constructors

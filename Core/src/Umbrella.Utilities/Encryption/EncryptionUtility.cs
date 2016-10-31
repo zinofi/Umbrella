@@ -19,13 +19,16 @@ namespace Umbrella.Utilities.Encryption
 		protected SymmetricAlgorithm p_Algorithm;
 		protected ICryptoTransform p_Encryptor;
 		protected ICryptoTransform p_Decryptor;
-        protected readonly ILogger m_Logger;
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Protected Properties
+        protected ILogger Log { get; }
+        #endregion
+
+        #region Constructors
         public EncryptionUtility(ILogger logger)
         {
-            m_Logger = logger;   
+            Log = logger;   
         }
         #endregion
 
@@ -47,7 +50,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc, value))
+            catch (Exception exc) when (Log.WriteError(exc, value))
             {
                 throw;
             }
@@ -68,7 +71,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
@@ -100,7 +103,7 @@ namespace Umbrella.Utilities.Encryption
                 p_Encryptor = p_Algorithm.CreateEncryptor(key, iV);
                 p_Decryptor = p_Algorithm.CreateDecryptor(key, iV);
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
@@ -128,7 +131,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc, value))
+            catch (Exception exc) when (Log.WriteError(exc, value))
             {
                 throw;
             }
@@ -158,7 +161,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc, value))
+            catch (Exception exc) when (Log.WriteError(exc, value))
             {
                 throw;
             }

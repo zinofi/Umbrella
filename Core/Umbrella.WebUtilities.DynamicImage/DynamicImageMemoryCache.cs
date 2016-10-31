@@ -50,7 +50,7 @@ namespace Umbrella.WebUtilities.DynamicImage
                     return dynamicImage;
                 });
             }
-            catch(Exception exc) when (m_Logger.WriteError(exc))
+            catch(Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
@@ -82,7 +82,7 @@ namespace Umbrella.WebUtilities.DynamicImage
 
                 return item;
             }
-            catch(Exception exc) when (m_Logger.WriteError(exc, new { key, originalFilePhysicalPath, fileExtension }))
+            catch(Exception exc) when (Log.WriteError(exc, new { key, originalFilePhysicalPath, fileExtension }))
             {
                 throw;
             }
@@ -94,7 +94,7 @@ namespace Umbrella.WebUtilities.DynamicImage
             {
                 m_Cache.Remove(key);
             }
-            catch(Exception exc) when (m_Logger.WriteError(exc, new { key, fileExtension }))
+            catch(Exception exc) when (Log.WriteError(exc, new { key, fileExtension }))
             {
                 throw;
             }
