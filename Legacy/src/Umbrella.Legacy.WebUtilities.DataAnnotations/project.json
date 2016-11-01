@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00072",
+  "version": "1.0.0-rel-build00073",
   "description": "Umbrella.Legacy.WebUtilities.DataAnnotations Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -9,10 +9,5 @@
   "dependencies": {
     "Microsoft.AspNet.Mvc": "5.2.3",
     "Umbrella.DataAnnotations": "1.0.0-*"
-  },
-  "buildOptions": {
-    "embed": [
-      "ClientScripts/*.js"
-    ]
   }
 }

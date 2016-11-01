@@ -38,9 +38,8 @@ namespace Umbrella.WebUtilities.Mvc.DataAnnotations
             Attribute<RequiredIfNotRegExMatchAttribute>();
             Attribute<MinDateAttribute>();
             Attribute<MaxDateAttribute>();
-            Attribute<UmbrellaEmailAttribute>();
             Attribute<UmbrellaPostcodeAttribute>();
-            Attribute<UmbrellaTelephoneAttribute>();
+            Attribute<UmbrellaPhoneAttribute>();
         }
     }
 }

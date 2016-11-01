@@ -7,3 +7,4 @@
 /TestResults
 bin
 obj
+/Samples/Umbrella.AspNetCore.Samples/wwwroot/lib

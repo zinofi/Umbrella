@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Umbrella.DataAnnotations
 {
-    public class UmbrellaTelephoneAttribute : RegularExpressionAttribute
+    public class UmbrellaPhoneAttribute : RegularExpressionAttribute
     {
-        public UmbrellaTelephoneAttribute()
+        public UmbrellaPhoneAttribute()
             : base(@"^(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]*$")
         {
         }

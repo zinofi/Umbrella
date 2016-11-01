@@ -1,0 +1,20 @@
+﻿@model DataAnnotationsModel
+
+<form asp-antiforgery="true" asp-action="Index" novalidate>
+    <div class="form-group">
+        <label asp-for="Required">Required</label>
+        <input asp-for="Required" type="text" class="form-control" />
+        <span asp-validation-for="Required"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UmbrellaPostcode">Umbrella Postcode</label>
+        <input asp-for="UmbrellaPostcode" type="text" class="form-control" />
+        <span asp-validation-for="UmbrellaPostcode"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UmbrellaPhone">Umbrella Phone</label>
+        <input asp-for="UmbrellaPhone" type="tel" class="form-control" />
+        <span asp-validation-for="UmbrellaPhone"></span>
+    </div>
+    <button class="btn btn-default" type="submit">Submit</button>
+</form>
