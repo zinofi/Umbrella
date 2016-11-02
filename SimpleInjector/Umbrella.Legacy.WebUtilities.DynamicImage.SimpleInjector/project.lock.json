@@ -349,7 +349,7 @@
           "lib/net40/Owin.dll": {}
         }
       },
-      "SimpleInjector/3.2.4": {
+      "SimpleInjector/3.2.5": {
         "type": "package",
         "compile": {
           "lib/net45/SimpleInjector.dll": {}
@@ -534,7 +534,7 @@
           "lib/net40/WebActivatorEx.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00071": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -553,7 +553,7 @@
           "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Legacy.Utilities/1.0.0-rel-build00071": {
+      "Umbrella.Legacy.Utilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -569,7 +569,7 @@
           "net46/Umbrella.Legacy.Utilities.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00071": {
+      "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -596,7 +596,7 @@
           "net46/Umbrella.Legacy.WebUtilities.dll": {}
         }
       },
-      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rel-build00071": {
+      "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -617,7 +617,7 @@
           "net46/Umbrella.Legacy.WebUtilities.DynamicImage.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00071": {
+      "Umbrella.Utilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -636,7 +636,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rel-build00071": {
+      "Umbrella.WebUtilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -652,7 +652,7 @@
           "net46/Umbrella.WebUtilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00071": {
+      "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -672,11 +672,11 @@
           "net46/Umbrella.WebUtilities.DynamicImage.dll": {}
         }
       },
-      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rel-build00071": {
+      "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
-          "SimpleInjector": "3.2.4",
+          "SimpleInjector": "3.2.5",
           "Umbrella.WebUtilities.DynamicImage": "1.0.0"
         },
         "compile": {
@@ -1028,12 +1028,12 @@
         "lib/net40/Owin.dll"
       ]
     },
-    "SimpleInjector/3.2.4": {
-      "sha512": "T7yPxSLKOsNjZc6O356roS756eue+5xl+g/L7t5+pjb5FCqzUFzMDbCwKELy1AmGj16rCvwMsY+/u/TOJgUXNg==",
+    "SimpleInjector/3.2.5": {
+      "sha512": "3RvNO94o040YtV5tJonEVApldcZ+wyt3KVHE1mVjjD6gj8kyyfVPaWXnT9mXsMVCbr/mgyGN/ihfcg7QjlqSXw==",
       "type": "package",
-      "path": "SimpleInjector/3.2.4",
+      "path": "SimpleInjector/3.2.5",
       "files": [
-        "SimpleInjector.3.2.4.nupkg.sha512",
+        "SimpleInjector.3.2.5.nupkg.sha512",
         "SimpleInjector.nuspec",
         "lib/net40-client/SimpleInjector.dll",
         "lib/net40-client/SimpleInjector.xml",
@@ -2054,42 +2054,42 @@
         "lib/net40/WebActivatorEx.dll"
       ]
     },
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00071": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
       "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
     },
-    "Umbrella.Legacy.Utilities/1.0.0-rel-build00071": {
+    "Umbrella.Legacy.Utilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.Utilities/project.json",
       "msbuildProject": "../../Legacy/Umbrella.Legacy.Utilities/Umbrella.Legacy.Utilities.xproj"
     },
-    "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00071": {
+    "Umbrella.Legacy.WebUtilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities/project.json",
       "msbuildProject": "../../Legacy/Umbrella.Legacy.WebUtilities/Umbrella.Legacy.WebUtilities.xproj"
     },
-    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rel-build00071": {
+    "Umbrella.Legacy.WebUtilities.DynamicImage/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Legacy/Umbrella.Legacy.WebUtilities.DynamicImage/Umbrella.Legacy.WebUtilities.DynamicImage.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00071": {
+    "Umbrella.Utilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rel-build00071": {
+    "Umbrella.WebUtilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"
     },
-    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00071": {
+    "Umbrella.WebUtilities.DynamicImage/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities.DynamicImage/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities.DynamicImage/Umbrella.WebUtilities.DynamicImage.xproj"
     },
-    "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rel-build00071": {
+    "Umbrella.WebUtilities.DynamicImage.SimpleInjector/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../Umbrella.WebUtilities.DynamicImage.SimpleInjector/project.json",
       "msbuildProject": "../Umbrella.WebUtilities.DynamicImage.SimpleInjector/Umbrella.WebUtilities.DynamicImage.SimpleInjector.xproj"
@@ -2097,7 +2097,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "SimpleInjector >= 3.2.4",
+      "SimpleInjector >= 3.2.5",
       "Umbrella.Legacy.WebUtilities.DynamicImage >= 1.0.0-*",
       "Umbrella.WebUtilities.DynamicImage.SimpleInjector >= 1.0.0-*"
     ],

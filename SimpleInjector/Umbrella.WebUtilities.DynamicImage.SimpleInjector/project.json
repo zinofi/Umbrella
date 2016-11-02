@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00073",
+  "version": "1.0.0-rel-build00074",
   "description": "Umbrella.WebUtilities.DynamicImage.SimpleInjector Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -8,7 +8,7 @@
   },
 
   "dependencies": {
-    "SimpleInjector": "3.2.4",
+    "SimpleInjector": "3.2.5",
     "Umbrella.WebUtilities.DynamicImage": "1.0.0-*"
   }
 }

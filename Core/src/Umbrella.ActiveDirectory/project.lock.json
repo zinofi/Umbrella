@@ -69,7 +69,7 @@
           "lib/netstandard1.0/Microsoft.Extensions.Primitives.dll": {}
         }
       },
-      "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.5": {
+      "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.7": {
         "type": "package",
         "compile": {
           "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll": {},
@@ -253,7 +253,7 @@
           "lib/net45/_._": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00056": {
+      "Umbrella.Utilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -319,45 +319,35 @@
         "lib/netstandard1.0/Microsoft.Extensions.Primitives.xml"
       ]
     },
-    "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.5": {
-      "sha512": "oMAWDsfCOZQHxI/8hjSQLXb0+dPGIR/4C01CQ7/AM4Cfj1pZpqcDBkipmiq/SdnXloPbX8Y7tSnHP85/shgKcA==",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.7": {
+      "sha512": "XGiN0mBDFMCETSh3A9g00qz75uBQmnqbTpRjue7ljxsEACruTLiyNcvH+jWsX1CbR6NMogblHxcLQa/KMFqjDg==",
       "type": "package",
-      "path": "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.5",
+      "path": "Microsoft.IdentityModel.Clients.ActiveDirectory/3.13.7",
       "files": [
-        "Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.5.nupkg.sha512",
+        "Microsoft.IdentityModel.Clients.ActiveDirectory.3.13.7.nupkg.sha512",
         "Microsoft.IdentityModel.Clients.ActiveDirectory.nuspec",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/MonoAndroid10/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
-        "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/Xamarin.iOS10/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
-        "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/net45/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
-        "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/netcore45/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.XML",
         "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll",
-        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll.CodeAnalysisLog.xml",
         "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
         "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/netstandard1.4/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml",
         "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.XML",
-        "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.dll",
-        "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.dll.CodeAnalysisLog.xml"
+        "lib/portable-net45+win/Microsoft.IdentityModel.Clients.ActiveDirectory.dll"
       ]
     },
     "Newtonsoft.Json/9.0.1": {
@@ -1383,7 +1373,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.Utilities/1.0.0-rel-build00056": {
+    "Umbrella.Utilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../Umbrella.Utilities/project.json",
       "msbuildProject": "../Umbrella.Utilities/Umbrella.Utilities.xproj"
@@ -1392,7 +1382,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Microsoft.Extensions.DependencyInjection.Abstractions >= 1.0.0",
-      "Microsoft.IdentityModel.Clients.ActiveDirectory >= 3.13.5",
+      "Microsoft.IdentityModel.Clients.ActiveDirectory >= 3.13.7",
       "Umbrella.Utilities >= 1.0.0-*"
     ],
     ".NETFramework,Version=v4.6": []

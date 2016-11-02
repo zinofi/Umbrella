@@ -70,7 +70,7 @@
           "lib/net45/Microsoft.AI.Agent.Intercept.dll": {}
         }
       },
-      "Microsoft.ApplicationInsights.AspNetCore/1.0.0": {
+      "Microsoft.ApplicationInsights.AspNetCore/1.0.2": {
         "type": "package",
         "dependencies": {
           "Microsoft.ApplicationInsights": "2.1.0",
@@ -79,7 +79,7 @@
           "Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel": "2.1.0",
           "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
           "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.1",
           "Microsoft.Extensions.Configuration": "1.0.0",
           "Microsoft.Extensions.DiagnosticAdapter": "1.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "1.0.0"
@@ -2246,7 +2246,7 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Umbrella.AspNetCore.DataAnnotations/1.0.0-rel-build00072": {
+      "Umbrella.AspNetCore.DataAnnotations/1.0.0-rel-build00073": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2264,7 +2264,7 @@
           "net46/Umbrella.AspNetCore.DataAnnotations.dll": {}
         }
       },
-      "Umbrella.AspNetCore.MultiTenant/1.0.0-rel-build00073": {
+      "Umbrella.AspNetCore.MultiTenant/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2279,7 +2279,7 @@
           "net46/Umbrella.AspNetCore.MultiTenant.dll": {}
         }
       },
-      "Umbrella.AspNetCore.WebUtilities/1.0.0-rel-build00073": {
+      "Umbrella.AspNetCore.WebUtilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2296,7 +2296,7 @@
           "net46/Umbrella.AspNetCore.WebUtilities.dll": {}
         }
       },
-      "Umbrella.DataAccess/1.0.0-rel-build00073": {
+      "Umbrella.DataAccess/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2310,7 +2310,7 @@
           "net46/Umbrella.DataAccess.dll": {}
         }
       },
-      "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00073": {
+      "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2326,7 +2326,7 @@
           "net46/Umbrella.DataAccess.MultiTenant.dll": {}
         }
       },
-      "Umbrella.DataAnnotations/1.0.0-rel-build00073": {
+      "Umbrella.DataAnnotations/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "frameworkAssemblies": [
@@ -2339,7 +2339,7 @@
           "net46/Umbrella.DataAnnotations.dll": {}
         }
       },
-      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00073": {
+      "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2358,7 +2358,7 @@
           "net46/Umbrella.Extensions.Logging.Log4Net.dll": {}
         }
       },
-      "Umbrella.Utilities/1.0.0-rel-build00073": {
+      "Umbrella.Utilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2377,7 +2377,7 @@
           "net46/Umbrella.Utilities.dll": {}
         }
       },
-      "Umbrella.WebUtilities/1.0.0-rel-build00073": {
+      "Umbrella.WebUtilities/1.0.0-rel-build00074": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.6",
         "dependencies": {
@@ -2470,15 +2470,17 @@
         "lib/net45/Microsoft.AI.Agent.Intercept.dll"
       ]
     },
-    "Microsoft.ApplicationInsights.AspNetCore/1.0.0": {
-      "sha512": "t1O4hbatuHU4BJnuBZ4zmx6fNoTryyZO/NwxwqmMUbuHyvil3elkOZvX3pJWlUTOk6/wyRXItGKBiW4uDET6Kw==",
+    "Microsoft.ApplicationInsights.AspNetCore/1.0.2": {
+      "sha512": "2pe22FuypQRT5YNd4cIehYqDduxiQzt1o/585LgG6vJmOfuX7aF2h4uSI5epRrvu1EikuoZEzBchAR6U8cBybQ==",
       "type": "package",
-      "path": "Microsoft.ApplicationInsights.AspNetCore/1.0.0",
+      "path": "Microsoft.ApplicationInsights.AspNetCore/1.0.2",
       "files": [
-        "Microsoft.ApplicationInsights.AspNetCore.1.0.0.nupkg.sha512",
+        "Microsoft.ApplicationInsights.AspNetCore.1.0.2.nupkg.sha512",
         "Microsoft.ApplicationInsights.AspNetCore.nuspec",
         "lib/net451/Microsoft.ApplicationInsights.AspNetCore.dll",
-        "lib/netstandard1.6/Microsoft.ApplicationInsights.AspNetCore.dll"
+        "lib/net451/Microsoft.ApplicationInsights.AspNetCore.xml",
+        "lib/netstandard1.6/Microsoft.ApplicationInsights.AspNetCore.dll",
+        "lib/netstandard1.6/Microsoft.ApplicationInsights.AspNetCore.xml"
       ]
     },
     "Microsoft.ApplicationInsights.DependencyCollector/2.1.0": {
@@ -6524,47 +6526,47 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "Umbrella.AspNetCore.DataAnnotations/1.0.0-rel-build00072": {
+    "Umbrella.AspNetCore.DataAnnotations/1.0.0-rel-build00073": {
       "type": "project",
       "path": "../../AspNetCore/Umbrella.AspNetCore.DataAnnotations/project.json",
       "msbuildProject": "../../AspNetCore/Umbrella.AspNetCore.DataAnnotations/Umbrella.AspNetCore.DataAnnotations.xproj"
     },
-    "Umbrella.AspNetCore.MultiTenant/1.0.0-rel-build00073": {
+    "Umbrella.AspNetCore.MultiTenant/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../AspNetCore/Umbrella.AspNetCore.MultiTenant/project.json",
       "msbuildProject": "../../AspNetCore/Umbrella.AspNetCore.MultiTenant/Umbrella.AspNetCore.MultiTenant.xproj"
     },
-    "Umbrella.AspNetCore.WebUtilities/1.0.0-rel-build00073": {
+    "Umbrella.AspNetCore.WebUtilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../AspNetCore/Umbrella.AspNetCore.WebUtilities/project.json",
       "msbuildProject": "../../AspNetCore/Umbrella.AspNetCore.WebUtilities/Umbrella.AspNetCore.WebUtilities.xproj"
     },
-    "Umbrella.DataAccess/1.0.0-rel-build00073": {
+    "Umbrella.DataAccess/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.DataAccess/project.json",
       "msbuildProject": "../../Core/Umbrella.DataAccess/Umbrella.DataAccess.xproj"
     },
-    "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00073": {
+    "Umbrella.DataAccess.MultiTenant/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.DataAccess.MultiTenant/project.json",
       "msbuildProject": "../../Core/Umbrella.DataAccess.MultiTenant/Umbrella.DataAccess.MultiTenant.xproj"
     },
-    "Umbrella.DataAnnotations/1.0.0-rel-build00073": {
+    "Umbrella.DataAnnotations/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.DataAnnotations/project.json",
       "msbuildProject": "../../Core/Umbrella.DataAnnotations/Umbrella.DataAnnotations.xproj"
     },
-    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00073": {
+    "Umbrella.Extensions.Logging.Log4Net/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.Extensions.Logging.Log4Net/project.json",
       "msbuildProject": "../../Core/Umbrella.Extensions.Logging.Log4Net/Umbrella.Extensions.Logging.Log4Net.xproj"
     },
-    "Umbrella.Utilities/1.0.0-rel-build00073": {
+    "Umbrella.Utilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.Utilities/project.json",
       "msbuildProject": "../../Core/Umbrella.Utilities/Umbrella.Utilities.xproj"
     },
-    "Umbrella.WebUtilities/1.0.0-rel-build00073": {
+    "Umbrella.WebUtilities/1.0.0-rel-build00074": {
       "type": "project",
       "path": "../../Core/Umbrella.WebUtilities/project.json",
       "msbuildProject": "../../Core/Umbrella.WebUtilities/Umbrella.WebUtilities.xproj"
@@ -6572,7 +6574,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.ApplicationInsights.AspNetCore >= 1.0.0",
+      "Microsoft.ApplicationInsights.AspNetCore >= 1.0.2",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Mvc >= 1.0.1",
       "Microsoft.AspNetCore.Razor.Tools >= 1.0.0-preview2-final",
