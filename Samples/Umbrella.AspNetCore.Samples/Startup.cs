@@ -72,7 +72,7 @@ namespace Umbrella.AspNetCore.Samples
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            loggerFactory.AddLog4Net(env.ContentRootPath, log4netConfigFileName);
+            loggerFactory.AddUmbrellaLog4Net(env.ContentRootPath, log4netConfigFileName);
 
             var logger = loggerFactory.CreateLogger<Startup>();
             logger.LogInformation("Umbrella AspNetCore Samples Application Started");

@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
 using Umbrella.AspNetCore.WebUtilities.Middleware.Options;
 
-namespace Umbrella.AspNetCore.WebUtilities
+namespace Microsoft.AspNetCore.Builder
 {
     public static class IApplicationBuilderExtensions
     {

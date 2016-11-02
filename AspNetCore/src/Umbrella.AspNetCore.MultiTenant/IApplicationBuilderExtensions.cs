@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Umbrella.AspNetCore.MultiTenant.Middleware;
 
-namespace Umbrella.AspNetCore.MultiTenant
+namespace Microsoft.AspNetCore.Builder
 {
     public static class IApplicationBuilderExtensions
     {

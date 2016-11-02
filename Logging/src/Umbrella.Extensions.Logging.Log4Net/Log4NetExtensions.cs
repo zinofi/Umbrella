@@ -1,10 +1,9 @@
 ﻿using log4net;
 using log4net.Config;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
+using Umbrella.Extensions.Logging.Log4Net;
 
-namespace Umbrella.Extensions.Logging.Log4Net
+namespace Microsoft.Extensions.Logging
 {
     /// <summary>
     /// A set of extension methods to configure log4net to be used by your application
@@ -17,7 +16,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
         /// <param name="contentRootPath">The root path of the application.</param>
         /// <param name="configFileRelativePath">The file path to the config file relative to <paramref name="contentRootPath"/>
         /// </param>
-        public static ILoggerFactory AddLog4Net(this ILoggerFactory loggerFactory, string contentRootPath, string configFileRelativePath)
+        public static ILoggerFactory AddUmbrellaLog4Net(this ILoggerFactory loggerFactory, string contentRootPath, string configFileRelativePath)
         {
             GlobalContext.Properties["appRoot"] = contentRootPath;
             XmlConfigurator.ConfigureAndWatch(new FileInfo(Path.Combine(contentRootPath, configFileRelativePath)));

@@ -7,7 +7,7 @@ using Umbrella.AspNetCore.WebUtilities.Hosting;
 using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 using Umbrella.Utilities.Hosting;
 
-namespace Umbrella.AspNetCore.WebUtilities
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
