@@ -55,7 +55,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 
                         string contentType = response.ContentType;
 
-                        if (m_Options.ContentTypes.Count == 0 || m_Options.ContentTypes.Any(x => contentType.Contains(x)))
+                        //Apply the headers when no response content type - this may be the case when a 204 code is sent for a GET request that issues no content
+                        //If no content types have been specified in the options apply the headers to all response for the configured HTTP methods
+                        //If content types have been specified to filter on then only apply the headers for those responses
+                        if (string.IsNullOrWhiteSpace(contentType) || m_Options.ContentTypes.Count == 0 || m_Options.ContentTypes.Any(x => contentType.Contains(x)))
                         {
                             //Set standard HTTP/1.0 no-cache header (no-store, no-cache, must-revalidate)
                             //Set IE extended HTTP/1.1 no-cache headers (post-check, pre-check)
