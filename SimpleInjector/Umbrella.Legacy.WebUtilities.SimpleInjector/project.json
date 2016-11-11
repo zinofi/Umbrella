@@ -8,7 +8,7 @@
   },
 
   "dependencies": {
-    "SimpleInjector": "3.2.5",
+    "SimpleInjector": "3.2.7",
     "Umbrella.Legacy.WebUtilities": "1.0.0-*"
   }
 }
