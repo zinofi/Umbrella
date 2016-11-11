@@ -41,7 +41,7 @@ namespace Umbrella.TypeScript.Generators
             foreach (PropertyInfo pi in properties)
             {
                 Type propertyType = pi.PropertyType;
-
+                
                 TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(propertyType, pi.Name.ToCamelCase(), OutputModelType);
                 
                 WriteProperty(tsInfo, typeBuilder);

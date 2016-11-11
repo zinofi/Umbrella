@@ -159,6 +159,9 @@ namespace Umbrella.TypeScript
             }
             else
             {
+                //TODO: Removed this because the default might need to be null. Possibly alter this so that
+                //an instance of the containing class is instantiated and then the property value read which will tell us
+                //what the default value should be now that C# 6 supports default property values.
                 //object instance = Activator.CreateInstance(info.CLRType);
 
                 info.InitialOutputValue = "null"; //instance.ToString();

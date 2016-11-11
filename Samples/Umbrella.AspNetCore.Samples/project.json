@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00074",
+  "version": "1.0.0-rel-build00075",
   "dependencies": {
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.2",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",

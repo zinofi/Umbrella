@@ -22,7 +22,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelState
                 {
                     state.Entries.Add(new TModelStateEntry
                     {
-                        Key = item.Key.ToCamelCase(),
+                        Key = !string.IsNullOrWhiteSpace(item.Key) ? string.Join(".", item.Key.Split('.').Select(x => x.ToCamelCase())) : item.Key.ToCamelCase(),
                         Errors = item.Value.Errors.Select(x => x.ErrorMessage).ToList()
                     });
                 }
