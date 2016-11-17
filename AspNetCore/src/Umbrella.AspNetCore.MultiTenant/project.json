@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00075",
+  "version": "1.0.0-rel-build00076",
   "description": "Umbrella.AspNetCore.MultiTenant Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -8,7 +8,7 @@
   },
 
   "dependencies": {
-    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
     "Umbrella.DataAccess.MultiTenant": "1.0.0-*",
     "Umbrella.Utilities": "1.0.0-*"
   }

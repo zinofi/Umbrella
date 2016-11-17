@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00075",
+  "version": "1.0.0-rel-build00076",
   "description": "Umbrella.Extensions.Configuration.Azure.KeyVault Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "Microsoft.Azure.KeyVault": "1.0.0",
-    "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.Extensions.Configuration": "1.1.0",
     "Umbrella.ActiveDirectory": "1.0.0-*",
     "Umbrella.Utilities": "1.0.0-*"
   }

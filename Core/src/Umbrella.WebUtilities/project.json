@@ -1,21 +1,22 @@
 {
-  "version": "1.0.0-rel-build00075",
+  "version": "1.0.0-rel-build00076",
   "description": "Umbrella.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
-        "System.Xml": "4.0.0.0"
+        "System.Xml": "4.0.0.0",
+        "System.Xml.XmlSerializer": "4.0.10.0"
       }
     },
     "netstandard1.6": {
       "dependencies": {
-        "NETStandard.Library": "1.6.0",
-        "System.Xml.XmlSerializer": "4.0.11"
+        "System.Xml.XmlSerializer": "4.3.0"
       }
     }
   },
   "dependencies": {
+    "NETStandard.Library": "1.6.1",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }
