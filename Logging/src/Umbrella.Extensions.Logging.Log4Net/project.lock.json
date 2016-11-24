@@ -682,6 +682,7 @@
     "log4net/2.0.5": {
       "sha512": "AEqPZz+v+OikfnR2SqRVdQPnSaLq5y9Iz1CfRQZ9kTKPYCXHG6zYmDHb7wJotICpDLMr/JqokyjiqKAjUKp0ng==",
       "type": "package",
+      "path": "log4net/2.0.5",
       "files": [
         "lib/net10-full/log4net.dll",
         "lib/net10-full/log4net.xml",
@@ -699,7 +700,6 @@
         "lib/net40-full/log4net.xml",
         "lib/net45-full/log4net.dll",
         "lib/net45-full/log4net.xml",
-        "log4net.2.0.5.nupkg",
         "log4net.2.0.5.nupkg.sha512",
         "log4net.nuspec"
       ]

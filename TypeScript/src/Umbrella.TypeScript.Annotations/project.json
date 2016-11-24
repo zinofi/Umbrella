@@ -1,0 +1,14 @@
+﻿{
+  "version": "1.0.0-rel-build00077",
+  "description": "Umbrella.TypeScript.Annotations Class Library",
+  "authors": [ "Richard Edwards" ],
+
+  "frameworks": {
+    "net46": {},
+    "netstandard1.6": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.1"
+      }
+    }
+  }
+}

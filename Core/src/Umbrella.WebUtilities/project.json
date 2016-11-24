@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-rel-build00076",
+  "version": "1.0.0-rel-build00077",
   "description": "Umbrella.WebUtilities Class Library",
   "authors": [ "Richard Edwards" ],
   "frameworks": {
@@ -11,12 +11,12 @@
     },
     "netstandard1.6": {
       "dependencies": {
+        "NETStandard.Library": "1.6.1",
         "System.Xml.XmlSerializer": "4.3.0"
       }
     }
   },
   "dependencies": {
-    "NETStandard.Library": "1.6.1",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }

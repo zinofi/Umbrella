@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-rel-build00076",
+  "version": "1.0.0-rel-build00077",
   "description": "Umbrella.TypeScript Class Library",
   "authors": [ "Richard Edwards" ],
 
@@ -11,6 +11,7 @@
     }
   },
   "dependencies": {
+    "Umbrella.TypeScript.Annotations": "1.0.0-*",
     "Umbrella.Utilities": "1.0.0-*"
   }
 }
