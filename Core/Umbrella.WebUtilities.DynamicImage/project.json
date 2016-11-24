@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "AutoMapper": "5.1.1",
+    "AutoMapper": "5.2.0",
     "DynamicImage": "3.1.1",
     "Umbrella.Utilities": "1.0.0-*"
   }

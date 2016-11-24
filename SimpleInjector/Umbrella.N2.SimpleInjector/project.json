@@ -8,7 +8,7 @@
   },
 
   "dependencies": {
-    "SimpleInjector": "3.2.7",
+    "SimpleInjector": "3.3.1",
     "Umbrella.N2": "1.0.0-*"
   }
 }

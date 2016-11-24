@@ -6,7 +6,7 @@
     "net46": {}
   },
   "dependencies": {
-    "AutoMapper": "5.1.1",
+    "AutoMapper": "5.2.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
     "Umbrella.DataAccess": "1.0.0-*"
   }
