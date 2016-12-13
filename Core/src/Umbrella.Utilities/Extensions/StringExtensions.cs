@@ -162,6 +162,9 @@ namespace Umbrella.Utilities.Extensions
             //Replace the following in strings
             sb.Replace("&amp;", "&");
             sb.Replace("&#39;", "'");
+            sb.Replace("&quot;", "\"");
+            sb.Replace("&#8216;", "'"); //Left quote
+            sb.Replace("&#8217;", "'"); //Right quote
 
             if (trimNewLines)
             {
