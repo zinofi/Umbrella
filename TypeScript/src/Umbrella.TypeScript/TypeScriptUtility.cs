@@ -35,7 +35,7 @@ namespace Umbrella.TypeScript
             return generatedName;
         }
 
-        public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type memberType, string memberName, TypeScriptOutputModelType outputType)
+        public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type memberType, string memberName, TypeScriptOutputModelType outputType, PropertyInfo propertyInfo, bool strictNullChecks)
         {
             TypeScriptMemberInfo info = new TypeScriptMemberInfo
             {
@@ -70,7 +70,7 @@ namespace Umbrella.TypeScript
                     //Get the underlying primitive type or struct
                     Type underlyingType = Nullable.GetUnderlyingType(memberType);
 
-                    info = GetTypeScriptMemberInfo(underlyingType, memberName, outputType);
+                    info = GetTypeScriptMemberInfo(underlyingType, memberName, outputType, propertyInfo, strictNullChecks);
                     info.IsNullable = true;
                 }
                 else if (memberType == typeof(object))
@@ -84,7 +84,7 @@ namespace Umbrella.TypeScript
 
                     Type arrayType = Type.GetType(arrayTypeName);
 
-                    info = GetTypeScriptMemberInfo(arrayType, memberName, outputType);
+                    info = GetTypeScriptMemberInfo(arrayType, memberName, outputType, propertyInfo, strictNullChecks);
 
                     //Set the type name correctly
                     info.TypeName += "[]";
@@ -96,8 +96,8 @@ namespace Umbrella.TypeScript
                     Type keyType = genericArgs[0];
                     Type valueType = genericArgs[1];
 
-                    var keyInfo = GetTypeScriptMemberInfo(keyType, memberName, outputType);
-                    var valueInfo = GetTypeScriptMemberInfo(valueType, memberName, outputType);
+                    var keyInfo = GetTypeScriptMemberInfo(keyType, memberName, outputType, propertyInfo, strictNullChecks);
+                    var valueInfo = GetTypeScriptMemberInfo(valueType, memberName, outputType, propertyInfo, strictNullChecks);
 
                     info = keyInfo;
 
@@ -113,7 +113,7 @@ namespace Umbrella.TypeScript
                         //Determine the type of the collection
                         Type genericEnumerableType = memberType.GetGenericArguments().First();
 
-                        info = GetTypeScriptMemberInfo(genericEnumerableType, memberName, outputType);
+                        info = GetTypeScriptMemberInfo(genericEnumerableType, memberName, outputType, propertyInfo, strictNullChecks);
 
                         //Set the type name correctly
                         info.TypeName += "[]";

@@ -16,6 +16,7 @@ namespace Umbrella.TypeScript
     {
         #region Private Members
         private readonly List<Type> m_Types;
+        private readonly bool m_StrictNullChecks;
         #endregion
 
         #region Public Properties
@@ -31,8 +32,10 @@ namespace Umbrella.TypeScript
         /// If no names are specified then all assemblies in the current <see cref="AppDomain"/> will be loaded
         /// and scanned.
         /// </param>
-        public TypeScriptGenerator(params string[] onlyNamedAssemblies)
+        public TypeScriptGenerator(bool strictNullChecks = true, params string[] onlyNamedAssemblies)
         {
+            m_StrictNullChecks = strictNullChecks;
+
             IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             if (onlyNamedAssemblies?.Length > 0)
@@ -53,6 +56,14 @@ namespace Umbrella.TypeScript
         {
             Generators.Add(new KnockoutInterfaceGenerator());
             Generators.Add(new KnockoutClassGenerator());
+
+            return this;
+        }
+
+        public TypeScriptGenerator IncludeGenerator<T>()
+            where T : IGenerator, new()
+        {
+            Generators.Add(new T());
 
             return this;
         }
@@ -103,7 +114,7 @@ namespace Umbrella.TypeScript
 
                         if(attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
                         {
-                            string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules);
+                            string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules, m_StrictNullChecks);
 
                             sbNamespaces.AppendLine(generatorOutput);
                         }
