@@ -31,7 +31,11 @@ namespace Umbrella.TypeScript.Generators
         protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
         {
             if (!string.IsNullOrEmpty(tsInfo.TypeName))
-                builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName};");
+            {
+                string strStrictNullCheck = StrictNullChecks && tsInfo.InitialOutputValue == "null" ? " | null" : "";
+
+                builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck};");
+            }
         }
     }
 }
