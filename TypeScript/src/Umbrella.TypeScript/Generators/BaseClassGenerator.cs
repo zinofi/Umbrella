@@ -38,10 +38,25 @@ namespace Umbrella.TypeScript.Generators
         {
             if (!string.IsNullOrEmpty(tsInfo.TypeName))
             {
-                string initialOutputValue = tsInfo.InitialOutputValue;
-                string strStrictNullCheck = StrictNullChecks && initialOutputValue == "null" ? " | null" : "";
+                string strInitialOutputValue;
 
-                builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck} = {initialOutputValue};");
+                switch(PropertyMode)
+                {
+                    default:
+                    case TypeScriptPropertyMode.None:
+                        strInitialOutputValue = "";
+                        break;
+                    case TypeScriptPropertyMode.Null:
+                        strInitialOutputValue = " = null";
+                        break;
+                    case TypeScriptPropertyMode.Model:
+                        strInitialOutputValue = $" = {tsInfo.InitialOutputValue}";
+                        break;
+                }
+
+                string strStrictNullCheck = StrictNullChecks && tsInfo.IsNullable ? " | null" : "";
+
+                builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck}{strInitialOutputValue};");
             }
         }
     }

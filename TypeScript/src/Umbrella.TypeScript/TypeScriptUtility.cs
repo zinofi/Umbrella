@@ -35,8 +35,10 @@ namespace Umbrella.TypeScript
             return generatedName;
         }
 
-        public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type memberType, string memberName, TypeScriptOutputModelType outputType, PropertyInfo propertyInfo, bool strictNullChecks)
+        public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type modelType, Type memberType, PropertyInfo propertyInfo, TypeScriptOutputModelType outputType, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
         {
+            string memberName = propertyInfo.Name.ToCamelCase();
+
             TypeScriptMemberInfo info = new TypeScriptMemberInfo
             {
                 Name = memberName,
@@ -70,7 +72,7 @@ namespace Umbrella.TypeScript
                     //Get the underlying primitive type or struct
                     Type underlyingType = Nullable.GetUnderlyingType(memberType);
 
-                    info = GetTypeScriptMemberInfo(underlyingType, memberName, outputType, propertyInfo, strictNullChecks);
+                    info = GetTypeScriptMemberInfo(modelType, underlyingType, propertyInfo, outputType, strictNullChecks, propertyMode);
                     info.IsNullable = true;
                 }
                 else if (memberType == typeof(object))
@@ -84,7 +86,7 @@ namespace Umbrella.TypeScript
 
                     Type arrayType = Type.GetType(arrayTypeName);
 
-                    info = GetTypeScriptMemberInfo(arrayType, memberName, outputType, propertyInfo, strictNullChecks);
+                    info = GetTypeScriptMemberInfo(modelType, arrayType, propertyInfo, outputType, strictNullChecks, propertyMode);
 
                     //Set the type name correctly
                     info.TypeName += "[]";
@@ -96,8 +98,8 @@ namespace Umbrella.TypeScript
                     Type keyType = genericArgs[0];
                     Type valueType = genericArgs[1];
 
-                    var keyInfo = GetTypeScriptMemberInfo(keyType, memberName, outputType, propertyInfo, strictNullChecks);
-                    var valueInfo = GetTypeScriptMemberInfo(valueType, memberName, outputType, propertyInfo, strictNullChecks);
+                    var keyInfo = GetTypeScriptMemberInfo(modelType, keyType, propertyInfo, outputType, strictNullChecks, propertyMode);
+                    var valueInfo = GetTypeScriptMemberInfo(modelType, valueType, propertyInfo, outputType, strictNullChecks, propertyMode);
 
                     info = keyInfo;
 
@@ -113,7 +115,7 @@ namespace Umbrella.TypeScript
                         //Determine the type of the collection
                         Type genericEnumerableType = memberType.GetGenericArguments().First();
 
-                        info = GetTypeScriptMemberInfo(genericEnumerableType, memberName, outputType, propertyInfo, strictNullChecks);
+                        info = GetTypeScriptMemberInfo(modelType, genericEnumerableType, propertyInfo, outputType, strictNullChecks, propertyMode);
 
                         //Set the type name correctly
                         info.TypeName += "[]";
@@ -145,6 +147,7 @@ namespace Umbrella.TypeScript
 
                     //Ensure the name that is output is fully qualified by namespace as it may not necessarily exist in the same one as the parent
                     info.TypeName = memberType.Namespace + "." + generatedName;
+                    info.IsUserDefinedType = true;
                 }
             }
 
@@ -153,33 +156,57 @@ namespace Umbrella.TypeScript
                 info.TypeName = "any";
 
             //Set the initial output value
-            if (info.IsNullable || !info.CLRType.IsValueType)
+            if(propertyMode == TypeScriptPropertyMode.None)
             {
-                info.InitialOutputValue = info.TypeName.EndsWith("[]") ? "[]" : "null";
+                //Don't need to do anything here as the InitialOutputValue will be null
             }
-            else
+            else if(propertyMode == TypeScriptPropertyMode.Null)
             {
-                //TODO: Removed this because the default might need to be null. Possibly alter this so that
-                //an instance of the containing class is instantiated and then the property value read which will tell us
-                //what the default value should be now that C# 6 supports default property values.
-                //object instance = Activator.CreateInstance(info.CLRType);
+                info.InitialOutputValue = "null";
+            }
+            else if(propertyMode == TypeScriptPropertyMode.Model)
+            {
+                object instance = Activator.CreateInstance(modelType);
 
-                info.InitialOutputValue = "null"; //instance.ToString();
+                object propertyValue = propertyInfo.GetValue(instance);
 
-                if (info.CLRType == typeof(DateTime))
+                if(propertyValue == null)
                 {
                     info.InitialOutputValue = "null";
                 }
-                else if (info.CLRType.IsEnum)
+                else if(info.CLRType.IsEnum)
                 {
-                    string name = Enum.GetValues(info.CLRType).GetValue(0).ToString();
-
-                    //Ensure the full namespace of the type is prefixed to the initial output value
+                    string name = propertyValue.ToString();
                     info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
                 }
-                else if (info.CLRType == typeof(bool))
+                else if(info.CLRType == typeof(DateTime))
                 {
-                    info.InitialOutputValue = info.InitialOutputValue.ToLowerInvariant();
+                    //The only sensible way to output a DateTime value is in UTC format to ensure
+                    //that it is timezone and locale agnostic
+                    info.InitialOutputValue = ((DateTime)propertyValue).ToUniversalTime().ToString("O");
+                }
+                else if(info.CLRType == typeof(bool))
+                {
+                    info.InitialOutputValue = propertyValue.ToString().ToLowerInvariant();
+                }
+                else if(info.TypeName.EndsWith("[]"))
+                {
+                    info.InitialOutputValue = "[]";
+                }
+                else if(info.TypeName.StartsWith("Map<"))
+                {
+                    //Maps are used to represent a Dictionary on the server. We can only support the default
+                    //empty Dictionary which can be done by instantiating a new Map.
+                    info.InitialOutputValue = $"new {info.TypeName}()";
+                }
+                else if(info.IsUserDefinedType)
+                {
+                    info.InitialOutputValue = $"new {info.TypeName}()";
+                }
+                else
+                {
+                    //For all other cases just output the property value
+                    info.InitialOutputValue = propertyValue.ToString();
                 }
             }
 

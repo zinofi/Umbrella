@@ -16,7 +16,8 @@ namespace Umbrella.TypeScript
     {
         #region Private Members
         private readonly List<Type> m_Types;
-        private readonly bool m_StrictNullChecks;
+        private bool m_StrictNullChecks;
+        private TypeScriptPropertyMode m_TypeScriptPropertyMode;
         #endregion
 
         #region Public Properties
@@ -32,10 +33,8 @@ namespace Umbrella.TypeScript
         /// If no names are specified then all assemblies in the current <see cref="AppDomain"/> will be loaded
         /// and scanned.
         /// </param>
-        public TypeScriptGenerator(bool strictNullChecks = true, params string[] onlyNamedAssemblies)
+        public TypeScriptGenerator(params string[] onlyNamedAssemblies)
         {
-            m_StrictNullChecks = strictNullChecks;
-
             IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             if (onlyNamedAssemblies?.Length > 0)
@@ -68,8 +67,11 @@ namespace Umbrella.TypeScript
             return this;
         }
 
-        public string GenerateAll(bool outputAsModuleExport)
+        public string GenerateAll(bool outputAsModuleExport = true, bool strictNullChecks = true, TypeScriptPropertyMode propertyMode = TypeScriptPropertyMode.Model)
         {
+            m_StrictNullChecks = strictNullChecks;
+            m_TypeScriptPropertyMode = propertyMode;
+
             StringBuilder sbNamespaces = new StringBuilder();
 
             //Before processing the models, firstly find all the enums that need to be generated
@@ -114,7 +116,7 @@ namespace Umbrella.TypeScript
 
                         if(attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
                         {
-                            string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules, m_StrictNullChecks);
+                            string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules, m_StrictNullChecks, m_TypeScriptPropertyMode);
 
                             sbNamespaces.AppendLine(generatorOutput);
                         }

@@ -13,5 +13,6 @@ namespace Umbrella.TypeScript
         public string TypeName { get; set; }
         public Type CLRType { get; set; }
         public string InitialOutputValue { get; set; }
+        public bool IsUserDefinedType { get; set; }
     }
 }

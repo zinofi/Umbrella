@@ -14,10 +14,14 @@ namespace Umbrella.TypeScript.Generators
         public abstract TypeScriptOutputModelType OutputModelType { get; }
         protected abstract bool SupportsValidationRules { get; }
         protected bool StrictNullChecks { get; set; }
+        protected TypeScriptPropertyMode PropertyMode { get; set; }
+        protected Type ModelType { get; set; }
 
-        public virtual string Generate(Type modelType, bool generateValidationRules, bool strictNullChecks)
+        public virtual string Generate(Type modelType, bool generateValidationRules, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
         {
+            ModelType = modelType;
             StrictNullChecks = strictNullChecks;
+            PropertyMode = propertyMode;
 
             StringBuilder typeBuilder = new StringBuilder();
 
@@ -28,7 +32,7 @@ namespace Umbrella.TypeScript.Generators
             WriteStart(modelType, typeBuilder);
 
             //Write all properties. This may or may not generate validation rules.
-            WriteAllProperties(GetModelProperties(modelType), typeBuilder, validationBuilder, strictNullChecks);
+            WriteAllProperties(GetModelProperties(modelType), typeBuilder, validationBuilder);
 
             //Write the end of the type. We pass in the validationBuilder here so that the content
             //of the validationBuilder can be written to the type in a way that is specific to the generator.
@@ -39,13 +43,11 @@ namespace Umbrella.TypeScript.Generators
 
         protected abstract void WriteStart(Type modelType, StringBuilder builder);
 
-        protected virtual void WriteAllProperties(IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder, bool strictNullChecks)
+        protected virtual void WriteAllProperties(IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
         {
             foreach (PropertyInfo pi in properties)
             {
-                Type propertyType = pi.PropertyType;
-                
-                TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(propertyType, pi.Name.ToCamelCase(), OutputModelType, pi, strictNullChecks);
+                TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(ModelType, pi.PropertyType, pi, OutputModelType, StrictNullChecks, PropertyMode);
                 
                 WriteProperty(tsInfo, typeBuilder);
 
