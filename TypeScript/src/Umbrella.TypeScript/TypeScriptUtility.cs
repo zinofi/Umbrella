@@ -193,14 +193,24 @@ namespace Umbrella.TypeScript
                     }
                     else if (info.CLRType.IsEnum)
                     {
-                        string name = propertyValue.ToString();
-                        info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
+                        string name = Enum.GetName(info.CLRType, propertyValue);
+                        info.InitialOutputValue = $"\"{info.CLRType.FullName}.{name}\"";
                     }
                     else if (info.CLRType == typeof(DateTime))
                     {
-                        //The only sensible way to output a DateTime value is in UTC format to ensure
-                        //that it is timezone and locale agnostic
-                        info.InitialOutputValue = ((DateTime)propertyValue).ToUniversalTime().ToString("O");
+                        DateTime dtPropertyValue = ((DateTime)propertyValue);
+
+                        if (dtPropertyValue == default(DateTime))
+                        {
+                            //Output unspecified dates as null rather than a string with DateTime.MinValue
+                            info.InitialOutputValue = "null";
+                        }
+                        else
+                        {
+                            //The only sensible way to output a DateTime value is in UTC format to ensure
+                            //that it is timezone and locale agnostic
+                            info.InitialOutputValue = $"\"{dtPropertyValue.ToUniversalTime().ToString("O")}\"";
+                        }
                     }
                     else if (info.CLRType == typeof(bool))
                     {
