@@ -161,6 +161,7 @@ namespace Umbrella.TypeScript
 
                     //Ensure the name that is output is fully qualified by namespace as it may not necessarily exist in the same one as the parent
                     info.TypeName = memberType.Namespace + "." + generatedName;
+                    info.IsNullable = true;
                     info.IsUserDefinedType = true;
                 }
             }
