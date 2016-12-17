@@ -194,7 +194,14 @@ namespace Umbrella.TypeScript
                     else if (info.CLRType.IsEnum)
                     {
                         string name = Enum.GetName(info.CLRType, propertyValue);
-                        info.InitialOutputValue = $"\"{info.CLRType.FullName}.{name}\"";
+
+                        //An enum name will be null if it doesn't have a member with a value of 0
+                        //which propertyValue defaults to in the case of enums.
+                        //Where this is the case we need to manually get the first enum value and use that.
+                        if(string.IsNullOrEmpty(name))
+                            name = Enum.GetValues(info.CLRType).GetValue(0).ToString();
+
+                        info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
                     }
                     else if (info.CLRType == typeof(DateTime))
                     {
