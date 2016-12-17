@@ -50,17 +50,30 @@ namespace Umbrella.TypeScript
             if (memberType.IsPrimitive)
             {
                 if (memberType == typeof(bool))
+                {
                     info.TypeName = "boolean";
+                }
                 else if (memberType == typeof(char))
+                {
                     info.TypeName = "string";
+                    info.IsNullable = true;
+                }
                 else
+                {
                     info.TypeName = "number";
+                }
             }
             else
             {
-                //Always deal with DateTime instances as strings and deal with them on the client
-                if (memberType == typeof(string) || memberType == typeof(DateTime))
+                
+                if (memberType == typeof(string))
                 {
+                    info.TypeName = "string";
+                    info.IsNullable = true;
+                }
+                else if(memberType == typeof(DateTime))
+                {
+                    //Always deal with DateTime instances as strings and deal with them on the client
                     info.TypeName = "string";
                 }
                 else if (memberType == typeof(decimal))
@@ -78,6 +91,7 @@ namespace Umbrella.TypeScript
                 else if (memberType == typeof(object))
                 {
                     info.TypeName = "any";
+                    info.IsNullable = true;
                 }
                 else if (memberType.IsArray)
                 {
@@ -90,6 +104,7 @@ namespace Umbrella.TypeScript
 
                     //Set the type name correctly
                     info.TypeName += "[]";
+                    info.IsNullable = true;
                 }
                 else if (memberType.IsAssignableToGenericType(typeof(IDictionary<,>)))
                 {
@@ -105,7 +120,6 @@ namespace Umbrella.TypeScript
 
                     //Set the type name correctly
                     info.TypeName = $"Map<{keyInfo.TypeName}, {valueInfo.TypeName}>";
-
                     info.IsNullable = true;
                 }
                 else if (typeof(IEnumerable).IsAssignableFrom(memberType))
