@@ -54,7 +54,7 @@ namespace Umbrella.TypeScript.Generators
                         break;
                 }
 
-                string strStrictNullCheck = StrictNullChecks && tsInfo.IsNullable ? " | null" : "";
+                string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
                 builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck}{strInitialOutputValue};");
             }

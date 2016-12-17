@@ -32,7 +32,7 @@ namespace Umbrella.TypeScript.Generators
         {
             if (!string.IsNullOrEmpty(tsInfo.TypeName))
             {
-                string strStrictNullCheck = StrictNullChecks && tsInfo.IsNullable ? " | null" : "";
+                string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
                 builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck};");
             }
