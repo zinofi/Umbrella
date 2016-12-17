@@ -170,58 +170,61 @@ namespace Umbrella.TypeScript
             if (string.IsNullOrEmpty(info.TypeName))
                 info.TypeName = "any";
 
-            //Set the initial output value
-            if(propertyMode == TypeScriptPropertyMode.None)
+            //Set the initial output value - but only for non-interfaces
+            if (!modelType.IsInterface)
             {
-                //Don't need to do anything here as the InitialOutputValue will be null
-            }
-            else if(propertyMode == TypeScriptPropertyMode.Null)
-            {
-                info.InitialOutputValue = "null";
-            }
-            else if(propertyMode == TypeScriptPropertyMode.Model)
-            {
-                object instance = Activator.CreateInstance(modelType);
-
-                object propertyValue = propertyInfo.GetValue(instance);
-
-                if(propertyValue == null)
+                if (propertyMode == TypeScriptPropertyMode.None)
+                {
+                    //Don't need to do anything here as the InitialOutputValue will be null
+                }
+                else if (propertyMode == TypeScriptPropertyMode.Null)
                 {
                     info.InitialOutputValue = "null";
                 }
-                else if(info.CLRType.IsEnum)
+                else if (propertyMode == TypeScriptPropertyMode.Model)
                 {
-                    string name = propertyValue.ToString();
-                    info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
-                }
-                else if(info.CLRType == typeof(DateTime))
-                {
-                    //The only sensible way to output a DateTime value is in UTC format to ensure
-                    //that it is timezone and locale agnostic
-                    info.InitialOutputValue = ((DateTime)propertyValue).ToUniversalTime().ToString("O");
-                }
-                else if(info.CLRType == typeof(bool))
-                {
-                    info.InitialOutputValue = propertyValue.ToString().ToLowerInvariant();
-                }
-                else if(info.TypeName.EndsWith("[]"))
-                {
-                    info.InitialOutputValue = "[]";
-                }
-                else if(info.TypeName.StartsWith("Map<"))
-                {
-                    //Maps are used to represent a Dictionary on the server. We can only support the default
-                    //empty Dictionary which can be done by instantiating a new Map.
-                    info.InitialOutputValue = $"new {info.TypeName}()";
-                }
-                else if(info.IsUserDefinedType)
-                {
-                    info.InitialOutputValue = $"new {info.TypeName}()";
-                }
-                else
-                {
-                    //For all other cases just output the property value
-                    info.InitialOutputValue = propertyValue.ToString();
+                    object instance = Activator.CreateInstance(modelType);
+
+                    object propertyValue = propertyInfo.GetValue(instance);
+
+                    if (propertyValue == null)
+                    {
+                        info.InitialOutputValue = "null";
+                    }
+                    else if (info.CLRType.IsEnum)
+                    {
+                        string name = propertyValue.ToString();
+                        info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
+                    }
+                    else if (info.CLRType == typeof(DateTime))
+                    {
+                        //The only sensible way to output a DateTime value is in UTC format to ensure
+                        //that it is timezone and locale agnostic
+                        info.InitialOutputValue = ((DateTime)propertyValue).ToUniversalTime().ToString("O");
+                    }
+                    else if (info.CLRType == typeof(bool))
+                    {
+                        info.InitialOutputValue = propertyValue.ToString().ToLowerInvariant();
+                    }
+                    else if (info.TypeName.EndsWith("[]"))
+                    {
+                        info.InitialOutputValue = "[]";
+                    }
+                    else if (info.TypeName.StartsWith("Map<"))
+                    {
+                        //Maps are used to represent a Dictionary on the server. We can only support the default
+                        //empty Dictionary which can be done by instantiating a new Map.
+                        info.InitialOutputValue = $"new {info.TypeName}()";
+                    }
+                    else if (info.IsUserDefinedType)
+                    {
+                        info.InitialOutputValue = $"new {info.TypeName}()";
+                    }
+                    else
+                    {
+                        //For all other cases just output the property value
+                        info.InitialOutputValue = propertyValue.ToString();
+                    }
                 }
             }
 
