@@ -65,13 +65,13 @@ namespace Umbrella.TypeScript
             }
             else
             {
-                
+
                 if (memberType == typeof(string))
                 {
                     info.TypeName = "string";
                     info.IsNullable = true;
                 }
-                else if(memberType == typeof(DateTime))
+                else if (memberType == typeof(DateTime))
                 {
                     //Always deal with DateTime instances as strings and deal with them on the client
                     info.TypeName = "string";
@@ -183,6 +183,14 @@ namespace Umbrella.TypeScript
                 }
                 else if (propertyMode == TypeScriptPropertyMode.Model)
                 {
+                    TypeScriptNullAttribute attrNull = propertyInfo.GetCustomAttribute<TypeScriptNullAttribute>();
+
+                    if (attrNull != null)
+                    {
+                        info.InitialOutputValue = "null";
+                        return info;
+                    }
+
                     object instance = Activator.CreateInstance(modelType);
 
                     object propertyValue = propertyInfo.GetValue(instance);
@@ -198,7 +206,7 @@ namespace Umbrella.TypeScript
                         //An enum name will be null if it doesn't have a member with a value of 0
                         //which propertyValue defaults to in the case of enums.
                         //Where this is the case we need to manually get the first enum value and use that.
-                        if(string.IsNullOrEmpty(name))
+                        if (string.IsNullOrEmpty(name))
                             name = Enum.GetValues(info.CLRType).GetValue(0).ToString();
 
                         info.InitialOutputValue = $"{info.CLRType.FullName}.{name}";
