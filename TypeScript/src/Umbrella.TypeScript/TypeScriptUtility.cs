@@ -199,7 +199,14 @@ namespace Umbrella.TypeScript
 
                     if (propertyValue == null)
                     {
-                        info.InitialOutputValue = "null";
+                        if (info.TypeName.EndsWith("[]") && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() != null)
+                        {
+                            info.InitialOutputValue = "[]";
+                        }
+                        else
+                        {
+                            info.InitialOutputValue = "null";
+                        }
                     }
                     else if (info.CLRType.IsEnum)
                     {
