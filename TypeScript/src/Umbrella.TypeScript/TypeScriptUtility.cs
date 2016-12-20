@@ -188,6 +188,8 @@ namespace Umbrella.TypeScript
                     if (attrNull != null)
                     {
                         info.InitialOutputValue = "null";
+                        info.IsNullable = true;
+
                         return info;
                     }
 
