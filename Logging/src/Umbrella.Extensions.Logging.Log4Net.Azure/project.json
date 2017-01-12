@@ -8,7 +8,7 @@
   },
 
   "dependencies": {
-    "log4net": "2.0.5",
+    "log4net": "2.0.7",
     "Umbrella.Utilities": "1.0.0-*",
     "WindowsAzure.Storage": "7.2.1"
   }

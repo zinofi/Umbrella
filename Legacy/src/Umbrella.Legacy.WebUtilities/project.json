@@ -12,7 +12,6 @@
     }
   },
   "dependencies": {
-    "log4net": "2.0.5",
     "Microsoft.AspNet.Identity.Owin": "2.2.1",
     "Microsoft.AspNet.Mvc": "5.2.3",
     "Microsoft.AspNet.WebApi": "5.2.3",
