@@ -14,6 +14,7 @@ namespace Umbrella.AspNetCore.Samples
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseApplicationInsights()
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();

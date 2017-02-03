@@ -42,9 +42,7 @@ namespace Umbrella.AspNetCore.Samples
             // Add framework services.
             services.AddLogging();
             services.AddOptions();
-
-            services.AddApplicationInsightsTelemetry(Configuration);
-
+            
             services.AddMvc();
             services.AddRouting(options =>
             {
@@ -73,11 +71,10 @@ namespace Umbrella.AspNetCore.Samples
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             loggerFactory.AddUmbrellaLog4Net(env.ContentRootPath, log4netConfigFileName);
+            loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Error);
 
             var logger = loggerFactory.CreateLogger<Startup>();
             logger.LogInformation("Umbrella AspNetCore Samples Application Started");
-
-            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -96,8 +93,6 @@ namespace Umbrella.AspNetCore.Samples
                 SupportedCultures = new[] { new CultureInfo("en-GB") },
                 SupportedUICultures = new[] { new CultureInfo("en-GB") }
             });
-
-            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseStaticFiles();
 

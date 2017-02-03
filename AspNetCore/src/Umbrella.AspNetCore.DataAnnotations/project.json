@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0-rel-build00091",
+  "version": "1.0.0-rel-build00092",
   "description": "Umbrella.AspNetCore.DataAnnotations Class Library",
   "authors": [ "Richard Edwards" ],
 
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc.DataAnnotations": "1.1.0",
+    "Microsoft.AspNetCore.Mvc.DataAnnotations": "1.1.1",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
     "Umbrella.DataAnnotations": "1.0.0-*"
   },
