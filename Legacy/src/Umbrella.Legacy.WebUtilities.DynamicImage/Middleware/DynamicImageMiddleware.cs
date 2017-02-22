@@ -20,110 +20,124 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
     public class DynamicImageMiddleware : OwinMiddleware
 	{
+        #region Private Members
         private readonly ILogger Log;
         private readonly IDynamicImageUtility m_DynamicImageUtility;
+        #endregion
 
-		public DynamicImageMiddleware(OwinMiddleware next,
+        #region Constructors
+        public DynamicImageMiddleware(OwinMiddleware next,
             ILogger<DynamicImageMiddleware> logger,
             IDynamicImageUtility dynamicImageUtility)
-			: base(next)
-		{
+            : base(next)
+        {
             Log = logger;
             m_DynamicImageUtility = dynamicImageUtility;
 
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug($"{nameof(DynamicImageMiddleware)} registered successfully");
-		}
+            if (Log.IsEnabled(LogLevel.Debug))
+                Log.WriteDebug($"{nameof(DynamicImageMiddleware)} registered successfully");
+        }
+        #endregion
 
-		public override async Task Invoke(IOwinContext context)
-		{
+        #region Overridden Methods
+        public override async Task Invoke(IOwinContext context)
+        {
             DynamicImageMappingsConfig mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
 
-			try
-			{
-				string requestedPath = context.Request.Path.Value.ToLowerInvariant();
+            try
+            {
+                string requestedPath = context.Request.Path.Value.ToLowerInvariant();
 
-				if (requestedPath.StartsWith("/dynamicimage/"))
-				{
-					//Break down the url into segments
-					string[] segments = requestedPath.Split('/');
+                if (requestedPath.StartsWith("/dynamicimage/"))
+                {
+                    //Break down the url into segments
+                    string[] segments = requestedPath.Split('/');
 
-					//Check there are at least 7 segments
-					if (segments.Length < 7)
-					{
-						await context.Response.SendStatusCode(HttpStatusCode.NotFound);
-						return;
-					}
-					else
-					{
+                    //Check there are at least 7 segments
+                    if (segments.Length < 7)
+                    {
+                        await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+                        return;
+                    }
+                    else
+                    {
                         //Ignore the first 2 segments
                         int width = int.Parse(segments[2]);
-						int height = int.Parse(segments[3]);
-						DynamicResizeMode mode = segments[4].ToEnum<DynamicResizeMode>();
-						string originalExtension = segments[5];
-						string path = "/" + string.Join("/", segments.Skip(6));
+                        int height = int.Parse(segments[3]);
+                        DynamicResizeMode mode = segments[4].ToEnum<DynamicResizeMode>();
+                        string originalExtension = segments[5];
+                        string path = "/" + string.Join("/", segments.Skip(6));
 
-						//Before doing anything, we need to validate that the image parameters we have
-						//are permitted by the DynamicImageMappings config settings. These exist to prevent
-						//malicious users from requesting images in sizes and formats with the intent of
-						//overloading the server with bogus image requests
-						if (mappingsConfig.Enabled)
-						{
-							DynamicImageMapping mapping = new DynamicImageMapping
-							{
-								Width = width,
-								Height = height,
-								ResizeMode = mode,
-								Format = m_DynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
-							};
+                        //Before doing anything, we need to validate that the image parameters we have
+                        //are permitted by the DynamicImageMappings config settings. These exist to prevent
+                        //malicious users from requesting images in sizes and formats with the intent of
+                        //overloading the server with bogus image requests
+                        if (mappingsConfig.Enabled)
+                        {
+                            DynamicImageMapping mapping = new DynamicImageMapping
+                            {
+                                Width = width,
+                                Height = height,
+                                ResizeMode = mode,
+                                Format = m_DynamicImageUtility.ParseImageFormat(originalExtension.ToLower())
+                            };
 
-							//If the mapping is invalid, return a 404
-							if (!mappingsConfig.Settings.Any(x => x == mapping))
-							{
-								await context.Response.SendStatusCode(HttpStatusCode.NotFound);
-								return;
-							}
-						}
+                            //If the mapping is invalid, return a 404
+                            if (!mappingsConfig.Settings.Any(x => x == mapping))
+                            {
+                                await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+                                return;
+                            }
+                        }
 
                         Umbrella.WebUtilities.DynamicImage.DynamicImage image = m_DynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
 
-						if (!string.IsNullOrEmpty(image.CachedVirtualPath))
-						{
-							await context.Response.SendFileAsync(image.CachedVirtualPath);
-							return;
-						}
-						else if (image.Content != null && image.Content.Length > 0)
-						{
-							//Get the If-Modified-Since header
-							string ifModifiedSince = context.Request.Headers["If-Modified-Since"];
-							if (!string.IsNullOrEmpty(ifModifiedSince))
-							{
-								DateTime lastModified = DateTime.Parse(ifModifiedSince);
+                        if (!string.IsNullOrEmpty(image.CachedVirtualPath))
+                        {
+                            AppendResponseHeaders(context.Response, image);
+                            await context.Response.SendFileAsync(image.CachedVirtualPath);
+                            return;
+                        }
+                        else if (image.Content != null && image.Content.Length > 0)
+                        {
+                            //Get the If-Modified-Since header
+                            string ifModifiedSince = context.Request.Headers["If-Modified-Since"];
+                            if (!string.IsNullOrEmpty(ifModifiedSince))
+                            {
+                                DateTime lastModified = DateTime.Parse(ifModifiedSince);
 
-								if (lastModified.ToString() == image.LastModified.ToString())
-								{
-									await context.Response.SendStatusCode(HttpStatusCode.NotModified);
-									return;
-								}
-							}
+                                if (lastModified.ToString() == image.LastModified.ToString())
+                                {
+                                    await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+                                    return;
+                                }
+                            }
 
-							context.Response.Headers.Append("Content-Type", "image/" + image.ImageOptions.Format.ToString().ToLower());
-							context.Response.Headers.Append("Last-Modified", image.LastModified.ToUniversalTime().ToString());
+                            AppendResponseHeaders(context.Response, image);
 
-							//Write the file to the output stream
-							await context.Response.WriteAsync(image.Content);
-							return;
-						}
-					}
-				}
-			}
-			catch (Exception exc) when (Log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
-			{
+                            //Write the file to the output stream
+                            await context.Response.WriteAsync(image.Content);
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception exc) when (Log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
+            {
                 await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                 return;
             }
 
-			await Next.Invoke(context);
-		}
-	}
+            await Next.Invoke(context);
+        }
+        #endregion
+
+        #region Private Methods
+        private void AppendResponseHeaders(IOwinResponse response, Umbrella.WebUtilities.DynamicImage.DynamicImage dynamicImage)
+        {
+            response.Headers.Append("Content-Type", "image/" + dynamicImage.ImageOptions.Format.ToString().ToLower());
+            response.Headers.Append("Last-Modified", dynamicImage.LastModified.ToUniversalTime().ToString("r"));
+        } 
+        #endregion
+    }
 }
