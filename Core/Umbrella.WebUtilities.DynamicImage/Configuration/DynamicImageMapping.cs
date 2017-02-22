@@ -7,7 +7,7 @@ using Umbrella.WebUtilities.DynamicImage.Enumerations;
 
 namespace Umbrella.WebUtilities.DynamicImage.Configuration
 {
-	public struct DynamicImageMapping
+	public class DynamicImageMapping
 	{
 		public int Width { get; set; }
 		public int Height { get; set; }
