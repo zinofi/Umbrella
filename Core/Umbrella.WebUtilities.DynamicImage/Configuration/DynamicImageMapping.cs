@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 
-namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
+namespace Umbrella.WebUtilities.DynamicImage.Configuration
 {
 	public struct DynamicImageMapping
 	{

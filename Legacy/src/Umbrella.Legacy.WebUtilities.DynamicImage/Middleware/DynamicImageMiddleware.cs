@@ -14,6 +14,7 @@ using Umbrella.Legacy.Utilities;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Microsoft.Extensions.Logging;
+using Umbrella.WebUtilities.DynamicImage.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {

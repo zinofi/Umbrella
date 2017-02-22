@@ -11,11 +11,11 @@ namespace Microsoft.AspNetCore.Builder
         public static IApplicationBuilder UseUmbrellaCleanupIDisposable(this IApplicationBuilder builder) => builder.UseMiddleware<CleanupIDisposableMiddleware>();
 
         public static IApplicationBuilder UseUmbrellaQueryStringParameterToHttpHeader(this IApplicationBuilder builder,
-            string queryStringParamaterName,
+            string queryStringParameterName,
             string headerName,
             Func<string, string> valueTransformer = null)
         {
-            return builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParamaterName, headerName, valueTransformer);
+            return builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParameterName, headerName, valueTransformer);
         }
 
         public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder, Action<InternetExplorerCacheHeaderOptions> config) => builder.UseMiddleware<InternetExplorerCacheHeaderMiddleware>(config);

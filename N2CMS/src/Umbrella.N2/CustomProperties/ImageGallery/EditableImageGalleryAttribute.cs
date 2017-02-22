@@ -11,6 +11,7 @@ using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Umbrella.N2.CustomProperties.ImageGallery.Controls;
 using Umbrella.N2.CustomProperties.LinkEditor;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
+using Umbrella.WebUtilities.DynamicImage.Configuration;
 using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.WebUtilities.DynamicImage.Interfaces;
 

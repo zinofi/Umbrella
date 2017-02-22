@@ -72,7 +72,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
                 Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
 
-                string cleanedPath = virtualPath.Trim().Remove(0, 1);
+                string cleanedPath = virtualPath.StartsWith("~")
+                    ? virtualPath.Trim().Remove(0, 1)
+                    : virtualPath.Trim();
 
                 string key = $"UmbrellaHostingEnvironment:MapWebPath:{cleanedPath}:{scheme}".ToUpperInvariant();
 
@@ -82,7 +84,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
                     HttpRequest request = m_HttpContextAccessor.HttpContext.Request;
 
-                    return $"{scheme}://{request.Host}{virtualPath.Remove(0, 1)}";
+                    return $"{scheme}://{request.Host}{cleanedPath}";
                 });
             }
             catch (Exception exc) when (m_Logger.WriteError(exc, new { virtualPath, scheme }))

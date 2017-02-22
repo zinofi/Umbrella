@@ -14,27 +14,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
         /// </summary>
         /// <param name="relativeUrl">App-Relative path</param>
         /// <returns>Provided relativeUrl parameter as fully qualified Url</returns>
-        /// <example>~/path/to/foo to http://www.web.com/path/to/foo</example>
-        [Obsolete("TODO: Not yet migrated this method!!", true)]
-        public static string ToAbsoluteUrl(this string relativeUrl, HttpRequest request)
+        /// <example>~/path/to/foo or /path/to/foo to http://www.web.com/path/to/foo</example>
+        public static string ToAbsoluteUrl(this string relativeUrl, HttpRequest request, string scheme = "http")
         {
-            //if (string.IsNullOrEmpty(relativeUrl))
-            //    return relativeUrl;
+            string cleanedPath = relativeUrl.StartsWith("~")
+                    ? relativeUrl.Trim().Remove(0, 1)
+                    : relativeUrl.Trim();
 
-            //if (request == null)
-            //    return relativeUrl;
-
-            //if (relativeUrl.StartsWith("/"))
-            //    relativeUrl = relativeUrl.Insert(0, "~");
-            //if (!relativeUrl.StartsWith("~/"))
-            //    relativeUrl = relativeUrl.Insert(0, "~/");
-
-            //var url = request.Path;
-
-            //return string.Format("{0}://{1}{2}{3}",
-            //    request.Scheme, request.Host.ToUriComponent(), ""); //TODO: VirtualPathUtility.ToAbsolute(relativeUrl));
-
-            throw new NotImplementedException();
+            return $"{scheme}://{request.Host}{cleanedPath}";
         }
     }
 }
