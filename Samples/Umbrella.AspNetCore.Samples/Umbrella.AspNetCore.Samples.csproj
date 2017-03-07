@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.0-rel-build00094</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00095</VersionPrefix>
     <TargetFramework>net46</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>Umbrella.AspNetCore.Samples</AssemblyName>

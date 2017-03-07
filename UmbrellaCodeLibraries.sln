@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NuGet.Config = NuGet.Config
 		package.json = package.json
 		UmbrellaCodeLibraries.vsext = UmbrellaCodeLibraries.vsext
+		Update-Version.ps1 = Update-Version.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{9EA3F4AE-0260-4B8A-98AD-25803026D4E5}"

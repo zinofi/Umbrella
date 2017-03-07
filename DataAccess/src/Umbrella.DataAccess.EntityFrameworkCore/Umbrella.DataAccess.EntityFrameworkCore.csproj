@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>This package is a placeholder for a future EF Core port of the EF6 library.</Description>
-    <VersionPrefix>1.0.0-rel-build00094</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00095</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.DataAccess.EntityFrameworkCore</AssemblyName>
