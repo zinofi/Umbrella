@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Umbrella.DataAccess.MultiTenant.EF6 Class Library</Description>
+    <VersionPrefix>1.0.0-rel-build00094</VersionPrefix>
+    <Authors>Richard Edwards</Authors>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>Umbrella.DataAccess.MultiTenant.EF6</AssemblyName>
+    <PackageId>Umbrella.DataAccess.MultiTenant.EF6</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Umbrella.DataAccess.EF6\Umbrella.DataAccess.EF6.csproj" />
+    <ProjectReference Include="..\Umbrella.DataAccess.MultiTenant\Umbrella.DataAccess.MultiTenant.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

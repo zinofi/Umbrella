@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Umbrella.Legacy.WCF Class Library</Description>
+    <VersionPrefix>1.0.0-rel-build00094</VersionPrefix>
+    <Authors>Richard Edwards</Authors>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>Umbrella.Legacy.WCF</AssemblyName>
+    <PackageId>Umbrella.Legacy.WCF</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

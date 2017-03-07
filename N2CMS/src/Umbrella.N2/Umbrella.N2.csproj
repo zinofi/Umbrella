@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Umbrella.N2.Utilities Class Library</Description>
+    <VersionPrefix>1.0.0-rel-build00094</VersionPrefix>
+    <Authors>Richard Edwards</Authors>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>Umbrella.N2</AssemblyName>
+    <PackageId>Umbrella.N2</PackageId>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CustomProperties\ImageGallery\Controls\ImageGalleryEditorControl.ascx;CustomProperties\ImageGallery\Controls\ImageGallerySummaryControl.ascx;CustomProperties\ImageGallery\Resources\ImageGallery.css;CustomProperties\ImageGallery\Resources\ImageGallery.js;CustomProperties\LinkEditor\Controls\ImageEditorPopup.ascx;CustomProperties\LinkEditor\Controls\LinkEditorPopup.ascx;CustomProperties\LinkEditor\Controls\LinkListPopup.ascx;CustomProperties\LinkEditor\Resources\down-arrow.png;CustomProperties\LinkEditor\Resources\LinkEditor.css;CustomProperties\LinkEditor\Resources\LinkEditor.js;CustomProperties\LinkEditor\Resources\up-arrow.png" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Legacy\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\Legacy\Umbrella.Legacy.WebUtilities.DynamicImage\Umbrella.Legacy.WebUtilities.DynamicImage.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="N2CMS" Version="2.9.6.17" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CustomProperties\ImageGallery\Controls\ImageGalleryEditorControl.ascx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Update="CustomProperties\ImageGallery\Controls\ImageGallerySummaryControl.ascx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Update="CustomProperties\LinkEditor\Controls\ImageEditorPopup.ascx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Update="CustomProperties\LinkEditor\Controls\LinkEditorPopup.ascx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Update="CustomProperties\LinkEditor\Controls\LinkListPopup.ascx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Update="CustomProperties\LinkEditor\Extensions\LinkItemCollectionUserControlBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

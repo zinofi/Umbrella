@@ -1,6 +1,0 @@
-{
-  "projects": [ "Core", "N2CMS", "Legacy", "Test", "SimpleInjector", "AspNetCore" ],
-  "sdk": {
-    "version": "1.0.0-preview2-1-003177"
-  }
-}
