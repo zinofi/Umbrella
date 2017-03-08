@@ -49,7 +49,7 @@ namespace Umbrella.Utilities.Extensions
             return result;
         }
 
-        public static Tuple<bool, TItem> TryGetFromJsonString<TItem>(this IDistributedCache cache, string key)
+        public static (bool ItemFound, TItem CacheItem) TryGetFromJsonString<TItem>(this IDistributedCache cache, string key)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -61,7 +61,7 @@ namespace Umbrella.Utilities.Extensions
                 {
                     var item = JsonConvert.DeserializeObject<TItem>(result);
 
-                    return new Tuple<bool, TItem>(true, item);
+                    return (true, item);
                 }
                 catch (Exception)
                 {
@@ -70,10 +70,10 @@ namespace Umbrella.Utilities.Extensions
                 }
             }
 
-            return new Tuple<bool, TItem>(false, default(TItem));
+            return (false, default(TItem));
         }
 
-        public static async Task<Tuple<bool, TItem>> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
+        public static async Task<(bool ItemFound, TItem CacheItem)> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -85,7 +85,7 @@ namespace Umbrella.Utilities.Extensions
                 {
                     var item = JsonConvert.DeserializeObject<TItem>(result);
 
-                    return new Tuple<bool, TItem>(true, item);
+                    return (true, item);
                 }
                 catch (Exception)
                 {
@@ -94,7 +94,7 @@ namespace Umbrella.Utilities.Extensions
                 }
             }
 
-            return new Tuple<bool, TItem>(false, default(TItem));
+            return (false, default(TItem));
         }
 
         public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).Item2;
@@ -128,8 +128,8 @@ namespace Umbrella.Utilities.Extensions
 
             var result = cache.TryGetFromJsonString<TItem>(key);
 
-            if (result.Item1)
-                return result.Item2;
+            if (result.ItemFound)
+                return result.CacheItem;
 
             // If we get this far then we haven't found the cached item
             TItem createdItem = factory();
@@ -146,8 +146,8 @@ namespace Umbrella.Utilities.Extensions
 
             var result = await cache.TryGetFromJsonStringAsync<TItem>(key);
 
-            if (result.Item1)
-                return result.Item2;
+            if (result.ItemFound)
+                return result.CacheItem;
 
             // If we get this far then we haven't found the cached item
             TItem createdItem = await factory();
