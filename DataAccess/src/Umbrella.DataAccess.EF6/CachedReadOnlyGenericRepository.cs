@@ -4,13 +4,14 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Umbrella.DataAccess.Interfaces;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Umbrella.Utilities.Extensions;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;
 using System.Data.Entity.Core.Objects;
+using Umbrella.DataAccess.Abstractions;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -117,7 +118,7 @@ namespace Umbrella.DataAccess.EF6
 
                 var entry = await CacheFindByIdAsync(id, cancellationToken, trackChanges, map);
 
-                return entry != null ? entry.Item : null;
+                return entry?.Item;
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -397,8 +398,7 @@ namespace Umbrella.DataAccess.EF6
 
             bool attach = false;
 
-            ObjectStateEntry stateEntry;
-            if (objectContext.ObjectStateManager.TryGetObjectStateEntry(objectContext.CreateEntityKey(EntitySetName, entity), out stateEntry))
+            if (objectContext.ObjectStateManager.TryGetObjectStateEntry(objectContext.CreateEntityKey(EntitySetName, entity), out ObjectStateEntry stateEntry))
             {
                 attach = stateEntry.State == EntityState.Detached;
                 entity = cacheEntry.Item = (TEntity)stateEntry.Entity;

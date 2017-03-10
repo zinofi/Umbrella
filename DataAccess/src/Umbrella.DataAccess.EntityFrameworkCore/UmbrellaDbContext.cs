@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Umbrella.DataAccess.Interfaces;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore

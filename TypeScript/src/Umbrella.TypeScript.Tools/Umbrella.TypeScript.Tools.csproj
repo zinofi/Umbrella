@@ -1,32 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Umbrella.AspNetCore.WebUtilities Class Library</Description>
+    <Description>Umbrella.TypeScript Class Library</Description>
     <VersionPrefix>1.0.0-rel-build00095</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>Umbrella.AspNetCore.WebUtilities</AssemblyName>
-    <PackageId>Umbrella.AspNetCore.WebUtilities</PackageId>
+    <AssemblyName>Umbrella.TypeScript.Tools</AssemblyName>
+    <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="1.1.2" />
+    <ProjectReference Include="..\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj" />
+    <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>

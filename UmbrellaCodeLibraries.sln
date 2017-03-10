@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities", "Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities", "Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj", "{51D68721-517F-4A5C-91EF-1C5EFC18798E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess", "Core\Umbrella.DataAccess\Umbrella.DataAccess.csproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Abstractions", "Core\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.Test", "Test\Umbrella.AspNetCore.WebUtilities.Test\Umbrella.AspNetCore.WebUtilities.Test.csproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
 EndProject
@@ -99,7 +99,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Samples
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Annotations", "Core\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj", "{55BED670-A11E-4516-BC33-52855F022D30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript", "Core\Umbrella.TypeScript\Umbrella.TypeScript.csproj", "{8DE8C471-2ED0-4B28-94D0-742BF89D543F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Tools", "Core\Umbrella.TypeScript.Tools\Umbrella.TypeScript.Tools.csproj", "{8DE8C471-2ED0-4B28-94D0-742BF89D543F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.DynamicImage", "AspNetCore\Umbrella.AspNetCore.WebUtilities.DynamicImage\Umbrella.AspNetCore.WebUtilities.DynamicImage.csproj", "{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}"
 EndProject

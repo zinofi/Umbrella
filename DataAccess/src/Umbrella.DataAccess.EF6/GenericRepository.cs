@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Umbrella.DataAccess.Interfaces;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.DataAccess.Exceptions;
+using Umbrella.DataAccess.Abstractions.Exceptions;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using Umbrella.Utilities;
+using Umbrella.DataAccess.Abstractions;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -197,13 +198,11 @@ namespace Umbrella.DataAccess.EF6
             //Look for the entity in the context - this action will allow us to determine it's state
             DbEntityEntry<TEntity> dbEntity = Context.Entry(entity);
 
-            //TODO: Replace with C# 7 Pattern Matching when available
-            IConcurrencyStamp concurrencyStampEntity = entity as IConcurrencyStamp;
             IDateAuditEntity datedEntity = entity as IDateAuditEntity;
             IUserAuditEntity<TUserAuditKey> userAuditEntity = entity as IUserAuditEntity<TUserAuditKey>;
 
             //Set the Concurrency Stamp
-            if (concurrencyStampEntity != null)
+            if (entity is IConcurrencyStamp concurrencyStampEntity)
                 concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
 
             //Check if this entity is in the context, i.e. is it new

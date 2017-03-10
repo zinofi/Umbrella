@@ -7,7 +7,7 @@ using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelState;
-using Umbrella.DataAccess.Exceptions;
+using Umbrella.DataAccess.Abstractions.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc

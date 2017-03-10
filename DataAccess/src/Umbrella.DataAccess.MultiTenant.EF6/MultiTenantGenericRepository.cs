@@ -5,9 +5,9 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.DataAccess;
+using Umbrella.DataAccess.Abstractions;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 using Umbrella.DataAccess.EF6;
-using Umbrella.DataAccess.Interfaces;
 using Umbrella.DataAccess.MultiTenant.Interfaces;
 
 namespace Umbrella.DataAccess.MultiTenant.EF6

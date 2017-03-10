@@ -12,9 +12,7 @@ namespace Umbrella.DataAnnotations
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            ICollection collection = value as ICollection;
-
-            if (collection != null && collection.Count > 0)
+            if (value is ICollection collection && collection.Count > 0)
                 return ValidationResult.Success;
 
             return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));

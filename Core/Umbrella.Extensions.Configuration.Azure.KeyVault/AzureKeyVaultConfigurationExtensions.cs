@@ -11,6 +11,7 @@ namespace Microsoft.Extensions.Configuration
     /// <summary>
     /// Extension methods on IConfigurationBuilder for loading configuration from Azure KeyVault
     /// </summary>
+    [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
     public static class AzureKeyVaultConfigurationExtensions
     {
         /// <summary>
@@ -27,6 +28,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="storeLocation"></param>
         /// <param name="maxSecrets"></param>
         /// <returns></returns>
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         public static IConfigurationBuilder AddUmbrellaAzureKeyVaultSecrets(this IConfigurationBuilder configurationBuilder, IAuthenticationTokenUtility authTokenUtility, string appClientId, string vaultName, string certificateThumbprint, bool validateCertificate, ILoggerFactory loggerFactory, StoreName storeName = StoreName.My, StoreLocation storeLocation = StoreLocation.CurrentUser, int maxSecrets = AzureKeyVaultConfigurationProvider.DefaultMaxSecrets)
         {
             configurationBuilder.Add(new AzureKeyVaultConfigurationProvider(authTokenUtility, appClientId, vaultName, certificateThumbprint, validateCertificate, loggerFactory, storeName, storeLocation, maxSecrets));
@@ -46,6 +48,7 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="loggerFactory"></param>
         /// <param name="maxSecrets"></param>
         /// <returns></returns>
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         public static IConfigurationBuilder AddUmbrellaAzureKeyVaultSecrets(this IConfigurationBuilder configurationBuilder, IAuthenticationTokenUtility authTokenUtility, string appClientId, string appClientSecret, string vaultName, ILoggerFactory loggerFactory, int maxSecrets = AzureKeyVaultConfigurationProvider.DefaultMaxSecrets)
         {
             configurationBuilder.Add(new AzureKeyVaultConfigurationProvider(authTokenUtility, appClientId, appClientSecret, vaultName, loggerFactory, maxSecrets));

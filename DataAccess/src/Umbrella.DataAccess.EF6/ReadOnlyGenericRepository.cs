@@ -5,7 +5,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbrella.DataAccess.Interfaces;
+using Umbrella.DataAccess.Abstractions;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 

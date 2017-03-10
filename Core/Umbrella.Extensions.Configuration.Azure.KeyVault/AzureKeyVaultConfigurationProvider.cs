@@ -15,6 +15,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
     /// <summary>
     /// Asp.Net configuration provider to read secrets from key vault. This requires List and Get permissions on the vault.
     /// </summary>
+    [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
     public class AzureKeyVaultConfigurationProvider : ConfigurationProvider, IConfigurationSource
     {
         public const int DefaultMaxSecrets = 25;
@@ -42,6 +43,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// <param name="vaultName"></param>
         /// <param name="loggerFactory"></param>
         /// <param name="maxSecrets"></param>
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         public AzureKeyVaultConfigurationProvider(IAuthenticationTokenUtility tokenUtility, string appClientId, string appClientSecret, string vaultName, ILoggerFactory loggerFactory, int maxSecrets = DefaultMaxSecrets)
         {
             Guard.ArgumentNotNullOrWhiteSpace(appClientId, nameof(appClientId));
@@ -71,6 +73,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// <param name="storeName"></param>
         /// <param name="storeLocation"></param>
         /// <param name="maxSecrets"></param>
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         public AzureKeyVaultConfigurationProvider(IAuthenticationTokenUtility tokenUtility, string appClientId, string vaultName, string certificateThumbprint, bool validateCertificate, ILoggerFactory loggerFactory, StoreName storeName = StoreName.My, StoreLocation storeLocation = StoreLocation.CurrentUser, int maxSecrets = DefaultMaxSecrets)
         {
             Guard.ArgumentNotNullOrWhiteSpace(appClientId, nameof(appClientId));
@@ -96,6 +99,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// Since KeyVault does not  allow the : character as delimiter in the share secret name is not used as key for configuration, the Tag properties are used instead
         /// The tag should always be of the form "ConfigKey"="ParentKey1:Child1:.."
         /// </summary>
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         public override void Load()
         {
             try
@@ -116,6 +120,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         private async Task LoadAsync(CancellationToken token)
         {
             Data = new Dictionary<string, string>();
@@ -139,6 +144,7 @@ namespace Umbrella.Extensions.Configuration.Azure.KeyVault
             }
         }
 
+        [Obsolete("Use the Microsoft.Extensions.Configuration.AzureKeyVault NuGet package instead.")]
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
             return this;

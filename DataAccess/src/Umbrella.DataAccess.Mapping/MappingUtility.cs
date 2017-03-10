@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Umbrella.DataAccess.Interfaces;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 
 namespace Umbrella.DataAccess.Mapping
 {

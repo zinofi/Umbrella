@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Umbrella.Utilities.Extensions;
+using Umbrella.TypeScript.Tools.Generators.Interfaces;
+
+namespace Umbrella.TypeScript.Tools.Generators
+{
+    public class StandardClassGenerator : BaseClassGenerator
+    {
+        public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.Class;
+        protected override bool SupportsValidationRules => false;
+        protected override TypeScriptOutputModelType InterfaceModelType => TypeScriptOutputModelType.Interface;
+    }
+}

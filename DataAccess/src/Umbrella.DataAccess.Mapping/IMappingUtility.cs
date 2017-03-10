@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using Umbrella.DataAccess.Interfaces;
+using Umbrella.DataAccess.Abstractions.Interfaces;
 
 namespace Umbrella.DataAccess.Mapping
 {
