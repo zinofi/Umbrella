@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Umbrella.TypeScript.Tools.Generators;
-using Umbrella.TypeScript.Tools.Generators.Interfaces;
+using Umbrella.TypeScript.Generators;
+using Umbrella.TypeScript.Generators.Interfaces;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Comparers;
 
-namespace Umbrella.TypeScript.Tools
+namespace Umbrella.TypeScript
 {
     //This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
     //i.e. a type that is part of the .NET framework other than a primitive, DateTime or string, array or IEnumerable
@@ -24,7 +24,9 @@ namespace Umbrella.TypeScript.Tools
         public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator>(x => x.GetType()));
         #endregion
 
-        #region Public Methods
+#region Public Methods
+
+#if NET46
         /// <summary>
         /// Create a new <see cref="TypeScriptGenerator"/> instance.
         /// </summary>
@@ -35,11 +37,17 @@ namespace Umbrella.TypeScript.Tools
         /// </param>
         public TypeScriptGenerator(params string[] onlyNamedAssemblies)
         {
-            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            IEnumerable<Assembly> assemblies = null;//AppDomain.CurrentDomain.GetAssemblies();
 
             if (onlyNamedAssemblies?.Length > 0)
                 assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.GetName().Name));
 
+            m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
+        }
+#endif
+
+        public TypeScriptGenerator(List<Assembly> assemblies)
+        {
             m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
         }
 
@@ -147,16 +155,16 @@ namespace Umbrella.TypeScript.Tools
 
             return sbNamespaces.ToString();
         }
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
         private string GenerateEnumDefinition(Type enumType)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine($"\texport enum {enumType.Name}");
             builder.AppendLine("\t{");
 
-            foreach(var enumItem in enumType.GetEnumDictionary())
+            foreach(var enumItem in enumType.GetTypeInfo().GetEnumDictionary())
             {
                 builder.AppendLine($"\t\t{enumItem.Value} = {enumItem.Key},");
             }
@@ -169,7 +177,7 @@ namespace Umbrella.TypeScript.Tools
         {
             foreach (Type type in m_Types)
             {
-                TypeScriptModelAttribute modelAttribute = type.GetCustomAttribute<TypeScriptModelAttribute>();
+                TypeScriptModelAttribute modelAttribute = type.GetTypeInfo().GetCustomAttribute<TypeScriptModelAttribute>();
 
                 if (modelAttribute == null)
                     continue;
@@ -180,7 +188,7 @@ namespace Umbrella.TypeScript.Tools
 
         private IEnumerable<Type> GetEnumItems()
         {
-            foreach(Type type in m_Types)
+            foreach(var type in m_Types.Select(x => x.GetTypeInfo()))
             {
                 if (!type.IsEnum)
                     continue;
@@ -190,9 +198,9 @@ namespace Umbrella.TypeScript.Tools
                 if (enumAttribute == null)
                     continue;
 
-                yield return type;
+                yield return type.GetType();
             }
         }
-        #endregion
+#endregion
     }
 }

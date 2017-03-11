@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.TypeScript.Tools.Generators.Interfaces;
+using Umbrella.TypeScript.Generators.Interfaces;
 
-namespace Umbrella.TypeScript.Tools.Generators
+namespace Umbrella.TypeScript.Generators
 {
     public abstract class BaseGenerator : IGenerator
     {
@@ -70,6 +70,6 @@ namespace Umbrella.TypeScript.Tools.Generators
 
         protected virtual void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder) => typeBuilder.AppendLine("\t}");
 
-        protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
+        protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetTypeInfo().GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.TypeScript.Tools
+namespace Umbrella.TypeScript
 {
     public static class TypeScriptUtility
     {
@@ -16,7 +16,7 @@ namespace Umbrella.TypeScript.Tools
         {
             string generatedName = memberName;
 
-            if (!memberType.IsInterface && (outputModelType == TypeScriptOutputModelType.Interface
+            if (!memberType.GetTypeInfo().IsInterface && (outputModelType == TypeScriptOutputModelType.Interface
                 || outputModelType == TypeScriptOutputModelType.KnockoutInterface
                 || outputModelType == TypeScriptOutputModelType.AureliaInterface))
             {
@@ -47,7 +47,7 @@ namespace Umbrella.TypeScript.Tools
 
             //The primitive types are Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, and Single.
             //Not checking for the use of IntPtr and UIntPtr. Assuming they just won't be used!
-            if (memberType.IsPrimitive)
+            if (memberType.GetTypeInfo().IsPrimitive)
             {
                 if (memberType == typeof(bool))
                 {
@@ -80,7 +80,7 @@ namespace Umbrella.TypeScript.Tools
                 {
                     info.TypeName = "number";
                 }
-                else if (memberType.IsNullableType())
+                else if (memberType.GetTypeInfo().IsNullableType())
                 {
                     //Get the underlying primitive type or struct
                     Type underlyingType = Nullable.GetUnderlyingType(memberType);
@@ -106,9 +106,9 @@ namespace Umbrella.TypeScript.Tools
                     info.TypeName += "[]";
                     info.IsNullable = true;
                 }
-                else if (memberType.IsAssignableToGenericType(typeof(IDictionary<,>)))
+                else if (memberType.GetTypeInfo().IsAssignableToGenericType(typeof(IDictionary<,>).GetTypeInfo()))
                 {
-                    Type[] genericArgs = memberType.GetGenericArguments();
+                    Type[] genericArgs = memberType.GetTypeInfo().GetGenericArguments();
 
                     Type keyType = genericArgs[0];
                     Type valueType = genericArgs[1];
@@ -122,12 +122,12 @@ namespace Umbrella.TypeScript.Tools
                     info.TypeName = $"Map<{keyInfo.TypeName}, {valueInfo.TypeName}>";
                     info.IsNullable = true;
                 }
-                else if (typeof(IEnumerable).IsAssignableFrom(memberType))
+                else if (typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(memberType))
                 {
-                    if (memberType.IsGenericType)
+                    if (memberType.GetTypeInfo().IsGenericType)
                     {
                         //Determine the type of the collection
-                        Type genericEnumerableType = memberType.GetGenericArguments().First();
+                        Type genericEnumerableType = memberType.GetTypeInfo().GetGenericArguments().First();
 
                         info = GetTypeScriptMemberInfo(modelType, genericEnumerableType, propertyInfo, outputType, strictNullChecks, propertyMode);
 
@@ -142,7 +142,7 @@ namespace Umbrella.TypeScript.Tools
 
                     info.IsNullable = true;
                 }
-                else if (memberType.IsEnum)
+                else if (memberType.GetTypeInfo().IsEnum)
                 {
                     //Output the fully qualified name of the Enum in case it resides in another TypeScript namespace
                     info.TypeName = memberType.FullName;
@@ -171,7 +171,7 @@ namespace Umbrella.TypeScript.Tools
                 info.TypeName = "any";
 
             //Set the initial output value - but only for non-interfaces
-            if (!modelType.IsInterface)
+            if (!modelType.GetTypeInfo().IsInterface)
             {
                 if (propertyMode == TypeScriptPropertyMode.None)
                 {
@@ -208,7 +208,7 @@ namespace Umbrella.TypeScript.Tools
                             info.InitialOutputValue = "null";
                         }
                     }
-                    else if (info.CLRType.IsEnum)
+                    else if (info.CLRType.GetTypeInfo().IsEnum)
                     {
                         string name = Enum.GetName(info.CLRType, propertyValue);
 
@@ -275,7 +275,7 @@ namespace Umbrella.TypeScript.Tools
                 lstInterfaceName.Add(GenerateTypeName(modelType.Name, modelType, outputType));
 
             //All other interfaces
-            foreach (Type tInterface in modelType.GetInterfaces())
+            foreach (Type tInterface in modelType.GetTypeInfo().GetInterfaces())
             {
                 //Check if the interface has the same namespace as the model type to avoid outputting fully qualified names where possible
                 string interfaceName = tInterface.Namespace == modelType.Namespace

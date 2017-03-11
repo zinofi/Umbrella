@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.TypeScript.Tools.Generators.Interfaces;
+using Umbrella.TypeScript.Generators.Interfaces;
 
-namespace Umbrella.TypeScript.Tools.Generators
+namespace Umbrella.TypeScript.Generators
 {
     public class StandardInterfaceGenerator : BaseInterfaceGenerator
     {

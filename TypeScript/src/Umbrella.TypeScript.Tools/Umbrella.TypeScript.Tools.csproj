@@ -1,11 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <Description>Umbrella.TypeScript Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00095</VersionPrefix>
+    <AssemblyName>dotnet-umbrella-typescript</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp1.0</TargetFrameworks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
+    <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Description>Umbrella.TypeScript Tools Class Library</Description>
+    <PackageVersion>1.0.0-rel-build00096</PackageVersion>
     <Authors>Richard Edwards</Authors>
-    <TargetFramework>net46</TargetFramework>
-    <AssemblyName>Umbrella.TypeScript.Tools</AssemblyName>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -16,9 +22,18 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp1.0|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP1_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj" />
+    <ProjectReference Include="..\Umbrella.TypeScript\Umbrella.TypeScript.csproj" />
     <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
@@ -26,6 +41,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
 </Project>

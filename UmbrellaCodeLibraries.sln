@@ -103,6 +103,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Tools",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.DynamicImage", "AspNetCore\Umbrella.AspNetCore.WebUtilities.DynamicImage\Umbrella.AspNetCore.WebUtilities.DynamicImage.csproj", "{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript", "Core\Umbrella.TypeScript\Umbrella.TypeScript.csproj", "{26DE1D59-0106-4C38-9722-1A3C373C662E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -261,6 +263,10 @@ Global
 		{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -304,5 +310,6 @@ Global
 		{55BED670-A11E-4516-BC33-52855F022D30} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{8DE8C471-2ED0-4B28-94D0-742BF89D543F} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15} = {57500288-3639-445F-8E6E-D66057C5CD99}
+		{26DE1D59-0106-4C38-9722-1A3C373C662E} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 	EndGlobalSection
 EndGlobal

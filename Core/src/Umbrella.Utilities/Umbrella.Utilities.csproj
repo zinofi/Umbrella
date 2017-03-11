@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>Umbrella.Utilities Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00095</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00096</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFrameworks>net46;netstandard1.6</TargetFrameworks>
     <AssemblyName>Umbrella.Utilities</AssemblyName>

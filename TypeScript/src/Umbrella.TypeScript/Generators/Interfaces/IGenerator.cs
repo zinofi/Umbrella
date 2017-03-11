@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.TypeScript.Tools.Generators.Interfaces
+namespace Umbrella.TypeScript.Generators.Interfaces
 {
     public interface IGenerator
     {
