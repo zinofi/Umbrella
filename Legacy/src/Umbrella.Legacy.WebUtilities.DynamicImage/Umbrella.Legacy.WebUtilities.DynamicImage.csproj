@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.Legacy.WebUtilities.DynamicImage Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00096</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00097</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.Legacy.WebUtilities.DynamicImage</AssemblyName>

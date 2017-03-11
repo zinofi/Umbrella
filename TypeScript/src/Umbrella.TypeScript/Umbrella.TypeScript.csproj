@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net46;netstandard1.6</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <Description>Umbrella.TypeScript Class Library</Description>
-    <PackageVersion>1.0.0-rel-build00096</PackageVersion>
+    <PackageVersion>1.0.0-rel-build00097</PackageVersion>
     <Authors>Richard Edwards</Authors>
     <PackageId>Umbrella.TypeScript</PackageId>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
