@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.DataAccess.Mapping Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00098</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00200</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.DataAccess.Mapping</AssemblyName>
