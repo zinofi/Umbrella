@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.0-rel-build00200</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00201</VersionPrefix>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.AspNetCore.WebUtilities.Test</AssemblyName>
     <PackageId>Umbrella.AspNetCore.WebUtilities.Test</PackageId>

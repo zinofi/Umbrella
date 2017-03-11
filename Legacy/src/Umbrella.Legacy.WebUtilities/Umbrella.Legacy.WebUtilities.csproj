@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.Legacy.WebUtilities Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00200</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00201</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.Legacy.WebUtilities</AssemblyName>
