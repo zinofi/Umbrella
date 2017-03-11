@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.WebUtilities.DynamicImage.SimpleInjector Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00097</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00098</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.WebUtilities.DynamicImage.SimpleInjector</AssemblyName>

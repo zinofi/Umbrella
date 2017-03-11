@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <AssemblyName>dotnet-umbrella-typescript</AssemblyName>
     <OutputType>Exe</OutputType>
@@ -9,21 +9,10 @@
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup>
-    <Description>Umbrella.TypeScript Tools Class Library</Description>
-    <PackageVersion>1.0.0-rel-build00097</PackageVersion>
-    <Authors>Richard Edwards</Authors>
+    <PackageVersion>1.0.0-build00098</PackageVersion>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <SignAssembly>False</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp1.0|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETCOREAPP1_0</DefineConstants>
+    <PackageType>DotnetCliTool</PackageType>
+    <MinClientVersion>3.0</MinClientVersion>
   </PropertyGroup>
 
   <ItemGroup>

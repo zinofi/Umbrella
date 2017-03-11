@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.Utilities Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00097</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00098</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFrameworks>net46;netstandard1.6</TargetFrameworks>
     <AssemblyName>Umbrella.Utilities</AssemblyName>

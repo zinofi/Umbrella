@@ -18,7 +18,7 @@ namespace Umbrella.TypeScript.Tools
             {
                 Name = "dotnet-umbrella-typescript",
                 FullName = ".NET Core Umbrella TypeScript Generator",
-                Description = "TypeScript generator for .NET Core applications",
+                Description = "TypeScript generator for .NET Core applications"
             };
             app.HelpOption("-?|-h|--help");
 
