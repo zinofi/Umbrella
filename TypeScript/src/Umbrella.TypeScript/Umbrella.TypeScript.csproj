@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Description>Umbrella.TypeScript Class Library</Description>
-    <PackageVersion>1.0.0-rel-build00203</PackageVersion>
+    <PackageVersion>1.0.0-rel-build00204</PackageVersion>
     <Authors>Richard Edwards</Authors>
     <PackageId>Umbrella.TypeScript</PackageId>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>

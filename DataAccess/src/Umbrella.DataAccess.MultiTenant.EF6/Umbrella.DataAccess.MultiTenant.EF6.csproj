@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.DataAccess.MultiTenant.EF6 Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00203</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.DataAccess.MultiTenant.EF6</AssemblyName>

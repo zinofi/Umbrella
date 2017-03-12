@@ -7,6 +7,7 @@ using System.Runtime.Loader;
 using System.Text;
 using Umbrella.Utilities;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Umbrella.TypeScript.Tools
 {
@@ -19,7 +20,7 @@ namespace Umbrella.TypeScript.Tools
             //Store the initial Console text color so we can reset it if we alter it at some point.
             s_InitialConsoleColor = Console.ForegroundColor;
 
-            Name = "dotnet-umbrella-typescript";
+            Name = "dotnet-umbrella-ts";
             FullName = ".NET Core Umbrella TypeScript Generator";
             Description = "TypeScript generator for .NET Core applications";
 
@@ -29,6 +30,8 @@ namespace Umbrella.TypeScript.Tools
 
             OnExecute(() =>
             {
+                bool verbose = dicOption["verbose"].HasValue();
+                bool debug = dicOption["debug"].HasValue();
                 string assemblyFolderPath = dicOption["input"].Value()?.Trim('"');
                 List<string> assemblyNames = dicOption["assemblies"].Values?.Select(x => x.Trim('"')).ToList();
                 List<string> generators = dicOption["generators"].Values?.Select(x => x.Trim('"')).ToList();
@@ -36,6 +39,24 @@ namespace Umbrella.TypeScript.Tools
                 bool strictNullChecks = dicOption["strict"].HasValue();
                 string propertyMode = dicOption["property-mode"].Value()?.Trim('"');
                 string outputPath = dicOption["output"].Value()?.Trim('"');
+
+                if (debug)
+                {
+                    var parsedOptions = new
+                    {
+                        verbose,
+                        debug,
+                        assemblyFolderPath,
+                        assemblyNames,
+                        generators,
+                        outputType,
+                        strictNullChecks,
+                        propertyMode,
+                        outputPath
+                    };
+
+                    WriteConsoleDebugMessage($"Parsed options: {JsonConvert.SerializeObject(parsedOptions)}");
+                }
 
                 Guard.ArgumentNotNullOrWhiteSpace(assemblyFolderPath, "--assemblies|-a");
                 Guard.ArgumentNotNull(generators, "--generators|-g");
@@ -138,6 +159,9 @@ namespace Umbrella.TypeScript.Tools
 
         protected virtual Dictionary<string, CommandOption> SetupCommandOptions()
         {
+            CommandOption coVerbose = Option("--verbose|-v", "Show detailed output messages.", CommandOptionType.NoValue);
+            CommandOption coDebug = Option("--debug|-d", "Show debug messages.", CommandOptionType.NoValue);
+
             CommandOption coAssemblyFolderPath = Option("--input|-i", "The physical path to the folder containing the assemblies to scan for TypeScript attributes.", CommandOptionType.SingleValue);
             CommandOption coAssemblyNames = Option("--assemblies|-a", "The names of the assemblies to scan for attributes. If not supplied all assemblies in the folder path will be scanned.", CommandOptionType.MultipleValue);
             CommandOption coGenerators = Option("--generators|-g", "The generators to include: [standard | knockout]", CommandOptionType.MultipleValue);
@@ -148,6 +172,8 @@ namespace Umbrella.TypeScript.Tools
             
             return new Dictionary<string, CommandOption>
             {
+                ["verbose"] = coVerbose,
+                ["debug"] = coDebug,
                 ["input"] = coAssemblyFolderPath,
                 ["assemblies"] = coAssemblyNames,
                 ["generators"] = coGenerators,
@@ -162,6 +188,17 @@ namespace Umbrella.TypeScript.Tools
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine(message);
+            Console.ForegroundColor = s_InitialConsoleColor;
+        }
+
+        public void WriteConsoleDebugMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Yellow);
+
+        public void WriteConsoleInfoMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Cyan);
+
+        private void WriteColoredConsoleMessage(string message, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
             Console.ForegroundColor = s_InitialConsoleColor;
         }
     }
