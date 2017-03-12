@@ -105,6 +105,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript", "Core\Umbrella.TypeScript\Umbrella.TypeScript.csproj", "{26DE1D59-0106-4C38-9722-1A3C373C662E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Test", "Test\Umbrella.TypeScript.Test\Umbrella.TypeScript.Test.csproj", "{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Tools.Test", "Test\Umbrella.TypeScript.Tools.Test\Umbrella.TypeScript.Tools.Test.csproj", "{9D515991-F843-4F57-9157-164FD0414C08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -267,6 +271,14 @@ Global
 		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26DE1D59-0106-4C38-9722-1A3C373C662E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D515991-F843-4F57-9157-164FD0414C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D515991-F843-4F57-9157-164FD0414C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D515991-F843-4F57-9157-164FD0414C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D515991-F843-4F57-9157-164FD0414C08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -311,5 +323,7 @@ Global
 		{8DE8C471-2ED0-4B28-94D0-742BF89D543F} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15} = {57500288-3639-445F-8E6E-D66057C5CD99}
 		{26DE1D59-0106-4C38-9722-1A3C373C662E} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{9D515991-F843-4F57-9157-164FD0414C08} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 	EndGlobalSection
 EndGlobal

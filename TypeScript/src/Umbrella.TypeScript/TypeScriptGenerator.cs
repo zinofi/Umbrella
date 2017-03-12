@@ -83,7 +83,8 @@ namespace Umbrella.TypeScript
             StringBuilder sbNamespaces = new StringBuilder();
 
             //Before processing the models, firstly find all the enums that need to be generated
-            Dictionary<string, List<Type>> enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
+            var enumItems = GetEnumItems().ToList();
+            Dictionary<string, List<TypeInfo>> enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
 
             //Start of TypeScript namespace or module export
             string namespaceOrModuleStart = outputAsModuleExport
@@ -101,9 +102,9 @@ namespace Umbrella.TypeScript
                 //Generate enum definitions for this namespace if any exist
                 if(enumGroups.ContainsKey(nsName))
                 {
-                    List<Type> lstEnumToGenerate = enumGroups[nsName];
+                    List<TypeInfo> lstEnumToGenerate = enumGroups[nsName];
                     
-                    foreach(Type enumType in lstEnumToGenerate)
+                    foreach(TypeInfo enumType in lstEnumToGenerate)
                     {
                         string enumOutput = GenerateEnumDefinition(enumType);
 
@@ -142,7 +143,7 @@ namespace Umbrella.TypeScript
                 sbNamespaces.AppendLine($"{namespaceOrModuleStart} {group.Key}")
                     .AppendLine("{");
 
-                foreach (Type enumType in group.Value)
+                foreach (TypeInfo enumType in group.Value)
                 {
                     string enumOutput = GenerateEnumDefinition(enumType);
 
@@ -158,13 +159,13 @@ namespace Umbrella.TypeScript
 #endregion
 
 #region Private Methods
-        private string GenerateEnumDefinition(Type enumType)
+        private string GenerateEnumDefinition(TypeInfo enumType)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine($"\texport enum {enumType.Name}");
             builder.AppendLine("\t{");
 
-            foreach(var enumItem in enumType.GetTypeInfo().GetEnumDictionary())
+            foreach(var enumItem in enumType.GetEnumDictionary())
             {
                 builder.AppendLine($"\t\t{enumItem.Value} = {enumItem.Key},");
             }
@@ -186,7 +187,7 @@ namespace Umbrella.TypeScript
             }
         }
 
-        private IEnumerable<Type> GetEnumItems()
+        private IEnumerable<TypeInfo> GetEnumItems()
         {
             foreach(var type in m_Types.Select(x => x.GetTypeInfo()))
             {
@@ -198,7 +199,7 @@ namespace Umbrella.TypeScript
                 if (enumAttribute == null)
                     continue;
 
-                yield return type.GetType();
+                yield return type;
             }
         }
 #endregion

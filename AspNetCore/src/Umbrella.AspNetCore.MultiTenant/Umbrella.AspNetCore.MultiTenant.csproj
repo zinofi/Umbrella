@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Umbrella.AspNetCore.MultiTenant Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00201</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00202</VersionPrefix>
     <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.AspNetCore.MultiTenant</AssemblyName>

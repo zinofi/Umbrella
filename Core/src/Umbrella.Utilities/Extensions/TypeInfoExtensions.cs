@@ -36,9 +36,9 @@ namespace Umbrella.Utilities.Extensions
             if (!enumType.IsEnum)
                 throw new ArgumentException($"{nameof(enumType)} is not an Enum.");
 
-            return Enum.GetValues(enumType.GetType())
+            return Enum.GetValues(enumType.AsType())
                 .OfType<object>()
-                .ToDictionary(x => Convert.ToInt32(x), x => Enum.GetName(enumType.GetType(), x));
+                .ToDictionary(x => Convert.ToInt32(x), x => Enum.GetName(enumType.AsType(), x));
         }
 
         public static bool IsAssignableToGenericType(this TypeInfo givenType, TypeInfo genericType)
@@ -54,7 +54,7 @@ namespace Umbrella.Utilities.Extensions
             if (givenType.IsGenericType && givenType.GetGenericTypeDefinition().GetTypeInfo() == genericType)
                 return true;
 
-            var baseTypeInfo = givenType.BaseType.GetTypeInfo();
+            var baseTypeInfo = givenType.BaseType?.GetTypeInfo();
 
             if (baseTypeInfo == null)
                 return false;

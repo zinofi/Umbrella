@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 using Xunit;
 
-namespace TRW.AftermarketMVC.Utilities.Tests.Extensions
+namespace Umbrella.Utilities.Tests.Extensions
 {
     public class StringExtensionsTests
     {
