@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.0-rel-build00202</VersionPrefix>
+    <VersionPrefix>1.0.0-rel-build00203</VersionPrefix>
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.Utilities.Test</AssemblyName>
     <PackageId>Umbrella.Utilities.Test</PackageId>

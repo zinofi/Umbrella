@@ -16,6 +16,9 @@ namespace Umbrella.TypeScript.Tools
 
         public UmbrellaTypeScriptApp(bool testMode = false)
         {
+            //Store the initial Console text color so we can reset it if we alter it at some point.
+            s_InitialConsoleColor = Console.ForegroundColor;
+
             Name = "dotnet-umbrella-typescript";
             FullName = ".NET Core Umbrella TypeScript Generator";
             Description = "TypeScript generator for .NET Core applications";
@@ -26,13 +29,13 @@ namespace Umbrella.TypeScript.Tools
 
             OnExecute(() =>
             {
-                string assemblyFolderPath = dicOption["input"].Value();
-                List<string> assemblyNames = dicOption["assemblies"].Values;
-                List<string> generators = dicOption["generators"].Values;
-                string outputType = dicOption["type"].Value();
+                string assemblyFolderPath = dicOption["input"].Value()?.Trim('"');
+                List<string> assemblyNames = dicOption["assemblies"].Values?.Select(x => x.Trim('"')).ToList();
+                List<string> generators = dicOption["generators"].Values?.Select(x => x.Trim('"')).ToList();
+                string outputType = dicOption["type"].Value()?.Trim('"');
                 bool strictNullChecks = dicOption["strict"].HasValue();
-                string propertyMode = dicOption["property-mode"].Value();
-                string outputPath = dicOption["output"].Value();
+                string propertyMode = dicOption["property-mode"].Value()?.Trim('"');
+                string outputPath = dicOption["output"].Value()?.Trim('"');
 
                 Guard.ArgumentNotNullOrWhiteSpace(assemblyFolderPath, "--assemblies|-a");
                 Guard.ArgumentNotNull(generators, "--generators|-g");
@@ -142,7 +145,7 @@ namespace Umbrella.TypeScript.Tools
             CommandOption coStrictNullChecks = Option("--strict|-s", "Enable strict null checks", CommandOptionType.NoValue);
             CommandOption coPropertyMode = Option("--property-mode|-p", "The TypeScriptPropertyMode to use: [none, null, model]", CommandOptionType.SingleValue);
             CommandOption coOutputPath = Option("--output|-o", "The path where the output file will be written.", CommandOptionType.SingleValue);
-
+            
             return new Dictionary<string, CommandOption>
             {
                 ["input"] = coAssemblyFolderPath,

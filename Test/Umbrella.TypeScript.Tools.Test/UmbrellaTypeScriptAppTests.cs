@@ -17,14 +17,14 @@ namespace Umbrella.TypeScript.Tools.Test
 
             var args = new[]
             {
-                $"--input:{baseDir}",
-                $"--assemblies:Umbrella.TypeScript.Tools.Test",
-                $"--generators:standard",
-                $"--generators:knockout",
-                $"--type:module",
+                $"--input:\"{baseDir}\"",
+                $"--assemblies:\"Umbrella.TypeScript.Tools.Test\"",
+                $"--generators:\"standard\"",
+                $"--generators:\"knockout\"",
+                $"--type:\"module\"",
                 "--strict",
-                "--property-mode:Model",
-                $"--output:{outputPath}"
+                "--property-mode:\"Model\"",
+                $"--output:\"{outputPath}\""
             };
 
             try

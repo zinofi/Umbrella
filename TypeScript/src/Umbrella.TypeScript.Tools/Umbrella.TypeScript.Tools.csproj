@@ -9,7 +9,7 @@
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageVersion>1.0.0-rel-build00202</PackageVersion>
+    <PackageVersion>1.0.0-rel-build00203</PackageVersion>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
     <MinClientVersion>3.0</MinClientVersion>
