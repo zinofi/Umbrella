@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>This package is a placeholder for a future EF Core port of the EF6 library.</Description>
-    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
-    <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>Umbrella.DataAccess.EntityFrameworkCore</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Umbrella.DataAccess.EntityFrameworkCore</PackageId>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
+    <Description>This package is a placeholder for a future EF Core port of the Umbrella.DataAccess.EF6 package.</Description>
   </PropertyGroup>
 
   <ItemGroup>

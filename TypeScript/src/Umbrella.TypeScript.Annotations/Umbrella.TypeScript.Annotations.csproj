@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Umbrella.TypeScript.Annotations Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
-    <Authors>Richard Edwards</Authors>
     <TargetFrameworks>netstandard1.1</TargetFrameworks>
-    <AssemblyName>Umbrella.TypeScript.Annotations</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Annotations</PackageId>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
   </PropertyGroup>
 
 </Project>

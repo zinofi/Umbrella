@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
     <TargetFramework>net462</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>Umbrella.AspNetCore.Samples</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>Umbrella.AspNetCore.Samples</PackageId>
     <UserSecretsId>b7181249-37e4-4aae-b8fc-c65370d6f601</UserSecretsId>
   </PropertyGroup>
 
@@ -53,7 +50,7 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>

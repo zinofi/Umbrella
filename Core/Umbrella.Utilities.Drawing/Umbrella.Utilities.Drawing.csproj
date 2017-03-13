@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
-    <Authors>Richard Edwards</Authors>
     <TargetFramework>net45</TargetFramework>
-    <AssemblyName>Umbrella.Utilities.Drawing</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Umbrella.Utilities.Drawing</PackageId>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

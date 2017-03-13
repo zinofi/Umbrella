@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageVersion>1.0.0-rel-build00204</PackageVersion>
     <PackageId>Umbrella.TypeScript.Tools.Aurelia</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <MinClientVersion>3.0</MinClientVersion>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

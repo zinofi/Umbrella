@@ -2,10 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.5</TargetFramework>
-    <Description>Umbrella.TypeScript.Aurelia Class Library</Description>
-    <PackageVersion>1.0.0-rel-build00204</PackageVersion>
-    <Authors>Richard Edwards</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Aurelia</PackageId>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

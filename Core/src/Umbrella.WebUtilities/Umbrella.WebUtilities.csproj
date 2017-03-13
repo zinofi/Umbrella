@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Umbrella.WebUtilities Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
-    <Authors>Richard Edwards</Authors>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
-    <AssemblyName>Umbrella.WebUtilities</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Umbrella.WebUtilities</PackageId>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

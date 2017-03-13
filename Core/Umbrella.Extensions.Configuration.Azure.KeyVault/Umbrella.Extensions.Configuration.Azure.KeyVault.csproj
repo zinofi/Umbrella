@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Umbrella.Extensions.Configuration.Azure.KeyVault Class Library</Description>
-    <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
-    <Authors>Richard Edwards</Authors>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>Umbrella.Extensions.Configuration.Azure.KeyVault</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Umbrella.Extensions.Configuration.Azure.KeyVault</PackageId>
+    <Version>1.0.0-rel-build00300</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
+    <Description>This package is obsolete and will be de-listed. Please use the new Microsoft.Extensions.Configuration.AzureKeyVault package.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+  <ItemGroup>
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
