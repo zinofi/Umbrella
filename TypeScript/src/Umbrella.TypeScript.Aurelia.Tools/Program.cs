@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Umbrella.TypeScript.Tools.Aurelia
+namespace Umbrella.TypeScript.Aurelia.Tools
 {
     public class Program
     {

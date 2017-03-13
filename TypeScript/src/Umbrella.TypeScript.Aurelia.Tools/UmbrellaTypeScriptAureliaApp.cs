@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.CommandLineUtils;
-using Umbrella.TypeScript.Aurelia;
+using Umbrella.TypeScript.Tools;
 
-namespace Umbrella.TypeScript.Tools.Aurelia
+namespace Umbrella.TypeScript.Aurelia.Tools
 {
     public class UmbrellaTypeScriptAureliaApp : UmbrellaTypeScriptApp
     {

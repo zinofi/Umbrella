@@ -98,11 +98,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Tools.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Aurelia", "Core\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj", "{1F388195-8BBD-49C7-BDC3-F9D774A0489C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Tools.Aurelia", "Core\Umbrella.TypeScript.Tools.Aurelia\Umbrella.TypeScript.Tools.Aurelia.csproj", "{23937086-8EEE-424F-9837-EEC3CC9BF7CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Aurelia.Tools", "Core\Umbrella.TypeScript.Aurelia.Tools\Umbrella.TypeScript.Aurelia.Tools.csproj", "{23937086-8EEE-424F-9837-EEC3CC9BF7CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Aurelia.Test", "Test\Umbrella.TypeScript.Aurelia.Test\Umbrella.TypeScript.Aurelia.Test.csproj", "{ED48DA42-703B-4F8B-9605-E262EDCD8BCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Tools.Aurelia.Test", "Test\Umbrella.TypeScript.Tools.Aurelia.Test\Umbrella.TypeScript.Tools.Aurelia.Test.csproj", "{DAD50C9B-4EC7-4ABF-8339-130227F79D4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.TypeScript.Aurelia.Tools.Test", "Test\Umbrella.TypeScript.Aurelia.Tools.Test\Umbrella.TypeScript.Aurelia.Tools.Test.csproj", "{DAD50C9B-4EC7-4ABF-8339-130227F79D4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DynamicImage.Abstractions", "Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj", "{94DCA90F-03D5-4E8F-88C5-E4882AC98DE5}"
 EndProject

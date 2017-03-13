@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Umbrella.TypeScript.Tools.Aurelia;
 using Xunit;
 
-namespace Umbrella.TypeScript.Tools.Test
+namespace Umbrella.TypeScript.Aurelia.Tools.Test
 {
     public class UmbrellaTypeScriptAureliaAppTests
     {
