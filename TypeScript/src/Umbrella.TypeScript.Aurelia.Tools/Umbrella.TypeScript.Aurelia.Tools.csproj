@@ -3,25 +3,21 @@
   <PropertyGroup>
     <AssemblyName>dotnet-umbrella-ts-aurelia</AssemblyName>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Aurelia.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>1.0.0-rel-build00302</Version>
+    <Version>1.0.0-rel-build00303</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd ? 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj" />
     <ProjectReference Include="..\Umbrella.TypeScript.Tools\Umbrella.TypeScript.Tools.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

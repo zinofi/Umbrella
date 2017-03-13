@@ -3,16 +3,16 @@
   <PropertyGroup>
     <AssemblyName>dotnet-umbrella-ts</AssemblyName>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp1.0</TargetFrameworks>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
   
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>1.0.0-rel-build00302</Version>
+    <Version>1.0.0-rel-build00303</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
