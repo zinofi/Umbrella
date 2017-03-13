@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>Umbrella.DataAccess.MultiTenant.EF6 Class Library</Description>
@@ -7,9 +7,6 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>Umbrella.DataAccess.MultiTenant.EF6</AssemblyName>
     <PackageId>Umbrella.DataAccess.MultiTenant.EF6</PackageId>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
   <ItemGroup>

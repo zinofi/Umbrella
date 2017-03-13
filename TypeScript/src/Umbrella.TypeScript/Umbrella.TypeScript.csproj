@@ -1,33 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net46;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>netstandard1.5</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <Description>Umbrella.TypeScript Class Library</Description>
     <PackageVersion>1.0.0-rel-build00204</PackageVersion>
     <Authors>Richard Edwards</Authors>
     <PackageId>Umbrella.TypeScript</PackageId>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NET46;NETSTANDARD1_6</DefineConstants>
-  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj" />
     <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.6'">
-    <PackageReference Include="System.Runtime.Loader">
-      <Version>4.3.0</Version>
-    </PackageReference>
+  
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

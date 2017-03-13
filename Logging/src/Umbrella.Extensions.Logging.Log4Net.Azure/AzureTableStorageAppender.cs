@@ -38,7 +38,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             //Executing this code asynchronously on a worker thread to avoid blocking the main thread
             //If there are a lot of threads trying to write to the logs then this could have been a bottleneck
             //if executed synchronously.
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 if (m_LogErrorsToConsole)
                     Console.WriteLine("SendBuffer started.");
@@ -50,7 +50,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 
                     //Get the table we need to write stuff to and create it if needed
                     CloudTable table = m_Client.GetTableReference($"{m_Config.TablePrefix}xxxxxx{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
-                    table.CreateIfNotExists();
+                    await table.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                     //Create the required table entities to write to storage and group them by PartitionKey.
                     //This is because entities written in a batch must all have the same PartitionKey.
@@ -68,7 +68,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                                     batchOperation.Insert(item);
                             }
 
-                            table.ExecuteBatch(batchOperation);
+                            await table.ExecuteBatchAsync(batchOperation).ConfigureAwait(false);
                         }
                     }
                 }

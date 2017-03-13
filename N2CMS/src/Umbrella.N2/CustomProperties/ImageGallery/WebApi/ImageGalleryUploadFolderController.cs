@@ -8,12 +8,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
+using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.DynamicImage;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
 {

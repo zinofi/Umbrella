@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
+using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 {

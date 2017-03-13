@@ -1,14 +1,12 @@
-﻿using Umbrella.WebUtilities.DynamicImage.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using System.Web;
-using Umbrella.WebUtilities.DynamicImage;
 using System.Text.RegularExpressions;
+using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage
 {

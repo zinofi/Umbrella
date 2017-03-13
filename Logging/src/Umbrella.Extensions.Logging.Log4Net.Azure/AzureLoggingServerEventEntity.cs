@@ -13,7 +13,6 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
     {
         #region Public Properties
         public DateTime EventTimeStamp { get; set; }
-        public StackFrameItem[] StackFrames { get; set; }
         public string ClassName { get; set; }
         public string Exception { get; set; }
         public string FileName { get; set; }
@@ -52,7 +51,6 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             FileName = e.LocationInformation.FileName;
             LineNumber = e.LocationInformation.LineNumber;
             MethodName = e.LocationInformation.MethodName;
-            StackFrames = e.LocationInformation.StackFrames;
 
             if (e.ExceptionObject != null)
                 Exception = e.ExceptionObject.ToString();

@@ -44,7 +44,7 @@ namespace Umbrella.DataAnnotations
         protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
         {
             return base.GetClientValidationParameters()
-                .Union(new[] { new KeyValuePair<string, object>("Min", GetMinDate().ToShortDateString()) });
+                .Union(new[] { new KeyValuePair<string, object>("Min", GetMinDate().ToString("d")) });
         }
 
         public override bool IsValid(object value, object container)

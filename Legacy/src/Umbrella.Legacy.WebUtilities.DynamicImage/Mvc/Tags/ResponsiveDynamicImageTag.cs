@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.Mvc.Tags;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 {

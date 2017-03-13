@@ -4,17 +4,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.DynamicImage;
 using Umbrella.Legacy.WebUtilities.Extensions;
 using System.Net;
 using System.Web.Configuration;
-using Umbrella.Legacy.Utilities;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Microsoft.Extensions.Logging;
-using Umbrella.WebUtilities.DynamicImage.Configuration;
+using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
@@ -90,7 +86,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
                             }
                         }
 
-                        Umbrella.WebUtilities.DynamicImage.DynamicImage image = m_DynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
+                        DynamicImageItem image = m_DynamicImageUtility.GetImage(width, height, mode, originalExtension, path);
 
                         if (!string.IsNullOrEmpty(image.CachedVirtualPath))
                         {
@@ -133,7 +129,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
         #endregion
 
         #region Private Methods
-        private void AppendResponseHeaders(IOwinResponse response, Umbrella.WebUtilities.DynamicImage.DynamicImage dynamicImage)
+        private void AppendResponseHeaders(IOwinResponse response, DynamicImageItem dynamicImage)
         {
             response.Headers.Append("Content-Type", "image/" + dynamicImage.ImageOptions.Format.ToString().ToLower());
             response.Headers.Append("Last-Modified", dynamicImage.LastModified.ToUniversalTime().ToString("r"));

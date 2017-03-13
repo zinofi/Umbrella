@@ -1,18 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Umbrella.Utilities Class Library</Description>
     <VersionPrefix>1.0.0-rel-build00204</VersionPrefix>
     <Authors>Richard Edwards</Authors>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
     <AssemblyName>Umbrella.Utilities.Drawing</AssemblyName>
     <PackageId>Umbrella.Utilities.Drawing</PackageId>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+  <ItemGroup>
     <Reference Include="System.Drawing" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />

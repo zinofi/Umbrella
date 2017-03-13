@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.5</TargetFramework>
+    <Description>Umbrella.TypeScript.Aurelia Class Library</Description>
+    <PackageVersion>1.0.0-rel-build00204</PackageVersion>
+    <Authors>Richard Edwards</Authors>
+    <PackageId>Umbrella.TypeScript.Aurelia</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Umbrella.TypeScript\Umbrella.TypeScript.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

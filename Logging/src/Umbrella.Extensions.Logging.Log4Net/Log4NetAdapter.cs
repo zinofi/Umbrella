@@ -1,22 +1,25 @@
 ﻿using log4net;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {
     public class Log4NetAdapter : ILogger
     {
-        private ILog _logger;
+        #region Private Members
+        private readonly ILog m_Logger;
+        #endregion
 
+        #region Constructors
         public Log4NetAdapter(string loggerName)
         {
-            _logger = LogManager.GetLogger(loggerName);
+            m_Logger = LogManager.GetLogger(loggerName);
         }
+        #endregion
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return null;
-        }
+        #region ILogger Members
+        public IDisposable BeginScope<TState>(TState state) => null;
 
         public bool IsEnabled(LogLevel logLevel)
         {
@@ -24,15 +27,15 @@ namespace Umbrella.Extensions.Logging.Log4Net
             {
                 case LogLevel.Trace:
                 case LogLevel.Debug:
-                    return _logger.IsDebugEnabled;
+                    return m_Logger.IsDebugEnabled;
                 case LogLevel.Information:
-                    return _logger.IsInfoEnabled;
+                    return m_Logger.IsInfoEnabled;
                 case LogLevel.Warning:
-                    return _logger.IsWarnEnabled;
+                    return m_Logger.IsWarnEnabled;
                 case LogLevel.Error:
-                    return _logger.IsErrorEnabled;
+                    return m_Logger.IsErrorEnabled;
                 case LogLevel.Critical:
-                    return _logger.IsFatalEnabled;
+                    return m_Logger.IsFatalEnabled;
                 default:
                     throw new ArgumentException($"Unknown log level {logLevel}.", nameof(logLevel));
             }
@@ -53,10 +56,6 @@ namespace Umbrella.Extensions.Logging.Log4Net
             }
             else
             {
-                //TODO: RC2 - The LogFormatter class has disappeared in RC2. May need to find a replacement
-                //if this exception gets thrown.
-                //message = LogFormatter.Formatter(state, exception);
-
                 throw new InvalidOperationException();
             }
 
@@ -64,25 +63,26 @@ namespace Umbrella.Extensions.Logging.Log4Net
             {
                 case LogLevel.Trace:
                 case LogLevel.Debug:
-                    _logger.Debug(message, exception);
+                    m_Logger.Debug(message, exception);
                     break;
                 case LogLevel.Information:
-                    _logger.Info(message, exception);
+                    m_Logger.Info(message, exception);
                     break;
                 case LogLevel.Warning:
-                    _logger.Warn(message, exception);
+                    m_Logger.Warn(message, exception);
                     break;
                 case LogLevel.Error:
-                    _logger.Error(message, exception);
+                    m_Logger.Error(message, exception);
                     break;
                 case LogLevel.Critical:
-                    _logger.Fatal(message, exception);
+                    m_Logger.Fatal(message, exception);
                     break;
                 default:
-                    _logger.Warn($"Encountered unknown log level {logLevel}, writing out as Info.");
-                    _logger.Info(message, exception);
+                    m_Logger.Warn($"Encountered unknown log level {logLevel}, writing out as Info.");
+                    m_Logger.Info(message, exception);
                     break;
             }
-        }
+        } 
+        #endregion
     }
 }

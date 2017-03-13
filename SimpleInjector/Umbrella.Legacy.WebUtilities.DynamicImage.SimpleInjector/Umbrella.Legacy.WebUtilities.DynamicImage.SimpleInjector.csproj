@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>Umbrella.Legacy.WebUtilities.DynamicImage.SimpleInjector Class Library</Description>
@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Legacy\Umbrella.Legacy.WebUtilities.DynamicImage\Umbrella.Legacy.WebUtilities.DynamicImage.csproj" />
-    <ProjectReference Include="..\Umbrella.WebUtilities.DynamicImage.SimpleInjector\Umbrella.WebUtilities.DynamicImage.SimpleInjector.csproj" />
   </ItemGroup>
 
   <ItemGroup>

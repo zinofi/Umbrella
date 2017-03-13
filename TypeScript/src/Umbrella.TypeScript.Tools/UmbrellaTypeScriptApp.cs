@@ -13,39 +13,39 @@ namespace Umbrella.TypeScript.Tools
 {
     public class UmbrellaTypeScriptApp : CommandLineApplication
     {
-        protected static ConsoleColor s_InitialConsoleColor;
+        protected ConsoleColor InitialConsoleColor { get; } = Console.ForegroundColor;
+        protected Dictionary<string, CommandOption> OptionDictionary { get; private set; }
+        protected bool DebugEnabled { get; private set; }
+        protected bool VerboseEnabled { get; private set; }
 
         public UmbrellaTypeScriptApp(bool testMode = false)
         {
-            //Store the initial Console text color so we can reset it if we alter it at some point.
-            s_InitialConsoleColor = Console.ForegroundColor;
-
             Name = "dotnet-umbrella-ts";
             FullName = ".NET Core Umbrella TypeScript Generator";
             Description = "TypeScript generator for .NET Core applications";
 
             HelpOption("-?|-h|--help");
 
-            Dictionary<string, CommandOption> dicOption = SetupCommandOptions();
-
+            SetupCommandOptions();
+            
             OnExecute(() =>
             {
-                bool verbose = dicOption["verbose"].HasValue();
-                bool debug = dicOption["debug"].HasValue();
-                string assemblyFolderPath = dicOption["input"].Value()?.Trim('"');
-                List<string> assemblyNames = dicOption["assemblies"].Values?.Select(x => x.Trim('"')).ToList();
-                List<string> generators = dicOption["generators"].Values?.Select(x => x.Trim('"')).ToList();
-                string outputType = dicOption["type"].Value()?.Trim('"');
-                bool strictNullChecks = dicOption["strict"].HasValue();
-                string propertyMode = dicOption["property-mode"].Value()?.Trim('"');
-                string outputPath = dicOption["output"].Value()?.Trim('"');
+                VerboseEnabled = OptionDictionary["verbose"].HasValue();
+                DebugEnabled = OptionDictionary["debug"].HasValue();
+                string assemblyFolderPath = OptionDictionary["input"].Value()?.Trim('"');
+                List<string> assemblyNames = OptionDictionary["assemblies"].Values?.Select(x => x.Trim('"')).ToList();
+                List<string> generators = OptionDictionary["generators"].Values?.Select(x => x.Trim('"')).ToList();
+                string outputType = OptionDictionary["type"].Value()?.Trim('"');
+                bool strictNullChecks = OptionDictionary["strict"].HasValue();
+                string propertyMode = OptionDictionary["property-mode"].Value()?.Trim('"');
+                string outputPath = OptionDictionary["output"].Value()?.Trim('"');
 
-                if (debug)
+                if (DebugEnabled)
                 {
                     var parsedOptions = new
                     {
-                        verbose,
-                        debug,
+                        VerboseEnabled,
+                        DebugEnabled,
                         assemblyFolderPath,
                         assemblyNames,
                         generators,
@@ -157,20 +157,20 @@ namespace Umbrella.TypeScript.Tools
                 generator.IncludeKnockoutGenerators();
         }
 
-        protected virtual Dictionary<string, CommandOption> SetupCommandOptions()
+        protected virtual void SetupCommandOptions()
         {
             CommandOption coVerbose = Option("--verbose|-v", "Show detailed output messages.", CommandOptionType.NoValue);
             CommandOption coDebug = Option("--debug|-d", "Show debug messages.", CommandOptionType.NoValue);
 
             CommandOption coAssemblyFolderPath = Option("--input|-i", "The physical path to the folder containing the assemblies to scan for TypeScript attributes.", CommandOptionType.SingleValue);
             CommandOption coAssemblyNames = Option("--assemblies|-a", "The names of the assemblies to scan for attributes. If not supplied all assemblies in the folder path will be scanned.", CommandOptionType.MultipleValue);
-            CommandOption coGenerators = Option("--generators|-g", "The generators to include: [standard | knockout]", CommandOptionType.MultipleValue);
+            CommandOption coGenerators = Option("--generators|-g", "The generators to include: [standard | knockout].", CommandOptionType.MultipleValue);
             CommandOption coOutputType = Option("--type|-t", "The output type: [namespace, module]", CommandOptionType.SingleValue);
             CommandOption coStrictNullChecks = Option("--strict|-s", "Enable strict null checks", CommandOptionType.NoValue);
-            CommandOption coPropertyMode = Option("--property-mode|-p", "The TypeScriptPropertyMode to use: [none, null, model]", CommandOptionType.SingleValue);
+            CommandOption coPropertyMode = Option("--property-mode|-p", "The TypeScriptPropertyMode to use: [None, Null, Model]. This value is case sensitive.", CommandOptionType.SingleValue);
             CommandOption coOutputPath = Option("--output|-o", "The path where the output file will be written.", CommandOptionType.SingleValue);
             
-            return new Dictionary<string, CommandOption>
+            OptionDictionary = new Dictionary<string, CommandOption>
             {
                 ["verbose"] = coVerbose,
                 ["debug"] = coDebug,
@@ -188,7 +188,7 @@ namespace Umbrella.TypeScript.Tools
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine(message);
-            Console.ForegroundColor = s_InitialConsoleColor;
+            Console.ForegroundColor = InitialConsoleColor;
         }
 
         public void WriteConsoleDebugMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Yellow);
@@ -199,7 +199,7 @@ namespace Umbrella.TypeScript.Tools
         {
             Console.ForegroundColor = color;
             Console.WriteLine(message);
-            Console.ForegroundColor = s_InitialConsoleColor;
+            Console.ForegroundColor = InitialConsoleColor;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -32,14 +31,14 @@ namespace Umbrella.DataAnnotations.BaseClasses
 
         private object GetDependentPropertyValue(object container)
         {
-            var currentType = container.GetType();
+            var currentType = container.GetType().GetTypeInfo();
             var value = container;
 
             foreach (string propertyName in DependentProperty.Split('.'))
             {
                 var property = currentType.GetProperty(propertyName);
                 value = property.GetValue(value, null);
-                currentType = property.PropertyType;
+                currentType = property.PropertyType.GetTypeInfo();
             }
 
             return value;

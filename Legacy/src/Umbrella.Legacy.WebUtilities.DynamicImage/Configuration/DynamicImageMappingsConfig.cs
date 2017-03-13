@@ -5,8 +5,8 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.Utilities.Configuration;
-using Umbrella.WebUtilities.DynamicImage.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 {

@@ -13,7 +13,6 @@ namespace Umbrella.TypeScript.Tools.Test
             var app = new UmbrellaTypeScriptApp(testMode: true);
 
             string baseDir = AppContext.BaseDirectory;
-            string outputPath = Path.Combine(baseDir, "test out", "TestApp.ts");
 
             var args = new[]
             {
@@ -24,7 +23,7 @@ namespace Umbrella.TypeScript.Tools.Test
                 $"--type:\"module\"",
                 "--strict",
                 "--property-mode:\"Model\"",
-                $@"--output: ""C:\ProjectsGIT\Umbrella Aurelia\samples\Umbrella.Aurelia.Samples\App\generated.ts"""
+                $@"--output: ""C:\Temp\generated.ts"""
             };
 
             try

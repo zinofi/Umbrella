@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags;
-using Umbrella.WebUtilities.DynamicImage.Enumerations;
-using Umbrella.WebUtilities.DynamicImage.Interfaces;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
 {
