@@ -17,7 +17,7 @@ namespace Umbrella.TypeScript.Aurelia.Tools.Test
             var args = new[]
             {
                 $"--input:\"{baseDir}\"",
-                $"--assemblies:\"Umbrella.TypeScript.Tools.Aurelia.Test\"",
+                $"--assemblies:\"Umbrella.TypeScript.Aurelia.Tools.Test\"",
                 $"--type:\"module\"",
                 "--strict",
                 "--validation",

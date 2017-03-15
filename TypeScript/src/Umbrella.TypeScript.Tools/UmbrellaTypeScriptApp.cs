@@ -106,7 +106,7 @@ namespace Umbrella.TypeScript.Tools
                     using (FileStream fs = File.OpenRead(assemblyName))
                     {
                         Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(fs);
-
+                        
                         lstAssemblyToProcess.Add(assembly);
                     }
                 }

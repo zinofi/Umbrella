@@ -3,6 +3,8 @@ using System.Runtime.Loader;
 using System.Reflection;
 using System.Collections.Generic;
 using Xunit;
+using System.ComponentModel.DataAnnotations;
+using Umbrella.DataAnnotations;
 
 namespace Umbrella.TypeScript.Aurelia.Test
 {
@@ -34,6 +36,8 @@ namespace Umbrella.TypeScript.Aurelia.Test
     public class TestClass
     {
         public int TestInt { get; set; } = 100;
+
+        [Required]
         public string TestString { get; set; }
     }
 
@@ -52,6 +56,7 @@ namespace Umbrella.TypeScript.Aurelia.Test
         [TypeScriptEmpty]
         public List<string> TestStringList { get; set; }
 
+        [RequiredNonEmptyCollection]
         public List<int> TestIntList { get; set; } = new List<int>();
     }
 }
