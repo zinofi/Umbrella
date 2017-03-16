@@ -6,11 +6,13 @@ using Umbrella.TypeScript.Tools;
 
 namespace Umbrella.TypeScript.Aurelia.Tools
 {
-    public class UmbrellaTypeScriptAureliaApp : UmbrellaTypeScriptApp
+    public class UmbrellaTypeScriptAureliaApp : UmbrellaTypeScriptApp<AureliaToolOptions>
     {
-        public UmbrellaTypeScriptAureliaApp(bool testMode = false)
-            : base(testMode)
+        public UmbrellaTypeScriptAureliaApp()
         {
+            Name = "dotnet-umbrella-ts-aurelia";
+            FullName = ".NET Core Umbrella Aurelia TypeScript Generator";
+            Description = "Aurelia TypeScript generator for .NET Core applications";
         }
 
         protected override void SetupCommandOptions()
@@ -22,6 +24,15 @@ namespace Umbrella.TypeScript.Aurelia.Tools
             OptionDictionary["generators"].Description += " The Aurelia generator is included by default.";
         }
 
+        protected override AureliaToolOptions GetToolOptions()
+        {
+            var toolOptions = base.GetToolOptions();
+
+            toolOptions.ValidationEnabled = OptionDictionary["validation"].HasValue();
+
+            return toolOptions;
+        }
+
         protected override void SetupGenerators(List<string> generators, TypeScriptGenerator generator)
         {
             base.SetupGenerators(generators, generator);
@@ -29,11 +40,11 @@ namespace Umbrella.TypeScript.Aurelia.Tools
             generator.IncludeAureliaGenerators();
         }
 
-        protected override StringBuilder CreateOutputBuilder()
+        protected override StringBuilder CreateOutputBuilder(AureliaToolOptions toolOptions)
         {
-            StringBuilder sbOutput = base.CreateOutputBuilder();
+            StringBuilder sbOutput = base.CreateOutputBuilder(toolOptions);
 
-            if (OptionDictionary["validation"].HasValue())
+            if (toolOptions.ValidationEnabled)
             {
                 sbOutput.AppendLine("import { ValidationRules } from \"aurelia-validation\";");
                 sbOutput.AppendLine();

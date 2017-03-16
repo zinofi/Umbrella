@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +38,12 @@ namespace Umbrella.Utilities
             {
                 throw new ArgumentException($"{argumentName} cannot be null, empty, or only whitespace.");
             }
+        }
+
+        public static void ArgumentNotNullOrEmpty(IList argumentValue, string argumentName)
+        {
+            if (argumentValue?.Count == 0)
+                throw new ArgumentException($"{argumentName} cannot be null or empty");
         }
     }
 }

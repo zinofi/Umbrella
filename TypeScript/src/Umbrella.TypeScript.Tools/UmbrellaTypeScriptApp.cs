@@ -11,14 +11,19 @@ using Newtonsoft.Json;
 
 namespace Umbrella.TypeScript.Tools
 {
-    public class UmbrellaTypeScriptApp : CommandLineApplication
+    public class UmbrellaTypeScriptApp : UmbrellaTypeScriptApp<ToolOptions>
+    {
+    }
+
+    public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
+        where TOptions : ToolOptions, new()
     {
         protected ConsoleColor InitialConsoleColor { get; } = Console.ForegroundColor;
         protected Dictionary<string, CommandOption> OptionDictionary { get; private set; }
         protected bool DebugEnabled { get; private set; }
         protected bool VerboseEnabled { get; private set; }
 
-        public UmbrellaTypeScriptApp(bool testMode = false)
+        public UmbrellaTypeScriptApp()
         {
             Name = "dotnet-umbrella-ts";
             FullName = ".NET Core Umbrella TypeScript Generator";
@@ -27,89 +32,28 @@ namespace Umbrella.TypeScript.Tools
             HelpOption("-?|-h|--help");
 
             SetupCommandOptions();
-            
+
             OnExecute(() =>
             {
-                VerboseEnabled = OptionDictionary["verbose"].HasValue();
-                DebugEnabled = OptionDictionary["debug"].HasValue();
-                string assemblyFolderPath = OptionDictionary["input"].Value()?.Trim('"');
-                List<string> assemblyNames = OptionDictionary["assemblies"].Values?.Select(x => x.Trim('"')).ToList();
-                List<string> generators = OptionDictionary["generators"].Values?.Select(x => x.Trim('"')).ToList();
-                string outputType = OptionDictionary["type"].Value()?.Trim('"');
-                bool strictNullChecks = OptionDictionary["strict"].HasValue();
-                string propertyMode = OptionDictionary["property-mode"].Value()?.Trim('"');
-                string outputPath = OptionDictionary["output"].Value()?.Trim('"');
+                TOptions toolOptions = GetToolOptions();
 
                 if (DebugEnabled)
                 {
-                    var parsedOptions = new
-                    {
-                        VerboseEnabled,
-                        DebugEnabled,
-                        assemblyFolderPath,
-                        assemblyNames,
-                        generators,
-                        outputType,
-                        strictNullChecks,
-                        propertyMode,
-                        outputPath
-                    };
-
-                    WriteConsoleDebugMessage($"Parsed options: {JsonConvert.SerializeObject(parsedOptions)}");
-                }
-
-                Guard.ArgumentNotNullOrWhiteSpace(assemblyFolderPath, "--assemblies|-a");
-                Guard.ArgumentNotNull(generators, "--generators|-g");
-                Guard.ArgumentNotNullOrWhiteSpace(outputType, "--type|-t");
-                Guard.ArgumentNotNullOrWhiteSpace(propertyMode, "--property-mode|-p");
-                Guard.ArgumentNotNullOrWhiteSpace(outputPath, "--output|-o");
-
-                if (!Enum.TryParse(propertyMode, out TypeScriptPropertyMode tsPropertyMode))
-                {
-                    WriteConsoleErrorMessage($"The value for the --property-mode|-p argument {propertyMode} is invalid.");
-                    return 3;
+                    WriteConsoleDebugMessage($"Parsed options: {JsonConvert.SerializeObject(toolOptions)}");
                 }
 
                 //Check folder exists
-                if (!Directory.Exists(assemblyFolderPath))
+                if (!Directory.Exists(toolOptions.AssemblyFolderPath))
                 {
-                    WriteConsoleErrorMessage($"The path for the --input|-i argument {assemblyFolderPath} does not exist.");
+                    WriteConsoleErrorMessage($"The path for the --input|-i argument {toolOptions.AssemblyFolderPath} does not exist.");
                     return 3;
                 }
 
-                List<string> lstAssemblyName = new List<string>();
+                //Load Runtime Assemblies
+                LoadAssemblies(toolOptions.AssemblyFolderPath, toolOptions.RuntimeAssemblyNameList);
 
-                foreach (var fileName in Directory.EnumerateFiles(assemblyFolderPath, "*.dll"))
-                {
-                    if (assemblyNames.Count > 0)
-                    {
-                        if (!assemblyNames.Contains(Path.GetFileNameWithoutExtension(fileName)))
-                            continue;
-                    }
-
-                    lstAssemblyName.Add(fileName);
-                }
-
-                if (lstAssemblyName.Count == 0)
-                {
-                    WriteConsoleErrorMessage($"No assemblies were found to process.");
-                    return 3;
-                }
-
-                if (testMode)
-                    throw new Exception("Testing successful");
-
-                List<Assembly> lstAssemblyToProcess = new List<Assembly>();
-
-                foreach (string assemblyName in lstAssemblyName)
-                {
-                    using (FileStream fs = File.OpenRead(assemblyName))
-                    {
-                        Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(fs);
-                        
-                        lstAssemblyToProcess.Add(assembly);
-                    }
-                }
+                //Assemblies to scan
+                List<Assembly> lstAssemblyToProcess = LoadAssemblies(toolOptions.AssemblyFolderPath, toolOptions.AssemblyNameList);
 
                 if (lstAssemblyToProcess.Count == 0)
                 {
@@ -119,14 +63,14 @@ namespace Umbrella.TypeScript.Tools
 
                 var generator = new TypeScriptGenerator(lstAssemblyToProcess);
 
-                SetupGenerators(generators, generator);
+                SetupGenerators(toolOptions.GeneratorList, generator);
 
-                string strOutput = generator.GenerateAll(outputType == "module", strictNullChecks, tsPropertyMode);
-                StringBuilder sbOutput = CreateOutputBuilder();
+                string strOutput = generator.GenerateAll(toolOptions.OutputType == "module", toolOptions.StrictNullChecks, toolOptions.PropertyMode);
+                StringBuilder sbOutput = CreateOutputBuilder(toolOptions);
 
                 sbOutput.AppendLine(strOutput);
 
-                using (StreamWriter sw = File.CreateText(outputPath))
+                using (StreamWriter sw = File.CreateText(toolOptions.OutputPath))
                 {
                     sw.Write(sbOutput.ToString());
                 }
@@ -135,7 +79,18 @@ namespace Umbrella.TypeScript.Tools
             });
         }
 
-        protected virtual StringBuilder CreateOutputBuilder()
+        public void WriteConsoleErrorMessage(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Error.WriteLine(message);
+            Console.ForegroundColor = InitialConsoleColor;
+        }
+
+        public void WriteConsoleDebugMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Yellow);
+
+        public void WriteConsoleInfoMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Cyan);
+
+        protected virtual StringBuilder CreateOutputBuilder(TOptions toolOptions)
         {
             return new StringBuilder()
                 .AppendLine("//------------------------------------------------------------------------------")
@@ -164,18 +119,20 @@ namespace Umbrella.TypeScript.Tools
 
             CommandOption coAssemblyFolderPath = Option("--input|-i", "The physical path to the folder containing the assemblies to scan for TypeScript attributes.", CommandOptionType.SingleValue);
             CommandOption coAssemblyNames = Option("--assemblies|-a", "The names of the assemblies to scan for attributes. If not supplied all assemblies in the folder path will be scanned.", CommandOptionType.MultipleValue);
+            CommandOption coRuntimeAssemblies = Option("--runtime-assemblies|-r", "The names of the assemblies to load into memory upon which the assemblies being scanned depend.", CommandOptionType.MultipleValue);
             CommandOption coGenerators = Option("--generators|-g", "The generators to include: [standard | knockout].", CommandOptionType.MultipleValue);
             CommandOption coOutputType = Option("--type|-t", "The output type: [namespace, module]", CommandOptionType.SingleValue);
             CommandOption coStrictNullChecks = Option("--strict|-s", "Enable strict null checks", CommandOptionType.NoValue);
             CommandOption coPropertyMode = Option("--property-mode|-p", "The TypeScriptPropertyMode to use: [None, Null, Model]. This value is case sensitive.", CommandOptionType.SingleValue);
             CommandOption coOutputPath = Option("--output|-o", "The path where the output file will be written.", CommandOptionType.SingleValue);
-            
+
             OptionDictionary = new Dictionary<string, CommandOption>
             {
                 ["verbose"] = coVerbose,
                 ["debug"] = coDebug,
                 ["input"] = coAssemblyFolderPath,
                 ["assemblies"] = coAssemblyNames,
+                ["runtime-assemblies"] = coRuntimeAssemblies,
                 ["generators"] = coGenerators,
                 ["type"] = coOutputType,
                 ["strict"] = coStrictNullChecks,
@@ -184,22 +141,69 @@ namespace Umbrella.TypeScript.Tools
             };
         }
 
-        public void WriteConsoleErrorMessage(string message)
+        protected virtual TOptions GetToolOptions()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(message);
-            Console.ForegroundColor = InitialConsoleColor;
+            string propertyMode = CleanInput(OptionDictionary["property-mode"].Value());
+
+            if (!Enum.TryParse(propertyMode, out TypeScriptPropertyMode tsPropertyMode))
+            {
+                string message = $"The value for the --property-mode|-p argument {propertyMode} is invalid.";
+
+                WriteConsoleErrorMessage(message);
+                throw new Exception(message);
+            }
+
+            var toolOptions = new TOptions
+            {
+                VerboseEnabled = OptionDictionary["verbose"].HasValue(),
+                DebugEnabled = OptionDictionary["debug"].HasValue(),
+                AssemblyFolderPath = CleanInput(OptionDictionary["input"].Value()),
+                AssemblyNameList = CleanInput(OptionDictionary["assemblies"].Values),
+                RuntimeAssemblyNameList = CleanInput(OptionDictionary["runtime-assemblies"].Values),
+                GeneratorList = CleanInput(OptionDictionary["generators"].Values),
+                OutputType = CleanInput(OptionDictionary["type"].Value()),
+                StrictNullChecks = OptionDictionary["strict"].HasValue(),
+                PropertyMode = tsPropertyMode,
+                OutputPath = CleanInput(OptionDictionary["output"].Value())
+            };
+
+            Guard.ArgumentNotNullOrWhiteSpace(toolOptions.AssemblyFolderPath, "--input|-i");
+            Guard.ArgumentNotNullOrEmpty(toolOptions.AssemblyNameList, "--assemblies|-a");
+            Guard.ArgumentNotNullOrEmpty(toolOptions.GeneratorList, "--generators|-g");
+            Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputType, "--type|-t");
+            Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputPath, "--output|-o");
+
+            return toolOptions;
         }
-
-        public void WriteConsoleDebugMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Yellow);
-
-        public void WriteConsoleInfoMessage(string message) => WriteColoredConsoleMessage(message, ConsoleColor.Cyan);
 
         private void WriteColoredConsoleMessage(string message, ConsoleColor color)
         {
             Console.ForegroundColor = color;
             Console.WriteLine(message);
             Console.ForegroundColor = InitialConsoleColor;
+        }
+
+        private List<string> CleanInput(List<string> values) => values?.Select(x => x.Trim('"')).ToList();
+
+        private string CleanInput(string input) => input?.Trim('"');
+
+        private List<Assembly> LoadAssemblies(string assemblyFolderPath, List<string> lstAssemblyName)
+        {
+            List<Assembly> lstAssemblyToProcess = new List<Assembly>();
+
+            foreach (string assemblyName in lstAssemblyName)
+            {
+                string fileName = Path.Combine(assemblyFolderPath, $"{assemblyName}.dll");
+
+                using (FileStream fs = File.OpenRead(fileName))
+                {
+                    Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(fs);
+
+                    lstAssemblyToProcess.Add(assembly);
+                }
+            }
+
+            return lstAssemblyToProcess;
         }
     }
 }
