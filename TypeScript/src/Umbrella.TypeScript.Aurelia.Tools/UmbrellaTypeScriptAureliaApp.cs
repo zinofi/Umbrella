@@ -35,9 +35,9 @@ namespace Umbrella.TypeScript.Aurelia.Tools
 
         protected override void SetupGenerators(List<string> generators, TypeScriptGenerator generator)
         {
-            base.SetupGenerators(generators, generator);
-
             generator.IncludeAureliaGenerators();
+
+            base.SetupGenerators(generators, generator);
         }
 
         protected override StringBuilder CreateOutputBuilder(AureliaToolOptions toolOptions)

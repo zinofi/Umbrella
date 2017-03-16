@@ -40,7 +40,13 @@ namespace Umbrella.Utilities
             }
         }
 
-        public static void ArgumentNotNullOrEmpty(IList argumentValue, string argumentName)
+        public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)
+        {
+            if (argumentValue?.Count == 0)
+                throw new ArgumentException($"{argumentName} cannot be null or empty");
+        }
+
+        public static void ArgumentNotNullOrEmpty<T>(ICollection<T> argumentValue, string argumentName)
         {
             if (argumentValue?.Count == 0)
                 throw new ArgumentException($"{argumentName} cannot be null or empty");

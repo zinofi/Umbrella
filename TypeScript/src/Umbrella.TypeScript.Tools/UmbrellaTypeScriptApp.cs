@@ -65,6 +65,8 @@ namespace Umbrella.TypeScript.Tools
 
                 SetupGenerators(toolOptions.GeneratorList, generator);
 
+                Guard.ArgumentNotNullOrEmpty(generator.Generators, "--generators|-g");
+
                 string strOutput = generator.GenerateAll(toolOptions.OutputType == "module", toolOptions.StrictNullChecks, toolOptions.PropertyMode);
                 StringBuilder sbOutput = CreateOutputBuilder(toolOptions);
 
@@ -169,7 +171,6 @@ namespace Umbrella.TypeScript.Tools
 
             Guard.ArgumentNotNullOrWhiteSpace(toolOptions.AssemblyFolderPath, "--input|-i");
             Guard.ArgumentNotNullOrEmpty(toolOptions.AssemblyNameList, "--assemblies|-a");
-            Guard.ArgumentNotNullOrEmpty(toolOptions.GeneratorList, "--generators|-g");
             Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputType, "--type|-t");
             Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputPath, "--output|-o");
 
