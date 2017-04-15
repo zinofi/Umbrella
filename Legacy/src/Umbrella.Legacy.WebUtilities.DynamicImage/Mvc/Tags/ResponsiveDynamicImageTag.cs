@@ -13,24 +13,47 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
         private readonly HashSet<int> m_SizeWidths = new HashSet<int>();
         private string m_SizeAttributeValue;
         private readonly float m_Ratio;
-        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
         private readonly DynamicResizeMode m_ResizeMode;
         private readonly DynamicImageFormat m_Format;
         private readonly bool m_ToAbsolutePath;
+        private readonly string m_DynamicImagePathPrefix;
         #endregion
 
         #region Constructors
-        public ResponsiveDynamicImageTag(IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format, bool toAbsolutePath, Func<string, string> mapVirtualPathFunc)
+        public ResponsiveDynamicImageTag(IDynamicImageUrlGenerator dynamicImageUrlGenerator,
+            string dynamicImagePathPrefix,
+            string path,
+            string altText,
+            int width,
+            int height,
+            DynamicResizeMode resizeMode,
+            IDictionary<string, object> htmlAttributes,
+            DynamicImageFormat format,
+            bool toAbsolutePath,
+            Func<string, string> mapVirtualPathFunc)
             : base(path, altText, htmlAttributes, mapVirtualPathFunc)
         {
-            m_DynamicImageUtility = dynamicImageUtility;
+            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
             m_ResizeMode = resizeMode;
             m_Format = format;
             m_ToAbsolutePath = toAbsolutePath;
+            m_DynamicImagePathPrefix = dynamicImagePathPrefix;
 
             m_Ratio = width / (float)height;
 
-            string x1Url = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
+            //TODO: Assign to member
+            DynamicImageOptions options = new DynamicImageOptions
+            {
+                Format = format,
+                Height = height,
+                ResizeMode = resizeMode,
+                SourcePath = path,
+                Width = width
+            };
+
+            //TODO: Need to provide "dynamicimage" from somewhere else... somehow!
+            string x1Url = dynamicImageUrlGenerator.GenerateUrl(dynamicImagePathPrefix, options, toAbsolutePath);
 
             HtmlAttributes["src"] = mapVirtualPathFunc(x1Url);
         }
@@ -94,7 +117,16 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
                     int imgWidth = sizeWidth * density;
                     int imgHeight = (int)Math.Ceiling(imgWidth / m_Ratio);
 
-                    string imgUrl = m_DynamicImageUtility.GetResizedUrl(Path, imgWidth, imgHeight, m_ResizeMode, m_Format, m_ToAbsolutePath);
+                    DynamicImageOptions options = new DynamicImageOptions
+                    {
+                        Format = m_Format,
+                        Height = imgHeight,
+                        ResizeMode = m_ResizeMode,
+                        SourcePath = Path,
+                        Width = imgWidth
+                    };
+
+                    string imgUrl = m_DynamicImageUrlGenerator.GenerateUrl(m_DynamicImagePathPrefix, options, m_ToAbsolutePath);
 
                     imgUrl = MapVirtualPathFunc(imgUrl);
 

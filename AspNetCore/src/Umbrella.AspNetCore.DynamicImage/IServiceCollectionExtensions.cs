@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddUmbrellaAspNetCoreDynamicImage(this IServiceCollection services)
         {
             services.AddSingleton<IDynamicImageUrlGenerator, DynamicImageUrlGenerator>();
-
+            
             return services;
         }
     }

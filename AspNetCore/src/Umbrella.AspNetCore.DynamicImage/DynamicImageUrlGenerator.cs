@@ -9,13 +9,14 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Hosting;
 using Microsoft.AspNetCore.Http;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.DynamicImage
 {
     public class DynamicImageUrlGenerator : IDynamicImageUrlGenerator
     {
         #region Private Constants
-        private const string c_UrlFormat = "~/DynamicImage/{0}/{1}/{2}/{3}/{4}";
+        private const string c_UrlFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
         #endregion
 
         #region Private Static Members
@@ -24,41 +25,49 @@ namespace Umbrella.AspNetCore.DynamicImage
 
         #region Private Members
         private readonly ILogger m_Logger;
-        private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
+        private readonly IUmbrellaHostingEnvironment m_UmbrellaHostingEnvironment;
         private readonly IHttpContextAccessor m_HttpContextAccessor;
         #endregion
 
         #region Constructors
         public DynamicImageUrlGenerator(ILogger<DynamicImageUrlGenerator> logger,
-            IUmbrellaHostingEnvironment hostingEnvironment,
+            IUmbrellaHostingEnvironment umbrellaHostingEnvironment,
             IHttpContextAccessor httpContextAccessor)
         {
             m_Logger = logger;
-            m_HostingEnvironment = hostingEnvironment;
+            m_UmbrellaHostingEnvironment = umbrellaHostingEnvironment;
             m_HttpContextAccessor = httpContextAccessor;
         }
         #endregion
 
         #region IDynamicImageUrlGenerator Members
-        public string GenerateUrl(DynamicImageOptions options, bool toAbsolutePath = false)
+        public string GenerateUrl(string dynamicImagePathPrefix, DynamicImageOptions options, bool toAbsolutePath = false)
         {
-            string originalExtension = Path.GetExtension(options.OriginalVirtualPath).ToLower().Remove(0, 1);
+            try
+            {
+                string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
 
-            string path = options.OriginalVirtualPath.Replace("~/", "");
+                string path = options.SourcePath.Replace("~/", "");
 
-            string virtualPath = string.Format(c_UrlFormat,
-                options.Width,
-                options.Height,
-                options.Mode,
-                originalExtension,
-                path.Replace(originalExtension, options.Format.ToFileExtensionString()));
+                string virtualPath = string.Format(c_UrlFormat,
+                    dynamicImagePathPrefix,
+                    options.Width,
+                    options.Height,
+                    options.ResizeMode,
+                    originalExtension,
+                    path.Replace(originalExtension, options.Format.ToFileExtensionString()));
 
-            virtualPath = s_Regex.Replace(virtualPath, "/");
+                virtualPath = s_Regex.Replace(virtualPath, "/");
 
-            if (toAbsolutePath)
-                virtualPath = m_HostingEnvironment.MapWebPath(virtualPath, m_HttpContextAccessor.HttpContext.Request.Scheme);
+                if (toAbsolutePath)
+                    virtualPath = m_UmbrellaHostingEnvironment.MapWebPath(virtualPath, m_HttpContextAccessor.HttpContext.Request.Scheme);
 
-            return virtualPath;
+                return virtualPath;
+            }
+            catch (Exception exc) when (m_Logger.WriteError(exc, new { options, toAbsolutePath }))
+            {
+                throw new DynamicImageException("An error occurred whilst generating the url.", exc, options);
+            }
         }
         #endregion
     }

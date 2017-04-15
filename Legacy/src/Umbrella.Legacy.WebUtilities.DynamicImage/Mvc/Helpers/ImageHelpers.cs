@@ -12,32 +12,43 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
 {
     public static class ImageHelpers
     {
-        public static ResponsiveDynamicImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        private const string c_DefaultPrefix = "dynamicimage";
+
+        public static ResponsiveDynamicImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUrlGenerator urlGenerator, string path, string altText, int width, int height, DynamicResizeMode resizeMode, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false, string dynamicImagePathPrefix = c_DefaultPrefix)
         {
             var attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
-            return helper.DynamicImage(dynamicImageUtility, path, altText, width, height, resizeMode, attributesDictionary, format, toAbsolutePath);
+            return helper.DynamicImage(urlGenerator, path, altText, width, height, resizeMode, attributesDictionary, format, toAbsolutePath, dynamicImagePathPrefix);
         }
 
-        public static ResponsiveDynamicImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveDynamicImageTag DynamicImage(this HtmlHelper helper, IDynamicImageUrlGenerator urlGenerator, string path, string altText, int width, int height, DynamicResizeMode resizeMode, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false, string dynamicImagePathPrefix = c_DefaultPrefix)
         {
             UrlHelper urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
 
-            return new ResponsiveDynamicImageTag(dynamicImageUtility, path, altText, width, height, resizeMode, htmlAttributes, format, toAbsolutePath, urlHelper.Content);
+            return new ResponsiveDynamicImageTag(urlGenerator, dynamicImagePathPrefix, path, altText, width, height, resizeMode, htmlAttributes, format, toAbsolutePath, urlHelper.Content);
         }
 
-        public static ResponsiveDynamicImagePictureSourceTag DynamicImagePictureSource(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, int width, int height, DynamicResizeMode resizeMode, string mediaAttributeValue, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveDynamicImagePictureSourceTag DynamicImagePictureSource(this HtmlHelper helper, IDynamicImageUrlGenerator urlGenerator, string path, int width, int height, DynamicResizeMode resizeMode, string mediaAttributeValue, object htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false, string dynamicImagePathPrefix = c_DefaultPrefix)
         {
             var attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
-            return helper.DynamicImagePictureSource(dynamicImageUtility, path, width, height, resizeMode, mediaAttributeValue, attributesDictionary, format, toAbsolutePath);
+            return helper.DynamicImagePictureSource(urlGenerator, path, width, height, resizeMode, mediaAttributeValue, attributesDictionary, format, toAbsolutePath, dynamicImagePathPrefix);
         }
 
-        public static ResponsiveDynamicImagePictureSourceTag DynamicImagePictureSource(this HtmlHelper helper, IDynamicImageUtility dynamicImageUtility, string path, int width, int height, DynamicResizeMode resizeMode, string mediaAttributeValue, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false)
+        public static ResponsiveDynamicImagePictureSourceTag DynamicImagePictureSource(this HtmlHelper helper, IDynamicImageUrlGenerator urlGenerator, string path, int width, int height, DynamicResizeMode resizeMode, string mediaAttributeValue, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false, string dynamicImagePathPrefix = c_DefaultPrefix)
         {
             UrlHelper urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
 
-            string url = dynamicImageUtility.GetResizedUrl(path, width, height, resizeMode, format, toAbsolutePath);
+            var options = new DynamicImageOptions
+            {
+                Format = format,
+                Height = height,
+                ResizeMode = resizeMode,
+                SourcePath = path,
+                Width = width
+            };
+
+            string url = urlGenerator.GenerateUrl(dynamicImagePathPrefix, options, toAbsolutePath);
 
             return new ResponsiveDynamicImagePictureSourceTag(url, mediaAttributeValue, htmlAttributes, urlHelper.Content);
         }

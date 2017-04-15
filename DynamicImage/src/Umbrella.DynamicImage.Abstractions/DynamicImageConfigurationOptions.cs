@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Umbrella.DynamicImage.Abstractions;
+using System.Text;
 
-namespace Umbrella.AspNetCore.DynamicImage.Configuration
+namespace Umbrella.DynamicImage.Abstractions
 {
-    public class DynamicImageOptions
+    public class DynamicImageConfigurationOptions
     {
         public bool Enabled { get; set; }
         public List<DynamicImageMapping> Mappings { get; set; } = new List<DynamicImageMapping>();

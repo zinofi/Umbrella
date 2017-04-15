@@ -69,5 +69,16 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 
 		public bool Enabled => s_Section != null ? s_Section.Enabled : true;
         #endregion
+
+        #region Operators
+        public static explicit operator DynamicImageConfigurationOptions(DynamicImageMappingsConfig config)
+        {
+            return new DynamicImageConfigurationOptions
+            {
+                Enabled = config.Enabled,
+                Mappings = config.Settings
+            };
+        }
+        #endregion
     }
 }

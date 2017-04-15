@@ -19,12 +19,12 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
     public class EditableImageGalleryAttribute : AbstractEditableAttribute, IRelativityTransformer
     {
         #region Private Static Members
-        private static readonly Type s_IDynamicImageUtilityResolverType = typeof(IDynamicImageUtilityResolver);
-        private static readonly ConcurrentDictionary<Type, IDynamicImageUtilityResolver> s_ResolverDictionary = new ConcurrentDictionary<Type, IDynamicImageUtilityResolver>();
+        private static readonly Type s_IDynamicImageUrlGeneratorResolverType = typeof(IDynamicImageUrlGeneratorResolver);
+        private static readonly ConcurrentDictionary<Type, IDynamicImageUrlGeneratorResolver> s_ResolverDictionary = new ConcurrentDictionary<Type, IDynamicImageUrlGeneratorResolver>();
         #endregion
 
         #region Private Members
-        private readonly Type m_IDynamicImageUtilityResolverType;
+        private readonly Type m_IDynamicImageUrlGeneratorResolverType;
         #endregion
 
         #region Constructors
@@ -59,14 +59,14 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
         /// </summary>
         /// <param name="title">The title of the property displayed in edit mode</param>
         /// <param name="sortOrder">The sort order of the property in edit mode</param>
-        /// <param name="dynamicImageUtilityResolverType">A type which implements <see cref="IDynamicImageUtilityResolver"/>. A singleton instance of this type will be created for the lifetime of the application.</param>
+        /// <param name="dynamicImageUtilityResolverType">A type which implements <see cref="IDynamicImageUrlGeneratorResolver"/>. A singleton instance of this type will be created for the lifetime of the application.</param>
         public EditableImageGalleryAttribute(string title, int sortOrder, Type dynamicImageUtilityResolverType)
             : base(title, sortOrder)
         {
-            if (!s_IDynamicImageUtilityResolverType.IsAssignableFrom(dynamicImageUtilityResolverType))
-                throw new ArgumentException($"The specified type cannot be assigned to {nameof(IDynamicImageUtilityResolver)}", nameof(dynamicImageUtilityResolverType));
+            if (!s_IDynamicImageUrlGeneratorResolverType.IsAssignableFrom(dynamicImageUtilityResolverType))
+                throw new ArgumentException($"The specified type cannot be assigned to {nameof(IDynamicImageUrlGeneratorResolver)}", nameof(dynamicImageUtilityResolverType));
 
-            m_IDynamicImageUtilityResolverType = dynamicImageUtilityResolverType;
+            m_IDynamicImageUrlGeneratorResolverType = dynamicImageUtilityResolverType;
         }
         #endregion
 
@@ -84,13 +84,13 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
 
             ImageGalleryControl ctrl = ((ImageGalleryControl)editor);
 
-            IDynamicImageUtility dynamicImageUtility = GetDynamicImageUtility();
+            IDynamicImageUrlGenerator dynamicImageUrlGenerator = GetDynamicImageUrlResolver();
 
             //Need to convert the ImageItem objects to ImageGalleryItemEditDTO objects
             List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = coll.Cast<ImageItem>().Select(x =>
             {
                 var dto = ImageGalleryAutoMapperMappings.Instance.Map<ImageGalleryItemEditDTO>(x);
-                dto.ThumbnailUrl = dynamicImageUtility.GetResizedUrl(dto.Url, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true);
+                dto.ThumbnailUrl = dynamicImageUrlGenerator.GenerateUrl(dto.Url, new DynamicImageOptions(dto.Url, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), true);
 
                 return dto;
             }).ToList();
@@ -139,9 +139,9 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
         public RelativityMode RelativeWhen => RelativityMode.Always;
 
         #region Private Methods
-        private IDynamicImageUtility GetDynamicImageUtility()
+        private IDynamicImageUrlGenerator GetDynamicImageUrlResolver()
         {
-            IDynamicImageUtilityResolver resolver = s_ResolverDictionary.GetOrAdd(m_IDynamicImageUtilityResolverType, x => (IDynamicImageUtilityResolver)Activator.CreateInstance(x));
+            IDynamicImageUrlGeneratorResolver resolver = s_ResolverDictionary.GetOrAdd(m_IDynamicImageUrlGeneratorResolverType, x => (IDynamicImageUrlGeneratorResolver)Activator.CreateInstance(x));
 
             return resolver.GetInstance();
         }

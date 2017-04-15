@@ -8,6 +8,6 @@ namespace Umbrella.DynamicImage.Abstractions
 {
     public interface IDynamicImageUrlGenerator
     {
-        string GenerateUrl(DynamicImageOptions options, bool toAbsolutePath = false);
+        string GenerateUrl(string dynamicImagePathPrefix, DynamicImageOptions options, bool toAbsolutePath = false);
     }
 }

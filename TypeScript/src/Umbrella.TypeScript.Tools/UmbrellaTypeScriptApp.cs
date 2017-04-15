@@ -20,8 +20,6 @@ namespace Umbrella.TypeScript.Tools
     {
         protected ConsoleColor InitialConsoleColor { get; } = Console.ForegroundColor;
         protected Dictionary<string, CommandOption> OptionDictionary { get; private set; }
-        protected bool DebugEnabled { get; private set; }
-        protected bool VerboseEnabled { get; private set; }
 
         public UmbrellaTypeScriptApp()
         {
@@ -37,10 +35,8 @@ namespace Umbrella.TypeScript.Tools
             {
                 TOptions toolOptions = GetToolOptions();
 
-                if (DebugEnabled)
-                {
+                if (toolOptions.DebugEnabled)
                     WriteConsoleDebugMessage($"Parsed options: {JsonConvert.SerializeObject(toolOptions)}");
-                }
 
                 //Check folder exists
                 if (!Directory.Exists(toolOptions.AssemblyFolderPath))

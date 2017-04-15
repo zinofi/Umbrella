@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
-    public interface IDynamicImageUtilityResolver
+    public interface IDynamicImageUrlGeneratorResolver
     {
-        IDynamicImageUtility GetInstance();
+        IDynamicImageUrlGenerator GetInstance();
     }
 }

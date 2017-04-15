@@ -15,15 +15,15 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
     public class ImageGalleryUploadFileController : UmbrellaApiController
     {
         #region Private Members
-        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
         #endregion
         
         #region Constructors
         public ImageGalleryUploadFileController(ILogger<ImageGalleryUploadFileController> logger,
-            IDynamicImageUtility dynamicImageUtility)
+            IDynamicImageUrlGenerator dynamicImageUrlGenerator)
             : base(logger)
         {
-            m_DynamicImageUtility = dynamicImageUtility;
+            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
         }
         #endregion
 
@@ -32,11 +32,14 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
         {
             try
             {
+                var thumbnailOptions = new DynamicImageOptions(path, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg);
+                var previewOptions = new DynamicImageOptions(path, 400, 400, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg);
+
                 return new ImageGalleryItemEditDTO
                 {
                     Url = path,
-                    ThumbnailUrl = m_DynamicImageUtility.GetResizedUrl(path, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true),
-                    PreviewUrl = m_DynamicImageUtility.GetResizedUrl(path, 400, 400, DynamicResizeMode.UniformFill, toAbsolutePath: true)
+                    ThumbnailUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", thumbnailOptions, true),
+                    PreviewUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", previewOptions, true)
                 };
             }
             catch(Exception exc) when (Log.WriteError(exc, new { path }))

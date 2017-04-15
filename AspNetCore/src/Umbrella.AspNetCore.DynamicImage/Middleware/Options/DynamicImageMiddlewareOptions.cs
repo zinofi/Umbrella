@@ -7,6 +7,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware.Options
 {
     public class DynamicImageMiddlewareOptions
     {
-        public bool MapFromWebRoot { get; set; }
+        public string DynamicImagePathPrefix { get; set; }
+        public Func<string, Task<(byte[], DateTime)>> SourceImageResolver;
     }
 }

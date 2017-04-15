@@ -12,20 +12,21 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage
 {
     public class DynamicImageUrlGenerator : IDynamicImageUrlGenerator
     {
-        private const string c_UrlFormat = "~/DynamicImage/{0}/{1}/{2}/{3}/{4}";
+        private const string c_UrlFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
 
         private static readonly Regex m_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public string GenerateUrl(DynamicImageOptions options, bool toAbsolutePath = false)
+        public string GenerateUrl(string dynamicImagePathPrefix, DynamicImageOptions options, bool toAbsolutePath = false)
         {
-            string originalExtension = Path.GetExtension(options.OriginalVirtualPath).ToLower().Remove(0, 1);
+            string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
 
-            string path = options.OriginalVirtualPath.Replace("~/", "");
+            string path = options.SourcePath.Replace("~/", "");
 
             string virtualPath = string.Format(c_UrlFormat,
+                dynamicImagePathPrefix,
                 options.Width,
                 options.Height,
-                options.Mode,
+                options.ResizeMode,
                 originalExtension,
                 path.Replace(originalExtension, options.Format.ToFileExtensionString()));
 

@@ -1,16 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using N2;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.WebApi;
-using Umbrella.N2.CustomProperties.LinkEditor.Items;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
@@ -19,15 +16,15 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
     public class ImageGalleryUploadFolderController : UmbrellaApiController
     {
         #region Private Members
-        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
         #endregion
 
         #region Constructors
         public ImageGalleryUploadFolderController(ILogger<ImageGalleryUploadFolderController> logger,
-            IDynamicImageUtility dynamicImageUtility)
+            IDynamicImageUrlGenerator dynamicImageUrlGenerator)
             : base(logger)
         {
-            m_DynamicImageUtility = dynamicImageUtility;
+            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
         }
         #endregion
 
@@ -48,11 +45,11 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
                         IEnumerable<string> files = Directory.EnumerateFiles(HostingEnvironment.MapPath("~" + folderPath)).Select(x => folderPathLowered + x.Replace("\\", "/").ToLower().Split(new[] { folderPathLowered }, StringSplitOptions.RemoveEmptyEntries)[1]);
 
                         //Ensure the windows Thumbs.db file is excluded
-                        return Ok(files.Where(x => Path.GetExtension(x).ToLower() != ".db").Select(x => new ImageGalleryItemEditDTO
+                        return Ok(files.Where(x => Path.GetExtension(x).ToLower() != ".db").Select(path => new ImageGalleryItemEditDTO
                         {
-                            Url = x,
-                            ThumbnailUrl = m_DynamicImageUtility.GetResizedUrl(x, 150, 150, DynamicResizeMode.UniformFill, toAbsolutePath: true),
-                            PreviewUrl = m_DynamicImageUtility.GetResizedUrl(x, 400, 400, DynamicResizeMode.UniformFill, toAbsolutePath: true)
+                            Url = path,
+                            ThumbnailUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", new DynamicImageOptions(path, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), true),
+                            PreviewUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", new DynamicImageOptions(path, 400, 400, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), true)
                         }));
                     }
                 }

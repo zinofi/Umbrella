@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
@@ -111,6 +111,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage", "Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj", "{4D3680D0-81EA-4B35-A47E-42507C38953C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.WebUtilities.ModelState", "Core\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj", "{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DynamicImage.Caching.Azure", "Core\Umbrella.DynamicImage.Caching.Azure\Umbrella.DynamicImage.Caching.Azure.csproj", "{7CACBC66-1459-4E42-A673-172A39646D95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -290,6 +292,10 @@ Global
 		{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CACBC66-1459-4E42-A673-172A39646D95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CACBC66-1459-4E42-A673-172A39646D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CACBC66-1459-4E42-A673-172A39646D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CACBC66-1459-4E42-A673-172A39646D95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -338,5 +344,6 @@ Global
 		{6BFF2C5C-F639-48EE-AC88-12FC9F5D7707} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{4D3680D0-81EA-4B35-A47E-42507C38953C} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{7CACBC66-1459-4E42-A673-172A39646D95} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 	EndGlobalSection
 EndGlobal

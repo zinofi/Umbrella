@@ -20,9 +20,7 @@ namespace Umbrella.Utilities
         public static void ArgumentNotNull(object argumentValue, string argumentName)
         {
             if (argumentValue == null)
-            {
                 throw new ArgumentNullException(argumentName);
-            }
         }
 
         /// <summary>
@@ -35,9 +33,7 @@ namespace Umbrella.Utilities
         public static void ArgumentNotNullOrWhiteSpace(string argumentValue, string argumentName)
         {
             if (string.IsNullOrWhiteSpace(argumentValue))
-            {
                 throw new ArgumentException($"{argumentName} cannot be null, empty, or only whitespace.");
-            }
         }
 
         public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)

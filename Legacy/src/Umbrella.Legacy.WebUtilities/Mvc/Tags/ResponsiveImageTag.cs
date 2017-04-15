@@ -85,9 +85,10 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
 
             IEnumerable<string> srcsetImagePaths =
                 from density in PixelDensities
+                orderby density
                 let densityX = $"{density}x"
-                let highResImagePath = path.Insert(densityIndex, $"@{densityX}") + $" {densityX}"
-                select MapVirtualPathFunc(highResImagePath);
+                let highResImagePath = density > 1 ? path.Insert(densityIndex, $"@{densityX}") : path
+                select MapVirtualPathFunc(highResImagePath) + " " + densityX;
 
             imgTag.Attributes["srcset"] = string.Join(", ", srcsetImagePaths);
         }

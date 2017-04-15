@@ -19,6 +19,7 @@ namespace Umbrella.DataAccess.Mapping
         }
         #endregion
 
+        //TODO: Add an overload where TEntity is constrained by IEntity<T>
         #region IMappingUtility Members
         public List<TEntity> UpdateItemsList<TModel, TEntity>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
             where TEntity : class, IEntity
@@ -56,7 +57,7 @@ namespace Umbrella.DataAccess.Mapping
                     updatedList.Add(entity);
                 }
 
-                if (innerActions != null && innerActions.Length > 0)
+                if (innerActions?.Length > 0)
                 {
                     foreach (var action in innerActions)
                     {
