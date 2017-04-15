@@ -47,6 +47,9 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 
             Guard.ArgumentNotNull(m_MiddlewareOptions.SourceImageResolver, nameof(m_MiddlewareOptions.SourceImageResolver));
             Guard.ArgumentNotNullOrWhiteSpace(m_MiddlewareOptions.DynamicImagePathPrefix, nameof(m_MiddlewareOptions.DynamicImagePathPrefix));
+
+            //TODO: Add in validation to protected against multiple instances of the middleware being registered using
+            //the same path prefix
         }
         #endregion
 
@@ -70,6 +73,12 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                 }
 
                 DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceImageResolver, result.ImageOptions);
+
+                if(image == null)
+                {
+                    SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
+                    return;
+                }
 
                 //If the image in the cache hasn't been modified
                 string ifModifiedSince = context.Request.Headers["If-Modified-Since"];

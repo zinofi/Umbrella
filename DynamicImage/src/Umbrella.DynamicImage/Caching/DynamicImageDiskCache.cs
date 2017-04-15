@@ -80,7 +80,7 @@ namespace Umbrella.DynamicImage.Caching
                 FileInfo fiCached = new FileInfo(physicalCachedFilePath);
                 
                 //No cached image available
-                if (fiCached == null)
+                if (!fiCached.Exists)
                     return null;
 
                 //If the file does not exist or has been modified since the item was generated,
@@ -96,11 +96,25 @@ namespace Umbrella.DynamicImage.Caching
                 //We need to return the cached image
                 DynamicImageItem item = new DynamicImageItem
                 {
-                    LastModified = fiCached.LastWriteTime
+                    LastModified = fiCached.LastWriteTimeUtc
                 };
 
                 //Set the content resolver to allow the file to be read from disk if / when needed
-                item.SetContentResolver(() => Task.FromResult(File.ReadAllBytes(physicalCachedFilePath)));
+                item.SetContentResolver(async () =>
+                {
+                    //Check the file still exists. Could potentially be removed before this resolver is executed.
+                    if (!File.Exists(physicalCachedFilePath))
+                        return null;
+
+                    using (FileStream fs = File.OpenRead(physicalCachedFilePath))
+                    {
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            await fs.CopyToAsync(ms);
+                            return ms.ToArray();
+                        }
+                    }
+                });
 
                 return Task.FromResult(item);
             }

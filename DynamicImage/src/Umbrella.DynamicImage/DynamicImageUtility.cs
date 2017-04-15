@@ -40,7 +40,7 @@ namespace Umbrella.DynamicImage
         #region Public Methods
         public DynamicImageFormat ParseImageFormat(string format)
         {
-            switch (format)
+            switch (format?.TrimStart('.').Trim()?.ToLowerInvariant())
             {
                 case "png":
                     return DynamicImageFormat.Png;
@@ -98,7 +98,10 @@ namespace Umbrella.DynamicImage
                         int densityIdentifierLength = densityMatch.Value.Length;
 
                         //Remove the density identifier from the path
-                        pathWithoutExtension.Remove(pathWithoutExtension.Length - densityIdentifierLength, densityIdentifierLength);
+                        string extension = Path.GetExtension(sourcePath);
+                        int charsToRemove = extension.Length + densityIdentifierLength;
+
+                        sourcePath = sourcePath.Remove(sourcePath.Length - charsToRemove, charsToRemove) + extension;
 
                         //Double the dimensions
                         width *= density;

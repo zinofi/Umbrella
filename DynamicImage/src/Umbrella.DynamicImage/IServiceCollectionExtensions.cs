@@ -10,10 +10,18 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddUmbrellaDynamicImage(this IServiceCollection services, DynamicImageCacheOptions options = null)
+        public static IServiceCollection AddUmbrellaDynamicImage(this IServiceCollection services,
+            DynamicImageCacheOptions cacheOptions,
+            DynamicImageMemoryCacheOptions memoryCacheOptions = null,
+            DynamicImageDiskCacheOptions diskCacheOptions = null)
         {
-            if (options != null)
-                services.AddSingleton(options);
+            services.AddSingleton(cacheOptions);
+
+            if (memoryCacheOptions != null)
+                services.AddSingleton(memoryCacheOptions);
+
+            if (diskCacheOptions != null)
+                services.AddSingleton(diskCacheOptions);
 
             services.AddSingleton<IDynamicImageCache, DynamicImageDiskCache>();
             services.AddSingleton<IDynamicImageUtility, DynamicImageUtility>();

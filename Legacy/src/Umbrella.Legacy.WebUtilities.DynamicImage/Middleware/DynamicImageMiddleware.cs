@@ -44,6 +44,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
             m_DynamicImageResizer = dynamicImageResizer;
             m_DynamicImagePathPrefix = dynamicImagePathPrefix;
             m_SourceImageResolver = sourceImageResolver;
+
+            //TODO: Add in validation to protected against multiple instances of the middleware being registered using
+            //the same path prefix
         }
         #endregion
 
@@ -67,6 +70,12 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
                 }
 
                 DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_SourceImageResolver, result.ImageOptions);
+
+                if(image == null)
+                {
+                    await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+                    return;
+                }
 
                 //If the image in the cache hasn't been modified
                 string ifModifiedSince = context.Request.Headers["If-Modified-Since"];

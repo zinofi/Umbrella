@@ -55,6 +55,9 @@ namespace Umbrella.DynamicImage.SoundInTheory
         {
             try
             {
+                if (bytes == null || bytes.Length == 0)
+                    return null;
+
                 string cacheKey = m_DynamicImageCache.GenerateCacheKey(options);
 
                 //Check if the image exists in the cache

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Umbrella.AspNetCore.DataAnnotations;
+using Umbrella.Utilities.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,12 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddUmbrellaAspNetCoreDataAnnotations(this IServiceCollection services)
         {
-            ServiceDescriptor existingService = services.SingleOrDefault(x => x.ServiceType == typeof(IValidationAttributeAdapterProvider));
-
-            if (existingService != null)
-                services.Remove(existingService);
-
-            services.AddSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
+            services.ReplaceSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
 
             return services;
         }

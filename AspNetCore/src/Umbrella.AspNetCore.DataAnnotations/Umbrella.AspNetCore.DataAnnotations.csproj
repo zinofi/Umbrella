@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard1.6</TargetFrameworks>
@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
