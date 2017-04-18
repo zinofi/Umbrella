@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
@@ -12,8 +15,125 @@ namespace Umbrella.DynamicImage.Test.Caching
 {
     public class DynamicImageDiskCacheTest
     {
+        private string m_BaseDirectory;
+
+        private string BaseDirectory
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_BaseDirectory))
+                {
+                    int indexToEndAt = AppContext.BaseDirectory.IndexOf(@"\bin\Debug\netcoreapp1.1");
+                    m_BaseDirectory = AppContext.BaseDirectory.Remove(indexToEndAt, AppContext.BaseDirectory.Length - indexToEndAt);
+                }
+
+                return m_BaseDirectory;
+            }
+        }
+
         [Fact]
-        public async Task AddAsyncTest()
+        public async Task AddAsync_RemoveAsync()
+        {
+            var cache = CreateDynamicImageDiskCache();
+
+            var path = $@"{BaseDirectory}\aspnet-mvc-logo.png";
+
+            var item = new DynamicImageItem
+            {
+                ImageOptions = new DynamicImageOptions
+                {
+                    Format = DynamicImageFormat.Jpeg,
+                    Height = 100,
+                    Width = 100,
+                    ResizeMode = DynamicResizeMode.UniformFill,
+                    SourcePath = path
+                },
+                LastModified = DateTime.UtcNow
+            };
+
+            item.SetContent(File.ReadAllBytes(path));
+
+            await cache.AddAsync(item);
+
+            //Verify the file exists in the cache on disk as a jpg
+            var cacheKey = cache.GenerateCacheKey(item.ImageOptions);
+            string cachedPath = $@"{BaseDirectory}\DynamicImageCache\{cacheKey.Substring(0, 2)}\{cacheKey}.jpg";
+
+            Assert.True(File.Exists(cachedPath));
+
+            //Perform cleanup by removing the file from the disk cache
+            await cache.RemoveAsync(cacheKey, "jpg");
+
+            Assert.False(File.Exists(cachedPath));
+        }
+
+        [Fact]
+        public async Task GetAsync_NotExists()
+        {
+            var cache = CreateDynamicImageDiskCache();
+
+            var path = $@"{BaseDirectory}\doesnotexist.png";
+
+            var item = new DynamicImageItem
+            {
+                ImageOptions = new DynamicImageOptions
+                {
+                    Format = DynamicImageFormat.Jpeg,
+                    Height = 200,
+                    Width = 200,
+                    ResizeMode = DynamicResizeMode.UniformFill,
+                    SourcePath = path
+                },
+                LastModified = DateTime.UtcNow
+            };
+
+            string cacheKey = cache.GenerateCacheKey(item.ImageOptions);
+
+            DynamicImageItem cachedItem = await cache.GetAsync(cacheKey, DateTime.MinValue, "jpg");
+
+            Assert.Null(cachedItem);
+        }
+
+        [Fact]
+        public async Task AddAsync_GetAsync()
+        {
+            var cache = CreateDynamicImageDiskCache();
+
+            var path = $@"{BaseDirectory}\aspnet-mvc-logo.png";
+
+            var item = new DynamicImageItem
+            {
+                ImageOptions = new DynamicImageOptions
+                {
+                    Format = DynamicImageFormat.Jpeg,
+                    Height = 200,
+                    Width = 200,
+                    ResizeMode = DynamicResizeMode.UniformFill,
+                    SourcePath = path
+                },
+                LastModified = DateTime.UtcNow
+            };
+
+            item.SetContent(File.ReadAllBytes(path));
+
+            await cache.AddAsync(item);
+
+            string cacheKey = cache.GenerateCacheKey(item.ImageOptions);
+
+            DynamicImageItem cachedItem = await cache.GetAsync(cacheKey, DateTime.MinValue, "jpg");
+
+            Assert.NotNull(cachedItem);
+
+            //Load the content
+            byte[] content = await cachedItem.GetContentAsync();
+
+            Assert.NotEmpty(content);
+
+            //Cleanup
+            await cache.RemoveAsync(cacheKey, "jpg");
+        }
+
+        private DynamicImageDiskCache CreateDynamicImageDiskCache()
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
@@ -27,27 +147,12 @@ namespace Umbrella.DynamicImage.Test.Caching
 
             var diskCacheOptions = new DynamicImageDiskCacheOptions
             {
-                PhysicalFolderPath = @"C:\Data\Umbrella\DynamicImageCache"
+                PhysicalFolderPath = $@"{BaseDirectory}\DynamicImageCache"
             };
 
-            DynamicImageDiskCache cache = new DynamicImageDiskCache(null, null, memoryCache, cacheOptions, diskCacheOptions);
+            var logger = new Mock<ILogger<DynamicImageDiskCache>>();
 
-            var item = new DynamicImageItem
-            {
-                ImageOptions = new DynamicImageOptions
-                {
-                    Format = DynamicImageFormat.Png,
-                    Height = 100,
-                    Width = 100,
-                    ResizeMode = DynamicResizeMode.UniformFill,
-                    SourcePath = @"C:\test.jpg"
-                },
-                LastModified = DateTime.UtcNow
-            };
-
-            item.SetContent(new byte[100]);
-
-            await cache.AddAsync(item);
+            return new DynamicImageDiskCache(logger.Object, memoryCache, cacheOptions, diskCacheOptions);
         }
     }
 }

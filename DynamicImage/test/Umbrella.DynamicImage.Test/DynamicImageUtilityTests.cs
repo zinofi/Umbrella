@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using Umbrella.DynamicImage;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DynamicImage.Test
 {
@@ -16,6 +18,13 @@ namespace Umbrella.DynamicImage.Test
             var result = utility.TryParseUrl("dynamicimage", "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.png");
 
             //TODO: Finish this off.
+        }
+
+        private DynamicImageUtility CreateDynamicImageUtility()
+        {
+            var logger = new Mock<ILogger<DynamicImageUtility>>();
+            return null;
+            //return new DynamicImageUtility(logger.Object, )
         }
     }
 }

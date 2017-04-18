@@ -15,15 +15,17 @@ namespace Umbrella.DynamicImage.Caching
 {
     public class DynamicImageDiskCache : DynamicImageCache, IDynamicImageCache
     {
+        #region Private Static Members
+        private static readonly Task<DynamicImageItem> s_NullDynamicImageItemResult = Task.FromResult<DynamicImageItem>(null);
+        #endregion
+
         #region Private Members
-        private readonly IUmbrellaHostingEnvironment m_UmbrellaHostingEnvironment;
         private readonly DynamicImageDiskCacheOptions m_DiskCacheOptions;
         private readonly string m_CachePathFormat;
         #endregion
 
         #region Constructors
-        public DynamicImageDiskCache(IUmbrellaHostingEnvironment umbrellaHostingEnvironment,
-            ILogger<DynamicImageDiskCache> logger,
+        public DynamicImageDiskCache(ILogger<DynamicImageDiskCache> logger,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions,
             DynamicImageDiskCacheOptions diskCacheOptions)
@@ -35,9 +37,8 @@ namespace Umbrella.DynamicImage.Caching
             //Sanitize the provided path
             diskCacheOptions.PhysicalFolderPath = diskCacheOptions.PhysicalFolderPath.Trim().TrimEnd('\\');
 
-            m_UmbrellaHostingEnvironment = umbrellaHostingEnvironment;
             m_DiskCacheOptions = diskCacheOptions;
-            m_CachePathFormat = diskCacheOptions.PhysicalFolderPath.Trim().TrimEnd('\\') + @"\{0}\{1}.{2}";
+            m_CachePathFormat = diskCacheOptions.PhysicalFolderPath + @"\{0}\{1}.{2}";
         }
         #endregion
 
@@ -78,10 +79,10 @@ namespace Umbrella.DynamicImage.Caching
 
                 //Find the cached file
                 FileInfo fiCached = new FileInfo(physicalCachedFilePath);
-                
+
                 //No cached image available
                 if (!fiCached.Exists)
-                    return null;
+                    return s_NullDynamicImageItemResult;
 
                 //If the file does not exist or has been modified since the item was generated,
                 //evict it from the cache, i.e. delete the cached image from disk
@@ -90,7 +91,7 @@ namespace Umbrella.DynamicImage.Caching
                     if (File.Exists(physicalCachedFilePath))
                         File.Delete(physicalCachedFilePath);
 
-                    return null;
+                    return s_NullDynamicImageItemResult;
                 }
 
                 //We need to return the cached image
