@@ -20,19 +20,16 @@ namespace Umbrella.DynamicImage.SoundInTheory
     public class DynamicImageResizer : IDynamicImageResizer
     {
         #region Private Members
-        private readonly IDynamicImageCache m_DynamicImageCache;
-        private readonly IUmbrellaHostingEnvironment m_HostingEnvironment;
         private readonly ILogger<DynamicImageResizer> m_Logger;
+        private readonly IDynamicImageCache m_DynamicImageCache;
         #endregion
 
         #region Constructors
-        public DynamicImageResizer(IDynamicImageCache dynamicImageCache,
-            IUmbrellaHostingEnvironment hostingEnvironment,
-            ILogger<DynamicImageResizer> logger)
+        public DynamicImageResizer(ILogger<DynamicImageResizer> logger,
+            IDynamicImageCache dynamicImageCache)
         {
-            m_DynamicImageCache = dynamicImageCache;
-            m_HostingEnvironment = hostingEnvironment;
             m_Logger = logger;
+            m_DynamicImageCache = dynamicImageCache;
         }
         #endregion
 

@@ -11,6 +11,9 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
     {
         public string MapPath(string virtualPath, bool fromContentRoot = true)
         {
+            if (!virtualPath.StartsWith("~"))
+                virtualPath = $"~{virtualPath}";
+
             return System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
         }
 

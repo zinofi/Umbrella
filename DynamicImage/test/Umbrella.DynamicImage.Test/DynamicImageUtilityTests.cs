@@ -9,7 +9,7 @@ namespace Umbrella.DynamicImage.Test
     public class DynamicImageUtilityTests
     {
         [Fact]
-        public void TryParseUrlTest()
+        public void TryParseUrl()
         {
             DynamicImageUtility utility = new DynamicImageUtility(null, null, null);
 

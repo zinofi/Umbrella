@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
@@ -44,7 +45,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
                 //Trim and remove the ~/ from the front of the path
                 //Also change forward slashes to back slashes
-                string cleanedPath = virtualPath.Trim().Remove(0, 2).Replace("/", @"\");
+                string cleanedPath = TransformPath(virtualPath, true, true);
 
                 string key = $"UmbrellaHostingEnvironment:MapPath:{cleanedPath}:{fromContentRoot}".ToUpperInvariant();
 
@@ -72,9 +73,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
                 Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
 
-                string cleanedPath = virtualPath.StartsWith("~")
-                    ? virtualPath.Trim().Remove(0, 1)
-                    : virtualPath.Trim();
+                string cleanedPath = TransformPath(virtualPath, false, false);
 
                 string key = $"UmbrellaHostingEnvironment:MapWebPath:{cleanedPath}:{scheme}".ToUpperInvariant();
 
@@ -91,6 +90,21 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
             {
                 throw;
             }
+        }
+
+        private string TransformPath(string virtualPath, bool removeLeadingSlash, bool convertForwardSlashesToBackSlashes)
+        {
+            StringBuilder sb = new StringBuilder(virtualPath)
+                .Trim()
+                .Trim('~');
+
+            if (removeLeadingSlash)
+                sb.Trim('/');
+
+            if(convertForwardSlashesToBackSlashes)
+                sb.Replace("/", @"\");
+
+            return sb.ToString();
         }
     }
 }
