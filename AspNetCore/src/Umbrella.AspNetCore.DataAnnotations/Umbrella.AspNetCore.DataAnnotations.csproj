@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard1.6</TargetFrameworks>
@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.AspNetCore.DataAnnotations</PackageId>
-    <Version>1.0.0-rel-build00312</Version>
+    <Version>1.0.0-rel-build00313</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd ? 2017</Copyright>
