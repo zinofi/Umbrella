@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.Caching.AzureStorage\Umbrella.DynamicImage.Caching.AzureStorage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

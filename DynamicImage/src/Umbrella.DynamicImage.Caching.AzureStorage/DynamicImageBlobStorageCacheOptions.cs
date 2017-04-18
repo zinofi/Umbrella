@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Umbrella.DynamicImage.Caching.Azure
+namespace Umbrella.DynamicImage.Caching.AzureStorage
 {
     public class DynamicImageBlobStorageCacheOptions
     {

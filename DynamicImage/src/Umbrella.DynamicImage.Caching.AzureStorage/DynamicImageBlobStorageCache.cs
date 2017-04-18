@@ -11,8 +11,11 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Umbrella.Utilities;
 using System.IO;
+using System.Runtime.CompilerServices;
 
-namespace Umbrella.DynamicImage.Caching.Azure
+[assembly: InternalsVisibleTo("Umbrella.DynamicImage.Caching.AzureStorage.Test")]
+
+namespace Umbrella.DynamicImage.Caching.AzureStorage
 {
     public class DynamicImageBlobStorageCache : DynamicImageCache, IDynamicImageCache
     {
@@ -20,7 +23,10 @@ namespace Umbrella.DynamicImage.Caching.Azure
         private readonly DynamicImageBlobStorageCacheOptions m_BlobStorageCacheOptions;
         private readonly CloudStorageAccount m_StorageAccount;
         private readonly CloudBlobClient m_BlobClient;
-        private readonly CloudBlobContainer m_BlobContainer; 
+        #endregion
+
+        #region Internal Properties
+        internal CloudBlobContainer BlobContainer { get; }
         #endregion
 
         #region Constructors
@@ -37,7 +43,7 @@ namespace Umbrella.DynamicImage.Caching.Azure
 
             m_StorageAccount = CloudStorageAccount.Parse(blobStorageCacheOptions.StorageConnectionString);
             m_BlobClient = m_StorageAccount.CreateCloudBlobClient();
-            m_BlobContainer = m_BlobClient.GetContainerReference(blobStorageCacheOptions.ContainerName);
+            BlobContainer = m_BlobClient.GetContainerReference(blobStorageCacheOptions.ContainerName);
         }
         #endregion
 
@@ -48,7 +54,7 @@ namespace Umbrella.DynamicImage.Caching.Azure
             {
                 string key = GenerateCacheKey(dynamicImage.ImageOptions);
 
-                await m_BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+                await BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 CloudBlockBlob blob = GetBlob(key, dynamicImage.ImageOptions.Format.ToFileExtensionString());
 
@@ -66,7 +72,7 @@ namespace Umbrella.DynamicImage.Caching.Azure
         {
             try
             {
-                await m_BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+                await BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 CloudBlockBlob blob = GetBlob(key, fileExtension);
                 
@@ -122,7 +128,7 @@ namespace Umbrella.DynamicImage.Caching.Azure
 
         #region Private Methods
         private CloudBlockBlob GetBlob(string cacheKey, string fileExtension)
-            => m_BlobContainer.GetBlockBlobReference($"{cacheKey}.{fileExtension}");
+            => BlobContainer.GetBlockBlobReference($"{cacheKey}.{fileExtension}");
         #endregion
     }
 }

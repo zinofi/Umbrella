@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Utilities.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
+    public static class IServiceCollectionExtensions2
     {
         public static IServiceCollection ReplaceTransient<TService>(this IServiceCollection services)
             where TService : class
