@@ -1,15 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.DynamicImage.Caching.AzureStorage;
 
-namespace Umbrella.DynamicImage.Caching.AzureStorage
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddUmbrellaDynamicImageBlobStorageCache(this IServiceCollection services)
+        public static IServiceCollection AddUmbrellaDynamicImageBlobStorageCache(this IServiceCollection services, DynamicImageBlobStorageCacheOptions cacheOptions)
         {
+            services.AddSingleton(cacheOptions);
             services.ReplaceSingleton<IDynamicImageCache, DynamicImageBlobStorageCache>();
 
             return services;
