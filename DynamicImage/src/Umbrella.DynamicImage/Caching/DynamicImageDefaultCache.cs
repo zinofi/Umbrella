@@ -8,7 +8,11 @@ using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.DynamicImage.Caching
 {
-    public class DynamicImageNullCache : IDynamicImageCache
+    /// <summary>
+    /// A default caching implementation that doesn't actually perform any caching. Useful for unit testing
+    /// and scenarios where caching isn't required.
+    /// </summary>
+    public class DynamicImageDefaultCache : IDynamicImageCache
     {
         #region IDynamicImageCache Members
         public Task AddAsync(DynamicImageItem dynamicImage)
