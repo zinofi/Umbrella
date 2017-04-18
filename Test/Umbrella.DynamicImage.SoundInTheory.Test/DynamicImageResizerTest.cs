@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Moq;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Caching;
-using Umbrella.Utilities.Hosting;
 using Umbrella.DynamicImage.Abstractions;
 using Xunit;
 
