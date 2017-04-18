@@ -9,7 +9,7 @@
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>1.0.0-rel-build00314</Version>
+    <Version>1.0.0-rel-build00315</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>

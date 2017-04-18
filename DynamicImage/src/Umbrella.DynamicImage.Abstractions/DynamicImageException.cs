@@ -15,11 +15,13 @@ namespace Umbrella.DynamicImage.Abstractions
         public DynamicImageException(string message, DynamicImageOptions options = default(DynamicImageOptions))
             : base(message)
         {
+            Options = options;
         }
 
         public DynamicImageException(string message, Exception innerException, DynamicImageOptions options = default(DynamicImageOptions))
             : base(message, innerException)
         {
+            Options = options;
         }
     }
 }

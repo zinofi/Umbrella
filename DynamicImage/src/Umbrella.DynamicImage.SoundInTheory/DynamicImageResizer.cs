@@ -52,16 +52,28 @@ namespace Umbrella.DynamicImage.SoundInTheory
         {
             try
             {
+                if (m_Logger.IsEnabled(LogLevel.Debug))
+                    m_Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
+
                 if (bytes == null || bytes.Length == 0)
                     return null;
 
                 string cacheKey = m_DynamicImageCache.GenerateCacheKey(options);
 
+                if (m_Logger.IsEnabled(LogLevel.Debug))
+                    m_Logger.WriteDebug(new { cacheKey, options }, "Generated cache key using options.");
+
                 //Check if the image exists in the cache
                 DynamicImageItem dynamicImage = await m_DynamicImageCache.GetAsync(cacheKey, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
 
+                if (m_Logger.IsEnabled(LogLevel.Debug))
+                    m_Logger.WriteDebug(new { cacheKey, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
+
                 if (dynamicImage != null)
                 {
+                    if (m_Logger.IsEnabled(LogLevel.Debug))
+                        m_Logger.WriteDebug(new { dynamicImage.ImageOptions, dynamicImage.LastModified }, "Image found in cache.");
+
                     //Assign the options here as they aren't necessarily available when using
                     //anything other than the memory cache as the cache key which is based
                     //on the options is hashed one way.
@@ -80,6 +92,9 @@ namespace Umbrella.DynamicImage.SoundInTheory
                     .ImageFormat(dynamicImageFormat);
 
                 GeneratedImage image = builder.Composition.GenerateImage();
+
+                if (m_Logger.IsEnabled(LogLevel.Debug))
+                    m_Logger.WriteDebug(new { image.Properties.IsImagePresent }, "Successfully generated the target image.");
 
                 //Need to get the newly resized image and assign it to the instance
                 dynamicImage = new DynamicImageItem
