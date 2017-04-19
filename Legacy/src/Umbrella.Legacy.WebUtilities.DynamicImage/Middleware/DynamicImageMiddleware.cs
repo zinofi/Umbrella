@@ -12,6 +12,8 @@ using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using System.IO;
+using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options;
+using Umbrella.Utilities;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
@@ -21,9 +23,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
         private readonly ILogger Log;
         private readonly IDynamicImageUtility m_DynamicImageUtility;
         private readonly IDynamicImageResizer m_DynamicImageResizer;
-        private readonly string m_DynamicImagePathPrefix;
         private readonly Lazy<DynamicImageConfigurationOptions> m_ConfigurationOptions = new Lazy<DynamicImageConfigurationOptions>(LoadConfigurationOptions);
-        private readonly Func<string, Task<(byte[], DateTime)>> m_SourceImageResolver;
+        private readonly DynamicImageMiddlewareOptions m_MiddlewareOptions = new DynamicImageMiddlewareOptions();
         #endregion
 
         #region Private Properties
@@ -35,15 +36,17 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
             ILogger<DynamicImageMiddleware> logger,
             IDynamicImageUtility dynamicImageUtility,
             IDynamicImageResizer dynamicImageResizer,
-            string dynamicImagePathPrefix,
-            Func<string, Task<(byte[], DateTime)>> sourceImageResolver)
+            Action<DynamicImageMiddlewareOptions> optionsBuilder)
             : base(next)
         {
             Log = logger;
             m_DynamicImageUtility = dynamicImageUtility;
             m_DynamicImageResizer = dynamicImageResizer;
-            m_DynamicImagePathPrefix = dynamicImagePathPrefix;
-            m_SourceImageResolver = sourceImageResolver;
+
+            optionsBuilder?.Invoke(m_MiddlewareOptions);
+
+            Guard.ArgumentNotNull(m_MiddlewareOptions.SourceImageResolver, nameof(m_MiddlewareOptions.SourceImageResolver));
+            Guard.ArgumentNotNullOrWhiteSpace(m_MiddlewareOptions.DynamicImagePathPrefix, nameof(m_MiddlewareOptions.DynamicImagePathPrefix));
 
             //TODO: Add in validation to protected against multiple instances of the middleware being registered using
             //the same path prefix
@@ -55,7 +58,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
         {
             try
             {
-                var result = m_DynamicImageUtility.TryParseUrl(m_DynamicImagePathPrefix, context.Request.Path.Value);
+                var result = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
 
                 if(result.Status == DynamicImageParseUrlResult.Skip)
                 {
@@ -69,7 +72,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
                     return;
                 }
 
-                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_SourceImageResolver, result.ImageOptions);
+                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceImageResolver, result.ImageOptions);
 
                 if(image == null)
                 {
