@@ -80,7 +80,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
                     return null;
 
                 DateTime cacheLastModified = blob.Properties.LastModified.Value.UtcDateTime;
-
+                
                 if (sourceLastModified > cacheLastModified)
                 {
                     //The cache is invalid at this point. Just return null rather than deleting the blob
@@ -90,7 +90,8 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
                 DynamicImageItem item = new DynamicImageItem
                 {
-                    LastModified = cacheLastModified
+                    LastModified = cacheLastModified,
+                    Length = blob.Properties.Length
                 };
 
                 //Set the content resolver to allow the file to be downloaded from blob storage if needed.

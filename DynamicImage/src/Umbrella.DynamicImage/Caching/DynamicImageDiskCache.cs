@@ -97,7 +97,8 @@ namespace Umbrella.DynamicImage.Caching
                 //We need to return the cached image
                 DynamicImageItem item = new DynamicImageItem
                 {
-                    LastModified = fiCached.LastWriteTimeUtc
+                    LastModified = fiCached.LastWriteTimeUtc,
+                    Length = fiCached.Length
                 };
 
                 //Set the content resolver to allow the file to be read from disk if / when needed

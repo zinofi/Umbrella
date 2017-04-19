@@ -84,7 +84,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                 string ifModifiedSince = context.Request.Headers["If-Modified-Since"];
                 if (!string.IsNullOrEmpty(ifModifiedSince))
                 {
-                    DateTime lastModified = DateTime.Parse(ifModifiedSince);
+                    DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
 
                     if (lastModified == image.LastModified)
                     {
@@ -92,6 +92,8 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                         return;
                     }
                 }
+                
+                //TODO: Check the If-None-Match header as well if the If-Modified-Since header is missing
 
                 byte[] content = await image.GetContentAsync();
 
@@ -121,6 +123,15 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
         {
             response.Headers.Append("Content-Type", "image/" + dynamicImage.ImageOptions.Format.ToString().ToLower());
             response.Headers.Append("Last-Modified", dynamicImage.LastModified.ToUniversalTime().ToString("r"));
+
+            //TODO: ASP.NET Core seems to require this to be present on responses otherwise it won't
+            //read the If-Modified-Since request header value when the ETag is not sent back in the If-None-Match header.
+            //Not sure if this is Kestrel or IIS that is exhibiting this behaviour.
+            //Track the source of this down and file an issue on github with the aspnet team.
+            long eTagHash = dynamicImage.LastModified.ToFileTimeUtc() ^ dynamicImage.Length;
+            string eTagValue = Convert.ToString(eTagHash, 16);
+
+            response.Headers.Append("ETag", $"\"{eTagValue}\"");
         }
 
         private void SetResponseStatusCode(HttpResponse response, HttpStatusCode statusCode)
