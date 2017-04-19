@@ -64,7 +64,7 @@ namespace Umbrella.AspNetCore.DynamicImage
 
                 return virtualPath;
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc, new { options, toAbsolutePath }))
+            catch (Exception exc) when (m_Logger.WriteError(exc, new { options, toAbsolutePath }, returnValue: true))
             {
                 throw new DynamicImageException("An error occurred whilst generating the url.", exc, options);
             }

@@ -42,7 +42,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
 
                 return await GenerateImageAsync(bytes, sourceLastModified, options).ConfigureAwait(false);
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc, new { options }))
+            catch (Exception exc) when (m_Logger.WriteError(exc, new { options }, returnValue: true))
             {
                 throw new UDynamicImageException("An error has occurred during image resizing.", exc, options);
             }
@@ -110,7 +110,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
 
                 return dynamicImage;
             }
-            catch (Exception exc) when (m_Logger.WriteError(exc, new { sourceLastModified, options }))
+            catch (Exception exc) when (m_Logger.WriteError(exc, new { sourceLastModified, options }, returnValue: true))
             {
                 throw new UDynamicImageException("An error has occurred during image resizing.", exc, options);
             }

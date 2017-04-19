@@ -62,7 +62,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
                 await blob.UploadFromByteArrayAsync(content, 0, content.Length).ConfigureAwait(false);
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { dynamicImage.ImageOptions }))
+            catch (Exception exc) when (Log.WriteError(exc, new { dynamicImage.ImageOptions }, returnValue: true))
             {
                 throw new DynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
             }
@@ -106,7 +106,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
                 return item;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { key, sourceLastModified, fileExtension }))
+            catch (Exception exc) when (Log.WriteError(exc, new { key, sourceLastModified, fileExtension }, returnValue: true))
             {
                 throw new DynamicImageException("There was problem retrieving the image from the cache.", exc);
             }
@@ -120,7 +120,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
                 return blob.DeleteIfExistsAsync();
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { key, fileExtension }))
+            catch (Exception exc) when (Log.WriteError(exc, new { key, fileExtension }, returnValue: true))
             {
                 throw new DynamicImageException("There was problem removing the image from the cache.", exc);
             }

@@ -58,7 +58,7 @@ namespace Umbrella.DynamicImage.Caching
                         return stringBuilder.ToString();
                     });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { options }))
+            catch (Exception exc) when (Log.WriteError(exc, new { options }, returnValue: true))
             {
                 throw new DynamicImageException("There was a problem generating the cache key.", exc, options);
             }
