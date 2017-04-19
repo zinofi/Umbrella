@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 using Xunit;
 
-namespace Umbrella.Utilities.Tests.Extensions
+namespace Umbrella.Utilities.Test.Extensions
 {
-    public class StringExtensionsTests
+    public class StringExtensionsTest
     {
         [Fact]
         public void ToCamelCaseValid()

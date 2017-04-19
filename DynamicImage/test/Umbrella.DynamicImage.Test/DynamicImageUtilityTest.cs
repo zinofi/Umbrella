@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DynamicImage.Test
 {
-    public class DynamicImageUtilityTests
+    public class DynamicImageUtilityTest
     {
         [Fact]
         public void TryParseUrl()

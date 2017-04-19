@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Umbrella.Utilities.Test.Encryption
 {
     //TODO: Need to sort this out.
-    public class PasswordGeneratorTests
+    public class PasswordGeneratorTest
     {
         //[TestMethod]
         //public void TestValidPassword()

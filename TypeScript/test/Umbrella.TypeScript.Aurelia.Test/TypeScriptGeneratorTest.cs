@@ -3,19 +3,20 @@ using System.Runtime.Loader;
 using System.Reflection;
 using System.Collections.Generic;
 using Xunit;
+using System.ComponentModel.DataAnnotations;
+using Umbrella.DataAnnotations;
 
-namespace Umbrella.TypeScript.Test
+namespace Umbrella.TypeScript.Aurelia.Test
 {
-    public class TypeScriptGeneratorTests
+    public class TypeScriptGeneratorTest
     {
         [Fact]
-        public void GenerateAllTest()
+        public void GenerateAureliaTest()
         {
-            var testAssembly = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
+            var testAssembly = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Aurelia.Test"));
 
             TypeScriptGenerator generator = new TypeScriptGenerator(new List<Assembly> { testAssembly })
-                .IncludeStandardGenerators()
-                .IncludeKnockoutGenerators();
+                .IncludeAureliaGenerators();
 
             string output = generator.GenerateAll(true, true, TypeScriptPropertyMode.Model);
 
@@ -31,14 +32,16 @@ namespace Umbrella.TypeScript.Test
         Value2
     }
 
-    [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
+    [TypeScriptModel(TypeScriptOutputModelType.AureliaClass)]
     public class TestClass
     {
         public int TestInt { get; set; } = 100;
+
+        [Required]
         public string TestString { get; set; }
     }
 
-    [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
+    [TypeScriptModel(TypeScriptOutputModelType.AureliaClass)]
     public class TestChildClass
     {
         public int? TestChildInt { get; set; }
@@ -53,6 +56,7 @@ namespace Umbrella.TypeScript.Test
         [TypeScriptEmpty]
         public List<string> TestStringList { get; set; }
 
+        [RequiredNonEmptyCollection]
         public List<int> TestIntList { get; set; } = new List<int>();
     }
 }
