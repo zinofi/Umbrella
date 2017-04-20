@@ -71,21 +71,16 @@ namespace Umbrella.DataAccess.EF6
         private static readonly TRepoOptions s_DefaultRepoOptions = new TRepoOptions();
         #endregion
 
-        #region Private Members
-        private readonly IUserAuditDataFactory<TUserAuditKey> m_UserAuditDataFactory;
-        #endregion
-
-
-
         #region Protected Properties
-        protected TUserAuditKey CurrentUserId => m_UserAuditDataFactory.CurrentUserId;
+        protected TUserAuditKey CurrentUserId => UserAuditDataFactory.CurrentUserId;
+        protected IUserAuditDataFactory<TUserAuditKey> UserAuditDataFactory { get; }
         #endregion
 
         #region Constructors
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<TUserAuditKey> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
             : base(dbContext, logger, lookupNormalizer)
         {
-            m_UserAuditDataFactory = userAuditDataFactory;
+            UserAuditDataFactory = userAuditDataFactory;
         }
         #endregion
 
@@ -214,7 +209,7 @@ namespace Umbrella.DataAccess.EF6
                     datedEntity.CreatedDate = DateTime.UtcNow;
 
                 if (userAuditEntity != null)
-                    userAuditEntity.CreatedById = m_UserAuditDataFactory.CurrentUserId;
+                    userAuditEntity.CreatedById = UserAuditDataFactory.CurrentUserId;
 
                 if (addToContext)
                     Context.Set<TEntity>().Add(entity);
@@ -226,7 +221,7 @@ namespace Umbrella.DataAccess.EF6
                     datedEntity.UpdatedDate = DateTime.UtcNow;
 
                 if (userAuditEntity != null)
-                    userAuditEntity.UpdatedById = m_UserAuditDataFactory.CurrentUserId;
+                    userAuditEntity.UpdatedById = UserAuditDataFactory.CurrentUserId;
             }
         }
 
