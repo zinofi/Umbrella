@@ -126,6 +126,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Disk.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.AzureStorage.Test", "Test\Umbrella.FileSystem.AzureStorage.Test\Umbrella.FileSystem.AzureStorage.Test.csproj", "{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.Test", "Test\Umbrella.Legacy.WebUtilities.Test\Umbrella.Legacy.WebUtilities.Test.csproj", "{AF51C65C-F241-48C7-81DD-9E0E763E2002}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -332,6 +334,10 @@ Global
 		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -387,5 +393,6 @@ Global
 		{C9B1A1E3-7374-465C-8043-67966E1461AA} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
 		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{AF51C65C-F241-48C7-81DD-9E0E763E2002} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 	EndGlobalSection
 EndGlobal

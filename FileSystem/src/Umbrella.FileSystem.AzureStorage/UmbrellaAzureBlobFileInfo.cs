@@ -11,16 +11,20 @@ namespace Umbrella.FileSystem.AzureStorage
 {
     public class UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
     {
+        private byte[] m_Contents;
+
         protected ILogger Log { get; }
-        protected CloudBlockBlob Blob { get; }
+        internal CloudBlockBlob Blob { get; }
+        protected IUmbrellaFileProvider Provider { get; }
 
         public string Name => Blob.Name;
         public long Length => Blob.Properties.Length;
         public DateTimeOffset? LastModified => Blob.Properties.LastModified;
 
-        public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger, CloudBlockBlob blob)
+        public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger, IUmbrellaFileProvider provider, CloudBlockBlob blob)
         {
             Log = Log;
+            Provider = provider;
             Blob = blob;
         }
 
@@ -58,8 +62,14 @@ namespace Umbrella.FileSystem.AzureStorage
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (cacheContents && m_Contents != null)
+                    return m_Contents;
+
                 byte[] bytes = new byte[Blob.Properties.Length];
                 await Blob.DownloadToByteArrayAsync(bytes, 0).ConfigureAwait(false);
+
+                if (cacheContents)
+                    m_Contents = bytes;
 
                 return bytes;
             }
@@ -78,6 +88,18 @@ namespace Umbrella.FileSystem.AzureStorage
                 await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
+        }
+
+        public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await Provider.CopyAsync(this, destinationSubpath, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }))
             {
                 throw;
             }

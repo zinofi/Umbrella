@@ -43,9 +43,9 @@ namespace Umbrella.FileSystem.AzureStorage
 
                 return await GetFileAsync(subpath, true, cancellationToken).ConfigureAwait(false);
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { subpath }))
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
             {
-                throw;
+                throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
 
@@ -58,9 +58,9 @@ namespace Umbrella.FileSystem.AzureStorage
 
                 return await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { subpath }))
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
             {
-                throw;
+                throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
 
@@ -68,10 +68,12 @@ namespace Umbrella.FileSystem.AzureStorage
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string[] parts = subpath.Trim().Split(s_DirectorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+            string cleanedPath = subpath.Trim(' ', '~');
+
+            string[] parts = cleanedPath.Split(s_DirectorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length != 2)
-                throw new UmbrellaFileSystemException($"The value for {nameof(subpath)} must contain exactly 2 segments, i.e. folder name and file name. The folder name is used as the blob storage container name. The invalid value is {subpath}");
+                throw new Exception($"The value for {nameof(subpath)} must contain exactly 2 segments, i.e. folder name and file name. The folder name is used as the blob storage container name. The invalid value is {subpath}");
 
             string containerName = parts[0].ToLowerInvariant();
             string fileName = parts[1];
@@ -83,9 +85,97 @@ namespace Umbrella.FileSystem.AzureStorage
 
             //The call to ExistsAsync should force the properties of the blob to be populated
             if (!isNew && await blob.ExistsAsync().ConfigureAwait(false))
-                throw new UmbrellaFileSystemException($"The blob for {nameof(subpath)} with value {subpath} does not exist.");
+                return null;
 
-            return new UmbrellaAzureBlobFileInfo(LoggerFactory.CreateLogger<UmbrellaAzureBlobFileInfo>(), blob);
+            return new UmbrellaAzureBlobFileInfo(LoggerFactory.CreateLogger<UmbrellaAzureBlobFileInfo>(), this, blob);
+        }
+
+        public async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
+                IUmbrellaFileInfo fileInfo = await GetAsync(subpath, cancellationToken).ConfigureAwait(false);
+
+                if (fileInfo != null)
+                    return await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
+
+                return true;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNull(fileInfo, nameof(fileInfo));
+
+                return fileInfo.DeleteAsync(cancellationToken);
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { fileInfo }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
+                Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+                IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken);
+
+                if (sourceFile == null)
+                    throw new UmbrellaFileNotFoundException(sourceSubpath);
+
+                return await CopyAsync(sourceFile, destinationSubpath, cancellationToken).ConfigureAwait(false);
+            }
+            catch(Exception exc) when (Log.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNull(sourceFile, nameof(sourceFile));
+                Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+                IUmbrellaFileInfo destinationFile = await GetAsync(destinationSubpath, cancellationToken);
+
+                if (destinationFile == null)
+                    throw new UmbrellaFileNotFoundException(destinationSubpath);
+
+                if (sourceFile is UmbrellaAzureBlobFileInfo blobSourceFile)
+                {
+                    var blobDestinationFile = (UmbrellaAzureBlobFileInfo)destinationFile;
+
+                    await blobDestinationFile.Blob.StartCopyAsync(blobSourceFile.Blob);
+
+                    return destinationFile;
+                }
+                else
+                {
+                    throw new Exception($"The {nameof(sourceFile)} parameter must be of type {nameof(UmbrellaAzureBlobFileInfo)}. This provider does currently not support copying files loaded using different provider implementations.");
+                }
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
         }
     }
 }

@@ -13,6 +13,11 @@ namespace Umbrella.FileSystem.Disk
         public long Length => throw new NotImplementedException();
         public DateTimeOffset? LastModified => throw new NotImplementedException();
 
+        public Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();

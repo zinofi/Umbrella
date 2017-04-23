@@ -151,6 +151,9 @@ namespace Umbrella.Utilities.Extensions
             return sb;
         }
 
+        public static bool StartsWith(this StringBuilder sb, char test) => sb.IndexOf(test) == 0;
+        public static bool StartsWith(this StringBuilder sb, string test) => sb.IndexOf(test) == 0;
+
         public static bool EndsWith(this StringBuilder sb, string test) => EndsWith(sb, test, StringComparison.CurrentCulture);
 
         public static bool EndsWith(this StringBuilder sb, string test, StringComparison comparison)

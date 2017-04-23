@@ -16,5 +16,6 @@ namespace Umbrella.FileSystem.Abstractions
         Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default(CancellationToken), bool cacheContents = true);
         Task WriteFromByteArrayAsync(byte[] bytes, CancellationToken cancellationToken = default(CancellationToken));
         Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

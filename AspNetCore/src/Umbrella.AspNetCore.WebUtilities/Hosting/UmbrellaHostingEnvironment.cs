@@ -37,6 +37,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
         }
         #endregion
 
+        #region IUmbrellaHostingEnvironment Members
         public string MapPath(string virtualPath, bool fromContentRoot = true)
         {
             try
@@ -45,7 +46,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
                 //Trim and remove the ~/ from the front of the path
                 //Also change forward slashes to back slashes
-                string cleanedPath = TransformPath(virtualPath, true, true);
+                string cleanedPath = TransformPath(virtualPath, true, false, true);
 
                 string key = $"UmbrellaHostingEnvironment:MapPath:{cleanedPath}:{fromContentRoot}".ToUpperInvariant();
 
@@ -73,7 +74,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
                 Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
 
-                string cleanedPath = TransformPath(virtualPath, false, false);
+                string cleanedPath = TransformPath(virtualPath, false, true, false);
 
                 string key = $"UmbrellaHostingEnvironment:MapWebPath:{cleanedPath}:{scheme}".ToUpperInvariant();
 
@@ -91,20 +92,29 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 throw;
             }
         }
+        #endregion
 
-        private string TransformPath(string virtualPath, bool removeLeadingSlash, bool convertForwardSlashesToBackSlashes)
+        #region Private Methods
+        private string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
         {
             StringBuilder sb = new StringBuilder(virtualPath)
                 .Trim()
                 .Trim('~');
 
+            if (removeLeadingSlash && ensureLeadingSlash)
+                throw new ArgumentException($"{nameof(removeLeadingSlash)} and {nameof(ensureLeadingSlash)} are both set to true. This is not allowed.");
+
             if (removeLeadingSlash)
                 sb.Trim('/');
 
-            if(convertForwardSlashesToBackSlashes)
+            if (ensureLeadingSlash && !sb.StartsWith('/'))
+                sb.Insert(0, '/');
+
+            if (convertForwardSlashesToBackSlashes)
                 sb.Replace("/", @"\");
 
             return sb.ToString();
-        }
+        } 
+        #endregion
     }
 }
