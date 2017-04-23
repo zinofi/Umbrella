@@ -45,7 +45,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 
             optionsBuilder?.Invoke(m_MiddlewareOptions);
 
-            Guard.ArgumentNotNull(m_MiddlewareOptions.SourceImageResolver, nameof(m_MiddlewareOptions.SourceImageResolver));
+            Guard.ArgumentNotNull(m_MiddlewareOptions.SourceFileProvider, nameof(m_MiddlewareOptions.SourceFileProvider));
             Guard.ArgumentNotNullOrWhiteSpace(m_MiddlewareOptions.DynamicImagePathPrefix, nameof(m_MiddlewareOptions.DynamicImagePathPrefix));
 
             //TODO: Add in validation to protected against multiple instances of the middleware being registered using
@@ -71,8 +71,8 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
                     return;
                 }
-
-                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceImageResolver, result.ImageOptions);
+                
+                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, context.RequestAborted);
 
                 if(image == null)
                 {
@@ -86,7 +86,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                 {
                     DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
 
-                    if (lastModified == image.LastModified)
+                    if (lastModified == image.LastModified.UtcDateTime)
                     {
                         SetResponseStatusCode(context.Response, HttpStatusCode.NotModified);
                         return;
@@ -122,13 +122,13 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
         private void AppendResponseHeaders(HttpResponse response, DynamicImageItem dynamicImage)
         {
             response.Headers.Append("Content-Type", "image/" + dynamicImage.ImageOptions.Format.ToString().ToLower());
-            response.Headers.Append("Last-Modified", dynamicImage.LastModified.ToUniversalTime().ToString("r"));
+            response.Headers.Append("Last-Modified", dynamicImage.LastModified.UtcDateTime.ToString("r"));
 
             //TODO: ASP.NET Core seems to require this to be present on responses otherwise it won't
             //read the If-Modified-Since request header value when the ETag is not sent back in the If-None-Match header.
             //Not sure if this is Kestrel or IIS that is exhibiting this behaviour.
             //Track the source of this down and file an issue on github with the aspnet team.
-            long eTagHash = dynamicImage.LastModified.ToFileTimeUtc() ^ dynamicImage.Length;
+            long eTagHash = dynamicImage.LastModified.UtcDateTime.ToFileTimeUtc() ^ dynamicImage.Length;
             string eTagValue = Convert.ToString(eTagHash, 16);
 
             response.Headers.Append("ETag", $"\"{eTagValue}\"");

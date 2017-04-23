@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Umbrella.DynamicImage.Abstractions;
+using System.Threading;
 
 namespace Umbrella.DynamicImage.Caching
 {
@@ -15,13 +16,13 @@ namespace Umbrella.DynamicImage.Caching
     public class DynamicImageDefaultCache : IDynamicImageCache
     {
         #region IDynamicImageCache Members
-        public Task AddAsync(DynamicImageItem dynamicImage)
+        public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken))
             => Task.CompletedTask;
 
-        public Task<DynamicImageItem> GetAsync(string key, DateTime sourceLastModified, string fileExtension)
+        public Task<DynamicImageItem> GetAsync(string key, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
             => Task.FromResult<DynamicImageItem>(null);
 
-        public Task RemoveAsync(string key, string fileExtension)
+        public Task RemoveAsync(string key, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
             => Task.CompletedTask;
 
         public string GenerateCacheKey(DynamicImageOptions options)

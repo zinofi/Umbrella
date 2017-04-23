@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+ï»¿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
@@ -9,11 +9,12 @@
     <Version>1.0.0-rel-build00321</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd ï¿½ 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
     <ProjectReference Include="..\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
   </ItemGroup>
 

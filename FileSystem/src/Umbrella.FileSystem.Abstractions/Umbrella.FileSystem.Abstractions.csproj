@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Umbrella.FileSystem.Abstractions</PackageId>
+    <Version>1.0.0-rel-build00321</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+  </PropertyGroup>
+
+</Project>

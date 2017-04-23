@@ -116,6 +116,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DynamicImage.Sound
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DynamicImage.Caching.AzureStorage.Test", "Test\Umbrella.DynamicImage.Caching.AzureStorage.Test\Umbrella.DynamicImage.Caching.AzureStorage.Test.csproj", "{3A5567B4-6C4B-4C89-B7B0-5DF01A7C47AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Abstractions", "Core\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj", "{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.AzureStorage", "Core\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj", "{A23F38F1-8CE7-483F-AADE-685EAF303E67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Disk", "Core\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj", "{C9B1A1E3-7374-465C-8043-67966E1461AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Disk.Test", "Test\Umbrella.FileSystem.Disk.Test\Umbrella.FileSystem.Disk.Test.csproj", "{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.AzureStorage.Test", "Test\Umbrella.FileSystem.AzureStorage.Test\Umbrella.FileSystem.AzureStorage.Test.csproj", "{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -302,6 +312,26 @@ Global
 		{3A5567B4-6C4B-4C89-B7B0-5DF01A7C47AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A5567B4-6C4B-4C89-B7B0-5DF01A7C47AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A5567B4-6C4B-4C89-B7B0-5DF01A7C47AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A23F38F1-8CE7-483F-AADE-685EAF303E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A23F38F1-8CE7-483F-AADE-685EAF303E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A23F38F1-8CE7-483F-AADE-685EAF303E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A23F38F1-8CE7-483F-AADE-685EAF303E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9B1A1E3-7374-465C-8043-67966E1461AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B1A1E3-7374-465C-8043-67966E1461AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B1A1E3-7374-465C-8043-67966E1461AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B1A1E3-7374-465C-8043-67966E1461AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -352,5 +382,10 @@ Global
 		{E9ECDF2D-0A5C-45FF-8457-7D11B8750097} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{A48D6A8C-B1E4-4FA9-B4EE-895AB040B5BC} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{3A5567B4-6C4B-4C89-B7B0-5DF01A7C47AA} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{A23F38F1-8CE7-483F-AADE-685EAF303E67} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{C9B1A1E3-7374-465C-8043-67966E1461AA} = {9EA3F4AE-0260-4B8A-98AD-25803026D4E5}
+		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 	EndGlobalSection
 EndGlobal

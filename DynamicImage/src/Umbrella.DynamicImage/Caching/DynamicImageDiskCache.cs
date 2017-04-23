@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Umbrella.DynamicImage.Abstractions;
+using System.Threading;
 
 namespace Umbrella.DynamicImage.Caching
 {
@@ -43,7 +44,7 @@ namespace Umbrella.DynamicImage.Caching
         #endregion
 
         #region IDynamicImageCache Members
-        public async Task AddAsync(DynamicImageItem dynamicImage)
+        public async Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -57,7 +58,7 @@ namespace Umbrella.DynamicImage.Caching
 
                 if (!Directory.Exists(directoryName))
                     Directory.CreateDirectory(directoryName);
-
+                
                 using (FileStream fs = new FileStream(physicalCachedFilePath, FileMode.Create, FileAccess.Write))
                 {
                     byte[] content = await dynamicImage.GetContentAsync();
@@ -71,7 +72,7 @@ namespace Umbrella.DynamicImage.Caching
             }
         }
 
-        public Task<DynamicImageItem> GetAsync(string key, DateTime sourceLastModified, string fileExtension)
+        public Task<DynamicImageItem> GetAsync(string key, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -126,7 +127,7 @@ namespace Umbrella.DynamicImage.Caching
             }
         }
 
-        public Task RemoveAsync(string key, string fileExtension)
+        public Task RemoveAsync(string key, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {

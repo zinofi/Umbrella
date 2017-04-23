@@ -14,6 +14,8 @@ using UDynamicImageFormat = Umbrella.DynamicImage.Abstractions.DynamicImageForma
 using SDynamicImageFormat = SoundInTheory.DynamicImage.DynamicImageFormat;
 using UDynamicImageException = Umbrella.DynamicImage.Abstractions.DynamicImageException;
 using System.Threading.Tasks;
+using Umbrella.FileSystem.Abstractions;
+using System.Threading;
 
 namespace Umbrella.DynamicImage.SoundInTheory
 {
@@ -34,13 +36,22 @@ namespace Umbrella.DynamicImage.SoundInTheory
         #endregion
 
         #region IDynamicImageResizer Members
-        public async Task<DynamicImageItem> GenerateImageAsync(Func<string, Task<(byte[] Bytes, DateTime SourceLastModified)>> sourceImageResolver, DynamicImageOptions options)
+        public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                var (bytes, sourceLastModified) = await sourceImageResolver(options.SourcePath).ConfigureAwait(false);
+                var fileInfo = await sourceFileProvider.GetAsync(options.SourcePath, cancellationToken).ConfigureAwait(false);
 
-                return await GenerateImageAsync(bytes, sourceLastModified, options).ConfigureAwait(false);
+                if (await fileInfo.ExistsAsync().ConfigureAwait(false))
+                {
+                    return await GenerateImageAsync(() => fileInfo.ReadAsByteArrayAsync(cancellationToken),
+                        fileInfo.LastModified.Value,
+                        options,
+                        cancellationToken)
+                        .ConfigureAwait(false);
+                }
+
+                return null;
             }
             catch (Exception exc) when (m_Logger.WriteError(exc, new { options }, returnValue: true))
             {
@@ -48,16 +59,13 @@ namespace Umbrella.DynamicImage.SoundInTheory
             }
         }
 
-        public async Task<DynamicImageItem> GenerateImageAsync(byte[] bytes, DateTime sourceLastModified, DynamicImageOptions options)
+        public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
                 if (m_Logger.IsEnabled(LogLevel.Debug))
                     m_Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
-
-                if (bytes == null || bytes.Length == 0)
-                    return null;
-
+                
                 string cacheKey = m_DynamicImageCache.GenerateCacheKey(options);
 
                 if (m_Logger.IsEnabled(LogLevel.Debug))
@@ -82,6 +90,8 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 }
 
                 //Item cannot be found in the cache - build a new image
+                byte[] bytes = await sourceBytesProvider().ConfigureAwait(false);
+
                 ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceBytes(bytes);
 
                 ResizeMode dynamicResizeMode = GetResizeMode(options.ResizeMode);
@@ -100,7 +110,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 dynamicImage = new DynamicImageItem
                 {
                     ImageOptions = options,
-                    LastModified = DateTime.UtcNow
+                    LastModified = DateTimeOffset.UtcNow
                 };
 
                 dynamicImage.SetContent(ConvertBitmapSourceToByteArray(image.Image, options.Format));

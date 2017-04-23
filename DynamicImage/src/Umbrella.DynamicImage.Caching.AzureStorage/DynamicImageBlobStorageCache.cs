@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage;
 using Umbrella.Utilities;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Caching.AzureStorage.Test")]
 
@@ -19,10 +20,10 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 {
     public class DynamicImageBlobStorageCache : DynamicImageCache, IDynamicImageCache
     {
-        #region Private Members
-        private readonly DynamicImageBlobStorageCacheOptions m_BlobStorageCacheOptions;
-        private readonly CloudStorageAccount m_StorageAccount;
-        private readonly CloudBlobClient m_BlobClient;
+        #region Protected Properties
+        protected DynamicImageBlobStorageCacheOptions BlobStorageCacheOptions { get; }
+        protected CloudStorageAccount StorageAccount { get; }
+        protected CloudBlobClient BlobClient { get; }
         #endregion
 
         #region Internal Properties
@@ -36,22 +37,25 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
             DynamicImageBlobStorageCacheOptions blobStorageCacheOptions)
             : base(logger, cache, cacheOptions)
         {
-            m_BlobStorageCacheOptions = blobStorageCacheOptions;
+            BlobStorageCacheOptions = blobStorageCacheOptions;
 
             Guard.ArgumentNotNullOrWhiteSpace(blobStorageCacheOptions.ContainerName, nameof(blobStorageCacheOptions.ContainerName));
             Guard.ArgumentNotNullOrWhiteSpace(blobStorageCacheOptions.StorageConnectionString, nameof(blobStorageCacheOptions.StorageConnectionString));
 
-            m_StorageAccount = CloudStorageAccount.Parse(blobStorageCacheOptions.StorageConnectionString);
-            m_BlobClient = m_StorageAccount.CreateCloudBlobClient();
-            BlobContainer = m_BlobClient.GetContainerReference(blobStorageCacheOptions.ContainerName);
+            StorageAccount = CloudStorageAccount.Parse(blobStorageCacheOptions.StorageConnectionString);
+            BlobClient = StorageAccount.CreateCloudBlobClient();
+            BlobContainer = BlobClient.GetContainerReference(blobStorageCacheOptions.ContainerName);
         }
         #endregion
 
         #region IDynamicImageCache Members
-        public async Task AddAsync(DynamicImageItem dynamicImage)
+        public async Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                //TODO: Rework all the code in this file to use the appropriate IUmbrellaFileProvider for blob storage
+                cancellationToken.ThrowIfCancellationRequested();
+
                 string key = GenerateCacheKey(dynamicImage.ImageOptions);
 
                 await BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
@@ -68,14 +72,17 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
             }
         }
 
-        public async Task<DynamicImageItem> GetAsync(string key, DateTime sourceLastModified, string fileExtension)
+        public async Task<DynamicImageItem> GetAsync(string key, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 await BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 CloudBlockBlob blob = GetBlob(key, fileExtension);
                 
+                //The call to ExistsAsync should populate the properties of the blob
                 if (!await blob.ExistsAsync())
                     return null;
 
@@ -97,11 +104,10 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
                 //Set the content resolver to allow the file to be downloaded from blob storage if needed.
                 item.SetContentResolver(async () =>
                 {
-                    using (var ms = new MemoryStream())
-                    {
-                        await blob.DownloadToStreamAsync(ms).ConfigureAwait(false);
-                        return ms.ToArray();
-                    }
+                    byte[] bytes = new byte[blob.Properties.Length];
+                    await blob.DownloadToByteArrayAsync(bytes, 0).ConfigureAwait(false);
+
+                    return bytes;
                 });
 
                 return item;
@@ -112,13 +118,15 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
             }
         }
 
-        public Task RemoveAsync(string key, string fileExtension)
+        public async Task RemoveAsync(string key, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 CloudBlockBlob blob = GetBlob(key, fileExtension);
 
-                return blob.DeleteIfExistsAsync();
+                await blob.DeleteIfExistsAsync().ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc, new { key, fileExtension }, returnValue: true))
             {

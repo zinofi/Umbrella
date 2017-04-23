@@ -11,13 +11,9 @@ namespace Umbrella.DynamicImage.Abstractions
         private Func<Task<byte[]>> m_ContentResolver;
         private byte[] m_Content;
         
-        public DateTime LastModified { get; set; }
+        public DateTimeOffset LastModified { get; set; }
         public long Length { get; set; }
         public DynamicImageOptions ImageOptions { get; set; }
-        /// <summary>
-        /// This will either be a physical file path or a URL.
-        /// </summary>
-        //public string CachedPath { get; set; } //TODO: Do we need this?? - Yes, this is needed to lazily serve files from the disk cache. Need some way
 
         public void SetContent(byte[] bytes)
         {

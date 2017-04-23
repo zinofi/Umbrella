@@ -10,6 +10,7 @@ using Umbrella.Utilities.Hosting;
 using Microsoft.AspNetCore.Http;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities;
 
 namespace Umbrella.AspNetCore.DynamicImage
 {
@@ -45,6 +46,8 @@ namespace Umbrella.AspNetCore.DynamicImage
         {
             try
             {
+                Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
+
                 string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
 
                 string path = options.SourcePath.Replace("~/", "");
