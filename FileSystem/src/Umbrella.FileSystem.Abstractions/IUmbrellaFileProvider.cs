@@ -14,5 +14,7 @@ namespace Umbrella.FileSystem.Abstractions
         Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default(CancellationToken));
         Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken));
         Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, CancellationToken cancellationToken = default(CancellationToken));
+        Task<(bool Exists, IUmbrellaFileInfo FileInfo)> ExistsAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

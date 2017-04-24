@@ -12,7 +12,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
-    public class UmbrellaAzureBlobFileProvider : IUmbrellaFileProvider
+    public class UmbrellaAzureBlobFileProvider : IUmbrellaAzureBlobFileProvider
     {
         private static readonly char[] s_DirectorySeparatorArray = new[] { '/' };
 
@@ -84,7 +84,7 @@ namespace Umbrella.FileSystem.AzureStorage
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
 
             //The call to ExistsAsync should force the properties of the blob to be populated
-            if (!isNew && await blob.ExistsAsync().ConfigureAwait(false))
+            if (!isNew && !await blob.ExistsAsync().ConfigureAwait(false))
                 return null;
 
             return new UmbrellaAzureBlobFileInfo(LoggerFactory.CreateLogger<UmbrellaAzureBlobFileInfo>(), this, blob);
@@ -173,6 +173,42 @@ namespace Umbrella.FileSystem.AzureStorage
                 }
             }
             catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+                Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+
+                IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
+                await file.WriteFromByteArrayAsync(bytes, cancellationToken).ConfigureAwait(false);
+
+                return file;
+            }
+            catch(Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task<(bool Exists, IUmbrellaFileInfo FileInfo)> ExistsAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
+                IUmbrellaFileInfo file = await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
+
+                return (file != null, file);
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
