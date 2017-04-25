@@ -19,6 +19,11 @@ namespace Umbrella.FileSystem.Disk
             throw new NotImplementedException();
         }
 
+        public Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
@@ -34,7 +39,7 @@ namespace Umbrella.FileSystem.Disk
             throw new NotImplementedException();
         }
 
-        public Task<(bool Exists, IUmbrellaFileInfo FileInfo)> ExistsAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
@@ -44,7 +49,7 @@ namespace Umbrella.FileSystem.Disk
             throw new NotImplementedException();
         }
 
-        public Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

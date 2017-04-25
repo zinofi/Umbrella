@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("Umbrella.AspNetCore.WebUtilities")]
-[assembly: InternalsVisibleTo("Umbrella.AspNetCore.WebUtilities.DynamicImage")]
+[assembly: InternalsVisibleTo("Umbrella.AspNetCore.DynamicImage")]
 namespace Umbrella.Utilities.Compilation
 {
     /// <summary>

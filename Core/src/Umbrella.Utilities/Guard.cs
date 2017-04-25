@@ -47,5 +47,39 @@ namespace Umbrella.Utilities
             if (argumentValue?.Count == 0)
                 throw new ArgumentException($"{argumentName} cannot be null or empty");
         }
+
+        /// <summary>
+        /// Checks if the <paramref name="argumentValue"/> is of type <typeparamref name="T"/> or a type in it's type hierarchy.
+        /// Calls <see cref="ArgumentNotNull(object, string)"/> internally.
+        /// </summary>
+        /// <typeparam name="T">The type to match.</typeparam>
+        /// <param name="argumentValue">The object to test.</param>
+        /// <param name="argumentName">The name of the argument.</param>
+        /// <exception cref="ArgumentNullException">The value is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The value is not of type <typeparamref name="T"/> or a type in it's type hierarchy.</exception>
+        public static void ArgumentOfType<T>(object argumentValue, string argumentName)
+        {
+            ArgumentNotNull(argumentValue, argumentName);
+
+            if (argumentValue is T == false)
+                throw new ArgumentOutOfRangeException($"{argumentName} is not of type {nameof(T)}: {typeof(T).FullName} or one of it's super types.");
+        }
+
+        /// <summary>
+        /// Checks if the <paramref name="argumentValue"/> is axactly of type <typeparamref name="T"/>
+        /// Calls <see cref="ArgumentNotNull(object, string)"/> internally.
+        /// </summary>
+        /// <typeparam name="T">The type to match.</typeparam>
+        /// <param name="argumentValue">The object to test.</param>
+        /// <param name="argumentName">The name of the argument.</param>
+        /// <exception cref="ArgumentNullException">The value is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The value is not exactly of type <typeparamref name="T"/></exception>
+        public static void ArgumentOfTypeExact<T>(object argumentValue, string argumentName)
+        {
+            ArgumentNotNull(argumentValue, argumentName);
+
+            if (argumentValue.GetType() != typeof(T))
+                throw new ArgumentOutOfRangeException($"{argumentName} is not exactly of type {nameof(T)}: {typeof(T).FullName}");
+        }
     }
 }

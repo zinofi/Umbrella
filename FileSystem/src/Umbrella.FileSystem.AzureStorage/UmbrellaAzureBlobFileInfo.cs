@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
@@ -15,17 +16,26 @@ namespace Umbrella.FileSystem.AzureStorage
 
         protected ILogger Log { get; }
         internal CloudBlockBlob Blob { get; }
-        protected IUmbrellaFileProvider Provider { get; }
+        protected UmbrellaAzureBlobFileProvider Provider { get; }
 
+        public bool IsNew { get; private set; }
         public string Name => Blob.Name;
         public long Length => Blob.Properties.Length;
         public DateTimeOffset? LastModified => Blob.Properties.LastModified;
-
-        public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger, IUmbrellaFileProvider provider, CloudBlockBlob blob)
+        public string ContentType
         {
-            Log = Log;
+            get => Blob.Properties.ContentType;
+            private set => Blob.Properties.ContentType = value;
+        }
+
+        public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger, UmbrellaAzureBlobFileProvider provider, CloudBlockBlob blob, bool isNew)
+        {
+            Log = logger;
             Provider = provider;
             Blob = blob;
+            IsNew = isNew;
+
+            ContentType = MimeTypeUtility.GetMimeType(Name);
         }
 
         public async Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -62,14 +72,16 @@ namespace Umbrella.FileSystem.AzureStorage
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (IsNew)
+                    throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
+
                 if (cacheContents && m_Contents != null)
                     return m_Contents;
 
                 byte[] bytes = new byte[Blob.Properties.Length];
                 await Blob.DownloadToByteArrayAsync(bytes, 0).ConfigureAwait(false);
 
-                if (cacheContents)
-                    m_Contents = bytes;
+                m_Contents = cacheContents ? bytes : null;
 
                 return bytes;
             }
@@ -79,13 +91,17 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public async Task WriteFromByteArrayAsync(byte[] bytes, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
 
                 await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+
+                m_Contents = cacheContents ? bytes : null;
+                IsNew = false;
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -93,15 +109,39 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken)
+        public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                return await Provider.CopyAsync(this, destinationSubpath, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+                var destinationFile = (UmbrellaAzureBlobFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+                await destinationFile.Blob.StartCopyAsync(Blob).ConfigureAwait(false);
+
+                return destinationFile;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }))
             {
-                throw;
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentOfType<UmbrellaAzureBlobFileInfo>(destinationFile, nameof(destinationFile));
+
+                var blobDestinationFile = (UmbrellaAzureBlobFileInfo)destinationFile;
+                await blobDestinationFile.Blob.StartCopyAsync(Blob).ConfigureAwait(false);
+
+                return destinationFile;
+            }
+            catch(Exception exc) when (Log.WriteError(exc, new { destinationFile }))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
     }

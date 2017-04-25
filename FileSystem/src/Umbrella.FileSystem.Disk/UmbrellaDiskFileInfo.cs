@@ -9,11 +9,18 @@ namespace Umbrella.FileSystem.Disk
 {
     public class UmbrellaDiskFileInfo : IUmbrellaFileInfo
     {
+        public bool IsNew { get; }
         public string Name => throw new NotImplementedException();
         public long Length => throw new NotImplementedException();
         public DateTimeOffset? LastModified => throw new NotImplementedException();
+        public string ContentType => throw new NotImplementedException();
 
         public Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
@@ -33,7 +40,7 @@ namespace Umbrella.FileSystem.Disk
             throw new NotImplementedException();
         }
 
-        public Task WriteFromByteArrayAsync(byte[] bytes, CancellationToken cancellationToken = default(CancellationToken))
+        public Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
