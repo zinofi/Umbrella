@@ -15,8 +15,9 @@ namespace Umbrella.DynamicImage.Test
         {
             DynamicImageUtility utility = new DynamicImageUtility(null, null, null);
 
-            var result = utility.TryParseUrl("dynamicimage", "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.png");
+            var result = utility.TryParseUrl("dynamicimage", "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg");
 
+            int i = 0;
             //TODO: Finish this off.
         }
 

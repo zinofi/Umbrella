@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Encryption.Interfaces
 {
-	public interface IEncryptionUtility
+	public interface IEncryptionUtility : IDisposable
 	{
         void Initialize(string encryptionKey, string initializationVector);
         string DecryptString(string value);

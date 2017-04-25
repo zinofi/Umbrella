@@ -67,7 +67,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 			}
 		}
 
-		public bool Enabled => s_Section != null ? s_Section.Enabled : true;
+        public bool Enabled => s_Section?.Enabled ?? false;
         #endregion
 
         #region Operators

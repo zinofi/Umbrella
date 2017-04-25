@@ -21,11 +21,15 @@ namespace Umbrella.Utilities.Encryption
         #endregion
 
         #region Public Methods
-        public T CreateEncryptionUtility<T>(string encryptionKey, string initializationVector) where T : IEncryptionUtility
+        public T CreateEncryptionUtility<T>(string encryptionKey, string initializationVector)
+            where T : IEncryptionUtility
         {
             ILogger logger = m_LoggerFactory.CreateLogger<T>();
 
-            return (T)Activator.CreateInstance(typeof(T), logger);
+            var instance = (T)Activator.CreateInstance(typeof(T), logger);
+            instance.Initialize(encryptionKey, initializationVector);
+
+            return instance;
         }
         #endregion
     }

@@ -645,6 +645,7 @@ namespace Umbrella.Utilities
             ["gif"] = "image/gif",
             ["ief"] = "image/ief",
             ["jpeg"] = "image/jpeg",
+            ["jpg"] = "image/jpeg",
             ["ktx"] = "image/ktx",
             ["png"] = "image/png",
             ["btif"] = "image/prs.btif",

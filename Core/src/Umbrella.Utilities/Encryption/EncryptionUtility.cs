@@ -12,17 +12,14 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Encryption
 {
-	public abstract class EncryptionUtility<T> : IEncryptionUtility, IDisposable
+	public abstract class EncryptionUtility<T> : IEncryptionUtility
 		where T : SymmetricAlgorithm, new()
 	{
-		#region Protected Members
-		protected SymmetricAlgorithm p_Algorithm;
-		protected ICryptoTransform p_Encryptor;
-		protected ICryptoTransform p_Decryptor;
-        #endregion
-
         #region Protected Properties
         protected ILogger Log { get; }
+        protected SymmetricAlgorithm Algorithm { get; private set; }
+        protected ICryptoTransform Encryptor { get; private set; }
+        protected ICryptoTransform Decryptor { get; private set; }
         #endregion
 
         #region Constructors
@@ -39,7 +36,7 @@ namespace Umbrella.Utilities.Encryption
             {
                 using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, p_Encryptor, CryptoStreamMode.Write))
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write))
                     {
                         byte[] converted = ConvertStringToByteArray(value);
 
@@ -62,7 +59,7 @@ namespace Umbrella.Utilities.Encryption
             {
                 using (MemoryStream msDecrypt = new MemoryStream())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, p_Decryptor, CryptoStreamMode.Write))
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, Decryptor, CryptoStreamMode.Write))
                     {
                         csDecrypt.Write(value, 0, value.Length);
                         csDecrypt.Close();
@@ -89,19 +86,20 @@ namespace Umbrella.Utilities.Encryption
             try
             {
                 // Create provider
-                p_Algorithm = new T();
+                Algorithm = new T()
+                {
+                    // Assign key and iv
+                    Mode = CipherMode.CBC,
+                    Key = ConvertStringToByteArray(encryptionKey),
+                    IV = ConvertStringToByteArray(initializationVector)
+                };
 
-                // Assign key and iv
-                p_Algorithm.Mode = CipherMode.CBC;
-                p_Algorithm.Key = ConvertStringToByteArray(encryptionKey);
-                p_Algorithm.IV = ConvertStringToByteArray(initializationVector);
-
-                byte[] key = p_Algorithm.Key;
-                byte[] iV = p_Algorithm.IV;
+                byte[] key = Algorithm.Key;
+                byte[] iV = Algorithm.IV;
 
                 // Setup encryptor and decryptor
-                p_Encryptor = p_Algorithm.CreateEncryptor(key, iV);
-                p_Decryptor = p_Algorithm.CreateDecryptor(key, iV);
+                Encryptor = Algorithm.CreateEncryptor(key, iV);
+                Decryptor = Algorithm.CreateDecryptor(key, iV);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -120,7 +118,7 @@ namespace Umbrella.Utilities.Encryption
             {
                 using (MemoryStream msEncrypt = new MemoryStream())
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, p_Encryptor, CryptoStreamMode.Write))
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write))
                     {
                         byte[] converted = Encoding.UTF8.GetBytes(value);
 
@@ -137,8 +135,6 @@ namespace Umbrella.Utilities.Encryption
             }
         }
 
-        
-
         /// <summary>
         /// Method to decrypt a given byte array.
         /// </summary>
@@ -150,7 +146,7 @@ namespace Umbrella.Utilities.Encryption
             {
                 using (MemoryStream msDecrypt = new MemoryStream())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, p_Decryptor, CryptoStreamMode.Write))
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, Decryptor, CryptoStreamMode.Write))
                     {
                         byte[] converted = Convert.FromBase64String(value);
 
@@ -184,22 +180,22 @@ namespace Umbrella.Utilities.Encryption
 		{
 			if (disposing)
 			{
-				if (p_Decryptor != null)
+				if (Decryptor != null)
 				{
-					p_Decryptor.Dispose();
-					p_Decryptor = null;
+					Decryptor.Dispose();
+					Decryptor = null;
 				}
 
-				if (p_Encryptor != null)
+				if (Encryptor != null)
 				{
-					p_Encryptor.Dispose();
-					p_Encryptor = null;
+					Encryptor.Dispose();
+					Encryptor = null;
 				}
 
-				if (p_Algorithm != null)
+				if (Algorithm != null)
 				{
-					p_Algorithm.Dispose();
-					p_Algorithm = null;
+					Algorithm.Dispose();
+					Algorithm = null;
 				}
 			}
 		}
@@ -213,20 +209,14 @@ namespace Umbrella.Utilities.Encryption
         /// </summary>
         /// <param name="str">The string to convert.</param>
         /// <returns>The converted byte array.</returns>
-        private byte[] ConvertStringToByteArray(string str)
-        {
-            return Encoding.Default.GetBytes(str);
-        }
+        private byte[] ConvertStringToByteArray(string str) => Encoding.Default.GetBytes(str);
 
         /// <summary>
         /// Method to convert a byte array to a unicode string.
         /// </summary>
         /// <param name="bytes">The byte array to convert.</param>
         /// <returns>The converted string.</returns>
-        private string ConvertByteArrayToString(byte[] bytes)
-        {
-            return Encoding.Default.GetString(bytes);
-        }
+        private string ConvertByteArrayToString(byte[] bytes) => Encoding.Default.GetString(bytes);
 
         #endregion
 	}
