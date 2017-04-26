@@ -2,6 +2,6 @@
 foreach ($file in $configFiles)
 {
     (Get-Content $file.PSPath) |
-    Foreach-Object { $_ -replace "build00325", "build00326" } |
+    Foreach-Object { $_ -replace "build00326", "build00327" } |
     Set-Content $file.PSPath
 }
