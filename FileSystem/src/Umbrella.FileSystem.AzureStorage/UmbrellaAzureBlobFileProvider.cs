@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
@@ -18,13 +19,17 @@ namespace Umbrella.FileSystem.AzureStorage
 
         protected ILogger Log { get; }
         protected ILoggerFactory LoggerFactory { get; }
+        protected IMimeTypeUtility MimeTypeUtility { get; }
         protected UmbrellaAzureBlobFileProviderOptions Options { get; }
         protected CloudStorageAccount StorageAccount { get; }
         protected CloudBlobClient BlobClient { get; }
 
-        public UmbrellaAzureBlobFileProvider(ILoggerFactory loggerFactory, UmbrellaAzureBlobFileProviderOptions options)
+        public UmbrellaAzureBlobFileProvider(ILoggerFactory loggerFactory,
+            IMimeTypeUtility mimeTypeUtility,
+            UmbrellaAzureBlobFileProviderOptions options)
         {
             LoggerFactory = loggerFactory;
+            MimeTypeUtility = mimeTypeUtility;
             Log = loggerFactory.CreateLogger<UmbrellaAzureBlobFileProvider>();
             Options = options;
 
@@ -87,7 +92,7 @@ namespace Umbrella.FileSystem.AzureStorage
             if (!isNew && !await blob.ExistsAsync().ConfigureAwait(false))
                 return null;
 
-            return new UmbrellaAzureBlobFileInfo(LoggerFactory.CreateLogger<UmbrellaAzureBlobFileInfo>(), this, blob, isNew);
+            return new UmbrellaAzureBlobFileInfo(LoggerFactory.CreateLogger<UmbrellaAzureBlobFileInfo>(), MimeTypeUtility, this, blob, isNew);
         }
 
         public async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))

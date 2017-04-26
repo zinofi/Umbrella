@@ -11,6 +11,7 @@ using Umbrella.Utilities.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Umbrella.DynamicImage.Abstractions;
 using System.Threading;
+using Umbrella.Utilities.Mime;
 
 namespace Umbrella.DynamicImage.Caching
 {
@@ -27,10 +28,11 @@ namespace Umbrella.DynamicImage.Caching
 
         #region Constructors
         public DynamicImageDiskCache(ILogger<DynamicImageDiskCache> logger,
+            IMimeTypeUtility mimeTypeUtility,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions,
             DynamicImageDiskCacheOptions diskCacheOptions)
-            : base(logger, cache, cacheOptions)
+            : base(logger, mimeTypeUtility, cache, cacheOptions)
         {
             if (string.IsNullOrWhiteSpace(diskCacheOptions.PhysicalFolderPath))
                 throw new DynamicImageException($"The {diskCacheOptions.PhysicalFolderPath} must be specified.");

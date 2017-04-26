@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Legacy.WebUtilities.Extensions
+namespace Microsoft.Owin
 {
 	public static class IOwinResponseExtensions
 	{

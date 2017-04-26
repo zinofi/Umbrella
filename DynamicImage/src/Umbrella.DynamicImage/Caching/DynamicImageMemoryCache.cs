@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Umbrella.DynamicImage.Abstractions;
 using System.Threading.Tasks;
 using System.Threading;
+using Umbrella.Utilities.Mime;
 
 namespace Umbrella.DynamicImage.Caching
 {
@@ -21,11 +22,12 @@ namespace Umbrella.DynamicImage.Caching
 
         #region Constructors
         public DynamicImageMemoryCache(ILogger<DynamicImageMemoryCache> logger,
+            IMimeTypeUtility mimeTypeUtility,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions,
             DynamicImageMemoryCacheOptions memoryCacheOptions,
             IUmbrellaHostingEnvironment umbrellaHostingEnvironment)
-            : base(logger, cache, cacheOptions)
+            : base(logger, mimeTypeUtility, cache, cacheOptions)
         {
             if (memoryCacheOptions.ItemCacheOptions == null)
                 throw new DynamicImageException($"The {memoryCacheOptions.ItemCacheOptions} must not be null");

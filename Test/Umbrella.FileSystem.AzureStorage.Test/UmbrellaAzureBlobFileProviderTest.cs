@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities.Mime;
 using Xunit;
 
 namespace Umbrella.FileSystem.AzureStorage.Test
@@ -245,12 +246,16 @@ namespace Umbrella.FileSystem.AzureStorage.Test
             var loggerFactory = new Mock<ILoggerFactory>();
             loggerFactory.Setup(x => x.CreateLogger("UmbrellaAzureBlobFileProvider")).Returns(logger.Object);
 
+            var mimeTypeUtility = new Mock<IMimeTypeUtility>();
+            mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
+            mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
+
             var options = new UmbrellaAzureBlobFileProviderOptions
             {
                 StorageConnectionString = c_StorageConnectionString
             };
 
-            return new UmbrellaAzureBlobFileProvider(loggerFactory.Object, options);
+            return new UmbrellaAzureBlobFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
         }
 
         private void CheckWrittenFileAssertions(IUmbrellaFileInfo file, byte[] bytes, string fileName)

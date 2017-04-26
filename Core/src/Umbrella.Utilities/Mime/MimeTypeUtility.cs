@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Utilities
+namespace Umbrella.Utilities.Mime
 {
-    public static class MimeTypeUtility
+    public class MimeTypeUtility : IMimeTypeUtility
     {
         private const string c_DefaultMimeType = "application/octet-stream";
 
@@ -35,6 +35,7 @@ namespace Umbrella.Utilities
             ["exi"] = "application/exi",
             ["pfr"] = "application/font-tdpfr",
             ["woff"] = "application/font-woff",
+            ["woff2"] = "application/font-woff2",
             ["gml"] = "application/gml+xml",
             ["gpx"] = "application/gpx+xml",
             ["gxf"] = "application/gxf",
@@ -780,7 +781,7 @@ namespace Umbrella.Utilities
             ["ice"] = "x-conference/x-cooltalk",
         });
 
-        public static string GetMimeType(string extension)
+        public string GetMimeType(string extension)
         {
             Guard.ArgumentNotNullOrWhiteSpace(extension, nameof(extension));
 

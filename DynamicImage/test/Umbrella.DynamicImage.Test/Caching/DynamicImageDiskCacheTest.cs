@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Caching;
+using Umbrella.Utilities.Mime;
 using Xunit;
 
 namespace Umbrella.DynamicImage.Test.Caching
@@ -152,7 +153,11 @@ namespace Umbrella.DynamicImage.Test.Caching
 
             var logger = new Mock<ILogger<DynamicImageDiskCache>>();
 
-            return new DynamicImageDiskCache(logger.Object, memoryCache, cacheOptions, diskCacheOptions);
+            var mimeTypeUtility = new Mock<IMimeTypeUtility>();
+            mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
+            mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
+
+            return new DynamicImageDiskCache(logger.Object, mimeTypeUtility.Object, memoryCache, cacheOptions, diskCacheOptions);
         }
     }
 }

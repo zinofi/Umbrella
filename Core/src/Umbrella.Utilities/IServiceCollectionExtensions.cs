@@ -6,6 +6,7 @@ using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Interfaces;
 using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Mime;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -13,8 +14,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
         {
-            //Email
             services.AddTransient<IEmailBuilder, EmailBuilder>();
+            services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
 
             //Encryption
 #if NET46

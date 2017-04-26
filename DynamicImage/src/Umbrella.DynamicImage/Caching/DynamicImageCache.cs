@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Mime;
 
 namespace Umbrella.DynamicImage.Caching
 {
@@ -19,16 +20,19 @@ namespace Umbrella.DynamicImage.Caching
 
         #region Protected Properties
         protected ILogger Log { get; }
+        protected IMimeTypeUtility MimeTypeUtility { get; }
         protected IMemoryCache Cache { get; }
         protected DynamicImageCacheOptions CacheOptions { get; }
         #endregion
 
         #region Constructors
         public DynamicImageCache(ILogger logger,
+            IMimeTypeUtility mimeTypeUtility,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions)
         {
             Log = logger;
+            MimeTypeUtility = mimeTypeUtility;
             Cache = cache;
             CacheOptions = cacheOptions;
 

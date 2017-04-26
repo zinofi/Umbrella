@@ -13,6 +13,7 @@ using Umbrella.Utilities;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Umbrella.Utilities.Mime;
 
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Caching.AzureStorage.Test")]
 
@@ -32,10 +33,11 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
         #region Constructors
         public DynamicImageBlobStorageCache(ILogger<DynamicImageBlobStorageCache> logger,
+            IMimeTypeUtility mimeTypeUtility,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions,
             DynamicImageBlobStorageCacheOptions blobStorageCacheOptions)
-            : base(logger, cache, cacheOptions)
+            : base(logger, mimeTypeUtility, cache, cacheOptions)
         {
             BlobStorageCacheOptions = blobStorageCacheOptions;
 
@@ -60,10 +62,13 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
                 await BlobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
 
-                CloudBlockBlob blob = GetBlob(key, dynamicImage.ImageOptions.Format.ToFileExtensionString());
+                string fileExtension = dynamicImage.ImageOptions.Format.ToFileExtensionString();
+
+                CloudBlockBlob blob = GetBlob(key, fileExtension);
 
                 byte[] content = await dynamicImage.GetContentAsync().ConfigureAwait(false);
 
+                blob.Properties.ContentType = MimeTypeUtility.GetMimeType(fileExtension);
                 await blob.UploadFromByteArrayAsync(content, 0, content.Length).ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc, new { dynamicImage.ImageOptions }, returnValue: true))

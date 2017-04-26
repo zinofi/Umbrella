@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
@@ -15,8 +16,9 @@ namespace Umbrella.FileSystem.AzureStorage
         private byte[] m_Contents;
 
         protected ILogger Log { get; }
-        internal CloudBlockBlob Blob { get; }
         protected UmbrellaAzureBlobFileProvider Provider { get; }
+
+        internal CloudBlockBlob Blob { get; }
 
         public bool IsNew { get; private set; }
         public string Name => Blob.Name;
@@ -28,14 +30,18 @@ namespace Umbrella.FileSystem.AzureStorage
             private set => Blob.Properties.ContentType = value;
         }
 
-        public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger, UmbrellaAzureBlobFileProvider provider, CloudBlockBlob blob, bool isNew)
+        public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger,
+            IMimeTypeUtility mimeTypeUtility,
+            UmbrellaAzureBlobFileProvider provider,
+            CloudBlockBlob blob,
+            bool isNew)
         {
             Log = logger;
             Provider = provider;
             Blob = blob;
             IsNew = isNew;
 
-            ContentType = MimeTypeUtility.GetMimeType(Name);
+            ContentType = mimeTypeUtility.GetMimeType(Name);
         }
 
         public async Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
