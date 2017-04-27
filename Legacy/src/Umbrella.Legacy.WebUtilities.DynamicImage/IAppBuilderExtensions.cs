@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options;
+using Umbrella.WebUtilities.Http;
 
 namespace Owin
 {
@@ -17,7 +18,8 @@ namespace Owin
             ILogger<DynamicImageMiddleware> logger,
             IDynamicImageUtility dynamicImageUtility,
             IDynamicImageResizer dynamicImageResizer,
+            IHttpHeaderValueUtility headerValueUtility,
             Action<DynamicImageMiddlewareOptions> optionsBuilder)
-            => builder.Use<DynamicImageMiddleware>(logger, dynamicImageUtility, dynamicImageResizer, optionsBuilder);
+            => builder.Use<DynamicImageMiddleware>(logger, dynamicImageUtility, dynamicImageResizer, headerValueUtility, optionsBuilder);
     }
 }

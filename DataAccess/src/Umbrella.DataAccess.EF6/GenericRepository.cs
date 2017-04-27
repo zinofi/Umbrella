@@ -104,8 +104,7 @@ namespace Umbrella.DataAccess.EF6
                     ValidateEntity(entity, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
-                bool isNew;
-                PreSaveWork(entity, addToContext, out isNew);
+                PreSaveWork(entity, addToContext, out bool isNew);
 
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 AfterContextSaving(entity, options, childOptions);
@@ -155,8 +154,7 @@ namespace Umbrella.DataAccess.EF6
                     await ValidateEntityAsync(entity, cancellationToken, options, childOptions);
 
                 //Common work shared between the synchronous and asynchronous version of the Save method
-                bool isNew;
-                PreSaveWork(entity, addToContext, out isNew);
+                PreSaveWork(entity, addToContext, out bool isNew);
 
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 await AfterContextSavingAsync(entity, cancellationToken, options, childOptions);
@@ -251,7 +249,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                Guard.ArgumentNotNull(entities, nameof(entities));
+                Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
 
                 //Save all changes - do not push to the database yet
                 if (!bypassSaveLogic)
@@ -287,7 +285,7 @@ namespace Umbrella.DataAccess.EF6
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                Guard.ArgumentNotNull(entities, nameof(entities));
+                Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
 
                 //Save all changes - do not push to the database yet
                 if (!bypassSaveLogic)
@@ -398,7 +396,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                Guard.ArgumentNotNull(entities, nameof(entities));
+                Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
 
                 foreach (TEntity entity in entities)
                 {
@@ -435,7 +433,7 @@ namespace Umbrella.DataAccess.EF6
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                Guard.ArgumentNotNull(entities, nameof(entities));
+                Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
 
                 foreach (TEntity entity in entities)
                 {

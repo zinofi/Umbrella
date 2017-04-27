@@ -48,6 +48,12 @@ namespace Umbrella.Utilities
                 throw new ArgumentException($"{argumentName} cannot be null or empty");
         }
 
+        public static void ArgumentNotNullOrEmpty<T>(IEnumerable<T> argumentValue, string argumentName)
+        {
+            if (argumentValue?.Count() == 0)
+                throw new ArgumentException($"{argumentName} cannot be null or empty");
+        }
+
         /// <summary>
         /// Checks if the <paramref name="argumentValue"/> is of type <typeparamref name="T"/> or a type in it's type hierarchy.
         /// Calls <see cref="ArgumentNotNull(object, string)"/> internally.

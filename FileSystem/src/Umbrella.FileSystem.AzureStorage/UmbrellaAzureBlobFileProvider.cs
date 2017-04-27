@@ -13,6 +13,7 @@ using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
+    //TODO: Most of this could go into a base class when looking at the disk provider.
     public class UmbrellaAzureBlobFileProvider : IUmbrellaAzureBlobFileProvider
     {
         private static readonly char[] s_DirectorySeparatorArray = new[] { '/' };
