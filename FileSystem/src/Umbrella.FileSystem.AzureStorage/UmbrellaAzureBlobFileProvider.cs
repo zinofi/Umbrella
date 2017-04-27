@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.AzureStorage
@@ -74,7 +75,14 @@ namespace Umbrella.FileSystem.AzureStorage
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            string cleanedPath = subpath.Trim(' ', '~');
+            StringBuilder pathBuilder = new StringBuilder(subpath)
+                .Trim(' ')
+                .Trim('~')
+                .Trim('_')
+                .Replace("_", "")
+                .Replace(" ", "");
+
+            string cleanedPath = pathBuilder.ToString();
 
             string[] parts = cleanedPath.Split(s_DirectorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 

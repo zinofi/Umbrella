@@ -14,8 +14,8 @@ namespace Umbrella.FileSystem.AzureStorage.Test
     public class UmbrellaAzureBlobFileProviderTest
     {
         //TODO: When moving to GitHub this connection string needs to be dynamically set somehow before executing the tests
-        private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
-        //private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+        //private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
+        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
 
         private string m_BaseDirectory;
 
@@ -57,6 +57,23 @@ namespace Umbrella.FileSystem.AzureStorage.Test
             string fileName = "aspnet-mvc-logo.png";
 
             IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{fileName}");
+
+            Assert.IsType<UmbrellaAzureBlobFileInfo>(file);
+            Assert.True(file.IsNew);
+            Assert.Equal(-1, file.Length);
+            Assert.Null(file.LastModified);
+            Assert.Equal(fileName, file.Name);
+            Assert.Equal("image/png", file.ContentType);
+        }
+
+        [Fact]
+        public async Task CreateAsync_InvalidChars()
+        {
+            IUmbrellaFileProvider provider = CreateFileProvider();
+
+            string fileName = "aspnet-mvc-logo.png";
+
+            IUmbrellaFileInfo file = await provider.CreateAsync($"/_ images/{fileName}");
 
             Assert.IsType<UmbrellaAzureBlobFileInfo>(file);
             Assert.True(file.IsNew);
