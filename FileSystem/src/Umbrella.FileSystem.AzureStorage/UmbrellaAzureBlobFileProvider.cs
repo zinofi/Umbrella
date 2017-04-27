@@ -75,6 +75,13 @@ namespace Umbrella.FileSystem.AzureStorage
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            //TODO: Use a regex here to only allow the characters permitted by Azure which are:
+            //Length: between 3 and 63 chars
+            //Lowercase letters
+            //Numbers
+            //Hyphens
+            //Can't contain consecutive hyphens
+            //Begin and end with a letter or number
             StringBuilder pathBuilder = new StringBuilder(subpath)
                 .Trim(' ')
                 .Trim('~')
