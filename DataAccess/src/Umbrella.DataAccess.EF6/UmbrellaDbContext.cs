@@ -89,7 +89,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                int result = await SaveChangesAsync();
+                int result = await base.SaveChangesAsync();
 
                 await ExecutePostSaveChangesActionsAsync();
 
