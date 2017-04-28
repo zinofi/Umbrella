@@ -13,12 +13,13 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using Umbrella.Utilities;
 using Umbrella.DataAccess.Abstractions;
+using System.Collections.Concurrent;
 
 namespace Umbrella.DataAccess.EF6
 {
     public abstract class GenericRepository<TEntity, TDbContext> : GenericRepository<TEntity, TDbContext, RepoOptions>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
     {
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
             : base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
@@ -28,7 +29,7 @@ namespace Umbrella.DataAccess.EF6
 
     public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions> : GenericRepository<TEntity, TDbContext, TRepoOptions, int>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
     {
         public GenericRepository(TDbContext dbContext, IUserAuditDataFactory<int> userAuditDataFactory, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
@@ -39,7 +40,7 @@ namespace Umbrella.DataAccess.EF6
 
     public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
     {
@@ -56,7 +57,7 @@ namespace Umbrella.DataAccess.EF6
     /// <typeparam name="TDbContext">The type of the data context</typeparam>
     public abstract class GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey>, IGenericRepository<TEntity, TEntityKey, TRepoOptions>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
     {
@@ -109,14 +110,10 @@ namespace Umbrella.DataAccess.EF6
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 AfterContextSaving(entity, options, childOptions);
 
-                if (pushChangesToDb)
-                {
-                    //Push changes to the database
-                    Context.SaveChanges();
+                Context.RegisterPostSaveChangesAction(entity, () => AfterContextSavedChanges(entity, isNew, options, childOptions));
 
-                    //Additional processing after changes have been successfully committed to the database
-                    AfterContextSavedChanges(entity, isNew, options, childOptions);
-                }
+                if (pushChangesToDb)
+                    Context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", true))
             {
@@ -159,14 +156,10 @@ namespace Umbrella.DataAccess.EF6
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 await AfterContextSavingAsync(entity, cancellationToken, options, childOptions);
 
+                Context.RegisterPostSaveChangesAction(entity, () => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions));
+
                 if (pushChangesToDb)
-                {
-                    //Push changes to the database
                     await Context.SaveChangesAsync(cancellationToken);
-                    
-                    //Additional processing after changes have been successfully committed to the database
-                    await AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions);
-                }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", true))
             {
@@ -261,13 +254,7 @@ namespace Umbrella.DataAccess.EF6
                 }
 
                 if (pushChangesToDb)
-                {
-                    //Commit changes to the database as a single transaction
                     Context.SaveChanges();
-
-                    //Additional process after all changes have been committed to the database
-                    AfterContextSavedChangesMultiple(entities, options ?? s_DefaultRepoOptions, childOptions);
-                }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", true))
             {
@@ -297,13 +284,7 @@ namespace Umbrella.DataAccess.EF6
                 }
 
                 if (pushChangesToDb)
-                {
-                    //Commit changes to the database as a single transaction
                     await Context.SaveChangesAsync(cancellationToken);
-
-                    //Additional process after all changes have been committed to the database
-                    await AfterContextSavedChangesMultipleAsync(entities, cancellationToken, options ?? s_DefaultRepoOptions, childOptions);
-                }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", true))
             {
@@ -333,13 +314,10 @@ namespace Umbrella.DataAccess.EF6
 
                 AfterContextDeleting(entity, options, childOptions);
 
-                if (pushChangesToDb)
-                {
-                    //Push changes to the database
-                    Context.SaveChanges();
+                Context.RegisterPostSaveChangesAction(entity, () => AfterContextDeletedChanges(entity, options, childOptions));
 
-                    AfterContextDeletedChanges(entity, options, childOptions);
-                }
+                if (pushChangesToDb)
+                    Context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", true))
             {
@@ -369,13 +347,10 @@ namespace Umbrella.DataAccess.EF6
 
                 await AfterContextDeletingAsync(entity, cancellationToken, options, childOptions);
 
-                if (pushChangesToDb)
-                {
-                    //Push changes to the database
-                    await Context.SaveChangesAsync(cancellationToken);
+                Context.RegisterPostSaveChangesAction(entity, () => AfterContextDeletedChangesAsync(entity, cancellationToken, options, childOptions));
 
-                    await AfterContextDeletedChangesAsync(entity, cancellationToken, options, childOptions);
-                }
+                if (pushChangesToDb)
+                    await Context.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", true))
             {
@@ -404,12 +379,7 @@ namespace Umbrella.DataAccess.EF6
                 }
 
                 if (pushChangesToDb)
-                {
-                    //Commit changes to the database as a single transaction
                     Context.SaveChanges();
-
-                    AfterContextDeletedChangesMultiple(entities, options ?? s_DefaultRepoOptions, childOptions);
-                }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", true))
             {
@@ -441,12 +411,7 @@ namespace Umbrella.DataAccess.EF6
                 }
 
                 if (pushChangesToDb)
-                {
-                    //Commit changes to the database as a single transaction
                     await Context.SaveChangesAsync(cancellationToken);
-
-                    await AfterContextDeletedChangesMultipleAsync(entities, cancellationToken, options ?? s_DefaultRepoOptions, childOptions);
-                }
             }
             catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", true))
             {
@@ -530,7 +495,7 @@ namespace Umbrella.DataAccess.EF6
         }
 
         /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChanges"/> has taken place.
+        /// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChanges"/> has taken place.
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
@@ -539,34 +504,13 @@ namespace Umbrella.DataAccess.EF6
         }
 
         /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChangesAsync()"/> has taken place.
+        /// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChangesAsync()"/> has taken place.
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
         protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
             AfterContextSavedChanges(entity, isNew, options, childOptions);
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChanges"/> has taken place when working with multiple entities.
-        /// </summary>
-        /// <param name="entities">The entities</param>
-        /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
-        protected virtual void AfterContextSavedChangesMultiple(IEnumerable<TEntity> entities, TRepoOptions options, RepoOptions[] childOptions)
-        {
-        }
-
-        /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChangesAsync()"/> has taken place when working with multiple entities.
-        /// </summary>
-        /// <param name="entities">The entities</param>
-        /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
-        protected virtual Task AfterContextSavedChangesMultipleAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
-        {
-            AfterContextSavedChangesMultiple(entities, options, childOptions);
 
             return Task.CompletedTask;
         }
@@ -614,7 +558,7 @@ namespace Umbrella.DataAccess.EF6
         }
 
         /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChanges"/> has taken place.
+        /// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChanges"/> has taken place.
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
@@ -623,34 +567,13 @@ namespace Umbrella.DataAccess.EF6
         }
 
         /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChangesAsync"/> has taken place.
+        /// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChangesAsync"/> has taken place.
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
         protected virtual Task AfterContextDeletedChangesAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
         {
             AfterContextDeletedChanges(entity, options, childOptions);
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChanges"/> has taken place when working with multiple entities.
-        /// </summary>
-        /// <param name="entities">The entities</param>
-        /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
-        protected virtual void AfterContextDeletedChangesMultiple(IEnumerable<TEntity> entities, TRepoOptions options, RepoOptions[] childOptions)
-        {
-        }
-
-        /// <summary>
-        /// Overriding this method allows you to perform any work after the call to <see cref="DbContext.SaveChangesAsync"/> has taken place when working with multiple entities.
-        /// </summary>
-        /// <param name="entities">The entities</param>
-        /// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
-        protected virtual Task AfterContextDeletedChangesMultipleAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
-        {
-            AfterContextDeletedChangesMultiple(entities, options, childOptions);
 
             return Task.CompletedTask;
         }

@@ -14,7 +14,7 @@ namespace Umbrella.DataAccess.EF6
 {
     public abstract class ReadOnlyGenericRepository<TEntity, TDbContext> : ReadOnlyGenericRepository<TEntity, TDbContext, int>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
     {
         #region Constructors
         public ReadOnlyGenericRepository(TDbContext dbContext, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer)
@@ -26,7 +26,7 @@ namespace Umbrella.DataAccess.EF6
 
     public abstract class ReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey> : IReadOnlyGenericRepository<TEntity, TEntityKey>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TEntityKey : IEquatable<TEntityKey>
     {
         #region Protected Properties

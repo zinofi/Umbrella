@@ -14,7 +14,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 {
     public abstract class MultiTenantGenericRepository<TEntity, TDbContext> : MultiTenantGenericRepository<TEntity, TDbContext, RepoOptions>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
     {
         public MultiTenantGenericRepository(TDbContext dbContext,
             IUserAuditDataFactory<int> userAuditDataFactory,
@@ -28,7 +28,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 
     public abstract class MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions> : MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions, int>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
     {
         public MultiTenantGenericRepository(TDbContext dbContext,
@@ -43,7 +43,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 
     public abstract class MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
     {
@@ -59,7 +59,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 
     public abstract class MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int, int>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
     {
@@ -75,7 +75,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 
     public abstract class MultiTenantGenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TAppTenantKey> : GenericRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TRepoOptions : RepoOptions, new()
         where TEntityKey : IEquatable<TEntityKey>
     {
@@ -95,9 +95,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 
         protected override void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
         {
-            IAppTenantEntity<TAppTenantKey> tenantEntity = entity as IAppTenantEntity<TAppTenantKey>;
-
-            if (tenantEntity != null && m_DbAppTenantSessionContext.IsAuthenticated)
+            if (entity is IAppTenantEntity<TAppTenantKey> tenantEntity && m_DbAppTenantSessionContext.IsAuthenticated)
                 tenantEntity.AppTenantId = m_DbAppTenantSessionContext.AppTenantId;
 
             base.PreSaveWork(entity, addToContext, out isNew);

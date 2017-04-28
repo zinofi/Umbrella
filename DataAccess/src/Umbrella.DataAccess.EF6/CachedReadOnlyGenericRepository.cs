@@ -17,7 +17,7 @@ namespace Umbrella.DataAccess.EF6
 {
     public abstract class CachedReadOnlyGenericRepository<TEntity, TDbContext> : CachedReadOnlyGenericRepository<TEntity, TDbContext, int>
         where TEntity : class, IEntity<int>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
     {
         #region Constructors
         public CachedReadOnlyGenericRepository(TDbContext dbContext, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer, IDistributedCache cache)
@@ -29,7 +29,7 @@ namespace Umbrella.DataAccess.EF6
 
     public abstract class CachedReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey> : ReadOnlyGenericRepository<TEntity, TDbContext, TEntityKey>
         where TEntity : class, IEntity<TEntityKey>
-        where TDbContext : DbContext
+        where TDbContext : UmbrellaDbContext
         where TEntityKey : IEquatable<TEntityKey>
     {
         #region Private Members

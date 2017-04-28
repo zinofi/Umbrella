@@ -6,14 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Umbrella.DataAccess.Abstractions.Interfaces;
 using Umbrella.Utilities.Extensions;
+using System.Threading;
 
 namespace Umbrella.DataAccess.EF6
 {
-    [Obsolete("Do not use this. This should only be used from Code First and it needs the implementation for applying concurrency tokens to columns sorting out properly.", true)]
     public class UmbrellaDbContext : DbContext
     {
-        #region Private Static Members
-        private static readonly Type s_ConcurrencyTypeStamp = typeof(IConcurrencyStamp);
+        #region Private Members
+        private readonly Dictionary<object, Func<Task>> m_PostSaveChangesSaveActionDictionary = new Dictionary<object, Func<Task>>(); 
         #endregion
 
         #region Protected Properties
@@ -25,39 +25,96 @@ namespace Umbrella.DataAccess.EF6
         {
             Log = logger;
         }
+
+        public UmbrellaDbContext(ILogger logger, string nameOrConnectionString)
+            : base(nameOrConnectionString)
+        {
+            Log = logger;
+        }
+        #endregion
+
+        #region Public Methods
+        public virtual void RegisterPostSaveChangesAction(object entity, Action action)
+        {
+            m_PostSaveChangesSaveActionDictionary[entity] = () => Task.FromResult(action);
+        }
+
+        public virtual void RegisterPostSaveChangesActionAsync(object entity, Func<Task> wrappedAction)
+        {
+            m_PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
+        }
+        #endregion
+
+        #region Internal Methods
+        internal virtual async Task ExecutePostSaveChangesActionsAsync()
+        {
+            //There is the potential that if this code is being executed whilst
+            //delegates are still being registered that this will throw up an error.
+            //Realistically though I can't see this happening. Not worth building in locking
+            //because of the overheads unless we encounter problems.
+            foreach (var func in m_PostSaveChangesSaveActionDictionary.Values)
+            {
+                Task task = func?.Invoke();
+
+                if (task != null)
+                    await task;
+            }
+
+            //Now that all items have been processed, clear the dictionary
+            m_PostSaveChangesSaveActionDictionary.Clear();
+        }
         #endregion
 
         #region Overridden Methods
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public override int SaveChanges()
         {
-            throw new NotImplementedException();
-            //try
-            //{
-            //    bool isDebug = Log.IsEnabled(LogLevel.Debug);
+            try
+            {
+                int result = base.SaveChanges();
 
-            //    if (isDebug)
-            //        Log.WriteDebug("Start applying Concurrency Token to entity types.");
+                //Run this on a thread pool thread to ensure when this is executed where we have an available
+                //SynchronizationContext that it does not cause deadlock
+                Task t = Task.Run(() => ExecutePostSaveChangesActionsAsync());
+                t.Wait();
 
-            //    var entityTypes = modelBuilder.Model.GetEntityTypes();
+                return result;
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
+        }
 
-            //    foreach (var type in entityTypes)
-            //    {
-            //        if (s_ConcurrencyTypeStamp.IsAssignableFrom(type.ClrType))
-            //        {
-            //            type.FindProperty(nameof(IConcurrencyStamp.ConcurrencyStamp)).IsConcurrencyToken = true;
+        public override async Task<int> SaveChangesAsync()
+        {
+            try
+            {
+                int result = await SaveChangesAsync();
 
-            //            if (isDebug)
-            //                Log.WriteDebug($"Concurrency Token applied to Entity Type: {type.Name}");
-            //        }
-            //    }
+                await ExecutePostSaveChangesActionsAsync();
 
-            //    if (isDebug)
-            //        Log.WriteDebug("End applying Concurrency Token to entity types.");
-            //}
-            //catch(Exception exc) when (Log.WriteError(exc))
-            //{
-            //    throw;
-            //}
+                return result;
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                int result = await base.SaveChangesAsync(cancellationToken);
+
+                await ExecutePostSaveChangesActionsAsync();
+
+                return result;
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
         }
         #endregion
     }
