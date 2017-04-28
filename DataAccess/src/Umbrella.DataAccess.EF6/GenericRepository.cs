@@ -156,7 +156,7 @@ namespace Umbrella.DataAccess.EF6
                 //Additional processing after changes have been reflected in the database context but not yet pushed to the database
                 await AfterContextSavingAsync(entity, cancellationToken, options, childOptions);
 
-                Context.RegisterPostSaveChangesAction(entity, () => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions));
+                Context.RegisterPostSaveChangesActionAsync(entity, () => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions));
 
                 if (pushChangesToDb)
                     await Context.SaveChangesAsync(cancellationToken);
@@ -347,7 +347,7 @@ namespace Umbrella.DataAccess.EF6
 
                 await AfterContextDeletingAsync(entity, cancellationToken, options, childOptions);
 
-                Context.RegisterPostSaveChangesAction(entity, () => AfterContextDeletedChangesAsync(entity, cancellationToken, options, childOptions));
+                Context.RegisterPostSaveChangesActionAsync(entity, () => AfterContextDeletedChangesAsync(entity, cancellationToken, options, childOptions));
 
                 if (pushChangesToDb)
                     await Context.SaveChangesAsync(cancellationToken);
