@@ -9,6 +9,12 @@
     <Optimize>False</Optimize>
     <DefineConstants>TRACE;NETCOREAPP1_1</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BenchmarkDotNet.Artifacts\**" />
+    <EmbeddedResource Remove="BenchmarkDotNet.Artifacts\**" />
+    <None Remove="BenchmarkDotNet.Artifacts\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
