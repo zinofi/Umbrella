@@ -12,12 +12,9 @@ namespace Umbrella.DataAccess.EF6
 {
     public class UmbrellaDbContext : DbContext
     {
-        #region Private Members
-        private readonly Dictionary<object, Func<Task>> m_PostSaveChangesSaveActionDictionary = new Dictionary<object, Func<Task>>(); 
-        #endregion
-
         #region Protected Properties
         protected ILogger Log { get; }
+        protected Dictionary<object, Func<Task>> PostSaveChangesSaveActionDictionary { get; } = new Dictionary<object, Func<Task>>();
         #endregion
 
         #region Constructors
@@ -36,7 +33,7 @@ namespace Umbrella.DataAccess.EF6
         #region Public Methods
         public virtual void RegisterPostSaveChangesAction(object entity, Action action)
         {
-            m_PostSaveChangesSaveActionDictionary[entity] = () => Task.FromResult(action);
+            PostSaveChangesSaveActionDictionary[entity] = () => Task.FromResult(action);
 
             if (Log.IsEnabled(LogLevel.Debug))
                 Log.WriteDebug(message: "Post save callback registered");
@@ -44,24 +41,22 @@ namespace Umbrella.DataAccess.EF6
 
         public virtual void RegisterPostSaveChangesActionAsync(object entity, Func<Task> wrappedAction)
         {
-            m_PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
+            PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
 
             if (Log.IsEnabled(LogLevel.Debug))
                 Log.WriteDebug(message: "Post save callback registered");
         }
-        #endregion
-
-        #region Internal Methods
-        internal virtual async Task ExecutePostSaveChangesActionsAsync()
+        
+        public virtual async Task ExecutePostSaveChangesActionsAsync()
         {
             if (Log.IsEnabled(LogLevel.Debug))
-                Log.WriteDebug(new { StartPostSaveChangesActionsCount = m_PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
+                Log.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
 
             //There is the potential that if this code is being executed whilst
             //delegates are still being registered that this will throw up an error.
             //Realistically though I can't see this happening. Not worth building in locking
             //because of the overheads unless we encounter problems.
-            foreach (var func in m_PostSaveChangesSaveActionDictionary.Values)
+            foreach (var func in PostSaveChangesSaveActionDictionary.Values)
             {
                 Task task = func?.Invoke();
 
@@ -75,10 +70,10 @@ namespace Umbrella.DataAccess.EF6
             }
 
             //Now that all items have been processed, clear the dictionary
-            m_PostSaveChangesSaveActionDictionary.Clear();
+            PostSaveChangesSaveActionDictionary.Clear();
 
             if (Log.IsEnabled(LogLevel.Debug))
-                Log.WriteDebug(new { EndPostSaveChangesActionsCount = m_PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
+                Log.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
         }
         #endregion
 

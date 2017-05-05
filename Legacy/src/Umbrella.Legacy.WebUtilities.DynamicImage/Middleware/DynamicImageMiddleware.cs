@@ -125,9 +125,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
         #region Private Methods
         private void AppendResponseHeaders(IOwinResponse response, DynamicImageItem image)
         {
-            response.Headers.Append("Content-Type", "image/" + image.ImageOptions.Format.ToString().ToLower());
-            response.Headers.Append("Last-Modified", m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified));
-            response.Headers.Append("ETag", m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length));
+            response.Headers["Content-Type"] = "image/" + image.ImageOptions.Format.ToString().ToLower();
+            response.Headers["Last-Modified"] = m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
+            response.Headers["ETag"] = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
         }
 
         private static DynamicImageConfigurationOptions LoadConfigurationOptions()

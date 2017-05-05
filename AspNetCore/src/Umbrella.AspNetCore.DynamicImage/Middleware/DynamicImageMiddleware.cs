@@ -12,6 +12,7 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
+using Umbrella.WebUtilities.Http;
 
 namespace Umbrella.AspNetCore.DynamicImage.Middleware
 {
@@ -24,6 +25,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
         private readonly IDynamicImageUtility m_DynamicImageUtility;
         private readonly IDynamicImageResizer m_DynamicImageResizer;
         private readonly IHostingEnvironment m_HostingEnvironment;
+        private readonly IHttpHeaderValueUtility m_HeaderValueUtility;
         private readonly DynamicImageMiddlewareOptions m_MiddlewareOptions = new DynamicImageMiddlewareOptions();
         #endregion
 
@@ -34,6 +36,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
             IDynamicImageUtility dynamicImageUtility,
             IDynamicImageResizer dynamicImageResizer,
             IHostingEnvironment hostingEnvironment,
+            IHttpHeaderValueUtility headerValueUtility,
             Action<DynamicImageMiddlewareOptions> optionsBuilder)
         {
             m_Next = next;
@@ -42,6 +45,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
             m_DynamicImageUtility = dynamicImageUtility;
             m_DynamicImageResizer = dynamicImageResizer;
             m_HostingEnvironment = hostingEnvironment;
+            m_HeaderValueUtility = headerValueUtility;
 
             optionsBuilder?.Invoke(m_MiddlewareOptions);
 
@@ -80,20 +84,20 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                     return;
                 }
 
-                //If the image in the cache hasn't been modified
-                string ifModifiedSince = context.Request.Headers["If-Modified-Since"];
-                if (!string.IsNullOrEmpty(ifModifiedSince))
+                //Check the cache headers
+                if (context.Request.IfModifiedSinceHeaderMatched(image.LastModified))
                 {
-                    DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
-
-                    if (lastModified == image.LastModified.UtcDateTime)
-                    {
-                        SetResponseStatusCode(context.Response, HttpStatusCode.NotModified);
-                        return;
-                    }
+                    SetResponseStatusCode(context.Response, HttpStatusCode.NotModified);
+                    return;
                 }
-                
-                //TODO: Check the If-None-Match header as well if the If-Modified-Since header is missing
+
+                string eTagValue = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
+
+                if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
+                {
+                    SetResponseStatusCode(context.Response, HttpStatusCode.NotModified);
+                    return;
+                }
 
                 byte[] content = await image.GetContentAsync();
 
@@ -119,19 +123,11 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
         #endregion
 
         #region Private Methods
-        private void AppendResponseHeaders(HttpResponse response, DynamicImageItem dynamicImage)
+        private void AppendResponseHeaders(HttpResponse response, DynamicImageItem image)
         {
-            response.Headers.Append("Content-Type", "image/" + dynamicImage.ImageOptions.Format.ToString().ToLower());
-            response.Headers.Append("Last-Modified", dynamicImage.LastModified.UtcDateTime.ToString("r"));
-
-            //TODO: ASP.NET Core seems to require this to be present on responses otherwise it won't
-            //read the If-Modified-Since request header value when the ETag is not sent back in the If-None-Match header.
-            //Not sure if this is Kestrel or IIS that is exhibiting this behaviour.
-            //Track the source of this down and file an issue on github with the aspnet team.
-            long eTagHash = dynamicImage.LastModified.UtcDateTime.ToFileTimeUtc() ^ dynamicImage.Length;
-            string eTagValue = Convert.ToString(eTagHash, 16);
-
-            response.Headers.Append("ETag", $"\"{eTagValue}\"");
+            response.Headers["Content-Type"] = "image/" + image.ImageOptions.Format.ToString().ToLower();
+            response.Headers["Last-Modified"] = m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
+            response.Headers["ETag"] = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
         }
 
         private void SetResponseStatusCode(HttpResponse response, HttpStatusCode statusCode)
