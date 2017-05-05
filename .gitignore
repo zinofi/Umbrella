@@ -10,3 +10,4 @@ obj
 /Samples/Umbrella.AspNetCore.Samples/wwwroot/lib
 project.lock.json
 Logs
+BenchmarkDotNet.Artifacts

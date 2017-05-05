@@ -22,18 +22,12 @@ namespace Umbrella.DynamicImage
 
         #region Private Members
         private readonly ILogger m_Logger;
-        private readonly IDynamicImageResizer m_DynamicImageResizer;
-        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
         #endregion
 
         #region Constructors
-        public DynamicImageUtility(ILogger<DynamicImageUtility> logger,
-            IDynamicImageResizer dynamicImageResizer,
-            IDynamicImageUrlGenerator dynamicImageUrlGenerator)
+        public DynamicImageUtility(ILogger<DynamicImageUtility> logger)
         {
             m_Logger = logger;
-            m_DynamicImageResizer = dynamicImageResizer;
-            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
         }
         #endregion
 

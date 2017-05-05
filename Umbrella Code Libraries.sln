@@ -128,6 +128,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.AzureSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.Test", "Test\Umbrella.Legacy.WebUtilities.Test\Umbrella.Legacy.WebUtilities.Test.csproj", "{AF51C65C-F241-48C7-81DD-9E0E763E2002}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmark", "Benchmark", "{22AAC218-83E8-419E-8656-0151F717B73A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DynamicImage.Benchmark", "Benchmark\Umbrella.DynamicImage.Benchmark\Umbrella.DynamicImage.Benchmark.csproj", "{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -338,6 +342,10 @@ Global
 		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF51C65C-F241-48C7-81DD-9E0E763E2002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -394,5 +402,6 @@ Global
 		{8DE82DA6-2B9C-4E2B-B3AB-529FBBA0079D} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
 		{AF51C65C-F241-48C7-81DD-9E0E763E2002} = {32ADE78B-DA1F-4286-ACCB-C83EB2390041}
+		{2DFB32F0-7CF9-48DF-B436-268B0C2171E8} = {22AAC218-83E8-419E-8656-0151F717B73A}
 	EndGlobalSection
 EndGlobal
