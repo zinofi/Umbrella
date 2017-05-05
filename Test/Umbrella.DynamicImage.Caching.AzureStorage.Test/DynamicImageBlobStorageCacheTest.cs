@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Mime;
 using Xunit;
+using Umbrella.Utilities.Compilation;
 
 namespace Umbrella.DynamicImage.Caching.AzureStorage.Test
 {
@@ -28,7 +29,8 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage.Test
             {
                 if (string.IsNullOrEmpty(m_BaseDirectory))
                 {
-                    int indexToEndAt = AppContext.BaseDirectory.IndexOf(@"\bin\Debug\netcoreapp1.1");
+                    string buildConfig = DebugUtility.IsDebugMode ? "Debug" : "Release";
+                    int indexToEndAt = AppContext.BaseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp1.1");
                     m_BaseDirectory = AppContext.BaseDirectory.Remove(indexToEndAt, AppContext.BaseDirectory.Length - indexToEndAt);
                 }
 

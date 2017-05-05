@@ -11,6 +11,7 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Caching;
 using Umbrella.Utilities.Mime;
 using Xunit;
+using Umbrella.Utilities.Compilation;
 
 namespace Umbrella.DynamicImage.Test.Caching
 {
@@ -24,7 +25,8 @@ namespace Umbrella.DynamicImage.Test.Caching
             {
                 if (string.IsNullOrEmpty(m_BaseDirectory))
                 {
-                    int indexToEndAt = AppContext.BaseDirectory.IndexOf(@"\bin\Debug\netcoreapp1.1");
+                    string buildConfig = DebugUtility.IsDebugMode ? "Debug" : "Release";
+                    int indexToEndAt = AppContext.BaseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp1.1");
                     m_BaseDirectory = AppContext.BaseDirectory.Remove(indexToEndAt, AppContext.BaseDirectory.Length - indexToEndAt);
                 }
 

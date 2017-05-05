@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Mime;
 using Xunit;
+using Umbrella.Utilities.Compilation;
 
 namespace Umbrella.FileSystem.AzureStorage.Test
 {
     public class UmbrellaAzureBlobFileProviderTest
     {
         //TODO: When moving to GitHub this connection string needs to be dynamically set somehow before executing the tests
-        //private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
-        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+        private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
+        //private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
 
         private string m_BaseDirectory;
 
@@ -25,7 +26,8 @@ namespace Umbrella.FileSystem.AzureStorage.Test
             {
                 if (string.IsNullOrEmpty(m_BaseDirectory))
                 {
-                    int indexToEndAt = AppContext.BaseDirectory.IndexOf(@"\bin\Debug\netcoreapp1.1");
+                    string buildConfig = DebugUtility.IsDebugMode ? "Debug" : "Release";
+                    int indexToEndAt = AppContext.BaseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp1.1");
                     m_BaseDirectory = AppContext.BaseDirectory.Remove(indexToEndAt, AppContext.BaseDirectory.Length - indexToEndAt);
                 }
 
