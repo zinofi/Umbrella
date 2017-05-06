@@ -67,13 +67,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                     return Path.Combine(rootPath, cleanedPath);
                 });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath }))
+            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
             {
                 throw;
             }
         }
 
-        //TODO: This doesn't yet handle virtual application paths
         public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true)
         {
             try
@@ -90,7 +89,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
                     string cleanedPath = TransformPath(virtualPath, false, true, false);
 
-                    string url = cleanedPath;
+                    var applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
+
+                    //Prefix the path with the virtual application segment
+                    string basePath = applicationPath != "/"
+                        ? applicationPath.Add(cleanedPath).Value
+                        : cleanedPath;
+
+                    string url = basePath;
 
                     if (toAbsoluteUrl)
                     {
@@ -119,7 +125,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                     return url;
                 });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, scheme }))
+            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }))
             {
                 throw;
             }

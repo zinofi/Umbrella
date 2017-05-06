@@ -50,10 +50,10 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
                     string cleanedPath = TransformPath(virtualPath, true, false, false);
 
-                    return System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
+                    return System.Web.Hosting.HostingEnvironment.MapPath(cleanedPath);
                 });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath }))
+            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
             {
                 throw;
             }
@@ -75,6 +75,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
                     string cleanedPath = TransformPath(virtualPath, false, true, true);
 
+                    //Prefix the path with the virtual application segment
                     string basePath = HttpRuntime.AppDomainAppVirtualPath != "/"
                         ? HttpRuntime.AppDomainAppVirtualPath + cleanedPath
                         : cleanedPath;
@@ -108,7 +109,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
                     return url;
                 });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, scheme }))
+            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }))
             {
                 throw;
             }
