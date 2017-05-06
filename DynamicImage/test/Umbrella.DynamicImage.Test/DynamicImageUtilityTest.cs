@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using Umbrella.DynamicImage;
 using Moq;
 using Microsoft.Extensions.Logging;
+using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.DynamicImage.Test
 {
@@ -13,19 +13,24 @@ namespace Umbrella.DynamicImage.Test
         [Fact]
         public void TryParseUrl()
         {
-            //DynamicImageUtility utility = new DynamicImageUtility(null, null, null);
+            var utility = CreateDynamicImageUtility();
 
-            //var result = utility.TryParseUrl("dynamicimage", "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg");
+            string path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
 
-            //int i = 0;
-            //TODO: Finish this off.
+            var result = utility.TryParseUrl("dynamicimage", path);
+
+            Assert.Equal(DynamicImageParseUrlResult.Success, result.Status);
+
+            var options = new DynamicImageOptions("/images/mobile-devices.png", 680 * 2, 649 * 2, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg);
+
+            Assert.Equal(options, result.ImageOptions);
         }
 
         private DynamicImageUtility CreateDynamicImageUtility()
         {
             var logger = new Mock<ILogger<DynamicImageUtility>>();
-            return null;
-            //return new DynamicImageUtility(logger.Object, )
+
+            return new DynamicImageUtility(logger.Object);
         }
     }
 }

@@ -23,10 +23,9 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 		{
 			string value = context.Request.Cookies["_RequestVerificationToken"];
 
-			string cookieToken, formToken;
-			AntiForgery.GetTokens(value, out cookieToken, out formToken);
+            AntiForgery.GetTokens(value, out string cookieToken, out string formToken);
 
-			return cookieToken + ":" + formToken;
+            return cookieToken + ":" + formToken;
 		}
 	}
 }

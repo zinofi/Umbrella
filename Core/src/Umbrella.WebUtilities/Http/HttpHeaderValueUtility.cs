@@ -6,6 +6,7 @@ namespace Umbrella.WebUtilities.Http
 {
     public class HttpHeaderValueUtility : IHttpHeaderValueUtility
     {
+        #region IHttpHeaderValueUtility Members
         public string CreateLastModifiedHeaderValue(DateTimeOffset lastModified)
             => lastModified.UtcDateTime.ToString("r");
 
@@ -14,7 +15,8 @@ namespace Umbrella.WebUtilities.Http
             long eTagHash = lastModified.UtcDateTime.ToFileTimeUtc() ^ contentLength;
             string eTagValue = Convert.ToString(eTagHash, 16);
 
-            return $"\"{eTagValue}\"";
+            return $"\"{eTagValue}\""; 
         }
+        #endregion
     }
 }
