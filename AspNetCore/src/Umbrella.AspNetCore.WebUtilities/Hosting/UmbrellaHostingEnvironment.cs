@@ -105,6 +105,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                         url = $"{scheme}://{request.Host}{cleanedPath}";
                     }
 
+                    //TODO: Consider using the IUmbrellaFileProvider to do this work. That way we can use the append version
+                    //stuff with files stored elsewhere in future, e.g. in blob storage, etc.
                     if(appendVersion)
                     {
                         string physicalPath = MapPath(cleanedPath, mapFromContentRoot);

@@ -15,6 +15,7 @@ using System.IO;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options;
 using Umbrella.Utilities;
 using Umbrella.WebUtilities.Http;
+using System.Threading;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
@@ -60,6 +61,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
         #region Overridden Methods
         public override async Task Invoke(IOwinContext context)
         {
+            CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
+            CancellationToken token = cts.Token;
+
             try
             {
                 var result = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
@@ -72,14 +76,16 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
                 if (result.Status == DynamicImageParseUrlResult.Invalid || !m_DynamicImageUtility.ImageOptionsValid(result.ImageOptions, ConfigurationOptions))
                 {
+                    cts.Cancel();
                     await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                     return;
                 }
 
-                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, context.Request.CallCancelled);
+                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, token);
 
                 if(image == null)
                 {
+                    cts.Cancel();
                     await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                     return;
                 }
@@ -87,6 +93,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
                 //Check the cache headers
                 if(context.Request.IfModifiedSinceHeaderMatched(image.LastModified))
                 {
+                    cts.Cancel();
                     await context.Response.SendStatusCode(HttpStatusCode.NotModified);
                     return;
                 }
@@ -95,27 +102,30 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
                 if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
                 {
+                    cts.Cancel();
                     await context.Response.SendStatusCode(HttpStatusCode.NotModified);
                     return;
                 }
 
-                byte[] content = await image.GetContentAsync();
+                byte[] content = await image.GetContentAsync(token);
 
                 if (content?.Length > 0)
                 {
                     AppendResponseHeaders(context.Response, image);
 
-                    await context.Response.WriteAsync(content);
+                    await context.Response.WriteAsync(content, token);
                     return;
                 }
                 else
                 {
+                    cts.Cancel();
                     await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                     return;
                 }
             }
             catch (Exception exc) when (Log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
             {
+                cts.Cancel();
                 await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                 return;
             }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.AspNetCore.DynamicImage.Middleware.Options;
 using Umbrella.DynamicImage.Abstractions;
@@ -60,6 +61,9 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
         #region Public Methods
         public async Task Invoke(HttpContext context)
         {
+            CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
+            CancellationToken token = cts.Token;
+
             try
             {
                 var result = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
@@ -72,14 +76,16 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 
                 if (result.Status == DynamicImageParseUrlResult.Invalid || !m_DynamicImageUtility.ImageOptionsValid(result.ImageOptions, m_DynamicImageConfigurationOptions))
                 {
+                    cts.Cancel();
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
                     return;
                 }
                 
-                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, context.RequestAborted);
+                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, token);
 
                 if(image == null)
                 {
+                    cts.Cancel();
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
                     return;
                 }
@@ -87,6 +93,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                 //Check the cache headers
                 if (context.Request.IfModifiedSinceHeaderMatched(image.LastModified))
                 {
+                    cts.Cancel();
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotModified);
                     return;
                 }
@@ -95,27 +102,30 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 
                 if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
                 {
+                    cts.Cancel();
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotModified);
                     return;
                 }
 
-                byte[] content = await image.GetContentAsync();
+                byte[] content = await image.GetContentAsync(token);
 
                 if (content?.Length > 0)
                 {
                     AppendResponseHeaders(context.Response, image);
 
-                    await context.Response.Body.WriteAsync(content, 0, content.Length);
+                    await context.Response.Body.WriteAsync(content, 0, content.Length, token);
                     return;
                 }
                 else
                 {
+                    cts.Cancel();
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
                     return;
                 }
             }
             catch (Exception exc) when (m_Logger.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: false))
             {
+                cts.Cancel();
                 SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
                 return;
             }

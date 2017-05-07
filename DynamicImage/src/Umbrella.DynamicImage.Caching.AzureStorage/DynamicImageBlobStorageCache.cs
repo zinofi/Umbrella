@@ -107,8 +107,11 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
                 };
 
                 //Set the content resolver to allow the file to be downloaded from blob storage if needed.
-                item.SetContentResolver(async () =>
+                item.SetContentResolver(async token =>
                 {
+                    token.ThrowIfCancellationRequested();
+
+                    //TODO: Need to pass the token to the download method
                     byte[] bytes = new byte[blob.Properties.Length];
                     await blob.DownloadToByteArrayAsync(bytes, 0).ConfigureAwait(false);
 

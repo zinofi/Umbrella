@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
     public class DynamicImageItem
     {
-        private Func<Task<byte[]>> m_ContentResolver;
+        private Func<CancellationToken, Task<byte[]>> m_ContentResolver;
         private byte[] m_Content;
         
         public DateTimeOffset LastModified { get; set; }
@@ -23,18 +24,18 @@ namespace Umbrella.DynamicImage.Abstractions
             Length = bytes.Length;
         }
 
-        public async Task<byte[]> GetContentAsync()
+        public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (m_Content != null)
                 return m_Content;
 
             if (m_ContentResolver != null)
-                m_Content = await m_ContentResolver();
+                m_Content = await m_ContentResolver(cancellationToken);
 
             return m_Content;
         }
 
-        public void SetContentResolver(Func<Task<byte[]>> contentResolver)
+        public void SetContentResolver(Func<CancellationToken, Task<byte[]>> contentResolver)
             => m_ContentResolver = contentResolver;
     }
 }

@@ -18,18 +18,17 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Filters
 			string cookieToken = "";
 			string formToken = "";
 
-			IEnumerable<string> tokenHeaders;
-			if (actionContext.Request.Headers.TryGetValues("X-Request-Verification-Token", out tokenHeaders))
-			{
-				string[] tokens = tokenHeaders.First().Split(':');
-				if (tokens.Length == 2)
-				{
-					cookieToken = tokens[0].Trim();
-					formToken = tokens[1].Trim();
-				}
-			}
+            if (actionContext.Request.Headers.TryGetValues("X-Request-Verification-Token", out IEnumerable<string> tokenHeaders))
+            {
+                string[] tokens = tokenHeaders.First().Split(':');
+                if (tokens.Length == 2)
+                {
+                    cookieToken = tokens[0].Trim();
+                    formToken = tokens[1].Trim();
+                }
+            }
 
-			System.Web.Helpers.AntiForgery.Validate(cookieToken, formToken);
+            System.Web.Helpers.AntiForgery.Validate(cookieToken, formToken);
 
 			base.OnActionExecuting(actionContext);
 		}

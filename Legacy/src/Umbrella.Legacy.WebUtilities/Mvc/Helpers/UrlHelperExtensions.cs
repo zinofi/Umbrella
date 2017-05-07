@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Umbrella.Legacy.WebUtilities.Extensions;
 
-namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
+namespace System.Web.Mvc
 {
     public static class UrlHelperExtensions
     {

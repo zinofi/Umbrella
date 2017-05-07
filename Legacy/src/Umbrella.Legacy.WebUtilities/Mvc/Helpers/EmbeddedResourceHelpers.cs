@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI;
 
-namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
+namespace System.Web.Mvc
 {
     public static class EmbeddedResourceHelpers
     {

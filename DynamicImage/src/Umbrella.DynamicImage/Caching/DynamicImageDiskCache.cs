@@ -105,8 +105,10 @@ namespace Umbrella.DynamicImage.Caching
                 };
 
                 //Set the content resolver to allow the file to be read from disk if / when needed
-                item.SetContentResolver(async () =>
+                item.SetContentResolver(async token =>
                 {
+                    token.ThrowIfCancellationRequested();
+
                     //Check the file still exists. Could potentially be removed before this resolver is executed.
                     if (!File.Exists(physicalCachedFilePath))
                         return null;
@@ -115,7 +117,7 @@ namespace Umbrella.DynamicImage.Caching
                     {
                         using (MemoryStream ms = new MemoryStream())
                         {
-                            await fs.CopyToAsync(ms);
+                            await fs.CopyToAsync(ms, 81920, token);
                             return ms.ToArray();
                         }
                     }
