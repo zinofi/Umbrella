@@ -9,6 +9,7 @@ using System.Web.Http;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Hosting;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
 {
@@ -16,15 +17,18 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
     public class ImageGalleryUploadFolderController : UmbrellaApiController
     {
         #region Private Members
-        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
+        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly IUmbrellaHostingEnvironment m_UmbrellaHostingEnvironment;
         #endregion
 
         #region Constructors
         public ImageGalleryUploadFolderController(ILogger<ImageGalleryUploadFolderController> logger,
-            IDynamicImageUrlGenerator dynamicImageUrlGenerator)
+            IDynamicImageUtility dynamicImageUtility,
+            IUmbrellaHostingEnvironment umbrellaHostingEnvironment)
             : base(logger)
         {
-            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
+            m_DynamicImageUtility = dynamicImageUtility;
+            m_UmbrellaHostingEnvironment = umbrellaHostingEnvironment;
         }
         #endregion
 
@@ -48,8 +52,8 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
                         return Ok(files.Where(x => Path.GetExtension(x).ToLower() != ".db").Select(path => new ImageGalleryItemEditDTO
                         {
                             Url = path,
-                            ThumbnailUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", new DynamicImageOptions(path, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), true),
-                            PreviewUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", new DynamicImageOptions(path, 400, 400, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), true)
+                            ThumbnailUrl = m_UmbrellaHostingEnvironment.MapWebPath(m_DynamicImageUtility.GenerateVirtualPath("dynamicimage", new DynamicImageOptions(path, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg))),
+                            PreviewUrl = m_UmbrellaHostingEnvironment.MapWebPath(m_DynamicImageUtility.GenerateVirtualPath("dynamicimage", new DynamicImageOptions(path, 400, 400, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg)))
                         }));
                     }
                 }

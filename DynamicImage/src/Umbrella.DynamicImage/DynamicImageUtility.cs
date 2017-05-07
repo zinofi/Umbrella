@@ -6,33 +6,37 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DynamicImage
 {
     public class DynamicImageUtility : IDynamicImageUtility
     {
-        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default(DynamicImageOptions));
-        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default(DynamicImageOptions));
+        #region Private Constants
+        private const string c_VirtualPathFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
+        #endregion
 
         #region Private Static Members
+        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default(DynamicImageOptions));
+        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default(DynamicImageOptions));
         private static readonly Regex s_DensityRegex = new Regex("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly char[] s_SegmentSeparatorArray = new[] { '/' };
         #endregion
 
-        #region Private Members
-        private readonly ILogger m_Logger;
+        #region Protected Properties
+        protected ILogger Log { get; }
         #endregion
 
         #region Constructors
         public DynamicImageUtility(ILogger<DynamicImageUtility> logger)
         {
-            m_Logger = logger;
+            Log = logger;
         }
         #endregion
 
         #region Public Methods
-        public DynamicImageFormat ParseImageFormat(string format)
+        public virtual DynamicImageFormat ParseImageFormat(string format)
         {
             switch (format?.TrimStart('.').Trim()?.ToLowerInvariant())
             {
@@ -49,10 +53,13 @@ namespace Umbrella.DynamicImage
             }
         }
 
-        public (DynamicImageParseUrlResult Status, DynamicImageOptions ImageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl)
+        public virtual (DynamicImageParseUrlResult Status, DynamicImageOptions ImageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl)
         {
             try
             {
+                Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
+                Guard.ArgumentNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
+
                 string pathPrefix = dynamicImagePathPrefix.ToLowerInvariant();
                 string url = relativeUrl?.Trim()?.ToLowerInvariant();
 
@@ -114,13 +121,13 @@ namespace Umbrella.DynamicImage
 
                 return (DynamicImageParseUrlResult.Success, imageOptions);
             }
-            catch(Exception exc) when (m_Logger.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }))
+            catch(Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }))
             {
                 return s_InvalidParseUrlResult;
             }
         }
 
-        public bool ImageOptionsValid(DynamicImageOptions imageOptions, DynamicImageConfigurationOptions configOptions)
+        public virtual bool ImageOptionsValid(DynamicImageOptions imageOptions, DynamicImageConfigurationOptions configOptions)
         {
             if(configOptions.Enabled)
             {
@@ -131,6 +138,32 @@ namespace Umbrella.DynamicImage
             }
 
             return true;
+        }
+
+        public virtual string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options)
+        {
+            try
+            {
+                Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
+
+                string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
+
+                string path = options.SourcePath.Replace("~/", "");
+
+                string virtualPath = string.Format(c_VirtualPathFormat,
+                    dynamicImagePathPrefix,
+                    options.Width,
+                    options.Height,
+                    options.ResizeMode,
+                    originalExtension,
+                    path.Replace(originalExtension, options.Format.ToFileExtensionString()));
+
+                return virtualPath;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, options }))
+            {
+                throw;
+            }
         }
         #endregion
     }

@@ -8,6 +8,7 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.WebApi;
 using Umbrella.N2.CustomProperties.LinkEditor.Items;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Hosting;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
 {
@@ -15,15 +16,18 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
     public class ImageGalleryUploadFileController : UmbrellaApiController
     {
         #region Private Members
-        private readonly IDynamicImageUrlGenerator m_DynamicImageUrlGenerator;
+        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly IUmbrellaHostingEnvironment m_UmbrellaHostingEnvironment;
         #endregion
         
         #region Constructors
         public ImageGalleryUploadFileController(ILogger<ImageGalleryUploadFileController> logger,
-            IDynamicImageUrlGenerator dynamicImageUrlGenerator)
+            IDynamicImageUtility dynamicImageUtility,
+            IUmbrellaHostingEnvironment umbrellaHostingEnvironment)
             : base(logger)
         {
-            m_DynamicImageUrlGenerator = dynamicImageUrlGenerator;
+            m_DynamicImageUtility = dynamicImageUtility;
+            m_UmbrellaHostingEnvironment = umbrellaHostingEnvironment;
         }
         #endregion
 
@@ -38,8 +42,8 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
                 return new ImageGalleryItemEditDTO
                 {
                     Url = path,
-                    ThumbnailUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", thumbnailOptions, true),
-                    PreviewUrl = m_DynamicImageUrlGenerator.GenerateUrl("dynamicimage", previewOptions, true)
+                    ThumbnailUrl = m_UmbrellaHostingEnvironment.MapWebPath(m_DynamicImageUtility.GenerateVirtualPath("dynamicimage", thumbnailOptions)),
+                    PreviewUrl = m_UmbrellaHostingEnvironment.MapWebPath(m_DynamicImageUtility.GenerateVirtualPath("dynamicimage", previewOptions))
                 };
             }
             catch(Exception exc) when (Log.WriteError(exc, new { path }))

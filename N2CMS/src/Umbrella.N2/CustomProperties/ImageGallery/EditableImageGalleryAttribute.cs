@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Configuration;
+using System.Web.Hosting;
 using System.Web.UI;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
@@ -19,12 +20,12 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
     public class EditableImageGalleryAttribute : AbstractEditableAttribute, IRelativityTransformer
     {
         #region Private Static Members
-        private static readonly Type s_IDynamicImageUrlGeneratorResolverType = typeof(IDynamicImageUrlGeneratorResolver);
-        private static readonly ConcurrentDictionary<Type, IDynamicImageUrlGeneratorResolver> s_ResolverDictionary = new ConcurrentDictionary<Type, IDynamicImageUrlGeneratorResolver>();
+        private static readonly Type s_IDynamicImageUtilityResolverType = typeof(IDynamicImageUtilityResolver);
+        private static readonly ConcurrentDictionary<Type, IDynamicImageUtilityResolver> s_ResolverDictionary = new ConcurrentDictionary<Type, IDynamicImageUtilityResolver>();
         #endregion
 
         #region Private Members
-        private readonly Type m_IDynamicImageUrlGeneratorResolverType;
+        private readonly Type m_IDynamicImageUtilityResolverType;
         #endregion
 
         #region Constructors
@@ -59,14 +60,14 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
         /// </summary>
         /// <param name="title">The title of the property displayed in edit mode</param>
         /// <param name="sortOrder">The sort order of the property in edit mode</param>
-        /// <param name="dynamicImageUtilityResolverType">A type which implements <see cref="IDynamicImageUrlGeneratorResolver"/>. A singleton instance of this type will be created for the lifetime of the application.</param>
+        /// <param name="dynamicImageUtilityResolverType">A type which implements <see cref="IDynamicImageUtilityResolver"/>. A singleton instance of this type will be created for the lifetime of the application.</param>
         public EditableImageGalleryAttribute(string title, int sortOrder, Type dynamicImageUtilityResolverType)
             : base(title, sortOrder)
         {
-            if (!s_IDynamicImageUrlGeneratorResolverType.IsAssignableFrom(dynamicImageUtilityResolverType))
-                throw new ArgumentException($"The specified type cannot be assigned to {nameof(IDynamicImageUrlGeneratorResolver)}", nameof(dynamicImageUtilityResolverType));
+            if (!s_IDynamicImageUtilityResolverType.IsAssignableFrom(dynamicImageUtilityResolverType))
+                throw new ArgumentException($"The specified type cannot be assigned to {nameof(IDynamicImageUtilityResolver)}", nameof(dynamicImageUtilityResolverType));
 
-            m_IDynamicImageUrlGeneratorResolverType = dynamicImageUtilityResolverType;
+            m_IDynamicImageUtilityResolverType = dynamicImageUtilityResolverType;
         }
         #endregion
 
@@ -84,14 +85,14 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
 
             ImageGalleryControl ctrl = ((ImageGalleryControl)editor);
 
-            IDynamicImageUrlGenerator dynamicImageUrlGenerator = GetDynamicImageUrlResolver();
+            IDynamicImageUtility dynamicImageUtility = GetDynamicImageUtility();
 
             //Need to convert the ImageItem objects to ImageGalleryItemEditDTO objects
             List<ImageGalleryItemEditDTO> lstImageGalleryItemEditDTO = coll.Cast<ImageItem>().Select(x =>
             {
                 var dto = ImageGalleryAutoMapperMappings.Instance.Map<ImageGalleryItemEditDTO>(x);
-                dto.ThumbnailUrl = dynamicImageUrlGenerator.GenerateUrl(dto.Url, new DynamicImageOptions(dto.Url, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), true);
-
+                dto.ThumbnailUrl = VirtualPathUtility.ToAppRelative(dynamicImageUtility.GenerateVirtualPath(dto.Url, new DynamicImageOptions(dto.Url, 150, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg)));
+                
                 return dto;
             }).ToList();
 
@@ -139,11 +140,11 @@ namespace Umbrella.N2.CustomProperties.ImageGallery
         public RelativityMode RelativeWhen => RelativityMode.Always;
 
         #region Private Methods
-        private IDynamicImageUrlGenerator GetDynamicImageUrlResolver()
+        private IDynamicImageUtility GetDynamicImageUtility()
         {
-            IDynamicImageUrlGeneratorResolver resolver = s_ResolverDictionary.GetOrAdd(m_IDynamicImageUrlGeneratorResolverType, x => (IDynamicImageUrlGeneratorResolver)Activator.CreateInstance(x));
+            IDynamicImageUtilityResolver resolver = s_ResolverDictionary.GetOrAdd(m_IDynamicImageUtilityResolverType, x => (IDynamicImageUtilityResolver)Activator.CreateInstance(x));
 
-            return resolver.GetInstance();
+            return resolver.Instance;
         }
         #endregion
     }
