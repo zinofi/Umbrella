@@ -11,6 +11,7 @@ namespace Umbrella.DataAnnotations
     [AttributeUsage(AttributeTargets.Property)]
     public class MinDateAttribute : ModelAwareValidationAttribute
     {
+        //TODO: Need to ensure this works using UTC
         private DateTime? m_MinDate;
         private int? m_OffSetDays;
 

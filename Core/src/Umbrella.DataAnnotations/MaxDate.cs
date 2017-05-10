@@ -31,14 +31,14 @@ namespace Umbrella.DataAnnotations
         }
 
         /// <summary>
-        /// Maximum date based on the exact date specified
+        /// Maximum date based on the exact date specified at the end of the day, i.e. 23:59:59
         /// </summary>
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <param name="day"></param>
         public MaxDateAttribute(int year, int month, int day)
         {
-            m_MaxDate = new DateTime(year, month, day);
+            m_MaxDate = new DateTime(year, month, day, 23, 59, 59, DateTimeKind.Utc);
         }
 
         protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
@@ -57,7 +57,7 @@ namespace Umbrella.DataAnnotations
             {
                 result = (DateTime)value;
 
-                if (result.Date > maxDate)
+                if (result.ToUniversalTime() > maxDate)
                 {
                     return false;
                 }
@@ -69,7 +69,7 @@ namespace Umbrella.DataAnnotations
                 if (!string.IsNullOrEmpty(strDateTime))
                 {
                     //We have a value - try and parse it to a datetime
-                    if (DateTime.TryParse(strDateTime, out result) && result.Date > maxDate)
+                    if (DateTime.TryParse(strDateTime, out result) && result.ToUniversalTime() > maxDate)
                     {
                         return false;
                     }
@@ -84,12 +84,14 @@ namespace Umbrella.DataAnnotations
         {
             DateTime maxDate;
 
+            var now = DateTime.UtcNow;
+
             if (m_MaxDate.HasValue)
                 maxDate = m_MaxDate.Value;
             else if (m_OffSetDays.HasValue)
-                maxDate = DateTime.UtcNow.AddDays(m_OffSetDays.Value);
+                maxDate = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59, DateTimeKind.Utc).AddDays(m_OffSetDays.Value);
             else
-                maxDate = DateTime.UtcNow.Date;
+                maxDate = now;
 
             return maxDate;
         }
