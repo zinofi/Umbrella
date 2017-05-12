@@ -57,11 +57,9 @@ namespace Umbrella.TypeScript.Aurelia
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
                         .AppendLineWithTabIndent($".required()", 4);
                 }
-                else if (validationAttribute is CompareAttribute)
+                else if (validationAttribute is CompareAttribute compareAttribute)
                 {
-                    var resolvedAttribute = (CompareAttribute)validationAttribute;
-
-                    string otherPropertyName = resolvedAttribute.OtherProperty.ToCamelCase();
+                    string otherPropertyName = compareAttribute.OtherProperty.ToCamelCase();
 
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
                         .AppendLineWithTabIndent($".satisfies((value: string, obj: {declaringTypeName}) => value === obj.{otherPropertyName})", 4);
@@ -79,46 +77,36 @@ namespace Umbrella.TypeScript.Aurelia
                 {
                     //Do nothing - fallback to server validation
                 }
-                else if (validationAttribute is MaxLengthAttribute)
+                else if (validationAttribute is MaxLengthAttribute maxLengthAttribute)
                 {
-                    var resolvedAttribute = (MaxLengthAttribute)validationAttribute;
-
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
-                        .AppendLineWithTabIndent($".maxLength({resolvedAttribute.Length})", 4);
+                        .AppendLineWithTabIndent($".maxLength({maxLengthAttribute.Length})", 4);
                 }
-                else if (validationAttribute is MinLengthAttribute)
+                else if (validationAttribute is MinLengthAttribute minLengthAttribute)
                 {
-                    var resolvedAttribute = (MinLengthAttribute)validationAttribute;
-
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
-                        .AppendLineWithTabIndent($".minLength({resolvedAttribute.Length})", 4);
+                        .AppendLineWithTabIndent($".minLength({minLengthAttribute.Length})", 4);
                 }
                 else if (validationAttribute is PhoneAttribute)
                 {
                     //Do nothing - fallback to server validation
                 }
-                else if (validationAttribute is RangeAttribute)
+                else if (validationAttribute is RangeAttribute rangeAttribute)
                 {
-                    var resolvedAttribute = (RangeAttribute)validationAttribute;
-
                     //TODO
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
-                        .AppendLineWithTabIndent($".satisfies((value: number, obj: {declaringTypeName}) => obj.{tsInfo.Name} >= {resolvedAttribute.Minimum} && obj.{tsInfo.Name} <= {resolvedAttribute.Maximum})", 4);
+                        .AppendLineWithTabIndent($".satisfies((value: number, obj: {declaringTypeName}) => obj.{tsInfo.Name} >= {rangeAttribute.Minimum} && obj.{tsInfo.Name} <= {rangeAttribute.Maximum})", 4);
                 }
-                else if (validationAttribute is RegularExpressionAttribute)
+                else if (validationAttribute is RegularExpressionAttribute regexAttribute)
                 {
-                    var resolvedAttribute = (RegularExpressionAttribute)validationAttribute;
-
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
-                        .AppendLineWithTabIndent($".matches(new RegExp({resolvedAttribute.Pattern})", 4);
+                        .AppendLineWithTabIndent($".matches(new RegExp({regexAttribute.Pattern})", 4);
                 }
-                else if (validationAttribute is StringLengthAttribute)
+                else if (validationAttribute is StringLengthAttribute stringLengthAttribute)
                 {
-                    var resolvedAttribute = (StringLengthAttribute)validationAttribute;
-
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
-                        .AppendLineWithTabIndent($".minLength({resolvedAttribute.MinimumLength})", 4)
-                        .AppendLineWithTabIndent($".maxLength({resolvedAttribute.MaximumLength})", 4);
+                        .AppendLineWithTabIndent($".minLength({stringLengthAttribute.MinimumLength})", 4)
+                        .AppendLineWithTabIndent($".maxLength({stringLengthAttribute.MaximumLength})", 4);
                 }
                 else if (validationAttribute is UrlAttribute)
                 {
