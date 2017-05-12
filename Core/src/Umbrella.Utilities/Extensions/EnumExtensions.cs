@@ -7,12 +7,11 @@ namespace Umbrella.Utilities.Extensions
 {
     public static class EnumExtensions
     {
-        public static T ToEnum<T>(this string value) where T : struct => value.ToEnum<T>(default(T));
+        public static T ToEnum<T>(this string value) where T : struct => value.ToEnum(default(T));
 
         public static T ToEnum<T>(this string value, T defaultValue) where T : struct
         {
-            T result;
-            if(Enum.TryParse<T>(value, true, out result))
+            if (Enum.TryParse(value, true, out T result))
                 return result;
 
             return defaultValue;
