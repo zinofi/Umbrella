@@ -13,9 +13,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
         #region Constructors
         public Log4NetAdapter(string loggerName)
-        {
-            m_Logger = LogManager.GetLogger(loggerName);
-        }
+            => LogManager.GetLogger(loggerName);
         #endregion
 
         #region ILogger Members
@@ -44,9 +42,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
-            {
                 return;
-            }
 
             string message = null;
 

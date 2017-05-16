@@ -23,16 +23,6 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         #endregion
 
         #region Overridden Methods
-        protected override void Append(LoggingEvent loggingEvent)
-        {
-            base.Append(loggingEvent);
-        }
-
-        protected override void Append(LoggingEvent[] loggingEvents)
-        {
-            base.Append(loggingEvents);
-        }
-
         protected override void SendBuffer(LoggingEvent[] events)
         {
             //Executing this code asynchronously on a worker thread to avoid blocking the main thread

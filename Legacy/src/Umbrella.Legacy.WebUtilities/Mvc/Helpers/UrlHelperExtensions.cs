@@ -10,7 +10,13 @@ namespace System.Web.Mvc
 {
     public static class UrlHelperExtensions
     {
+        public static string ContentLower(this UrlHelper helper, string contentPath)
+            => helper.Content(contentPath)?.ToLowerInvariant();
+
         public static string ContentAbsolute(this UrlHelper helper, string contentPath)
             => contentPath.ToAbsoluteUrl();
+
+        public static string ContentAbsoluteLower(this UrlHelper helper, string contentPath)
+            => ContentAbsolute(helper, contentPath)?.ToLowerInvariant();
     }
 }

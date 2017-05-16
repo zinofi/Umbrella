@@ -10,9 +10,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
         private ConcurrentDictionary<string, ILogger> m_LoggersDictionary = new ConcurrentDictionary<string, ILogger>();
 
         public ILogger CreateLogger(string name)
-        {
-            return m_LoggersDictionary.GetOrAdd(name, (x) => new Log4NetAdapter(x));
-        }
+            => m_LoggersDictionary.GetOrAdd(name, (x) => new Log4NetAdapter(x));
 
         public void Dispose()
         {
