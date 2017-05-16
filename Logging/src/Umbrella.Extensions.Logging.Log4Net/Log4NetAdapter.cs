@@ -13,7 +13,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
         #region Constructors
         public Log4NetAdapter(string loggerName)
-            => LogManager.GetLogger(loggerName);
+            => m_Logger = LogManager.GetLogger(loggerName);
         #endregion
 
         #region ILogger Members
@@ -46,14 +46,10 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
             string message = null;
 
-            if (null != formatter)
-            {
+            if (formatter != null)
                 message = formatter(state, exception);
-            }
             else
-            {
                 throw new InvalidOperationException();
-            }
 
             switch (logLevel)
             {
