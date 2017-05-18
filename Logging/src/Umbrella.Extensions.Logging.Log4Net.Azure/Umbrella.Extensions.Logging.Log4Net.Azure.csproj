@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+ï»¿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>net46</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -9,7 +9,7 @@
     <Version>1.0.0-rel-build00344</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="WindowsAzure.Storage" Version="8.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
   </ItemGroup>
 
 </Project>

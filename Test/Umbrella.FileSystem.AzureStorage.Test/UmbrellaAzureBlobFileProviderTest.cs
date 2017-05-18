@@ -27,7 +27,7 @@ namespace Umbrella.FileSystem.AzureStorage.Test
                 if (string.IsNullOrEmpty(m_BaseDirectory))
                 {
                     string buildConfig = DebugUtility.IsDebugMode ? "Debug" : "Release";
-                    int indexToEndAt = AppContext.BaseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp1.1");
+                    int indexToEndAt = AppContext.BaseDirectory.IndexOf($@"\bin\{buildConfig}\net46");
                     m_BaseDirectory = AppContext.BaseDirectory.Remove(indexToEndAt, AppContext.BaseDirectory.Length - indexToEndAt);
                 }
 

@@ -100,12 +100,12 @@ namespace Umbrella.FileSystem.AzureStorage
             string fileName = parts[1];
 
             CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
-            await container.CreateIfNotExistsAsync();
+            await container.CreateIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
 
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
 
             //The call to ExistsAsync should force the properties of the blob to be populated
-            if (!isNew && !await blob.ExistsAsync().ConfigureAwait(false))
+            if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
                 return null;
 
             return new UmbrellaAzureBlobFileInfo(LoggerFactory.CreateLogger<UmbrellaAzureBlobFileInfo>(), MimeTypeUtility, this, blob, isNew);
@@ -154,7 +154,7 @@ namespace Umbrella.FileSystem.AzureStorage
                 Guard.ArgumentNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
                 Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
 
-                IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken);
+                IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
 
                 if (sourceFile == null)
                     throw new UmbrellaFileNotFoundException(sourceSubpath);
@@ -175,9 +175,9 @@ namespace Umbrella.FileSystem.AzureStorage
                 Guard.ArgumentOfType<UmbrellaAzureBlobFileInfo>(sourceFile, nameof(sourceFile));
                 Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
 
-                IUmbrellaFileInfo destinationFile = await CreateAsync(destinationSubpath, cancellationToken);
+                IUmbrellaFileInfo destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 
-                return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false); ;
+                return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true))
             {

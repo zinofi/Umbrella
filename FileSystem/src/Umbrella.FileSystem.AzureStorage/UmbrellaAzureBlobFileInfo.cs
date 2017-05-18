@@ -13,13 +13,20 @@ namespace Umbrella.FileSystem.AzureStorage
 {
     public class UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
     {
+        #region Private Members
         private byte[] m_Contents;
+        #endregion
 
+        #region Protected Properties
         protected ILogger Log { get; }
         protected UmbrellaAzureBlobFileProvider Provider { get; }
+        #endregion
 
-        internal CloudBlockBlob Blob { get; }
+        #region Internal Properties
+        internal CloudBlockBlob Blob { get; } 
+        #endregion
 
+        #region Public Properties
         public bool IsNew { get; private set; }
         public string Name => Blob.Name;
         public long Length => Blob.Properties.Length;
@@ -28,8 +35,10 @@ namespace Umbrella.FileSystem.AzureStorage
         {
             get => Blob.Properties.ContentType;
             private set => Blob.Properties.ContentType = value;
-        }
+        } 
+        #endregion
 
+        #region Constructors
         public UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger,
             IMimeTypeUtility mimeTypeUtility,
             UmbrellaAzureBlobFileProvider provider,
@@ -43,14 +52,16 @@ namespace Umbrella.FileSystem.AzureStorage
 
             ContentType = mimeTypeUtility.GetMimeType(Name);
         }
+        #endregion
 
+        #region IUmbrellaFileInfo Members
         public async Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return await Blob.DeleteIfExistsAsync().ConfigureAwait(false);
+                return await Blob.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -64,7 +75,7 @@ namespace Umbrella.FileSystem.AzureStorage
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return await Blob.ExistsAsync().ConfigureAwait(false);
+                return await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -85,7 +96,7 @@ namespace Umbrella.FileSystem.AzureStorage
                     return m_Contents;
 
                 byte[] bytes = new byte[Blob.Properties.Length];
-                await Blob.DownloadToByteArrayAsync(bytes, 0).ConfigureAwait(false);
+                await Blob.DownloadToByteArrayAsync(bytes, 0, cancellationToken).ConfigureAwait(false);
 
                 m_Contents = cacheContents ? bytes : null;
 
@@ -104,7 +115,7 @@ namespace Umbrella.FileSystem.AzureStorage
                 cancellationToken.ThrowIfCancellationRequested();
                 Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
 
-                await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
 
                 m_Contents = cacheContents ? bytes : null;
                 IsNew = false;
@@ -123,7 +134,7 @@ namespace Umbrella.FileSystem.AzureStorage
                 Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
 
                 var destinationFile = (UmbrellaAzureBlobFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
-                await destinationFile.Blob.StartCopyAsync(Blob).ConfigureAwait(false);
+                await destinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 
                 return destinationFile;
             }
@@ -141,14 +152,15 @@ namespace Umbrella.FileSystem.AzureStorage
                 Guard.ArgumentOfType<UmbrellaAzureBlobFileInfo>(destinationFile, nameof(destinationFile));
 
                 var blobDestinationFile = (UmbrellaAzureBlobFileInfo)destinationFile;
-                await blobDestinationFile.Blob.StartCopyAsync(Blob).ConfigureAwait(false);
+                await blobDestinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 
                 return destinationFile;
             }
-            catch(Exception exc) when (Log.WriteError(exc, new { destinationFile }))
+            catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
-        }
+        } 
+        #endregion
     }
 }
