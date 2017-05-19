@@ -52,11 +52,18 @@ namespace Umbrella.DataAccess.EF6
             if (Log.IsEnabled(LogLevel.Debug))
                 Log.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
 
+            //Firstly, create a copy of the callback dictionary and iterate over this
+            Dictionary<object, Func<Task>> dicItem = PostSaveChangesSaveActionDictionary.ToDictionary(x => x.Key, x => x.Value);
+
+            //Now clear the original dictionary so that if any of the callbacks makes a call to SaveChanges we don't end up
+            //with infinite recursion.
+            PostSaveChangesSaveActionDictionary.Clear();
+
             //There is the potential that if this code is being executed whilst
             //delegates are still being registered that this will throw up an error.
             //Realistically though I can't see this happening. Not worth building in locking
             //because of the overheads unless we encounter problems.
-            foreach (var func in PostSaveChangesSaveActionDictionary.Values)
+            foreach (var func in dicItem.Values)
             {
                 Task task = func?.Invoke();
 
@@ -65,12 +72,9 @@ namespace Umbrella.DataAccess.EF6
                     if (Log.IsEnabled(LogLevel.Debug))
                         Log.WriteDebug(message: "Post save callback found to execute");
 
-                    await task;
+                    await task.ConfigureAwait(false);
                 }
             }
-
-            //Now that all items have been processed, clear the dictionary
-            PostSaveChangesSaveActionDictionary.Clear();
 
             if (Log.IsEnabled(LogLevel.Debug))
                 Log.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
@@ -110,9 +114,9 @@ namespace Umbrella.DataAccess.EF6
                 if (Log.IsEnabled(LogLevel.Debug))
                     Log.WriteDebug(message: "Started SaveChangesAsync()");
 
-                int result = await base.SaveChangesAsync();
-
-                await ExecutePostSaveChangesActionsAsync();
+                int result = await base.SaveChangesAsync().ConfigureAwait(false);
+                
+                await ExecutePostSaveChangesActionsAsync().ConfigureAwait(false);
 
                 if (Log.IsEnabled(LogLevel.Debug))
                     Log.WriteDebug(message: "Finished SaveChangesAsync()");
@@ -132,9 +136,9 @@ namespace Umbrella.DataAccess.EF6
                 if (Log.IsEnabled(LogLevel.Debug))
                     Log.WriteDebug(message: "Started SaveChangesAsync()");
 
-                int result = await base.SaveChangesAsync(cancellationToken);
+                int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-                await ExecutePostSaveChangesActionsAsync();
+                await ExecutePostSaveChangesActionsAsync().ConfigureAwait(false);
 
                 if (Log.IsEnabled(LogLevel.Debug))
                     Log.WriteDebug(message: "Finished SaveChangesAsync()");
