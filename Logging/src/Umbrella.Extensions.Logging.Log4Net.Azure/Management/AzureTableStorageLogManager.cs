@@ -418,9 +418,9 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
 
                 //Remove the table from the cached list - potential for a race condition to mess with this but should be low probability.
                 string tablePrefix = tableName.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries)[0];
-                string cacheKey = GenerateCacheKey(tablePrefix);
+                string listCacheKey = GenerateCacheKey(tablePrefix);
 
-                var lstTableModel = await DistributedCache.GetFromJsonStringAsync<List<AzureTableStorageLogTable>>(cacheKey).ConfigureAwait(false);
+                var lstTableModel = await DistributedCache.GetFromJsonStringAsync<List<AzureTableStorageLogTable>>(listCacheKey).ConfigureAwait(false);
 
                 if (lstTableModel != null)
                 {
@@ -429,9 +429,12 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
                     if (itemToRemove != null)
                     {
                         lstTableModel.Remove(itemToRemove);
-                        await DistributedCache.SetAsJsonStringAsync(cacheKey, lstTableModel, TableListCacheEntryOptions).ConfigureAwait(false);
+                        await DistributedCache.SetAsJsonStringAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions).ConfigureAwait(false);
                     }
                 }
+
+                //Also need to remove the log entries from the Memory Cache
+                MemoryCache.Remove(GenerateCacheKey(tableName));
 
                 return AzureTableStorageLogDeleteOperationResult.Success;
             }
