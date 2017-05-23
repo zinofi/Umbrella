@@ -138,6 +138,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
             response.ContentType = "image/" + image.ImageOptions.Format.ToString().ToLower();
             response.Headers["Last-Modified"] = m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
             response.ETag = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
+
+            if (!string.IsNullOrWhiteSpace(m_MiddlewareOptions.CacheControlHeaderValue))
+                response.Headers["Cache-Control"] = m_MiddlewareOptions.CacheControlHeaderValue.Trim().ToLowerInvariant();
         }
 
         private static DynamicImageConfigurationOptions LoadConfigurationOptions()

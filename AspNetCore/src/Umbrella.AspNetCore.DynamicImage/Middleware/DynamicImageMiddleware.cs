@@ -138,6 +138,9 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
             response.Headers["Content-Type"] = "image/" + image.ImageOptions.Format.ToString().ToLower();
             response.Headers["Last-Modified"] = m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
             response.Headers["ETag"] = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
+
+            if (!string.IsNullOrWhiteSpace(m_MiddlewareOptions.CacheControlHeaderValue))
+                response.Headers["Cache-Control"] = m_MiddlewareOptions.CacheControlHeaderValue.Trim().ToLowerInvariant();
         }
 
         private void SetResponseStatusCode(HttpResponse response, HttpStatusCode statusCode)
