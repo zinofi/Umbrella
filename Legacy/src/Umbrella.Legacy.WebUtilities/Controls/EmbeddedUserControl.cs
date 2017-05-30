@@ -55,8 +55,7 @@ namespace Umbrella.Legacy.WebUtilities.Controls
 
             EnsureControls();
 
-            if (OnFrameworkInitialized != null)
-                OnFrameworkInitialized();
+            OnFrameworkInitialized?.Invoke();
         }
         #endregion
 
