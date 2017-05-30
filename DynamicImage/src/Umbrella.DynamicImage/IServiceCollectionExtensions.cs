@@ -17,12 +17,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddSingleton(cacheOptions);
 
-            if (memoryCacheOptions != null)
-                services.AddSingleton(memoryCacheOptions);
+            if (memoryCacheOptions == null)
+                memoryCacheOptions = new DynamicImageMemoryCacheOptions();
 
             if (diskCacheOptions != null)
-                services.AddSingleton(diskCacheOptions);
+                diskCacheOptions = new DynamicImageDiskCacheOptions();
 
+            services.AddSingleton(memoryCacheOptions);
+            services.AddSingleton(diskCacheOptions);
             services.AddSingleton<IDynamicImageCache, DynamicImageDiskCache>();
             services.AddSingleton<IDynamicImageUtility, DynamicImageUtility>();
 

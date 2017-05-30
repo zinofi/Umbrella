@@ -16,7 +16,7 @@ namespace Umbrella.FileSystem.AzureStorage
 {
     public class UmbrellaAzureBlobFileProvider : UmbrellaFileProvider<UmbrellaAzureBlobFileInfo, UmbrellaAzureBlobFileProviderOptions>, IUmbrellaAzureBlobFileProvider
     {
-        private static readonly char[] s_DirectorySeparatorArray = new[] { '/' };
+        private static readonly char[] s_DirectorySeparatorArray = new[] { '/', '\\' };
 
         protected CloudStorageAccount StorageAccount { get; }
         protected CloudBlobClient BlobClient { get; }

@@ -65,27 +65,18 @@ namespace Umbrella.DynamicImage.SoundInTheory
             {
                 if (m_Logger.IsEnabled(LogLevel.Debug))
                     m_Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
-                
-                string cacheKey = m_DynamicImageCache.GenerateCacheKey(options);
-
-                if (m_Logger.IsEnabled(LogLevel.Debug))
-                    m_Logger.WriteDebug(new { cacheKey, options }, "Generated cache key using options.");
 
                 //Check if the image exists in the cache
-                DynamicImageItem dynamicImage = await m_DynamicImageCache.GetAsync(cacheKey, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
+                DynamicImageItem dynamicImage = await m_DynamicImageCache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
 
                 if (m_Logger.IsEnabled(LogLevel.Debug))
-                    m_Logger.WriteDebug(new { cacheKey, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
+                    m_Logger.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
 
                 if (dynamicImage != null)
                 {
                     if (m_Logger.IsEnabled(LogLevel.Debug))
                         m_Logger.WriteDebug(new { dynamicImage.ImageOptions, dynamicImage.LastModified }, "Image found in cache.");
 
-                    //Assign the options here as they aren't necessarily available when using
-                    //anything other than the memory cache as the cache key which is based
-                    //on the options is hashed one way.
-                    dynamicImage.ImageOptions = options;
                     return dynamicImage;
                 }
 

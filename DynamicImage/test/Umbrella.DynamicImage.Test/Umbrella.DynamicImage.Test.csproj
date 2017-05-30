@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
     <TargetFramework>netcoreapp1.1</TargetFramework>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.Caching.AzureStorage\Umbrella.DynamicImage.Caching.AzureStorage.csproj" />
     <ProjectReference Include="..\..\Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
   </ItemGroup>
 

@@ -6,9 +6,6 @@ namespace Umbrella.DynamicImage.Caching
 {
     public class DynamicImageDiskCacheOptions
     {
-        /// <summary>
-        /// The physical folder path under which images will be cached.
-        /// </summary>
-        public string PhysicalFolderPath { get; set; }
+        public string CacheFolderName { get; set; } = "DynamicImageCache";
     }
 }

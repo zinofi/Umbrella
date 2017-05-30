@@ -145,7 +145,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage.Test
             await cache.RemoveAsync(cacheKey, "jpg");
         }
 
-        private DynamicImageBlobStorageCache CreateDynamicImageBlobStorageCache()
+        private DynamicImageAzureBlobStorageCache CreateDynamicImageBlobStorageCache()
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
@@ -157,18 +157,18 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage.Test
                 }
             };
 
-            var blobCacheOptions = new DynamicImageBlobStorageCacheOptions
+            var blobCacheOptions = new DynamicImageAzureBlobStorageCacheOptions
             {
                 ContainerName = "dynamicimagecache",
                 StorageConnectionString = c_StorageConnectionString
             };
 
-            var logger = new Mock<ILogger<DynamicImageBlobStorageCache>>();
+            var logger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
             var mimeTypeUtility = new Mock<IMimeTypeUtility>();
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
-            return new DynamicImageBlobStorageCache(logger.Object, mimeTypeUtility.Object, memoryCache, cacheOptions, blobCacheOptions);
+            return new DynamicImageAzureBlobStorageCache(logger.Object, mimeTypeUtility.Object, memoryCache, cacheOptions, blobCacheOptions);
         }
     }
 }

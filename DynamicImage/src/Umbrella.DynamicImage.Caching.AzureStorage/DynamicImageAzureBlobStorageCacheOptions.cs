@@ -4,12 +4,8 @@ using System.Text;
 
 namespace Umbrella.DynamicImage.Caching.AzureStorage
 {
-    public class DynamicImageBlobStorageCacheOptions
+    public class DynamicImageAzureBlobStorageCacheOptions
     {
-        /// <summary>
-        /// The connection string for the Azure storage account in which the blobs will be stored.
-        /// </summary>
-        public string StorageConnectionString { get; set; }
         /// <summary>
         /// The name of the container in which blobs are stored. Defaults to "dynamicimagecache".
         /// </summary>

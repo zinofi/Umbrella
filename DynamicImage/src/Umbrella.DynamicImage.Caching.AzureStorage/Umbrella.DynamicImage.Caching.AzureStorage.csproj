@@ -11,12 +11,13 @@
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="WindowsAzure.Storage" Version="8.1.3" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.3\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
+    <ProjectReference Include="..\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj" />
   </ItemGroup>
 
 </Project>

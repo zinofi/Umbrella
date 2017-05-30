@@ -50,7 +50,9 @@ namespace Umbrella.FileSystem.Test
         {
             $"~/images/{c_TestFileName}",
             $"/images/{c_TestFileName}",
-            $"/_ images/{c_TestFileName}"
+            $"/_ images/{c_TestFileName}",
+            $@"\images\{c_TestFileName}",
+            $@"\images/{c_TestFileName}"
         };
 
         public static List<object[]> ProvidersMemberData = Providers.Select(x => new object[] { x }).ToList();

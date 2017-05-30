@@ -46,10 +46,6 @@ namespace Umbrella.FileSystem.AzureStorage
         #endregion
 
         #region Constructors
-        private UmbrellaAzureBlobFileInfo()
-        {
-        }
-
         internal UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger,
             IMimeTypeUtility mimeTypeUtility,
             string subpath,

@@ -19,14 +19,11 @@ namespace Umbrella.DynamicImage.Caching
         public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken))
             => Task.CompletedTask;
 
-        public Task<DynamicImageItem> GetAsync(string key, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
             => Task.FromResult<DynamicImageItem>(null);
 
-        public Task RemoveAsync(string key, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
+        public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
             => Task.CompletedTask;
-
-        public string GenerateCacheKey(DynamicImageOptions options)
-            => string.Empty; 
         #endregion
     }
 }

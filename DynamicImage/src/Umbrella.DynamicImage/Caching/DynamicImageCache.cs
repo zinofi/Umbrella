@@ -6,33 +6,27 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
-using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Mime;
 
 namespace Umbrella.DynamicImage.Caching
 {
     public abstract class DynamicImageCache
     {
         #region Private Static Members
-        //TODO: Confirm we can leave this around indefinitely. Thread safe?
         private static readonly SHA256 s_Hasher = SHA256.Create();
         #endregion
 
         #region Protected Properties
         protected ILogger Log { get; }
-        protected IMimeTypeUtility MimeTypeUtility { get; }
         protected IMemoryCache Cache { get; }
         protected DynamicImageCacheOptions CacheOptions { get; }
         #endregion
 
         #region Constructors
         public DynamicImageCache(ILogger logger,
-            IMimeTypeUtility mimeTypeUtility,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions)
         {
             Log = logger;
-            MimeTypeUtility = mimeTypeUtility;
             Cache = cache;
             CacheOptions = cacheOptions;
 
@@ -41,8 +35,8 @@ namespace Umbrella.DynamicImage.Caching
         }
         #endregion
 
-        #region Public Methods
-        public string GenerateCacheKey(DynamicImageOptions options)
+        #region Protected Methods
+        protected virtual string GenerateCacheKey(DynamicImageOptions options)
         {
             try
             {
@@ -66,7 +60,12 @@ namespace Umbrella.DynamicImage.Caching
             {
                 throw new DynamicImageException("There was a problem generating the cache key.", exc, options);
             }
-        } 
+        }
+        
+        protected virtual string GetSubPath(string cackeKey, string fileExtension)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

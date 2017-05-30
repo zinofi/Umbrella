@@ -175,7 +175,7 @@ namespace Umbrella.FileSystem.Disk
             }
             catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
             {
-                throw;
+                throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
     }
