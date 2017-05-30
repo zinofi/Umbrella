@@ -1,57 +1,51 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities;
+using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.Disk
 {
-    public class UmbrellaDiskFileProvider : IUmbrellaDiskFileProvider
+    public class UmbrellaDiskFileProvider : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
     {
-        public Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        public UmbrellaDiskFileProvider(ILoggerFactory loggerFactory,
+            IMimeTypeUtility mimeTypeUtility,
+            UmbrellaDiskFileProviderOptions options)
+            : base(loggerFactory.CreateLogger<UmbrellaDiskFileProvider>(), loggerFactory, mimeTypeUtility, options)
         {
-            throw new NotImplementedException();
+            Guard.ArgumentNotNullOrWhiteSpace(options.RootPhysicalPath, nameof(options.RootPhysicalPath));
+
+            //Sanitize the root path
+            options.RootPhysicalPath = options.RootPhysicalPath.Trim().TrimEnd('\\');
         }
 
-        public Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        protected override Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            cancellationToken.ThrowIfCancellationRequested();
 
-        public Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
+            //Sanitize subpath
+            StringBuilder pathBuilder = new StringBuilder(subpath)
+                .Trim(' ', '~', '\\', ' ')
+                .Replace('/', '\\')
+                .Insert(0, Options.RootPhysicalPath);
 
-        public Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
+            string physicalPath = pathBuilder.ToString();
 
-        public Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
+            if (Log.IsEnabled(LogLevel.Debug))
+                Log.WriteDebug(new { subpath, physicalPath });
 
-        public Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
+            FileInfo physicalFileInfo = new FileInfo(physicalPath);
 
-        public Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
+            if (!isNew && !physicalFileInfo.Exists)
+                return Task.FromResult<IUmbrellaFileInfo>(null);
 
-        public Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            throw new NotImplementedException();
+            return Task.FromResult<IUmbrellaFileInfo>(new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, physicalFileInfo, isNew));
         }
     }
 }

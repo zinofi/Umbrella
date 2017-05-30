@@ -6,5 +6,6 @@ namespace Umbrella.FileSystem.Disk
 {
     public class UmbrellaDiskFileProviderOptions
     {
+        public string RootPhysicalPath { get; set; }
     }
 }

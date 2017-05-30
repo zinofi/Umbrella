@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Umbrella.FileSystem.AzureStorage.Test
+namespace Umbrella.FileSystem.Test
 {
-    public class UmbrellaAzureBlobFileInfoTest
+    public class UmbrellaFileInfoTest
     {
         
     }

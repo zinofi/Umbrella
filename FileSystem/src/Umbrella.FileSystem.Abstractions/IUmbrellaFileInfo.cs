@@ -11,6 +11,7 @@ namespace Umbrella.FileSystem.Abstractions
     {
         bool IsNew { get; }
         string Name { get; }
+        string SubPath { get; }
         long Length { get; }
         DateTimeOffset? LastModified { get; }
         string ContentType { get; }

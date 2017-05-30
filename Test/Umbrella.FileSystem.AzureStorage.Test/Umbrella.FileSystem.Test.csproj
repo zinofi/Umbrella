@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj" />
+    <ProjectReference Include="..\..\Core\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj" />
   </ItemGroup>
 
   <ItemGroup>

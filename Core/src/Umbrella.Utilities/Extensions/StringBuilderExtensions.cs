@@ -123,8 +123,22 @@ namespace Umbrella.Utilities.Extensions
 
         public static StringBuilder Trim(this StringBuilder sb) => Trim(sb, ' ');
 
+        public static StringBuilder Trim(this StringBuilder sb, params char[] chars)
+        {
+            Guard.ArgumentNotNull(chars, nameof(chars));
+            
+            foreach(var c in chars)
+            {
+                sb.Trim(c);
+            }
+
+            return sb;
+        }
+
         public static StringBuilder Trim(this StringBuilder sb, char c)
         {
+            Guard.ArgumentNotNull(sb, nameof(sb));
+
             if (sb.Length != 0)
             {
                 int length = 0;

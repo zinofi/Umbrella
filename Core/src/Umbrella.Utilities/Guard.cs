@@ -61,14 +61,15 @@ namespace Umbrella.Utilities
         /// <typeparam name="T">The type to match.</typeparam>
         /// <param name="argumentValue">The object to test.</param>
         /// <param name="argumentName">The name of the argument.</param>
+        /// <param name="customMessage">A custom message which is appended to the default error message.</param>
         /// <exception cref="ArgumentNullException">The value is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The value is not of type <typeparamref name="T"/> or a type in it's type hierarchy.</exception>
-        public static void ArgumentOfType<T>(object argumentValue, string argumentName)
+        public static void ArgumentOfType<T>(object argumentValue, string argumentName, string customMessage = "")
         {
             ArgumentNotNull(argumentValue, argumentName);
 
             if (argumentValue is T == false)
-                throw new ArgumentOutOfRangeException($"{argumentName} is not of type {nameof(T)}: {typeof(T).FullName} or one of it's super types.");
+                throw new ArgumentOutOfRangeException($"{argumentName} is not of type {nameof(T)}: {typeof(T).FullName} or one of it's super types. {customMessage}");
         }
 
         /// <summary>
@@ -78,14 +79,15 @@ namespace Umbrella.Utilities
         /// <typeparam name="T">The type to match.</typeparam>
         /// <param name="argumentValue">The object to test.</param>
         /// <param name="argumentName">The name of the argument.</param>
+        /// <param name="customMessage">A custom message which is appended to the default error message.</param>
         /// <exception cref="ArgumentNullException">The value is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The value is not exactly of type <typeparamref name="T"/></exception>
-        public static void ArgumentOfTypeExact<T>(object argumentValue, string argumentName)
+        public static void ArgumentOfTypeExact<T>(object argumentValue, string argumentName, string customMessage = "")
         {
             ArgumentNotNull(argumentValue, argumentName);
 
             if (argumentValue.GetType() != typeof(T))
-                throw new ArgumentOutOfRangeException($"{argumentName} is not exactly of type {nameof(T)}: {typeof(T).FullName}");
+                throw new ArgumentOutOfRangeException($"{argumentName} is not exactly of type {nameof(T)}: {typeof(T).FullName}. {customMessage}");
         }
     }
 }
