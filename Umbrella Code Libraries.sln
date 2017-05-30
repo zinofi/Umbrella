@@ -122,7 +122,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.AzureSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Disk", "Core\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj", "{C9B1A1E3-7374-465C-8043-67966E1461AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Test", "Test\Umbrella.FileSystem.AzureStorage.Test\Umbrella.FileSystem.Test.csproj", "{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.FileSystem.Test", "Test\Umbrella.FileSystem.Test\Umbrella.FileSystem.Test.csproj", "{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.Test", "Test\Umbrella.Legacy.WebUtilities.Test\Umbrella.Legacy.WebUtilities.Test.csproj", "{AF51C65C-F241-48C7-81DD-9E0E763E2002}"
 EndProject
