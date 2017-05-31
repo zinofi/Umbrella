@@ -131,9 +131,7 @@ namespace Umbrella.FileSystem.Disk
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                if (IsNew)
-                    throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
+                ThrowIfIsNew();
 
                 if (cacheContents && m_Contents != null)
                     return m_Contents;
@@ -150,6 +148,25 @@ namespace Umbrella.FileSystem.Disk
                 return bytes;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task CopyToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                ThrowIfIsNew();
+                Guard.ArgumentNotNull(target, nameof(target));
+
+                using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                {
+                    await fs.CopyToAsync(target, 4096, cancellationToken);
+                }
+            }
+            catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
@@ -178,5 +195,13 @@ namespace Umbrella.FileSystem.Disk
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
+
+        #region Private Methods
+        private void ThrowIfIsNew()
+        {
+            if (IsNew)
+                throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
+        }
+        #endregion
     }
 }

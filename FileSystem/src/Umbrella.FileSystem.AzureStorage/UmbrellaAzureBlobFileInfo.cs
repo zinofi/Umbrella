@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,7 +70,7 @@ namespace Umbrella.FileSystem.AzureStorage
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-#if net46
+#if NET46
                 return await Blob.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
 #else
                 return await Blob.DeleteIfExistsAsync().ConfigureAwait(false);
@@ -87,7 +88,7 @@ namespace Umbrella.FileSystem.AzureStorage
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-#if net46
+#if NET46
                 return await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
 #else
                 return await Blob.ExistsAsync().ConfigureAwait(false);
@@ -115,7 +116,7 @@ namespace Umbrella.FileSystem.AzureStorage
                     throw new UmbrellaFileNotFoundException(SubPath);
 
                 byte[] bytes = new byte[Blob.Properties.Length];
-#if net46
+#if NET46
                 await Blob.DownloadToByteArrayAsync(bytes, 0, cancellationToken).ConfigureAwait(false);
 #else
                 await Blob.DownloadToByteArrayAsync(bytes, 0).ConfigureAwait(false);
@@ -131,6 +132,25 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
+        public async Task CopyToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNull(target, nameof(target));
+
+#if NET46
+                await Blob.DownloadToStreamAsync(target, cancellationToken).ConfigureAwait(false);
+#else
+                await Blob.DownloadToStreamAsync(target).ConfigureAwait(false);
+#endif
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
         public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
@@ -138,14 +158,14 @@ namespace Umbrella.FileSystem.AzureStorage
                 cancellationToken.ThrowIfCancellationRequested();
                 Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
 
-#if net46
+#if NET46
                 await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
 #else
                 await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
 #endif
 
                 //Trigger a call to this to ensure property population
-#if net46
+#if NET46
                 await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
 #else
                 await Blob.ExistsAsync().ConfigureAwait(false);
@@ -171,7 +191,7 @@ namespace Umbrella.FileSystem.AzureStorage
                     throw new UmbrellaFileNotFoundException(SubPath);
 
                 var destinationFile = (UmbrellaAzureBlobFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
-#if net46
+#if NET46
                 await destinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 #else
                 await destinationFile.Blob.StartCopyAsync(Blob).ConfigureAwait(false);
@@ -202,7 +222,7 @@ namespace Umbrella.FileSystem.AzureStorage
                     throw new UmbrellaFileNotFoundException(SubPath);
 
                 var blobDestinationFile = (UmbrellaAzureBlobFileInfo)destinationFile;
-#if net46
+#if NET46
                 await blobDestinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 #else
                 await blobDestinationFile.Blob.StartCopyAsync(Blob).ConfigureAwait(false);
