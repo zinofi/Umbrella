@@ -38,9 +38,9 @@ namespace Umbrella.FileSystem.Disk
 
             //Sanitize subpath
             StringBuilder pathBuilder = new StringBuilder(subpath)
-                .Trim(' ', '~', '\\', ' ')
+                .Trim(' ', '~', '\\', '/', ' ')
                 .Replace('/', '\\')
-                .Insert(0, Options.RootPhysicalPath);
+                .Insert(0, Options.RootPhysicalPath + @"\");
 
             string physicalPath = pathBuilder.ToString();
 
