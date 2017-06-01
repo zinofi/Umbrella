@@ -36,6 +36,10 @@ namespace Umbrella.FileSystem.AzureStorage
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            //TODO: Need to keep a list of incoming container names and map these to cleaned names so that we can throw an
+            //exception in cases where two different incoming names map to the same cleaned name which could potentially
+            //cause issues with unintentionally overwriting files that have the same name
+
             //TODO: Use a regex here to only allow the characters permitted by Azure which are:
             //Length: between 3 and 63 chars
             //Lowercase letters

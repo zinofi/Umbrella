@@ -132,7 +132,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public async Task CopyToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
