@@ -109,7 +109,7 @@ namespace Umbrella.FileSystem.Test
 
         [Theory]
         [MemberData(nameof(ProvidersAndPathsMemberData))]
-        public async Task CreateAsync_Write_Read_DeleteFile(IUmbrellaFileProvider provider, string path)
+        public async Task CreateAsync_Write_ReadBytes_DeleteFile(IUmbrellaFileProvider provider, string path)
         {
             var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
 
@@ -134,7 +134,7 @@ namespace Umbrella.FileSystem.Test
 
         [Theory]
         [MemberData(nameof(ProvidersMemberData))]
-        public async Task CreateAsync_Write_GetAsync_Read_DeleteFile(IUmbrellaFileProvider provider)
+        public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile(IUmbrellaFileProvider provider)
         {
             var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
 
@@ -157,6 +157,72 @@ namespace Umbrella.FileSystem.Test
 
             byte[] retrievedBytes = await file.ReadAsByteArrayAsync();
             Assert.Equal(bytes.Length, retrievedFile.Length);
+
+            //Cleanup
+            await provider.DeleteAsync(file);
+        }
+
+        [Theory]
+        [MemberData(nameof(ProvidersAndPathsMemberData))]
+        public async Task CreateAsync_Write_ReadStream_DeleteFile(IUmbrellaFileProvider provider, string path)
+        {
+            var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+            byte[] bytes = File.ReadAllBytes(physicalPath);
+
+            //Create the file
+            IUmbrellaFileInfo file = await provider.CreateAsync(path);
+
+            Assert.True(file.IsNew);
+
+            await file.WriteFromByteArrayAsync(bytes);
+
+            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                await file.WriteToStreamAsync(ms);
+                bytes = ms.ToArray();
+            }
+
+            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+
+            //Cleanup
+            await provider.DeleteAsync(file);
+        }
+
+        [Theory]
+        [MemberData(nameof(ProvidersMemberData))]
+        public async Task CreateAsync_Write_GetAsync_ReadStream_DeleteFile(IUmbrellaFileProvider provider)
+        {
+            var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+            byte[] bytes = File.ReadAllBytes(physicalPath);
+
+            IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{c_TestFileName}");
+
+            Assert.True(file.IsNew);
+
+            await file.WriteFromByteArrayAsync(bytes);
+
+            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+
+            //Get the file
+            IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{c_TestFileName}");
+
+            Assert.NotNull(retrievedFile);
+
+            CheckWrittenFileAssertions(provider, retrievedFile, bytes, c_TestFileName);
+
+            byte[] retrievedBytes;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                await file.WriteToStreamAsync(ms);
+                retrievedBytes = ms.ToArray();
+            }
+
+            Assert.Equal(bytes.Length, retrievedBytes.Length);
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -313,7 +379,8 @@ namespace Umbrella.FileSystem.Test
         [MemberData(nameof(ProvidersMemberData))]
         public async Task CopyAsync_InvalidSourceType(IUmbrellaFileProvider provider)
         {
-            //TODO
+            //TODO: Test that files coming from one provider cannot be used with a different one.
+            //Maybe look at building this in somehow?
         }
 
         [Theory]
