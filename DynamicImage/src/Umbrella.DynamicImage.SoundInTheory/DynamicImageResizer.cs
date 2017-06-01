@@ -104,7 +104,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
                     LastModified = DateTimeOffset.UtcNow
                 };
 
-                dynamicImage.SetContent(ConvertBitmapSourceToByteArray(image.Image, options.Format));
+                dynamicImage.Content = ConvertBitmapSourceToByteArray(image.Image, options.Format);
 
                 //Now add to the cache
                 await m_DynamicImageCache.AddAsync(dynamicImage).ConfigureAwait(false);

@@ -84,24 +84,9 @@ namespace Umbrella.DynamicImage.Caching
                 //We need to return the cached image
                 DynamicImageItem item = new DynamicImageItem
                 {
-                    LastModified = fileInfo.LastModified.Value,
-                    Length = fileInfo.Length,
+                    UmbrellaFileInfo = fileInfo,
                     ImageOptions = options
                 };
-
-                //Set the content resolver to allow the file to be read from disk if / when needed
-                item.SetContentResolver(async token =>
-                {
-                    token.ThrowIfCancellationRequested();
-
-                    IUmbrellaFileInfo cachedFile = await FileProvider.GetAsync(subPath, token).ConfigureAwait(false);
-                    
-                    //Check the file still exists
-                    if (cachedFile == null)
-                        return null;
-
-                    return await cachedFile.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                });
 
                 return item;
             }

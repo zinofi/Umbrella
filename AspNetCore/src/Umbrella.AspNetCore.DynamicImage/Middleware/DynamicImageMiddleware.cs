@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 using Umbrella.AspNetCore.DynamicImage.Middleware.Options;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Hosting;
 using Umbrella.WebUtilities.Http;
 
 namespace Umbrella.AspNetCore.DynamicImage.Middleware
@@ -107,13 +105,11 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
                     return;
                 }
 
-                byte[] content = await image.GetContentAsync(token);
-
-                if (content?.Length > 0)
+                if (image.Length > 0)
                 {
                     AppendResponseHeaders(context.Response, image);
 
-                    await context.Response.Body.WriteAsync(content, 0, content.Length, token);
+                    await image.WriteContentToStreamAsync(context.Response.Body, token);
                     return;
                 }
                 else

@@ -19,8 +19,11 @@ namespace Umbrella.FileSystem.Test
     public class UmbrellaFileProviderTest
     {
         //TODO: When moving to GitHub this connection string needs to be dynamically set somehow before executing the tests
+#if DEBUG
+        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+#else
         private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
-        //private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+#endif
 
         private const string c_TestFileName = "aspnet-mvc-logo.png";
         private static string s_BaseDirectory;

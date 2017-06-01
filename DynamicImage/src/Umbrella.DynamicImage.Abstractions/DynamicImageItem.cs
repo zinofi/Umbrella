@@ -1,41 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
     public class DynamicImageItem
     {
-        private Func<CancellationToken, Task<byte[]>> m_ContentResolver;
+        private DateTimeOffset m_LastModified;
         private byte[] m_Content;
-        
-        public DateTimeOffset LastModified { get; set; }
-        public long Length { get; set; }
-        public DynamicImageOptions ImageOptions { get; set; }
 
-        public void SetContent(byte[] bytes)
+        public DateTimeOffset LastModified
         {
-            m_Content = bytes;
-
-            //Ensure the length is in sync with the content
-            Length = bytes.Length;
+            get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified.Value : m_LastModified;
+            set => m_LastModified = value;
         }
+        public long Length => UmbrellaFileInfo?.Length ?? m_Content?.Length ?? -1;
+        public DynamicImageOptions ImageOptions { get; set; }
+        public byte[] Content
+        {
+            set => m_Content = value;
+        }
+        public IUmbrellaFileInfo UmbrellaFileInfo { get; set; }
 
         public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (m_Content != null)
-                return m_Content;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (m_ContentResolver != null)
-                m_Content = await m_ContentResolver(cancellationToken);
+            if (m_Content == null && UmbrellaFileInfo != null)
+                m_Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
 
             return m_Content;
         }
 
-        public void SetContentResolver(Func<CancellationToken, Task<byte[]>> contentResolver)
-            => m_ContentResolver = contentResolver;
+        public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            Guard.ArgumentNotNull(target, nameof(target));
+
+            if (m_Content == null && UmbrellaFileInfo != null)
+                return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
+
+            return target.WriteAsync(m_Content, 0, m_Content.Length);
+        }
     }
 }

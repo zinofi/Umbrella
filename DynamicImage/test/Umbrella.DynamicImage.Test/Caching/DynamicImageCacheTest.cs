@@ -23,7 +23,11 @@ namespace Umbrella.DynamicImage.Test.Caching
     public class DynamicImageCacheTest
     {
         //TODO: When moving to GitHub this connection string needs to be dynamically set somehow before executing the tests
+#if DEBUG
+        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+#else
         private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
+#endif
         private const string c_TestFileName = "aspnet-mvc-logo.png";
 
         private static List<IDynamicImageCache> CacheList = new List<IDynamicImageCache>
@@ -54,10 +58,10 @@ namespace Umbrella.DynamicImage.Test.Caching
 
         [Theory]
         [MemberData(nameof(CacheListMemberData))]
-        public async Task AddAsync_RemoveAsync(IDynamicImageCache cache)
+        public async Task AddAsync_RemoveAsync_Bytes(IDynamicImageCache cache)
         {
             var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
-            
+
             var item = new DynamicImageItem
             {
                 ImageOptions = new DynamicImageOptions
@@ -73,7 +77,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 
             byte[] sourceBytes = File.ReadAllBytes(physicalPath);
 
-            item.SetContent(sourceBytes);
+            item.Content = sourceBytes;
 
             await cache.AddAsync(item);
 
@@ -83,6 +87,54 @@ namespace Umbrella.DynamicImage.Test.Caching
             Assert.Equal(item.ImageOptions, cachedItem.ImageOptions);
 
             byte[] cachedBytes = await cachedItem.GetContentAsync();
+
+            Assert.Equal(sourceBytes.Length, cachedBytes.Length);
+
+            //Perform cleanup by removing the file from the cache
+            await cache.RemoveAsync(item.ImageOptions, "jpg");
+
+            cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+
+            Assert.Null(cachedItem);
+        }
+
+        [Theory]
+        [MemberData(nameof(CacheListMemberData))]
+        public async Task AddAsync_RemoveAsync_Stream(IDynamicImageCache cache)
+        {
+            var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+            var item = new DynamicImageItem
+            {
+                ImageOptions = new DynamicImageOptions
+                {
+                    Format = DynamicImageFormat.Jpeg,
+                    Height = 100,
+                    Width = 100,
+                    ResizeMode = DynamicResizeMode.UniformFill,
+                    SourcePath = "/sometestpath/image.png"
+                },
+                LastModified = DateTime.UtcNow
+            };
+
+            byte[] sourceBytes = File.ReadAllBytes(physicalPath);
+
+            item.Content = sourceBytes;
+
+            await cache.AddAsync(item);
+
+            DynamicImageItem cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+
+            Assert.NotNull(cachedItem);
+            Assert.Equal(item.ImageOptions, cachedItem.ImageOptions);
+
+            byte[] cachedBytes = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                await cachedItem.WriteContentToStreamAsync(ms);
+                cachedBytes = ms.ToArray();
+            }
 
             Assert.Equal(sourceBytes.Length, cachedBytes.Length);
 
@@ -139,7 +191,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 
             byte[] sourceBytes = File.ReadAllBytes(path);
 
-            item.SetContent(sourceBytes);
+            item.Content = sourceBytes;
 
             await cache.AddAsync(item);
 

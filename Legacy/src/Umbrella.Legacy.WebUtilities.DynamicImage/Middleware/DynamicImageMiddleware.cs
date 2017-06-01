@@ -107,13 +107,11 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
                     return;
                 }
 
-                byte[] content = await image.GetContentAsync(token);
-
-                if (content?.Length > 0)
+                if (image.Length > 0)
                 {
                     AppendResponseHeaders(context.Response, image);
 
-                    await context.Response.WriteAsync(content, token);
+                    await image.WriteContentToStreamAsync(context.Response.Body, token);
                     return;
                 }
                 else
