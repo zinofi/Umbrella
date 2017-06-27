@@ -34,9 +34,11 @@ namespace Umbrella.FileSystem.Test
             {
                 if (string.IsNullOrEmpty(s_BaseDirectory))
                 {
-                    string buildConfig = DebugUtility.IsDebugMode ? "Debug" : "Release";
-                    int indexToEndAt = AppContext.BaseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp1.1");
-                    s_BaseDirectory = AppContext.BaseDirectory.Remove(indexToEndAt, AppContext.BaseDirectory.Length - indexToEndAt);
+                    string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
+
+                    string buildConfig = DebugUtility.IsDebugMode ? "debug" : "release";
+                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp1.1");
+                    s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 
                 return s_BaseDirectory;
