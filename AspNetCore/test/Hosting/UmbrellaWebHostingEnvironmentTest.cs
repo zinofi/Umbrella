@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 {
-    public class UmbrellaHostingEnvironmentTest
+    public class UmbrellaWebHostingEnvironmentTest
     {
         [Fact]
         public void MapPath_VirtualPath_ContentRoot()
@@ -88,9 +88,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
             Assert.Equal("http://www.test.com/images/test.jpg", mappedPath);
         }
 
-        private UmbrellaHostingEnvironment CreateHostingEnvironment()
+        private UmbrellaWebHostingEnvironment CreateHostingEnvironment()
         {
-            var logger = new Mock<ILogger<UmbrellaHostingEnvironment>>();
+            var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 
             var hostingEnvironment = new Mock<IHostingEnvironment>();
             hostingEnvironment.Setup(x => x.ContentRootPath).Returns(@"C:\MockedWebApp\src\");
@@ -105,7 +105,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-            return new UmbrellaHostingEnvironment(logger.Object,
+            return new UmbrellaWebHostingEnvironment(logger.Object,
                 hostingEnvironment.Object,
                 httpContextAccessor.Object,
                 memoryCache);

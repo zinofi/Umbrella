@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Umbrella.Legacy.WebUtilities.Test.Hosting
 {
-    public class UmbrellaHostingEnvironmentTest
+    public class UmbrellaWebHostingEnvironmentTest
     {
         public static List<object[]> UrlsToTest = new List<object[]>
         {
@@ -44,13 +44,13 @@ namespace Umbrella.Legacy.WebUtilities.Test.Hosting
             Assert.Equal("/path/to/a/resource.jpg", transformedPath);
         }
 
-        private UmbrellaHostingEnvironment CreateHostingEnvironment()
+        private UmbrellaWebHostingEnvironment CreateHostingEnvironment()
         {
-            var logger = new Mock<ILogger<UmbrellaHostingEnvironment>>();
+            var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-            return new UmbrellaHostingEnvironment(logger.Object, memoryCache);
+            return new UmbrellaWebHostingEnvironment(logger.Object, memoryCache);
         }
     }
 }

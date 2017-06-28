@@ -1,44 +1,36 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Hosting;
+using Umbrella.WebUtilities.Hosting;
 
-namespace Umbrella.AspNetCore.WebUtilities.Hosting
+namespace Umbrella.Legacy.WebUtilities.Hosting
 {
-    public class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
+    public class UmbrellaWebHostingEnvironment : IUmbrellaWebHostingEnvironment
     {
         #region Private Static Members
-        private static readonly string s_CacheKeyPrefix = typeof(UmbrellaHostingEnvironment).FullName;
+        private static readonly string s_CacheKeyPrefix = typeof(UmbrellaWebHostingEnvironment).FullName;
         private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         #endregion
 
         #region Protected Properties
         protected ILogger Log { get; }
-        protected IHostingEnvironment HostingEnvironment { get; }
-        protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IMemoryCache Cache { get; }
         #endregion
 
         #region Constructors
-        public UmbrellaHostingEnvironment(ILogger<UmbrellaHostingEnvironment> logger,
-            IHostingEnvironment hostingEnvironment,
-            IHttpContextAccessor httpContextAccessor,
+        public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
             IMemoryCache cache)
         {
             Log = logger;
-            HostingEnvironment = hostingEnvironment;
-            HttpContextAccessor = httpContextAccessor;
             Cache = cache;
         }
         #endregion
@@ -56,15 +48,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 {
                     entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 
-                    //Trim and remove the ~/ from the front of the path
-                    //Also change forward slashes to back slashes
-                    string cleanedPath = TransformPath(virtualPath, true, false, true);
+                    string cleanedPath = TransformPath(virtualPath, true, false, false);
 
-                    string rootPath = fromContentRoot
-                        ? HostingEnvironment.ContentRootPath
-                        : HostingEnvironment.WebRootPath;
-
-                    return Path.Combine(rootPath, cleanedPath);
+                    return System.Web.Hosting.HostingEnvironment.MapPath(cleanedPath);
                 });
             }
             catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
@@ -82,32 +68,30 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
                 string key = $"{s_CacheKeyPrefix}:MapWebPath:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}".ToUpperInvariant();
-                
+
                 return Cache.GetOrCreate(key, entry =>
                 {
                     entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 
-                    string cleanedPath = TransformPath(virtualPath, false, true, false);
-
-                    var applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
+                    string cleanedPath = TransformPath(virtualPath, false, true, true);
 
                     //Prefix the path with the virtual application segment
-                    string basePath = applicationPath != "/"
-                        ? applicationPath.Add(cleanedPath).Value
+                    string basePath = HttpRuntime.AppDomainAppVirtualPath != "/"
+                        ? HttpRuntime.AppDomainAppVirtualPath + cleanedPath
                         : cleanedPath;
 
                     string url = basePath;
 
                     if (toAbsoluteUrl)
                     {
-                        HttpRequest request = HttpContextAccessor.HttpContext.Request;
+                        string host = ResolveHttpHost();
 
-                        url = $"{scheme}://{request.Host}{cleanedPath}";
+                        string baseUrl = $"{scheme}://{host}";
+
+                        url = baseUrl + basePath;
                     }
 
-                    //TODO: Consider using the IUmbrellaFileProvider to do this work. That way we can use the append version
-                    //stuff with files stored elsewhere in future, e.g. in blob storage, etc.
-                    if(appendVersion)
+                    if (appendVersion)
                     {
                         string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
 
@@ -134,28 +118,31 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
         }
         #endregion
 
+        #region Protected Methods
+        protected virtual string ResolveHttpHost() => HttpContext.Current.Request.Url.Host;
+        #endregion
+
         #region Public Methods
-        public string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
+        public string TransformPath(string virtualPath, bool ensureStartsWithTildeSlash, bool ensureNoTilde, bool ensureLeadingSlash)
         {
             StringBuilder sb = new StringBuilder(virtualPath)
-                .Trim()
-                .Trim('~');
+                .Trim();
 
-            if (removeLeadingSlash && ensureLeadingSlash)
-                throw new ArgumentException($"{nameof(removeLeadingSlash)} and {nameof(ensureLeadingSlash)} are both set to true. This is not allowed.");
-
-            if (removeLeadingSlash)
-                sb.Trim('/');
+            if (ensureNoTilde && sb.StartsWith("~"))
+                sb.Remove(0, 1);
 
             if (ensureLeadingSlash && !sb.StartsWith('/'))
                 sb.Insert(0, '/');
 
-            string path = s_Regex.Replace(sb.ToString(), "/");
+            if (ensureStartsWithTildeSlash && !sb.StartsWith("~/"))
+            {
+                if (sb.StartsWith('/'))
+                    sb.Insert(0, '~');
+                else
+                    sb.Insert(0, "~/");
+            }
 
-            if (convertForwardSlashesToBackSlashes)
-                path = path.Replace("/", @"\");
-
-            return path;
+            return s_Regex.Replace(sb.ToString(), "/");
         }
         #endregion
     }

@@ -8,8 +8,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.WebApi;
-using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Hosting;
+using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
 {
@@ -18,13 +17,13 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.WebApi
     {
         #region Private Members
         private readonly IDynamicImageUtility m_DynamicImageUtility;
-        private readonly IUmbrellaHostingEnvironment m_UmbrellaHostingEnvironment;
+        private readonly IUmbrellaWebHostingEnvironment m_UmbrellaHostingEnvironment;
         #endregion
 
         #region Constructors
         public ImageGalleryUploadFolderController(ILogger<ImageGalleryUploadFolderController> logger,
             IDynamicImageUtility dynamicImageUtility,
-            IUmbrellaHostingEnvironment umbrellaHostingEnvironment)
+            IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
             : base(logger)
         {
             m_DynamicImageUtility = dynamicImageUtility;
