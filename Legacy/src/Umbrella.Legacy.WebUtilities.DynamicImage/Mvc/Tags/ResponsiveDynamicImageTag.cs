@@ -49,7 +49,6 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
                 Width = width
             };
 
-            //TODO: Need to provide "dynamicimage" from somewhere else... somehow!
             string x1Url = dynamicImageUtility.GenerateVirtualPath(dynamicImagePathPrefix, options);
 
             HtmlAttributes["src"] = mapVirtualPathFunc(x1Url);
