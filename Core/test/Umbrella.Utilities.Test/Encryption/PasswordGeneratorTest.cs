@@ -1,44 +1,60 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Encryption;
+using Umbrella.Utilities.Encryption.Interfaces;
+using Xunit;
+using Moq;
 
 namespace Umbrella.Utilities.Test.Encryption
 {
-    //TODO: Need to sort this out.
     public class PasswordGeneratorTest
     {
-        //[TestMethod]
-        //public void TestValidPassword()
-        //{
-        //    string password = PasswordGenerator.GeneratePassword(8, 3);
+        [Fact]
+        public void TestValidPassword()
+        {
+            var generator = CreatePasswordGenerator();
 
-        //    Assert.AreEqual(8, password.Length);
+            string password = generator.GeneratePassword(8, 3);
 
-        //    int numbersCount = password.Where(x => char.IsNumber(x)).Count();
+            Assert.Equal(8, password.Length);
 
-        //    Assert.AreEqual(3, numbersCount);
-        //}
+            int numbersCount = password.Where(x => char.IsNumber(x)).Count();
 
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
-        //public void TestInvalidLength()
-        //{
-        //    PasswordGenerator.GeneratePassword(0);
-        //}
+            Assert.Equal(3, numbersCount);
+        }
 
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
-        //public void TestInvalidNumbers()
-        //{
-        //    PasswordGenerator.GeneratePassword(numbers: -1);
-        //}
+        [Fact]
+        public void TestInvalidLength()
+        {
+            var generator = CreatePasswordGenerator();
 
-        //[TestMethod]
-        //[ExpectedException(typeof(ArgumentOutOfRangeException))]
-        //public void TestNumbersLessThanLength()
-        //{
-        //    PasswordGenerator.GeneratePassword(5, 6);
-        //}
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(0));
+        }
+
+        [Fact]
+        public void TestInvalidNumbers()
+        {
+            var generator = CreatePasswordGenerator();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(numbers: -1));
+        }
+
+        [Fact]
+        public void TestNumbersLessThanLength()
+        {
+            var generator = CreatePasswordGenerator();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(5, 6));
+        }
+
+        private IPasswordGenerator CreatePasswordGenerator()
+        {
+            var logger = new Mock<ILogger<PasswordGenerator>>();
+
+            return new PasswordGenerator(logger.Object);
+        }
     }
 }
