@@ -13,13 +13,17 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities(this IServiceCollection services)
+            => services.AddUmbrellaAspNetCoreWebUtilities<UmbrellaWebHostingEnvironment>();
+
+        public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities<TUmbrellaWebHostingEnvironment>(this IServiceCollection services)
+            where TUmbrellaWebHostingEnvironment : class, IUmbrellaWebHostingEnvironment
         {
             services.AddSingleton<ValidateModelStateAttribute>();
 
             //Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
-            services.AddSingleton<UmbrellaWebHostingEnvironment>();
-            services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<UmbrellaWebHostingEnvironment>());
-            services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<UmbrellaWebHostingEnvironment>());
+            services.AddSingleton<TUmbrellaWebHostingEnvironment>();
+            services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+            services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
             return services;
         }

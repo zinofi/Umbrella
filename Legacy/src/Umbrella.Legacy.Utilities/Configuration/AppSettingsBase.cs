@@ -10,14 +10,17 @@ namespace Umbrella.Legacy.Utilities.Configuration
 {
     public abstract class AppSettingsBase
     {
+        #region Private Static Members
         private static readonly MemoryCacheEntryOptions s_DefaultMemoryCacheEntryOptions = new MemoryCacheEntryOptions();
+        #endregion
 
+        #region Private Members
         private readonly IMemoryCache m_Cache;
+        #endregion
 
-        public AppSettingsBase(IMemoryCache cache)
-        {
-            m_Cache = cache;
-        }
+        #region Constructors
+        public AppSettingsBase(IMemoryCache cache) => m_Cache = cache; 
+        #endregion
 
         #region Protected Methods
         protected abstract NameValueCollection GetConfigurationSettings();
@@ -76,8 +79,7 @@ namespace Umbrella.Legacy.Utilities.Configuration
 
             string value = settings[key];
 
-            T output;
-            if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out output))
+            if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out T output))
                 return output;
             else if (throwException)
                 throw new ArgumentException(string.Format("The value for key: {0} is not valid. An appSetting with that key cannot be found", key));
