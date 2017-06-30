@@ -23,6 +23,10 @@ namespace Umbrella.DataAccess.Mapping
         #region IMappingUtility Members
         public List<TEntity> UpdateItemsList<TModel, TEntity>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
             where TEntity : class, IEntity
+            => UpdateItemsList<TModel, TEntity, int>(modelItems, existingItems, matchSelector, newEntityAction, autoInclusionSelector, innerActions);
+
+        public List<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
+            where TEntity : class, IEntity<TEntityKey>
         {
             //If there is nothing to process, just return an empty list for the target entity type
             if (modelItems == null)
