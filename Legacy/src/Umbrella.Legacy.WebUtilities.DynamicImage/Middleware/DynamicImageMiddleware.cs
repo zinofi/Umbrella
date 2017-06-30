@@ -1,26 +1,27 @@
-﻿using log4net;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Legacy.WebUtilities.Extensions;
 using System.Net;
 using System.Web.Configuration;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
-using System.IO;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options;
 using Umbrella.Utilities;
 using Umbrella.WebUtilities.Http;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
     public class DynamicImageMiddleware : OwinMiddleware
     {
+        #region Private Static Members
+        private static List<string> s_RegisteredDynamicImagePathPrefixList = new List<string>();
+        #endregion
+
         #region Private Members
         private readonly ILogger Log;
         private readonly IDynamicImageUtility m_DynamicImageUtility;
@@ -53,8 +54,11 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
             Guard.ArgumentNotNull(m_MiddlewareOptions.SourceFileProvider, nameof(m_MiddlewareOptions.SourceFileProvider));
             Guard.ArgumentNotNullOrWhiteSpace(m_MiddlewareOptions.DynamicImagePathPrefix, nameof(m_MiddlewareOptions.DynamicImagePathPrefix));
 
-            //TODO: Add in validation to protected against multiple instances of the middleware being registered using
-            //the same path prefix
+            //Ensure that only one instance of the middleware can be registered for a specified path prefix value
+            if (s_RegisteredDynamicImagePathPrefixList.Contains(m_MiddlewareOptions.DynamicImagePathPrefix, StringComparer.OrdinalIgnoreCase))
+                throw new DynamicImageException($"The application is trying to register multiple instances of the {nameof(DynamicImageMiddleware)} with the same prefix: {m_MiddlewareOptions.DynamicImagePathPrefix}. This is not allowed.");
+
+            s_RegisteredDynamicImagePathPrefixList.Add(m_MiddlewareOptions.DynamicImagePathPrefix);
         }
         #endregion
 
