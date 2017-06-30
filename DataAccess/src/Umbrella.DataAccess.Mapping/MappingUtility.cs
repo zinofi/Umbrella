@@ -13,10 +13,7 @@ namespace Umbrella.DataAccess.Mapping
         #endregion
 
         #region Constructors
-        public MappingUtility(IMapper mapper)
-        {
-            m_Mapper = mapper;
-        }
+        public MappingUtility(IMapper mapper) => m_Mapper = mapper;
         #endregion
 
         #region IMappingUtility Members
@@ -46,9 +43,9 @@ namespace Umbrella.DataAccess.Mapping
                 {
                     entity = m_Mapper.Map<TEntity>(item);
 
-                    //Make sure the mapped entity has an id of 0 to avoid errors with having mapped an existing item that belongs
+                    //Make sure the mapped entity has an default id value to avoid errors with having mapped an existing item that belongs
                     //to something like a different foreign key relationship
-                    entity.Id = 0;
+                    entity.Id = default(TEntityKey);
 
                     newEntityAction?.Invoke(entity);
 
