@@ -15,6 +15,10 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 {
     public class AzureTableStorageAppender : BufferingAppenderSkeleton
     {
+        #region Public Constants
+        public const string TableNameSeparator = "xxxxxx";
+        #endregion
+
         #region Private Members
         private AzureTableStorageLogAppenderOptions m_Config;
         private CloudStorageAccount m_Account;
@@ -39,7 +43,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                         throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
                     //Get the table we need to write stuff to and create it if needed
-                    CloudTable table = m_Client.GetTableReference($"{m_Config.TablePrefix}xxxxxx{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
+                    CloudTable table = m_Client.GetTableReference($"{m_Config.TablePrefix}{TableNameSeparator}{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
                     await table.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                     //Create the required table entities to write to storage and group them by PartitionKey.

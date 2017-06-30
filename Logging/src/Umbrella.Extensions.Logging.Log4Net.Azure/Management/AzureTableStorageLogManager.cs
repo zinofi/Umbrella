@@ -49,7 +49,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             [nameof(LogEntryMetaData.Level)] = Normalize(nameof(LogEntryMetaData.Level)),
         };
         private static readonly GenericEqualityComparer<CloudTable> s_CloudTableEqualityComparer = new GenericEqualityComparer<CloudTable>(x => x.Name);
-        private static readonly string[] s_DateSeparatorArray = new[] { "xxxxxx" }; //TODO: Need to pull this from a common place
+        private static readonly string[] s_DateSeparatorArray = new[] { AzureTableStorageAppender.TableNameSeparator };
         private static readonly string s_CacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
         #endregion
 
