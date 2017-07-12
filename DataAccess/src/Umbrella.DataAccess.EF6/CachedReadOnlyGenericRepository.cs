@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Caching;
 using System.Threading;
 using System.Data.Entity.Infrastructure;
 using Newtonsoft.Json;

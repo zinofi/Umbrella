@@ -8,7 +8,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
@@ -16,6 +15,7 @@ using Umbrella.Extensions.Logging.Log4Net.Azure.Management.Configuration;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Comparers;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Caching;
 
 namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
 {

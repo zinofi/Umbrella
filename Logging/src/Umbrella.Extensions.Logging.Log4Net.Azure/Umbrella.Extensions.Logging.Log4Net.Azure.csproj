@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj" />
     <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 

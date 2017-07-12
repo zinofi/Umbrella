@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Umbrella.Utilities.Extensions
+namespace Umbrella.Utilities.Caching
 {
     public static class IDistributedCacheExtensions
     {
@@ -25,7 +22,7 @@ namespace Umbrella.Utilities.Extensions
             {
                 result = factory();
 
-                if(!string.IsNullOrWhiteSpace(result))
+                if (!string.IsNullOrWhiteSpace(result))
                     cache.SetString(key, result, options ?? s_DefaultOptions);
             }
 
@@ -107,7 +104,7 @@ namespace Umbrella.Utilities.Extensions
             string json = settings == null
                 ? JsonConvert.SerializeObject(item)
                 : JsonConvert.SerializeObject(item, settings);
-            
+
             cache.SetString(key, json, options ?? s_DefaultOptions);
         }
 

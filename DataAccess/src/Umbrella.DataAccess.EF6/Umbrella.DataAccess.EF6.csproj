@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+ï»¿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
@@ -9,7 +9,7 @@
     <Version>1.0.0-rel-build00356</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd © 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd ï¿½ 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj" />
   </ItemGroup>
   
 </Project>

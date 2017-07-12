@@ -1,11 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.Logging
 {
@@ -13,19 +9,13 @@ namespace Microsoft.Extensions.Logging
     {
         #region Public Static Methods
         public static void WriteDebug(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
-        {
-            LogDetails(log, LogLevel.Debug, null, state, message, methodName, filePath, lineNumber);
-        }
+            => LogDetails(log, LogLevel.Debug, null, state, message, methodName, filePath, lineNumber);
 
         public static void WriteTrace(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
-        {
-            LogDetails(log, LogLevel.Trace, null, state, message, methodName, filePath, lineNumber);
-        }
+            => LogDetails(log, LogLevel.Trace, null, state, message, methodName, filePath, lineNumber);
 
         public static void WriteInformation(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
-        {
-            LogDetails(log, LogLevel.Information, null, state, message, methodName, filePath, lineNumber);
-        }
+            => LogDetails(log, LogLevel.Information, null, state, message, methodName, filePath, lineNumber);
 
         public static bool WriteWarning(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
@@ -56,7 +46,7 @@ namespace Microsoft.Extensions.Logging
 
             if (state != null)
             {
-                string jsonState = JsonConvert.SerializeObject(state);
+                string jsonState = UmbrellaStatics.JsonSerializer(state);
                 messageBuilder.Append($"{methodName}({jsonState})");
             }
             else
