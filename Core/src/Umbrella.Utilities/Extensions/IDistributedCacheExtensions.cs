@@ -97,8 +97,8 @@ namespace Umbrella.Utilities.Extensions
             return (false, default(TItem));
         }
 
-        public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).Item2;
-        public static async Task<TItem> GetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetFromJsonStringAsync<TItem>(key)).Item2;
+        public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).CacheItem;
+        public static async Task<TItem> GetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetFromJsonStringAsync<TItem>(key)).CacheItem;
 
         public static void SetAsJsonString(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
         {
