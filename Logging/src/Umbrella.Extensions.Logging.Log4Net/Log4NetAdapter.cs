@@ -1,7 +1,6 @@
 ﻿using log4net;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Reflection;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {

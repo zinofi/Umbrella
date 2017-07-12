@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {
