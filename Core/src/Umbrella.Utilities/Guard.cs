@@ -32,26 +32,59 @@ namespace Umbrella.Utilities
         /// <param name="argumentName">The name of the argument to test.</param>
         public static void ArgumentNotNullOrWhiteSpace(string argumentValue, string argumentName)
         {
+            if (argumentValue == null)
+                throw new ArgumentNullException($"{argumentName} cannot be null.");
+
             if (string.IsNullOrWhiteSpace(argumentValue))
-                throw new ArgumentException($"{argumentName} cannot be null, empty, or only whitespace.");
+                throw new ArgumentException($"{argumentName} cannot be empty, or only whitespace.");
         }
 
+        /// <summary>
+        /// Throws an exception if the tested <see cref="IList{T}"/> argument is null or empty.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">The <see cref="IList{T}"/> is null.</exception>
+        /// <exception cref="ArgumentException">The <see cref="IList{T}"/> is empty.</exception>
+        /// <param name="argumentValue">The argument value to test.</param>
+        /// <param name="argumentName">The name of the argument to test.</param>
         public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)
         {
-            if (argumentValue?.Count == 0)
-                throw new ArgumentException($"{argumentName} cannot be null or empty");
+            if (argumentValue == null)
+                throw new ArgumentNullException($"{argumentName} cannot be null.");
+
+            if (argumentValue.Count == 0)
+                throw new ArgumentException($"{argumentName} cannot be empty.");
         }
 
+        /// <summary>
+        /// Throws an exception if the tested <see cref="ICollection{T}"/> argument is null or empty.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">The <see cref="ICollection{T}"/> is null.</exception>
+        /// <exception cref="ArgumentException">The <see cref="ICollection{T}"/> is empty.</exception>
+        /// <param name="argumentValue">The argument value to test.</param>
+        /// <param name="argumentName">The name of the argument to test.</param>
         public static void ArgumentNotNullOrEmpty<T>(ICollection<T> argumentValue, string argumentName)
         {
-            if (argumentValue?.Count == 0)
-                throw new ArgumentException($"{argumentName} cannot be null or empty");
+            if (argumentValue == null)
+                throw new ArgumentNullException($"{argumentName} cannot be null.");
+
+            if (argumentValue.Count == 0)
+                throw new ArgumentException($"{argumentName} cannot be empty.");
         }
 
+        /// <summary>
+        /// Throws an exception if the tested <see cref="IEnumerable{T}"/> argument is null or empty.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">The <see cref="IEnumerable{T}"/> is null.</exception>
+        /// <exception cref="ArgumentException">The <see cref="IEnumerable{T}"/> is empty.</exception>
+        /// <param name="argumentValue">The argument value to test.</param>
+        /// <param name="argumentName">The name of the argument to test.</param>
         public static void ArgumentNotNullOrEmpty<T>(IEnumerable<T> argumentValue, string argumentName)
         {
-            if (argumentValue?.Count() == 0)
-                throw new ArgumentException($"{argumentName} cannot be null or empty");
+            if (argumentValue == null)
+                throw new ArgumentNullException($"{argumentName} cannot be null.");
+
+            if (argumentValue.Count() == 0)
+                throw new ArgumentException($"{argumentName} cannot be empty.");
         }
 
         /// <summary>
