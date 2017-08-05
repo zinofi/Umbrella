@@ -19,6 +19,11 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>A nested collection split into groups</returns>
 		public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> source, int itemsPerGroup)
 		{
+            Guard.ArgumentNotNull(source, nameof(source));
+
+            if (itemsPerGroup < 1)
+                throw new ArgumentOutOfRangeException(nameof(itemsPerGroup), $"The {nameof(itemsPerGroup)} parameter value must be greater than or equal to 1.");
+
             return source
                 .Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / itemsPerGroup)
@@ -27,6 +32,9 @@ namespace Umbrella.Utilities.Extensions
 
         public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
         {
+            Guard.ArgumentNotNull(source, nameof(source));
+            Guard.ArgumentNotNull(keySelector, nameof(keySelector));
+
             switch (direction)
             {
                 default:

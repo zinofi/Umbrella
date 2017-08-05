@@ -9,7 +9,11 @@ namespace Umbrella.Utilities.Extensions
     {
         #region Public Static Methods
         public static string ToJsonString(this object value, bool useCamelCasingRules = false)
-            => UmbrellaStatics.JsonSerializer(value, useCamelCasingRules);
+        {
+            Guard.ArgumentNotNull(value, nameof(value));
+
+            return UmbrellaStatics.JsonSerializer(value, useCamelCasingRules);
+        }
         #endregion
     }
 }

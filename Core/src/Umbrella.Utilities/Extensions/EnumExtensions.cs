@@ -11,6 +11,8 @@ namespace Umbrella.Utilities.Extensions
 
         public static T ToEnum<T>(this string value, T defaultValue) where T : struct
         {
+            Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
+
             if (Enum.TryParse(value, true, out T result))
                 return result;
 

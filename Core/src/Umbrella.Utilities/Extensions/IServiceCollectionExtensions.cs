@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -38,6 +39,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection Remove<TService>(this IServiceCollection services)
         {
+            Guard.ArgumentNotNull(services, nameof(services));
+
             ServiceDescriptor serviceToRemove = services.SingleOrDefault(x => x.ServiceType == typeof(TService));
 
             if (serviceToRemove != null)
