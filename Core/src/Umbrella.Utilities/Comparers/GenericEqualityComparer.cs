@@ -10,18 +10,12 @@ namespace Umbrella.Utilities.Comparers
         private readonly Func<T, object> m_PropertySelector;
 
         public GenericEqualityComparer(Func<T, object> propertySelector)
-        {
-            m_PropertySelector = propertySelector;
-        }
+            => m_PropertySelector = propertySelector;
 
         public override bool Equals(T x, T y)
-        {
-            return GetHashCode(x) == GetHashCode(y);
-        }
+            => GetHashCode(x) == GetHashCode(y);
 
         public override int GetHashCode(T obj)
-        {
-            return m_PropertySelector(obj).GetHashCode();
-        }
+            => m_PropertySelector(obj).GetHashCode();
     }
 }
