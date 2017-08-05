@@ -44,5 +44,51 @@ namespace Umbrella.Utilities.Extensions
                     return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
             }
         }
+
+        public static IEnumerable<int> CumulativeSum(this IEnumerable<int> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<int?> CumulativeSum(this IEnumerable<int?> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<float> CumulativeSum(this IEnumerable<float> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<float?> CumulativeSum(this IEnumerable<float?> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<double> CumulativeSum(this IEnumerable<double> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<double?> CumulativeSum(this IEnumerable<double?> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<decimal> CumulativeSum(this IEnumerable<decimal> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<decimal?> CumulativeSum(this IEnumerable<decimal?> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<long> CumulativeSum(this IEnumerable<long> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        public static IEnumerable<long?> CumulativeSum(this IEnumerable<long?> source)
+            => CumulativeSum(source, (x, y) => x + y);
+
+        private static IEnumerable<T> CumulativeSum<T>(this IEnumerable<T> source, Func<T, T, T> addSelector)
+        {
+            Guard.ArgumentNotNull(source, nameof(source));
+            Guard.ArgumentNotNull(addSelector, nameof(addSelector));
+
+            T sum = source.FirstOrDefault();
+
+            yield return sum;
+
+            foreach (T item in source.Skip(1))
+            {
+                sum = addSelector(sum, item);
+                yield return sum;
+            }
+        }
     }
 }
