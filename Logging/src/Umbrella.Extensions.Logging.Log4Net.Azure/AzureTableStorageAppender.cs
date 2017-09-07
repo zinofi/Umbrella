@@ -87,6 +87,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         public void InitializeAppender(AzureTableStorageLogAppenderOptions options, string connectionString, bool logErrorsToConsole)
         {
             Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(options.AppenderType, nameof(options.AppenderType));
             Guard.ArgumentNotNullOrWhiteSpace(connectionString, nameof(connectionString));
             Guard.ArgumentNotNullOrWhiteSpace(options.Name, nameof(options.Name));
             Guard.ArgumentNotNullOrWhiteSpace(options.TablePrefix, nameof(options.TablePrefix));

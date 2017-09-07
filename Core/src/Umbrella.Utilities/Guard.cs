@@ -17,8 +17,7 @@ namespace Umbrella.Utilities
         /// <exception cref="ArgumentNullException">The value is null.</exception>
         /// <param name="argumentValue">The argument value to test.</param>
         /// <param name="argumentName">The name of the argument to test.</param>
-        public static void ArgumentNotNull<T>(T argumentValue, string argumentName)
-            where T : class
+        public static void ArgumentNotNull(object argumentValue, string argumentName)
         {
             if (argumentValue == null)
                 throw new ArgumentNullException(argumentName);
