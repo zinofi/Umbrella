@@ -13,6 +13,14 @@
     <Description>This package is obsolete and will be de-listed. Please use the new Microsoft.Extensions.Configuration.AzureKeyVault package.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.ActiveDirectory\Umbrella.ActiveDirectory.csproj" />
     <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />

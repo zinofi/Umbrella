@@ -12,6 +12,14 @@
     <Copyright>Zinofi Digital Ltd ? 2017</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="CustomProperties\ImageGallery\Controls\ImageGalleryEditorControl.ascx;CustomProperties\ImageGallery\Controls\ImageGallerySummaryControl.ascx;CustomProperties\ImageGallery\Resources\ImageGallery.css;CustomProperties\ImageGallery\Resources\ImageGallery.js;CustomProperties\LinkEditor\Controls\ImageEditorPopup.ascx;CustomProperties\LinkEditor\Controls\LinkEditorPopup.ascx;CustomProperties\LinkEditor\Controls\LinkListPopup.ascx;CustomProperties\LinkEditor\Resources\down-arrow.png;CustomProperties\LinkEditor\Resources\LinkEditor.css;CustomProperties\LinkEditor\Resources\LinkEditor.js;CustomProperties\LinkEditor\Resources\up-arrow.png" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>

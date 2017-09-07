@@ -52,7 +52,6 @@ namespace Umbrella.ActiveDirectory
                 AuthenticationResult result = await authContext.AcquireTokenAsync(resource, assertion);
 
                 return result?.AccessToken;
-
             }
             catch (Exception exc) when (m_Logger.WriteCritical(exc, new { clientId }))
             {

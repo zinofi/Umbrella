@@ -15,6 +15,14 @@
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj" />
     <ProjectReference Include="..\Umbrella.TypeScript.Tools\Umbrella.TypeScript.Tools.csproj" />
