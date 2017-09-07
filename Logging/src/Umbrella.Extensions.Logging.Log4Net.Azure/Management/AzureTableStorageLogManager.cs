@@ -88,7 +88,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
         #endregion
 
         #region IAzureTableStorageLogManager Members
-        public Task<(List<AzureTableStorageLogDataSource> Items, int TotalCount)> FindAllDataSourceByOptionsAsync(AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<(List<AzureTableStorageLogDataSource> Items, int TotalCount)> FindAllDataSourceByOptionsAsync(AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             }
         }
 
-        public async Task<(List<AzureTableStorageLogTable> Items, int TotalCount)> FindAllLogTableByTablePrefixAndOptionsAsync(string tablePrefix, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(List<AzureTableStorageLogTable> Items, int TotalCount)> FindAllLogTableByTablePrefixAndOptionsAsync(string tablePrefix, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -249,7 +249,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             }
         }
 
-        public async Task<(AzureTableStorageLogAppenderType? AppenderType, List<TableEntity> Items, int TotalCount)> FindAllTableEntityByOptionsAsync(string tablePrefix, string tableName, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(AzureTableStorageLogAppenderType? AppenderType, List<TableEntity> Items, int TotalCount)> FindAllTableEntityByOptionsAsync(string tablePrefix, string tableName, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -397,7 +397,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             }
         }
 
-        public async Task<AzureTableStorageLogDeleteOperationResult> DeleteTableByNameAsync(string tableName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<AzureTableStorageLogDeleteOperationResult> DeleteTableByNameAsync(string tableName, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -444,7 +444,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             }
         }
 
-        public async Task ClearTableNameCacheAsync(string tablePrefix, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ClearTableNameCacheAsync(string tablePrefix, CancellationToken cancellationToken = default)
         {
             try
             {

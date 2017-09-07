@@ -19,7 +19,7 @@ namespace Umbrella.Utilities.Extensions
             return defaultValue;
         }
 
-        public static T ToEnum<T>(this int value) => value.ToEnum<T>(default(T));
+        public static T ToEnum<T>(this int value) => value.ToEnum<T>(default);
 
         public static T ToEnum<T>(this int value, T defaultValue)
         {

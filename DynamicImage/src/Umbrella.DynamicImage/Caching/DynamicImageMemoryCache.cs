@@ -35,7 +35,7 @@ namespace Umbrella.DynamicImage.Caching
         #endregion
 
         #region IDynamicImageCache Members
-        public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken))
+        public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Umbrella.DynamicImage.Caching
             }
         }
 
-        public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Umbrella.DynamicImage.Caching
             }
         }
 
-        public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
+        public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
         {
             try
             {

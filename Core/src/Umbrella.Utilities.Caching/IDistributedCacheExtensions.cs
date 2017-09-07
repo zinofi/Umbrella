@@ -67,7 +67,7 @@ namespace Umbrella.Utilities.Caching
                 }
             }
 
-            return (false, default(TItem));
+            return (false, default);
         }
 
         public static async Task<(bool ItemFound, TItem CacheItem)> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
@@ -91,7 +91,7 @@ namespace Umbrella.Utilities.Caching
                 }
             }
 
-            return (false, default(TItem));
+            return (false, default);
         }
 
         public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).CacheItem;

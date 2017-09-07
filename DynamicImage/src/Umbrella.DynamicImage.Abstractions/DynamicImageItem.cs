@@ -29,7 +29,7 @@ namespace Umbrella.DynamicImage.Abstractions
         }
         public IUmbrellaFileInfo UmbrellaFileInfo { get; set; }
 
-        public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -39,7 +39,7 @@ namespace Umbrella.DynamicImage.Abstractions
             return m_Content;
         }
 
-        public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(target, nameof(target));

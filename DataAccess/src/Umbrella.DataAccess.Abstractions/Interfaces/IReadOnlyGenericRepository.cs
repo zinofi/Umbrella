@@ -15,12 +15,12 @@ namespace Umbrella.DataAccess.Abstractions.Interfaces
         where TEntity : class, IEntity<TEntityKey>
     {
         List<TEntity> FindAll(bool trackChanges = false, IncludeMap<TEntity> map = null);
-        Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
+        Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null);
         List<TEntity> FindAllByIdList(IEnumerable<TEntityKey> ids, bool trackChanges = false, IncludeMap<TEntity> map = null);
-        Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
+        Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null);
         TEntity FindById(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity> map = null);
-        Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null);
+        Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null);
         int FindTotalCount();
-        Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default);
     }
 }

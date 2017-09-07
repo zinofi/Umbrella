@@ -18,8 +18,8 @@ namespace Umbrella.DynamicImage
         #endregion
 
         #region Private Static Members
-        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default(DynamicImageOptions));
-        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default(DynamicImageOptions));
+        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
+        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
         private static readonly Regex s_DensityRegex = new Regex("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly char[] s_SegmentSeparatorArray = new[] { '/' };
         #endregion
@@ -49,7 +49,7 @@ namespace Umbrella.DynamicImage
                 case "gif":
                     return DynamicImageFormat.Gif;
                 default:
-                    return default(DynamicImageFormat);
+                    return default;
             }
         }
 

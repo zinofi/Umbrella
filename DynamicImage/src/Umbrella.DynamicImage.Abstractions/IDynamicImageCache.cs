@@ -10,8 +10,8 @@ namespace Umbrella.DynamicImage.Abstractions
 {
     public interface IDynamicImageCache
     {
-        Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken));
-        Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken));
-        Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default(CancellationToken));
+        Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default);
+        Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default);
+        Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default);
     }
 }

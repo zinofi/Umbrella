@@ -2,29 +2,22 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.5</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript</PackageId>
     <Version>1.0.0-rel-build00361</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd � 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.5|AnyCPU'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.5|AnyCPU'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj" />
     <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>

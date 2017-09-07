@@ -16,12 +16,12 @@ namespace Umbrella.FileSystem.Abstractions
         long Length { get; }
         DateTimeOffset? LastModified { get; }
         string ContentType { get; }
-        Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken));
-        Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default(CancellationToken), bool cacheContents = true);
-        Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken));
-        Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken));
-        Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken));
-        Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken));
-        Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> ExistsAsync(CancellationToken cancellationToken = default);
+        Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true);
+        Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default);
+        Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default);
+        Task<bool> DeleteAsync(CancellationToken cancellationToken = default);
+        Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default);
+        Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default);
     }
 }

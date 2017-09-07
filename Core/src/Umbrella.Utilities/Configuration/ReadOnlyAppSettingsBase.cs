@@ -53,7 +53,7 @@ namespace Umbrella.Utilities.Configuration
         protected abstract string ToJson(object value);
         protected abstract T FromJson<T>(string value);
 
-        protected virtual T GetSetting<T>(T fallback = default(T), [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
+        protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Umbrella.Utilities.Configuration
             }
         }
 
-        protected virtual T GetSettingEnum<T>(T fallback = default(T), [CallerMemberName]string key = "", bool useCache = true, bool throwException = false) where T : struct
+        protected virtual T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false) where T : struct
         {
             try
             {
@@ -95,7 +95,7 @@ namespace Umbrella.Utilities.Configuration
         #endregion
 
         #region Private Methods
-        private T GetSetting<T>(T fallback = default(T), [CallerMemberName]string key = "", bool throwException = false)
+        private T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false)
         {
             string value = AppSettingsSource.GetValue(key);
 
@@ -118,7 +118,7 @@ namespace Umbrella.Utilities.Configuration
                 : fallback;
         }
 
-        private T GetSettingEnum<T>(T fallback = default(T), [CallerMemberName]string key = "", bool throwException = false) where T : struct
+        private T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false) where T : struct
         {
             string value = AppSettingsSource.GetValue(key);
 

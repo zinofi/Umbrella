@@ -58,7 +58,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public virtual Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public virtual Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default)
         {
             try
             {

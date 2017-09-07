@@ -65,7 +65,7 @@ namespace Umbrella.FileSystem.AzureStorage
         #endregion
 
         #region IUmbrellaFileInfo Members
-        public virtual async Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public virtual async Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default(CancellationToken), bool cacheContents = true)
+        public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace Umbrella.FileSystem.AzureStorage
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
         {
             try
             {

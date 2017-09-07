@@ -27,13 +27,13 @@ namespace Umbrella.DynamicImage.SoundInTheory.Test
             byte[] bytes = Convert.FromBase64String(TestPNG);
 
             var fileMock = new Mock<IUmbrellaFileInfo>();
-            fileMock.Setup(x => x.ReadAsByteArrayAsync(default(CancellationToken), true)).Returns(Task.FromResult(bytes));
+            fileMock.Setup(x => x.ReadAsByteArrayAsync(default, true)).Returns(Task.FromResult(bytes));
             fileMock.Setup(x => x.LastModified).Returns(DateTimeOffset.UtcNow);
-            fileMock.Setup(x => x.ExistsAsync(default(CancellationToken))).Returns(Task.FromResult(true));
+            fileMock.Setup(x => x.ExistsAsync(default)).Returns(Task.FromResult(true));
             fileMock.Setup(x => x.Length).Returns(bytes.LongLength);
             
             var fileProviderMock = new Mock<IUmbrellaFileProvider>();
-            fileProviderMock.Setup(x => x.GetAsync("/dummypath.png", default(CancellationToken))).Returns(Task.FromResult(fileMock.Object));
+            fileProviderMock.Setup(x => x.GetAsync("/dummypath.png", default)).Returns(Task.FromResult(fileMock.Object));
 
             DynamicImageItem result = await resizer.GenerateImageAsync(fileProviderMock.Object, options);
 

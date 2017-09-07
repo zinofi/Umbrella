@@ -135,7 +135,7 @@
 //            }
 //        }
 
-//        public virtual async Task SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual async Task SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -245,7 +245,7 @@
 //            }
 //        }
 
-//        public virtual async Task SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual async Task SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -309,7 +309,7 @@
 //            }
 //        }
 
-//        public virtual async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -371,7 +371,7 @@
 //            }
 //        }
 
-//        public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -612,7 +612,7 @@
 //            }
 //        }
 
-//        protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken = default(CancellationToken))
+//        protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken = default)
 //            where TTargetEntity : class, TEntityBase
 //            where TTargetRepository : IGenericRepository<TTargetEntity, TEntityKey>
 //        {
@@ -714,7 +714,7 @@
 //            }
 //        }
 
-//        public virtual Task<List<TEntity>> FindAllAsync(IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual Task<List<TEntity>> FindAllAsync(IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -740,7 +740,7 @@
 //            }
 //        }
 
-//        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -766,7 +766,7 @@
 //            }
 //        }
 
-//        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual Task<TEntity> FindByIdAsync(TEntityKey id, IncludeMap<TEntity> map = null, CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {
@@ -792,7 +792,7 @@
 //            }
 //        }
 
-//        public virtual Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+//        public virtual Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default)
 //        {
 //            try
 //            {

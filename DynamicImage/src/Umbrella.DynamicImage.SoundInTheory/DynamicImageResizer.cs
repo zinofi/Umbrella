@@ -36,7 +36,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
         #endregion
 
         #region IDynamicImageResizer Members
-        public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
             }
         }
 
-        public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 case DynamicResizeMode.UseWidth:
                     return ResizeMode.UseWidth;
                 default:
-                    return default(ResizeMode);
+                    return default;
             }
         }
 
@@ -151,7 +151,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 case UDynamicImageFormat.Png:
                     return SDynamicImageFormat.Png;
                 default:
-                    return default(SDynamicImageFormat);
+                    return default;
             }
         }
 

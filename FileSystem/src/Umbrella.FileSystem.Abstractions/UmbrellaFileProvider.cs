@@ -35,7 +35,7 @@ namespace Umbrella.FileSystem.Abstractions
         #endregion
 
         #region Public Methods
-        public virtual async Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default)
         {
             try
             {

@@ -75,7 +75,7 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 
                         dbAppAuthSessionContext.AppTenantId = id;
 
-                        if (!id.Equals(default(TAppTenantKey)))
+                        if (!id.Equals(default))
                             dbNullableAppAuthSessionContext.AppTenantId = (dynamic)id;
                     }
 

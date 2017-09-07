@@ -13,6 +13,6 @@ namespace Umbrella.DataAccess.Abstractions
     /// <typeparam name="T">The type used for the user id</typeparam>
     public sealed class NoopUserAuditDataFactory<T> : IUserAuditDataFactory<T>
     {
-        public T CurrentUserId => default(T);
+        public T CurrentUserId => default;
     }
 }

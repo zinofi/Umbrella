@@ -33,7 +33,7 @@ namespace Umbrella.DataAccess.Abstractions
                     return (T)entry;
             }
 
-            return default(T);
+            return default;
         }
 
         public List<T> GetMetaDataListEntry<T>(string key)

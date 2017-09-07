@@ -130,7 +130,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual async Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool addToContext = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+        public virtual async Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions options = null, params RepoOptions[] childOptions)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace Umbrella.DataAccess.EF6
                 concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
 
             //Check if this entity is in the context, i.e. is it new
-            if (entity.Id.Equals(default(TEntityKey)) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)))
+            if (entity.Id.Equals(default) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)))
             {
                 isNew = true;
 
@@ -266,7 +266,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual async Task SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions options = null, params RepoOptions[] childOptions)
+        public virtual async Task SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions options = null, params RepoOptions[] childOptions)
         {
             try
             {
@@ -329,7 +329,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+        public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions options = null, params RepoOptions[] childOptions)
         {
             try
             {
@@ -397,7 +397,7 @@ namespace Umbrella.DataAccess.EF6
             Context.Entry(entity).State = EntityState.Deleted;
         }
 
-        public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken), bool pushChangesToDb = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+        public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions options = null, params RepoOptions[] childOptions)
         {
             try
             {

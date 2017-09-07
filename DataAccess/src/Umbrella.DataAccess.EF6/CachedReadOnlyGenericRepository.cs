@@ -76,7 +76,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public override async Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public override async Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public override async Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public override async Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public override async Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public override async Task<List<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -178,7 +178,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public override Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public override Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -245,7 +245,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public async Task<List<CacheEntry<TEntity>>> CacheFindAllAsync(CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public async Task<List<CacheEntry<TEntity>>> CacheFindAllAsync(CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {
@@ -337,7 +337,7 @@ namespace Umbrella.DataAccess.EF6
             }
         }
 
-        public async Task<CacheEntry<TEntity>> CacheFindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default(CancellationToken), bool trackChanges = false, IncludeMap<TEntity> map = null)
+        public async Task<CacheEntry<TEntity>> CacheFindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null)
         {
             try
             {

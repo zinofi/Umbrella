@@ -224,7 +224,7 @@ namespace Umbrella.TypeScript
                     {
                         DateTime dtPropertyValue = ((DateTime)propertyValue);
 
-                        if (dtPropertyValue == default(DateTime))
+                        if (dtPropertyValue == default)
                         {
                             //Output unspecified dates as null rather than a string with DateTime.MinValue
                             info.InitialOutputValue = "null";

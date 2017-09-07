@@ -16,13 +16,13 @@ namespace Umbrella.DynamicImage.Caching
     public class DynamicImageDefaultCache : IDynamicImageCache
     {
         #region IDynamicImageCache Members
-        public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default(CancellationToken))
+        public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)
             => Task.CompletedTask;
 
-        public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
             => Task.FromResult<DynamicImageItem>(null);
 
-        public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default(CancellationToken))
+        public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
             => Task.CompletedTask;
         #endregion
     }

@@ -50,7 +50,7 @@ namespace Umbrella.FileSystem.Disk
             ContentType = mimeTypeUtility.GetMimeType(Name);
         }
 
-        public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Umbrella.FileSystem.Disk
             }
         }
 
-        public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Umbrella.FileSystem.Disk
             }
         }
 
-        public Task<bool> DeleteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Umbrella.FileSystem.Disk
             }
         }
 
-        public Task<bool> ExistsAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace Umbrella.FileSystem.Disk
             }
         }
 
-        public async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default(CancellationToken), bool cacheContents = true)
+        public async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace Umbrella.FileSystem.Disk
             }
         }
 
-        public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace Umbrella.FileSystem.Disk
             }
         }
 
-        public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
         {
             try
             {

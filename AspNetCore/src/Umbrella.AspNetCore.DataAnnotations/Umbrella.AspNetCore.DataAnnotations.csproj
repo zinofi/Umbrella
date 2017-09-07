@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net462;netstandard1.6</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -9,15 +10,7 @@
     <Version>1.0.0-rel-build00361</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd ? 2017</Copyright>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net462|AnyCPU'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net462|AnyCPU'">
-    <LangVersion>latest</LangVersion>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

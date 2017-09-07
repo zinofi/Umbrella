@@ -140,7 +140,7 @@ namespace Umbrella.N2.Extensions
             if (value != null)
                 return (TProperty)value;
             if (typeof(TProperty) == typeof(bool))
-                return default(TProperty);
+                return default;
             if (!TypeExtensions.CanBeNull(typeof(TProperty)))
                 throw new Exception("The property value is null and the requested type is a value type. \r\n Consider using nullable as type or make the property mandatory.");
             else

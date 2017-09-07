@@ -45,7 +45,7 @@ namespace Umbrella.DataAccess.Mapping
 
                     //Make sure the mapped entity has an default id value to avoid errors with having mapped an existing item that belongs
                     //to something like a different foreign key relationship
-                    entity.Id = default(TEntityKey);
+                    entity.Id = default;
 
                     newEntityAction?.Invoke(entity);
 
