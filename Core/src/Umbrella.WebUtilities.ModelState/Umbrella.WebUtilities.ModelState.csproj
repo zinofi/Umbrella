@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.WebUtilities.ModelState</PackageId>
-    <Version>1.0.0-rel-build00361</Version>
+    <Version>1.0.0-rel-build00362</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
