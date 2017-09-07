@@ -10,20 +10,26 @@ namespace Umbrella.Utilities.Pagination
 	{
 		public struct PageItem
 		{
-			public int Number { get; set; }
-			public bool IsCurrentPage { get; set; }
+			public int Number { get; }
+			public bool IsCurrentPage { get; }
+
+            public PageItem(int number, bool isCurrentPage)
+            {
+                Number = number;
+                IsCurrentPage = isCurrentPage;
+            }
 		}
 
-		public int? FirstPageNumber { get; set; }
-		public int? PreviousPageNumber { get; set; }
-		public int? NextPageNumber { get; set; }
-		public int? LastPageNumber { get; set; }
-		public int TotalCount { get; set; }
-		public bool EnablePageSizeSelection { get; set; }
-		public List<PageItem> PageNumbers { get; set; }
+		public int? FirstPageNumber { get; }
+		public int? PreviousPageNumber { get; }
+		public int? NextPageNumber { get; }
+		public int? LastPageNumber { get; }
+		public int TotalCount { get; }
+		public bool EnablePageSizeSelection { get; }
+		public List<PageItem> PageNumbers { get; }
 
-		public PaginationModel(int totalItems, int pageNo, int? pageSize, bool enablePageSizeSelection = false, int maxPagesToShow = 5)
-			: this()
+		public PaginationModel(int totalItems, int pageNo, int? pageSize, bool enablePageSizeSelection = false, int? maxPagesToShow = 5)
+            : this()
 		{
 			TotalCount = totalItems;
 			PageNumbers = new List<PageItem>();
@@ -45,28 +51,31 @@ namespace Umbrella.Utilities.Pagination
 					NextPageNumber = pageNo + 1;
 
 				int startPageNo = 1;
-				int maxPages = maxPagesToShow;
+                int maxPages = maxPagesToShow ?? totalPages;
 
-				if (totalPages <= maxPagesToShow)
-				{
-					maxPages = totalPages;
-				}
-				else
-				{
-					int halfway = maxPages / 2;
-					startPageNo = pageNo - halfway;
+                if (maxPagesToShow.HasValue)
+                {
+                    if (totalPages <= maxPagesToShow)
+                    {
+                        maxPages = totalPages;
+                    }
+                    else
+                    {
+                        int halfway = maxPages / 2;
+                        startPageNo = pageNo - halfway;
 
-					if (startPageNo < halfway)
-						startPageNo = 1;
-					else if (totalPages - halfway < pageNo)
-						startPageNo = totalPages - maxPages + 1;
-				}
+                        if (startPageNo < halfway)
+                            startPageNo = 1;
+                        else if (totalPages - halfway < pageNo)
+                            startPageNo = totalPages - maxPages + 1;
+                    }
+                }
 
 				for (int i = 0; i < maxPages; i++)
 				{
 					int pageNumber = startPageNo++;
 
-					PageNumbers.Add(new PageItem { Number = pageNumber, IsCurrentPage = pageNumber == pageNo });
+					PageNumbers.Add(new PageItem(pageNumber, pageNumber == pageNo));
 				}
 			}
 
