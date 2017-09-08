@@ -41,7 +41,7 @@ namespace Umbrella.Utilities.Extensions
                 : fallback;
         }
 
-        public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default, bool throwException = false)
+        public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
             where T : struct
         {
             Guard.ArgumentNotNull(element, nameof(element));
