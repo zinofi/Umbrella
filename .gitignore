@@ -11,3 +11,4 @@ obj
 project.lock.json
 Logs
 BenchmarkDotNet.Artifacts
+/Test/Umbrella.DynamicImage.SoundInTheory.Test/Output

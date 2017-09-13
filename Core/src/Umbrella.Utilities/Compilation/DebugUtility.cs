@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 [assembly: InternalsVisibleTo("Umbrella.AspNetCore.DynamicImage")]
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Caching.AzureStorage.Test")]
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Test")]
+[assembly: InternalsVisibleTo("Umbrella.DynamicImage.SoundInTheory.Test")]
 [assembly: InternalsVisibleTo("Umbrella.FileSystem.Test")]
 namespace Umbrella.Utilities.Compilation
 {
