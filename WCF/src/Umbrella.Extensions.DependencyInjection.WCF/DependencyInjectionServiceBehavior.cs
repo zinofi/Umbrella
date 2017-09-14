@@ -33,9 +33,7 @@ namespace Umbrella.Extensions.DependencyInjection.WCF
         {
             foreach (var cdb in serviceHostBase.ChannelDispatchers)
             {
-                var cd = cdb as ChannelDispatcher;
-
-                if (cd != null)
+                if (cdb is ChannelDispatcher cd)
                 {
                     foreach (var ed in cd.Endpoints)
                     {
