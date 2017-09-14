@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
-using Umbrella.DynamicImage.SoundInTheory;
+using Umbrella.DynamicImage.FreeImage;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddUmbrellaDynamicImageSoundInTheory(this IServiceCollection services)
+        public static IServiceCollection AddUmbrellaDynamicImageFreeImage(this IServiceCollection services)
         {
             services.AddSingleton<DynamicImageResizerBase, DynamicImageResizer>();
 

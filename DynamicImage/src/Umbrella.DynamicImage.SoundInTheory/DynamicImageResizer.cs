@@ -1,121 +1,41 @@
 ﻿using SoundInTheory.DynamicImage;
 using SoundInTheory.DynamicImage.Filters;
 using SoundInTheory.DynamicImage.Fluent;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Media.Imaging;
-using Umbrella.Utilities.Hosting;
 using Microsoft.Extensions.Logging;
-using Umbrella.Utilities.Extensions;
 using Umbrella.DynamicImage.Abstractions;
 using UDynamicImageFormat = Umbrella.DynamicImage.Abstractions.DynamicImageFormat;
 using SDynamicImageFormat = SoundInTheory.DynamicImage.DynamicImageFormat;
-using UDynamicImageException = Umbrella.DynamicImage.Abstractions.DynamicImageException;
-using System.Threading.Tasks;
-using Umbrella.FileSystem.Abstractions;
-using System.Threading;
 
 namespace Umbrella.DynamicImage.SoundInTheory
 {
-    public class DynamicImageResizer : IDynamicImageResizer
+    public class DynamicImageResizer : DynamicImageResizerBase
     {
-        #region Private Members
-        private readonly ILogger<DynamicImageResizer> m_Logger;
-        private readonly IDynamicImageCache m_DynamicImageCache;
-        #endregion
-
         #region Constructors
         public DynamicImageResizer(ILogger<DynamicImageResizer> logger,
             IDynamicImageCache dynamicImageCache)
+            : base(logger, dynamicImageCache)
         {
-            m_Logger = logger;
-            m_DynamicImageCache = dynamicImageCache;
         }
         #endregion
 
-        #region IDynamicImageResizer Members
-        public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
+        #region Overridden Methods
+        protected override byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
         {
-            try
-            {
-                var fileInfo = await sourceFileProvider.GetAsync(options.SourcePath, cancellationToken).ConfigureAwait(false);
+            ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceBytes(originalImage);
 
-                if (await fileInfo.ExistsAsync().ConfigureAwait(false))
-                {
-                    return await GenerateImageAsync(() => fileInfo.ReadAsByteArrayAsync(cancellationToken),
-                        fileInfo.LastModified.Value,
-                        options,
-                        cancellationToken)
-                        .ConfigureAwait(false);
-                }
+            ResizeMode dynamicResizeMode = GetResizeMode(options.ResizeMode);
+            SDynamicImageFormat dynamicImageFormat = GetImageFormat(options.Format);
 
-                return null;
-            }
-            catch (Exception exc) when (m_Logger.WriteError(exc, new { options }, returnValue: true))
-            {
-                throw new UDynamicImageException("An error has occurred during image resizing.", exc, options);
-            }
-        }
+            CompositionBuilder builder = new CompositionBuilder()
+                .WithLayer(imageLayerBuilder.WithFilter(FilterBuilder.Resize.To(options.Width, options.Height, dynamicResizeMode)))
+                .ImageFormat(dynamicImageFormat);
 
-        public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                if (m_Logger.IsEnabled(LogLevel.Debug))
-                    m_Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
+            GeneratedImage image = builder.Composition.GenerateImage();
 
-                //Check if the image exists in the cache
-                DynamicImageItem dynamicImage = await m_DynamicImageCache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
-
-                if (m_Logger.IsEnabled(LogLevel.Debug))
-                    m_Logger.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
-
-                if (dynamicImage != null)
-                {
-                    if (m_Logger.IsEnabled(LogLevel.Debug))
-                        m_Logger.WriteDebug(new { dynamicImage.ImageOptions, dynamicImage.LastModified }, "Image found in cache.");
-
-                    return dynamicImage;
-                }
-
-                //Item cannot be found in the cache - build a new image
-                byte[] bytes = await sourceBytesProvider().ConfigureAwait(false);
-
-                ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceBytes(bytes);
-
-                ResizeMode dynamicResizeMode = GetResizeMode(options.ResizeMode);
-                SDynamicImageFormat dynamicImageFormat = GetImageFormat(options.Format);
-
-                CompositionBuilder builder = new CompositionBuilder()
-                    .WithLayer(imageLayerBuilder.WithFilter(FilterBuilder.Resize.To(options.Width, options.Height, dynamicResizeMode)))
-                    .ImageFormat(dynamicImageFormat);
-
-                GeneratedImage image = builder.Composition.GenerateImage();
-
-                if (m_Logger.IsEnabled(LogLevel.Debug))
-                    m_Logger.WriteDebug(new { image.Properties.IsImagePresent }, "Successfully generated the target image.");
-
-                //Need to get the newly resized image and assign it to the instance
-                dynamicImage = new DynamicImageItem
-                {
-                    ImageOptions = options,
-                    LastModified = DateTimeOffset.UtcNow
-                };
-
-                dynamicImage.Content = ConvertBitmapSourceToByteArray(image.Image, options.Format);
-
-                //Now add to the cache
-                await m_DynamicImageCache.AddAsync(dynamicImage).ConfigureAwait(false);
-
-                return dynamicImage;
-            }
-            catch (Exception exc) when (m_Logger.WriteError(exc, new { sourceLastModified, options }, returnValue: true))
-            {
-                throw new UDynamicImageException("An error has occurred during image resizing.", exc, options);
-            }
-        }
+            return ConvertBitmapSourceToByteArray(image.Image, options.Format);
+        } 
         #endregion
 
         #region Private Methods

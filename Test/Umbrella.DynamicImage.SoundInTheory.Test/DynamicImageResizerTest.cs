@@ -12,8 +12,10 @@ using Umbrella.FileSystem.Abstractions;
 using System.Threading;
 using System.IO;
 using Umbrella.Utilities.Compilation;
+using Umbrella.DynamicImage.SoundInTheory;
+using SoundInTheoryImageResizer = Umbrella.DynamicImage.SoundInTheory.DynamicImageResizer;
 
-namespace Umbrella.DynamicImage.SoundInTheory.Test
+namespace Umbrella.DynamicImage.Impl.Test
 {
     public class DynamicImageResizerTest
     {
@@ -39,26 +41,39 @@ namespace Umbrella.DynamicImage.SoundInTheory.Test
             }
         }
 
-        public static List<object[]> Options = new List<object[]>
+        private static List<DynamicImageOptions> s_OptionsList = new List<DynamicImageOptions>
         {
-            new object[] { new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg) },
-            new object[] { new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg) }
+            new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 100, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg),
+            new DynamicImageOptions("/dummypath.png", 150, 100, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg)
         };
+
+        public static List<object[]> Options = new List<object[]>();
+
+        static DynamicImageResizerTest()
+        {
+            IEnumerable<object[]> GenerateForResizer<T>()
+            {
+                foreach(var option in s_OptionsList)
+                {
+                    yield return new object[] { CreateDynamicImageResizer<T>(), option };
+                }
+            }
+
+            Options.AddRange(GenerateForResizer<SoundInTheoryImageResizer>());
+        }
 
         [Theory]
         [MemberData(nameof(Options))]
-        public async Task GenerateImageAsync_FromFunc(DynamicImageOptions options)
+        public async Task GenerateImageAsync_FromFunc(DynamicImageResizerBase resizer, DynamicImageOptions options)
         {
-            var resizer = CreateDynamicImageResizer();
-
             byte[] bytes = Convert.FromBase64String(TestPNG);
 
             var fileMock = new Mock<IUmbrellaFileInfo>();
@@ -76,8 +91,10 @@ namespace Umbrella.DynamicImage.SoundInTheory.Test
 
             Assert.NotEmpty(resizedImageBytes);
 
-            string outputPath = $@"{BaseDirectory}\Output\{options.Width}w-{options.Height}h-{options.ResizeMode.ToString()}.{options.Format.ToFileExtensionString()}";
-            Directory.CreateDirectory($@"{BaseDirectory}\Output");
+            string outputDirectory = $@"{BaseDirectory}\Output\{resizer.GetType().Namespace}";
+
+            string outputPath = $@"{outputDirectory}\{options.Width}w-{options.Height}h-{options.ResizeMode.ToString()}.{options.Format.ToFileExtensionString()}";
+            Directory.CreateDirectory(outputDirectory);
 
             using (var fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
             {
@@ -85,11 +102,11 @@ namespace Umbrella.DynamicImage.SoundInTheory.Test
             }
         }
 
-        private DynamicImageResizer CreateDynamicImageResizer()
+        private static DynamicImageResizerBase CreateDynamicImageResizer<T>()
         {
-            var logger = new Mock<ILogger<DynamicImageResizer>>();
+            var logger = new Mock<ILogger<T>>();
 
-            return new DynamicImageResizer(logger.Object, new DynamicImageDefaultCache());
+            return Activator.CreateInstance(typeof(T), logger.Object, new DynamicImageDefaultCache()) as DynamicImageResizerBase;
         }
     }
 }
