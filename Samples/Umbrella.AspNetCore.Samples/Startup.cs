@@ -70,8 +70,14 @@ namespace Umbrella.AspNetCore.Samples
 
             services.AddUmbrellaDiskFileProvider(new UmbrellaDiskFileProviderOptions { RootPhysicalPath = HostingEnvironment.WebRootPath });
 
-            var jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-            UmbrellaStatics.JsonSerializer = (obj, useCamelCase) => JsonConvert.SerializeObject(obj, jsonSerializerSettings);
+            var jsonCamelCaseSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            UmbrellaStatics.JsonSerializer = (obj, useCamelCase) =>
+            {
+                if (useCamelCase)
+                    return JsonConvert.SerializeObject(obj, jsonCamelCaseSettings);
+                else
+                    return JsonConvert.SerializeObject(obj);
+            };
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
