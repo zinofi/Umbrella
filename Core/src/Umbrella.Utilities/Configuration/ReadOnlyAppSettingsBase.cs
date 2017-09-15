@@ -50,7 +50,6 @@ namespace Umbrella.Utilities.Configuration
         #region Protected Methods
         protected virtual string GenerateCacheKey(string settingKey) => $"{s_CacheKeyPrefix}:{settingKey}";
         protected virtual Func<MemoryCacheEntryOptions> GetCacheEntryOptionsFunc() => null;
-        protected abstract string ToJson(object value);
         protected abstract T FromJson<T>(string value);
 
         protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)

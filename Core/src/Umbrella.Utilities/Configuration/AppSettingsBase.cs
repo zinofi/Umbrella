@@ -56,6 +56,8 @@ namespace Umbrella.Utilities.Configuration
                 throw;
             }
         }
+
+        protected abstract string ToJson(object value);
         #endregion
     }
 }
