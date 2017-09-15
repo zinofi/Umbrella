@@ -34,7 +34,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
         public DynamicImageAzureBlobStorageCache(ILogger<DynamicImageAzureBlobStorageCache> logger,
             IMemoryCache cache,
             DynamicImageCacheOptions cacheOptions,
-            IUmbrellaAzureBlobFileProvider fileProvider,
+            IUmbrellaAzureBlobStorageFileProvider fileProvider,
             DynamicImageAzureBlobStorageCacheOptions blobStorageCacheOptions)
             : base(logger, cache, cacheOptions, fileProvider)
         {

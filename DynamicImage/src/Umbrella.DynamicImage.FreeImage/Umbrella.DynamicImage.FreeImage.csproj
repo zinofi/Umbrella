@@ -5,10 +5,18 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Version>1.0.0-rel-build00363</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="FreeImage-dotnet-core" Version="4.3.5" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
   </ItemGroup>

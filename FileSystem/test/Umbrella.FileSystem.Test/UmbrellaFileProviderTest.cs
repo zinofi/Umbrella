@@ -518,21 +518,21 @@ namespace Umbrella.FileSystem.Test
 
         private static IUmbrellaFileProvider CreateAzureBlobFileProvider()
         {
-            var logger = new Mock<ILogger<UmbrellaAzureBlobFileProvider>>();
+            var logger = new Mock<ILogger<UmbrellaAzureBlobStorageFileProvider>>();
 
             var loggerFactory = new Mock<ILoggerFactory>();
-            loggerFactory.Setup(x => x.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(UmbrellaAzureBlobFileProvider)))).Returns(logger.Object);
+            loggerFactory.Setup(x => x.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(UmbrellaAzureBlobStorageFileProvider)))).Returns(logger.Object);
 
             var mimeTypeUtility = new Mock<IMimeTypeUtility>();
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
-            var options = new UmbrellaAzureBlobFileProviderOptions
+            var options = new UmbrellaAzureBlobStorageFileProviderOptions
             {
                 StorageConnectionString = c_StorageConnectionString
             };
 
-            return new UmbrellaAzureBlobFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
+            return new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
         }
 
         private static IUmbrellaFileProvider CreateDiskFileProvider()
@@ -568,8 +568,8 @@ namespace Umbrella.FileSystem.Test
         {
             switch (provider)
             {
-                case UmbrellaAzureBlobFileProvider azureProvider:
-                    Assert.IsType<UmbrellaAzureBlobFileInfo>(file);
+                case UmbrellaAzureBlobStorageFileProvider azureProvider:
+                    Assert.IsType<UmbrellaAzureBlobStorageFileInfo>(file);
                     break;
                 case UmbrellaDiskFileProvider diskProvider:
                     Assert.IsType<UmbrellaDiskFileInfo>(file);

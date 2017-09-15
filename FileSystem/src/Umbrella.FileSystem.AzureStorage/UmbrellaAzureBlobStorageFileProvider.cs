@@ -14,17 +14,17 @@ using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
-    public class UmbrellaAzureBlobFileProvider : UmbrellaFileProvider<UmbrellaAzureBlobFileInfo, UmbrellaAzureBlobFileProviderOptions>, IUmbrellaAzureBlobFileProvider
+    public class UmbrellaAzureBlobStorageFileProvider : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider
     {
         private static readonly char[] s_DirectorySeparatorArray = new[] { '/', '\\' };
 
         protected CloudStorageAccount StorageAccount { get; }
         protected CloudBlobClient BlobClient { get; }
 
-        public UmbrellaAzureBlobFileProvider(ILoggerFactory loggerFactory,
+        public UmbrellaAzureBlobStorageFileProvider(ILoggerFactory loggerFactory,
             IMimeTypeUtility mimeTypeUtility,
-            UmbrellaAzureBlobFileProviderOptions options)
-            : base(loggerFactory.CreateLogger<UmbrellaAzureBlobFileProvider>(), loggerFactory, mimeTypeUtility, options)
+            UmbrellaAzureBlobStorageFileProviderOptions options)
+            : base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(options.StorageConnectionString, nameof(options.StorageConnectionString));
 
@@ -84,7 +84,7 @@ namespace Umbrella.FileSystem.AzureStorage
                 return null;
 #endif
 
-            return new UmbrellaAzureBlobFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, blob, isNew);
+            return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, blob, isNew);
         }
     }
 }

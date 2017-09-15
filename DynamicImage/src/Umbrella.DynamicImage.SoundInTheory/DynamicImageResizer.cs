@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using UDynamicImageFormat = Umbrella.DynamicImage.Abstractions.DynamicImageFormat;
 using SDynamicImageFormat = SoundInTheory.DynamicImage.DynamicImageFormat;
+using System.Windows;
 
 namespace Umbrella.DynamicImage.SoundInTheory
 {
@@ -33,7 +34,7 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 .ImageFormat(dynamicImageFormat);
 
             GeneratedImage image = builder.Composition.GenerateImage();
-
+            
             return ConvertBitmapSourceToByteArray(image.Image, options.Format);
         } 
         #endregion

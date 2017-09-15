@@ -13,7 +13,7 @@ using Umbrella.Utilities.Mime;
 namespace Umbrella.FileSystem.AzureStorage
 {
     //TODO: Override Equals, GetHashCode, etc to allow for equality comparisons
-    public class UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
+    public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo
     {
         #region Private Members
         private byte[] m_Contents;
@@ -22,7 +22,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
         #region Protected Properties
         protected ILogger Log { get; }
-        protected UmbrellaAzureBlobFileProvider Provider { get; }
+        protected UmbrellaAzureBlobStorageFileProvider Provider { get; }
         #endregion
 
         #region Internal Properties
@@ -47,10 +47,10 @@ namespace Umbrella.FileSystem.AzureStorage
         #endregion
 
         #region Constructors
-        internal UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger,
+        internal UmbrellaAzureBlobStorageFileInfo(ILogger<UmbrellaAzureBlobStorageFileInfo> logger,
             IMimeTypeUtility mimeTypeUtility,
             string subpath,
-            UmbrellaAzureBlobFileProvider provider,
+            UmbrellaAzureBlobStorageFileProvider provider,
             CloudBlockBlob blob,
             bool isNew)
         {
@@ -190,7 +190,7 @@ namespace Umbrella.FileSystem.AzureStorage
                 if (!await ExistsAsync(cancellationToken))
                     throw new UmbrellaFileNotFoundException(SubPath);
 
-                var destinationFile = (UmbrellaAzureBlobFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+                var destinationFile = (UmbrellaAzureBlobStorageFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 #if NET46
                 await destinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 #else
@@ -216,12 +216,12 @@ namespace Umbrella.FileSystem.AzureStorage
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Guard.ArgumentOfType<UmbrellaAzureBlobFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
+                Guard.ArgumentOfType<UmbrellaAzureBlobStorageFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
 
                 if (!await ExistsAsync(cancellationToken))
                     throw new UmbrellaFileNotFoundException(SubPath);
 
-                var blobDestinationFile = (UmbrellaAzureBlobFileInfo)destinationFile;
+                var blobDestinationFile = (UmbrellaAzureBlobStorageFileInfo)destinationFile;
 #if NET46
                 await blobDestinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 #else

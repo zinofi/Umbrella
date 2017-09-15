@@ -280,18 +280,18 @@ namespace Umbrella.DynamicImage.Test.Caching
             var fileProviderLogger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
 
             var loggerFactory = new Mock<ILoggerFactory>();
-            loggerFactory.Setup(x => x.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(UmbrellaAzureBlobFileProvider)))).Returns(fileProviderLogger.Object);
+            loggerFactory.Setup(x => x.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(UmbrellaAzureBlobStorageFileProvider)))).Returns(fileProviderLogger.Object);
 
             var mimeTypeUtility = new Mock<IMimeTypeUtility>();
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
-            var options = new UmbrellaAzureBlobFileProviderOptions
+            var options = new UmbrellaAzureBlobStorageFileProviderOptions
             {
                 StorageConnectionString = c_StorageConnectionString
             };
 
-            var fileProvider = new UmbrellaAzureBlobFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
+            var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
 
             var blobStorageCacheOptions = new DynamicImageAzureBlobStorageCacheOptions();
 

@@ -5,28 +5,42 @@ using System.Threading.Tasks;
 using Umbrella.DynamicImage;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Caching;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddUmbrellaDynamicImage(this IServiceCollection services,
-            DynamicImageCacheOptions cacheOptions,
-            DynamicImageMemoryCacheOptions memoryCacheOptions = null,
-            DynamicImageDiskCacheOptions diskCacheOptions = null)
+        public static IServiceCollection AddUmbrellaDynamicImage(this IServiceCollection services, DynamicImageCacheOptions cacheOptions)
         {
+            Guard.ArgumentNotNull(services, nameof(services));
+            Guard.ArgumentNotNull(cacheOptions, nameof(cacheOptions));
+
             services.AddSingleton(cacheOptions);
-
-            if (memoryCacheOptions == null)
-                memoryCacheOptions = new DynamicImageMemoryCacheOptions();
-
-            if (diskCacheOptions != null)
-                diskCacheOptions = new DynamicImageDiskCacheOptions();
-
-            services.AddSingleton(memoryCacheOptions);
-            services.AddSingleton(diskCacheOptions);
-            services.AddSingleton<IDynamicImageCache, DynamicImageDiskCache>();
             services.AddSingleton<IDynamicImageUtility, DynamicImageUtility>();
+            services.AddSingleton<IDynamicImageCache, DynamicImageNoCache>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddUmbrellaDynamicImageMemoryCache(this IServiceCollection services, DynamicImageMemoryCacheOptions cacheOptions)
+        {
+            Guard.ArgumentNotNull(services, nameof(services));
+            Guard.ArgumentNotNull(cacheOptions, nameof(cacheOptions));
+
+            services.AddSingleton(cacheOptions);
+            services.ReplaceSingleton<IDynamicImageCache, DynamicImageMemoryCache>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddUmbrellaDynamicImageDiskCache(this IServiceCollection services, DynamicImageDiskCacheOptions cacheOptions)
+        {
+            Guard.ArgumentNotNull(services, nameof(services));
+            Guard.ArgumentNotNull(cacheOptions, nameof(cacheOptions));
+
+            services.AddSingleton(cacheOptions);
+            services.ReplaceSingleton<IDynamicImageCache, DynamicImageDiskCache>();
 
             return services;
         }

@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddUmbrellaDynamicImageSkiaSharp(this IServiceCollection services)
         {
-            services.AddSingleton<DynamicImageResizerBase, DynamicImageResizer>();
+            services.AddSingleton<IDynamicImageResizer, DynamicImageResizer>();
 
             return services;
         }

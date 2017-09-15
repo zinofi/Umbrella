@@ -13,7 +13,7 @@ namespace Umbrella.DynamicImage.Caching
     /// A default caching implementation that doesn't actually perform any caching. Useful for unit testing
     /// and scenarios where caching isn't required.
     /// </summary>
-    public class DynamicImageDefaultCache : IDynamicImageCache
+    public class DynamicImageNoCache : IDynamicImageCache
     {
         #region IDynamicImageCache Members
         public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)

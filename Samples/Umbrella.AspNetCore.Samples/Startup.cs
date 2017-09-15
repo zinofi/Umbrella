@@ -7,19 +7,27 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Umbrella.AspNetCore.WebUtilities;
-using Umbrella.Utilities;
-using Umbrella.AspNetCore.DataAnnotations;
-using Umbrella.Extensions.Logging.Log4Net;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Umbrella.DynamicImage.Caching;
+using Microsoft.Extensions.Caching.Memory;
+using Umbrella.FileSystem.Disk;
+using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Umbrella.AspNetCore.Samples
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+        private IHostingEnvironment HostingEnvironment { get; }
+
         public Startup(IHostingEnvironment env)
         {
+            HostingEnvironment = env;
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -35,8 +43,6 @@ namespace Umbrella.AspNetCore.Samples
             }
             Configuration = builder.Build();
         }
-
-        public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -55,10 +61,21 @@ namespace Umbrella.AspNetCore.Samples
             services.AddUmbrellaAspNetCoreDataAnnotations();
             services.AddUmbrellaAspNetCoreWebUtilities();
             services.AddUmbrellaUtilities();
+            services.AddUmbrellaWebUtilities();
+            services.AddUmbrellaDynamicImage(new DynamicImageCacheOptions { CacheKeyCacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) } });
+            //services.AddUmbrellaDynamicImageSoundInTheory();
+            //services.AddUmbrellaDynamicImageFreeImage();
+            services.AddUmbrellaDynamicImageSkiaSharp();
+            //services.AddUmbrellaDynamicImageMemoryCache(new DynamicImageMemoryCacheOptions { ItemCacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) } });
+
+            services.AddUmbrellaDiskFileProvider(new UmbrellaDiskFileProviderOptions { RootPhysicalPath = HostingEnvironment.WebRootPath });
+
+            var jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            UmbrellaStatics.JsonSerializer = (obj, useCamelCase) => JsonConvert.SerializeObject(obj, jsonSerializerSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IUmbrellaFileProvider fileProvider, IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             bool isDevelopment = env.IsDevelopment();
             bool isProduction = env.IsProduction();
@@ -77,7 +94,7 @@ namespace Umbrella.AspNetCore.Samples
 
             var logger = loggerFactory.CreateLogger<Startup>();
             logger.LogInformation("Umbrella AspNetCore Samples Application Started");
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -94,6 +111,12 @@ namespace Umbrella.AspNetCore.Samples
                 DefaultRequestCulture = new RequestCulture("en-GB", "en-GB"),
                 SupportedCultures = new[] { new CultureInfo("en-GB") },
                 SupportedUICultures = new[] { new CultureInfo("en-GB") }
+            });
+
+            app.UseUmbrellaDynamicImage(config =>
+            {
+                config.DynamicImagePathPrefix = "dynamicimage";
+                config.SourceFileProvider = fileProvider;
             });
 
             app.UseStaticFiles();

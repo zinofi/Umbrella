@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
-    public class UmbrellaAzureBlobFileProviderOptions
+    public class UmbrellaAzureBlobStorageFileProviderOptions
     {
         /// <summary>
         /// The connection string for the Azure storage account in which the blobs will be stored.

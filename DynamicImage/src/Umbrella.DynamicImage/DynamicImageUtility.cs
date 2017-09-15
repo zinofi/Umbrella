@@ -73,8 +73,12 @@ namespace Umbrella.DynamicImage
                     return s_InvalidParseUrlResult;
 
                 //Ignore the prefix segments
-                int width = int.Parse(allSegments[prefixSegments.Length]);
-                int height = int.Parse(allSegments[prefixSegments.Length + 1]);
+                int.TryParse(allSegments[prefixSegments.Length], out int width);
+                int.TryParse(allSegments[prefixSegments.Length + 1], out int height);
+
+                if (width <= 0 || height <= 0)
+                    return s_InvalidParseUrlResult;
+
                 DynamicResizeMode mode = allSegments[prefixSegments.Length + 2].ToEnum<DynamicResizeMode>();
                 string originalExtension = allSegments[prefixSegments.Length + 3];
 
@@ -121,7 +125,7 @@ namespace Umbrella.DynamicImage
 
                 return (DynamicImageParseUrlResult.Success, imageOptions);
             }
-            catch(Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }))
+            catch(Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }, returnValue: true))
             {
                 return s_InvalidParseUrlResult;
             }
