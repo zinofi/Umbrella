@@ -26,6 +26,26 @@ namespace Umbrella.DynamicImage.FreeImage
         #endregion
 
         #region Overridden Methods
+        public override bool IsImage(byte[] bytes)
+        {
+            try
+            {
+                Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+
+                using (var inputStream = new MemoryStream(bytes))
+                {
+                    using (var image = FreeImageBitmap.FromStream(inputStream))
+                    {
+                        return image != null;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
         {
             try

@@ -25,6 +25,23 @@ namespace Umbrella.DynamicImage.SkiaSharp
         #endregion
 
         #region Overridden Methods
+        public override bool IsImage(byte[] bytes)
+        {
+            try
+            {
+                Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+
+                using (var image = LoadBitmap(bytes))
+                {
+                    return image != null;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
         {
             try
@@ -111,7 +128,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
                 default:
                     return default;
             }
-        } 
+        }
         #endregion
     }
 }

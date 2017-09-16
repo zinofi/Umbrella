@@ -23,6 +23,26 @@ namespace Umbrella.DynamicImage.SoundInTheory
         #endregion
 
         #region Overridden Methods
+        public override bool IsImage(byte[] bytes)
+        {
+            try
+            {
+                Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+
+                //Try and get an image from the bytes
+                CompositionBuilder builder = new CompositionBuilder().WithLayer(LayerBuilder.Image.SourceBytes(bytes));
+
+                //Trying to call this when we have a non-sensical image coming through will throw an exception
+                GeneratedImage image = builder.Composition.GenerateImage();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, UDynamicImageFormat format)
         {
             try

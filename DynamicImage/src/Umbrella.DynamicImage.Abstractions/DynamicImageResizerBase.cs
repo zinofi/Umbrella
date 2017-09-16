@@ -46,7 +46,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
                 return null;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { options }, returnValue: true))
+            catch (Exception exc) when (Log.WriteError(exc, new { options }, returnValue: true) && exc is DynamicImageException == false)
             {
                 throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
             }
@@ -92,11 +92,13 @@ namespace Umbrella.DynamicImage.Abstractions
 
                 return dynamicImage;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { sourceLastModified, options }, returnValue: true))
+            catch (Exception exc) when (Log.WriteError(exc, new { sourceLastModified, options }, returnValue: true) && exc is DynamicImageException == false)
             {
                 throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
             }
         }
+
+        public abstract bool IsImage(byte[] bytes);
 
         public byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
             => ResizeImage(originalImage, options.Width, options.Height, options.ResizeMode, options.Format);

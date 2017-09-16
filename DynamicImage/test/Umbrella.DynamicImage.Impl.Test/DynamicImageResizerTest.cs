@@ -207,6 +207,28 @@ namespace Umbrella.DynamicImage.Impl.Test
             Assert.Throws<DynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
         }
 
+        [Theory]
+        [MemberData(nameof(ResizersList))]
+        public void IsImage_InvalidImage(IDynamicImageResizer imageResizer)
+        {
+            byte[] bytes = File.ReadAllBytes($@"{BaseDirectory}\IkeaManual.pdf");
+
+            bool isValid = imageResizer.IsImage(bytes);
+
+            Assert.False(isValid);
+        }
+
+        [Theory]
+        [MemberData(nameof(ResizersList))]
+        public void IsImage_ValidImage(IDynamicImageResizer imageResizer)
+        {
+            byte[] bytes = Convert.FromBase64String(TestPNG);
+
+            bool isValid = imageResizer.IsImage(bytes);
+
+            Assert.True(isValid);
+        }
+
         private static DynamicImageResizerBase CreateDynamicImageResizer<T>()
         {
             var logger = new Mock<ILogger<T>>();

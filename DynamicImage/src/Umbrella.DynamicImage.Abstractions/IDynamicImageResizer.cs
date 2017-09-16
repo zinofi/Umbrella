@@ -11,6 +11,7 @@ namespace Umbrella.DynamicImage.Abstractions
 {
     public interface IDynamicImageResizer
     {
+        bool IsImage(byte[] bytes);
         Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default);
         Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default);
         byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options);
