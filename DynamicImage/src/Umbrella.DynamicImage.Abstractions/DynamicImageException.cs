@@ -23,5 +23,11 @@ namespace Umbrella.DynamicImage.Abstractions
         {
             Options = options;
         }
+
+        public DynamicImageException(string message, Exception innerException, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
+            : base(message, innerException)
+        {
+            Options = new DynamicImageOptions("", width, height, resizeMode, format);
+        }
     }
 }

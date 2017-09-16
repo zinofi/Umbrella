@@ -24,7 +24,7 @@ namespace Umbrella.DynamicImage.Abstractions
         #endregion
 
         #region IDynamicImageResizer Members
-        public virtual async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
+        public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace Umbrella.DynamicImage.Abstractions
             }
         }
 
-        public virtual async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default)
+        public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -97,11 +97,14 @@ namespace Umbrella.DynamicImage.Abstractions
                 throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
             }
         }
+
+        public byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
+            => ResizeImage(originalImage, options.Width, options.Height, options.ResizeMode, options.Format);
+
+        public abstract byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format);
         #endregion
 
         #region Protected Methods
-        protected abstract byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options);
-
         protected (int Width, int Height, int OffsetX, int OffsetY, int CropWidth, int CropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
         {
             int? requestedWidth = null;

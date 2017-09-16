@@ -18,6 +18,7 @@ using FreeImageResizer = Umbrella.DynamicImage.FreeImage.DynamicImageResizer;
 using SkiaSharpResizer = Umbrella.DynamicImage.SkiaSharp.DynamicImageResizer;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.Impl.Test
 {
@@ -107,20 +108,30 @@ namespace Umbrella.DynamicImage.Impl.Test
             //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Gif), new Size(50, 32)),
         };
 
-        public static List<object[]> Options = new List<object[]>();
+        public static List<object[]> OptionsList = new List<object[]>();
+
+        public static List<object[]> ResizersList = new List<object[]>
+        {
+            new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>() },
+            new object[] { CreateDynamicImageResizer<FreeImageResizer>() },
+            new object[] { CreateDynamicImageResizer<SkiaSharpResizer>() },
+        };
 
         static DynamicImageResizerTest()
         {
+            //Just assigning a dummy JSON Serialization implementation here. Not important for it to return anything of value for these tests.
+            UmbrellaStatics.JsonSerializer = (obj, useCamelCase) => "";
+
             foreach (var option in s_OptionsList)
             {
-                Options.Add(new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>(), option });
-                Options.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option });
-                Options.Add(new object[] { CreateDynamicImageResizer<SkiaSharpResizer>(), option });
+                OptionsList.Add(new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>(), option });
+                OptionsList.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option });
+                OptionsList.Add(new object[] { CreateDynamicImageResizer<SkiaSharpResizer>(), option });
             }
         }
 
         [Theory]
-        [MemberData(nameof(Options))]
+        [MemberData(nameof(OptionsList))]
         public async Task GenerateImageAsync_FromFunc(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item)
         {
             byte[] bytes = Convert.FromBase64String(TestPNG);
@@ -185,6 +196,15 @@ namespace Umbrella.DynamicImage.Impl.Test
                     fs.Write(resizedImageBytes, 0, resizedImageBytes.Length);
                 }
             }
+        }
+
+        [Theory]
+        [MemberData(nameof(ResizersList))]
+        public void ResizeImage_InvalidImage(IDynamicImageResizer imageResizer)
+        {
+            byte[] pdfBytes = File.ReadAllBytes($@"{BaseDirectory}\IkeaManual.pdf");
+
+            Assert.Throws<DynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
         }
 
         private static DynamicImageResizerBase CreateDynamicImageResizer<T>()

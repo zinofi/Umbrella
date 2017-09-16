@@ -7,7 +7,8 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using UDynamicImageFormat = Umbrella.DynamicImage.Abstractions.DynamicImageFormat;
 using SDynamicImageFormat = SoundInTheory.DynamicImage.DynamicImageFormat;
-using System.Windows;
+using System;
+using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.SoundInTheory
 {
@@ -22,20 +23,29 @@ namespace Umbrella.DynamicImage.SoundInTheory
         #endregion
 
         #region Overridden Methods
-        protected override byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
+        public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, UDynamicImageFormat format)
         {
-            ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceBytes(originalImage);
+            try
+            {
+                Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
 
-            ResizeMode dynamicResizeMode = GetResizeMode(options.ResizeMode);
-            SDynamicImageFormat dynamicImageFormat = GetImageFormat(options.Format);
+                ImageLayerBuilder imageLayerBuilder = LayerBuilder.Image.SourceBytes(originalImage);
 
-            CompositionBuilder builder = new CompositionBuilder()
-                .WithLayer(imageLayerBuilder.WithFilter(FilterBuilder.Resize.To(options.Width, options.Height, dynamicResizeMode)))
-                .ImageFormat(dynamicImageFormat);
+                ResizeMode dynamicResizeMode = GetResizeMode(resizeMode);
+                SDynamicImageFormat dynamicImageFormat = GetImageFormat(format);
 
-            GeneratedImage image = builder.Composition.GenerateImage();
-            
-            return ConvertBitmapSourceToByteArray(image.Image, options.Format);
+                CompositionBuilder builder = new CompositionBuilder()
+                    .WithLayer(imageLayerBuilder.WithFilter(FilterBuilder.Resize.To(width, height, dynamicResizeMode)))
+                    .ImageFormat(dynamicImageFormat);
+
+                GeneratedImage image = builder.Composition.GenerateImage();
+
+                return ConvertBitmapSourceToByteArray(image.Image, format);
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { width, height, resizeMode, format }, returnValue: true))
+            {
+                throw new Abstractions.DynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
+            }
         } 
         #endregion
 

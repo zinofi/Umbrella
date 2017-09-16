@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using System.Threading;
 using SkiaSharp;
+using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.SkiaSharp
 {
@@ -24,37 +25,46 @@ namespace Umbrella.DynamicImage.SkiaSharp
         #endregion
 
         #region Overridden Methods
-        protected override byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
+        public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
         {
-            using (var image = LoadBitmap(originalImage))
+            try
             {
-                SKBitmap imageToResize = image;
+                Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
 
-                var result = GetDestinationDimensions(image.Width, image.Height, options.Width, options.Height, options.ResizeMode);
-
-                try
+                using (var image = LoadBitmap(originalImage))
                 {
-                    if (result.OffsetX > 0 || result.OffsetY > 0)
-                    {
-                        var cropRect = SKRectI.Create(result.OffsetX, result.OffsetY, result.CropWidth, result.CropHeight);
+                    SKBitmap imageToResize = image;
 
-                        imageToResize = new SKBitmap(cropRect.Width, cropRect.Height);
-                        image.ExtractSubset(imageToResize, cropRect);
-                    }
+                    var result = GetDestinationDimensions(image.Width, image.Height, width, height, resizeMode);
 
-                    using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.Width, result.Height), SKBitmapResizeMethod.Box))
+                    try
                     {
-                        using (var outputImage = SKImage.FromBitmap(resizedImage))
+                        if (result.OffsetX > 0 || result.OffsetY > 0)
                         {
-                            return outputImage.Encode(GetImageFormat(options.Format), 75)?.ToArray();
+                            var cropRect = SKRectI.Create(result.OffsetX, result.OffsetY, result.CropWidth, result.CropHeight);
+
+                            imageToResize = new SKBitmap(cropRect.Width, cropRect.Height);
+                            image.ExtractSubset(imageToResize, cropRect);
+                        }
+
+                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.Width, result.Height), SKBitmapResizeMethod.Box))
+                        {
+                            using (var outputImage = SKImage.FromBitmap(resizedImage))
+                            {
+                                return outputImage.Encode(GetImageFormat(format), 75).ToArray();
+                            }
                         }
                     }
+                    finally
+                    {
+                        if (!ReferenceEquals(image, imageToResize))
+                            imageToResize.Dispose();
+                    }
                 }
-                finally
-                {
-                    if (!ReferenceEquals(image, imageToResize))
-                        imageToResize.Dispose();
-                }
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { width, height, resizeMode, format }, returnValue: true))
+            {
+                throw new DynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
             }
         }
         #endregion
@@ -69,7 +79,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
                     using (var codec = SKCodec.Create(s))
                     {
                         var info = codec.Info;
-                        var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height));//, SKImageInfo.PlatformColorType, info.IsOpaque ? SKAlphaType.Opaque : SKAlphaType.Premul);
+                        var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height, SKImageInfo.PlatformColorType, info.IsOpaque ? SKAlphaType.Opaque : SKAlphaType.Premul));
 
                         var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels(out IntPtr length));
 

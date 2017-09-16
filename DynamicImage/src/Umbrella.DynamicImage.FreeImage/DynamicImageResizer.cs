@@ -11,6 +11,7 @@ using Umbrella.FileSystem.Abstractions;
 using System.Threading;
 using FreeImageAPI;
 using System.Drawing;
+using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.FreeImage
 {
@@ -25,35 +26,44 @@ namespace Umbrella.DynamicImage.FreeImage
         #endregion
 
         #region Overridden Methods
-        protected override byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
+        public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
         {
-            using (var inputStream = new MemoryStream(originalImage))
+            try
             {
-                using (var image = FreeImageBitmap.FromStream(inputStream))
+                Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
+
+                using (var inputStream = new MemoryStream(originalImage))
                 {
-                    FreeImageBitmap imageToSave = image;
-
-                    var result = GetDestinationDimensions(image.Width, image.Height, options.Width, options.Height, options.ResizeMode);
-
-                    try
+                    using (var image = FreeImageBitmap.FromStream(inputStream))
                     {
-                        if (result.OffsetX > 0 || result.OffsetY > 0)
-                            imageToSave = image.Copy(new Rectangle(result.OffsetX, result.OffsetY, result.CropWidth, result.CropHeight));
+                        FreeImageBitmap imageToSave = image;
 
-                        imageToSave.Rescale(result.Width, result.Height, FREE_IMAGE_FILTER.FILTER_LANCZOS3);
+                        var result = GetDestinationDimensions(image.Width, image.Height, width, height, resizeMode);
 
-                        using (var outputStream = new MemoryStream())
+                        try
                         {
-                            imageToSave.Save(outputStream, GetImageFormat(options.Format), GetSaveFlags(options.Format));
-                            return outputStream.ToArray();
+                            if (result.OffsetX > 0 || result.OffsetY > 0)
+                                imageToSave = image.Copy(new Rectangle(result.OffsetX, result.OffsetY, result.CropWidth, result.CropHeight));
+
+                            imageToSave.Rescale(result.Width, result.Height, FREE_IMAGE_FILTER.FILTER_LANCZOS3);
+
+                            using (var outputStream = new MemoryStream())
+                            {
+                                imageToSave.Save(outputStream, GetImageFormat(format), GetSaveFlags(format));
+                                return outputStream.ToArray();
+                            }
+                        }
+                        finally
+                        {
+                            if (!ReferenceEquals(image, imageToSave))
+                                imageToSave.Dispose();
                         }
                     }
-                    finally
-                    {
-                        if (!ReferenceEquals(image, imageToSave))
-                            imageToSave.Dispose();
-                    }
                 }
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { width, height, resizeMode, format }, returnValue: true))
+            {
+                throw new DynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
             }
         }
         #endregion
