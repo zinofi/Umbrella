@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
@@ -101,6 +99,7 @@ namespace Umbrella.DynamicImage.Abstractions
         }
         #endregion
 
+        #region Protected Methods
         protected abstract byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options);
 
         protected (int Width, int Height, int OffsetX, int OffsetY, int CropWidth, int CropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
@@ -166,7 +165,6 @@ namespace Umbrella.DynamicImage.Abstractions
                         {
                             // If so, we need to resize based on max height instead.
                             requestedHeight = targetHeight;
-                            //height = targetHeight;
 
                             (tempWidth, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, null, targetHeight);
 
@@ -179,7 +177,6 @@ namespace Umbrella.DynamicImage.Abstractions
                         {
                             // If not, we have our max dimension.
                             requestedWidth = targetWidth;
-                            //width = targetWidth;
 
                             // Then crop height and calculate offset.
                             requestedHeight = targetHeight;
@@ -199,7 +196,9 @@ namespace Umbrella.DynamicImage.Abstractions
 
             return (width, height, offsetX, offsetY, cropWidth, cropHeight);
         }
+        #endregion
 
+        #region Private Methods
         private (int Width, int Height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
         {
             // both width and height are specified - squash image
@@ -223,6 +222,7 @@ namespace Umbrella.DynamicImage.Abstractions
             {
                 throw new Exception("Width or height, or both, must be specified");
             }
-        }
+        } 
+        #endregion
     }
 }
