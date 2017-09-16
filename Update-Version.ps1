@@ -1,8 +1,8 @@
 ﻿$configFiles = Get-ChildItem . *.csproj -rec
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
-$previousBuild = "build00365"
-$currentBuild = "build00366"
+$previousBuild = "build00366"
+$currentBuild = "build00367"
 
 foreach ($file in $configFiles)
 {
