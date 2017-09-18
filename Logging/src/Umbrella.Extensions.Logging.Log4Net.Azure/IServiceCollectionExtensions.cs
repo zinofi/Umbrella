@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Umbrella.Extensions.Logging.Log4Net.Azure.Management;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Management.Configuration;
 
+[assembly:InternalsVisibleTo("Umbrella.Extensions.Logging.Log4Net.Azure.Test")]
 namespace Umbrella.Extensions.Logging.Log4Net.Azure
 {
     public static class IServiceCollectionExtensions
