@@ -16,7 +16,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Test
 #if DEBUG
         private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
 #else
-        private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellablobtest;AccountKey=eaxPzjIwVy4WQTCUQnUIL6cIYbzFolVp72nfStCQMNXU8lG4I/zaa2ll1wdiZ2q2h4roIA+DCISXnwhD2nRU0A==;EndpointSuffix=core.windows.net";
+        private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellastorage;AccountKey=Q8HxUT1X+WkarjVh7fkWkaqpJFyPRiX8vbvBMiFuNahHOhtsluvS4hKWZEQfzQnIMBIY4Xg1tWdr9Gpc/imJNg==;EndpointSuffix=core.windows.net";
 #endif
 
         [Fact]
