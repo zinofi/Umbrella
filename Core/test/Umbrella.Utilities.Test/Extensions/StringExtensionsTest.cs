@@ -11,13 +11,23 @@ namespace Umbrella.Utilities.Test.Extensions
     public class StringExtensionsTest
     {
         [Fact]
-        public void ToCamelCaseValid()
+        public void ToCamelCase()
         {
             Assert.Equal("capitalCity", "CapitalCity".ToCamelCase());
             Assert.Equal("movChecked", "MOVChecked".ToCamelCase());
             Assert.Equal("croatia", "Croatia".ToCamelCase());
             Assert.Equal("lowercasealready", "lowercasealready".ToCamelCase());
             Assert.Equal("alreadyCamelCase", "alreadyCamelCase".ToCamelCase());
+        }
+
+        [Fact]
+        public void ToSnakeCase()
+        {
+            //TODO
+            //I think the method should handle existing underscores and skip them
+            //i.e. if a string is already fully snake case or partially snake case then it should handle that.
+            //Should these work using invariant casing rules??
+            //Make them case invariant by default?
         }
     }
 }

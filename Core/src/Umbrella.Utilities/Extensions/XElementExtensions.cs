@@ -10,6 +10,9 @@ namespace Umbrella.Utilities.Extensions
 {
     public static class XElementExtensions
     {
+        public static string GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
+            => GetAttributeValue<string>(element, name, required, fallback);
+
         public static T GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
         {
             Guard.ArgumentNotNull(element, nameof(element));
