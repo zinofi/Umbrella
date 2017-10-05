@@ -18,13 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="UnityEngine">
       <HintPath>..\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
   </ItemGroup>
 
 </Project>
