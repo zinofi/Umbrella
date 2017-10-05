@@ -1,26 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities
 {
     public static class UmbrellaStatics
     {
-        public delegate string SerializeJson(object value, bool useCamelCasingRules = false);
-        private static SerializeJson s_JsonSerializer;
+        public delegate string SerializeJsonDelegate(object value, bool useCamelCasingRules);
+        public delegate object DeserializeJsonDelegate(string value);
 
-        public static SerializeJson JsonSerializer
+        public static SerializeJsonDelegate JsonSerializer { private get; set; }
+
+        public static DeserializeJsonDelegate JsonDeserializer { private get; set; }
+
+        public static string SerializeJson(object value, bool useCamelCasingRules = false)
         {
-            internal get
-            {
-                if (s_JsonSerializer == null)
-                    throw new Exception("The JsonSerializer has not been assigned. This should be done on application startup.");
+            if(JsonSerializer == null)
+                throw new Exception("The JsonSerializer has not been assigned. This should be done on application startup.");
 
-                return s_JsonSerializer;
-            }
-            set => s_JsonSerializer = value;
+            return JsonSerializer(value, useCamelCasingRules);
+        }
+
+        public static T DeserializeJson<T>(string value)
+        {
+            if(JsonDeserializer == null)
+                throw new Exception("The JsonDeserializer has not been assigned. This should be done on application startup.");
+
+            return (T)JsonDeserializer(value);
         }
     }
 }

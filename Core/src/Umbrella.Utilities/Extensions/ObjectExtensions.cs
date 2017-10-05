@@ -12,7 +12,7 @@ namespace Umbrella.Utilities.Extensions
         {
             Guard.ArgumentNotNull(value, nameof(value));
 
-            return UmbrellaStatics.JsonSerializer(value, useCamelCasingRules);
+            return UmbrellaStatics.SerializeJson(value, useCamelCasingRules);
         }
         #endregion
     }

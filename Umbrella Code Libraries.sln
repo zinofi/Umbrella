@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
@@ -196,7 +196,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.SkiaS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.FreeImage", "DynamicImage\src\Umbrella.DynamicImage.FreeImage\Umbrella.DynamicImage.FreeImage.csproj", "{5AC3FA02-4826-470D-84D4-BC4D681B804C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Extensions.Logging.Log4Net.Azure.Test", "Logging\test\Umbrella.Extensions.Logging.Log4Net.Azure.Test\Umbrella.Extensions.Logging.Log4Net.Azure.Test.csproj", "{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net.Azure.Test", "Logging\test\Umbrella.Extensions.Logging.Log4Net.Azure.Test\Umbrella.Extensions.Logging.Log4Net.Azure.Test.csproj", "{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{1A673C30-B606-479B-A067-111CCAEFEF2F}"
 EndProject
@@ -213,6 +213,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{759B6C78-277D-48E6-8262-47965C51A68B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{02FBA93A-6801-4366-BE29-BD590659DA89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Unity", "Unity\src\Umbrella.Unity\Umbrella.Unity.csproj", "{2AF06EDE-B935-4B4E-A363-EC123518E556}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -424,6 +426,10 @@ Global
 		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -516,6 +522,7 @@ Global
 		{F7470A53-4415-4823-AFA7-B8436775DC1D} = {93F8B969-4903-4F2C-93A5-57D3F33AE510}
 		{759B6C78-277D-48E6-8262-47965C51A68B} = {93F8B969-4903-4F2C-93A5-57D3F33AE510}
 		{02FBA93A-6801-4366-BE29-BD590659DA89} = {93F8B969-4903-4F2C-93A5-57D3F33AE510}
+		{2AF06EDE-B935-4B4E-A363-EC123518E556} = {EE10F9C4-1CCF-4BD5-86E2-BEB0008804F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

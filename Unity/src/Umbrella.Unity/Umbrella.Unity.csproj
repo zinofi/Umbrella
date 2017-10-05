@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Umbrella.Unity</PackageId>
+    <Version>1.0.0-rel-build00368</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.Logging
 
             if (state != null)
             {
-                string jsonState = UmbrellaStatics.JsonSerializer(state);
+                string jsonState = UmbrellaStatics.SerializeJson(state);
                 messageBuilder.Append($"{methodName}({jsonState})");
             }
             else

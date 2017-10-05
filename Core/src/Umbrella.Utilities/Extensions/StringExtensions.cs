@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
+    //TODO: Add Invariant methods for camel and snake case methods
     public static class StringExtensions
     {
         private const string c_HtmlTagPattern = @"<.*?>";
@@ -187,6 +187,40 @@ namespace Umbrella.Utilities.Extensions
                 cleanedValue = cleanedValue.Trim();
 
             return cleanedValue;
+        }
+
+        public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return value;
+
+            if (value.Length == 1)
+                return lowerCase ? value.ToLower() : value;
+
+            List<char> buffer = new List<char>(value.Length)
+            {
+                lowerCase ? char.ToLower(value[0]) : value[0]
+            };
+
+            for (int i = 1; i < value.Length; i++)
+            {
+                char current = value[i];
+
+                if (removeWhiteSpace && char.IsWhiteSpace(current))
+                    continue;
+
+                if (char.IsUpper(value[i]))
+                {
+                    if (lowerCase)
+                        current = char.ToLower(current);
+
+                    buffer.Add('_');
+                }
+
+                buffer.Add(current);
+            }
+
+            return new string(buffer.ToArray());
         }
     }
 }
