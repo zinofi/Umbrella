@@ -9,6 +9,7 @@ using Umbrella.Unity.Networking.WebRequest;
 using Umbrella.Unity.Utilities;
 using Umbrella.Unity.Utilities.Async;
 using Umbrella.Unity.Utilities.Configuration;
+using Umbrella.Unity.Utilities.Validation;
 using Umbrella.Utilities.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -21,6 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IAppSettingsSource, PlayerPrefsSettingsSource>();
             services.AddSingleton<IUnityNetworkManager, UnityNetworkManager>();
             services.AddSingleton<ITaskCompletionSourceProcessor>(x => TaskCompletionSourceProcessor.Instance);
+            services.AddSingleton<IUnityValidationUtility, UnityValidationUtility>();
 
             return services;
         }
