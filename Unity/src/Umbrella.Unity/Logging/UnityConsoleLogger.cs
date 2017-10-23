@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Umbrella.Unity.Logging
 {
+    //TODO: Need to create a web specific version that calls the console.x methods
     //TODO: Need to create a UnityWebServerLogger as well to send messages up to the server.
     //Create a UnityConsoleLogger by renaming this and also another logger to write to a web service.
     //Add a constructor to the providers to allow a config object to be passed in containing a property for the log level so that each provider can be
@@ -37,14 +38,14 @@ namespace Umbrella.Unity.Logging
                 StringBuilder sbMessage = new StringBuilder(message);
 
                 if (!string.IsNullOrWhiteSpace(exception?.Message))
-                    sbMessage.AppendLine($"\n{exception.Message}");
+                    sbMessage.AppendLine($"{exception.GetType().FullName}: {exception.Message}");
 
                 var innerException = exception?.InnerException;
 
                 while (innerException != null)
                 {
                     if (!string.IsNullOrWhiteSpace(innerException.Message))
-                        sbMessage.AppendLine($"\n{innerException.Message}");
+                        sbMessage.AppendLine($"{innerException.GetType().FullName}: {innerException.Message}");
 
                     innerException = innerException.InnerException;
                 }
