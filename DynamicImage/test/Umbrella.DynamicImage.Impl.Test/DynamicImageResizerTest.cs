@@ -38,7 +38,7 @@ namespace Umbrella.DynamicImage.Impl.Test
                     string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
 
                     string buildConfig = DebugUtility.IsDebugMode ? "debug" : "release";
-                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{buildConfig}\net462");
+                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{buildConfig}\net47");
                     s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 
