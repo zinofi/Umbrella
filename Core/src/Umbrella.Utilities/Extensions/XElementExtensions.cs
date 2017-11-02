@@ -32,10 +32,18 @@ namespace Umbrella.Utilities.Extensions
             {
                 if (typeInfo.IsPrimitive || type == typeof(string))
                 {
-                    if (typeInfo.IsPrimitive)
-                        attributeValue = attributeValue.Replace(" ", "");
+                    string cleanedAttributeValue = typeInfo.IsPrimitive
+                        ? attributeValue.Replace(" ", "")
+                        : attributeValue;
 
-                    return (T)Convert.ChangeType(attributeValue, type);
+                    try
+                    {
+                        return (T)Convert.ChangeType(cleanedAttributeValue, type);
+                    }
+                    catch (Exception exc)
+                    {
+                        throw new Exception($"The {name} attribute of a {element.Name} element with value {attributeValue} could not be converted to type {type.FullName}.", exc);
+                    }
                 }
             }
 
@@ -60,6 +68,43 @@ namespace Umbrella.Utilities.Extensions
             return !string.IsNullOrEmpty(attributeValue) && Enum.TryParse(attributeValue, true, out T output)
                 ? output
                 : fallback;
+        }
+
+        public static (bool Success, string Value) TryGetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
+        {
+            try
+            {
+                return (true, GetAttributeValue(element, name, required, fallback));
+            }
+            catch(Exception)
+            {
+                return (false, fallback);
+            }
+        }
+
+        public static (bool Success, T Value) TryGetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+        {
+            try
+            {
+                return (true, GetAttributeValue(element, name, required, fallback));
+            }
+            catch (Exception)
+            {
+                return (false, fallback);
+            }
+        }
+
+        public static (bool Success, T Value) TryGetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+            where T : struct
+        {
+            try
+            {
+                return (true, GetAttributeEnumValue(element, name, required, fallback));
+            }
+            catch (Exception)
+            {
+                return (false, fallback);
+            }
         }
     }
 }
