@@ -36,10 +36,10 @@ namespace Umbrella.Unity.Networking.WebRequest
             AuthenticationAccessor = authenticationAccessor;
         }
 
-        public virtual async Task<UnityNetworkResponse> PerformRequest(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true)
-            => await PerformRequest<object>(url, method, bodyContent, bodyEncodingType, requiresAuthentication);
+        public virtual async Task<UnityNetworkResponse> PerformRequest(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true, bool showLoadingScreen = true)
+            => await PerformRequest<object>(url, method, bodyContent, bodyEncodingType, requiresAuthentication, showLoadingScreen);
 
-        public virtual async Task<UnityNetworkResponse<TResponse>> PerformRequest<TResponse>(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true)
+        public virtual async Task<UnityNetworkResponse<TResponse>> PerformRequest<TResponse>(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true, bool showLoadingScreen = true)
         {
             UnityWebRequest request = null;
             UploadHandler uploadHandler = null;
@@ -55,26 +55,25 @@ namespace Umbrella.Unity.Networking.WebRequest
                 string methodName = method.ToString().ToUpperInvariant();
                 url = url.Trim().ToLowerInvariant();
 
-                switch(typeof(TResponse))
+                if(typeof(TResponse) == typeof(AssetBundle))
                 {
-                    case var t when t == typeof(AssetBundle):
-                        //Before doing anything check if the asset bundle has already been loaded from the server.
-                        AssetBundle bundle = m_CachedAssetBundleDictionary.ContainsKey(url) ? m_CachedAssetBundleDictionary[url] : null;
+                    //Before doing anything check if the asset bundle has already been loaded from the server.
+                    AssetBundle bundle = m_CachedAssetBundleDictionary.ContainsKey(url) ? m_CachedAssetBundleDictionary[url] : null;
 
-                        if (bundle != null)
+                    if (bundle != null)
+                    {
+                        return new UnityNetworkResponse<TResponse>
                         {
-                            return new UnityNetworkResponse<TResponse>
-                            {
-                                Status = HttpStatusCode.OK,
-                                Result = (TResponse)(object)bundle
-                            };
-                        }
+                            Status = HttpStatusCode.OK,
+                            Result = (TResponse)(object)bundle
+                        };
+                    }
 
-                        downloadHandler = new DownloadHandlerAssetBundle(url, 0);
-                        break;
-                    default:
-                        downloadHandler = new DownloadHandlerBuffer();
-                        break;
+                    downloadHandler = new DownloadHandlerAssetBundle(url, 0);
+                }
+                else
+                {
+                    downloadHandler = new DownloadHandlerBuffer();
                 }
 
                 if(bodyContent != null)
@@ -96,7 +95,7 @@ namespace Umbrella.Unity.Networking.WebRequest
                     disposeUploadHandlerOnDispose = false
                 };
 
-                var eventArgs = new UnityNetworkRequestEventArgs(url, request, requiresAuthentication);
+                var eventArgs = new UnityNetworkRequestEventArgs(url, request, requiresAuthentication, showLoadingScreen);
 
                 OnBeginRequest?.Invoke(this, eventArgs);
 
@@ -105,7 +104,7 @@ namespace Umbrella.Unity.Networking.WebRequest
                 if(Log.IsEnabled(LogLevel.Debug))
                     Log.LogDebug("Request.Send");
 
-                TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+                TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(eventArgs);
                 TaskCompletionSourceProcessor.Enqueue(tcs, () => op.isDone);
 
                 await tcs.Task;
@@ -125,7 +124,9 @@ namespace Umbrella.Unity.Networking.WebRequest
                 {
                     response.Status = (HttpStatusCode)statusCode;
 
-                    if (response.Status == HttpStatusCode.Unauthorized)
+                    //Only handle 401 responses where authentication was explicitly required. Allow the caller to handle the
+                    //401 code themselves if it wasn't required, e.g. for a login endpoint.
+                    if (response.Status == HttpStatusCode.Unauthorized && requiresAuthentication)
                         throw new UnityNetworkAuthorizationException();
 
                     string contentType = request.GetResponseHeader("Content-Type");
@@ -175,8 +176,10 @@ namespace Umbrella.Unity.Networking.WebRequest
                                 }
                             }
                         }
-                        else if(downloadHandler is DownloadHandlerAssetBundle assetBundleHandler)
+                        else if(downloadHandler is DownloadHandlerAssetBundle)
                         {
+                            var assetBundleHandler = downloadHandler as DownloadHandlerAssetBundle;
+
                             //Check again to ensure the bundle is not in the cache
                             AssetBundle bundle = m_CachedAssetBundleDictionary.ContainsKey(url) ? m_CachedAssetBundleDictionary[url] : null;
 

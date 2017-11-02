@@ -8,6 +8,18 @@ namespace Umbrella.Unity.Utilities.Validation
 {
     public class UnityValidationUtility : IUnityValidationUtility
     {
+        public struct UnityValidationResult
+        {
+            public UnityValidationResult(bool isValid, List<ValidationResult> results) : this()
+            {
+                IsValid = isValid;
+                Results = results;
+            }
+
+            public bool IsValid { get; set; }
+            public List<ValidationResult> Results { get; set; }
+        }
+
         #region Private Members
         private readonly ILogger m_Logger;
         #endregion
@@ -20,7 +32,7 @@ namespace Umbrella.Unity.Utilities.Validation
         #endregion
 
         #region IUnityValidationUtility Members
-        public (bool IsValid, List<ValidationResult> Results) TryValidateModel<TModel>(TModel model)
+        public UnityValidationResult TryValidateModel<TModel>(TModel model)
         {
             try
             {
@@ -29,7 +41,7 @@ namespace Umbrella.Unity.Utilities.Validation
                 var ctx = new ValidationContext(model);
                 bool isValid = Validator.TryValidateObject(model, ctx, lstValidationResult, true);
 
-                return (isValid, lstValidationResult);
+                return new UnityValidationResult(isValid, lstValidationResult);
             }
             catch (Exception exc)
             {
@@ -42,13 +54,13 @@ namespace Umbrella.Unity.Utilities.Validation
         {
             try
             {
-                var (isValid, results) = TryValidateModel(model);
+                var result = TryValidateModel(model);
 
                 if (m_Logger.IsEnabled(LogLevel.Debug))
-                    results.ForEach(x => m_Logger.LogDebug(x.ErrorMessage));
+                    result.Results.ForEach(x => m_Logger.LogDebug(x.ErrorMessage));
 
-                if (!isValid)
-                    throw new UnityValidationException(results[0].ErrorMessage);
+                if (!result.IsValid)
+                    throw new UnityValidationException(result.Results[0].ErrorMessage);
             }
             catch (Exception exc)
             {

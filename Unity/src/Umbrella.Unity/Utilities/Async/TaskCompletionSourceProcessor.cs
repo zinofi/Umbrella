@@ -9,6 +9,18 @@ namespace Umbrella.Unity.Utilities.Async
 {
     public class TaskCompletionSourceProcessor : MonoBehaviour, ITaskCompletionSourceProcessor
     {
+        private struct TaskItem
+        {
+            public TaskItem(TaskCompletionSource<object> tcs, Func<bool> completionTestFunc)
+            {
+                Tcs = tcs;
+                CompletionTestFunc = completionTestFunc;
+            }
+
+            public TaskCompletionSource<object> Tcs { get; }
+            public Func<bool> CompletionTestFunc { get; }
+        }
+
         public static TaskCompletionSourceProcessor Instance { get; private set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -20,14 +32,14 @@ namespace Umbrella.Unity.Utilities.Async
 
         private bool m_IsRunning;
         private readonly object m_Result = new object();
-        private readonly List<(TaskCompletionSource<object> Tcs, Func<bool> CompletionTestFunc)> m_TaskCompletionSourceList = new List<(TaskCompletionSource<object> Tcs, Func<bool> CompletionTestFunc)>();
+        private readonly List<TaskItem> m_TaskCompletionSourceList = new List<TaskItem>();
 
         private void Start()
             => DontDestroyOnLoad(gameObject);
 
         public void Enqueue(TaskCompletionSource<object> source, Func<bool> completionTestFunc)
         {
-            m_TaskCompletionSourceList.Add((source, completionTestFunc));
+            m_TaskCompletionSourceList.Add(new TaskItem(source, completionTestFunc));
 
             if (!m_IsRunning)
             {
@@ -40,11 +52,11 @@ namespace Umbrella.Unity.Utilities.Async
         {
             for (int i = 0; i < m_TaskCompletionSourceList.Count; i++)
             {
-                var (tcs, completedFunc) = m_TaskCompletionSourceList[i];
+                var item = m_TaskCompletionSourceList[i];
 
-                if (completedFunc != null && completedFunc())
+                if (item.CompletionTestFunc != null && item.CompletionTestFunc())
                 {
-                    tcs.SetResult(m_Result);
+                    item.Tcs.SetResult(m_Result);
                     m_TaskCompletionSourceList.RemoveAt(i--);
                 }
             }

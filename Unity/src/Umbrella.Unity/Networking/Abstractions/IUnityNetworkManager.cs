@@ -8,7 +8,7 @@ namespace Umbrella.Unity.Networking.Abstractions
     {
         event EventHandler<UnityNetworkRequestEventArgs> OnBeginRequest;
         event EventHandler<UnityNetworkRequestEventArgs> OnEndRequest;
-        Task<UnityNetworkResponse> PerformRequest(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true);
-        Task<UnityNetworkResponse<TResponse>> PerformRequest<TResponse>(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true);
+        Task<UnityNetworkResponse> PerformRequest(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true, bool showLoadingScreen = true);
+        Task<UnityNetworkResponse<TResponse>> PerformRequest<TResponse>(string url, HttpMethodType method = HttpMethodType.Get, object bodyContent = null, BodyEncodingType bodyEncodingType = BodyEncodingType.Json, bool requiresAuthentication = true, bool showLoadingScreen = true);
     }
 }

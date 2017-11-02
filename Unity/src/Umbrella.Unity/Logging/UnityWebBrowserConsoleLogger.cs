@@ -1,16 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Umbrella.Unity.Logging
 {
-    public class UnityConsoleLogger : Microsoft.Extensions.Logging.ILogger
+    public class UnityWebBrowserConsoleLogger : Microsoft.Extensions.Logging.ILogger
     {
         private readonly string m_CategoryName;
 
         public static LogLevel LogLevel { get; set; } = LogLevel.None;
 
-        public UnityConsoleLogger(string categoryName)
+        public UnityWebBrowserConsoleLogger(string categoryName)
         {
             m_CategoryName = categoryName;
         }
@@ -33,61 +37,55 @@ namespace Umbrella.Unity.Logging
                 StringBuilder sbMessage = new StringBuilder(message);
 
                 if (!string.IsNullOrWhiteSpace(exception?.Message))
-                {
-                    sbMessage
-                        .AppendLine()
-                        .AppendLine($"{exception.GetType().FullName}: {exception.Message}");
-                }
-
-                LogStackTrace(exception, sbMessage);
+                    sbMessage.AppendLine($"{exception.GetType().FullName}: {exception.Message}");
 
                 var innerException = exception?.InnerException;
 
                 while (innerException != null)
                 {
                     if (!string.IsNullOrWhiteSpace(innerException.Message))
-                    {
-                        sbMessage
-                            .AppendLine()
-                            .AppendLine($"{innerException.GetType().FullName}: {innerException.Message}");
-                    }
-
-                    LogStackTrace(innerException, sbMessage);
+                        sbMessage.AppendLine($"{innerException.GetType().FullName}: {innerException.Message}");
 
                     innerException = innerException.InnerException;
                 }
 
+                if (!string.IsNullOrWhiteSpace(exception?.StackTrace))
+                {
+                    sbMessage
+                        .AppendLine()
+                        .AppendLine("********** Stack Trace **********")
+                        .AppendLine()
+                        .AppendLine(exception?.StackTrace)
+                        .AppendLine()
+                        .AppendLine("*********************************");
+                }
+
                 string messageToLog = sbMessage.ToString();
+
+                string methodName = null;
 
                 switch (logLevel)
                 {
                     case LogLevel.Trace:
+                        methodName = "trace";
+                        break;
                     case LogLevel.Debug:
+                        methodName = "debug";
+                        break;
+                    default:
                     case LogLevel.Information:
-                        UnityEngine.Debug.Log(messageToLog);
+                        methodName = "info";
                         break;
                     case LogLevel.Warning:
-                        UnityEngine.Debug.LogWarning(messageToLog);
+                        methodName = "warn";
                         break;
                     case LogLevel.Error:
                     case LogLevel.Critical:
-                        UnityEngine.Debug.LogError(messageToLog);
+                        methodName = "error";
                         break;
                 }
-            }
-        }
 
-        private static void LogStackTrace(Exception exception, StringBuilder sbMessage)
-        {
-            if (!string.IsNullOrWhiteSpace(exception?.StackTrace))
-            {
-                sbMessage
-                    .AppendLine()
-                    .AppendLine($"********** Stack Trace: {exception.GetType().FullName} **********")
-                    .AppendLine()
-                    .AppendLine(exception?.StackTrace)
-                    .AppendLine()
-                    .AppendLine("******************************************************************");
+                Application.ExternalCall($"console.{methodName}", messageToLog);
             }
         }
     }

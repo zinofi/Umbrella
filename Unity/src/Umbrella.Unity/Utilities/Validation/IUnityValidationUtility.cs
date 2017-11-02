@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using static Umbrella.Unity.Utilities.Validation.UnityValidationUtility;
 
 namespace Umbrella.Unity.Utilities.Validation
 {
     public interface IUnityValidationUtility
     {
-        (bool IsValid, List<ValidationResult> Results) TryValidateModel<TModel>(TModel model);
+        UnityValidationResult TryValidateModel<TModel>(TModel model);
         void ValidateModel<TModel>(TModel model);
     }
 }

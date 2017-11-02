@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Unity.Logging;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.Logging
 {
@@ -13,6 +14,25 @@ namespace Microsoft.Extensions.Logging
         {
             UnityConsoleLogger.LogLevel = logLevel;
             loggerFactory.AddProvider(new UnityConsoleLoggerProvider());
+
+            return loggerFactory;
+        }
+
+        public static ILoggerFactory AddUmbrellaUnityWebBrowserConsoleLogger(this ILoggerFactory loggerFactory, LogLevel logLevel)
+        {
+            UnityWebBrowserConsoleLogger.LogLevel = logLevel;
+            loggerFactory.AddProvider(new UnityWebBrowserConsoleLoggerProvider());
+
+            return loggerFactory;
+        }
+
+        public static ILoggerFactory AddUmbrellaUnityRemoteClientLogger(this ILoggerFactory loggerFactory, Func<IServiceProvider> serviceProviderAccessor, LogLevel logLevel)
+        {
+            Guard.ArgumentNotNull(loggerFactory, nameof(loggerFactory));
+            Guard.ArgumentNotNull(serviceProviderAccessor, nameof(serviceProviderAccessor));
+
+            UnityRemoteClientLogger.LogLevel = logLevel;
+            loggerFactory.AddProvider(new UnityRemoteClientLoggerProvider(serviceProviderAccessor));
 
             return loggerFactory;
         }
