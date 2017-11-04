@@ -14,6 +14,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.SkiaSharp
 {
+    //TODO: Handle issues with transparency information being lost on resize
     public class DynamicImageResizer : DynamicImageResizerBase
     {
         #region Constructors
@@ -64,7 +65,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
                             image.ExtractSubset(imageToResize, cropRect);
                         }
 
-                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.Width, result.Height), SKBitmapResizeMethod.Box))
+                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.Width, result.Height), SKBitmapResizeMethod.Lanczos3))
                         {
                             using (var outputImage = SKImage.FromBitmap(resizedImage))
                             {

@@ -9,7 +9,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware.Options
     public class DynamicImageMiddlewareOptions
     {
         public string CacheControlHeaderValue { get; set; } = "no-cache";
-        public string DynamicImagePathPrefix { get; set; }
+        public string DynamicImagePathPrefix { get; set; } = "dynamicimage";
         public IUmbrellaFileProvider SourceFileProvider { get; set; }
     }
 }

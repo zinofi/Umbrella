@@ -8,6 +8,7 @@ namespace Microsoft.AspNetCore.Builder
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseUmbrellaDynamicImage(this IApplicationBuilder builder, Action<DynamicImageMiddlewareOptions> config) => builder.UseMiddleware<DynamicImageMiddleware>(config);
+        public static IApplicationBuilder UseUmbrellaDynamicImage(this IApplicationBuilder builder, Action<DynamicImageMiddlewareOptions> configBuilder = null)
+            => builder.UseMiddleware<DynamicImageMiddleware>(configBuilder);
     }
 }

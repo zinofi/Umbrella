@@ -12,6 +12,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.SoundInTheory
 {
+    //TODO: Handle issues with transparency information being lost on resize
     public class DynamicImageResizer : DynamicImageResizerBase
     {
         #region Constructors

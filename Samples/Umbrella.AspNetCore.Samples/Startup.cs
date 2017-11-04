@@ -63,9 +63,9 @@ namespace Umbrella.AspNetCore.Samples
             services.AddUmbrellaUtilities();
             services.AddUmbrellaWebUtilities();
             services.AddUmbrellaDynamicImage(new DynamicImageCacheOptions { CacheKeyCacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) } });
-            //services.AddUmbrellaDynamicImageSoundInTheory();
+            services.AddUmbrellaDynamicImageSoundInTheory();
             //services.AddUmbrellaDynamicImageFreeImage();
-            services.AddUmbrellaDynamicImageSkiaSharp();
+            //services.AddUmbrellaDynamicImageSkiaSharp();
             //services.AddUmbrellaDynamicImageMemoryCache(new DynamicImageMemoryCacheOptions { ItemCacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) } });
 
             services.AddUmbrellaDiskFileProvider(new UmbrellaDiskFileProviderOptions { RootPhysicalPath = HostingEnvironment.WebRootPath });
@@ -119,11 +119,7 @@ namespace Umbrella.AspNetCore.Samples
                 SupportedUICultures = new[] { new CultureInfo("en-GB") }
             });
 
-            app.UseUmbrellaDynamicImage(config =>
-            {
-                config.DynamicImagePathPrefix = "dynamicimage";
-                config.SourceFileProvider = fileProvider;
-            });
+            app.UseUmbrellaDynamicImage(config => config.SourceFileProvider = fileProvider);
 
             app.UseStaticFiles();
 

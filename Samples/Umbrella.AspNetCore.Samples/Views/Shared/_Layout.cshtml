@@ -25,8 +25,10 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-controller="DataAnnotations" asp-action="Index">Data Annotations</a></li>
+                    <li asp-controller="Home" asp-action="Index">Home</li>
+                    <li asp-controller="DataAnnotations" asp-action="Index">Data Annotations</li>
+                    <li asp-controller="ResponsiveImage" asp-action="Index">Responsive Image</li>
+                    <li asp-controller="DynamicImage" asp-action="Index">Dynamic Image</li>
                 </ul>
             </div>
         </div>
@@ -35,7 +37,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2016 - Umbrella.AspNetCore.Samples</p>
+            <p>&copy; 2017 - Zinofi Digital Ltd</p>
         </footer>
     </div>
 

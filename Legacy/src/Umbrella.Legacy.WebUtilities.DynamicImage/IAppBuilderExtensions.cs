@@ -19,7 +19,7 @@ namespace Owin
             IDynamicImageUtility dynamicImageUtility,
             IDynamicImageResizer dynamicImageResizer,
             IHttpHeaderValueUtility headerValueUtility,
-            Action<DynamicImageMiddlewareOptions> optionsBuilder)
+            Action<DynamicImageMiddlewareOptions> optionsBuilder = null)
             => builder.Use<DynamicImageMiddleware>(logger, dynamicImageUtility, dynamicImageResizer, headerValueUtility, optionsBuilder);
     }
 }

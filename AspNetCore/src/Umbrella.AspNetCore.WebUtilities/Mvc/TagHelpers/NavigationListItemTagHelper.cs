@@ -12,7 +12,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
 {
     [HtmlTargetElement("li", Attributes = ActionAttributeName, ParentTag = "ul")]
     [HtmlTargetElement("li", Attributes = ControllerAttributeName, ParentTag = "ul")]
-    public class BootstrapNavListItemTagHelper : AnchorTagHelper
+    public class NavigationListItemTagHelper : AnchorTagHelper
     {
         #region Private Constants
         private const string ActionAttributeName = "asp-action";
@@ -24,7 +24,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
         #endregion
 
         #region Constructors
-        public BootstrapNavListItemTagHelper(IHtmlGenerator generator)
+        public NavigationListItemTagHelper(IHtmlGenerator generator)
             : base(generator)
         {
         }
