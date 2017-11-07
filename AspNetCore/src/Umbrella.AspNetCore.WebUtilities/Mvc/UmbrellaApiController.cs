@@ -24,10 +24,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 
         #region Protected Properties
         protected IHostingEnvironment HostingEnvironment { get; }
-        protected bool IsDevelopment
-        {
-            get { return HostingEnvironment.IsDevelopment(); }
-        }
+        protected bool IsDevelopment => HostingEnvironment.IsDevelopment();
         #endregion
 
         #region Constructors
@@ -43,9 +40,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 
         #region Overridden Methods
         public override BadRequestObjectResult BadRequest(ModelStateDictionary modelState)
-        {
-            return BadRequest(m_ModelStateTransformer.TransformToObject(ModelState));
-        }
+            => BadRequest(m_ModelStateTransformer.TransformToObject(ModelState));
         #endregion
 
         #region Public Methods

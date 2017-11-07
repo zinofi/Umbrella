@@ -33,9 +33,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelState
             return state;
         }
 
-        public TModelState Transform(ModelStateDictionary modelState)
-        {
-            return (TModelState)TransformToObject(modelState);
-        }
+        public TModelState Transform(ModelStateDictionary modelState) => (TModelState)TransformToObject(modelState);
     }
 }

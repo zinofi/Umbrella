@@ -377,13 +377,13 @@ namespace Umbrella.FileSystem.Test
             });
         }
 
-        [Theory]
-        [MemberData(nameof(ProvidersMemberData))]
-        public async Task CopyAsync_InvalidSourceType(IUmbrellaFileProvider provider)
-        {
-            //TODO: Test that files coming from one provider cannot be used with a different one.
-            //Maybe look at building this in somehow?
-        }
+        //[Theory]
+        //[MemberData(nameof(ProvidersMemberData))]
+        //public async Task CopyAsync_InvalidSourceType(IUmbrellaFileProvider provider)
+        //{
+        //    //TODO: Test that files coming from one provider cannot be used with a different one.
+        //    //Maybe look at building this in somehow?
+        //}
 
         [Theory]
         [MemberData(nameof(ProvidersMemberData))]
