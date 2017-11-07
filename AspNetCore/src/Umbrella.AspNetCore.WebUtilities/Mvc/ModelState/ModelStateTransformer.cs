@@ -24,7 +24,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelState
                     {
                         //TODO: Cache the transformed keys.
                         //TODO: inject something into this type to determine whether the key is emitted in CamelCase or PascalCase instead of forcing to be CamelCase.
-                        Key = !string.IsNullOrWhiteSpace(item.Key) ? string.Join(".", item.Key.Split('.').Select(x => x.ToCamelCase())) : item.Key.ToCamelCase(),
+                        Key = !string.IsNullOrWhiteSpace(item.Key) ? string.Join(".", item.Key.Split('.').Select(x => x.ToCamelCaseInvariant())) : item.Key.ToCamelCaseInvariant(),
                         Errors = item.Value.Errors.Select(x => x.ErrorMessage).ToList()
                     });
                 }

@@ -44,7 +44,7 @@ namespace Umbrella.TypeScript.Aurelia
                 return;
 
             string declaringTypeName = propertyInfo.DeclaringType.Name;
-            string ensureProperty = $".ensure(\"{tsInfo.Name.ToCamelCase()}\")";
+            string ensureProperty = $".ensure(\"{tsInfo.Name.ToCamelCaseInvariant()}\")";
 
             for (int i = 0; i < lstValidationAttribute.Count; i++)
             {
@@ -59,7 +59,7 @@ namespace Umbrella.TypeScript.Aurelia
                 }
                 else if (validationAttribute is CompareAttribute compareAttribute)
                 {
-                    string otherPropertyName = compareAttribute.OtherProperty.ToCamelCase();
+                    string otherPropertyName = compareAttribute.OtherProperty.ToCamelCaseInvariant();
 
                     validationBuilder.AppendLineWithTabIndent(ensureProperty, 4)
                         .AppendLineWithTabIndent($".satisfies((value: string, obj: {declaringTypeName}) => value === obj.{otherPropertyName})", 4);

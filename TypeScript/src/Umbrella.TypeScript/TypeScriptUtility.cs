@@ -37,7 +37,7 @@ namespace Umbrella.TypeScript
 
         public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type modelType, Type memberType, PropertyInfo propertyInfo, TypeScriptOutputModelType outputType, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
         {
-            string memberName = propertyInfo.Name.ToCamelCase();
+            string memberName = propertyInfo.Name.ToCamelCaseInvariant();
 
             TypeScriptMemberInfo info = new TypeScriptMemberInfo
             {
