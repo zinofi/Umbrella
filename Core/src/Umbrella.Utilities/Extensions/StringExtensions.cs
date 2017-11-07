@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq.Expressions;
 
 namespace Umbrella.Utilities.Extensions
 {
-    //TODO: Add Invariant methods for camel and snake case methods
     public static class StringExtensions
     {
         private const string c_HtmlTagPattern = @"<.*?>";
@@ -69,13 +69,30 @@ namespace Umbrella.Utilities.Extensions
             return regex.Replace(value, string.Empty);
         }
 
-        public static string ToCamelCase(this string value)
+        public static string ToCamelCase(this string value) => ToCamelCaseInternal(value, false);
+        public static string ToCamelCaseInvariant(this string value) => ToCamelCaseInternal(value, true);
+
+        public static string ToCamelCaseInternal(string value, bool useInvariantCulture)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return value;
 
+            Func<string, string> stringLower = null;
+            Func<char, char> charLower = null;
+
+            if (useInvariantCulture)
+            {
+                stringLower = x => x.ToLowerInvariant();
+                charLower = char.ToLowerInvariant;
+            }
+            else
+            {
+                stringLower = x => x.ToLower();
+                charLower = char.ToLower;
+            }
+
             if (value.Length == 1)
-                return value.ToLower();
+                return stringLower(value);
 
             //If 1st char is already in lowercase, return the value untouched
             if (char.IsLower(value[0]))
@@ -91,7 +108,7 @@ namespace Umbrella.Utilities.Extensions
                 {
                     if (char.IsUpper(value[i]))
                     {
-                        buffer[i] = char.ToLower(value[i]);
+                        buffer[i] = charLower(value[i]);
                         continue;
                     }
                     else if (i > 1)
@@ -189,17 +206,37 @@ namespace Umbrella.Utilities.Extensions
             return cleanedValue;
         }
 
-        public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
+        private static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
+            => ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, false);
+
+        private static string ToSnakeCaseInvariant(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
+        => ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, true);
+
+        private static string ToSnakeCaseInternal(string value, bool lowerCase, bool removeWhiteSpace, bool useInvariantCulture)
         {
+            Func<string, string> stringLower = null;
+            Func<char, char> charLower = null;
+
+            if (useInvariantCulture)
+            {
+                stringLower = x => x.ToLowerInvariant();
+                charLower = char.ToLowerInvariant;
+            }
+            else
+            {
+                stringLower = x => x.ToLower();
+                charLower = char.ToLower;
+            }
+
             if (string.IsNullOrWhiteSpace(value))
                 return value;
 
             if (value.Length == 1)
-                return lowerCase ? value.ToLower() : value;
+                return lowerCase ? stringLower(value) : value;
 
             List<char> buffer = new List<char>(value.Length)
             {
-                lowerCase ? char.ToLower(value[0]) : value[0]
+                lowerCase ? charLower(value[0]) : value[0]
             };
 
             for (int i = 1; i < value.Length; i++)
@@ -212,7 +249,7 @@ namespace Umbrella.Utilities.Extensions
                 if (char.IsUpper(value[i]))
                 {
                     if (lowerCase)
-                        current = char.ToLower(current);
+                        current = charLower(current);
 
                     buffer.Add('_');
                 }

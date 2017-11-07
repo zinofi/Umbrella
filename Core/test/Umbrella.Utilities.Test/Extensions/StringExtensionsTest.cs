@@ -21,6 +21,16 @@ namespace Umbrella.Utilities.Test.Extensions
         }
 
         [Fact]
+        public void ToCamelCaseInvariant()
+        {
+            Assert.Equal("capitalCity", "CapitalCity".ToCamelCaseInvariant());
+            Assert.Equal("movChecked", "MOVChecked".ToCamelCaseInvariant());
+            Assert.Equal("croatia", "Croatia".ToCamelCaseInvariant());
+            Assert.Equal("lowercasealready", "lowercasealready".ToCamelCaseInvariant());
+            Assert.Equal("alreadyCamelCase", "alreadyCamelCase".ToCamelCaseInvariant());
+        }
+
+        [Fact]
         public void ToSnakeCase()
         {
             //TODO
