@@ -30,6 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
             //where specific customizations need to be made to the ModelState and ModelStateEntry classes.
             //e.g. to apply TypeScript code generation attributes to each type.
             services.AddSingleton<IModelStateTransformer, ModelStateTransformer<DefaultTransformedModelState<DefaultTransformedModelStateEntry>, DefaultTransformedModelStateEntry>>();
+            services.AddSingleton<ModelStateTransformerOptions>();
 
             return services;
         }

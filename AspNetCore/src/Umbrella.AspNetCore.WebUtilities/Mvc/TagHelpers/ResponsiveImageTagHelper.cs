@@ -57,7 +57,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
                 //Cache this using the image src attribute value and PixelDensities
                 string srcsetValue = Cache.GetOrCreate(GetCacheKey(path, PixelDensities), entry =>
                 {
-                    entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+                    entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 
                     //Cache this using PixelDensities as a key
                     var lstPixelDensity = GetPixelDensities();

@@ -42,8 +42,12 @@ namespace Umbrella.AspNetCore.DynamicImage.Mvc.TagHelpers
             {
                 string src = BuildCoreTag(output);
 
-                //TODO: Cache the srcSetValue using the src, PixelDensities and SizeWidths
-                string srcsetValue = string.Join(", ", GetSizeStrings(src).Distinct().OrderBy(x => x));
+                string srcsetValue = Cache.GetOrCreate(GetCacheKey(src, PixelDensities, SizeWidths), entry =>
+                {
+                    entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+
+                    return string.Join(", ", GetSizeStrings(src).Distinct().OrderBy(x => x));
+                });
 
                 if (!string.IsNullOrWhiteSpace(srcsetValue))
                     output.Attributes.Add("srcset", srcsetValue);

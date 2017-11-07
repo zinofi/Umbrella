@@ -13,3 +13,4 @@ Logs
 BenchmarkDotNet.Artifacts
 /Test/Umbrella.DynamicImage.SoundInTheory.Test/Output
 /Test/Umbrella.DynamicImage.Impl.Test/Output
+/coverage
