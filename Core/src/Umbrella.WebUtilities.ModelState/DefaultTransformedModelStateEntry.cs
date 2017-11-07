@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.WebUtilities.ModelState
 {
-    public abstract class DefaultTransformedModelStateEntry
+    public class DefaultTransformedModelStateEntry
     {
         public string Key { get; set; }
         public List<string> Errors { get; set; }

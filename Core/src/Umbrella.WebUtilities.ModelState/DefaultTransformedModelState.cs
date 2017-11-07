@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.WebUtilities.ModelState
 {
-    public abstract class DefaultTransformedModelState<T>
+    public class DefaultTransformedModelState<T>
         where T : DefaultTransformedModelStateEntry
     {
         public List<T> Entries { get; } = new List<T>();
