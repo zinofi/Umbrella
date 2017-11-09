@@ -63,8 +63,8 @@ namespace Umbrella.AspNetCore.Samples
             services.AddUmbrellaUtilities();
             services.AddUmbrellaWebUtilities();
             services.AddUmbrellaDynamicImage(new DynamicImageCacheOptions { CacheKeyCacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) } });
-            services.AddUmbrellaDynamicImageSoundInTheory();
-            //services.AddUmbrellaDynamicImageFreeImage();
+            //services.AddUmbrellaDynamicImageSoundInTheory();
+            services.AddUmbrellaDynamicImageFreeImage();
             //services.AddUmbrellaDynamicImageSkiaSharp();
             //services.AddUmbrellaDynamicImageMemoryCache(new DynamicImageMemoryCacheOptions { ItemCacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) } });
 
