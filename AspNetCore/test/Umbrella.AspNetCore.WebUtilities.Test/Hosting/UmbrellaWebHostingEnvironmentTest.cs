@@ -17,11 +17,21 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
     public class UmbrellaWebHostingEnvironmentTest
     {
         [Fact]
+        public void MapPath_InvalidPath()
+        {
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
+
+            Assert.Throws<ArgumentNullException>(() => env.MapPath(null));
+            Assert.Throws<ArgumentException>(() => env.MapPath(""));
+            Assert.Throws<ArgumentException>(() => env.MapPath("      "));
+        }
+
+        [Fact]
         public void MapPath_VirtualPath_ContentRoot()
         {
             string path = "~/images/test.jpg";
 
-            var env = CreateHostingEnvironment();
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
             string mappedPath = env.MapPath(path);
 
@@ -33,7 +43,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
         {
             string path = "~/images/test.jpg";
 
-            var env = CreateHostingEnvironment();
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
             string mappedPath = env.MapPath(path, false);
 
@@ -45,7 +55,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
         {
             string path = "/images/test.jpg";
 
-            var env = CreateHostingEnvironment();
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
             string mappedPath = env.MapPath(path);
 
@@ -57,7 +67,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
         {
             string path = "/images/test.jpg";
 
-            var env = CreateHostingEnvironment();
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
             string mappedPath = env.MapPath(path, false);
 
@@ -69,7 +79,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
         {
             string path = "~/images/test.jpg";
 
-            var env = CreateHostingEnvironment();
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
             string mappedPath = env.MapWebPath(path, true);
 
@@ -81,34 +91,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
         {
             string path = "/images/test.jpg";
 
-            var env = CreateHostingEnvironment();
+            var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
             string mappedPath = env.MapWebPath(path, true);
 
             Assert.Equal("http://www.test.com/images/test.jpg", mappedPath);
-        }
-
-        private UmbrellaWebHostingEnvironment CreateHostingEnvironment()
-        {
-            var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
-
-            var hostingEnvironment = new Mock<IHostingEnvironment>();
-            hostingEnvironment.Setup(x => x.ContentRootPath).Returns(@"C:\MockedWebApp\src\");
-            hostingEnvironment.Setup(x => x.WebRootPath).Returns(@"C:\MockedWebApp\src\wwwroot\");
-
-            var httpContextAccessor = new Mock<IHttpContextAccessor>();
-
-            var context = new DefaultHttpContext();
-            context.Request.Host = new HostString("www.test.com");
-
-            httpContextAccessor.Setup(x => x.HttpContext).Returns(context);
-
-            var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-
-            return new UmbrellaWebHostingEnvironment(logger.Object,
-                hostingEnvironment.Object,
-                httpContextAccessor.Object,
-                memoryCache);
         }
     }
 }

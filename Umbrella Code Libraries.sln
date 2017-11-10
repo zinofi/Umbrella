@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
@@ -217,6 +217,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{02FBA93A-6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Unity", "Unity\src\Umbrella.Unity\Umbrella.Unity.csproj", "{2AF06EDE-B935-4B4E-A363-EC123518E556}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNetCore.DynamicImage.Test", "AspNetCore\test\Umbrella.AspNetCore.DynamicImage.Test\Umbrella.AspNetCore.DynamicImage.Test.csproj", "{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -431,6 +433,10 @@ Global
 		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AF06EDE-B935-4B4E-A363-EC123518E556}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -524,6 +530,7 @@ Global
 		{759B6C78-277D-48E6-8262-47965C51A68B} = {93F8B969-4903-4F2C-93A5-57D3F33AE510}
 		{02FBA93A-6801-4366-BE29-BD590659DA89} = {93F8B969-4903-4F2C-93A5-57D3F33AE510}
 		{2AF06EDE-B935-4B4E-A363-EC123518E556} = {EE10F9C4-1CCF-4BD5-86E2-BEB0008804F6}
+		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F} = {1695D124-726F-446B-988E-61B9B440D345}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
