@@ -11,6 +11,12 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains extension methods for the Microsoft.Extensions.Caching.Distributed.IDistributedCache type.
+      This has been created as an independent package as it takes a hard dependency on the Newtonsoft.Json package
+      which the Umbrella.Utilities package cannot to allow it to be used on platforms that don't work well with
+      the Newtonsoft.Json package available on NuGet.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

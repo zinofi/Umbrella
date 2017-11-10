@@ -11,6 +11,12 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains a range of data annotation attributes that go beyond the standard ones available
+      in the System.ComponentModel.DataAnnotations namespace.
+      This package was originally cloned from: https://foolproof.codeplex.com/ and contains fixes and enhancements to the original code.
+      This license for the original code can be found here: https://foolproof.codeplex.com/license
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

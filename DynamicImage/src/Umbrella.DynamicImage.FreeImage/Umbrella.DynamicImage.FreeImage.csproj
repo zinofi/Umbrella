@@ -10,6 +10,10 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains an implementation of the IDynamicImageResizer built using the .NET Core wrapper for FreeImage.
+      The repo for this wrapper can be found on github: https://github.com/matgr1/FreeImage-dotnet-core
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

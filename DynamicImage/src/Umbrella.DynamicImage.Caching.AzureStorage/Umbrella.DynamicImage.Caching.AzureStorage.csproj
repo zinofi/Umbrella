@@ -10,6 +10,9 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package provides an Azure Blob Storage based caching mechanism for the Umbrella.DynamicImage infrastructure.
+    </Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

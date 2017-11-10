@@ -11,6 +11,10 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains OWIN middleware and HTML helpers to be used in conjunction
+      with the Umbrella.DynamicImage.* packages.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -11,6 +11,9 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package builds on the Umbrella.TypeScript generators by providing a generator specifically for creating code for use with Aurelia.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

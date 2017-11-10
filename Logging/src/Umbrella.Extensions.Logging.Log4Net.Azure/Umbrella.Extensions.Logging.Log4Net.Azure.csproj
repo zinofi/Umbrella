@@ -11,6 +11,9 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package builds on the Umbrella.Extensions.Logging.Log4Net package by writing log messages to Azure Table Storage.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -11,6 +11,9 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains Data Access abstractions upon which the Umbrella.DataAccess.EF6 and Umbrella.DataAccess.EntityFrameworkCore packages depend.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>

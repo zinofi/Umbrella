@@ -14,6 +14,9 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains .NET Core tooling to allow the Umbrella.TypeScript.Aurelia generators to be used with the dotnet CLI.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
