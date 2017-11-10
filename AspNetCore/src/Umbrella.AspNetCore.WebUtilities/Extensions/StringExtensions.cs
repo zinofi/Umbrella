@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbrella.Utilities;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
@@ -17,6 +18,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
         /// <example>~/path/to/foo or /path/to/foo to http://www.web.com/path/to/foo</example>
         public static string ToAbsoluteUrl(this string relativeUrl, HttpRequest request, string scheme = "http")
         {
+            Guard.ArgumentNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
+            Guard.ArgumentNotNull(request, nameof(request));
+            Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
+
             string cleanedPath = relativeUrl.StartsWith("~")
                     ? relativeUrl.Trim().Remove(0, 1)
                     : relativeUrl.Trim();
