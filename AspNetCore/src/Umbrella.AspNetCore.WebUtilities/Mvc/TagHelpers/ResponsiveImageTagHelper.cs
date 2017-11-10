@@ -29,7 +29,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
         public string PixelDensities { get; set; } = "";
         #endregion
 
-        protected virtual int MinPixelDensitiesRequiredToGenerateSrcsetAttribute => 1;
+        protected virtual int MinPixelDensitiesRequiredToGenerateSrcsetAttribute => 2;
 
         #region Protected Properties
         protected IMemoryCache Cache { get; }
@@ -62,10 +62,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
                     //Cache this using PixelDensities as a key
                     var lstPixelDensity = GetPixelDensities();
 
-                    if (lstPixelDensity.Count <= MinPixelDensitiesRequiredToGenerateSrcsetAttribute)
+                    if (lstPixelDensity.Count < MinPixelDensitiesRequiredToGenerateSrcsetAttribute)
                         return string.Empty;
 
                     int densityIndex = path.LastIndexOf('.');
+
+                    if (densityIndex == -1)
+                        return "Invalid image path";
 
                     IEnumerable<string> srcsetImagePaths =
                         from density in lstPixelDensity
