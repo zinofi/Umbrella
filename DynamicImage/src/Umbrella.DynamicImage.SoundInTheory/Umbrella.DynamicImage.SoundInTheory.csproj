@@ -11,10 +11,8 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
     <Description>
-      <Description>
-        This package contains an implementation of the IDynamicImageResizer built using the DynamicImage library.
-        The repo for this library can be found on github: https://github.com/tgjones/dynamic-image.
-      </Description>
+      This package contains an implementation of the IDynamicImageResizer built using the DynamicImage library.
+      The repo for this library can be found on github: https://github.com/tgjones/dynamic-image.
     </Description>
   </PropertyGroup>
 
