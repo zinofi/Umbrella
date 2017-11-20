@@ -61,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net.Azure", "Logging\src\Umbrella.Extensions.Logging.Log4Net.Azure\Umbrella.Extensions.Logging.Log4Net.Azure.csproj", "{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.Abstractions", "DataAccess\src\Umbrella.DataAccess.MultiTenant\Umbrella.DataAccess.MultiTenant.Abstractions.csproj", "{9A5FD4FF-9804-4B64-B483-23A02BCE431E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.Abstractions", "DataAccess\src\Umbrella.DataAccess.MultiTenant.Abstractions\Umbrella.DataAccess.MultiTenant.Abstractions.csproj", "{9A5FD4FF-9804-4B64-B483-23A02BCE431E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.EF6", "DataAccess\src\Umbrella.DataAccess.MultiTenant.EF6\Umbrella.DataAccess.MultiTenant.EF6.csproj", "{552F0401-14AE-4D2C-BF4E-ED6471201D71}"
 EndProject

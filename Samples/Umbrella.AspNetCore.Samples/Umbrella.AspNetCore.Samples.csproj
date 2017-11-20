@@ -23,14 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AspNetCore\Umbrella.AspNetCore.DataAnnotations\Umbrella.AspNetCore.DataAnnotations.csproj" />
-    <ProjectReference Include="..\..\AspNetCore\Umbrella.AspNetCore.DynamicImage\Umbrella.AspNetCore.DynamicImage.csproj" />
-    <ProjectReference Include="..\..\AspNetCore\Umbrella.AspNetCore.MultiTenant\Umbrella.AspNetCore.MultiTenant.csproj" />
-    <ProjectReference Include="..\..\AspNetCore\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.SoundInTheory\Umbrella.DynamicImage.SoundInTheory.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.Extensions.Logging.Log4Net\Umbrella.Extensions.Logging.Log4Net.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj" />
+    <ProjectReference Include="..\..\AspNetCore\src\Umbrella.AspNetCore.DataAnnotations\Umbrella.AspNetCore.DataAnnotations.csproj" />
+    <ProjectReference Include="..\..\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Umbrella.AspNetCore.DynamicImage.csproj" />
+    <ProjectReference Include="..\..\AspNetCore\src\Umbrella.AspNetCore.MultiTenant\Umbrella.AspNetCore.MultiTenant.csproj" />
+    <ProjectReference Include="..\..\AspNetCore\src\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\DynamicImage\src\Umbrella.DynamicImage.SoundInTheory\Umbrella.DynamicImage.SoundInTheory.csproj" />
+    <ProjectReference Include="..\..\DynamicImage\src\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
+    <ProjectReference Include="..\..\Logging\src\Umbrella.Extensions.Logging.Log4Net\Umbrella.Extensions.Logging.Log4Net.csproj" />
+    <ProjectReference Include="..\..\FileSystem\src\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj" />
     <ProjectReference Include="..\..\DynamicImage\src\Umbrella.DynamicImage.FreeImage\Umbrella.DynamicImage.FreeImage.csproj" />
     <ProjectReference Include="..\..\DynamicImage\src\Umbrella.DynamicImage.SkiaSharp\Umbrella.DynamicImage.SkiaSharp.csproj" />
   </ItemGroup>

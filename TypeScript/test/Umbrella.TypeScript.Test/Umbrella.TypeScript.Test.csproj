@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.TypeScript\Umbrella.TypeScript.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.TypeScript\Umbrella.TypeScript.csproj" />
   </ItemGroup>
 
   <ItemGroup>

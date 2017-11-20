@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Legacy\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

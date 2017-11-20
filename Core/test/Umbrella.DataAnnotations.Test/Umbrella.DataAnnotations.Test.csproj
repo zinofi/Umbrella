@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

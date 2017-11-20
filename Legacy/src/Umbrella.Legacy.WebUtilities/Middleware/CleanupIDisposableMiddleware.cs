@@ -1,5 +1,4 @@
-﻿using log4net;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;

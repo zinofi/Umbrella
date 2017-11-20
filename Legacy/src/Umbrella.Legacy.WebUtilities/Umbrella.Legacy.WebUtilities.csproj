@@ -21,9 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.Extensions.Logging.Log4Net\Umbrella.Extensions.Logging.Log4Net.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
     <ProjectReference Include="..\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

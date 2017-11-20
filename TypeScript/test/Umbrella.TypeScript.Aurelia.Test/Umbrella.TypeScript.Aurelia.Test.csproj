@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj" />
   </ItemGroup>
 
   <ItemGroup>

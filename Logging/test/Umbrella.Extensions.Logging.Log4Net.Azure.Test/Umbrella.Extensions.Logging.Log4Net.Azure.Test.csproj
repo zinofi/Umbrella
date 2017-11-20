@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Umbrella.Extensions.Logging.Log4Net.Azure\Umbrella.Extensions.Logging.Log4Net.Azure.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.Extensions.Logging.Log4Net.Azure\Umbrella.Extensions.Logging.Log4Net.Azure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

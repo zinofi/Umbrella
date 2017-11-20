@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

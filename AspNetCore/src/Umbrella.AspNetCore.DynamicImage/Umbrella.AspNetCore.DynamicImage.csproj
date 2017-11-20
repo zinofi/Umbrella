@@ -18,14 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NewFolder\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
-    <None Remove="NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
     <ProjectReference Include="..\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
   </ItemGroup>
 

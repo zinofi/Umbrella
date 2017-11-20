@@ -17,9 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

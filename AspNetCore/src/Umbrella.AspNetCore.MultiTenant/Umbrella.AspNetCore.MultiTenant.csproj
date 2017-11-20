@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DataAccess.MultiTenant\Umbrella.DataAccess.MultiTenant.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+    <ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.MultiTenant.Abstractions\Umbrella.DataAccess.MultiTenant.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

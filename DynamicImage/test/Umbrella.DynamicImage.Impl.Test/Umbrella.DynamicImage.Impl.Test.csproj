@@ -13,10 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage.SoundInTheory\Umbrella.DynamicImage.SoundInTheory.csproj" />
-    <ProjectReference Include="..\..\Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
-    <ProjectReference Include="..\..\DynamicImage\src\Umbrella.DynamicImage.FreeImage\Umbrella.DynamicImage.FreeImage.csproj" />
-    <ProjectReference Include="..\..\DynamicImage\src\Umbrella.DynamicImage.SkiaSharp\Umbrella.DynamicImage.SkiaSharp.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.DynamicImage.FreeImage\Umbrella.DynamicImage.FreeImage.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.DynamicImage.SkiaSharp\Umbrella.DynamicImage.SkiaSharp.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.DynamicImage.SoundInTheory\Umbrella.DynamicImage.SoundInTheory.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

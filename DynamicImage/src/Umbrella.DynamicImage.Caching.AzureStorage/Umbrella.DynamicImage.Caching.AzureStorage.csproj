@@ -20,8 +20,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj" />
     <ProjectReference Include="..\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
-    <ProjectReference Include="..\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj" />
   </ItemGroup>
 
 </Project>

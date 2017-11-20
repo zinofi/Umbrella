@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.DataAccess.EF6\Umbrella.DataAccess.EF6.csproj" />
-    <ProjectReference Include="..\Umbrella.DataAccess.MultiTenant\Umbrella.DataAccess.MultiTenant.csproj" />
+    <ProjectReference Include="..\Umbrella.DataAccess.MultiTenant.Abstractions\Umbrella.DataAccess.MultiTenant.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">

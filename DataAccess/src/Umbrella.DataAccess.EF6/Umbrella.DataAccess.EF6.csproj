@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj" />
     <ProjectReference Include="..\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
-    <ProjectReference Include="..\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj" />
   </ItemGroup>
   
 </Project>

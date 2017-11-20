@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
-    <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

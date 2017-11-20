@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+    <ProjectReference Include="..\..\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

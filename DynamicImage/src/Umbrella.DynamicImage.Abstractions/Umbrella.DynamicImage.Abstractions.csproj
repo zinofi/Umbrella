@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

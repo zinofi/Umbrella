@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

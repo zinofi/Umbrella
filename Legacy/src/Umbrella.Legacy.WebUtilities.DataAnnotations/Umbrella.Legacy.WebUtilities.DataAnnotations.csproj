@@ -18,11 +18,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
   </ItemGroup>
 
   <ItemGroup>
