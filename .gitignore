@@ -15,3 +15,4 @@ BenchmarkDotNet.Artifacts
 /Test/Umbrella.DynamicImage.Impl.Test/Output
 /coverage
 /git-mv-with-history.sh
+/DynamicImage/test/Umbrella.DynamicImage.Impl.Test/Output
