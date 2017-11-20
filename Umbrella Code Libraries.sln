@@ -25,101 +25,101 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNetCore", "AspNetCore", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{2606B945-AF74-4E4B-A665-BF5DBA99C332}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities", "Core\Umbrella.Utilities\Umbrella.Utilities.csproj", "{8E28E28C-BE21-4707-B32B-02246D62EE79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities", "Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj", "{8E28E28C-BE21-4707-B32B-02246D62EE79}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities", "Core\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj", "{51D68721-517F-4A5C-91EF-1C5EFC18798E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities", "Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj", "{51D68721-517F-4A5C-91EF-1C5EFC18798E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Abstractions", "Core\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Abstractions", "DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj", "{38863552-10BC-4F81-B281-74435D4C7485}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.Test", "Test\Umbrella.AspNetCore.WebUtilities.Test\Umbrella.AspNetCore.WebUtilities.Test.csproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.Test", "AspNetCore\test\Umbrella.AspNetCore.WebUtilities.Test\Umbrella.AspNetCore.WebUtilities.Test.csproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities", "Legacy\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj", "{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities", "Legacy\src\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj", "{5776DF6A-F53F-4A3E-AAE2-566EDC77DB29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.N2", "N2CMS\Umbrella.N2\Umbrella.N2.csproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.N2", "N2CMS\src\Umbrella.N2\Umbrella.N2.csproj", "{5926B995-BF16-40E7-960B-E7F12BC8B74B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAnnotations", "Core\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj", "{89194FB0-E735-4A79-91E5-C02B8E631DA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAnnotations", "Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj", "{89194FB0-E735-4A79-91E5-C02B8E631DA0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAnnotations.Test", "Test\Umbrella.DataAnnotations.Test\Umbrella.DataAnnotations.Test.csproj", "{EF7FC951-650A-4B87-87CA-E1350B24AB66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAnnotations.Test", "Core\test\Umbrella.DataAnnotations.Test\Umbrella.DataAnnotations.Test.csproj", "{EF7FC951-650A-4B87-87CA-E1350B24AB66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.DynamicImage", "Legacy\Umbrella.Legacy.WebUtilities.DynamicImage\Umbrella.Legacy.WebUtilities.DynamicImage.csproj", "{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.DynamicImage", "Legacy\src\Umbrella.Legacy.WebUtilities.DynamicImage\Umbrella.Legacy.WebUtilities.DynamicImage.csproj", "{37315368-C0EF-4DEA-BA1D-D514B9FB7F42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Test", "Test\Umbrella.Utilities.Test\Umbrella.Utilities.Test.csproj", "{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Test", "Core\test\Umbrella.Utilities.Test\Umbrella.Utilities.Test.csproj", "{90EE8E03-55F4-4EBB-8AB5-35848CECA09C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.DataAnnotations", "Legacy\Umbrella.Legacy.WebUtilities.DataAnnotations\Umbrella.Legacy.WebUtilities.DataAnnotations.csproj", "{EDCADC38-86E4-478E-9F0C-374F523D7FC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.DataAnnotations", "Legacy\src\Umbrella.Legacy.WebUtilities.DataAnnotations\Umbrella.Legacy.WebUtilities.DataAnnotations.csproj", "{EDCADC38-86E4-478E-9F0C-374F523D7FC1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net", "Core\Umbrella.Extensions.Logging.Log4Net\Umbrella.Extensions.Logging.Log4Net.csproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net", "Logging\src\Umbrella.Extensions.Logging.Log4Net\Umbrella.Extensions.Logging.Log4Net.csproj", "{15E0827C-6AED-4295-B5F9-9EB564B41DC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.Utilities", "Legacy\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.csproj", "{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.Utilities", "Legacy\src\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.csproj", "{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.DependencyInjection.WCF", "Core\Umbrella.Extensions.DependencyInjection.WCF\Umbrella.Extensions.DependencyInjection.WCF.csproj", "{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.DependencyInjection.WCF", "WCF\src\Umbrella.Extensions.DependencyInjection.WCF\Umbrella.Extensions.DependencyInjection.WCF.csproj", "{B9E9EE53-0ACA-4277-A330-BF6FC378D78C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EntityFrameworkCore", "Core\Umbrella.DataAccess.EntityFrameworkCore\Umbrella.DataAccess.EntityFrameworkCore.csproj", "{B432210E-757E-463D-8E53-461BF0AC9978}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EntityFrameworkCore", "DataAccess\src\Umbrella.DataAccess.EntityFrameworkCore\Umbrella.DataAccess.EntityFrameworkCore.csproj", "{B432210E-757E-463D-8E53-461BF0AC9978}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EF6", "Core\Umbrella.DataAccess.EF6\Umbrella.DataAccess.EF6.csproj", "{F0868FBD-BC81-431F-9A45-8E10BBC08E7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EF6", "DataAccess\src\Umbrella.DataAccess.EF6\Umbrella.DataAccess.EF6.csproj", "{F0868FBD-BC81-431F-9A45-8E10BBC08E7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities", "AspNetCore\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj", "{F07EDE25-B6E9-4D2D-903A-C36E850C0C94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities", "AspNetCore\src\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj", "{F07EDE25-B6E9-4D2D-903A-C36E850C0C94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net.Azure", "Core\Umbrella.Extensions.Logging.Log4Net.Azure\Umbrella.Extensions.Logging.Log4Net.Azure.csproj", "{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net.Azure", "Logging\src\Umbrella.Extensions.Logging.Log4Net.Azure\Umbrella.Extensions.Logging.Log4Net.Azure.csproj", "{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant", "Core\Umbrella.DataAccess.MultiTenant\Umbrella.DataAccess.MultiTenant.csproj", "{9A5FD4FF-9804-4B64-B483-23A02BCE431E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.Abstractions", "DataAccess\src\Umbrella.DataAccess.MultiTenant\Umbrella.DataAccess.MultiTenant.Abstractions.csproj", "{9A5FD4FF-9804-4B64-B483-23A02BCE431E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.EF6", "Core\Umbrella.DataAccess.MultiTenant.EF6\Umbrella.DataAccess.MultiTenant.EF6.csproj", "{552F0401-14AE-4D2C-BF4E-ED6471201D71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.EF6", "DataAccess\src\Umbrella.DataAccess.MultiTenant.EF6\Umbrella.DataAccess.MultiTenant.EF6.csproj", "{552F0401-14AE-4D2C-BF4E-ED6471201D71}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.MultiTenant", "AspNetCore\Umbrella.AspNetCore.MultiTenant\Umbrella.AspNetCore.MultiTenant.csproj", "{0A2DD608-EDFF-446F-87D4-A99141E90EB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.MultiTenant", "AspNetCore\src\Umbrella.AspNetCore.MultiTenant\Umbrella.AspNetCore.MultiTenant.csproj", "{0A2DD608-EDFF-446F-87D4-A99141E90EB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.ActiveDirectory", "Core\Umbrella.ActiveDirectory\Umbrella.ActiveDirectory.csproj", "{907E51AA-0997-4E70-A28C-23DB4374E406}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.ActiveDirectory", "Core\src\Umbrella.ActiveDirectory\Umbrella.ActiveDirectory.csproj", "{907E51AA-0997-4E70-A28C-23DB4374E406}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Mapping", "Core\Umbrella.DataAccess.Mapping\Umbrella.DataAccess.Mapping.csproj", "{90EC7DCA-8B0F-4833-A60C-223EC3138E36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Mapping", "DataAccess\src\Umbrella.DataAccess.Mapping\Umbrella.DataAccess.Mapping.csproj", "{90EC7DCA-8B0F-4833-A60C-223EC3138E36}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WCF", "Legacy\Umbrella.Legacy.WCF\Umbrella.Legacy.WCF.csproj", "{FCED5D85-E986-4613-AB53-482B919B5B4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WCF", "Legacy\src\Umbrella.Legacy.WCF\Umbrella.Legacy.WCF.csproj", "{FCED5D85-E986-4613-AB53-482B919B5B4C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DataAnnotations", "AspNetCore\Umbrella.AspNetCore.DataAnnotations\Umbrella.AspNetCore.DataAnnotations.csproj", "{FE1010FA-192E-4C9E-B1A5-89073631DDC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DataAnnotations", "AspNetCore\src\Umbrella.AspNetCore.DataAnnotations\Umbrella.AspNetCore.DataAnnotations.csproj", "{FE1010FA-192E-4C9E-B1A5-89073631DDC2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Samples", "Samples\Umbrella.AspNetCore.Samples\Umbrella.AspNetCore.Samples.csproj", "{C08A58A4-136B-4A57-948E-F29324022225}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Annotations", "Core\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj", "{55BED670-A11E-4516-BC33-52855F022D30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Annotations", "TypeScript\src\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj", "{55BED670-A11E-4516-BC33-52855F022D30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Tools", "Core\Umbrella.TypeScript.Tools\Umbrella.TypeScript.Tools.csproj", "{8DE8C471-2ED0-4B28-94D0-742BF89D543F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Tools", "TypeScript\src\Umbrella.TypeScript.Tools\Umbrella.TypeScript.Tools.csproj", "{8DE8C471-2ED0-4B28-94D0-742BF89D543F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DynamicImage", "AspNetCore\Umbrella.AspNetCore.DynamicImage\Umbrella.AspNetCore.DynamicImage.csproj", "{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DynamicImage", "AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Umbrella.AspNetCore.DynamicImage.csproj", "{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript", "Core\Umbrella.TypeScript\Umbrella.TypeScript.csproj", "{26DE1D59-0106-4C38-9722-1A3C373C662E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript", "TypeScript\src\Umbrella.TypeScript\Umbrella.TypeScript.csproj", "{26DE1D59-0106-4C38-9722-1A3C373C662E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Test", "Test\Umbrella.TypeScript.Test\Umbrella.TypeScript.Test.csproj", "{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Test", "TypeScript\test\Umbrella.TypeScript.Test\Umbrella.TypeScript.Test.csproj", "{80CCAF8F-96F1-4BF4-B1D3-7F6D9249FE5F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Aurelia", "Core\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj", "{1F388195-8BBD-49C7-BDC3-F9D774A0489C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Aurelia", "TypeScript\src\Umbrella.TypeScript.Aurelia\Umbrella.TypeScript.Aurelia.csproj", "{1F388195-8BBD-49C7-BDC3-F9D774A0489C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Aurelia.Tools", "Core\Umbrella.TypeScript.Aurelia.Tools\Umbrella.TypeScript.Aurelia.Tools.csproj", "{23937086-8EEE-424F-9837-EEC3CC9BF7CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Aurelia.Tools", "TypeScript\src\Umbrella.TypeScript.Aurelia.Tools\Umbrella.TypeScript.Aurelia.Tools.csproj", "{23937086-8EEE-424F-9837-EEC3CC9BF7CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Aurelia.Test", "Test\Umbrella.TypeScript.Aurelia.Test\Umbrella.TypeScript.Aurelia.Test.csproj", "{ED48DA42-703B-4F8B-9605-E262EDCD8BCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Aurelia.Test", "TypeScript\test\Umbrella.TypeScript.Aurelia.Test\Umbrella.TypeScript.Aurelia.Test.csproj", "{ED48DA42-703B-4F8B-9605-E262EDCD8BCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Abstractions", "Core\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj", "{94DCA90F-03D5-4E8F-88C5-E4882AC98DE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Abstractions", "DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj", "{94DCA90F-03D5-4E8F-88C5-E4882AC98DE5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.SoundInTheory", "Core\Umbrella.DynamicImage.SoundInTheory\Umbrella.DynamicImage.SoundInTheory.csproj", "{6BFF2C5C-F639-48EE-AC88-12FC9F5D7707}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.SoundInTheory", "DynamicImage\src\Umbrella.DynamicImage.SoundInTheory\Umbrella.DynamicImage.SoundInTheory.csproj", "{6BFF2C5C-F639-48EE-AC88-12FC9F5D7707}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage", "Core\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj", "{4D3680D0-81EA-4B35-A47E-42507C38953C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage", "DynamicImage\src\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj", "{4D3680D0-81EA-4B35-A47E-42507C38953C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities.ModelState", "Core\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj", "{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities.ModelState", "Core\src\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj", "{1BB58BD9-C7F8-4216-AEDF-86AB9BC8E722}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Caching.AzureStorage", "Core\Umbrella.DynamicImage.Caching.AzureStorage\Umbrella.DynamicImage.Caching.AzureStorage.csproj", "{7CACBC66-1459-4E42-A673-172A39646D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Caching.AzureStorage", "DynamicImage\src\Umbrella.DynamicImage.Caching.AzureStorage\Umbrella.DynamicImage.Caching.AzureStorage.csproj", "{7CACBC66-1459-4E42-A673-172A39646D95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Test", "Test\Umbrella.DynamicImage.Test\Umbrella.DynamicImage.Test.csproj", "{E9ECDF2D-0A5C-45FF-8457-7D11B8750097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Test", "DynamicImage\test\Umbrella.DynamicImage.Test\Umbrella.DynamicImage.Test.csproj", "{E9ECDF2D-0A5C-45FF-8457-7D11B8750097}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Impl.Test", "Test\Umbrella.DynamicImage.Impl.Test\Umbrella.DynamicImage.Impl.Test.csproj", "{A48D6A8C-B1E4-4FA9-B4EE-895AB040B5BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Impl.Test", "DynamicImage\test\Umbrella.DynamicImage.Impl.Test\Umbrella.DynamicImage.Impl.Test.csproj", "{A48D6A8C-B1E4-4FA9-B4EE-895AB040B5BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.Abstractions", "Core\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj", "{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.Abstractions", "FileSystem\src\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj", "{DC3A3FFA-7EA2-48A4-A43D-CC57036DA356}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.AzureStorage", "Core\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj", "{A23F38F1-8CE7-483F-AADE-685EAF303E67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.AzureStorage", "FileSystem\src\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj", "{A23F38F1-8CE7-483F-AADE-685EAF303E67}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.Disk", "Core\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj", "{C9B1A1E3-7374-465C-8043-67966E1461AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.Disk", "FileSystem\src\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj", "{C9B1A1E3-7374-465C-8043-67966E1461AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.Test", "Test\Umbrella.FileSystem.Test\Umbrella.FileSystem.Test.csproj", "{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.FileSystem.Test", "FileSystem\test\Umbrella.FileSystem.Test\Umbrella.FileSystem.Test.csproj", "{E25F6C5A-F7EC-45EA-8A7A-33A1F0DD6820}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.Test", "Test\Umbrella.Legacy.WebUtilities.Test\Umbrella.Legacy.WebUtilities.Test.csproj", "{AF51C65C-F241-48C7-81DD-9E0E763E2002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.Test", "Legacy\test\Umbrella.Legacy.WebUtilities.Test\Umbrella.Legacy.WebUtilities.Test.csproj", "{AF51C65C-F241-48C7-81DD-9E0E763E2002}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Benchmark", "Benchmark\Umbrella.DynamicImage.Benchmark\Umbrella.DynamicImage.Benchmark.csproj", "{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Benchmark", "DynamicImage\benchmark\Umbrella.DynamicImage.Benchmark\Umbrella.DynamicImage.Benchmark.csproj", "{2DFB32F0-7CF9-48DF-B436-268B0C2171E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Caching", "Core\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj", "{B8419E36-6A4A-4E6E-B6D6-84E00E985DC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Caching", "Core\src\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj", "{B8419E36-6A4A-4E6E-B6D6-84E00E985DC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{A5C95561-6F4D-47F2-9A8C-304936EAB91E}"
 EndProject
