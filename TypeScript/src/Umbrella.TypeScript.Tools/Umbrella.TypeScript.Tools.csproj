@@ -3,14 +3,14 @@
   <PropertyGroup>
     <AssemblyName>dotnet-umbrella-ts</AssemblyName>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>1.0.0</Version>
+    <Version>2.0.0-rc-00001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>

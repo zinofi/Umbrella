@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>Umbrella.Unity</PackageId>
-    <Version>1.0.0</Version>
+    <Version>2.0.0-rc-00001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
     <Description>
+      WILL NOT WORK WITH UNITY UNTIL THEY RELEASE A NET471 VERSION!
       This package contains general utilities and infrastructure code for use with Unity projects.
     </Description>
   </PropertyGroup>
@@ -25,6 +26,7 @@
     <Reference Include="UnityEngine">
       <HintPath>..\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="netstandard" />
   </ItemGroup>
 
 </Project>

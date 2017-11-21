@@ -1,5 +1,4 @@
-﻿#if NET46
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -14,4 +13,3 @@ namespace Umbrella.Utilities.Encryption.Interfaces
         byte[] ExportCertificateWithPrivateKey(X509Certificate2 cert, out string password);
     }
 }
-#endif

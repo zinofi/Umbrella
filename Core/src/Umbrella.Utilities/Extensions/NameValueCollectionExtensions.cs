@@ -1,5 +1,4 @@
-﻿#if NET46
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -28,4 +27,3 @@ namespace Umbrella.Utilities.Extensions
         }
     }
 }
-#endif

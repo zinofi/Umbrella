@@ -1,5 +1,4 @@
-﻿#if NET46
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -221,4 +220,3 @@ namespace Umbrella.Utilities.Encryption
         #endregion
 	}
 }
-#endif

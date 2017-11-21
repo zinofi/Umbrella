@@ -1,5 +1,4 @@
-﻿#if NET46 || NETSTANDARD1_5
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -65,4 +64,3 @@ namespace Umbrella.Utilities.Extensions
         #endregion
     }
 }
-#endif

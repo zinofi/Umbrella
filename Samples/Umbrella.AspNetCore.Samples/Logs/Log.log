@@ -1,2 +1,262 @@
-2017-11-07 23:20:59,587 [1] INFO  Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Core\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:60) - Umbrella AspNetCore Samples Application Started
-2017-11-07 23:24:48,071 [1] INFO  Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Core\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:60) - Umbrella AspNetCore Samples Application Started
+2017-11-21 14:46:46,417 [1] INFO  Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Logging\src\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:60) - Umbrella AspNetCore Samples Application Started
+2017-11-21 14:46:48,599 [3] ERROR Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Logging\src\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:66) - Invoke() failed - Error in DynamicImageModule for path: / on Line: 129, Path: C:\ProjectsGIT\Umbrella Code Libraries\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Middleware\DynamicImageMiddleware.cs
+System.InvalidOperationException: Cannot find reference assembly 'System.AppContext.dll' file for package System.AppContext.Reference
+   at Microsoft.Extensions.DependencyModel.Resolution.ReferenceAssemblyPathResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.Resolution.CompositeCompilationAssemblyResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths(ICompilationAssemblyResolver resolver, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths()
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.AssemblyPart.<>c.<GetReferencePaths>b__8_0(CompilationLibrary library)
+   at System.Linq.Enumerable.<SelectManyIterator>d__17`2.MoveNext()
+   at Microsoft.AspNetCore.Mvc.Razor.Compilation.MetadataReferenceFeatureProvider.PopulateFeature(IEnumerable`1 parts, MetadataReferenceFeature feature)
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.ApplicationPartManager.PopulateFeature[TFeature](TFeature feature)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.GetCompilationReferences()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.get_CompilationReferences()
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.LazyMetadataReferenceFeature.get_References()
+   at Microsoft.CodeAnalysis.Razor.CompilationTagHelperFeature.GetDescriptors()
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorTagHelperBinderPhase.ExecuteCore(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.RazorEnginePhaseBase.Execute(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorEngine.Process(RazorCodeDocument document)
+   at Microsoft.AspNetCore.Razor.Language.RazorTemplateEngine.GenerateCode(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CreateCacheEntry(String normalizedPath)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorPageFactoryProvider.CreateFactory(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.CreateCacheResult(HashSet`1 expirationTokens, String relativePath, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.OnCacheMiss(ViewLocationExpanderContext expanderContext, ViewLocationCacheKey cacheKey)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.LocatePageFromViewLocations(ActionContext actionContext, String pageName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewEngines.CompositeViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.ViewResultExecutor.FindView(ActionContext actionContext, ViewResult viewResult)
+   at Microsoft.AspNetCore.Mvc.ViewResult.<ExecuteResultAsync>d__26.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeResultAsync>d__19.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResultFilterAsync>d__24.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResourceFilter>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeFilterPipelineAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeAsync>d__15.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at Umbrella.AspNetCore.DynamicImage.Middleware.DynamicImageMiddleware.<Invoke>d__10.MoveNext() in C:\ProjectsGIT\Umbrella Code Libraries\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Middleware\DynamicImageMiddleware.cs:line 78
+2017-11-21 14:46:48,698 [3] ERROR Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Logging\src\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:66) - An unhandled exception has occurred while executing the request
+System.InvalidOperationException: Cannot find reference assembly 'System.AppContext.dll' file for package System.AppContext.Reference
+   at Microsoft.Extensions.DependencyModel.Resolution.ReferenceAssemblyPathResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.Resolution.CompositeCompilationAssemblyResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths(ICompilationAssemblyResolver resolver, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths()
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.AssemblyPart.<>c.<GetReferencePaths>b__8_0(CompilationLibrary library)
+   at System.Linq.Enumerable.<SelectManyIterator>d__17`2.MoveNext()
+   at Microsoft.AspNetCore.Mvc.Razor.Compilation.MetadataReferenceFeatureProvider.PopulateFeature(IEnumerable`1 parts, MetadataReferenceFeature feature)
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.ApplicationPartManager.PopulateFeature[TFeature](TFeature feature)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.GetCompilationReferences()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.get_CompilationReferences()
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.LazyMetadataReferenceFeature.get_References()
+   at Microsoft.CodeAnalysis.Razor.CompilationTagHelperFeature.GetDescriptors()
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorTagHelperBinderPhase.ExecuteCore(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.RazorEnginePhaseBase.Execute(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorEngine.Process(RazorCodeDocument document)
+   at Microsoft.AspNetCore.Razor.Language.RazorTemplateEngine.GenerateCode(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CreateCacheEntry(String normalizedPath)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorPageFactoryProvider.CreateFactory(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.CreateCacheResult(HashSet`1 expirationTokens, String relativePath, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.OnCacheMiss(ViewLocationExpanderContext expanderContext, ViewLocationCacheKey cacheKey)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.LocatePageFromViewLocations(ActionContext actionContext, String pageName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewEngines.CompositeViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.ViewResultExecutor.FindView(ActionContext actionContext, ViewResult viewResult)
+   at Microsoft.AspNetCore.Mvc.ViewResult.<ExecuteResultAsync>d__26.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeResultAsync>d__19.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResultFilterAsync>d__24.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResourceFilter>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeFilterPipelineAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeAsync>d__15.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at Umbrella.AspNetCore.DynamicImage.Middleware.DynamicImageMiddleware.<Invoke>d__10.MoveNext() in C:\ProjectsGIT\Umbrella Code Libraries\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Middleware\DynamicImageMiddleware.cs:line 78
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.<Invoke>d__7.MoveNext()
+2017-11-21 14:49:44,366 [22] ERROR Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Logging\src\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:66) - Invoke() failed - Error in DynamicImageModule for path: / on Line: 129, Path: C:\ProjectsGIT\Umbrella Code Libraries\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Middleware\DynamicImageMiddleware.cs
+System.InvalidOperationException: Cannot find reference assembly 'System.AppContext.dll' file for package System.AppContext.Reference
+   at Microsoft.Extensions.DependencyModel.Resolution.ReferenceAssemblyPathResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.Resolution.CompositeCompilationAssemblyResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths(ICompilationAssemblyResolver resolver, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths()
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.AssemblyPart.<>c.<GetReferencePaths>b__8_0(CompilationLibrary library)
+   at System.Linq.Enumerable.<SelectManyIterator>d__17`2.MoveNext()
+   at Microsoft.AspNetCore.Mvc.Razor.Compilation.MetadataReferenceFeatureProvider.PopulateFeature(IEnumerable`1 parts, MetadataReferenceFeature feature)
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.ApplicationPartManager.PopulateFeature[TFeature](TFeature feature)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.GetCompilationReferences()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.get_CompilationReferences()
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.LazyMetadataReferenceFeature.get_References()
+   at Microsoft.CodeAnalysis.Razor.CompilationTagHelperFeature.GetDescriptors()
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorTagHelperBinderPhase.ExecuteCore(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.RazorEnginePhaseBase.Execute(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorEngine.Process(RazorCodeDocument document)
+   at Microsoft.AspNetCore.Razor.Language.RazorTemplateEngine.GenerateCode(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CreateCacheEntry(String normalizedPath)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorPageFactoryProvider.CreateFactory(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.CreateCacheResult(HashSet`1 expirationTokens, String relativePath, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.OnCacheMiss(ViewLocationExpanderContext expanderContext, ViewLocationCacheKey cacheKey)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.LocatePageFromViewLocations(ActionContext actionContext, String pageName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewEngines.CompositeViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.ViewResultExecutor.FindView(ActionContext actionContext, ViewResult viewResult)
+   at Microsoft.AspNetCore.Mvc.ViewResult.<ExecuteResultAsync>d__26.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeResultAsync>d__19.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResultFilterAsync>d__24.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResourceFilter>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeFilterPipelineAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeAsync>d__15.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at Umbrella.AspNetCore.DynamicImage.Middleware.DynamicImageMiddleware.<Invoke>d__10.MoveNext() in C:\ProjectsGIT\Umbrella Code Libraries\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Middleware\DynamicImageMiddleware.cs:line 78
+2017-11-21 14:49:44,447 [22] ERROR Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Logging\src\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:66) - An unhandled exception has occurred while executing the request
+System.InvalidOperationException: Cannot find reference assembly 'System.AppContext.dll' file for package System.AppContext.Reference
+   at Microsoft.Extensions.DependencyModel.Resolution.ReferenceAssemblyPathResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.Resolution.CompositeCompilationAssemblyResolver.TryResolveAssemblyPaths(CompilationLibrary library, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths(ICompilationAssemblyResolver resolver, List`1 assemblies)
+   at Microsoft.Extensions.DependencyModel.CompilationLibrary.ResolveReferencePaths()
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.AssemblyPart.<>c.<GetReferencePaths>b__8_0(CompilationLibrary library)
+   at System.Linq.Enumerable.<SelectManyIterator>d__17`2.MoveNext()
+   at Microsoft.AspNetCore.Mvc.Razor.Compilation.MetadataReferenceFeatureProvider.PopulateFeature(IEnumerable`1 parts, MetadataReferenceFeature feature)
+   at Microsoft.AspNetCore.Mvc.ApplicationParts.ApplicationPartManager.PopulateFeature[TFeature](TFeature feature)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.GetCompilationReferences()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorReferenceManager.get_CompilationReferences()
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.LazyMetadataReferenceFeature.get_References()
+   at Microsoft.CodeAnalysis.Razor.CompilationTagHelperFeature.GetDescriptors()
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorTagHelperBinderPhase.ExecuteCore(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.RazorEnginePhaseBase.Execute(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Razor.Language.DefaultRazorEngine.Process(RazorCodeDocument document)
+   at Microsoft.AspNetCore.Razor.Language.RazorTemplateEngine.GenerateCode(RazorCodeDocument codeDocument)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CompileAndEmit(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.RazorViewCompiler.CreateCacheEntry(String normalizedPath)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Razor.Internal.DefaultRazorPageFactoryProvider.CreateFactory(String relativePath)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.CreateCacheResult(HashSet`1 expirationTokens, String relativePath, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.OnCacheMiss(ViewLocationExpanderContext expanderContext, ViewLocationCacheKey cacheKey)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.LocatePageFromViewLocations(ActionContext actionContext, String pageName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewEngines.CompositeViewEngine.FindView(ActionContext context, String viewName, Boolean isMainPage)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.Internal.ViewResultExecutor.FindView(ActionContext actionContext, ViewResult viewResult)
+   at Microsoft.AspNetCore.Mvc.ViewResult.<ExecuteResultAsync>d__26.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeResultAsync>d__19.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResultFilterAsync>d__24.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResultExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeNextResourceFilter>d__22.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Rethrow(ResourceExecutedContext context)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeFilterPipelineAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Mvc.Internal.ResourceInvoker.<InvokeAsync>d__15.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at Umbrella.AspNetCore.DynamicImage.Middleware.DynamicImageMiddleware.<Invoke>d__10.MoveNext() in C:\ProjectsGIT\Umbrella Code Libraries\AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Middleware\DynamicImageMiddleware.cs:line 78
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.<Invoke>d__7.MoveNext()
+2017-11-21 14:50:02,869 [1] INFO  Umbrella.Extensions.Logging.Log4Net.Log4NetAdapter.Log(C:\ProjectsGIT\Umbrella Code Libraries\Logging\src\Umbrella.Extensions.Logging.Log4Net\Log4NetAdapter.cs:60) - Umbrella AspNetCore Samples Application Started

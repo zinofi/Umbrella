@@ -18,10 +18,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
 
             //Encryption
-#if NET46
             services.AddSingleton<ICertificateUtility, CertificateUtility>();
             services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
-#endif
 
             return services;
         }
