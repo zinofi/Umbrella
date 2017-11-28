@@ -12,7 +12,7 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
     <Description>
-      This package contains a general mix of utilities, plugins and infrastructure for use with the N2 Content Management System. 
+      This package contains a general mix of utilities, plugins and infrastructure for use with the N2 Content Management System.
     </Description>
   </PropertyGroup>
 
@@ -38,9 +38,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="System.Configuration" />
   </ItemGroup>
 

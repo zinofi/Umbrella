@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -12,7 +12,6 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
     <Description>
-      WILL NOT WORK WITH UNITY UNTIL THEY RELEASE A NET471 VERSION!
       This package contains general utilities and infrastructure code for use with Unity projects.
     </Description>
   </PropertyGroup>

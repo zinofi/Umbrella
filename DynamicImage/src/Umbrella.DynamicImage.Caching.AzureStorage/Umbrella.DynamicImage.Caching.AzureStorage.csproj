@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.3\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

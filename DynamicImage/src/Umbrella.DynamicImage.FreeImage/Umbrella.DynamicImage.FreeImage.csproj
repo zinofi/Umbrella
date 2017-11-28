@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <PackageReference Include="FreeImage-dotnet-core" Version="4.3.5" />
-    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
