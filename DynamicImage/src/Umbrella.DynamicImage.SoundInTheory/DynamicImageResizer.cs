@@ -134,6 +134,8 @@ namespace Umbrella.DynamicImage.SoundInTheory
             using (MemoryStream stream = new MemoryStream())
             {
                 encoder.Save(stream);
+
+                //TODO: Call .GetBuffer to avoid creating a new copy of the array
                 return stream.ToArray();
             }
         }

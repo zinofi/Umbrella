@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -24,10 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="netstandard" />
   </ItemGroup>
 
 </Project>

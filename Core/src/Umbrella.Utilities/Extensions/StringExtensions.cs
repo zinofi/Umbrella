@@ -257,6 +257,7 @@ namespace Umbrella.Utilities.Extensions
                 buffer.Add(current);
             }
 
+            //TODO: Can this be made more efficient somehow by avoiding the intermediate array??
             return new string(buffer.ToArray());
         }
     }

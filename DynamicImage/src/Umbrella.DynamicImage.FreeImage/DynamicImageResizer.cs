@@ -71,6 +71,8 @@ namespace Umbrella.DynamicImage.FreeImage
                             using (var outputStream = new MemoryStream())
                             {
                                 imageToSave.Save(outputStream, GetImageFormat(format), GetSaveFlags(format));
+
+                                //TODO: Call .GetBuffer to avoid creating a new copy of the array
                                 return outputStream.ToArray();
                             }
                         }
