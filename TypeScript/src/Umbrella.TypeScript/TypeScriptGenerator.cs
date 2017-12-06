@@ -24,9 +24,8 @@ namespace Umbrella.TypeScript
         public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator>(x => x.GetType()));
         #endregion
 
-#region Public Methods
+        #region Public Methods
 
-#if NET46
         /// <summary>
         /// Create a new <see cref="TypeScriptGenerator"/> instance.
         /// </summary>
@@ -37,14 +36,13 @@ namespace Umbrella.TypeScript
         /// </param>
         public TypeScriptGenerator(params string[] onlyNamedAssemblies)
         {
-            IEnumerable<Assembly> assemblies = null;//AppDomain.CurrentDomain.GetAssemblies();
+            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             if (onlyNamedAssemblies?.Length > 0)
                 assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.GetName().Name));
 
             m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
         }
-#endif
 
         public TypeScriptGenerator(List<Assembly> assemblies)
         {
@@ -100,11 +98,11 @@ namespace Umbrella.TypeScript
                     .AppendLine("{");
 
                 //Generate enum definitions for this namespace if any exist
-                if(enumGroups.ContainsKey(nsName))
+                if (enumGroups.ContainsKey(nsName))
                 {
                     List<TypeInfo> lstEnumToGenerate = enumGroups[nsName];
-                    
-                    foreach(TypeInfo enumType in lstEnumToGenerate)
+
+                    foreach (TypeInfo enumType in lstEnumToGenerate)
                     {
                         string enumOutput = GenerateEnumDefinition(enumType);
 
@@ -123,7 +121,7 @@ namespace Umbrella.TypeScript
                     {
                         TypeScriptModelAttribute attribute = item.ModelAttribute;
 
-                        if(attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
+                        if (attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
                         {
                             string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules, m_StrictNullChecks, m_TypeScriptPropertyMode);
 
@@ -137,7 +135,7 @@ namespace Umbrella.TypeScript
             }
 
             //Now generate enums in namespaces that couldn't be placed within the same namespace as any of the generated models
-            foreach(var group in enumGroups)
+            foreach (var group in enumGroups)
             {
                 //Start of TypeScript namespace
                 sbNamespaces.AppendLine($"{namespaceOrModuleStart} {group.Key}")
@@ -156,16 +154,16 @@ namespace Umbrella.TypeScript
 
             return sbNamespaces.ToString();
         }
-#endregion
+        #endregion
 
-#region Private Methods
+        #region Private Methods
         private string GenerateEnumDefinition(TypeInfo enumType)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine($"\texport enum {enumType.Name}");
             builder.AppendLine("\t{");
 
-            foreach(var enumItem in enumType.GetEnumDictionary())
+            foreach (var enumItem in enumType.GetEnumDictionary())
             {
                 builder.AppendLine($"\t\t{enumItem.Value} = {enumItem.Key},");
             }
@@ -189,7 +187,7 @@ namespace Umbrella.TypeScript
 
         private IEnumerable<TypeInfo> GetEnumItems()
         {
-            foreach(var type in m_Types.Select(x => x.GetTypeInfo()))
+            foreach (var type in m_Types.Select(x => x.GetTypeInfo()))
             {
                 if (!type.IsEnum)
                     continue;
@@ -202,6 +200,6 @@ namespace Umbrella.TypeScript
                 yield return type;
             }
         }
-#endregion
+        #endregion
     }
 }
