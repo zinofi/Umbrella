@@ -3,6 +3,7 @@ using System.Runtime.Loader;
 using System.Reflection;
 using System.Collections.Generic;
 using Xunit;
+using System.ComponentModel.DataAnnotations;
 
 namespace Umbrella.TypeScript.Test
 {
@@ -34,8 +35,15 @@ namespace Umbrella.TypeScript.Test
     [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
     public class TestClass
     {
+        [Range(10, 200)]
         public int TestInt { get; set; } = 100;
         public string TestString { get; set; }
+        [EmailAddress]
+        public string EmailAddress { get; set; }
+
+        [EmailAddress]
+        [Compare(nameof(EmailAddress), ErrorMessage = "Emails must match")]
+        public string ConfirmEmailAddress { get; set; }
     }
 
     [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
@@ -48,6 +56,7 @@ namespace Umbrella.TypeScript.Test
         public int IgnoreMe { get; set; }
 
         [TypeScriptNull]
+        [Required]
         public string IHaveADefaultButAmForcedToBeNull { get; set; } = "I should not be output!";
 
         [TypeScriptEmpty]

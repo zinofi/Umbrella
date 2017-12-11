@@ -20,5 +20,9 @@
     <ProjectReference Include="..\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj" />
     <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
+  </ItemGroup>
 
 </Project>
