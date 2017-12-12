@@ -62,6 +62,7 @@ namespace Umbrella.TypeScript.Test
         [TypeScriptEmpty]
         public List<string> TestStringList { get; set; }
 
+        [TypeScriptOverride(typeof(string))]
         public List<int> TestIntList { get; set; } = new List<int>();
     }
 }
