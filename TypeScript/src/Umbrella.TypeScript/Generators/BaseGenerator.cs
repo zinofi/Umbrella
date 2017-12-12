@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 using Umbrella.TypeScript.Generators.Interfaces;
+using Umbrella.TypeScript.Annotations.Attributes;
 
 namespace Umbrella.TypeScript.Generators
 {
@@ -47,6 +48,12 @@ namespace Umbrella.TypeScript.Generators
         {
             foreach (PropertyInfo pi in properties)
             {
+                var typeOverrideAttribute = pi.GetCustomAttribute<TypeScriptOverrideAttribute>();
+
+                Type propertyType = typeOverrideAttribute != null
+                    ? typeOverrideAttribute.TypeOverride
+                    : pi.PropertyType;
+
                 TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(ModelType, pi.PropertyType, pi, OutputModelType, StrictNullChecks, PropertyMode);
                 
                 WriteProperty(tsInfo, typeBuilder);
