@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Comparers
 {
-    public class GenericEqualityComparer<T> : EqualityComparer<T>
+    public class GenericEqualityComparer<TObject, TProperty> : EqualityComparer<TObject>
     {
-        private readonly Func<T, object> m_PropertySelector;
+        private readonly Func<TObject, TProperty> _PropertySelector;
 
-        public GenericEqualityComparer(Func<T, object> propertySelector)
-            => m_PropertySelector = propertySelector;
+        public GenericEqualityComparer(Func<TObject, TProperty> propertySelector)
+            => _PropertySelector = propertySelector;
 
-        public override bool Equals(T x, T y)
+        public override bool Equals(TObject x, TObject y)
             => GetHashCode(x) == GetHashCode(y);
 
-        public override int GetHashCode(T obj)
-            => m_PropertySelector(obj).GetHashCode();
+        public override int GetHashCode(TObject obj)
+            => _PropertySelector(obj).GetHashCode();
     }
 }

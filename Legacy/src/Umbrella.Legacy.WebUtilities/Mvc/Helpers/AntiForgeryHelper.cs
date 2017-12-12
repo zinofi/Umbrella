@@ -12,12 +12,12 @@ namespace System.Web.Mvc
 {
 	public static class AntiForgeryHelper
 	{
-		public static string RequestVerificationToken(this HtmlHelper helper)
+		public static HtmlString RequestVerificationToken(this HtmlHelper helper)
 		{
 			IOwinContext context = HttpContext.Current.GetOwinContext();
 
-			return string.Format("data-request-verification-token={0}", GetAntiForgeryTokenValue(context));
-		}
+            return new HtmlString(string.Format("data-request-verification-token=\"{0}\"", GetAntiForgeryTokenValue(context)));
+        }
 
 		public static string GetAntiForgeryTokenValue(this IOwinContext context)
 		{

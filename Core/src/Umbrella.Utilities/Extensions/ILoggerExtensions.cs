@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.Logging
         public static void WriteInformation(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
             => LogDetails(log, LogLevel.Information, null, state, message, methodName, filePath, lineNumber);
 
-        public static bool WriteWarning(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static bool WriteWarning(this ILogger log, Exception exc = null, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogWarningErrorOrCritical(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
 
@@ -75,8 +75,11 @@ namespace Microsoft.Extensions.Logging
                 case LogLevel.Information:
                     log.LogInformation(output);
                     break;
-                case LogLevel.Warning:
+                case LogLevel.Warning when exc != null:
                     log.LogWarning(new EventId(), exc, output);
+                    break;
+                case LogLevel.Warning:
+                    log.LogWarning(output);
                     break;
                 case LogLevel.Error:
                     log.LogError(new EventId(), exc, output);

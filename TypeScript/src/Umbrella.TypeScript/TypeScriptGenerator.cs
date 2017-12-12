@@ -21,7 +21,7 @@ namespace Umbrella.TypeScript
         #endregion
 
         #region Public Properties
-        public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator>(x => x.GetType()));
+        public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator, Type>(x => x.GetType()));
         #endregion
 
         #region Public Methods

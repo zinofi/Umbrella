@@ -52,7 +52,7 @@ namespace Umbrella.Utilities.Configuration
         protected virtual Func<MemoryCacheEntryOptions> GetCacheEntryOptionsFunc() => null;
         protected abstract T FromJson<T>(string value);
 
-        protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
+        protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
         {
             try
             {
@@ -62,9 +62,9 @@ namespace Umbrella.Utilities.Configuration
                     ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
                     {
                         entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
-                        return GetSetting(fallback, key, throwException);
+                        return GetSetting(fallback, key, throwException, customValueConverter);
                     })
-                    : GetSetting(fallback, key, throwException);
+                    : GetSetting(fallback, key, throwException, customValueConverter);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -94,23 +94,16 @@ namespace Umbrella.Utilities.Configuration
         #endregion
 
         #region Private Methods
-        private T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false)
+        private T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false, Func<string, T> customValueConverter = null)
         {
             string value = AppSettingsSource.GetValue(key);
 
             var type = typeof(T);
 
             if (!string.IsNullOrEmpty(value))
-            {
-                if (type.GetTypeInfo().IsPrimitive || type == typeof(string))
-                    return (T)Convert.ChangeType(value, type);
-
-                return FromJson<T>(value);
-            }
+                return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
             else if (throwException)
-            {
                 throw new ArgumentException(string.Format("The value for key: {0} is not valid. An app setting with that key cannot be found", key));
-            }
 
             return type == typeof(string) && fallback == null
                 ? (T)Convert.ChangeType(string.Empty, type)

@@ -48,7 +48,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             [nameof(LogEntryMetaData.EventTimeStamp)] = Normalize(nameof(LogEntryMetaData.EventTimeStamp)),
             [nameof(LogEntryMetaData.Level)] = Normalize(nameof(LogEntryMetaData.Level)),
         };
-        private static readonly GenericEqualityComparer<CloudTable> s_CloudTableEqualityComparer = new GenericEqualityComparer<CloudTable>(x => x.Name);
+        private static readonly GenericEqualityComparer<CloudTable, string> s_CloudTableEqualityComparer = new GenericEqualityComparer<CloudTable, string>(x => x.Name);
         private static readonly string[] s_DateSeparatorArray = new[] { AzureTableStorageAppender.TableNameSeparator };
         private static readonly string s_CacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
         #endregion

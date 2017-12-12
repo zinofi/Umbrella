@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Hosting
@@ -113,6 +114,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
                         if (!fileInfo.Exists)
                             throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
+
+                        var changeToken = new PhysicalFileChangeToken(fileInfo);
+                        entry.AddExpirationToken(changeToken);
 
                         long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
                         string version = Convert.ToString(versionHash, 16);
