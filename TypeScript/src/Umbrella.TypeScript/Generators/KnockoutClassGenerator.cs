@@ -56,7 +56,7 @@ namespace Umbrella.TypeScript.Generators
             if (lstValidationAttribute.Count == 0)
                 return;
 
-            validationBuilder.AppendLineWithTabIndent($"this.{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
+            validationBuilder.AppendLineWithTabIndent($"this.{tsInfo.Name.ToCamelCaseInvariant()} = this.{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
 
             for (int i = 0; i < lstValidationAttribute.Count; i++)
             {
