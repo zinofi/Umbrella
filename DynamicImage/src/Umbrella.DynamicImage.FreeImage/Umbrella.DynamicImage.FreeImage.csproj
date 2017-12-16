@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeImage-dotnet-core" Version="4.3.5" />
+    <PackageReference Include="FreeImage-dotnet-core" Version="4.3.6" />
   </ItemGroup>
 
   <ItemGroup>
