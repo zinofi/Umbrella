@@ -260,5 +260,13 @@ namespace Umbrella.Utilities.Extensions
             //TODO: Can this be made more efficient somehow by avoiding the intermediate array??
             return new string(buffer.ToArray());
         }
+
+        public static bool Contains(this string target, string value, StringComparison comparisonType)
+        {
+            if (target == null || value == null)
+                return false;
+
+            return target.IndexOf(value, comparisonType) >= 0;
+        }
     }
 }
