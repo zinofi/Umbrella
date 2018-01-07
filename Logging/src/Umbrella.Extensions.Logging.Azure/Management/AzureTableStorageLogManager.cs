@@ -311,7 +311,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
                 if (!cacheFirstBuild)
                 {
-                    //TODO: Check ATS for any new rows added since the cache was populated but only if
+                    //Check ATS for any new rows added since the cache was populated but only if
                     //we haven't just populated the cache in this request.
                     //Get the last item in the cache
                     LogEntryMetaData entry = lstMetaData?.LastOrDefault();
@@ -463,7 +463,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
         #endregion
 
         #region Private Static Methods
-        private static string Normalize(string value) => value?.Trim()?.ToUpperInvariant();//TODO: Add back when netstandard 2.0 is released ?.Normalize();
+        private static string Normalize(string value) => value?.Trim()?.ToUpperInvariant()?.Normalize();
         #endregion
 
         #region Private Methods

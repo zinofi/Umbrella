@@ -103,7 +103,7 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -124,11 +124,11 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             bytes = await file.ReadAsByteArrayAsync();
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -148,14 +148,14 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Get the file
             IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{c_TestFileName}");
 
             Assert.NotNull(retrievedFile);
 
-            CheckWrittenFileAssertions(provider, retrievedFile, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, retrievedFile, bytes.Length, c_TestFileName);
 
             byte[] retrievedBytes = await file.ReadAsByteArrayAsync();
             Assert.Equal(bytes.Length, retrievedFile.Length);
@@ -179,7 +179,7 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -187,7 +187,7 @@ namespace Umbrella.FileSystem.Test
                 bytes = ms.ToArray();
             }
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -207,14 +207,14 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Get the file
             IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{c_TestFileName}");
 
             Assert.NotNull(retrievedFile);
 
-            CheckWrittenFileAssertions(provider, retrievedFile, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, retrievedFile, bytes.Length, c_TestFileName);
 
             byte[] retrievedBytes;
 
@@ -285,7 +285,7 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             bool exists = await provider.ExistsAsync(subpath);
 
@@ -299,7 +299,7 @@ namespace Umbrella.FileSystem.Test
 
         [Theory]
         [MemberData(nameof(ProvidersMemberData))]
-        public async Task SaveAsync_GetAsync_DeletePath(IUmbrellaFileProvider provider)
+        public async Task SaveAsyncBytes_GetAsync_DeletePath(IUmbrellaFileProvider provider)
         {
             var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
 
@@ -309,11 +309,11 @@ namespace Umbrella.FileSystem.Test
 
             var fileInfo = await provider.SaveAsync(subpath, bytes);
 
-            CheckWrittenFileAssertions(provider, fileInfo, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, c_TestFileName);
 
             fileInfo = await provider.GetAsync(subpath);
 
-            CheckWrittenFileAssertions(provider, fileInfo, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, c_TestFileName);
 
             //Cleanup
             bool deleted = await provider.DeleteAsync(subpath);
@@ -323,7 +323,31 @@ namespace Umbrella.FileSystem.Test
 
         [Theory]
         [MemberData(nameof(ProvidersMemberData))]
-        public async Task SaveAsync_ExistsAsync_DeletePath(IUmbrellaFileProvider provider)
+        public async Task SaveAsyncStream_GetAsync_DeletePath(IUmbrellaFileProvider provider)
+        {
+            var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+            Stream stream = File.OpenRead(physicalPath);
+
+            string subpath = $"/images/{c_TestFileName}";
+
+            var fileInfo = await provider.SaveAsync(subpath, stream);
+
+            CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, c_TestFileName);
+
+            fileInfo = await provider.GetAsync(subpath);
+
+            CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, c_TestFileName);
+
+            //Cleanup
+            bool deleted = await provider.DeleteAsync(subpath);
+
+            Assert.True(deleted);
+        }
+
+        [Theory]
+        [MemberData(nameof(ProvidersMemberData))]
+        public async Task SaveAsyncBytes_ExistsAsync_DeletePath(IUmbrellaFileProvider provider)
         {
             var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
 
@@ -333,7 +357,31 @@ namespace Umbrella.FileSystem.Test
 
             var fileInfo = await provider.SaveAsync(subpath, bytes);
 
-            CheckWrittenFileAssertions(provider, fileInfo, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, c_TestFileName);
+
+            bool exists = await provider.ExistsAsync(subpath);
+
+            Assert.True(exists);
+
+            //Cleanup
+            bool deleted = await provider.DeleteAsync(subpath);
+
+            Assert.True(deleted);
+        }
+
+        [Theory]
+        [MemberData(nameof(ProvidersMemberData))]
+        public async Task SaveAsyncStream_ExistsAsync_DeletePath(IUmbrellaFileProvider provider)
+        {
+            var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+            Stream stream = File.OpenRead(physicalPath);
+
+            string subpath = $"/images/{c_TestFileName}";
+
+            var fileInfo = await provider.SaveAsync(subpath, stream);
+
+            CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, c_TestFileName);
 
             bool exists = await provider.ExistsAsync(subpath);
 
@@ -357,7 +405,7 @@ namespace Umbrella.FileSystem.Test
 
         [Theory]
         [MemberData(nameof(ProvidersMemberData))]
-        public async Task CopyAsync_FromFile_NotExists(IUmbrellaFileProvider provider)
+        public async Task CopyAsync_FromFileBytes_NotExists(IUmbrellaFileProvider provider)
         {
             //Should be a file system exception with a file not found exception inside
             await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
@@ -369,6 +417,28 @@ namespace Umbrella.FileSystem.Test
                 string subpath = $"/images/{c_TestFileName}";
 
                 var fileInfo = await provider.SaveAsync(subpath, bytes);
+
+                await provider.DeleteAsync(fileInfo);
+
+                //At this point the file will not exist
+                await provider.CopyAsync(fileInfo, "~/images/willfail.jpg");
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(ProvidersMemberData))]
+        public async Task CopyAsync_FromFileStream_NotExists(IUmbrellaFileProvider provider)
+        {
+            //Should be a file system exception with a file not found exception inside
+            await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+            {
+                var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+                Stream stream = File.OpenRead(physicalPath);
+
+                string subpath = $"/images/{c_TestFileName}";
+
+                var fileInfo = await provider.SaveAsync(subpath, stream);
 
                 await provider.DeleteAsync(fileInfo);
 
@@ -402,7 +472,7 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Act
             var copy = await provider.CopyAsync(subpath, "/images/copy.png");
@@ -413,7 +483,7 @@ namespace Umbrella.FileSystem.Test
             //Read the file into memory and cache for our comparison
             await copy.ReadAsByteArrayAsync(cacheContents: true);
 
-            CheckWrittenFileAssertions(provider, copy, bytes, "copy.png");
+            CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -437,7 +507,7 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Act
             var copy = await provider.CopyAsync(file, "/images/copy.png");
@@ -448,7 +518,7 @@ namespace Umbrella.FileSystem.Test
             //Read the file into memory and cache for our comparison
             await copy.ReadAsByteArrayAsync(cacheContents: true);
 
-            CheckWrittenFileAssertions(provider, copy, bytes, "copy.png");
+            CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -472,7 +542,7 @@ namespace Umbrella.FileSystem.Test
 
             await file.WriteFromByteArrayAsync(bytes);
 
-            CheckWrittenFileAssertions(provider, file, bytes, c_TestFileName);
+            CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
 
             //Create the copy file
             var copy = await provider.CreateAsync("/images/copy.png");
@@ -486,7 +556,7 @@ namespace Umbrella.FileSystem.Test
             //Read the file into memory and cache for our comparison
             await copy.ReadAsByteArrayAsync(cacheContents: true);
 
-            CheckWrittenFileAssertions(provider, copy, bytes, "copy.png");
+            CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
             //Cleanup
             await provider.DeleteAsync(file);
@@ -554,11 +624,11 @@ namespace Umbrella.FileSystem.Test
             return new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
         }
 
-        private void CheckWrittenFileAssertions(IUmbrellaFileProvider provider, IUmbrellaFileInfo file, byte[] bytes, string fileName)
+        private void CheckWrittenFileAssertions(IUmbrellaFileProvider provider, IUmbrellaFileInfo file, int length, string fileName)
         {
             CheckPOCOFileType(provider, file);
             Assert.False(file.IsNew);
-            Assert.Equal(bytes.Length, file.Length);
+            Assert.Equal(length, file.Length);
             Assert.Equal(DateTimeOffset.UtcNow.Date, file.LastModified.Value.UtcDateTime.Date);
             Assert.Equal(fileName, file.Name);
             Assert.Equal("image/png", file.ContentType);

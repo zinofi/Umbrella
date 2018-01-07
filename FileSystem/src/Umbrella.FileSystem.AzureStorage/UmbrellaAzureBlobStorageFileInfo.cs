@@ -105,9 +105,7 @@ namespace Umbrella.FileSystem.AzureStorage
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                if (IsNew)
-                    throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
+                ThrowIfIsNew();
 
                 if (cacheContents && m_Contents != null)
                     return m_Contents;
@@ -137,6 +135,7 @@ namespace Umbrella.FileSystem.AzureStorage
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                ThrowIfIsNew();
                 Guard.ArgumentNotNull(target, nameof(target));
 
 #if NET47
@@ -175,6 +174,34 @@ namespace Umbrella.FileSystem.AzureStorage
                 IsNew = false;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNull(stream, nameof(stream));
+                
+#if NET47
+                await Blob.UploadFromStreamAsync(stream, cancellationToken).ConfigureAwait(false);
+#else
+                await Blob.UploadFromStreamAsync(stream).ConfigureAwait(false);
+#endif
+                
+                //Trigger a call to this to ensure property population
+#if NET47
+                await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
+#else
+                await Blob.ExistsAsync().ConfigureAwait(false);
+#endif
+
+                IsNew = false;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
@@ -240,6 +267,14 @@ namespace Umbrella.FileSystem.AzureStorage
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
+        }
+        #endregion
+
+        #region Private Methods
+        private void ThrowIfIsNew()
+        {
+            if (IsNew)
+                throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
         }
         #endregion
     }

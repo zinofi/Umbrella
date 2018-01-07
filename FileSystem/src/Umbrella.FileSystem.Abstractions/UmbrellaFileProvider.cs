@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -165,6 +166,25 @@ namespace Umbrella.FileSystem.Abstractions
 
                 IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
                 await file.WriteFromByteArrayAsync(bytes, cacheContents, cancellationToken).ConfigureAwait(false);
+
+                return file;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+                Guard.ArgumentNotNull(stream, nameof(stream));
+
+                IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
+                await file.WriteFromStreamAsync(stream, cancellationToken).ConfigureAwait(false);
 
                 return file;
             }

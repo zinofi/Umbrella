@@ -163,7 +163,7 @@ namespace Umbrella.FileSystem.Disk
 
                 using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
                 {
-                    await fs.CopyToAsync(target, 4096, cancellationToken);
+                    await fs.CopyToAsync(target, 4096, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
@@ -171,9 +171,6 @@ namespace Umbrella.FileSystem.Disk
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
-
-        //TODO: Need a WriteFromStreamAsync
-        //TODO: Need a ReadAsStreamAsync
 
         public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
         {
@@ -194,6 +191,29 @@ namespace Umbrella.FileSystem.Disk
                 IsNew = false;
             }
             catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+            {
+                throw new UmbrellaFileSystemException(exc.Message, exc);
+            }
+        }
+
+        public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                Guard.ArgumentNotNull(stream, nameof(stream));
+
+                if (!PhysicalFileInfo.Directory.Exists)
+                    PhysicalFileInfo.Directory.Create();
+
+                using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
+                {
+                    await stream.CopyToAsync(fs, 4096, cancellationToken).ConfigureAwait(false);
+                }
+
+                IsNew = false;
+            }
+            catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
