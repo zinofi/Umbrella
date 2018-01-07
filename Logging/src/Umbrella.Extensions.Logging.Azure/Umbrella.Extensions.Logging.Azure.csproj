@@ -5,6 +5,17 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Umbrella.Extensions.Logging.Azure</PackageId>
+    <Version>2.0.0-rc-00006</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Description>
+      This package contains the core abstractions and management infrastructure for writing log messages to Azure Table Storage.
+    </Description>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="WindowsAzure.Storage" Version="8.7.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />

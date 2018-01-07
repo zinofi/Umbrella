@@ -7,12 +7,12 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Extensions.Logging.Log4Net.Azure</PackageId>
-    <Version>2.0.0-rc-00005</Version>
+    <Version>2.0.0-rc-00006</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2017</Copyright>
     <Description>
-      This package builds on the Umbrella.Extensions.Logging.Log4Net package by writing log messages to Azure Table Storage.
+      This package builds on the Umbrella.Extensions.Logging.Azure package by writing log messages to Azure Table Storage.
     </Description>
   </PropertyGroup>
 
