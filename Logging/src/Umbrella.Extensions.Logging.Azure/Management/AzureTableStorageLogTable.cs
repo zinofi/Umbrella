@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
+namespace Umbrella.Extensions.Logging.Azure.Management
 {
     public class AzureTableStorageLogTable
     {

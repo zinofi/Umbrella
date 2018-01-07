@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Umbrella.Utilities.Enumerations;
 
-namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
+namespace Umbrella.Extensions.Logging.Azure.Management
 {
     public class AzureTableStorageLogSearchOptions
     {

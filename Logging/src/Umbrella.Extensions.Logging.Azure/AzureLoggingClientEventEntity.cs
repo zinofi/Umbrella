@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Extensions.Logging.Log4Net.Azure
+namespace Umbrella.Extensions.Logging.Azure
 {
     public class AzureLoggingClientEventEntity : TableEntity
     {
@@ -23,16 +22,16 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         {
         }
 
-        public AzureLoggingClientEventEntity(LoggingEvent e)
+        public AzureLoggingClientEventEntity(string level, string message, string exceptionString, DateTime timeStamp, IDictionary properties)
         {
-            Level = e.Level.ToString();
-            Message = e.RenderedMessage + Environment.NewLine + e.GetExceptionString();
-            EventTimeStamp = e.TimeStamp.ToUniversalTime();
+            Level = level;
+            Message = message + Environment.NewLine + exceptionString;
+            EventTimeStamp = timeStamp.ToUniversalTime();
 
             //Write additional properties into a single table column
-            var sb = new StringBuilder(e.Properties.Count);
+            var sb = new StringBuilder(properties.Count);
 
-            foreach (DictionaryEntry entry in e.Properties)
+            foreach (DictionaryEntry entry in properties)
             {
                 sb.AppendLine($"{entry.Key}:{entry.Value}");
             }

@@ -4,8 +4,7 @@ using Microsoft.WindowsAzure.Storage;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Umbrella.Extensions.Logging.Log4Net.Azure;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
+using Umbrella.Extensions.Logging.Azure.Configuration;
 using Xunit;
 
 namespace Umbrella.Extensions.Logging.Log4Net.Azure.Test

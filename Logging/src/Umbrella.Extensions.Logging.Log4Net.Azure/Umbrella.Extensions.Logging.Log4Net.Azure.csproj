@@ -18,12 +18,10 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="WindowsAzure.Storage" Version="8.7.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities.Caching\Umbrella.Utilities.Caching.csproj" />
+    <ProjectReference Include="..\Umbrella.Extensions.Logging.Azure\Umbrella.Extensions.Logging.Azure.csproj" />
   </ItemGroup>
 
 </Project>

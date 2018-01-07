@@ -6,20 +6,19 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
+using Umbrella.Extensions.Logging.Azure;
+using Umbrella.Extensions.Logging.Azure.Configuration;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 
+[assembly: InternalsVisibleTo("Umbrella.Extensions.Logging.Log4Net.Azure.Test")]
 namespace Umbrella.Extensions.Logging.Log4Net.Azure
 {
     public class AzureTableStorageAppender : BufferingAppenderSkeleton
     {
-        #region Public Constants
-        public const string TableNameSeparator = "xxxxxx";
-        #endregion
-
         #region Private Members
         private bool m_LogErrorsToConsole;
         #endregion
@@ -42,7 +41,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                     throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
                 //Get the table we need to write stuff to and create it if needed
-                CloudTable table = TableClient.GetTableReference($"{Config.TablePrefix}{TableNameSeparator}{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
+                CloudTable table = TableClient.GetTableReference($"{Config.TablePrefix}{AzureTableStorageLoggingOptions.TableNameSeparator}{DateTime.UtcNow.ToString("yyyyxMMxdd")}");
                 await table.CreateIfNotExistsAsync().ConfigureAwait(false);
 
                 //Create the required table entities to write to storage and group them by PartitionKey.
@@ -157,9 +156,10 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
             switch (Config.AppenderType)
             {
                 case AzureTableStorageLogAppenderType.Client:
-                    return new AzureLoggingClientEventEntity(e);
+                    return new AzureLoggingClientEventEntity(e.Level.ToString(), e.RenderedMessage, e.GetExceptionString(), e.TimeStampUtc, e.Properties);
                 case AzureTableStorageLogAppenderType.Server:
-                    return new AzureLoggingServerEventEntity(e);
+                    var locationInfo = new LocationInformation(e.LocationInformation.ClassName, e.LocationInformation.FileName, e.LocationInformation.LineNumber, e.LocationInformation.MethodName, e.LocationInformation.FullInfo);
+                    return new AzureLoggingServerEventEntity(e.Level.ToString(), e.RenderedMessage, e.GetExceptionString(), e.ThreadName, e.TimeStampUtc, locationInfo, e.ExceptionObject, e.Properties);
             }
 
             return null;

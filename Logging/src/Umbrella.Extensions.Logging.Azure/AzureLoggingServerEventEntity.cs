@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Extensions.Logging.Log4Net.Azure
+namespace Umbrella.Extensions.Logging.Azure
 {
     public class AzureLoggingServerEventEntity : TableEntity
     {
@@ -30,30 +29,30 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
         {
         }
 
-        public AzureLoggingServerEventEntity(LoggingEvent e)
+        public AzureLoggingServerEventEntity(string level, string message, string exceptionString, string threadName, DateTime timeStamp, LocationInformation locationInfo, Exception exceptionObject, IDictionary properties)
         {
-            Level = e.Level.ToString();
+            Level = level;
 
             //Write additional properties into a single table column
-            var sb = new StringBuilder(e.Properties.Count);
+            var sb = new StringBuilder(properties.Count);
 
-            foreach (DictionaryEntry entry in e.Properties)
+            foreach (DictionaryEntry entry in properties)
             {
                 sb.AppendLine($"{entry.Key}:{entry.Value}");
             }
 
             Properties = sb.ToString();
-            Message = e.RenderedMessage + Environment.NewLine + e.GetExceptionString();
-            ThreadName = e.ThreadName;
-            EventTimeStamp = e.TimeStamp.ToUniversalTime();
-            Location = e.LocationInformation.FullInfo;
-            ClassName = e.LocationInformation.ClassName;
-            FileName = e.LocationInformation.FileName;
-            LineNumber = e.LocationInformation.LineNumber;
-            MethodName = e.LocationInformation.MethodName;
+            Message = message + Environment.NewLine + exceptionString;
+            ThreadName = threadName;
+            EventTimeStamp = timeStamp.ToUniversalTime();
+            Location = locationInfo.FullInfo;
+            ClassName = locationInfo.ClassName;
+            FileName = locationInfo.FileName;
+            LineNumber = locationInfo.LineNumber;
+            MethodName = locationInfo.MethodName;
 
-            if (e.ExceptionObject != null)
-                Exception = e.ExceptionObject.ToString();
+            if (exceptionObject != null)
+                Exception = exceptionObject.ToString();
 
             PartitionKey = $"{EventTimeStamp.Hour}-Hours"; ;
 

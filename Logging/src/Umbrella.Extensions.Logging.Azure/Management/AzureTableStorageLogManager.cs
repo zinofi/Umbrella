@@ -10,14 +10,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Management.Configuration;
+using Umbrella.Extensions.Logging.Azure.Configuration;
+using Umbrella.Extensions.Logging.Azure.Management.Configuration;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Comparers;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Caching;
 
-namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
+namespace Umbrella.Extensions.Logging.Azure.Management
 {
     public class AzureTableStorageLogManager : IAzureTableStorageLogManager
     {
@@ -49,7 +49,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
             [nameof(LogEntryMetaData.Level)] = Normalize(nameof(LogEntryMetaData.Level)),
         };
         private static readonly GenericEqualityComparer<CloudTable, string> s_CloudTableEqualityComparer = new GenericEqualityComparer<CloudTable, string>(x => x.Name);
-        private static readonly string[] s_DateSeparatorArray = new[] { AzureTableStorageAppender.TableNameSeparator };
+        private static readonly string[] s_DateSeparatorArray = new[] { AzureTableStorageLoggingOptions.TableNameSeparator };
         private static readonly string s_CacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
         #endregion
 

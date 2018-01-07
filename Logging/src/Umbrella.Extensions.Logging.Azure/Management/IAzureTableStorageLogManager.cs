@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Configuration;
-using Umbrella.Extensions.Logging.Log4Net.Azure.Management.Configuration;
+using Umbrella.Extensions.Logging.Azure.Configuration;
+using Umbrella.Extensions.Logging.Azure.Management.Configuration;
 
-namespace Umbrella.Extensions.Logging.Log4Net.Azure.Management
+namespace Umbrella.Extensions.Logging.Azure.Management
 {
     public interface IAzureTableStorageLogManager
     {
