@@ -34,8 +34,8 @@ namespace Microsoft.AspNetCore.Http
             string ifNoneMatch = request.Headers["If-None-Match"];
 
             if (!string.IsNullOrWhiteSpace(ifNoneMatch))
-                return string.Compare(ifNoneMatch, valueToMatch, StringComparison.InvariantCultureIgnoreCase) == 0;
-
+                return string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0;
+            
             return false;
         }
     }
