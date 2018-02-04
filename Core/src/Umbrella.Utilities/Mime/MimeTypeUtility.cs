@@ -9,9 +9,12 @@ namespace Umbrella.Utilities.Mime
 {
     public class MimeTypeUtility : IMimeTypeUtility
     {
+        #region Private Constants
         private const string c_DefaultMimeType = "application/octet-stream";
+        #endregion
 
-        private static Lazy<Dictionary<string, string>> s_MimeTypeDictionary = new Lazy<Dictionary<string, string>>(() => new Dictionary<string, string>()
+        #region Private Static Members
+        private static readonly Lazy<Dictionary<string, string>> s_MimeTypeDictionary = new Lazy<Dictionary<string, string>>(() => new Dictionary<string, string>()
         {
             ["ez"] = "application/andrew-inset",
             ["aw"] = "application/applixware",
@@ -780,22 +783,26 @@ namespace Umbrella.Utilities.Mime
             ["smv"] = "video/x-smv",
             ["ice"] = "x-conference/x-cooltalk",
         });
+        #endregion
 
-        public string GetMimeType(string extension)
+        #region IMimeTypeUtility
+        public string GetMimeType(string fileNameOrExtension)
         {
-            Guard.ArgumentNotNullOrWhiteSpace(extension, nameof(extension));
+            Guard.ArgumentNotNullOrWhiteSpace(fileNameOrExtension, nameof(fileNameOrExtension));
 
-            extension = extension.Trim().ToLowerInvariant();
+            fileNameOrExtension = fileNameOrExtension.Trim().ToLowerInvariant();
 
             //Assume the filename is the extension
-            extension = extension.IndexOf('.') == -1 ? extension : Path.GetExtension(extension).Remove(0, 1);
+            //If it contains any . chars run it through the Path utility method.
+            fileNameOrExtension = fileNameOrExtension.IndexOf('.') == -1 ? fileNameOrExtension : Path.GetExtension(fileNameOrExtension).Remove(0, 1);
 
             var mimeTypes = s_MimeTypeDictionary.Value;
 
-            if (mimeTypes.TryGetValue(extension, out string mimeType))
+            if (mimeTypes.TryGetValue(fileNameOrExtension, out string mimeType))
                 return mimeType;
 
             return c_DefaultMimeType;
-        }
+        } 
+        #endregion
     }
 }
