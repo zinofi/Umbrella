@@ -1,7 +1,7 @@
 ﻿$configFiles = Get-ChildItem . *.csproj -rec
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
-/* Manually alter the build number before pushing to NuGet feeds. */
+/* Manually alter the build number before pushing to NuGet feeds */
 $previousBuild = "2.0.0-rc-00007"
 $currentBuild =  "2.0.0-rc-00008"
 
