@@ -9,11 +9,13 @@
     <Version>2.0.0-rc-00008</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
       This package contains an implementation of the IDynamicImageResizer built using the SkiaSharp library.
       The repo for this library can be found on github: https://github.com/mono/SkiaSharp
     </Description>
+    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

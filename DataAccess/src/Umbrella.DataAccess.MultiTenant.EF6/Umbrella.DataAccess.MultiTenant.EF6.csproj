@@ -10,10 +10,12 @@
     <Version>2.0.0-rc-00008</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
       This package builds on the Umbrella.DataAccess.EF6 repositories concept to allow for multi-tenanted application data access logic.
     </Description>
+    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

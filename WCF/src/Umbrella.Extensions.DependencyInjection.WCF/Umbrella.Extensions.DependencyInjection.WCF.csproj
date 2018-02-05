@@ -10,8 +10,10 @@
     <Version>2.0.0-rc-00008</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>This is an experimental package to determine the feasibility of using the Microsoft.Extensions.DependencyInjection DI Container with WCF.</Description>
+    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

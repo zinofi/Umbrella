@@ -9,10 +9,12 @@
     <Version>2.0.0-rc-00008</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2017</Copyright>
+    <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
       This package contains come common features shared by other Umbrella.DynamicImage.* packages such as image URL generation and parsing capabilites as well as caching mechanisms for in-memory and physical disk.
     </Description>
+    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
