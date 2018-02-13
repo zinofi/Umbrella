@@ -10,7 +10,7 @@ namespace Umbrella.TypeScript
     /// <summary>
     /// Used to mark models (classes or interfaces) to be output by the TypeScript generator.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, Inherited = false)]
     public class TypeScriptModelAttribute : Attribute
     {
         /// <summary>

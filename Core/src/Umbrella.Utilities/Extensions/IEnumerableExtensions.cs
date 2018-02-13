@@ -45,6 +45,13 @@ namespace Umbrella.Utilities.Extensions
             }
         }
 
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
+        {
+            Guard.ArgumentNotNull(source, nameof(source));
+
+            return new HashSet<T>(source, comparer);
+        }
+
         public static IEnumerable<int> CumulativeSum(this IEnumerable<int> source)
             => CumulativeSum(source, (x, y) => x + y);
 
