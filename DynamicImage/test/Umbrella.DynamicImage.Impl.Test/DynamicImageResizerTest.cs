@@ -91,19 +91,19 @@ namespace Umbrella.DynamicImage.Impl.Test
             (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Png), new Size(233, 150)),
             (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Png), new Size(50, 32)),
 
-            //TODO: BMP Tests - SkiaSharp has issues converting the PNG to a BMP
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Bmp), new Size(50, 150)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Bmp), new Size(50, 32)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Bmp), new Size(50, 150)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Bmp), new Size(233, 150)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Bmp), new Size(50, 32)),
+            //BMP Tests
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Bmp), new Size(50, 150)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Bmp), new Size(50, 32)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Bmp), new Size(50, 150)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Bmp), new Size(233, 150)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Bmp), new Size(50, 32)),
 
-            //TODO: GIF Tests - SkiaSharp has issues converting the PNG to a GIF
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Gif), new Size(50, 150)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Gif), new Size(50, 32)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Gif), new Size(50, 150)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Gif), new Size(233, 150)),
-            //(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Gif), new Size(50, 32)),
+            //GIF Tests
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Gif), new Size(50, 150)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Gif), new Size(50, 32)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Gif), new Size(50, 150)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Gif), new Size(233, 150)),
+            (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Gif), new Size(50, 32)),
         };
 
         public static List<object[]> OptionsList = new List<object[]>();
@@ -122,17 +122,20 @@ namespace Umbrella.DynamicImage.Impl.Test
 
             foreach (var option in s_OptionsList)
             {
-                OptionsList.Add(new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>(), option });
-                OptionsList.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option });
-                OptionsList.Add(new object[] { CreateDynamicImageResizer<SkiaSharpResizer>(), option });
+                OptionsList.Add(new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>(), option, TestPNG });
+                OptionsList.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option, TestPNG });
+
+                //TODO: SkiaSharp has issues converting PNG to BMP and GIF
+                if(option.Options.Format != DynamicImageFormat.Bmp && option.Options.Format != DynamicImageFormat.Gif)
+                    OptionsList.Add(new object[] { CreateDynamicImageResizer<SkiaSharpResizer>(), option, TestPNG });
             }
         }
 
         [Theory]
         [MemberData(nameof(OptionsList))]
-        public async Task GenerateImageAsync_FromFunc(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item)
+        public async Task GenerateImageAsync_FromFunc(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item, string base64Image)
         {
-            byte[] bytes = Convert.FromBase64String(TestPNG);
+            byte[] bytes = Convert.FromBase64String(base64Image);
 
             var fileMock = new Mock<IUmbrellaFileInfo>();
             fileMock.Setup(x => x.ReadAsByteArrayAsync(default, true)).Returns(Task.FromResult(bytes));

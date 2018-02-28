@@ -57,7 +57,7 @@ namespace Umbrella.Utilities.Configuration
             }
         }
 
-        protected abstract string ToJson(object value);
+        protected virtual string ToJson(object value) => UmbrellaStatics.SerializeJson(value);
         #endregion
     }
 }
