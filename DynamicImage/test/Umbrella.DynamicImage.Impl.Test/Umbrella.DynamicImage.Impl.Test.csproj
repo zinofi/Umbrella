@@ -4,6 +4,7 @@
     <TargetFramework>net47</TargetFramework>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;TeamServices</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

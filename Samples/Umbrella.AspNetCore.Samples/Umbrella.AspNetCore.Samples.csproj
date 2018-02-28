@@ -7,6 +7,7 @@
     <OutputType>Exe</OutputType>
     <UserSecretsId>b7181249-37e4-4aae-b8fc-c65370d6f601</UserSecretsId>
     <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;TeamServices</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

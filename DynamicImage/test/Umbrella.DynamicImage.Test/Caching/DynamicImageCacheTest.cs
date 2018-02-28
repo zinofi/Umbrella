@@ -22,11 +22,10 @@ namespace Umbrella.DynamicImage.Test.Caching
 {
     public class DynamicImageCacheTest
     {
-        //TODO: When moving to GitHub this connection string needs to be dynamically set somehow before executing the tests
-#if DEBUG
-        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+#if TEAMSERVICES
+        private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 #else
-        private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellastorage;AccountKey=Q8HxUT1X+WkarjVh7fkWkaqpJFyPRiX8vbvBMiFuNahHOhtsluvS4hKWZEQfzQnIMBIY4Xg1tWdr9Gpc/imJNg==;EndpointSuffix=core.windows.net";
+        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
 #endif
         private const string c_TestFileName = "aspnet-mvc-logo.png";
 
@@ -48,9 +47,7 @@ namespace Umbrella.DynamicImage.Test.Caching
                 if (string.IsNullOrEmpty(s_BaseDirectory))
                 {
                     string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-
-                    string buildConfig = DebugUtility.IsDebugMode ? "debug" : "release";
-                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{buildConfig}\netcoreapp2.0");
+                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp2.0");
                     s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 

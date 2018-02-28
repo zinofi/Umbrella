@@ -14,10 +14,6 @@ namespace Umbrella.FileSystem.Disk
 {
     public class UmbrellaDiskFileProvider : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
     {
-        #region Private Static Members
-        private static readonly Task<IUmbrellaFileInfo> s_NullResult = Task.FromResult<IUmbrellaFileInfo>(null);
-        #endregion
-
         #region Constructors
         public UmbrellaDiskFileProvider(ILoggerFactory loggerFactory,
             IMimeTypeUtility mimeTypeUtility,
@@ -32,7 +28,7 @@ namespace Umbrella.FileSystem.Disk
         #endregion
 
         #region Overridden Methods
-        protected override Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
+        protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -50,10 +46,22 @@ namespace Umbrella.FileSystem.Disk
             FileInfo physicalFileInfo = new FileInfo(physicalPath);
 
             if (!isNew && !physicalFileInfo.Exists)
-                return s_NullResult;
+                return null;
 
-            return Task.FromResult<IUmbrellaFileInfo>(new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, physicalFileInfo, isNew));
-        } 
+            if (!await CheckFileAccessAsync(physicalFileInfo, cancellationToken))
+                throw new UmbrellaFileAccessDeniedException(subpath);
+
+            return new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, physicalFileInfo, isNew);
+        }
+        #endregion
+
+        #region Protected Methods
+        protected Task<bool> CheckFileAccessAsync(FileInfo fileInfo, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(true);
+        }
         #endregion
     }
 }

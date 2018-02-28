@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
   <IsPackable>false</IsPackable>
+  <Configurations>Debug;Release;TeamServices</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

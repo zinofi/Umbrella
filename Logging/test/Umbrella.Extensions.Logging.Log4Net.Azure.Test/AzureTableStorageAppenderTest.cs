@@ -11,11 +11,10 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Test
 {
     public class AzureTableStorageAppenderTest
     {
-        //TODO: When moving to GitHub this connection string needs to be dynamically set somehow before executing the tests
-#if DEBUG
-        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+#if TEAMSERVICES
+        private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 #else
-        private const string c_StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=umbrellastorage;AccountKey=Q8HxUT1X+WkarjVh7fkWkaqpJFyPRiX8vbvBMiFuNahHOhtsluvS4hKWZEQfzQnIMBIY4Xg1tWdr9Gpc/imJNg==;EndpointSuffix=core.windows.net";
+        private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
 #endif
 
         [Fact]

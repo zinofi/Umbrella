@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <Configurations>Debug;Release;TeamServices</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>

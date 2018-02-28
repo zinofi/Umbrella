@@ -19,22 +19,56 @@ namespace Umbrella.Utilities.Compilation
     /// </summary>
     internal static class DebugUtility
     {
-        public static bool IsDebugMode
+        public static bool IsDebug
         {
             get
             {
                 bool isDebugMode = false;
 
-                WellWeAre(ref isDebugMode);
+                IAmDebug(ref isDebugMode);
 
                 return isDebugMode;
             }
         }
 
+        public static bool IsTeamServices
+        {
+            get
+            {
+                bool isTeamServices = false;
+
+                IAmTeamServices(ref isTeamServices);
+
+                return isTeamServices;
+            }
+        }
+
+        public static string BuildConfiguration
+        {
+            get
+            {
+                string configuration = "release";
+
+#if TEAMSERVICES
+                configuration = "teamservices";
+#elif DEBUG
+                configuration = "debug";
+#endif
+
+                return configuration;
+            }
+        }
+
         [Conditional("DEBUG")]
-        private static void WellWeAre(ref bool isDebugMode)
+        private static void IAmDebug(ref bool isDebugMode)
         {
             isDebugMode = true;
+        }
+
+        [Conditional("TEAMSERVICES")]
+        private static void IAmTeamServices(ref bool isTeamServices)
+        {
+            isTeamServices = true;
         }
     }
 }

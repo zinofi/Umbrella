@@ -40,7 +40,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
                     context.Items.AsParallel().Select(x => x.Value).OfType<IDisposable>().ForAll(x => x.Dispose());
                 }));
             }
-			catch(Exception exc) when (m_Logger.WriteError(exc, returnValue: !DebugUtility.IsDebugMode))
+			catch(Exception exc) when (m_Logger.WriteError(exc, returnValue: !DebugUtility.IsDebug))
 			{
                 //Should enter here when in DebugMode. It's not critical if something goes wrong during resource disposal as the GC will
                 //sort us out eventually unless we've created something that can't be cleaned up automatically.

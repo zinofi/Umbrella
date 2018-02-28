@@ -17,7 +17,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Routing.Constraints
 
             var path = httpContext.Request.Url.AbsolutePath;
 
-            return path.Equals(path.ToLowerInvariant(), StringComparison.InvariantCulture);
+            return path.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

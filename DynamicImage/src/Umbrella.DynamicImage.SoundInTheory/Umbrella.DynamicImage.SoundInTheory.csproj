@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net47</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <Configurations>Debug;Release;TeamServices</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>

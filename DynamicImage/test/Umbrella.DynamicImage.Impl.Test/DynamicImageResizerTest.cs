@@ -36,9 +36,7 @@ namespace Umbrella.DynamicImage.Impl.Test
                 if (string.IsNullOrEmpty(s_BaseDirectory))
                 {
                     string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-
-                    string buildConfig = DebugUtility.IsDebugMode ? "debug" : "release";
-                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{buildConfig}\net47");
+                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\net47");
                     s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 
@@ -184,7 +182,7 @@ namespace Umbrella.DynamicImage.Impl.Test
 
             //Only output the images to disk when building in debug mode. This ensure that when running in release mode on the build server this doesn't waste
             //unneccessary build resources.
-            if (DebugUtility.IsDebugMode)
+            if (DebugUtility.IsDebug)
             {
                 string outputDirectory = $@"{BaseDirectory}\Output\{resizer.GetType().Namespace}";
 

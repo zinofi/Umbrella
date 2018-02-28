@@ -16,11 +16,16 @@ namespace Umbrella.FileSystem.AzureStorage
 {
     public class UmbrellaAzureBlobStorageFileProvider : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider
     {
+        #region Private Static Members
         private static readonly char[] s_DirectorySeparatorArray = new[] { '/', '\\' };
+        #endregion
 
+        #region Protected Properties
         protected CloudStorageAccount StorageAccount { get; }
         protected CloudBlobClient BlobClient { get; }
+        #endregion
 
+        #region Constructors
         public UmbrellaAzureBlobStorageFileProvider(ILoggerFactory loggerFactory,
             IMimeTypeUtility mimeTypeUtility,
             UmbrellaAzureBlobStorageFileProviderOptions options)
@@ -31,7 +36,9 @@ namespace Umbrella.FileSystem.AzureStorage
             StorageAccount = CloudStorageAccount.Parse(options.StorageConnectionString);
             BlobClient = StorageAccount.CreateCloudBlobClient();
         }
+        #endregion
 
+        #region Overridden Methods
         protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -54,7 +61,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
             string cleanedPath = pathBuilder.ToString();
 
-            if(Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+            if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
                 Log.WriteDebug(new { subpath, cleanedPath });
 
             string[] parts = cleanedPath.Split(s_DirectorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
@@ -84,7 +91,20 @@ namespace Umbrella.FileSystem.AzureStorage
                 return null;
 #endif
 
+            if (!await CheckFileAccessAsync(containerName, fileName, cancellationToken))
+                throw new UmbrellaFileAccessDeniedException(subpath);
+
             return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, blob, isNew);
         }
+        #endregion
+
+        #region Protected Methods
+        protected virtual Task<bool> CheckFileAccessAsync(string containerName, string fileName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(true);
+        }
+        #endregion
     }
 }

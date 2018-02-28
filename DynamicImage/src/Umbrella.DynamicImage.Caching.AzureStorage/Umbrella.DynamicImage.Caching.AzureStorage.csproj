@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <Configurations>Debug;Release;TeamServices</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,6 +19,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TeamServices|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
   </PropertyGroup>
 
