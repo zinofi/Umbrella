@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace Umbrella.WebUtilities.Mvc.DataAnnotations
+namespace Umbrella.Legacy.WebUtilities.Mvc.DataAnnotations
 {
     public class RemoteWebApiAttribute : RemoteAttribute
     {

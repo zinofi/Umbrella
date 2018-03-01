@@ -70,7 +70,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(exc.Message);
-                    Console.WriteLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ExtendedErrorInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}");
+                    Console.WriteLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}");
                     Console.WriteLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
                     Console.ResetColor();
                 }
@@ -99,7 +99,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
                     {
                         StringBuilder sbMessage = new StringBuilder()
                             .AppendLine(exc.Message)
-                            .AppendLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ExtendedErrorInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}")
+                            .AppendLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}")
                             .AppendLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
 
                         throw new Exception(sbMessage.ToString(), exc);

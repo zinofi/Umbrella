@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace System.Web.Mvc
+namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 {
     public static class ValidationMessageHelpers
     {

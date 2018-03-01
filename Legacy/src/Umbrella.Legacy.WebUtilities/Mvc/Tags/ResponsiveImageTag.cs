@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
 {
+    //TODO: Add parameters to enable absolute path generation
     public class ResponsiveImageTag : IHtmlString
     {
         #region Protected Members

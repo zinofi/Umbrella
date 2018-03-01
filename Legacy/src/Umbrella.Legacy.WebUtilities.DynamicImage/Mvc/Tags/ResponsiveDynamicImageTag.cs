@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Legacy.WebUtilities.Extensions;
 using Umbrella.Legacy.WebUtilities.Mvc.Tags;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
@@ -17,6 +19,11 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
         private readonly DynamicResizeMode m_ResizeMode;
         private readonly DynamicImageFormat m_Format;
         private readonly string m_DynamicImagePathPrefix;
+        private readonly bool m_ToAbsolutePath;
+        private readonly HttpRequestBase m_HttpRequest;
+        private readonly string m_SchemeOverride;
+        private readonly string m_HostOverride;
+        private readonly int m_PortOverride;
         #endregion
 
         #region Constructors
@@ -29,17 +36,26 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
             DynamicResizeMode resizeMode,
             IDictionary<string, object> htmlAttributes,
             DynamicImageFormat format,
-            Func<string, string> mapVirtualPathFunc)
+            Func<string, string> mapVirtualPathFunc,
+            bool toAbsolutePath,
+            HttpRequestBase request,
+            string schemeOverride,
+            string hostOverride,
+            int portOverride)
             : base(path, altText, htmlAttributes, mapVirtualPathFunc)
         {
             m_DynamicImageUtility = dynamicImageUtility;
             m_ResizeMode = resizeMode;
             m_Format = format;
             m_DynamicImagePathPrefix = dynamicImagePathPrefix;
+            m_ToAbsolutePath = toAbsolutePath;
+            m_HttpRequest = request;
+            m_SchemeOverride = schemeOverride;
+            m_HostOverride = hostOverride;
+            m_PortOverride = portOverride;
 
             m_Ratio = width / (float)height;
 
-            //TODO: Assign to member?
             DynamicImageOptions options = new DynamicImageOptions
             {
                 Format = format,
@@ -51,7 +67,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 
             string x1Url = dynamicImageUtility.GenerateVirtualPath(dynamicImagePathPrefix, options);
 
-            HtmlAttributes["src"] = mapVirtualPathFunc(x1Url);
+            string relativePath = mapVirtualPathFunc(x1Url);
+
+            HtmlAttributes["src"] = toAbsolutePath ? relativePath.ToAbsoluteUrl(request.Url, schemeOverride, hostOverride, portOverride) : relativePath;
         }
         #endregion
 
@@ -125,6 +143,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
                     string imgUrl = m_DynamicImageUtility.GenerateVirtualPath(m_DynamicImagePathPrefix, options);
 
                     imgUrl = MapVirtualPathFunc(imgUrl);
+
+                    if (m_ToAbsolutePath)
+                        imgUrl = imgUrl.ToAbsoluteUrl(m_HttpRequest.Url, m_SchemeOverride, m_HostOverride, m_PortOverride);
 
                     yield return $"{imgUrl} {imgWidth}w";
                 }

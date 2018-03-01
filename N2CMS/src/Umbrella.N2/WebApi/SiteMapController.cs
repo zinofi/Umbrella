@@ -35,11 +35,13 @@ namespace Umbrella.N2.Utilities.WebApi
 
                 foreach (ContentPageModelBase page in Find.Query<ContentPageModelBase>().Where(x => x.State == ContentState.Published).AsEnumerable().Where(x => !x.NoIndex))
                 {
-                    sitemap.Add(page.Url.ToAbsoluteUrl(), ChangeFrequency.Weekly, page.Published.Value);
+                    sitemap.Add(page.Url.ToAbsoluteUrl(Request.RequestUri), ChangeFrequency.Weekly, page.Published.Value);
                 }
 
-                HttpResponseMessage response = new HttpResponseMessage();
-                response.Content = new StringContent(sitemap.ToString());
+                HttpResponseMessage response = new HttpResponseMessage
+                {
+                    Content = new StringContent(sitemap.ToString())
+                };
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
 
                 return ResponseMessage(response);

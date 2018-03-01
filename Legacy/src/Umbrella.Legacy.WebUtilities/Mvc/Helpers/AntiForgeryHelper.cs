@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 
-namespace System.Web.Mvc
+namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 {
 	public static class AntiForgeryHelper
 	{

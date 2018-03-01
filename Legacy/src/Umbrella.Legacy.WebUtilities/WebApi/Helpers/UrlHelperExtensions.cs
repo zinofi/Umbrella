@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace System.Web.Mvc
+namespace Umbrella.Legacy.WebUtilities.WebApi.Helpers
 {
-	public static class UrlHelperExtensions2
+	public static class UrlHelperExtensions
 	{
 		public static string RouteWebApiUrl(this UrlHelper helper, string controller, IDictionary<string, object> values = null, string routeName = "DefaultApi")
 		{
