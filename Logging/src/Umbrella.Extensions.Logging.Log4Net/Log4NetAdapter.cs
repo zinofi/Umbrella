@@ -4,7 +4,7 @@ using System;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {
-    public class Log4NetAdapter : ILogger
+    internal sealed class Log4NetAdapter : ILogger
     {
         #region Private Members
         private readonly ILog m_Logger;
