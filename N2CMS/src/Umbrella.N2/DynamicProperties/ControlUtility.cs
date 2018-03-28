@@ -20,25 +20,27 @@ namespace Umbrella.N2.DynamicProperties.Utilities
 
             //if (container.Controls.OfType<Control>().FirstOrDefault(x => x.ID == container.ID + "_hlInheritedPage") == null)
             //{
-                ContentItem inheritedFrom = item.HasInheritedDynamicValue(name);
-                if (inheritedFrom == null || inheritedFrom == item)
+            ContentItem inheritedFrom = item.HasInheritedDynamicValue(name);
+            if (inheritedFrom == null || inheritedFrom == item)
+            {
+                label.ForeColor = Color.Green;
+                label.ToolTip = "This property does not have an inherited value";
+            }
+            else
+            {
+                label.ForeColor = Color.Red;
+
+                HyperLink hyperlink = new HyperLink
                 {
-                    label.ForeColor = Color.Green;
-                    label.ToolTip = "This property does not have an inherited value";
-                }
-                else
-                {
-                    label.ForeColor = Color.Red;
+                    NavigateUrl = Context.Current.ManagementPaths.GetEditExistingItemUrl(inheritedFrom) + "#Frame_Content_ie_Dynamic",
+                    ToolTip = "This property inherits its value from " + inheritedFrom.Title + " -  #" + inheritedFrom.ID,
+                };
+                hyperlink.ImageUrl = hyperlink.ResolveUrl("~/N2/Resources/icons/note.png");
 
-                    HyperLink hyperlink = new HyperLink();
-                    hyperlink.NavigateUrl = Context.Current.ManagementPaths.GetEditExistingItemUrl(inheritedFrom) + "#Frame_Content_ie_Dynamic";
-                    hyperlink.ToolTip = "This property inherits its value from " + inheritedFrom.Title + " -  #" + inheritedFrom.ID;
-                    hyperlink.ImageUrl = hyperlink.ResolveUrl("~/N2/Resources/icons/note.png");
+                int index = container.Controls.IndexOf(label);
 
-                    int index = container.Controls.IndexOf(label);
-
-                    container.Controls.AddAt(index + 1, hyperlink);
-                }
+                container.Controls.AddAt(index + 1, hyperlink);
+            }
             //}
         }
     }

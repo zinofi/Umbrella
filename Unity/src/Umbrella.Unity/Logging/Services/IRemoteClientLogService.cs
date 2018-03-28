@@ -7,6 +7,6 @@ namespace Umbrella.Unity.Logging.Services
 {
     public interface IRemoteClientLogService
     {
-        Task<RemoteClientLogServiceResult> PostAsync(RemoteClientLogModel model, CancellationToken cancellationToken = default(CancellationToken));
+        Task<RemoteClientLogServiceResult> PostAsync(RemoteClientLogModel model, CancellationToken cancellationToken = default);
     }
 }

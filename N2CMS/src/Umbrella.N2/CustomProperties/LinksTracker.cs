@@ -32,9 +32,7 @@ namespace Umbrella.N2.CustomProperties
             if (links.Count == 0)
             {
                 //No links found - might be dealing with a LinkItemCollection in which case we have a JSON string
-                LinkItemCollection linkCollection;
-
-                if (LinkItemCollection.TryParse(html, out linkCollection))
+                if (LinkItemCollection.TryParse(html, out LinkItemCollection linkCollection))
                 {
                     links = links.Concat(linkCollection.OfType<LinkItem>().Select(x => ContentDetail.Multi(LinkDetailName, false, 0, null, null, x.Url))).ToList();
                 }

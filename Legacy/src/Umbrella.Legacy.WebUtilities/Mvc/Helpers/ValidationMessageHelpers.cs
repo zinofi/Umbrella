@@ -25,8 +25,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
             outerBuilder.MergeAttribute("data-valmsg-for", name);
             outerBuilder.MergeAttribute("data-valmsg-replace", "true");
 
-            ModelState modelState;
-            if (htmlHelper.ViewData.ModelState.TryGetValue(name, out modelState))
+            if (htmlHelper.ViewData.ModelState.TryGetValue(name, out ModelState modelState))
             {
                 if (modelState.Errors.Count > 0)
                 {

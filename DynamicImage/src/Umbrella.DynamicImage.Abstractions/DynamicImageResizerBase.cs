@@ -107,7 +107,7 @@ namespace Umbrella.DynamicImage.Abstractions
         #endregion
 
         #region Protected Methods
-        protected (int Width, int Height, int OffsetX, int OffsetY, int CropWidth, int CropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
+        protected (int width, int height, int offsetX, int offsetY, int cropWidth, int cropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
         {
             int? requestedWidth = null;
             int? requestedHeight = null;

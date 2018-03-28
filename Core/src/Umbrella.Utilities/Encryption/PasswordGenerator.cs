@@ -31,22 +31,22 @@ namespace Umbrella.Utilities.Encryption
         #endregion
 
         #region IPasswordGenerator Members
-        public string GeneratePassword(int length = 8, int numbers = 1)
+        public string GeneratePassword(int length = 8, int minNumbers = 1)
         {
             try
             {
                 if (length < 1)
                     throw new ArgumentOutOfRangeException(nameof(length), "Must be greater than or equal to 1.");
 
-                if (numbers < 0)
-                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be greater than or equal to 0.");
+                if (minNumbers < 0)
+                    throw new ArgumentOutOfRangeException(nameof(minNumbers), "Must be greater than or equal to 0.");
 
-                if (numbers > length)
-                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be less than or equal to length.");
+                if (minNumbers > length)
+                    throw new ArgumentOutOfRangeException(nameof(minNumbers), "Must be less than or equal to length.");
 
                 StringBuilder builder = new StringBuilder(length);
 
-                int lettersLength = length - numbers;
+                int lettersLength = length - minNumbers;
 
                 using (RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider())
                 {
@@ -69,7 +69,7 @@ namespace Umbrella.Utilities.Encryption
 
                 return builder.ToString();
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { length = length, minNumbers = numbers }))
+            catch (Exception exc) when (Log.WriteError(exc, new { length, minNumbers }))
             {
                 throw;
             }

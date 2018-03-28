@@ -70,22 +70,22 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
             try
             {
-                var result = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
+                var (status, imageOptions) = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
 
-                if(result.Status == DynamicImageParseUrlResult.Skip)
+                if(status == DynamicImageParseUrlResult.Skip)
                 {
                     await Next.Invoke(context);
                     return;
                 }
 
-                if (result.Status == DynamicImageParseUrlResult.Invalid || !m_DynamicImageUtility.ImageOptionsValid(result.ImageOptions, ConfigurationOptions))
+                if (status == DynamicImageParseUrlResult.Invalid || !m_DynamicImageUtility.ImageOptionsValid(imageOptions, ConfigurationOptions))
                 {
                     cts.Cancel();
                     await context.Response.SendStatusCode(HttpStatusCode.NotFound);
                     return;
                 }
 
-                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, token);
+                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, imageOptions, token);
 
                 if(image == null)
                 {

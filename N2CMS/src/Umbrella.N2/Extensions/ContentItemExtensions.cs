@@ -120,9 +120,8 @@ namespace Umbrella.N2.Extensions
                 memberExpression = (MemberExpression)expression.Body;
             else if (expression.Body is UnaryExpression)
                 memberExpression = ((UnaryExpression)expression.Body).Operand as MemberExpression;
-            else if (expression.Body is MethodCallExpression)
+            else if (expression.Body is MethodCallExpression mce)
             {
-                MethodCallExpression mce = (MethodCallExpression)expression.Body;
                 if (mce.Arguments.Count > 0 && mce.Arguments[0] is MemberExpression)
                     memberExpression = (MemberExpression)mce.Arguments[0];
                 else

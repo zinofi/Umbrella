@@ -53,7 +53,7 @@ namespace Umbrella.DynamicImage
             }
         }
 
-        public virtual (DynamicImageParseUrlResult Status, DynamicImageOptions ImageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl)
+        public virtual (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl)
         {
             try
             {

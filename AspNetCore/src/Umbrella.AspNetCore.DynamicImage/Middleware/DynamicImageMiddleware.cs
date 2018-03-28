@@ -71,22 +71,22 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 
             try
             {
-                var result = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
+                var (status, imageOptions) = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
 
-                if (result.Status == DynamicImageParseUrlResult.Skip)
+                if (status == DynamicImageParseUrlResult.Skip)
                 {
                     await m_Next.Invoke(context);
                     return;
                 }
 
-                if (result.Status == DynamicImageParseUrlResult.Invalid || !m_DynamicImageUtility.ImageOptionsValid(result.ImageOptions, m_DynamicImageConfigurationOptions))
+                if (status == DynamicImageParseUrlResult.Invalid || !m_DynamicImageUtility.ImageOptionsValid(imageOptions, m_DynamicImageConfigurationOptions))
                 {
                     cts.Cancel();
                     SetResponseStatusCode(context.Response, HttpStatusCode.NotFound);
                     return;
                 }
                 
-                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, result.ImageOptions, token);
+                DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, imageOptions, token);
 
                 if(image == null)
                 {

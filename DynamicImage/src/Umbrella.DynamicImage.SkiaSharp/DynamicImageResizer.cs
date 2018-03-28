@@ -57,15 +57,15 @@ namespace Umbrella.DynamicImage.SkiaSharp
 
                     try
                     {
-                        if (result.OffsetX > 0 || result.OffsetY > 0)
+                        if (result.offsetX > 0 || result.offsetY > 0)
                         {
-                            var cropRect = SKRectI.Create(result.OffsetX, result.OffsetY, result.CropWidth, result.CropHeight);
+                            var cropRect = SKRectI.Create(result.offsetX, result.offsetY, result.cropWidth, result.cropHeight);
 
                             imageToResize = new SKBitmap(cropRect.Width, cropRect.Height);
                             image.ExtractSubset(imageToResize, cropRect);
                         }
 
-                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.Width, result.Height), SKBitmapResizeMethod.Lanczos3))
+                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKBitmapResizeMethod.Lanczos3))
                         {
                             using (var outputImage = SKImage.FromBitmap(resizedImage))
                             {

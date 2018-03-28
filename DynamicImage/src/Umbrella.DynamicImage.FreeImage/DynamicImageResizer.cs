@@ -63,10 +63,10 @@ namespace Umbrella.DynamicImage.FreeImage
 
                         try
                         {
-                            if (result.OffsetX > 0 || result.OffsetY > 0)
-                                imageToSave = image.Copy(new Rectangle(result.OffsetX, result.OffsetY, result.CropWidth, result.CropHeight));
+                            if (result.offsetX > 0 || result.offsetY > 0)
+                                imageToSave = image.Copy(new Rectangle(result.offsetX, result.offsetY, result.cropWidth, result.cropHeight));
 
-                            imageToSave.Rescale(result.Width, result.Height, FREE_IMAGE_FILTER.FILTER_LANCZOS3);
+                            imageToSave.Rescale(result.width, result.height, FREE_IMAGE_FILTER.FILTER_LANCZOS3);
 
                             using (var outputStream = new MemoryStream())
                             {

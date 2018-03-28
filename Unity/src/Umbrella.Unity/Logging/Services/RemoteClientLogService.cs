@@ -43,7 +43,7 @@ namespace Umbrella.Unity.Logging.Services
         #endregion
 
         #region IRemoteClientLogService Members
-        public virtual async Task<RemoteClientLogServiceResult> PostAsync(RemoteClientLogModel model, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<RemoteClientLogServiceResult> PostAsync(RemoteClientLogModel model, CancellationToken cancellationToken = default)
         {
             try
             {

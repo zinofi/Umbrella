@@ -46,18 +46,16 @@ namespace Umbrella.N2.Caching
         {
             int id = e.AffectedItem.ID;
 
-            ConcurrentBag<string> lstCacheKey;
-            if (s_CacheKeyDictionary.TryGetValue(id, out lstCacheKey))
+            if (s_CacheKeyDictionary.TryGetValue(id, out ConcurrentBag<string> lstCacheKey))
             {
-                foreach(string cacheKey in lstCacheKey)
+                foreach (string cacheKey in lstCacheKey)
                 {
                     m_Cache.Remove(cacheKey);
                 }
 
                 if (e.AffectedItem.State == ContentState.Deleted)
                 {
-                    ConcurrentBag<string> value;
-                    s_CacheKeyDictionary.TryRemove(id, out value);
+                    s_CacheKeyDictionary.TryRemove(id, out ConcurrentBag<string> value);
                 }
             }
         }

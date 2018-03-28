@@ -34,8 +34,10 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.Controls
             ImageGalleryEditorControl ctrl = Page.FindFirstControl<ItemEditor>().FindControl("ucImageGalleryEditorControl") as ImageGalleryEditorControl;
             if (ctrl == null)
             {
-                ctrl = new ImageGalleryEditorControl();
-                ctrl.ID = "ucImageGalleryEditorControl";
+                ctrl = new ImageGalleryEditorControl
+                {
+                    ID = "ucImageGalleryEditorControl"
+                };
                 Page.FindFirstControl<ItemEditor>().Controls.Add(ctrl);
 
                 //Register stylesheets and scripts - in theory these registrations will not be duplicated
@@ -58,8 +60,10 @@ namespace Umbrella.N2.CustomProperties.ImageGallery.Controls
 
         protected override void CreateChildControls()
         {
-            m_SummaryControl = new ImageGallerySummaryControl();
-            m_SummaryControl.ID = "ucImageGallerySummaryControl";
+            m_SummaryControl = new ImageGallerySummaryControl
+            {
+                ID = "ucImageGallerySummaryControl"
+            };
 
             Controls.Add(m_SummaryControl);
         }

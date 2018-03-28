@@ -46,7 +46,7 @@ namespace Umbrella.Utilities.Caching
             return result;
         }
 
-        public static (bool ItemFound, TItem CacheItem) TryGetFromJsonString<TItem>(this IDistributedCache cache, string key)
+        public static (bool itemFound, TItem cacheItem) TryGetFromJsonString<TItem>(this IDistributedCache cache, string key)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -70,7 +70,7 @@ namespace Umbrella.Utilities.Caching
             return (false, default);
         }
 
-        public static async Task<(bool ItemFound, TItem CacheItem)> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
+        public static async Task<(bool itemFound, TItem cacheItem)> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -94,8 +94,8 @@ namespace Umbrella.Utilities.Caching
             return (false, default);
         }
 
-        public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).CacheItem;
-        public static async Task<TItem> GetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetFromJsonStringAsync<TItem>(key)).CacheItem;
+        public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).cacheItem;
+        public static async Task<TItem> GetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetFromJsonStringAsync<TItem>(key)).cacheItem;
 
         public static void SetAsJsonString(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
         {
@@ -123,10 +123,10 @@ namespace Umbrella.Utilities.Caching
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-            var result = cache.TryGetFromJsonString<TItem>(key);
+            var (itemFound, cacheItem) = cache.TryGetFromJsonString<TItem>(key);
 
-            if (result.ItemFound)
-                return result.CacheItem;
+            if (itemFound)
+                return cacheItem;
 
             // If we get this far then we haven't found the cached item
             TItem createdItem = factory();
@@ -141,10 +141,10 @@ namespace Umbrella.Utilities.Caching
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-            var result = await cache.TryGetFromJsonStringAsync<TItem>(key);
+            var (itemFound, cacheItem) = await cache.TryGetFromJsonStringAsync<TItem>(key);
 
-            if (result.ItemFound)
-                return result.CacheItem;
+            if (itemFound)
+                return cacheItem;
 
             // If we get this far then we haven't found the cached item
             TItem createdItem = await factory();

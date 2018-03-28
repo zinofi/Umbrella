@@ -56,8 +56,10 @@ namespace Umbrella.N2.CustomProperties.LinkEditor.Controls
             LinkListPopup ctrl = Page.FindFirstControl<ItemEditor>().FindControl("ucLinkList") as LinkListPopup;
             if (ctrl == null)
             {
-                ctrl = new LinkListPopup();
-                ctrl.ID = "ucLinkList";
+                ctrl = new LinkListPopup
+                {
+                    ID = "ucLinkList"
+                };
                 Page.FindFirstControl<ItemEditor>().Controls.Add(ctrl);
 
                 //Register stylesheets and scripts - in theory these registrations will not be duplicated
@@ -134,11 +136,15 @@ namespace Umbrella.N2.CustomProperties.LinkEditor.Controls
         #region Overridden Methods
         protected override void CreateChildControls()
         {
-            hdnJsonData = new HtmlInputHidden();
-            hdnJsonData.ID = "hdnJsonData";
+            hdnJsonData = new HtmlInputHidden
+            {
+                ID = "hdnJsonData"
+            };
 
-            hdnJsonButtonOptions = new HtmlInputHidden();
-            hdnJsonButtonOptions.ID = "hdnJsonButtonOptions";
+            hdnJsonButtonOptions = new HtmlInputHidden
+            {
+                ID = "hdnJsonButtonOptions"
+            };
 
             this.Controls.Add(hdnJsonData);
             this.Controls.Add(hdnJsonButtonOptions);
