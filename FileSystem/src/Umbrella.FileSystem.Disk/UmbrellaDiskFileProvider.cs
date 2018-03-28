@@ -56,7 +56,7 @@ namespace Umbrella.FileSystem.Disk
         #endregion
 
         #region Protected Methods
-        protected Task<bool> CheckFileAccessAsync(FileInfo fileInfo, CancellationToken cancellationToken)
+        protected virtual Task<bool> CheckFileAccessAsync(FileInfo fileInfo, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
