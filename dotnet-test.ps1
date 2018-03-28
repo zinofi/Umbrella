@@ -1,1 +1,0 @@
-Get-ChildItem . *Test.csproj -rec | ForEach-Object { & dotnet test $_.FullName }

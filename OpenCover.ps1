@@ -1,2 +1,0 @@
-& 'C:\Program Files (x86)\OpenCover\OpenCover.Console.exe' -target:"c:\Program Files\dotnet\dotnet.exe" -targetargs:"test -f net462 -c Release test/Umbrella.AspNetCore.WebUtilities.Test/Umbrella.AspNetCore.WebUtilities.Test.csproj" -output:coverage/coverage.xml -searchdirs:.\Test\Umbrella.AspNetCore.WebUtilities.Test\bin\Release\net462 -register:user
-& C:\Utilities\ReportGenerator\ReportGenerator.exe -reports:coverage/coverage.xml -targetdir:coverage -verbosity:Error
