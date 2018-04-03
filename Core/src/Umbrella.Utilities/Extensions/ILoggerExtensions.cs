@@ -19,21 +19,21 @@ namespace Microsoft.Extensions.Logging
 
         public static bool WriteWarning(this ILogger log, Exception exc = null, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogWarningErrorOrCritical(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
         public static bool WriteError(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogWarningErrorOrCritical(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
         public static bool WriteCritical(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogWarningErrorOrCritical(log, LogLevel.Critical, exc, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Critical, exc, state, message, methodName, filePath, lineNumber);
 
             return returnValue;
         }
@@ -76,32 +76,17 @@ namespace Microsoft.Extensions.Logging
                     log.LogInformation(output);
                     break;
                 case LogLevel.Warning when exc != null:
-                    log.LogWarning(new EventId(), exc, output);
+                    log.LogWarning(exc, output);
                     break;
                 case LogLevel.Warning:
                     log.LogWarning(output);
                     break;
                 case LogLevel.Error:
-                    log.LogError(new EventId(), exc, output);
+                    log.LogError(exc, output);
                     break;
                 case LogLevel.Critical:
-                    log.LogCritical(new EventId(), exc, output);
+                    log.LogCritical(exc, output);
                     break;
-            }
-        }
-
-        private static void LogWarningErrorOrCritical(ILogger log, LogLevel level, Exception exc, object state, string message, string methodName, string filePath, int lineNumber)
-        {
-            LogDetails(log, level, exc, state, message, methodName, filePath, lineNumber);
-
-            AggregateException aggregateException = exc as AggregateException;
-
-            if (aggregateException?.InnerExceptions != null && aggregateException.InnerExceptions.Count > 0)
-            {
-                foreach (Exception excInner in aggregateException.InnerExceptions)
-                {
-                    LogDetails(log, level, excInner, state, message, methodName, filePath, lineNumber);
-                }
             }
         }
         #endregion

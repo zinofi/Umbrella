@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Text;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {
@@ -43,12 +44,28 @@ namespace Umbrella.Extensions.Logging.Log4Net
             if (!IsEnabled(logLevel))
                 return;
 
-            string message = null;
-
-            if (formatter != null)
-                message = formatter(state, exception);
-            else
+            StringBuilder messageBuider = null;
+            
+            if (formatter == null)
                 throw new InvalidOperationException();
+
+            string messageId = null;
+
+            if(eventId.Id == 0)
+            {
+                //If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
+                //to this method to use the same id for correlating messages.
+                messageId = string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name;
+            }
+            else
+            {
+                messageId = eventId.Id.ToString();
+            }
+
+            messageBuider.AppendLine(messageId);
+            messageBuider.Append(formatter(state, exception));
+
+            string message = messageBuider.ToString();
 
             switch (logLevel)
             {
@@ -73,7 +90,21 @@ namespace Umbrella.Extensions.Logging.Log4Net
                     m_Logger.Info(message, exception);
                     break;
             }
-        } 
+
+            //Log4Net doesn't seem to log AggregateExceptions properly so handling them manually here
+            AggregateException aggregate = exception as AggregateException;
+
+            if (aggregate == null)
+                aggregate = exception?.InnerException as AggregateException;
+
+            if(aggregate?.InnerExceptions?.Count > 0)
+            {
+                foreach(Exception innerException in aggregate.InnerExceptions)
+                {
+                    Log(logLevel, new EventId(0, messageId), state, exception, formatter);
+                }
+            }
+        }
         #endregion
     }
 }
