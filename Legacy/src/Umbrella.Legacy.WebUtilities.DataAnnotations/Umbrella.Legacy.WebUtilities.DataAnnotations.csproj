@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Legacy.WebUtilities.DataAnnotations</PackageId>
-    <Version>2.0.0-rc-00015</Version>
+    <Version>2.0.0-rc-00016</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
