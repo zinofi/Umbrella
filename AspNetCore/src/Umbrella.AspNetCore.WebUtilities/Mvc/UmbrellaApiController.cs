@@ -45,6 +45,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 
         #region Public Methods
         [NonAction]
+        public virtual IActionResult Created() => StatusCode(201);
+
+        [NonAction]
         public virtual IActionResult Forbidden(string message = null) => HttpObjectOrStatusResult(message, 403);
 
         [NonAction]

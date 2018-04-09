@@ -37,8 +37,6 @@ namespace Umbrella.Utilities.Extensions
             return AppendEllipsis(value.Substring(0, value.IndexOf(" ", length)));
         }
 
-        public static string TrimNull(this string value) => !string.IsNullOrEmpty(value) ? value.Trim() : null;
-
         public static string StripNbsp(this string value) => !string.IsNullOrEmpty(value) ? value.Replace("&nbsp;", "") : null;
 
         public static bool IsValidLength(this string value, int minLength, int maxLength, bool allowNull = true)
