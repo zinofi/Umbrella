@@ -43,27 +43,19 @@ namespace Umbrella.Extensions.Logging.Log4Net
         {
             if (!IsEnabled(logLevel))
                 return;
-
-            StringBuilder messageBuider = null;
             
             if (formatter == null)
                 throw new InvalidOperationException();
 
-            string messageId = null;
+            //If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
+            //to this method to use the same id for correlating messages.
+            string messageId = eventId.Id == 0
+                ? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name
+                : eventId.Id.ToString();
 
-            if(eventId.Id == 0)
-            {
-                //If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
-                //to this method to use the same id for correlating messages.
-                messageId = string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name;
-            }
-            else
-            {
-                messageId = eventId.Id.ToString();
-            }
-
-            messageBuider.AppendLine(messageId);
-            messageBuider.Append(formatter(state, exception));
+            var messageBuider = new StringBuilder()
+                .AppendLine(messageId)
+                .Append(formatter(state, exception));
 
             string message = messageBuider.ToString();
 

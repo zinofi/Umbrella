@@ -10,6 +10,9 @@ namespace Umbrella.Utilities.Extensions
 {
     public static class StringExtensions
     {
+        private static readonly Regex s_HtmlTagPatternRegex = new Regex(c_HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex s_EllipsisPatternRegex = new Regex(c_EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private const string c_HtmlTagPattern = @"<.*?>";
         private const string c_EllipsisPattern = @"[\.]+$";
 
@@ -62,9 +65,7 @@ namespace Umbrella.Utilities.Extensions
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            Regex regex = new Regex(c_HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-            return regex.Replace(value, string.Empty);
+            return s_HtmlTagPatternRegex.Replace(value, string.Empty);
         }
 
         public static string ToCamelCase(this string value) => ToCamelCaseInternal(value, false);
@@ -135,9 +136,7 @@ namespace Umbrella.Utilities.Extensions
 
             value += "...";
 
-            Regex regex = new Regex(c_EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-            return regex.Replace(value, "...");
+            return s_EllipsisPatternRegex.Replace(value, "...");
         }
 
         public static string ConvertHtmlBrTagsToLineBreaks(this string value)

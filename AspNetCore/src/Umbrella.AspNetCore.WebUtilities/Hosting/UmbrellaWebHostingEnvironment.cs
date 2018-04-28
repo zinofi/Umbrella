@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,23 +13,22 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Hosting
 {
-    public class UmbrellaWebHostingEnvironment : IUmbrellaWebHostingEnvironment
+    public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
     {
         #region Private Static Members
         private static readonly string s_CacheKeyPrefix = typeof(UmbrellaWebHostingEnvironment).FullName;
-        private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
         #endregion
 
         #region Protected Properties
-        protected ILogger Log { get; }
         protected IHostingEnvironment HostingEnvironment { get; }
         protected IHttpContextAccessor HttpContextAccessor { get; }
-        protected IMemoryCache Cache { get; }
         #endregion
 
         #region Constructors
@@ -36,22 +36,21 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
             IHostingEnvironment hostingEnvironment,
             IHttpContextAccessor httpContextAccessor,
             IMemoryCache cache)
+            : base(logger, cache)
         {
-            Log = logger;
             HostingEnvironment = hostingEnvironment;
             HttpContextAccessor = httpContextAccessor;
-            Cache = cache;
         }
         #endregion
 
         #region IUmbrellaHostingEnvironment Members
-        public virtual string MapPath(string virtualPath, bool fromContentRoot = true)
+        public override string MapPath(string virtualPath, bool fromContentRoot = true)
         {
             try
             {
                 Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-                string key = $"{s_CacheKeyPrefix}:MapPath:{virtualPath}:{fromContentRoot}".ToUpperInvariant();
+                string key = $"{s_CacheKeyPrefix}:{nameof(MapPath)}:{virtualPath}:{fromContentRoot}".ToUpperInvariant();
 
                 return Cache.GetOrCreate(key, entry =>
                 {
@@ -73,7 +72,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 throw;
             }
         }
+        #endregion
 
+        #region IUmbrellaWebHostingEnvironment Members
         public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true)
         {
             try
@@ -82,7 +83,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
                 Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
-                string key = $"{s_CacheKeyPrefix}:MapWebPath:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}".ToUpperInvariant();
+                string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}".ToUpperInvariant();
                 
                 return Cache.GetOrCreate(key, entry =>
                 {
@@ -92,19 +93,17 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
                     var applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
 
-                    //Prefix the path with the virtual application segment
-                    string basePath = applicationPath != "/"
-                        ? applicationPath.Add(cleanedPath).Value
-                        : cleanedPath;
+                    PathString virtualApplicationPath = applicationPath != "/"
+                        ? applicationPath
+                        : PathString.Empty;
 
-                    string url = basePath;
+                    //Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
+                    string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
+                        ? cleanedPath
+                        : virtualApplicationPath.Add(cleanedPath).Value;
 
                     if (toAbsoluteUrl)
-                    {
-                        string host = ResolveHttpHost();
-
-                        url = $"{scheme}://{host}{cleanedPath}";
-                    }
+                        url = $"{scheme}://{ResolveHttpHost()}{url}";
 
                     if(appendVersion)
                     {
@@ -133,6 +132,30 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
             {
                 throw;
             }
+        }
+
+        public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
+        {
+            try
+            {
+                Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
+                Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+
+                if (routeValues == null)
+                    routeValues = new Dictionary<string, object>();
+
+                throw new NotImplementedException();
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
+            {
+                throw;
+            }
+        }
+
+        public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
+        {
+            //TODO: Should this call into the method above? Or should we just throw as below? Maybe with a better message?
+            throw new InvalidOperationException();
         }
         #endregion
 

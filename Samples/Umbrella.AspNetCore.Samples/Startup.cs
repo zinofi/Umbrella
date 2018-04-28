@@ -78,6 +78,8 @@ namespace Umbrella.AspNetCore.Samples
                 else
                     return JsonConvert.SerializeObject(obj);
             };
+
+            UmbrellaStatics.JsonDeserializer = (json, type) => JsonConvert.DeserializeObject(json, type); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
