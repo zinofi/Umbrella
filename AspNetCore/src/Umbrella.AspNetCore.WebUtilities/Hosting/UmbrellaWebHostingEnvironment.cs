@@ -75,7 +75,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
         #endregion
 
         #region IUmbrellaWebHostingEnvironment Members
-        public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true)
+        public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                 Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
                 Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
-                string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}".ToUpperInvariant();
+                string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}:{watchWhenAppendVersion}".ToUpperInvariant();
                 
                 return Cache.GetOrCreate(key, entry =>
                 {
@@ -114,8 +114,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
                         if (!fileInfo.Exists)
                             throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
 
-                        var changeToken = new PhysicalFileChangeToken(fileInfo);
-                        entry.AddExpirationToken(changeToken);
+                        if (watchWhenAppendVersion)
+                            entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
 
                         long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
                         string version = Convert.ToString(versionHash, 16);
