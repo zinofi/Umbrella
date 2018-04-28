@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Hosting
 {
@@ -30,7 +31,7 @@ namespace Umbrella.Utilities.Hosting
         #region IUmbrellaHostingEnvironment Members
         public abstract string MapPath(string virtualPath, bool fromContentRoot = true);
 
-        public virtual string GetFileContent(string virtualPath, bool fromContentRoot = true, bool cache = true)
+        public virtual string GetFileContent(string virtualPath, bool fromContentRoot = true, bool cache = true, bool watch = true)
         {
             try
             {
@@ -38,10 +39,10 @@ namespace Umbrella.Utilities.Hosting
 
                 string key = $"{s_CacheKeyPrefix}:{nameof(GetFileContent)}:{virtualPath}:{fromContentRoot}:{cache}".ToUpperInvariant();
 
+                string physicalPath = MapPath(virtualPath, fromContentRoot);
+
                 string ReadContent()
                 {
-                    string physicalPath = MapPath(virtualPath, fromContentRoot);
-
                     if (File.Exists(physicalPath))
                         return File.ReadAllText(physicalPath);
 
@@ -53,6 +54,9 @@ namespace Umbrella.Utilities.Hosting
                     return Cache.GetOrCreate(key, entry =>
                     {
                         entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+
+                        if(watch)
+                            entry.AddExpirationToken(new PhysicalFileChangeToken(new FileInfo(physicalPath)));
 
                         return ReadContent();
                     });
