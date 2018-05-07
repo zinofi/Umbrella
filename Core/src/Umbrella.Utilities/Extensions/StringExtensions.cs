@@ -258,6 +258,13 @@ namespace Umbrella.Utilities.Extensions
             return new string(buffer.ToArray());
         }
 
+        /// <summary>
+        /// Returns a value indicating whether a specified substring occurs within this string.
+        /// </summary>
+        /// <param name="target">The string to check.</param>
+        /// <param name="value">The string to seek.</param>
+        /// <param name="comparisonType">The type of <see cref="StringComparison"/> to use to locate the <paramref name="value"/> in the <paramref name="target"/>.</param>
+        /// <returns>true if the value parameter occurs within this string, otherwise, false.</returns>
         public static bool Contains(this string target, string value, StringComparison comparisonType)
         {
             if (target == null || value == null)
