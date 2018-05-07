@@ -11,6 +11,8 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Middleware
 {
+    //TODO: Revisit this - needs only apply to requests that contain the "X-Requested-With" header with a value of "XMLHttpRequest"
+    //TODO: Implement a corresponding version for the legacy stack
     public class InternetExplorerCacheHeaderMiddleware
     {
         #region Private Members
@@ -54,7 +56,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
                         HttpResponse response = (HttpResponse)state;
 
                         string contentType = response.ContentType;
-
+                        
                         //Apply the headers when no response content type - this may be the case when a 204 code is sent for a GET request that issues no content
                         //If no content types have been specified in the options apply the headers to all response for the configured HTTP methods
                         //If content types have been specified to filter on then only apply the headers for those responses
@@ -66,6 +68,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 
                             //Set standard HTTP/1.0 no-cache header.
                             response.Headers.Add("Pragma", "no-cache");
+
+                            //Set the Expires header.
+                            response.Headers.Add("Expires", "0");
                         }
 
                         return Task.CompletedTask;
