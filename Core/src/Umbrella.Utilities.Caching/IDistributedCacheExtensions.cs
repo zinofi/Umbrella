@@ -5,31 +5,48 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Caching
 {
+    //TODO: This needs some work. We need to add in an optional locking mechanism and also investigate performing binary serialization, although that might not always be possible
+    //if types have to be annotated by the serialization mechanism. For the JSON, we need to specify settings that ensure the type names are always serialized properly.
+    //Also, ensure the cache entry options are always provided. We don't want any kind of defaults for these.
+    //Might also be a good idea to incorporate the .NET type name into the Keys.
     public static class IDistributedCacheExtensions
     {
         #region Private Static Members
-        private static readonly DistributedCacheEntryOptions s_DefaultOptions = new DistributedCacheEntryOptions();
+        private static JsonSerializerSettings s_JsonSerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        #endregion
+
+        #region Public Static Members
+        public static JsonSerializerSettings JsonSettings
+        {
+            get => s_JsonSerializerSettings;
+            set
+            {
+                Guard.ArgumentNotNull(value, nameof(value));
+
+                s_JsonSerializerSettings = value;
+            }
+        }
         #endregion
 
         #region Public Static Methods
-        public static string GetOrSetString(this IDistributedCache cache, string key, Func<string> factory, DistributedCacheEntryOptions options = null)
+        public static string GetOrCreateString(this IDistributedCache cache, string key, Func<string> factory, DistributedCacheEntryOptions options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
-
+            
             string result = cache.GetString(key);
-
+            
             if (string.IsNullOrWhiteSpace(result))
             {
                 result = factory();
 
                 if (!string.IsNullOrWhiteSpace(result))
-                    cache.SetString(key, result, options ?? s_DefaultOptions);
+                    cache.SetString(key, result, options);
             }
 
             return result;
         }
 
-        public static async Task<string> GetOrSetStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, DistributedCacheEntryOptions options = null)
+        public static async Task<string> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, DistributedCacheEntryOptions options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -40,13 +57,13 @@ namespace Umbrella.Utilities.Caching
                 result = await factory();
 
                 if (!string.IsNullOrWhiteSpace(result))
-                    await cache.SetStringAsync(key, result, options ?? s_DefaultOptions);
+                    await cache.SetStringAsync(key, result, options);
             }
 
             return result;
         }
 
-        public static (bool itemFound, TItem cacheItem) TryGetFromJsonString<TItem>(this IDistributedCache cache, string key)
+        public static (bool itemFound, TItem cacheItem) TryGet<TItem>(this IDistributedCache cache, string key)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -56,7 +73,7 @@ namespace Umbrella.Utilities.Caching
             {
                 try
                 {
-                    var item = JsonConvert.DeserializeObject<TItem>(result);
+                    var item = JsonConvert.DeserializeObject<TItem>(result, s_JsonSerializerSettings);
 
                     return (true, item);
                 }
@@ -70,7 +87,7 @@ namespace Umbrella.Utilities.Caching
             return (false, default);
         }
 
-        public static async Task<(bool itemFound, TItem cacheItem)> TryGetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key)
+        public static async Task<(bool itemFound, TItem cacheItem)> TryGetAsync<TItem>(this IDistributedCache cache, string key)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
@@ -80,7 +97,7 @@ namespace Umbrella.Utilities.Caching
             {
                 try
                 {
-                    var item = JsonConvert.DeserializeObject<TItem>(result);
+                    var item = JsonConvert.DeserializeObject<TItem>(result, s_JsonSerializerSettings);
 
                     return (true, item);
                 }
@@ -94,36 +111,32 @@ namespace Umbrella.Utilities.Caching
             return (false, default);
         }
 
-        public static TItem GetFromJsonString<TItem>(this IDistributedCache cache, string key) => cache.TryGetFromJsonString<TItem>(key).cacheItem;
-        public static async Task<TItem> GetFromJsonStringAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetFromJsonStringAsync<TItem>(key)).cacheItem;
+        public static TItem Get<TItem>(this IDistributedCache cache, string key) => cache.TryGet<TItem>(key).cacheItem;
+        public static async Task<TItem> GetAsync<TItem>(this IDistributedCache cache, string key) => (await cache.TryGetAsync<TItem>(key)).cacheItem;
 
-        public static void SetAsJsonString(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
+        public static void Set(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options)
+        {
+            Guard.ArgumentNotNull(item, nameof(item));
+            
+            string json = JsonConvert.SerializeObject(item, s_JsonSerializerSettings);
+
+            cache.SetString(key, json, options);
+        }
+
+        public static Task SetAsync(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options)
         {
             Guard.ArgumentNotNull(item, nameof(item));
 
-            string json = settings == null
-                ? JsonConvert.SerializeObject(item)
-                : JsonConvert.SerializeObject(item, settings);
+            string json = JsonConvert.SerializeObject(item, s_JsonSerializerSettings);
 
-            cache.SetString(key, json, options ?? s_DefaultOptions);
+            return cache.SetStringAsync(key, json, options);
         }
 
-        public static Task SetAsJsonStringAsync(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
-        {
-            Guard.ArgumentNotNull(item, nameof(item));
-
-            string json = settings == null
-                ? JsonConvert.SerializeObject(item)
-                : JsonConvert.SerializeObject(item, settings);
-
-            return cache.SetStringAsync(key, json, options ?? s_DefaultOptions);
-        }
-
-        public static TItem GetOrSetAsJsonString<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
+        public static TItem GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, DistributedCacheEntryOptions options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-            var (itemFound, cacheItem) = cache.TryGetFromJsonString<TItem>(key);
+            var (itemFound, cacheItem) = cache.TryGet<TItem>(key);
 
             if (itemFound)
                 return cacheItem;
@@ -132,16 +145,16 @@ namespace Umbrella.Utilities.Caching
             TItem createdItem = factory();
 
             if (createdItem != null)
-                SetAsJsonString(cache, key, createdItem, options, settings);
+                Set(cache, key, createdItem, options);
 
             return createdItem;
         }
 
-        public static async Task<TItem> GetOrSetAsJsonStringAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions options = null, JsonSerializerSettings settings = null)
+        public static async Task<TItem> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-            var (itemFound, cacheItem) = await cache.TryGetFromJsonStringAsync<TItem>(key);
+            var (itemFound, cacheItem) = await cache.TryGetAsync<TItem>(key);
 
             if (itemFound)
                 return cacheItem;
@@ -150,7 +163,7 @@ namespace Umbrella.Utilities.Caching
             TItem createdItem = await factory();
 
             if (createdItem != null)
-                await SetAsJsonStringAsync(cache, key, createdItem, options, settings);
+                await SetAsync(cache, key, createdItem, options);
 
             return createdItem;
         }

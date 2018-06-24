@@ -2,6 +2,7 @@
 
 namespace Umbrella.DynamicImage.Abstractions
 {
+    //TODO: Investigate making this readonly and passing around by reference to avoid copying if possible.
     public struct DynamicImageOptions
     {
         public static readonly DynamicImageOptions Empty = new DynamicImageOptions();

@@ -46,6 +46,11 @@ namespace Microsoft.Extensions.Logging
 
             if (state != null)
             {
+                //TODO: ApplicationInsights makes an assumption about state in that it expects an IReadOnlyList internally which is
+                //daft! Propose delegating the handling of the state to the actual logging implementation as well as JSON here. JSON can be ensured as a fallback.
+                //Here we will instead convert the state to an IReadOnlyList<string, object> so that it is compatible with ApplicationInsights.
+                //However, we then need to use reflection which might not be particularly fast! Need to ensure an approach that maintains
+                //maximum platform compatibility.
                 string jsonState = UmbrellaStatics.SerializeJson(state);
                 messageBuilder.Append($"{methodName}({jsonState})");
             }
@@ -64,6 +69,8 @@ namespace Microsoft.Extensions.Logging
 
             string output = messageBuilder.ToString();
 
+            //TODO: Alter these method calls to use Log to be more explicit and allow the state object to be passed directly.
+            //It is then up to the logger to decide how to handle the state.
             switch (level)
             {
                 case LogLevel.Debug:

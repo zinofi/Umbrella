@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Extensions.Logging.Azure
 {
+   //TODO: Could convert to a readonly struct and then pass by ref / in - need to doing some reading on this stuff
    public class LocationInformation
     {
         public string ClassName { get; }

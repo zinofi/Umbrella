@@ -33,7 +33,6 @@ namespace Umbrella.DataAccess.EF6
         where TEntityKey : IEquatable<TEntityKey>
     {
         #region Private Members
-        private readonly IDistributedCache m_Cache;
         private readonly bool m_InitialLazyLoadingStatus;
         private readonly bool m_InitialProxyCreationStatus;
         #endregion
@@ -45,7 +44,7 @@ namespace Umbrella.DataAccess.EF6
         #endregion
 
         #region Protected Properties
-        protected IDistributedCache Cache => m_Cache;
+        protected IDistributedCache Cache { get; }
         protected virtual DistributedCacheEntryOptions CacheOptions { get; }
         protected virtual JsonSerializerSettings JsonSettings { get; }
         protected abstract string EntitySetName { get; }
@@ -55,7 +54,7 @@ namespace Umbrella.DataAccess.EF6
         public CachedReadOnlyGenericRepository(TDbContext dbContext, ILogger logger, IDataAccessLookupNormalizer lookupNormalizer, IDistributedCache cache)
             : base(dbContext, logger, lookupNormalizer)
         {
-            m_Cache = cache;
+            Cache = cache;
             m_InitialLazyLoadingStatus = Context.Configuration.LazyLoadingEnabled;
             m_InitialProxyCreationStatus = Context.Configuration.ProxyCreationEnabled;
         }
@@ -170,7 +169,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                return m_Cache.GetOrSetAsJsonString(AllCountCacheKey, () => FindAll().Count);
+                return Cache.GetOrCreate(AllCountCacheKey, () => FindAll().Count, CacheOptions);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -184,12 +183,12 @@ namespace Umbrella.DataAccess.EF6
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                return m_Cache.GetOrSetAsJsonStringAsync(AllCountCacheKey, async () =>
+                return Cache.GetOrCreateAsync(AllCountCacheKey, async () =>
                 {
                     var allItems = await FindAllAsync();
 
                     return allItems.Count;
-                });
+                }, CacheOptions);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -207,7 +206,7 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                List<CacheEntry<TEntity>> lstCacheEntry = m_Cache.GetOrSetAsJsonString(AllCacheKey, () =>
+                List<CacheEntry<TEntity>> lstCacheEntry = Cache.GetOrCreate(AllCacheKey, () =>
                 {
                     List<TEntity> lstEntityFromDb = Items.AsNoTracking().ToList();
                     List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
@@ -220,12 +219,12 @@ namespace Umbrella.DataAccess.EF6
                         var entry = new CacheEntry<TEntity>(entity);
                         PopulateCacheEntryMetaData(entry);
 
-                        m_Cache.SetAsJsonString(key, entry, CacheOptions, JsonSettings);
+                        Cache.Set(key, entry, CacheOptions);
                         lstCacheEntryFromDb.Add(entry);
                     }
 
                     return lstCacheEntryFromDb;
-                }, CacheOptions, JsonSettings);
+                }, CacheOptions);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -255,7 +254,7 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                List<CacheEntry<TEntity>> lstCacheEntry = await m_Cache.GetOrSetAsJsonStringAsync(AllCacheKey, async () =>
+                List<CacheEntry<TEntity>> lstCacheEntry = await Cache.GetOrCreateAsync(AllCacheKey, async () =>
                 {
                     List<TEntity> lstEntityFromDb = await Items.AsNoTracking().ToListAsync();
                     List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
@@ -268,12 +267,12 @@ namespace Umbrella.DataAccess.EF6
                         var entry = new CacheEntry<TEntity>(entity);
                         await PopulateCacheEntryMetaDataAsync(entry);
 
-                        await m_Cache.SetAsJsonStringAsync(key, entry, CacheOptions, JsonSettings);
+                        await Cache.SetAsync(key, entry, CacheOptions);
                         lstCacheEntryFromDb.Add(entry);
                     }
 
                     return lstCacheEntryFromDb;
-                }, CacheOptions, JsonSettings);
+                }, CacheOptions);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -303,7 +302,7 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                CacheEntry<TEntity> cacheEntry = m_Cache.GetOrSetAsJsonString(key, () =>
+                CacheEntry<TEntity> cacheEntry = Cache.GetOrCreate(key, () =>
                 {
                     TEntity entityFromDb = Items.AsNoTracking().SingleOrDefault(x => x.Id.Equals(id));
 
@@ -315,14 +314,14 @@ namespace Umbrella.DataAccess.EF6
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
                         //environment otherwise.
-                        m_Cache.Remove(AllCacheKey);
-                        m_Cache.Remove(AllCountCacheKey);
+                        Cache.Remove(AllCacheKey);
+                        Cache.Remove(AllCountCacheKey);
 
                         return cacheEntryFromDb;
                     }
 
                     return null;
-                }, CacheOptions, JsonSettings);
+                }, CacheOptions);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -347,7 +346,7 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                CacheEntry<TEntity> cacheEntry = await m_Cache.GetOrSetAsJsonStringAsync(key, async () =>
+                CacheEntry<TEntity> cacheEntry = await Cache.GetOrCreateAsync(key, async () =>
                 {
                     TEntity entityFromDb = await Items.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
@@ -359,14 +358,14 @@ namespace Umbrella.DataAccess.EF6
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
                         //environment otherwise.
-                        await m_Cache.RemoveAsync(AllCacheKey);
-                        await m_Cache.RemoveAsync(AllCountCacheKey);
+                        await Cache.RemoveAsync(AllCacheKey);
+                        await Cache.RemoveAsync(AllCountCacheKey);
 
                         return cacheEntryFromDb;
                     }
 
                     return null;
-                }, CacheOptions, JsonSettings);
+                }, CacheOptions);
 
                 RestoreLazyLoadingAndProxying();
 

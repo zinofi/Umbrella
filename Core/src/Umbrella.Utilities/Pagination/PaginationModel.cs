@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Pagination
 {
-	public struct PaginationModel
+	public readonly struct PaginationModel
 	{
-		public struct PageItem
+		public readonly struct PageItem
 		{
 			public int Number { get; }
 			public bool IsCurrentPage { get; }

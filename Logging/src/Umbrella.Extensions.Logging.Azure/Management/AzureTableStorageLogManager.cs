@@ -160,7 +160,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                 Guard.ArgumentNotNull(options, nameof(options));
 
                 //Using the DistributedCache to store the table models so that changes are reflected globally
-                IEnumerable<AzureTableStorageLogTable> lstTableModel = await DistributedCache.GetOrSetAsJsonStringAsync(GenerateCacheKey(tablePrefix), async () =>
+                IEnumerable<AzureTableStorageLogTable> lstTableModel = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async () =>
                 {
                     CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
 
@@ -420,7 +420,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                 string tablePrefix = tableName.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries)[0];
                 string listCacheKey = GenerateCacheKey(tablePrefix);
 
-                var lstTableModel = await DistributedCache.GetFromJsonStringAsync<List<AzureTableStorageLogTable>>(listCacheKey).ConfigureAwait(false);
+                var lstTableModel = await DistributedCache.GetAsync<List<AzureTableStorageLogTable>>(listCacheKey).ConfigureAwait(false);
 
                 if (lstTableModel != null)
                 {
@@ -429,7 +429,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                     if (itemToRemove != null)
                     {
                         lstTableModel.Remove(itemToRemove);
-                        await DistributedCache.SetAsJsonStringAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions).ConfigureAwait(false);
+                        await DistributedCache.SetAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions).ConfigureAwait(false);
                     }
                 }
 
