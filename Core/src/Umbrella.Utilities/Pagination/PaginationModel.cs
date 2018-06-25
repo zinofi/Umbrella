@@ -20,19 +20,21 @@ namespace Umbrella.Utilities.Pagination
             }
 		}
 
+        private static readonly PageItem[] s_EmptyPageNumbers = new PageItem[0];
+
 		public int? FirstPageNumber { get; }
 		public int? PreviousPageNumber { get; }
 		public int? NextPageNumber { get; }
 		public int? LastPageNumber { get; }
 		public int TotalCount { get; }
 		public bool EnablePageSizeSelection { get; }
-		public List<PageItem> PageNumbers { get; }
+		public PageItem[] PageNumbers { get; }
 
 		public PaginationModel(int totalItems, int pageNo, int? pageSize, bool enablePageSizeSelection = false, int? maxPagesToShow = 5)
             : this()
 		{
 			TotalCount = totalItems;
-			PageNumbers = new List<PageItem>();
+            PageItem[] pageItems = null;
 
 			if (pageSize.HasValue)
 			{
@@ -71,15 +73,18 @@ namespace Umbrella.Utilities.Pagination
                     }
                 }
 
+                pageItems = new PageItem[maxPages];
+
 				for (int i = 0; i < maxPages; i++)
 				{
 					int pageNumber = startPageNo++;
 
-					PageNumbers.Add(new PageItem(pageNumber, pageNumber == pageNo));
+                    pageItems[i] = new PageItem(pageNumber, pageNumber == pageNo);
 				}
 			}
 
-			EnablePageSizeSelection = enablePageSizeSelection;
+            PageNumbers = pageItems ?? s_EmptyPageNumbers;
+            EnablePageSizeSelection = enablePageSizeSelection;
 		}
 	}
 }
