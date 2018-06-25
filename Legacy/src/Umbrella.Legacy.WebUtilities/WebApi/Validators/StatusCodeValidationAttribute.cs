@@ -20,7 +20,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Validators
     /// </summary>
     public abstract class StatusCodeValidationAttribute : ValidationAttribute
     {
-        private HttpContext m_HttpContext;
+        private readonly HttpContext m_HttpContext;
 
         public HttpStatusCode StatusCode { get; set; }
 

@@ -44,7 +44,7 @@ namespace Umbrella.DynamicImage.Impl.Test
             }
         }
 
-        private static List<(DynamicImageOptions Options, Size TargetSize)> s_OptionsList = new List<(DynamicImageOptions, Size)>
+        private static readonly List<(DynamicImageOptions Options, Size TargetSize)> s_OptionsList = new List<(DynamicImageOptions, Size)>
         {
             //These images are small than the original image dimensions of 300 x 193
             (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(50, 150)),

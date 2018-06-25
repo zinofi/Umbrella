@@ -15,7 +15,7 @@ namespace Umbrella.N2.Extensions
 {
     public static class ContentItemExtensions
     {
-        private static Func<object, bool> IsNullOrEmpty = x => x == null || x is string && string.IsNullOrEmpty((string)(x));
+        private static readonly Func<object, bool> IsNullOrEmpty = x => x == null || x is string && string.IsNullOrEmpty((string)(x));
 
         #region Public Static Methods
         public static TProperty GetPropertyValue<TContentItem, TProperty>(this TContentItem contentItem, Expression<Func<TContentItem, TProperty>> expression) where TContentItem : ContentItem

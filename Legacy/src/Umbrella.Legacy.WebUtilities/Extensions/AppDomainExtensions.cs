@@ -8,7 +8,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 {
 	public static class AppDomainExtensions
 	{
-		private static bool s_IsOwinApplication;
+		private static readonly bool s_IsOwinApplication;
 
 		static AppDomainExtensions()
 		{
