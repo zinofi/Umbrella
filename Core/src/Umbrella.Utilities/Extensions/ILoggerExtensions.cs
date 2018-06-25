@@ -1,58 +1,77 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.Logging
 {
+    public readonly struct TestX
+    {
+        public int Field1 { get; }
+    }
+
     public static class ILoggerExtensions
     {
+        #region Private Static Members
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_TypePropertyInfoDictionary = new ConcurrentDictionary<Type, PropertyInfo[]>();
+        #endregion
+
         #region Public Static Methods
-        public static void WriteDebug(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
-            => LogDetails(log, LogLevel.Debug, null, state, message, methodName, filePath, lineNumber);
+        public static void WriteDebug(this ILogger log, object state = null, string message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+            => LogDetails(log, LogLevel.Debug, null, state, message, in eventId, methodName, filePath, lineNumber);
 
-        public static void WriteTrace(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
-            => LogDetails(log, LogLevel.Trace, null, state, message, methodName, filePath, lineNumber);
+        public static void WriteTrace(this ILogger log, object state = null, string message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+            => LogDetails(log, LogLevel.Trace, null, state, message, in eventId, methodName, filePath, lineNumber);
 
-        public static void WriteInformation(this ILogger log, object state = null, string message = null, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
-            => LogDetails(log, LogLevel.Information, null, state, message, methodName, filePath, lineNumber);
+        public static void WriteInformation(this ILogger log, object state = null, string message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+            => LogDetails(log, LogLevel.Information, null, state, message, in eventId, methodName, filePath, lineNumber);
 
-        public static bool WriteWarning(this ILogger log, Exception exc = null, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static bool WriteWarning(this ILogger log, Exception exc = null, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogDetails(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
-        public static bool WriteError(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static bool WriteError(this ILogger log, Exception exc, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogDetails(log, LogLevel.Error, exc, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
-        public static bool WriteCritical(this ILogger log, Exception exc, object state = null, string message = null, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+        public static bool WriteCritical(this ILogger log, Exception exc, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogDetails(log, LogLevel.Critical, exc, state, message, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Critical, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
             return returnValue;
         }
         #endregion
 
         #region Private Static Methods
-        private static void LogDetails(ILogger log, LogLevel level, Exception exc, object state, string message, string methodName, string filePath, int lineNumber)
+        private static void LogDetails(ILogger log, LogLevel level, Exception exc, object state, string message, in EventId eventId, string methodName, string filePath, int lineNumber)
         {
             StringBuilder messageBuilder = new StringBuilder();
 
+            var stateDictionary = new List<KeyValuePair<string, string>>();
+
             if (state != null)
             {
-                //TODO: ApplicationInsights makes an assumption about state in that it expects an IReadOnlyList internally which is
-                //daft! Propose delegating the handling of the state to the actual logging implementation as well as JSON here. JSON can be ensured as a fallback.
-                //Here we will instead convert the state to an IReadOnlyList<string, object> so that it is compatible with ApplicationInsights.
-                //However, we then need to use reflection which might not be particularly fast! Need to ensure an approach that maintains
-                //maximum platform compatibility.
                 string jsonState = UmbrellaStatics.SerializeJson(state);
                 messageBuilder.Append($"{methodName}({jsonState})");
+
+                //Here we will convert the stateDictionary to an IReadOnlyList<KeyValuePair<string, object>> (actual call to .AsReadOnly is further down) so that it is compatible with ApplicationInsights.
+                //It should also be compatible with other logging implementations that can perform serialization of collections.
+                PropertyInfo[] propertyInfos = s_TypePropertyInfoDictionary.GetOrAdd(state.GetType(), x => x.GetProperties());
+
+                foreach (var pi in propertyInfos)
+                {
+                    stateDictionary.Add(new KeyValuePair<string, string>(pi.Name, Convert.ToString(pi.GetValue(state) ?? string.Empty, CultureInfo.InvariantCulture)));
+                }
             }
             else
             {
@@ -67,34 +86,9 @@ namespace Microsoft.Extensions.Logging
 
             messageBuilder.Append($" on Line: {lineNumber}, Path: {filePath}");
 
-            string output = messageBuilder.ToString();
-
-            //TODO: Alter these method calls to use Log to be more explicit and allow the state object to be passed directly.
-            //It is then up to the logger to decide how to handle the state.
-            switch (level)
-            {
-                case LogLevel.Debug:
-                    log.LogDebug(output);
-                    break;
-                case LogLevel.Trace:
-                    log.LogTrace(output);
-                    break;
-                case LogLevel.Information:
-                    log.LogInformation(output);
-                    break;
-                case LogLevel.Warning when exc != null:
-                    log.LogWarning(exc, output);
-                    break;
-                case LogLevel.Warning:
-                    log.LogWarning(output);
-                    break;
-                case LogLevel.Error:
-                    log.LogError(exc, output);
-                    break;
-                case LogLevel.Critical:
-                    log.LogCritical(exc, output);
-                    break;
-            }
+            //We are passing the state to logger. It is up to the logging implementation to then process it. We have already serialized it to JSON above and included it as part of the message
+            //just in case the logging implementation doesn't do something with it.
+            log.Log(level, eventId, stateDictionary.AsReadOnly(), exc, (stateObject, exceptionObject) => messageBuilder.ToString());
         }
         #endregion
     }

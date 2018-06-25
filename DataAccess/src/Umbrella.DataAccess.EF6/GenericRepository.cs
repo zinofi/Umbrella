@@ -115,11 +115,11 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     Context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", true))
+            catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", returnValue: true))
             {
                 LogDbEntityValidationExceptionDetails(exc);
                 throw;
@@ -161,11 +161,11 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     await Context.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
-            catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", true))
+            catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", returnValue: true))
             {
                 LogDbEntityValidationExceptionDetails(exc);
                 throw;
@@ -256,7 +256,7 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     Context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
@@ -286,7 +286,7 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     await Context.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
@@ -319,7 +319,7 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     Context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
@@ -352,7 +352,7 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     await Context.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
             }
@@ -381,7 +381,7 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     Context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
@@ -413,7 +413,7 @@ namespace Umbrella.DataAccess.EF6
                 if (pushChangesToDb)
                     await Context.SaveChangesAsync(cancellationToken);
             }
-            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", true))
+            catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
             {
                 throw new DataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
             }
