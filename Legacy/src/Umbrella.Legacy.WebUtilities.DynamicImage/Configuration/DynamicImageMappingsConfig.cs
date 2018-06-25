@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -16,20 +15,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
         private static readonly object s_Lock = new object();
 		private static List<DynamicImageMapping> s_DynamicImageMappingList;
 		private static DynamicImageMappingsSection s_Section;
-        private static readonly IMapper s_AutoMapperMappings;
         #endregion
 
         #region Constructors
-        static DynamicImageMappingsConfig()
-        {
-            MapperConfiguration mapperConfig = new MapperConfiguration(x =>
-            {
-                x.CreateMap<DynamicImageMappingElement, DynamicImageMapping>();
-            });
-
-            s_AutoMapperMappings = mapperConfig.CreateMapper();
-        }
-
         public DynamicImageMappingsConfig(System.Configuration.Configuration config)
 		{
             UmbrellaSectionGroup group = UmbrellaSectionGroup.GetSectionGroup(config);
@@ -53,7 +41,13 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 						{
 							if (s_Section != null)
 							{
-								s_DynamicImageMappingList = s_Section.Mappings.OfType<DynamicImageMappingElement>().Select(x => s_AutoMapperMappings.Map<DynamicImageMapping>(x)).ToList();
+								s_DynamicImageMappingList = s_Section.Mappings.OfType<DynamicImageMappingElement>().Select(x => new DynamicImageMapping
+                                {
+                                    Format = x.Format,
+                                    Height = x.Height,
+                                    ResizeMode = x.ResizeMode,
+                                    Width = x.Width
+                                }).ToList();
 							}
 
 							//If no config settings can be found, initialize as empty
