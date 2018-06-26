@@ -2,8 +2,8 @@
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
 # Manually alter the build number before pushing to NuGet feeds
-$previousBuild = "2.0.0-rc-00018"
-$currentBuild =  "2.0.0-rc-00019"
+$previousBuild = "2.0.0-rc-00019"
+$currentBuild =  "2.0.0-rc-00020"
 
 foreach ($file in $configFiles)
 {
@@ -16,12 +16,15 @@ foreach ($file in $configFiles)
 	}
 }
 
-Write-Output "Total files: " $configFiles.Length
-Write-Output "Total affected files: " $affectedFiles.Count
+Write-Output ""
+Write-Output "Updating from $($previousBuild) to $($currentBuild)"
+Write-Output ""
+Write-Output "Total files: $($configFiles.Length)"
+Write-Output "Total affected files: $($affectedFiles.Count)"
+Write-Output ""
 
 if(!$affectedFiles.Count.Equals(0))
 {
-	Write-Output ""
-	Write-Output "Affected Files: "
+	Write-Output "Affected Files:"
 	$affectedFiles | ForEach-Object { Write-Output $_ }
 }
