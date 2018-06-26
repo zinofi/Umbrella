@@ -9,11 +9,10 @@ using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.Logging
 {
-    public readonly struct TestX
-    {
-        public int Field1 { get; }
-    }
-
+    /// <summary>
+    /// A set of extension methods for <see cref="ILogger"/> instances which provide more comprehensive logging functionality than the built-in <see cref="ILogger.Log"/>
+    /// method and the Log* extension methods provided by Microsoft.
+    /// </summary>
     public static class ILoggerExtensions
     {
         #region Private Static Members
@@ -57,7 +56,12 @@ namespace Microsoft.Extensions.Logging
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            var stateDictionary = new List<KeyValuePair<string, string>>();
+            var stateDictionary = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>(nameof(methodName), methodName),
+                new KeyValuePair<string, string>(nameof(filePath), filePath),
+                new KeyValuePair<string, string>(nameof(lineNumber), lineNumber.ToString(CultureInfo.InvariantCulture))
+            };
 
             if (state != null)
             {
