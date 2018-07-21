@@ -27,13 +27,19 @@ namespace Umbrella.DynamicImage.Abstractions
 
         public override bool Equals(object obj)
         {
-            DynamicImageOptions compareOptions = (DynamicImageOptions)obj;
+            if (obj == null)
+                return false;
 
-            return SourcePath.Equals(compareOptions.SourcePath, StringComparison.OrdinalIgnoreCase)
-                && Width == compareOptions.Width
-                && Height == compareOptions.Height
-                && ResizeMode == compareOptions.ResizeMode
-                && Format == compareOptions.Format;
+            if (obj is DynamicImageOptions compareOptions)
+            {
+                return SourcePath.Equals(compareOptions.SourcePath, StringComparison.OrdinalIgnoreCase)
+                    && Width == compareOptions.Width
+                    && Height == compareOptions.Height
+                    && ResizeMode == compareOptions.ResizeMode
+                    && Format == compareOptions.Format;
+            }
+
+            return false;
         }
 
         public override int GetHashCode() => ToString().GetHashCode();
