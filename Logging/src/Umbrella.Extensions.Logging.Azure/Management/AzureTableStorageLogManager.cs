@@ -90,11 +90,11 @@ namespace Umbrella.Extensions.Logging.Azure.Management
         #region IAzureTableStorageLogManager Members
         public Task<(List<AzureTableStorageLogDataSource> Items, int TotalCount)> FindAllDataSourceByOptionsAsync(AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            Guard.ArgumentNotNull(options, nameof(options));
+
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                Guard.ArgumentNotNull(options, nameof(options));
-
                 IEnumerable<AzureTableStorageLogDataSource> lstDataSource = LogManagementOptions.DataSources;
 
                 //Apply filters first
@@ -153,14 +153,14 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
         public async Task<(List<AzureTableStorageLogTable> Items, int TotalCount)> FindAllLogTableByTablePrefixAndOptionsAsync(string tablePrefix, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            Guard.ArgumentNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
+            Guard.ArgumentNotNull(options, nameof(options));
+
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                Guard.ArgumentNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
-                Guard.ArgumentNotNull(options, nameof(options));
-
                 //Using the DistributedCache to store the table models so that changes are reflected globally
-                IEnumerable<AzureTableStorageLogTable> lstTableModel = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async () =>
+                (IEnumerable<AzureTableStorageLogTable> cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async innerToken =>
                 {
                     CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
 
@@ -171,7 +171,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
                     do
                     {
-                        resultSegment = await tableClient.ListTablesSegmentedAsync(tablePrefix, continuationToken, cancellationToken).ConfigureAwait(false);
+                        resultSegment = await tableClient.ListTablesSegmentedAsync(tablePrefix, continuationToken, innerToken).ConfigureAwait(false);
 
                         foreach (CloudTable table in resultSegment.Results)
                         {
@@ -214,7 +214,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                     return cbTableModel.ToList();
                 }, TableListCacheEntryOptions).ConfigureAwait(false);
 
-                int totalCount = lstTableModel?.Count() ?? 0;
+                int totalCount = cacheItem?.Count() ?? 0;
 
                 if (totalCount == 0)
                     return (new List<AzureTableStorageLogTable>(), 0);
@@ -228,18 +228,18 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                 sortBy = Normalize(sortBy);
 
                 if (sortBy == s_NormalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Date)])
-                    lstTableModel = lstTableModel.OrderBySortDirection(x => x.Date, options.SortDirection);
+                    cacheItem = cacheItem.OrderBySortDirection(x => x.Date, options.SortDirection);
                 else if (sortBy == s_NormalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Name)])
-                    lstTableModel = lstTableModel.OrderBySortDirection(x => x.Name, options.SortDirection);
+                    cacheItem = cacheItem.OrderBySortDirection(x => x.Name, options.SortDirection);
                 else
-                    lstTableModel = lstTableModel.OrderByDescending(x => x.Date);
+                    cacheItem = cacheItem.OrderByDescending(x => x.Date);
 
                 //Apply pagination
                 int itemsToSkip = (options.PageNumber - 1) * options.PageSize;
 
                 List<AzureTableStorageLogTable> lstSortedFilteredItem = options.PageSize > 0
-                    ? lstTableModel.Skip(itemsToSkip).Take(options.PageSize).ToList()
-                    : lstTableModel.ToList();
+                    ? cacheItem.Skip(itemsToSkip).Take(options.PageSize).ToList()
+                    : cacheItem.ToList();
 
                 return (lstSortedFilteredItem, totalCount);
             }
@@ -251,13 +251,13 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
         public async Task<(AzureTableStorageLogAppenderType? AppenderType, List<TableEntity> Items, int TotalCount)> FindAllTableEntityByOptionsAsync(string tablePrefix, string tableName, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            Guard.ArgumentNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
+            Guard.ArgumentNotNullOrWhiteSpace(tableName, nameof(tableName));
+            Guard.ArgumentNotNull(options, nameof(options));
+
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                Guard.ArgumentNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
-                Guard.ArgumentNotNullOrWhiteSpace(tableName, nameof(tableName));
-                Guard.ArgumentNotNull(options, nameof(options));
-
                 //Validate the tablePrefix
                 var dataSource = LogManagementOptions.DataSources.Find(x => Normalize(x.TablePrefix) == Normalize(tablePrefix));
 
@@ -399,11 +399,11 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
         public async Task<AzureTableStorageLogDeleteOperationResult> DeleteTableByNameAsync(string tableName, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            Guard.ArgumentNotNullOrWhiteSpace(tableName, nameof(tableName));
+
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                Guard.ArgumentNotNullOrWhiteSpace(tableName, nameof(tableName));
-
                 CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
 
                 CloudTable table = tableClient.GetTableReference(tableName);
@@ -420,7 +420,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                 string tablePrefix = tableName.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries)[0];
                 string listCacheKey = GenerateCacheKey(tablePrefix);
 
-                var lstTableModel = await DistributedCache.GetAsync<List<AzureTableStorageLogTable>>(listCacheKey).ConfigureAwait(false);
+                var lstTableModel = await DistributedCache.GetAsync<List<AzureTableStorageLogTable>>(listCacheKey, cancellationToken).ConfigureAwait(false);
 
                 if (lstTableModel != null)
                 {
@@ -429,7 +429,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                     if (itemToRemove != null)
                     {
                         lstTableModel.Remove(itemToRemove);
-                        await DistributedCache.SetAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions).ConfigureAwait(false);
+                        await DistributedCache.SetAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions, cancellationToken).ConfigureAwait(false);
                     }
                 }
 
@@ -446,14 +446,14 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
         public async Task ClearTableNameCacheAsync(string tablePrefix, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            Guard.ArgumentNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
+
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                Guard.ArgumentNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
-
                 string cacheKey = GenerateCacheKey(tablePrefix);
 
-                await DistributedCache.RemoveAsync(cacheKey).ConfigureAwait(false);
+                await DistributedCache.RemoveAsync(cacheKey, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exc) when (Log.WriteError(exc, new { tablePrefix }, returnValue: true))
             {
