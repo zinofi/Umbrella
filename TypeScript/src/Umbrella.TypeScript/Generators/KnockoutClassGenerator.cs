@@ -31,6 +31,24 @@ namespace Umbrella.TypeScript.Generators
         {
             if (!string.IsNullOrEmpty(tsInfo.TypeName))
             {
+                string strInitialOutputValue;
+
+                switch (PropertyMode)
+                {
+                    default:
+                    case TypeScriptPropertyMode.None:
+                        strInitialOutputValue = "";
+                        break;
+                    case TypeScriptPropertyMode.Null:
+                        strInitialOutputValue = "null";
+                        break;
+                    case TypeScriptPropertyMode.Model:
+                        strInitialOutputValue = tsInfo.InitialOutputValue;
+                        break;
+                }
+
+                string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
+
                 string formatString = "\t\t{0}: ";
 
                 if (tsInfo.TypeName.EndsWith("[]"))
@@ -43,7 +61,7 @@ namespace Umbrella.TypeScript.Generators
                     formatString += "KnockoutObservable<{1}> = ko.observable<{1}>({2});";
                 }
 
-                builder.AppendLine(string.Format(formatString, tsInfo.Name, tsInfo.TypeName, tsInfo.InitialOutputValue));
+                builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}", strInitialOutputValue));
             }
         }
 
@@ -87,7 +105,7 @@ namespace Umbrella.TypeScript.Generators
                         validationBuilder.AppendLineWithTabIndent($"max: {{ params: {attr.Maximum}, message: {message} }},", 4);
                         break;
                     case RegularExpressionAttribute attr:
-                        validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {attr.Pattern}, message: {message} }},", 4);
+                        validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: new RegExp(\"{attr.Pattern}\"), message: {message} }},", 4);
                         break;
                     case StringLengthAttribute attr:
                         if (attr.MinimumLength > 0)
