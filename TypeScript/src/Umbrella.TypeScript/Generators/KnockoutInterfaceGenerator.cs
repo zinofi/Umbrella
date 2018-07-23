@@ -47,7 +47,6 @@ namespace Umbrella.TypeScript.Generators
                     formatString += "KnockoutObservable<{1}>;";
                 }
 
-                builder.AppendLine(string.Format(formatString, tsInfo.Name, tsInfo.TypeName));
                 builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}"));
             }
         }
