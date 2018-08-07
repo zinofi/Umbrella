@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Umbrella.Utilities.Extensions
 {
+    /// <summary>
+    /// A set of extension methods for <see cref="Enum"/> types.
+    /// </summary>
     public static class EnumExtensions
     {
         public static T ToEnum<T>(this string value) where T : struct => value.ToEnum(default(T));
