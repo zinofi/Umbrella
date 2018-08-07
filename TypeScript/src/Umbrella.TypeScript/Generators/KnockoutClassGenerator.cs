@@ -105,7 +105,7 @@ namespace Umbrella.TypeScript.Generators
                         validationBuilder.AppendLineWithTabIndent($"max: {{ params: {attr.Maximum}, message: {message} }},", 4);
                         break;
                     case RegularExpressionAttribute attr:
-                        validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: new RegExp(\"{attr.Pattern}\"), message: {message} }},", 4);
+                        validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: /{attr.Pattern}/), message: {message} }},", 4);
                         break;
                     case StringLengthAttribute attr:
                         if (attr.MinimumLength > 0)
