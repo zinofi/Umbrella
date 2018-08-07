@@ -134,6 +134,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
+                //TODO: Ensure ConfigureAwait(false) is called on all async methods to avoid thread switching.
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Guard.ArgumentNotNull(entity, nameof(entity));
