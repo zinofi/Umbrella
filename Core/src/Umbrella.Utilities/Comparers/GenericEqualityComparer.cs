@@ -39,6 +39,15 @@ namespace Umbrella.Utilities.Comparers
         /// <returns>Whether or not the 2 object instances are equal.</returns>
         public override bool Equals(TObject x, TObject y)
         {
+            if (x == null && y == null)
+                return true;
+
+            if (x == null)
+                return false;
+
+            if (y == null)
+                return false;
+
             if (m_CustomComparer != null)
                 return m_CustomComparer(x, y);
 
@@ -51,6 +60,6 @@ namespace Umbrella.Utilities.Comparers
         /// </summary>
         /// <param name="obj">The object instance to compute the hash code for.</param>
         /// <returns>The hash code</returns>
-        public override int GetHashCode(TObject obj) => m_PropertySelector(obj).GetHashCode();
+        public override int GetHashCode(TObject obj) => m_PropertySelector(obj)?.GetHashCode() ?? 0;
     }
 }
