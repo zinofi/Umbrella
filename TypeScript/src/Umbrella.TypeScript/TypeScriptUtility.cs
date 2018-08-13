@@ -206,6 +206,7 @@ namespace Umbrella.TypeScript
                         else
                         {
                             info.InitialOutputValue = "null";
+                            info.IsNullable = true;
                         }
                     }
                     else if (info.CLRType.GetTypeInfo().IsEnum)
@@ -228,6 +229,7 @@ namespace Umbrella.TypeScript
                         {
                             //Output unspecified dates as null rather than a string with DateTime.MinValue
                             info.InitialOutputValue = "null";
+                            info.IsNullable = true;
                         }
                         else
                         {
