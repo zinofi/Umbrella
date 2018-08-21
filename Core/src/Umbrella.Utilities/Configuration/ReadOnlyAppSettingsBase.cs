@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Configuration
 {
@@ -103,21 +98,22 @@ namespace Umbrella.Utilities.Configuration
             if (!string.IsNullOrEmpty(value))
                 return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
             else if (throwException)
-                throw new ArgumentException(string.Format("The value for key: {0} is not valid. An app setting with that key cannot be found", key));
+                throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
 
             return type == typeof(string) && fallback == null
                 ? (T)Convert.ChangeType(string.Empty, type)
                 : fallback;
         }
 
-        private T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false) where T : struct
+        private T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false)
+            where T : struct, Enum
         {
             string value = AppSettingsSource.GetValue(key);
 
-            if (!string.IsNullOrEmpty(value) && typeof(Enum).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()) && Enum.TryParse(value, true, out T output))
+            if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out T output))
                 return output;
             else if (throwException)
-                throw new ArgumentException(string.Format("The value for key: {0} is not valid. An enum app setting with that key cannot be found", key));
+                throw new ArgumentException($"The value for key: {key} is not valid. An enum app setting with that key cannot be found.");
 
             return fallback;
         }
