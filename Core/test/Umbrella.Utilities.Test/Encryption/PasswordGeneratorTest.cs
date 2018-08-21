@@ -12,18 +12,36 @@ namespace Umbrella.Utilities.Test.Encryption
 {
     public class PasswordGeneratorTest
     {
-        [Fact]
-        public void TestValidPassword()
+        public static List<object[]> OptionsList = new List<object[]>
+        {
+            new object[] { 8, 3, 2 },
+            new object[] { 16, 5, 3 },
+            new object[] { 32, 14, 5 },
+            new object[] { 32, 5, 14 },
+            new object[] { 8, 0, 0 },
+            new object[] { 8, 3, 0 },
+            new object[] { 8, 0, 3 }
+        };
+
+        [Theory]
+        [MemberData(nameof(OptionsList))]
+        public void TestValidPassword(int length, int numbers, int upperCaseLetters)
         {
             var generator = CreatePasswordGenerator();
 
-            string password = generator.GeneratePassword(8, 3);
+            int lowerCaseLetters = length - numbers - upperCaseLetters;
 
-            Assert.Equal(8, password.Length);
+            string password = generator.GeneratePassword(length, numbers, upperCaseLetters);
 
-            int numbersCount = password.Where(x => char.IsNumber(x)).Count();
+            Assert.Equal(length, password.Length);
 
-            Assert.Equal(3, numbersCount);
+            int lowerCaseCount = password.Count(x => char.IsLower(x));
+            int numbersCount = password.Count(x => char.IsNumber(x));
+            int upperCaseCount = password.Count(x => char.IsUpper(x));
+
+            Assert.Equal(lowerCaseLetters, lowerCaseCount);
+            Assert.Equal(numbers, numbersCount);
+            Assert.Equal(upperCaseLetters, upperCaseCount);
         }
 
         [Fact]
@@ -48,6 +66,30 @@ namespace Umbrella.Utilities.Test.Encryption
             var generator = CreatePasswordGenerator();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(5, 6));
+        }
+
+        [Fact]
+        public void TestInvalidUpperCaseLetters()
+        {
+            var generator = CreatePasswordGenerator();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(upperCaseLetters: -1));
+        }
+
+        [Fact]
+        public void TestUpperCaseLettersLessThanLength()
+        {
+            var generator = CreatePasswordGenerator();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(5, 1, 10));
+        }
+
+        [Fact]
+        public void TestSumOfNumbersAndUpperCaseLettersLessThanLength()
+        {
+            var generator = CreatePasswordGenerator();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(10, 6, 6));
         }
 
         private IPasswordGenerator CreatePasswordGenerator()
