@@ -9,6 +9,7 @@ using System.Net.Http;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi.Filters
 {
+    //TODO: Is this even needed anymore?
 	public class ValidationActionFilterAttribute : ActionFilterAttribute
 	{
 		public override void OnActionExecuting(HttpActionContext actionContext)
