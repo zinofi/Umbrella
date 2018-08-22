@@ -67,7 +67,8 @@ namespace Umbrella.Utilities.Configuration
             }
         }
 
-        protected virtual T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false) where T : struct
+        protected virtual T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
+            where T : struct, Enum
         {
             try
             {

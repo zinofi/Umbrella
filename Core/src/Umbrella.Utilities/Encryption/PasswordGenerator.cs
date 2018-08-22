@@ -10,6 +10,8 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Encryption
 {
+    //TODO: Use stackalloc and System.Memory stuff to further optimize
+    //TODO: Add support for special chars, e.g. !@#$!&
     public class PasswordGenerator : IPasswordGenerator
     {
         #region Private Static Members
@@ -83,6 +85,7 @@ namespace Umbrella.Utilities.Encryption
                     {
                         int number = GenerateRandomInteger(rngProvider, 0, 10);
 
+                        //TODO: Must be a more efficient way of doing this without allocating using the new System.Memory stuff?
                         password[idx++] = number.ToString().ToCharArray()[0];
                     }
 
