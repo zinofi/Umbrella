@@ -2,14 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;net47</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release;TeamServices</Configurations>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,12 +15,12 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
     <PackageReference Include="Moq" Version="4.10.0" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+  </ItemGroup>
+  
 </Project>

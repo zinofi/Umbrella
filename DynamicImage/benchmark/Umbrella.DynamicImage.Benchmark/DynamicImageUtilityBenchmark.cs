@@ -11,7 +11,7 @@ namespace Umbrella.DynamicImage.Benchmark
     [CoreJob, ClrJob]
     public class DynamicImageUtilityBenchmark
     {
-        private readonly IDynamicImageUtility m_DynamicImageUtility;
+        private readonly DynamicImageUtility m_DynamicImageUtility;
 
         public DynamicImageUtilityBenchmark()
         {

@@ -216,6 +216,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Dynamic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Azure", "Logging\src\Umbrella.Extensions.Logging.Azure\Umbrella.Extensions.Logging.Azure.csproj", "{37FF704B-43D7-4B73-9CD2-736E1DDBD082}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Benchmark", "Core\benchmark\Umbrella.Utilities.Benchmark\Umbrella.Utilities.Benchmark.csproj", "{C55A126A-6326-4487-A4ED-53985786943D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -547,6 +549,12 @@ Global
 		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.Release|Any CPU.Build.0 = Release|Any CPU
 		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.TeamServices|Any CPU.ActiveCfg = TeamServices|Any CPU
 		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.TeamServices|Any CPU.Build.0 = TeamServices|Any CPU
+		{C55A126A-6326-4487-A4ED-53985786943D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55A126A-6326-4487-A4ED-53985786943D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55A126A-6326-4487-A4ED-53985786943D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55A126A-6326-4487-A4ED-53985786943D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C55A126A-6326-4487-A4ED-53985786943D}.TeamServices|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55A126A-6326-4487-A4ED-53985786943D}.TeamServices|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -642,6 +650,7 @@ Global
 		{2AF06EDE-B935-4B4E-A363-EC123518E556} = {EE10F9C4-1CCF-4BD5-86E2-BEB0008804F6}
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F} = {1695D124-726F-446B-988E-61B9B440D345}
 		{37FF704B-43D7-4B73-9CD2-736E1DDBD082} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
+		{C55A126A-6326-4487-A4ED-53985786943D} = {B35C85E1-B2C5-4F0B-9975-6E86DF7F5BE9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

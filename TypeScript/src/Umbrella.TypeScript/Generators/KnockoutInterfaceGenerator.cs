@@ -17,22 +17,6 @@ namespace Umbrella.TypeScript.Generators
         {
             if (!string.IsNullOrEmpty(tsInfo.TypeName))
             {
-                string strInitialOutputValue;
-
-                switch (PropertyMode)
-                {
-                    default:
-                    case TypeScriptPropertyMode.None:
-                        strInitialOutputValue = "";
-                        break;
-                    case TypeScriptPropertyMode.Null:
-                        strInitialOutputValue = "null";
-                        break;
-                    case TypeScriptPropertyMode.Model:
-                        strInitialOutputValue = tsInfo.InitialOutputValue;
-                        break;
-                }
-
                 string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
                 string formatString = "\t\t{0}: ";

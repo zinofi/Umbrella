@@ -56,7 +56,7 @@ namespace Umbrella.Utilities.Encryption
                 if (numbers + upperCaseLetters > length)
                     throw new ArgumentOutOfRangeException($"{nameof(numbers)}, {nameof(upperCaseLetters)}", $"The sum of the {nameof(numbers)} and the {nameof(upperCaseLetters)} arguments is greater than the length.");
 
-                char[] password = new char[length];
+                Span<char> password = stackalloc char[length];
 
                 int lowerCaseLettersLength = length - numbers - upperCaseLetters;
 
@@ -85,8 +85,7 @@ namespace Umbrella.Utilities.Encryption
                     {
                         int number = GenerateRandomInteger(rngProvider, 0, 10);
 
-                        //TODO: Must be a more efficient way of doing this without allocating using the new System.Memory stuff?
-                        password[idx++] = number.ToString().ToCharArray()[0];
+                        password[idx++] = number.ToString()[0];
                     }
 
                     // Randomly shuffle the generated password
@@ -100,7 +99,7 @@ namespace Umbrella.Utilities.Encryption
                     }
                 }
 
-                return new string(password);
+                return password.ToString();
             }
             catch (Exception exc) when (Log.WriteError(exc, new { length, numbers }))
             {

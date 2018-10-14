@@ -20,7 +20,7 @@ namespace Umbrella.Utilities.Comparers
         /// Create a new instance of the comparer using the specified delegate to select the value used to check
         /// for object instance equality. If a custom comparer is specified then that will be used instead with the property
         /// selector only being used to determine the HashCode for an object instance. If a custom comparer is not specified then
-        /// equality will be determine by comparing the 2 HashCode values which are generated as a result of calling <see cref="GetHashCode(TObject)"/>
+        /// equality will be determined by comparing the 2 HashCode values which are generated as a result of calling <see cref="GetHashCode(TObject)"/>
         /// on the value returned by the <paramref name="propertySelector"/> delegate.
         /// </summary>
         /// <param name="propertySelector">The property selector delegate.</param>

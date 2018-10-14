@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
+    // TODO: Rewrite these extensions to allow for proper StringComparison enums to be passed in.
+    // If helpful leverage the new Span stuff.
 	public static class StringBuilderExtensions
 	{
         #region Private Members

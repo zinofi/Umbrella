@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 
 namespace Umbrella.Utilities.Extensions
 {
+    // TODO: Rework some of this internally to take advantage of the new Span stuff.
     public static class StringExtensions
     {
         private static readonly Regex s_HtmlTagPatternRegex = new Regex(c_HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);

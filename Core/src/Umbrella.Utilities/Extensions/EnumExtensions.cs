@@ -10,9 +10,9 @@ namespace Umbrella.Utilities.Extensions
     /// </summary>
     public static class EnumExtensions
     {
-        public static T ToEnum<T>(this string value) where T : struct => value.ToEnum(default(T));
+        public static T ToEnum<T>(this string value) where T : struct, Enum => value.ToEnum(default(T));
 
-        public static T ToEnum<T>(this string value, T defaultValue) where T : struct
+        public static T ToEnum<T>(this string value, T defaultValue) where T : struct, Enum
         {
             Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
 

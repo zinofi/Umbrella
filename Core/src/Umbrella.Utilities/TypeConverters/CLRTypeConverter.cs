@@ -7,6 +7,8 @@ using System.Globalization;
 
 namespace Umbrella.Utilities.TypeConverters
 {
+    //TODO: What the hell was this used for? It looks like it's used to convert any .NET object instance to it's .NET type name.
+    //Maybe just document this a bit better and keep it in.
     public class CLRTypeConverter : TypeConverter
     {
         #region Public Overridden Methods

@@ -75,6 +75,7 @@ namespace Umbrella.TypeScript
                 {
                     //Always deal with DateTime instances as strings and deal with them on the client
                     info.TypeName = "string";
+                    info.IsNullable = true;
                 }
                 else if (memberType == typeof(decimal))
                 {

@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Umbrella.Utilities.Configuration
 {
+    //TODO: Could refactor the private methods to be local functions.
     public abstract class ReadOnlyAppSettingsBase : ReadOnlyAppSettingsBase<IReadOnlyAppSettingsSource>
     {
         #region Constructors
@@ -49,10 +50,10 @@ namespace Umbrella.Utilities.Configuration
 
         protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
         {
+            Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
-
                 return useCache
                     ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
                     {
@@ -67,13 +68,33 @@ namespace Umbrella.Utilities.Configuration
             }
         }
 
+        protected virtual T GetSetting<T>(Func<T> fallbackCreator = null, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
+        {
+            Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+            try
+            {
+                return useCache
+                    ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
+                    {
+                        entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
+                        return GetSetting(fallbackCreator, key, throwException, customValueConverter);
+                    })
+                    : GetSetting(fallbackCreator, key, throwException, customValueConverter);
+            }
+            catch (Exception exc) when (Log.WriteError(exc))
+            {
+                throw;
+            }
+        }
+
         protected virtual T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
             where T : struct, Enum
         {
+            Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
-
                 return useCache
                     ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
                     {
@@ -104,6 +125,24 @@ namespace Umbrella.Utilities.Configuration
             return type == typeof(string) && fallback == null
                 ? (T)Convert.ChangeType(string.Empty, type)
                 : fallback;
+        }
+
+        private T GetSetting<T>(Func<T> fallbackCreator = null, [CallerMemberName]string key = "", bool throwException = false, Func<string, T> customValueConverter = null)
+        {
+            string value = AppSettingsSource.GetValue(key);
+
+            var type = typeof(T);
+
+            if (!string.IsNullOrEmpty(value))
+                return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
+            else if (throwException)
+                throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
+
+            T defaultValue = fallbackCreator != null ? fallbackCreator() : default;
+
+            return type == typeof(string) && defaultValue == null
+                ? (T)Convert.ChangeType(string.Empty, type)
+                : defaultValue;
         }
 
         private T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false)

@@ -33,7 +33,7 @@ namespace Umbrella.TypeScript.Test
     }
 
     [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
-    public class TestClass
+    public class TestClass : ITestInterface
     {
         [Range(10, 200)]
         public int TestInt { get; set; } = 100;
@@ -44,6 +44,8 @@ namespace Umbrella.TypeScript.Test
         [EmailAddress]
         [Compare(nameof(EmailAddress), ErrorMessage = "Emails must match")]
         public string ConfirmEmailAddress { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 
     [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
@@ -64,5 +66,11 @@ namespace Umbrella.TypeScript.Test
 
         [TypeScriptOverride(typeof(string))]
         public List<int> TestIntList { get; set; } = new List<int>();
+    }
+
+    [TypeScriptModel(TypeScriptOutputModelType.Interface | TypeScriptOutputModelType.KnockoutInterface)]
+    public interface ITestInterface
+    {
+        DateTime CreatedDate { get; }
     }
 }
