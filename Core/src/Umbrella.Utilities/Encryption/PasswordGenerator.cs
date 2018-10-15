@@ -10,7 +10,6 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Encryption
 {
-    //TODO: Use stackalloc and System.Memory stuff to further optimize
     //TODO: Add support for special chars, e.g. !@#$!&
     public class PasswordGenerator : IPasswordGenerator
     {

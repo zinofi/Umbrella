@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Caching
 {
+    // TODO: Try and abstract away the depedency on Newtonsoft.Json so that this package can be merged back into the Utilities one.
     /// <summary>
     /// A set of extension methods for <see cref="IDistributedCache"/> instances to bring things more into line
     /// with those available for the <see cref="IMemoryCache"/>.
