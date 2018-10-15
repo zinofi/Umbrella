@@ -5,7 +5,11 @@ using System.Runtime.CompilerServices;
 
 namespace Umbrella.Utilities.Configuration
 {
-    //TODO: Could refactor the private methods to be local functions.
+    /// <summary>
+    /// The base class for an AppSettings class that contains property definitions for settings that are read from the appSettings section
+    /// of the application config file, e.g. app.config, web.config.
+    /// </summary>
+    /// <seealso cref="ReadOnlyAppSettingsBase{IReadOnlyAppSettingsSource}"/>
     public abstract class ReadOnlyAppSettingsBase : ReadOnlyAppSettingsBase<IReadOnlyAppSettingsSource>
     {
         #region Constructors
@@ -18,6 +22,11 @@ namespace Umbrella.Utilities.Configuration
         #endregion
     }
 
+    /// <summary>
+    /// The base class for an AppSettings class that contains property definitions for settings that are read from
+    /// </summary>
+    /// <typeparam name="TAppSettingsSource">The type of the application settings source.</typeparam>
+    /// <seealso cref="IReadOnlyAppSettingsSource"/>
     public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
         where TAppSettingsSource : IReadOnlyAppSettingsSource
     {
@@ -54,13 +63,29 @@ namespace Umbrella.Utilities.Configuration
 
             try
             {
+                T GetValue()
+                {
+                    string value = AppSettingsSource.GetValue(key);
+
+                    var type = typeof(T);
+
+                    if (!string.IsNullOrEmpty(value))
+                        return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
+                    else if (throwException)
+                        throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
+
+                    return type == typeof(string) && fallback == null
+                        ? (T)Convert.ChangeType(string.Empty, type)
+                        : fallback;
+                }
+
                 return useCache
                     ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
                     {
                         entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
-                        return GetSetting(fallback, key, throwException, customValueConverter);
+                        return GetValue();
                     })
-                    : GetSetting(fallback, key, throwException, customValueConverter);
+                    : GetValue();
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -68,19 +93,37 @@ namespace Umbrella.Utilities.Configuration
             }
         }
 
-        protected virtual T GetSetting<T>(Func<T> fallbackCreator = null, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
+        protected virtual T GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
         {
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
             try
             {
+                T GetValue()
+                {
+                    string value = AppSettingsSource.GetValue(key);
+
+                    var type = typeof(T);
+
+                    if (!string.IsNullOrEmpty(value))
+                        return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
+                    else if (throwException)
+                        throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
+
+                    T defaultValue = fallbackCreator != null ? fallbackCreator() : default;
+
+                    return type == typeof(string) && defaultValue == null
+                        ? (T)Convert.ChangeType(string.Empty, type)
+                        : defaultValue;
+                }
+
                 return useCache
                     ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
                     {
                         entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
-                        return GetSetting(fallbackCreator, key, throwException, customValueConverter);
+                        return GetValue();
                     })
-                    : GetSetting(fallbackCreator, key, throwException, customValueConverter);
+                    : GetValue();
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
@@ -95,67 +138,30 @@ namespace Umbrella.Utilities.Configuration
 
             try
             {
+                T GetValue()
+                {
+                    string value = AppSettingsSource.GetValue(key);
+
+                    if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out T output))
+                        return output;
+                    else if (throwException)
+                        throw new ArgumentException($"The value for key: {key} is not valid. An enum app setting with that key cannot be found.");
+
+                    return fallback;
+                }
+
                 return useCache
                     ? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
                     {
                         entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
-                        return GetSettingEnum(fallback, key, throwException);
+                        return GetValue();
                     })
-                    : GetSettingEnum(fallback, key, throwException);
+                    : GetValue();
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
-        }
-        #endregion
-
-        #region Private Methods
-        private T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false, Func<string, T> customValueConverter = null)
-        {
-            string value = AppSettingsSource.GetValue(key);
-
-            var type = typeof(T);
-
-            if (!string.IsNullOrEmpty(value))
-                return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
-            else if (throwException)
-                throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
-
-            return type == typeof(string) && fallback == null
-                ? (T)Convert.ChangeType(string.Empty, type)
-                : fallback;
-        }
-
-        private T GetSetting<T>(Func<T> fallbackCreator = null, [CallerMemberName]string key = "", bool throwException = false, Func<string, T> customValueConverter = null)
-        {
-            string value = AppSettingsSource.GetValue(key);
-
-            var type = typeof(T);
-
-            if (!string.IsNullOrEmpty(value))
-                return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
-            else if (throwException)
-                throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
-
-            T defaultValue = fallbackCreator != null ? fallbackCreator() : default;
-
-            return type == typeof(string) && defaultValue == null
-                ? (T)Convert.ChangeType(string.Empty, type)
-                : defaultValue;
-        }
-
-        private T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool throwException = false)
-            where T : struct, Enum
-        {
-            string value = AppSettingsSource.GetValue(key);
-
-            if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out T output))
-                return output;
-            else if (throwException)
-                throw new ArgumentException($"The value for key: {key} is not valid. An enum app setting with that key cannot be found.");
-
-            return fallback;
         }
         #endregion
     }

@@ -5,9 +5,13 @@
     <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
-    <Configurations>Debug;Release;TeamServices</Configurations>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Remove="BenchmarkDotNet.Artifacts\**" />
     <EmbeddedResource Remove="BenchmarkDotNet.Artifacts\**" />

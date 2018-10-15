@@ -31,15 +31,15 @@ namespace Umbrella.Utilities.Compilation
             }
         }
 
-        public static bool IsTeamServices
+        public static bool IsAzureDevOps
         {
             get
             {
-                bool isTeamServices = false;
+                bool isAzureDevOps = false;
 
-                IAmTeamServices(ref isTeamServices);
+                IAmAzureDevOps(ref isAzureDevOps);
 
-                return isTeamServices;
+                return isAzureDevOps;
             }
         }
 
@@ -49,8 +49,8 @@ namespace Umbrella.Utilities.Compilation
             {
                 string configuration = "release";
 
-#if TEAMSERVICES
-                configuration = "teamservices";
+#if AZUREDEVOPS
+                configuration = "azuredevops";
 #elif DEBUG
                 configuration = "debug";
 #endif
@@ -65,10 +65,10 @@ namespace Umbrella.Utilities.Compilation
             isDebugMode = true;
         }
 
-        [Conditional("TEAMSERVICES")]
-        private static void IAmTeamServices(ref bool isTeamServices)
+        [Conditional("AZUREDEVOPS")]
+        private static void IAmAzureDevOps(ref bool isAzureDevOps)
         {
-            isTeamServices = true;
+            isAzureDevOps = true;
         }
     }
 }

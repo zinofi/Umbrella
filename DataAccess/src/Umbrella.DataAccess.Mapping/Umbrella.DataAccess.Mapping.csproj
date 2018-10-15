@@ -3,9 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;TeamServices</Configurations>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <PackageId>Umbrella.DataAccess.Mapping</PackageId>
     <Version>2.1.0-rc-00004</Version>
@@ -13,8 +20,7 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
-      This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage
-      the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
+      This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
@@ -22,6 +28,10 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

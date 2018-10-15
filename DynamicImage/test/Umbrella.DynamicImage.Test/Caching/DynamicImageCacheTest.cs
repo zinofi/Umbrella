@@ -22,7 +22,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 {
     public class DynamicImageCacheTest
     {
-#if TEAMSERVICES
+#if AZUREDEVOPS
         private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 #else
         private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
@@ -47,7 +47,7 @@ namespace Umbrella.DynamicImage.Test.Caching
                 if (string.IsNullOrEmpty(s_BaseDirectory))
                 {
                     string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp2.0");
+                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp2.1");
                     s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 

@@ -3,7 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;TeamServices</Configurations>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,12 +20,18 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
-      This package contains the core abstractions which underpin all other Umbrella.FileSystem.* packages as well as many other of the Umbrella.* packages
-      which access the file system.
+      This package contains the core abstractions which underpin all other Umbrella.FileSystem.* packages as well as many other of the Umbrella.* packages which access the file system.
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />

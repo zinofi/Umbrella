@@ -3,9 +3,16 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;TeamServices</Configurations>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <PackageId>Umbrella.FileSystem.AzureStorage</PackageId>
     <Version>2.1.0-rc-00004</Version>
@@ -20,7 +27,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.2" />
   </ItemGroup>
 
   <ItemGroup>

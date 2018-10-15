@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net47</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;TeamServices</Configurations>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,8 +15,7 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
-      This package contains an implementation of the IDynamicImageResizer built using the DynamicImage library.
-      The repo for this library can be found on github: https://github.com/tgjones/dynamic-image.
+      This package contains an implementation of the IDynamicImageResizer built using the DynamicImage library. The repo for this library can be found on github: https://github.com/tgjones/dynamic-image.
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
@@ -21,6 +23,10 @@
 
   <ItemGroup>
     <PackageReference Include="DynamicImage" Version="3.1.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

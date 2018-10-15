@@ -3,9 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;TeamServices</Configurations>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <PackageId>Umbrella.DataAnnotations</PackageId>
     <Version>2.1.0-rc-00004</Version>
@@ -13,10 +20,9 @@
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
-      This package contains a range of data annotation attributes that go beyond the standard ones available
-      in the System.ComponentModel.DataAnnotations namespace.
-      This package was originally cloned from: https://foolproof.codeplex.com/ and contains fixes and enhancements to the original code.
-      This license for the original code can be found here: https://foolproof.codeplex.com/license
+      This package contains a range of data annotation attributes that go beyond the standard ones available in the System.ComponentModel.DataAnnotations namespace.
+	  This package was originally cloned from: https://foolproof.codeplex.com/ and contains fixes and enhancements to the original code.
+	  This license for the original code can be found here: https://foolproof.codeplex.com/license
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
@@ -27,6 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
   </ItemGroup>
 
