@@ -225,7 +225,7 @@ namespace Umbrella.DataAccess.EF6
                          var entry = new CacheEntry<TEntity>(entity);
                          PopulateCacheEntryMetaData(entry);
 
-                         Cache.Set(key, entry, () => CacheOptions);
+                         Cache.Set(key, entry, CacheOptions);
                          lstCacheEntryFromDb.Add(entry);
                      }
 
@@ -275,7 +275,7 @@ namespace Umbrella.DataAccess.EF6
                         var entry = new CacheEntry<TEntity>(entity);
                         await PopulateCacheEntryMetaDataAsync(entry, innerToken).ConfigureAwait(false);
 
-                        await Cache.SetAsync(key, entry, () => CacheOptions, innerToken).ConfigureAwait(false);
+                        await Cache.SetAsync(key, entry, CacheOptions, innerToken).ConfigureAwait(false);
                         lstCacheEntryFromDb.Add(entry);
                     }
 

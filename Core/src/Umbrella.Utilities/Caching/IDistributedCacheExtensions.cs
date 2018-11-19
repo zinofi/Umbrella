@@ -197,17 +197,17 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static void Set(this IDistributedCache cache, string key, object item, Func<DistributedCacheEntryOptions> optionsBuilder)
+        public static void Set(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options)
         {
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNull(item, nameof(item));
-            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
+            Guard.ArgumentNotNull(options, nameof(options));
 
             try
             {
                 string json = UmbrellaStatics.SerializeJson(item, false, TypeNameHandling.All);
 
-                cache.SetString(key, json, optionsBuilder());
+                cache.SetString(key, json, options);
             }
             catch (Exception exc)
             {
@@ -215,18 +215,18 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static async Task SetAsync(this IDistributedCache cache, string key, object item, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default)
+        public static async Task SetAsync(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNull(item, nameof(item));
-            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
+            Guard.ArgumentNotNull(options, nameof(options));
 
             try
             {
                 string json = UmbrellaStatics.SerializeJson(item, false, TypeNameHandling.All);
 
-                await cache.SetStringAsync(key, json, optionsBuilder(), cancellationToken).ConfigureAwait(false);
+                await cache.SetStringAsync(key, json, options, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exc)
             {
@@ -263,7 +263,7 @@ namespace Umbrella.Utilities.Caching
                 try
                 {
                     if (createdItem != null)
-                        Set(cache, key, createdItem, optionsBuilder);
+                        Set(cache, key, createdItem, optionsBuilder());
                 }
                 catch(Exception exc)
                 {
@@ -311,7 +311,7 @@ namespace Umbrella.Utilities.Caching
                 try
                 {
                     if (createdItem != null)
-                        await SetAsync(cache, key, createdItem, optionsBuilder, cancellationToken).ConfigureAwait(false);
+                        await SetAsync(cache, key, createdItem, optionsBuilder(), cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception exc)
                 {
