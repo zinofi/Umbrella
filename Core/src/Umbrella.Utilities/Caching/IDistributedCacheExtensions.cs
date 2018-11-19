@@ -1,45 +1,19 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Json;
 
 namespace Umbrella.Utilities.Caching
 {
-    // TODO: Try and abstract away the depedency on Newtonsoft.Json so that this package can be merged back into the Utilities one.
     /// <summary>
     /// A set of extension methods for <see cref="IDistributedCache"/> instances to bring things more into line
     /// with those available for the <see cref="IMemoryCache"/>.
     /// </summary>
     public static class IDistributedCacheExtensions
     {
-        #region Private Static Members
-        private static JsonSerializerSettings s_JsonSerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-        #endregion
-
-        #region Public Static Members        
-        /// <summary>
-        /// Gets or sets the <see cref="JsonSerializerSettings"/> to use for serialization and deserialization of types. The default settings use a value
-        /// for <see cref="JsonSerializerSettings.TypeNameHandling"/> of <see cref="TypeNameHandling.All"/>.
-        /// </summary>
-        /// <value>
-        /// The <see cref="JsonSerializerSettings"/> instance.
-        /// </value>
-        /// <exception cref="ArgumentNullException">Thrown when the value is null.</exception>
-        public static JsonSerializerSettings JsonSettings
-        {
-            get => s_JsonSerializerSettings;
-            set
-            {
-                Guard.ArgumentNotNull(value, nameof(value));
-
-                s_JsonSerializerSettings = value;
-            }
-        }
-        #endregion
-
         #region Public Static Methods        
         /// <summary>
         /// Gets the string from the cache using the specified <paramref name="key"/> or creates the specified string value using the provided <paramref name="factory"/> delegate if
@@ -48,7 +22,7 @@ namespace Umbrella.Utilities.Caching
         /// <param name="cache">The cache.</param>
         /// <param name="key">The key.</param>
         /// <param name="factory">The factory.</param>
-        /// <param name="options">The options.</param>
+        /// <param name="optionsBuilder">The options builder.</param>
         /// <param name="throwOnCacheFailure">
         /// <para>Specifies whether or not to throw an exception if the operation to get or set the cache item in the underlying cache fails.</para>
         /// <para>Setting this as false means that the failure is handled silently allowing the new cache item to be built with any cache failures being masked.
@@ -56,14 +30,14 @@ namespace Umbrella.Utilities.Caching
         /// </para>
         /// </param>
         /// <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="options"/> are null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
         /// <exception cref="ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
-        public static (string item, UmbrellaDistributedCacheException exception) GetOrCreateString(this IDistributedCache cache, string key, Func<string> factory, DistributedCacheEntryOptions options, bool throwOnCacheFailure = true)
+        public static (string item, UmbrellaDistributedCacheException exception) GetOrCreateString(this IDistributedCache cache, string key, Func<string> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
         {
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
             Guard.ArgumentNotNull(factory, nameof(factory));
-            Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
             try
             {
@@ -91,7 +65,7 @@ namespace Umbrella.Utilities.Caching
                     try
                     {
                         if (!string.IsNullOrWhiteSpace(result))
-                            cache.SetString(key, result, options);
+                            cache.SetString(key, result, optionsBuilder());
                     }
                     catch (Exception exc)
                     {
@@ -117,7 +91,7 @@ namespace Umbrella.Utilities.Caching
         /// <param name="cache">The cache.</param>
         /// <param name="key">The key.</param>
         /// <param name="factory">The factory.</param>
-        /// <param name="options">The options.</param>
+        /// <param name="optionsBuilder">The options builder.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <param name="throwOnCacheFailure">
         /// <para>Specifies whether or not to throw an exception if the operation to get or set the cache item in the underlying cache fails.</para>
@@ -126,15 +100,15 @@ namespace Umbrella.Utilities.Caching
         /// </para>
         /// </param>
         /// <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="options"/> are null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
         /// <exception cref="ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
-        public static async Task<(string item, UmbrellaDistributedCacheException exception)> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<CancellationToken, Task<string>> factory, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+        public static async Task<(string item, UmbrellaDistributedCacheException exception)> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
             Guard.ArgumentNotNull(factory, nameof(factory));
-            Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
             try
             {
@@ -157,12 +131,12 @@ namespace Umbrella.Utilities.Caching
                 if (string.IsNullOrWhiteSpace(result))
                 {
                     //A failure to create the item should always throw an exception
-                    result = await factory(cancellationToken).ConfigureAwait(false);
+                    result = await factory().ConfigureAwait(false);
 
                     try
                     {
                         if (!string.IsNullOrWhiteSpace(result))
-                            await cache.SetStringAsync(key, result, options, cancellationToken).ConfigureAwait(false);
+                            await cache.SetStringAsync(key, result, optionsBuilder(), cancellationToken).ConfigureAwait(false);
                     }
                     catch (Exception exc)
                     {
@@ -223,17 +197,17 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static void Set(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options)
+        public static void Set(this IDistributedCache cache, string key, object item, Func<DistributedCacheEntryOptions> optionsBuilder)
         {
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNull(item, nameof(item));
-            Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
             try
             {
-                string json = JsonConvert.SerializeObject(item, s_JsonSerializerSettings);
+                string json = UmbrellaStatics.SerializeJson(item, false, TypeNameHandling.All);
 
-                cache.SetString(key, json, options);
+                cache.SetString(key, json, optionsBuilder());
             }
             catch (Exception exc)
             {
@@ -241,18 +215,18 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static async Task SetAsync(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default)
+        public static async Task SetAsync(this IDistributedCache cache, string key, object item, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNull(item, nameof(item));
-            Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
             try
             {
-                string json = JsonConvert.SerializeObject(item, s_JsonSerializerSettings);
+                string json = UmbrellaStatics.SerializeJson(item, false, TypeNameHandling.All);
 
-                await cache.SetStringAsync(key, json, options, cancellationToken).ConfigureAwait(false);
+                await cache.SetStringAsync(key, json, optionsBuilder(), cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exc)
             {
@@ -260,12 +234,12 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static (TItem cacheItem, UmbrellaDistributedCacheException exception) GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, DistributedCacheEntryOptions options, bool throwOnCacheFailure = true)
+        public static (TItem cacheItem, UmbrellaDistributedCacheException exception) GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
         {
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
             Guard.ArgumentNotNull(factory, nameof(factory));
-            Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
             try
             {
@@ -289,7 +263,7 @@ namespace Umbrella.Utilities.Caching
                 try
                 {
                     if (createdItem != null)
-                        Set(cache, key, createdItem, options);
+                        Set(cache, key, createdItem, optionsBuilder);
                 }
                 catch(Exception exc)
                 {
@@ -307,13 +281,13 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<CancellationToken, Task<TItem>> factory, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+        public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<CancellationToken, Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(cache, nameof(cache));
             Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
             Guard.ArgumentNotNull(factory, nameof(factory));
-            Guard.ArgumentNotNull(options, nameof(options));
+            Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
             try
             {
@@ -337,7 +311,7 @@ namespace Umbrella.Utilities.Caching
                 try
                 {
                     if (createdItem != null)
-                        await SetAsync(cache, key, createdItem, options, cancellationToken).ConfigureAwait(false);
+                        await SetAsync(cache, key, createdItem, optionsBuilder, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception exc)
                 {
@@ -368,7 +342,7 @@ namespace Umbrella.Utilities.Caching
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    var item = JsonConvert.DeserializeObject<TItem>(result, s_JsonSerializerSettings);
+                    var item = UmbrellaStatics.DeserializeJson<TItem>(result, TypeNameHandling.All);
 
                     return (true, item, null);
                 }
@@ -396,7 +370,7 @@ namespace Umbrella.Utilities.Caching
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    var item = JsonConvert.DeserializeObject<TItem>(result, s_JsonSerializerSettings);
+                    var item = UmbrellaStatics.DeserializeJson<TItem>(result, TypeNameHandling.All);
 
                     return (true, item, null);
                 }

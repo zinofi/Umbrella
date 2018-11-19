@@ -37,6 +37,7 @@ namespace Umbrella.Utilities.Extensions
             return defaultValue;
         }
 
+        // TODO: Add some internal caching to avoid repeatedly doing the same work.
         public static string ToFlagsString(this Enum options, Func<string, string> valueTransformer = null, string separator = ",")
         {
             Guard.ArgumentNotNull(separator, nameof(separator));

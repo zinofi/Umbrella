@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Umbrella.Utilities.Enumerations;
+using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.Extensions.Logging.Azure.Management
 {

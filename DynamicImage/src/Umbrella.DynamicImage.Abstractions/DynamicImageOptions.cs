@@ -3,6 +3,7 @@
 namespace Umbrella.DynamicImage.Abstractions
 {
     //TODO: Investigate making this readonly and passing around by reference to avoid copying if possible.
+    //TODO: IEquatable
     public struct DynamicImageOptions
     {
         public static readonly DynamicImageOptions Empty = new DynamicImageOptions();
@@ -29,7 +30,7 @@ namespace Umbrella.DynamicImage.Abstractions
         {
             if (obj == null)
                 return false;
-
+            
             if (obj is DynamicImageOptions compareOptions)
             {
                 return SourcePath.Equals(compareOptions.SourcePath, StringComparison.OrdinalIgnoreCase)

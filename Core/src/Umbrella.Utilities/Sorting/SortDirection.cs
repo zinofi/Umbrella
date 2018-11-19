@@ -1,4 +1,4 @@
-﻿namespace Umbrella.Utilities.Enumerations
+﻿namespace Umbrella.Utilities.Sorting
 {
 	/// <summary>
 	/// Used to specify the sort direction for a list of items. This exists to avoid using the SortDirection enum from the System.Web namespaces
@@ -6,7 +6,14 @@
 	/// </summary>
 	public enum SortDirection
 	{
-		Ascending = 0,
-		Descending = 1
+        /// <summary>
+        /// Sort in ascending order.
+        /// </summary>
+        Ascending = 0,
+
+        /// <summary>
+        /// Sort in descending order.
+        /// </summary>
+        Descending = 1
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Umbrella.Utilities.Enumerations;
+using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.DataAccess.Abstractions
 {

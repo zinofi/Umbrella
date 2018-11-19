@@ -11,7 +11,7 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Middleware
 {
-    //TODO: Revisit this - needs only apply to requests that contain the "X-Requested-With" header with a value of "XMLHttpRequest"
+    //TODO: Revisit this - needs only apply to requests that contain the "X-Requested-With" header with a value of "XMLHttpRequest" - see Marshalls projects
     //TODO: Implement a corresponding version for the legacy stack
     public class InternetExplorerCacheHeaderMiddleware
     {

@@ -15,7 +15,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 	/// </summary>
 	public class CleanupIDisposableMiddleware : OwinMiddleware
 	{
-        private readonly ILogger Log;
+        protected ILogger Log { get; }
 
 		public CleanupIDisposableMiddleware(OwinMiddleware next, ILogger<CleanupIDisposableMiddleware> logger)
 			: base(next)

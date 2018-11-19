@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities
 {
+    // TODO: Look at possible making the methods that accept objects be generic instead to avoid accidently boxing something.
+    // Or just add a generic overload and then allow the caller to figure it out and hope they don't do stupid stuff!
     /// <summary>
     /// A static helper class that includes various parameter checking routines.
     /// </summary>

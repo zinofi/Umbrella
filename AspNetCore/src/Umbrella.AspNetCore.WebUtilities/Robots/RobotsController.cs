@@ -13,6 +13,7 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Robots
 {
+    //TODO: Remove this and convert to Middleware.
     [Route("robots.txt")]
     public class RobotsController : UmbrellaController
     {

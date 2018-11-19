@@ -169,7 +169,7 @@ namespace Umbrella.DataAccess.EF6
         {
             try
             {
-                var (cacheItem, exception) = Cache.GetOrCreate(AllCountCacheKey, () => FindAll().Count, CacheOptions);
+                var (cacheItem, exception) = Cache.GetOrCreate(AllCountCacheKey, () => FindAll().Count, () => CacheOptions);
 
                 return cacheItem;
             }
@@ -192,7 +192,7 @@ namespace Umbrella.DataAccess.EF6
                     var allItems = await FindAllAsync(innerToken).ConfigureAwait(false);
 
                     return allItems.Count;
-                }, CacheOptions).ConfigureAwait(false);
+                }, () => CacheOptions).ConfigureAwait(false);
 
                 return cacheItem;
             }
@@ -225,12 +225,12 @@ namespace Umbrella.DataAccess.EF6
                          var entry = new CacheEntry<TEntity>(entity);
                          PopulateCacheEntryMetaData(entry);
 
-                         Cache.Set(key, entry, CacheOptions);
+                         Cache.Set(key, entry, () => CacheOptions);
                          lstCacheEntryFromDb.Add(entry);
                      }
 
                      return lstCacheEntryFromDb;
-                 }, CacheOptions);
+                 }, () => CacheOptions);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -275,12 +275,12 @@ namespace Umbrella.DataAccess.EF6
                         var entry = new CacheEntry<TEntity>(entity);
                         await PopulateCacheEntryMetaDataAsync(entry, innerToken).ConfigureAwait(false);
 
-                        await Cache.SetAsync(key, entry, CacheOptions, innerToken).ConfigureAwait(false);
+                        await Cache.SetAsync(key, entry, () => CacheOptions, innerToken).ConfigureAwait(false);
                         lstCacheEntryFromDb.Add(entry);
                     }
 
                     return lstCacheEntryFromDb;
-                }, CacheOptions).ConfigureAwait(false);
+                }, () => CacheOptions).ConfigureAwait(false);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -329,7 +329,7 @@ namespace Umbrella.DataAccess.EF6
                     }
 
                     return null;
-                }, CacheOptions);
+                }, () => CacheOptions);
 
                 RestoreLazyLoadingAndProxying();
 
@@ -377,7 +377,7 @@ namespace Umbrella.DataAccess.EF6
                     }
 
                     return null;
-                }, CacheOptions).ConfigureAwait(false);
+                }, () => CacheOptions).ConfigureAwait(false);
 
                 RestoreLazyLoadingAndProxying();
 

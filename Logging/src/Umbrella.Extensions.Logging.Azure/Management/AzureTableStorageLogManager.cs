@@ -212,7 +212,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                     });
 
                     return cbTableModel.ToList();
-                }, TableListCacheEntryOptions).ConfigureAwait(false);
+                }, () => TableListCacheEntryOptions).ConfigureAwait(false);
 
                 int totalCount = cacheItem?.Count() ?? 0;
 
@@ -429,7 +429,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
                     if (itemToRemove != null)
                     {
                         lstTableModel.Remove(itemToRemove);
-                        await DistributedCache.SetAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions, cancellationToken).ConfigureAwait(false);
+                        await DistributedCache.SetAsync(listCacheKey, lstTableModel, () => TableListCacheEntryOptions, cancellationToken).ConfigureAwait(false);
                     }
                 }
 

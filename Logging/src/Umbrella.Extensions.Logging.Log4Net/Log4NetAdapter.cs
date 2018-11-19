@@ -83,13 +83,11 @@ namespace Umbrella.Extensions.Logging.Log4Net
                     break;
             }
 
-            //Log4Net doesn't seem to log AggregateExceptions properly so handling them manually here
-            AggregateException aggregate = exception as AggregateException;
-
-            if (aggregate == null)
+            // Log4Net doesn't seem to log AggregateExceptions properly so handling them manually here
+            if (!(exception is AggregateException aggregate))
                 aggregate = exception?.InnerException as AggregateException;
 
-            if(aggregate?.InnerExceptions?.Count > 0)
+            if (aggregate?.InnerExceptions?.Count > 0)
             {
                 foreach(Exception innerException in aggregate.InnerExceptions)
                 {
