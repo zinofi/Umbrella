@@ -160,8 +160,10 @@ namespace Umbrella.Extensions.Logging.Azure.Management
             try
             {
                 //Using the DistributedCache to store the table models so that changes are reflected globally
-                (IEnumerable<AzureTableStorageLogTable> cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async innerToken =>
+                (IEnumerable<AzureTableStorageLogTable> cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async () =>
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
 
                     TableContinuationToken continuationToken = null;
@@ -171,7 +173,9 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
                     do
                     {
-                        resultSegment = await tableClient.ListTablesSegmentedAsync(tablePrefix, continuationToken, innerToken).ConfigureAwait(false);
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        resultSegment = await tableClient.ListTablesSegmentedAsync(tablePrefix, continuationToken, cancellationToken).ConfigureAwait(false);
 
                         foreach (CloudTable table in resultSegment.Results)
                         {

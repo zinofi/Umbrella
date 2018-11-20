@@ -281,7 +281,7 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
-        public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<CancellationToken, Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+        public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Guard.ArgumentNotNull(cache, nameof(cache));
@@ -306,7 +306,7 @@ namespace Umbrella.Utilities.Caching
 
                 // If we get this far then we haven't found the cached item
                 // Always allow this to throw an exception
-                TItem createdItem = await factory(cancellationToken).ConfigureAwait(false);
+                TItem createdItem = await factory().ConfigureAwait(false);
 
                 try
                 {

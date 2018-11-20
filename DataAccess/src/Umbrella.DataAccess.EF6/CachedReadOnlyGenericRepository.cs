@@ -185,11 +185,11 @@ namespace Umbrella.DataAccess.EF6
 
             try
             {
-                var (cacheItem, exception) = await Cache.GetOrCreateAsync(AllCountCacheKey, async innerToken =>
+                var (cacheItem, exception) = await Cache.GetOrCreateAsync(AllCountCacheKey, async () =>
                 {
-                    innerToken.ThrowIfCancellationRequested();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    var allItems = await FindAllAsync(innerToken).ConfigureAwait(false);
+                    var allItems = await FindAllAsync(cancellationToken).ConfigureAwait(false);
 
                     return allItems.Count;
                 }, () => CacheOptions).ConfigureAwait(false);
@@ -260,11 +260,11 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                var (cacheItem, exception) = await Cache.GetOrCreateAsync(AllCacheKey, async innerToken =>
+                var (cacheItem, exception) = await Cache.GetOrCreateAsync(AllCacheKey, async () =>
                 {
-                    innerToken.ThrowIfCancellationRequested();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    List<TEntity> lstEntityFromDb = await Items.AsNoTracking().ToListAsync(innerToken).ConfigureAwait(false);
+                    List<TEntity> lstEntityFromDb = await Items.AsNoTracking().ToListAsync(cancellationToken).ConfigureAwait(false);
                     List<CacheEntry<TEntity>> lstCacheEntryFromDb = new List<CacheEntry<TEntity>>();
 
                     //Also add cache entries for each entity for fast lookup
@@ -273,9 +273,9 @@ namespace Umbrella.DataAccess.EF6
                         string key = GenerateCacheKey(entity.Id);
 
                         var entry = new CacheEntry<TEntity>(entity);
-                        await PopulateCacheEntryMetaDataAsync(entry, innerToken).ConfigureAwait(false);
+                        await PopulateCacheEntryMetaDataAsync(entry, cancellationToken).ConfigureAwait(false);
 
-                        await Cache.SetAsync(key, entry, CacheOptions, innerToken).ConfigureAwait(false);
+                        await Cache.SetAsync(key, entry, CacheOptions, cancellationToken).ConfigureAwait(false);
                         lstCacheEntryFromDb.Add(entry);
                     }
 
@@ -356,22 +356,22 @@ namespace Umbrella.DataAccess.EF6
 
                 DisableLazyLoadingAndProxying();
 
-                var (cacheItem, exception) = await Cache.GetOrCreateAsync(key, async innerToken =>
+                var (cacheItem, exception) = await Cache.GetOrCreateAsync(key, async () =>
                 {
-                    innerToken.ThrowIfCancellationRequested();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    TEntity entityFromDb = await Items.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id), innerToken).ConfigureAwait(false);
+                    TEntity entityFromDb = await Items.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 
                     if (entityFromDb != null)
                     {
                         var cacheEntryFromDb = new CacheEntry<TEntity>(entityFromDb);
-                        await PopulateCacheEntryMetaDataAsync(cacheEntryFromDb, innerToken).ConfigureAwait(false);
+                        await PopulateCacheEntryMetaDataAsync(cacheEntryFromDb, cancellationToken).ConfigureAwait(false);
 
                         //We need to ensure that the All items cache is cleared to force it to be repopulated
                         //There is no clear way to ensure we don't have concurrency issues when running in a multi-server
                         //environment otherwise.
-                        await Cache.RemoveAsync(AllCacheKey, innerToken).ConfigureAwait(false);
-                        await Cache.RemoveAsync(AllCountCacheKey, innerToken).ConfigureAwait(false);
+                        await Cache.RemoveAsync(AllCacheKey, cancellationToken).ConfigureAwait(false);
+                        await Cache.RemoveAsync(AllCountCacheKey, cancellationToken).ConfigureAwait(false);
 
                         return cacheEntryFromDb;
                     }
