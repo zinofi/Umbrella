@@ -27,6 +27,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi
 
         #region Protected Methods
         protected StatusCodeResult Created() => new StatusCodeResult(HttpStatusCode.Created, this);
+        protected CreatedNegotiatedContentResult<T> Created<T>(T content) => Created("", content);
         protected ResponseMessageResult NotFound(string reason) => CreateStringContentResult(HttpStatusCode.NotFound, reason);
         protected ResponseMessageResult Conflict(string reason) => CreateStringContentResult(HttpStatusCode.Conflict, reason);
         protected ResponseMessageResult InternalServerError(string reason) => CreateStringContentResult(HttpStatusCode.InternalServerError, reason);
