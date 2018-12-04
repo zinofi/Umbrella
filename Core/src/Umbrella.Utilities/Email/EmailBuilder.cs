@@ -10,6 +10,7 @@ using Umbrella.Utilities.Email.Interfaces;
 
 namespace Umbrella.Utilities.Email
 {
+    // TODO: The folder path containing the email templates should be configurable.
 	public class EmailBuilder : IEmailBuilder
 	{
 		#region Constants
@@ -18,9 +19,9 @@ namespace Umbrella.Utilities.Email
 
 		#region Private Static Members
 		private static readonly CultureInfo s_CultureInfo = new CultureInfo("en-GB");
-        private static Dictionary<string, string> s_EmailTemplateDictionary;
-        private static bool s_IsInitialized;
-        public static readonly object s_Lock = new object();
+        private static volatile Dictionary<string, string> s_EmailTemplateDictionary;
+        private static volatile bool s_IsInitialized;
+        private static readonly object s_Lock = new object();
         #endregion
 
         #region Private Members
