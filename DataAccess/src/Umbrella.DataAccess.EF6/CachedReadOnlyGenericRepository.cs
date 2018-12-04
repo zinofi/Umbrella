@@ -46,7 +46,7 @@ namespace Umbrella.DataAccess.EF6
         #region Protected Properties
         protected IDistributedCache Cache { get; }
         protected virtual DistributedCacheEntryOptions CacheOptions { get; }
-        protected virtual JsonSerializerSettings JsonSettings { get; }
+        protected virtual JsonSerializerSettings JsonSettings { get; } // TODO: Remove and abstract away if required.
         protected abstract string EntitySetName { get; }
         #endregion
 

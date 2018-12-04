@@ -43,6 +43,7 @@ namespace Umbrella.DataAccess.Abstractions
             if (lstObject is List<T>)
                 return lstObject as List<T>;
 
+            // TODO: Need to abstract this away somehow. Can't even remember what this does :(
             if (lstObject is JArray)
                 return ((JArray)lstObject).Select(x => x.Value<T>()).ToList();
 
