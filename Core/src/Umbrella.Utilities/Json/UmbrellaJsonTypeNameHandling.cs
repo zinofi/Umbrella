@@ -11,7 +11,7 @@ namespace Umbrella.Utilities.Json
     /// the Newtonsoft.Json code and is here as part of the abstraction efforts to avoid a hard dependency on Newtonsoft.Json.
     /// </summary>
     [Flags]
-    public enum TypeNameHandling
+    public enum UmbrellaJsonTypeNameHandling
     {
         /// <summary>
         /// Do not include the .NET type name when serializing types.

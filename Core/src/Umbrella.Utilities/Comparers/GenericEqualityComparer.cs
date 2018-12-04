@@ -19,14 +19,17 @@ namespace Umbrella.Utilities.Comparers
         /// <summary>
         /// Create a new instance of the comparer using the specified delegate to select the value used to check
         /// for object instance equality. If a custom comparer is specified then that will be used instead with the property
-        /// selector only being used to determine the HashCode for an object instance. If a custom comparer is not specified then
-        /// equality will be determined by comparing the 2 HashCode values which are generated as a result of calling <see cref="GetHashCode(TObject)"/>
-        /// on the value returned by the <paramref name="propertySelector"/> delegate.
+        /// selector only being used to determine the HashCode for an object instance.
+        /// <para>
+        /// If a custom comparer is not specified then equality will be determined by trying to get values from each object using the <paramref name="propertySelector"/> and comparing those.
+        /// </para>
         /// </summary>
         /// <param name="propertySelector">The property selector delegate.</param>
         /// <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector"/> if possible.</param>
         public GenericEqualityComparer(Func<TObject, TProperty> propertySelector, Func<TObject, TObject, bool> customComparer = null)
         {
+            Guard.ArgumentNotNull(propertySelector, nameof(propertySelector));
+
             m_PropertySelector = propertySelector;
             m_CustomComparer = customComparer;
         }
@@ -39,6 +42,7 @@ namespace Umbrella.Utilities.Comparers
         /// <returns>Whether or not the 2 object instances are equal.</returns>
         public override bool Equals(TObject x, TObject y)
         {
+            // Check the objects for null combinations first.
             if (x == null && y == null)
                 return true;
 
@@ -51,7 +55,24 @@ namespace Umbrella.Utilities.Comparers
             if (m_CustomComparer != null)
                 return m_CustomComparer(x, y);
 
-            return GetHashCode(x) == GetHashCode(y);
+            TProperty xProperty = m_PropertySelector(x);
+            TProperty yProperty = m_PropertySelector(y);
+
+            if (xProperty == null && yProperty == null)
+                return true;
+
+            if (xProperty == null)
+                return false;
+
+            if (yProperty == null)
+                return false;
+
+            // Check if we can compare the 2 values using the more efficient IEquatable interface to avoid any unnecessary boxing.
+            if (xProperty is IEquatable<TProperty> xPropertyEquatable && yProperty is IEquatable<TProperty> yPropertyEquatable)
+                return xPropertyEquatable.Equals(yPropertyEquatable);
+
+            // Use the default mechanism as a last resort.
+            return xProperty.Equals(yProperty);
         }
 
         /// <summary>

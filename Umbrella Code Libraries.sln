@@ -216,6 +216,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Benchmark", "Core\benchmark\Umbrella.Utilities.Benchmark\Umbrella.Utilities.Benchmark.csproj", "{C55A126A-6326-4487-A4ED-53985786943D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Integration.NewtonsoftJson", "Core\src\Umbrella.Utilities.Integration.NewtonsoftJson\Umbrella.Utilities.Integration.NewtonsoftJson.csproj", "{F4596AFB-6E84-430C-9D38-90BD11C264DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -547,6 +549,12 @@ Global
 		{C55A126A-6326-4487-A4ED-53985786943D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C55A126A-6326-4487-A4ED-53985786943D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C55A126A-6326-4487-A4ED-53985786943D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -642,6 +650,7 @@ Global
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F} = {1695D124-726F-446B-988E-61B9B440D345}
 		{37FF704B-43D7-4B73-9CD2-736E1DDBD082} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 		{C55A126A-6326-4487-A4ED-53985786943D} = {B35C85E1-B2C5-4F0B-9975-6E86DF7F5BE9}
+		{F4596AFB-6E84-430C-9D38-90BD11C264DE} = {84D45264-D944-4A17-A230-AAEECE889301}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

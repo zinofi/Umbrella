@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;AzureDevOps</Configurations>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <DocumentationFile>bin\Release\netstandard2.0\Umbrella.Utilities.Integration.NewtonsoftJson.xml</DocumentationFile>
+	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
@@ -14,29 +15,28 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <PackageId>Umbrella.AspNetCore.DataAnnotations</PackageId>
+    <PackageId>Umbrella.Utilities.Integration.NewtonsoftJson</PackageId>
     <Version>2.1.0-rc-00008</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
-      This package contains a custom validation adapter to allow custom attributes contained within the Umbrella.DataAnnotations package to be used with client side (currently jQuery validation).
+      This package is used to support the Umbrella.Utilities package by providing integration with Newtonsoft.Json
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.1.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+  </ItemGroup>
+  
 </Project>

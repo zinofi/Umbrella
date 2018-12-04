@@ -5,13 +5,13 @@ namespace Umbrella.Utilities
 {
     public static class UmbrellaStatics
     {
-        public delegate string SerializeJsonDelegate(object value, bool useCamelCasingRules, TypeNameHandling typeNameHandling);
-        public delegate object DeserializeJsonDelegate(string value, Type type, TypeNameHandling typeNameHandling);
+        public delegate string SerializeJsonDelegate(object value, bool useCamelCasingRules, UmbrellaJsonTypeNameHandling typeNameHandling);
+        public delegate object DeserializeJsonDelegate(string value, Type type, UmbrellaJsonTypeNameHandling typeNameHandling);
 
         public static SerializeJsonDelegate JsonSerializer { private get; set; }
         public static DeserializeJsonDelegate JsonDeserializer { private get; set; }
 
-        public static string SerializeJson(object value, bool useCamelCasingRules = false, TypeNameHandling typeNameHandling = TypeNameHandling.None)
+        public static string SerializeJson(object value, bool useCamelCasingRules = false, UmbrellaJsonTypeNameHandling typeNameHandling = UmbrellaJsonTypeNameHandling.None)
         {
             Guard.ArgumentNotNull(value, nameof(value));
 
@@ -21,7 +21,7 @@ namespace Umbrella.Utilities
             return JsonSerializer(value, useCamelCasingRules, typeNameHandling);
         }
 
-        public static T DeserializeJson<T>(string value, TypeNameHandling typeNameHandling = TypeNameHandling.None)
+        public static T DeserializeJson<T>(string value, UmbrellaJsonTypeNameHandling typeNameHandling = UmbrellaJsonTypeNameHandling.None)
         {
             Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
 

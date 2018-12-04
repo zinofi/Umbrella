@@ -205,7 +205,7 @@ namespace Umbrella.Utilities.Caching
 
             try
             {
-                string json = UmbrellaStatics.SerializeJson(item, false, TypeNameHandling.All);
+                string json = UmbrellaStatics.SerializeJson(item, false, UmbrellaJsonTypeNameHandling.All);
 
                 cache.SetString(key, json, options);
             }
@@ -224,7 +224,7 @@ namespace Umbrella.Utilities.Caching
 
             try
             {
-                string json = UmbrellaStatics.SerializeJson(item, false, TypeNameHandling.All);
+                string json = UmbrellaStatics.SerializeJson(item, false, UmbrellaJsonTypeNameHandling.All);
 
                 await cache.SetStringAsync(key, json, options, cancellationToken).ConfigureAwait(false);
             }
@@ -342,7 +342,7 @@ namespace Umbrella.Utilities.Caching
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    var item = UmbrellaStatics.DeserializeJson<TItem>(result, TypeNameHandling.All);
+                    var item = UmbrellaStatics.DeserializeJson<TItem>(result, UmbrellaJsonTypeNameHandling.All);
 
                     return (true, item, null);
                 }
@@ -370,7 +370,7 @@ namespace Umbrella.Utilities.Caching
 
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    var item = UmbrellaStatics.DeserializeJson<TItem>(result, TypeNameHandling.All);
+                    var item = UmbrellaStatics.DeserializeJson<TItem>(result, UmbrellaJsonTypeNameHandling.All);
 
                     return (true, item, null);
                 }
