@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Utilities.Hosting;
 using Umbrella.WebUtilities.Hosting;
+
+[assembly: InternalsVisibleTo("Umbrella.Legacy.WebUtilities.Test")]
+[assembly: InternalsVisibleTo("Umbrella.Legacy.WebUtilities.Benchmark")]
 
 namespace Microsoft.Extensions.DependencyInjection
 {

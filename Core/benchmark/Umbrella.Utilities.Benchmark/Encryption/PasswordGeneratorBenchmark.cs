@@ -10,7 +10,7 @@ using Umbrella.Utilities.Encryption;
 
 namespace Umbrella.Utilities.Benchmark.Encryption
 {
-    [CoreJob, ClrJob]
+    [CoreJob]
     public class PasswordGeneratorBenchmark
     {
         private readonly PasswordGenerator _passwordGenerator;

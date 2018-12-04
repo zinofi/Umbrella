@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Mime;
 using Xunit;
 
-namespace Umbrella.Utilities.Test
+namespace Umbrella.Utilities.Test.Mime
 {
     public class MimeTypeUtilityTest
     {

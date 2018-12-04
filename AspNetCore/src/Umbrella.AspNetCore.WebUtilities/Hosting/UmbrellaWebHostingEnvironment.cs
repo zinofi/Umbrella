@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Primitives;
@@ -35,8 +36,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
         public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
             IHostingEnvironment hostingEnvironment,
             IHttpContextAccessor httpContextAccessor,
-            IMemoryCache cache)
-            : base(logger, cache)
+            IMemoryCache cache,
+            ICacheKeyUtility cacheKeyUtility)
+            : base(logger, cache, cacheKeyUtility)
         {
             HostingEnvironment = hostingEnvironment;
             HttpContextAccessor = httpContextAccessor;
@@ -46,10 +48,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
         #region IUmbrellaHostingEnvironment Members
         public override string MapPath(string virtualPath, bool fromContentRoot = true)
         {
+            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-
                 string key = $"{s_CacheKeyPrefix}:{nameof(MapPath)}:{virtualPath}:{fromContentRoot}".ToUpperInvariant();
 
                 return Cache.GetOrCreate(key, entry =>

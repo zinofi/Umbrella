@@ -4,27 +4,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Hosting
 {
     public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
     {
-        #region Private Static Members
-        private static readonly string s_CacheKeyPrefix = typeof(UmbrellaHostingEnvironment).FullName;
-        #endregion
-
         #region Protected Properties
         protected ILogger Log { get; }
         protected IMemoryCache Cache { get; }
+        protected ICacheKeyUtility CacheKeyUtility { get; }
         #endregion
 
         #region Constructors
         public UmbrellaHostingEnvironment(ILogger logger,
-            IMemoryCache cache)
+            IMemoryCache cache,
+            ICacheKeyUtility cacheKeyUtility)
         {
             Log = logger;
             Cache = cache;
+            CacheKeyUtility = cacheKeyUtility;
         }
         #endregion
 
@@ -33,12 +33,13 @@ namespace Umbrella.Utilities.Hosting
 
         public virtual string GetFileContent(string virtualPath, bool fromContentRoot = true, bool cache = true, bool watch = true)
         {
+            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-
-                string key = $"{s_CacheKeyPrefix}:{nameof(GetFileContent)}:{virtualPath}:{fromContentRoot}:{cache}".ToUpperInvariant();
-
+                // TODO: Can we take advantage of the ArrayPool stuff to make this even better?
+                string key = CacheKeyUtility.Create<UmbrellaHostingEnvironment>(new string[] { virtualPath, fromContentRoot.ToString(), cache.ToString() });
+                
                 string physicalPath = MapPath(virtualPath, fromContentRoot);
 
                 string ReadContent()

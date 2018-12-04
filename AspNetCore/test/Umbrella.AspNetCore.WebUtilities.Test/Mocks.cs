@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
+using Umbrella.Utilities.Caching;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test
 {
@@ -42,7 +43,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
             return new UmbrellaWebHostingEnvironment(logger.Object,
                 hostingEnvironment.Object,
                 httpContextAccessor.Object,
-                CreateMemoryCache());
+                CreateMemoryCache(),
+                new CacheKeyUtility());
         }
 
         public static IMemoryCache CreateMemoryCache() => new MemoryCache(Options.Create(new MemoryCacheOptions()));
