@@ -18,6 +18,8 @@ using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Hosting
 {
+    // TODO: Add IHostingEnvironment and IHttpContextAccessor abstractions as per ASP.NET Core
+    // so that this class can be fully tested.
     public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
     {
         #region Private Static Members
@@ -36,10 +38,10 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
         #region IUmbrellaHostingEnvironment Members
         public override string MapPath(string virtualPath, bool fromContentRoot = true)
         {
+            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-
                 if (!fromContentRoot)
                     throw new ArgumentException("This value must always be true in a classic .NET application. It can only be set to false inside a .NET Core application.", nameof(fromContentRoot));
 
@@ -64,12 +66,12 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
         #region IUmbrellaWebHostingEnvironment Members
         public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
         {
+            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+            Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
+            Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-                Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
-                Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
-
                 string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}:{watchWhenAppendVersion}".ToUpperInvariant();
 
                 return Cache.GetOrCreate(key, entry =>
@@ -119,15 +121,13 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
             }
         }
 
-
-
         public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
         {
+            Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
+            Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
-                Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-
                 if (routeValues == null)
                     routeValues = new Dictionary<string, object>();
 
@@ -141,11 +141,11 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
         public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
         {
+            Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+            Guard.ArgumentNotNullOrWhiteSpace(routeName, nameof(routeName));
+
             try
             {
-                Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-                Guard.ArgumentNotNullOrWhiteSpace(routeName, nameof(routeName));
-
                 var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext, RouteTable.Routes);
 
                 if (routeValues == null)

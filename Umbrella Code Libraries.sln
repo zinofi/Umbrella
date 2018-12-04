@@ -216,7 +216,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Benchmark", "Core\benchmark\Umbrella.Utilities.Benchmark\Umbrella.Utilities.Benchmark.csproj", "{C55A126A-6326-4487-A4ED-53985786943D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Integration.NewtonsoftJson", "Core\src\Umbrella.Utilities.Integration.NewtonsoftJson\Umbrella.Utilities.Integration.NewtonsoftJson.csproj", "{F4596AFB-6E84-430C-9D38-90BD11C264DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Integration.NewtonsoftJson", "Core\src\Umbrella.Utilities.Integration.NewtonsoftJson\Umbrella.Utilities.Integration.NewtonsoftJson.csproj", "{F4596AFB-6E84-430C-9D38-90BD11C264DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.WebUtilities.Test", "Core\test\Umbrella.WebUtilities.Test\Umbrella.WebUtilities.Test.csproj", "{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.Bundling", "Legacy\src\Umbrella.Legacy.WebUtilities.Bundling\Umbrella.Legacy.WebUtilities.Bundling.csproj", "{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -555,6 +559,18 @@ Global
 		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4596AFB-6E84-430C-9D38-90BD11C264DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -651,6 +667,8 @@ Global
 		{37FF704B-43D7-4B73-9CD2-736E1DDBD082} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 		{C55A126A-6326-4487-A4ED-53985786943D} = {B35C85E1-B2C5-4F0B-9975-6E86DF7F5BE9}
 		{F4596AFB-6E84-430C-9D38-90BD11C264DE} = {84D45264-D944-4A17-A230-AAEECE889301}
+		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F} = {D8B05C3A-5AAC-41F7-99C8-3279378B68AB}
+		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1} = {B1144C83-C2B3-40FB-8F68-22A3228E7725}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
