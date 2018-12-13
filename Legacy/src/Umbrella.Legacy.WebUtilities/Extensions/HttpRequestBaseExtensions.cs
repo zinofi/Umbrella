@@ -35,7 +35,7 @@ namespace System.Web
         /// </returns>
         public static bool IsAjaxOrFetchRequest(this HttpRequestBase request)
         {
-            foreach(string key in AjaxOrFetchRequestHeaderKeys.Where(x => !string.IsNullOrWhiteSpace(x)))
+            foreach (string key in AjaxOrFetchRequestHeaderKeys.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
                 if (request.Headers[key] != null)
                 {
