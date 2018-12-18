@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Logging
 
         public static bool WriteWarning(this ILogger log, Exception exc = null, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
-            LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber);
+            LogDetails(log, LogLevel.Warning, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
             return returnValue;
         }
