@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Encryption

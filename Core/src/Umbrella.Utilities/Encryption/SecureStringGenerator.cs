@@ -6,13 +6,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Encryption
 {
     //TODO: Add support for special chars, e.g. !@#$!&
-    public class PasswordGenerator : IPasswordGenerator
+    public class SecureStringGenerator : ISecureStringGenerator
     {
         #region Private Static Members
         private static readonly char[] m_LowerCaseLettersArray = new char[26]
@@ -27,14 +27,14 @@ namespace Umbrella.Utilities.Encryption
         #endregion
 
         #region Constructors
-        public PasswordGenerator(ILogger<PasswordGenerator> logger)
+        public SecureStringGenerator(ILogger<SecureStringGenerator> logger)
         {
             Log = logger;
         }
         #endregion
 
         #region IPasswordGenerator Members
-        public string GeneratePassword(int length = 8, int numbers = 1, int upperCaseLetters = 1)
+        public string Generate(int length = 8, int numbers = 1, int upperCaseLetters = 1)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Umbrella.Utilities.Encryption
 #if !AzureDevOps
         [Obsolete]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal string GeneratePasswordOld(int length = 8, int numbers = 1, int upperCaseLetters = 1)
+        internal string GenerateOld(int length = 8, int numbers = 1, int upperCaseLetters = 1)
         {
             try
             {

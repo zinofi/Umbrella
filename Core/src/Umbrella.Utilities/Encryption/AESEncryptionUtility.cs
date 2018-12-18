@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
-using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Encryption.Abstractions;
 
 namespace Umbrella.Utilities.Encryption
 {

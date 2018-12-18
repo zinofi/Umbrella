@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.ActiveDirectory

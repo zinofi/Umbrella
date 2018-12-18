@@ -9,7 +9,7 @@ using Umbrella.Utilities.DependencyInjection;
 using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Interfaces;
 using Umbrella.Utilities.Encryption;
-using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.FriendlyUrl;
 using Umbrella.Utilities.Mime;
 
@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             //Encryption
             services.AddSingleton<ICertificateUtility, CertificateUtility>();
-            services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
+            services.AddSingleton<ISecureStringGenerator, SecureStringGenerator>();
 
             return services;
         }

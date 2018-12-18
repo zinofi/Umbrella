@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Encryption;
-using Umbrella.Utilities.Encryption.Interfaces;
+using Umbrella.Utilities.Encryption.Abstractions;
 using Xunit;
 using Moq;
 
 namespace Umbrella.Utilities.Test.Encryption
 {
-    public class PasswordGeneratorTest
+    public class SecureStringGeneratorTest
     {
         public static List<object[]> OptionsList = new List<object[]>
         {
@@ -25,13 +25,13 @@ namespace Umbrella.Utilities.Test.Encryption
 
         [Theory]
         [MemberData(nameof(OptionsList))]
-        public void TestValidPassword(int length, int numbers, int upperCaseLetters)
+        public void TestValidSecureString(int length, int numbers, int upperCaseLetters)
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
             int lowerCaseLetters = length - numbers - upperCaseLetters;
 
-            string password = generator.GeneratePassword(length, numbers, upperCaseLetters);
+            string password = generator.Generate(length, numbers, upperCaseLetters);
 
             Assert.Equal(length, password.Length);
 
@@ -47,56 +47,56 @@ namespace Umbrella.Utilities.Test.Encryption
         [Fact]
         public void TestInvalidLength()
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(0));
         }
 
         [Fact]
         public void TestInvalidNumbers()
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(numbers: -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(numbers: -1));
         }
 
         [Fact]
         public void TestNumbersLessThanLength()
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(5, 6));
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 6));
         }
 
         [Fact]
         public void TestInvalidUpperCaseLetters()
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(upperCaseLetters: -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(upperCaseLetters: -1));
         }
 
         [Fact]
         public void TestUpperCaseLettersLessThanLength()
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(5, 1, 10));
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 1, 10));
         }
 
         [Fact]
         public void TestSumOfNumbersAndUpperCaseLettersLessThanLength()
         {
-            var generator = CreatePasswordGenerator();
+            var generator = CreateSecureStringGenerator();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => generator.GeneratePassword(10, 6, 6));
+            Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(10, 6, 6));
         }
 
-        private IPasswordGenerator CreatePasswordGenerator()
+        private ISecureStringGenerator CreateSecureStringGenerator()
         {
-            var logger = new Mock<ILogger<PasswordGenerator>>();
+            var logger = new Mock<ILogger<SecureStringGenerator>>();
 
-            return new PasswordGenerator(logger.Object);
+            return new SecureStringGenerator(logger.Object);
         }
     }
 }
