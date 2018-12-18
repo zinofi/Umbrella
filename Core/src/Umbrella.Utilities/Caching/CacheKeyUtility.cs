@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -28,7 +30,7 @@ namespace Umbrella.Utilities.Caching
                 if (part != null)
                     partsLengthTotal += part.Length + 1;
             }
-
+            
             int length = typeName.Length + callerMemberName.Length + partsLengthTotal + 2;
 
             Span<char> span = stackalloc char[length];
@@ -58,12 +60,16 @@ namespace Umbrella.Utilities.Caching
             return span.ToString();
         }
 
-        public string CreateOld<T>(IEnumerable<string> keyParts, [CallerMemberName]string callerMemberName = "")
+#if !AzureDevOps
+        [Obsolete]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        internal string CreateOld<T>(IEnumerable<string> keyParts, [CallerMemberName]string callerMemberName = "")
         {
             Guard.ArgumentNotNullOrEmpty(keyParts, nameof(keyParts));
             Guard.ArgumentNotNullOrEmpty(callerMemberName, nameof(callerMemberName));
 
             return $"{typeof(T).FullName}:{callerMemberName}:{string.Join(":", keyParts)}".ToUpperInvariant();
         }
+#endif
     }
 }

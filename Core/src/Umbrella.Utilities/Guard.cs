@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Umbrella.Utilities
 {
-    // TODO: Investigate: https://github.com/dotnet/corefx/blob/master/src/System.Memory/src/System/ThrowHelper.cs
     // TODO: Look at possible making the methods that accept objects be generic instead to avoid accidently boxing something.
     // Or just add a generic overload and then allow the caller to figure it out and hope they don't do stupid stuff!
     /// <summary>
@@ -20,7 +21,8 @@ namespace Umbrella.Utilities
         /// <exception cref="ArgumentNullException">The value is null.</exception>
         /// <param name="argumentValue">The argument value to test.</param>
         /// <param name="argumentName">The name of the argument to test.</param>
-        public static void ArgumentNotNull(object argumentValue, string argumentName)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ArgumentNotNull<T>(T argumentValue, string argumentName)
         {
             if (argumentValue == null)
                 throw new ArgumentNullException(argumentName);
@@ -33,6 +35,7 @@ namespace Umbrella.Utilities
         /// <exception cref="ArgumentException">The string is empty.</exception>
         /// <param name="argumentValue">The argument value to test.</param>
         /// <param name="argumentName">The name of the argument to test.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ArgumentNotNullOrWhiteSpace(string argumentValue, string argumentName)
         {
             if (argumentValue == null)
@@ -49,30 +52,32 @@ namespace Umbrella.Utilities
         /// <exception cref="ArgumentException">The <see cref="IList{T}"/> is empty.</exception>
         /// <param name="argumentValue">The argument value to test.</param>
         /// <param name="argumentName">The name of the argument to test.</param>
-        public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)
-        {
-            if (argumentValue == null)
-                throw new ArgumentNullException($"{argumentName} cannot be null.");
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)
+        //{
+        //    if (argumentValue == null)
+        //        throw new ArgumentNullException($"{argumentName} cannot be null.");
 
-            if (argumentValue.Count == 0)
-                throw new ArgumentException($"{argumentName} cannot be empty.");
-        }
+        //    if (argumentValue.Count == 0)
+        //        throw new ArgumentException($"{argumentName} cannot be empty.");
+        //}
 
-        /// <summary>
-        /// Throws an exception if the tested <see cref="ICollection{T}"/> argument is null or empty.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">The <see cref="ICollection{T}"/> is null.</exception>
-        /// <exception cref="ArgumentException">The <see cref="ICollection{T}"/> is empty.</exception>
-        /// <param name="argumentValue">The argument value to test.</param>
-        /// <param name="argumentName">The name of the argument to test.</param>
-        public static void ArgumentNotNullOrEmpty<T>(ICollection<T> argumentValue, string argumentName)
-        {
-            if (argumentValue == null)
-                throw new ArgumentNullException($"{argumentName} cannot be null.");
+        ///// <summary>
+        ///// Throws an exception if the tested <see cref="ICollection{T}"/> argument is null or empty.
+        ///// </summary>
+        ///// <exception cref="ArgumentNullException">The <see cref="ICollection{T}"/> is null.</exception>
+        ///// <exception cref="ArgumentException">The <see cref="ICollection{T}"/> is empty.</exception>
+        ///// <param name="argumentValue">The argument value to test.</param>
+        ///// <param name="argumentName">The name of the argument to test.</param>
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public static void ArgumentNotNullOrEmpty<T>(ICollection<T> argumentValue, string argumentName)
+        //{
+        //    if (argumentValue == null)
+        //        throw new ArgumentNullException($"{argumentName} cannot be null.");
 
-            if (argumentValue.Count == 0)
-                throw new ArgumentException($"{argumentName} cannot be empty.");
-        }
+        //    if (argumentValue.Count == 0)
+        //        throw new ArgumentException($"{argumentName} cannot be empty.");
+        //}
 
         /// <summary>
         /// Throws an exception if the tested <see cref="IEnumerable{T}"/> argument is null or empty.
@@ -81,6 +86,7 @@ namespace Umbrella.Utilities
         /// <exception cref="ArgumentException">The <see cref="IEnumerable{T}"/> is empty.</exception>
         /// <param name="argumentValue">The argument value to test.</param>
         /// <param name="argumentName">The name of the argument to test.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ArgumentNotNullOrEmpty<T>(IEnumerable<T> argumentValue, string argumentName)
         {
             if (argumentValue == null)
@@ -92,7 +98,7 @@ namespace Umbrella.Utilities
 
         /// <summary>
         /// Checks if the <paramref name="argumentValue"/> is of type <typeparamref name="T"/> or a type in it's type hierarchy.
-        /// Calls <see cref="ArgumentNotNull(object, string)"/> internally.
+        /// Calls <see cref="ArgumentNotNull{T}(T, string)"/> internally.
         /// </summary>
         /// <typeparam name="T">The type to match.</typeparam>
         /// <param name="argumentValue">The object to test.</param>
@@ -100,6 +106,7 @@ namespace Umbrella.Utilities
         /// <param name="customMessage">A custom message which is appended to the default error message.</param>
         /// <exception cref="ArgumentNullException">The value is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The value is not of type <typeparamref name="T"/> or a type in it's type hierarchy.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ArgumentOfType<T>(object argumentValue, string argumentName, string customMessage = "")
         {
             ArgumentNotNull(argumentValue, argumentName);
@@ -110,7 +117,7 @@ namespace Umbrella.Utilities
 
         /// <summary>
         /// Checks if the <paramref name="argumentValue"/> is axactly of type <typeparamref name="T"/>
-        /// Calls <see cref="ArgumentNotNull(object, string)"/> internally.
+        /// Calls <see cref="ArgumentNotNull{T}(T, string)"/> internally.
         /// </summary>
         /// <typeparam name="T">The type to match.</typeparam>
         /// <param name="argumentValue">The object to test.</param>
@@ -118,6 +125,7 @@ namespace Umbrella.Utilities
         /// <param name="customMessage">A custom message which is appended to the default error message.</param>
         /// <exception cref="ArgumentNullException">The value is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The value is not exactly of type <typeparamref name="T"/></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ArgumentOfTypeExact<T>(object argumentValue, string argumentName, string customMessage = "")
         {
             ArgumentNotNull(argumentValue, argumentName);

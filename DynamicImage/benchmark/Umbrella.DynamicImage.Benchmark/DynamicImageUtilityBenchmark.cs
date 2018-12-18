@@ -9,6 +9,8 @@ using Umbrella.DynamicImage.Abstractions;
 namespace Umbrella.DynamicImage.Benchmark
 {
     [CoreJob, ClrJob]
+    [MemoryDiagnoser]
+    [BenchmarkCategory(nameof(DynamicImageUtility))]
     public class DynamicImageUtilityBenchmark
     {
         private readonly DynamicImageUtility m_DynamicImageUtility;

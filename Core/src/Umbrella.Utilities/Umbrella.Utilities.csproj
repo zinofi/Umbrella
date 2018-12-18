@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -12,6 +12,7 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
+    <DefineConstants>AzureDevOps</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup>

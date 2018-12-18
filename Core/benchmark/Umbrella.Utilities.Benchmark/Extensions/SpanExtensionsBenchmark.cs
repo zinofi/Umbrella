@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,13 @@ using Umbrella.Utilities.Extensions;
 namespace Umbrella.Utilities.Benchmark.Extensions
 {
     [CoreJob]
+    [MemoryDiagnoser]
+    [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
+    [CategoriesColumn]
     public class SpanExtensionsBenchmark
     {
         [Benchmark]
+        [BenchmarkCategory(nameof(Char_AppendStringBenchmark))]
         public int Char_AppendStringBenchmark()
         {
             Span<char> span = stackalloc char[10];
@@ -23,7 +28,9 @@ namespace Umbrella.Utilities.Benchmark.Extensions
             return span.Length;
         }
 
-        [Benchmark]
+#if !AzureDevOps
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory(nameof(Char_AppendStringBenchmark))]
         public int Char_AppendStringBenchmark_Old()
         {
             Span<char> span = stackalloc char[10];
@@ -33,8 +40,10 @@ namespace Umbrella.Utilities.Benchmark.Extensions
 
             return span.Length;
         }
+#endif
 
         [Benchmark]
+        [BenchmarkCategory(nameof(Char_AppendReadOnlySpanBenchmark))]
         public int Char_AppendReadOnlySpanBenchmark()
         {
             Span<char> span = stackalloc char[10];
@@ -45,7 +54,9 @@ namespace Umbrella.Utilities.Benchmark.Extensions
             return span.Length;
         }
 
-        [Benchmark]
+#if !AzureDevOps
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory(nameof(Char_AppendReadOnlySpanBenchmark))]
         public int Char_AppendReadOnlySpanBenchmark_Old()
         {
             Span<char> span = stackalloc char[10];
@@ -55,8 +66,10 @@ namespace Umbrella.Utilities.Benchmark.Extensions
 
             return span.Length;
         }
+#endif
 
         [Benchmark]
+        [BenchmarkCategory(nameof(Char_ToLowerBenchmark))]
         public int Char_ToLowerBenchmark()
         {
             Span<char> span = stackalloc char[10];
@@ -68,6 +81,7 @@ namespace Umbrella.Utilities.Benchmark.Extensions
         }
 
         [Benchmark]
+        [BenchmarkCategory(nameof(Char_ToLowerInvariantBenchmark))]
         public int Char_ToLowerInvariantBenchmark()
         {
             Span<char> span = stackalloc char[10];
@@ -78,7 +92,9 @@ namespace Umbrella.Utilities.Benchmark.Extensions
             return span.Length;
         }
 
-        [Benchmark]
+#if !AzureDevOps
+        [Benchmark(Baseline = true)]
+        [BenchmarkCategory(nameof(Char_ToLowerInvariantBenchmark))]
         public int Char_ToLowerInvariantBenchmark_Old()
         {
             Span<char> span = stackalloc char[10];
@@ -88,8 +104,10 @@ namespace Umbrella.Utilities.Benchmark.Extensions
 
             return span.Length;
         }
+#endif
 
         [Benchmark]
+        [BenchmarkCategory(nameof(Char_ToUpperBenchmark))]
         public int Char_ToUpperBenchmark()
         {
             Span<char> span = stackalloc char[10];
@@ -101,6 +119,7 @@ namespace Umbrella.Utilities.Benchmark.Extensions
         }
 
         [Benchmark]
+        [BenchmarkCategory(nameof(Char_ToUpperInvariantBenchmark))]
         public int Char_ToUpperInvariantBenchmark()
         {
             Span<char> span = stackalloc char[10];

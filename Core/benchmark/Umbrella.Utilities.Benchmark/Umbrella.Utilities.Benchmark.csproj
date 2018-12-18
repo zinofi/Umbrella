@@ -10,6 +10,7 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
+    <DefineConstants>AzureDevOps</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>

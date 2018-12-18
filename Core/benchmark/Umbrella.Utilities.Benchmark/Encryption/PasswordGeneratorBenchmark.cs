@@ -10,7 +10,8 @@ using Umbrella.Utilities.Encryption;
 
 namespace Umbrella.Utilities.Benchmark.Encryption
 {
-    [CoreJob]
+    [CoreJob,]
+    [MemoryDiagnoser]
     public class PasswordGeneratorBenchmark
     {
         private readonly PasswordGenerator _passwordGenerator;
@@ -26,5 +27,13 @@ namespace Umbrella.Utilities.Benchmark.Encryption
         {
             return _passwordGenerator.GeneratePassword(20, 5, 5);
         }
+
+#if !AzureDevOps
+        [Benchmark(Baseline = true)]
+        public string GeneratePasswordOld()
+        {
+            return _passwordGenerator.GeneratePasswordOld(20, 5, 5);
+        }
+#endif
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -105,6 +106,83 @@ namespace Umbrella.Utilities.Encryption
                 throw;
             }
         }
+
+#if !AzureDevOps
+        [Obsolete]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        internal string GeneratePasswordOld(int length = 8, int numbers = 1, int upperCaseLetters = 1)
+        {
+            try
+            {
+                if (length < 1)
+                    throw new ArgumentOutOfRangeException(nameof(length), "Must be greater than or equal to 1.");
+
+                if (numbers < 0)
+                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be greater than or equal to 0.");
+
+                if (numbers > length)
+                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be less than or equal to length.");
+
+                if (upperCaseLetters < 0)
+                    throw new ArgumentOutOfRangeException(nameof(upperCaseLetters), "Must be greater than or equal to 0.");
+
+                if (upperCaseLetters > length)
+                    throw new ArgumentOutOfRangeException(nameof(upperCaseLetters), "Must be less than or equal to length.");
+
+                if (numbers + upperCaseLetters > length)
+                    throw new ArgumentOutOfRangeException($"{nameof(numbers)}, {nameof(upperCaseLetters)}", $"The sum of the {nameof(numbers)} and the {nameof(upperCaseLetters)} arguments is greater than the length.");
+
+                char[] password = new char[length];
+
+                int lowerCaseLettersLength = length - numbers - upperCaseLetters;
+
+                // We are building up a string here starting with lowercase letters, followed by uppercase and finally numbers.
+                using (RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider())
+                {
+                    int idx = 0;
+
+                    while (idx < lowerCaseLettersLength)
+                    {
+                        int index = GenerateRandomInteger(rngProvider, 0, 26);
+                        char letter = m_LowerCaseLettersArray[index];
+
+                        password[idx++] = letter;
+                    }
+
+                    while (idx < length - numbers)
+                    {
+                        int index = GenerateRandomInteger(rngProvider, 0, 26);
+                        char letter = m_UpperCaseLettersArray[index];
+
+                        password[idx++] = letter;
+                    }
+
+                    while (idx < length)
+                    {
+                        int number = GenerateRandomInteger(rngProvider, 0, 10);
+
+                        password[idx++] = number.ToString().ToCharArray()[0];
+                    }
+
+                    // Randomly shuffle the generated password
+                    int n = password.Length;
+                    while (n > 1)
+                    {
+                        int k = GenerateRandomInteger(rngProvider, 0, n--);
+                        char temp = password[n];
+                        password[n] = password[k];
+                        password[k] = temp;
+                    }
+                }
+
+                return new string(password);
+            }
+            catch (Exception exc) when (Log.WriteError(exc, new { length, numbers }))
+            {
+                throw;
+            }
+        }
+#endif
         #endregion
 
         #region Private Members
@@ -120,7 +198,7 @@ namespace Umbrella.Utilities.Encryption
                 // Convert that into an uint.
                 scale = BitConverter.ToUInt32(four_bytes, 0);
             }
-            
+
             // Add min to the scaled difference between max and min.
             return (int)(min + (max - min) *
                 (scale / (double)uint.MaxValue));

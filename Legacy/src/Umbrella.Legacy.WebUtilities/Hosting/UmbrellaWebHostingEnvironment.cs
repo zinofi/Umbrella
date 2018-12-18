@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -19,7 +20,7 @@ using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Hosting
 {
-    // TODO: Add IHostingEnvironment and IHttpContextAccessor abstractions as per ASP.NET Core
+    // TODO: Add IHostingEnvironmentAccessor and IHttpContextAccessor abstractions as per ASP.NET Core
     // so that this class can be fully tested.
     public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
     {
@@ -78,7 +79,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
                 return Cache.GetOrCreate(key, entry =>
                 {
                     entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
-
+                    
                     string cleanedPath = TransformPath(virtualPath, false, true, true);
 
                     string virtualApplicationPath = HttpRuntime.AppDomainAppVirtualPath != "/"

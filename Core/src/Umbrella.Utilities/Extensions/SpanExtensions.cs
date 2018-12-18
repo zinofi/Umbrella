@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,6 +19,9 @@ namespace Umbrella.Utilities.Extensions
             return startIndex + value.Length;
         }
 
+#if !AzureDevOps
+        [Obsolete]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int AppendOld(this in Span<char> span, int startIndex, string value)
         {
@@ -28,6 +32,7 @@ namespace Umbrella.Utilities.Extensions
 
             return startIndex;
         }
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Append(this in Span<char> span, int startIndex, in ReadOnlySpan<char> value)
@@ -37,6 +42,9 @@ namespace Umbrella.Utilities.Extensions
             return startIndex + value.Length;
         }
 
+#if !AzureDevOps
+        [Obsolete]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int AppendOld(this in Span<char> span, int startIndex, in ReadOnlySpan<char> value)
         {
@@ -47,6 +55,7 @@ namespace Umbrella.Utilities.Extensions
 
             return startIndex;
         }
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToLower(this in Span<char> span)
@@ -64,6 +73,9 @@ namespace Umbrella.Utilities.Extensions
             readOnlySpan.ToLowerInvariant(span);
         }
 
+#if !AzureDevOps
+        [Obsolete]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ToLowerInvariantOld(this in Span<char> span)
         {
@@ -72,6 +84,7 @@ namespace Umbrella.Utilities.Extensions
                 span[i] = char.ToLowerInvariant(span[i]);
             }
         }
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToUpper(this in Span<char> span)
