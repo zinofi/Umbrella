@@ -54,8 +54,7 @@ namespace Umbrella.Utilities.Caching
                 }
             }
 
-            ReadOnlySpan<char> readOnlySpan = span;
-            readOnlySpan.ToUpperInvariant(span);
+            span.ToUpperInvariant();
 
             return span.ToString();
         }
