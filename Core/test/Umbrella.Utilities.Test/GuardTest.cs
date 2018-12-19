@@ -18,35 +18,46 @@ namespace Umbrella.Utilities.Test
         }
 
         [Fact]
-        public void ArgumentNotNull()
+        public void ArgumentNotNull_Null()
             => Assert.Throws<ArgumentNullException>(() => Guard.ArgumentNotNull((object)null, "test"));
 
         [Fact]
-        public void ArgumentNotNullOrEmpty_IList_T()
-            => Assert.Throws<ArgumentNullException>(() =>
-            {
-                IList<string> testArgument = null;
-
-                Guard.ArgumentNotNullOrEmpty(testArgument, nameof(testArgument));
-            });
+        public void ArgumentNotNull_Valid()
+            => Guard.ArgumentNotNull(new object(), "test");
 
         [Fact]
-        public void ArgumentNotNullOrEmpty_ICollection_T()
-            => Assert.Throws<ArgumentNullException>(() =>
-            {
-                ICollection<string> testArgument = null;
-
-                Guard.ArgumentNotNullOrEmpty(testArgument, nameof(testArgument));
-            });
-
-        [Fact]
-        public void ArgumentNotNullOrEmpty_IEnumerable_T()
+        public void ArgumentNotNullOrEmpty_IEnumerable_T_Null()
             => Assert.Throws<ArgumentNullException>(() =>
             {
                 IEnumerable<string> testArgument = null;
 
                 Guard.ArgumentNotNullOrEmpty(testArgument, nameof(testArgument));
             });
+
+        [Fact]
+        public void ArgumentNotNullOrEmpty_IEnumerable_T_Empty()
+            => Assert.Throws<ArgumentException>(() =>
+            {
+                IEnumerable<string> testArgument = new List<string>();
+
+                Guard.ArgumentNotNullOrEmpty(testArgument, nameof(testArgument));
+            });
+
+        [Fact]
+        public void ArgumentNotNullOrEmpty_IEnumerable_T_Valid()
+            => Guard.ArgumentNotNullOrEmpty(new[] { "test" }, "test");
+
+        [Fact]
+        public void ArgumentNotNullOrEmpty_Null()
+            => Assert.Throws<ArgumentNullException>(() => Guard.ArgumentNotNullOrEmpty(null, "test"));
+
+        [Fact]
+        public void ArgumentNotNullOrEmpty_Empty()
+            => Assert.Throws<ArgumentException>(() => Guard.ArgumentNotNullOrEmpty("", "test"));
+
+        [Fact]
+        public void ArgumentNotNullOrEmpty_Valid()
+            => Guard.ArgumentNotNullOrEmpty("test", "test");
 
         [Fact]
         public void ArgumentNotNullOrWhiteSpace_Null()
@@ -59,6 +70,10 @@ namespace Umbrella.Utilities.Test
         [Fact]
         public void ArgumentNotNullOrWhiteSpace_WhiteSpace()
             => Assert.Throws<ArgumentException>(() => Guard.ArgumentNotNullOrWhiteSpace("    ", "test"));
+
+        [Fact]
+        public void ArgumentNotNullOrWhiteSpace_Valid()
+            => Guard.ArgumentNotNullOrWhiteSpace("test", "test");
 
         [Fact]
         public void ArgumentOfType_Null()
@@ -81,7 +96,7 @@ namespace Umbrella.Utilities.Test
             => Assert.Throws<ArgumentNullException>(() => Guard.ArgumentOfTypeExact<A>(null, "test"));
 
         [Fact]
-        public void ArgumentOfTypeExact_Passes()
+        public void ArgumentOfTypeExact_Valid()
             => Guard.ArgumentOfTypeExact<A>(new A(), "test");
 
         [Fact]

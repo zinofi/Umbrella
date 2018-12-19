@@ -29,10 +29,27 @@ namespace Umbrella.Utilities
         }
 
         /// <summary>
-        /// Throws an exception if the tested string argument is null or an empty string.
+        /// Throws an exception if the tested string argument is null, or an empty string.
         /// </summary>
         /// <exception cref="ArgumentNullException">The string value is null.</exception>
         /// <exception cref="ArgumentException">The string is empty.</exception>
+        /// <param name="argumentValue">The argument value to test.</param>
+        /// <param name="argumentName">The name of the argument to test.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ArgumentNotNullOrEmpty(string argumentValue, string argumentName)
+        {
+            if (argumentValue == null)
+                throw new ArgumentNullException($"{argumentName} cannot be null.");
+
+            if (string.IsNullOrWhiteSpace(argumentValue))
+                throw new ArgumentException($"{argumentName} cannot be empty, or only whitespace.");
+        }
+
+        /// <summary>
+        /// Throws an exception if the tested string argument is null, whitespace, or an empty string.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">The string value is null.</exception>
+        /// <exception cref="ArgumentException">The string is empty or only whitespace.</exception>
         /// <param name="argumentValue">The argument value to test.</param>
         /// <param name="argumentName">The name of the argument to test.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -45,13 +62,15 @@ namespace Umbrella.Utilities
                 throw new ArgumentException($"{argumentName} cannot be empty, or only whitespace.");
         }
 
-        /// <summary>
-        /// Throws an exception if the tested <see cref="IList{T}"/> argument is null or empty.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">The <see cref="IList{T}"/> is null.</exception>
-        /// <exception cref="ArgumentException">The <see cref="IList{T}"/> is empty.</exception>
-        /// <param name="argumentValue">The argument value to test.</param>
-        /// <param name="argumentName">The name of the argument to test.</param>
+        //TODO: Add a new ArgumentNotNullOrEmpty that accepts a string to avoid it being implicitly coverted to IEnumerable<char> and causing an allocation.
+
+        ///// <summary>
+        ///// Throws an exception if the tested <see cref="IList{T}"/> argument is null or empty.
+        ///// </summary>
+        ///// <exception cref="ArgumentNullException">The <see cref="IList{T}"/> is null.</exception>
+        ///// <exception cref="ArgumentException">The <see cref="IList{T}"/> is empty.</exception>
+        ///// <param name="argumentValue">The argument value to test.</param>
+        ///// <param name="argumentName">The name of the argument to test.</param>
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         //public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)
         //{

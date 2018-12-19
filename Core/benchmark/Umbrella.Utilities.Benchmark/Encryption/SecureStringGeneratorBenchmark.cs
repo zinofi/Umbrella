@@ -10,7 +10,7 @@ using Umbrella.Utilities.Encryption;
 
 namespace Umbrella.Utilities.Benchmark.Encryption
 {
-    [CoreJob,]
+    [CoreJob, ClrJob]
     [MemoryDiagnoser]
     public class SecureStringGeneratorBenchmark
     {
@@ -32,7 +32,9 @@ namespace Umbrella.Utilities.Benchmark.Encryption
         [Benchmark(Baseline = true)]
         public string GenerateOld()
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             return _secureStringGenerator.GenerateOld(20, 5, 5);
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 #endif
     }

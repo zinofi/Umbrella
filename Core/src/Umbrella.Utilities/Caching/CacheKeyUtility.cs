@@ -14,12 +14,16 @@ namespace Umbrella.Utilities.Caching
 {
     public class CacheKeyUtility : ICacheKeyUtility
     {
-        public string Create<T>(IList<string> keyParts, [CallerMemberName]string callerMemberName = "")
+        public string Create<T>(in ReadOnlySpan<string> keyParts, [CallerMemberName]string callerMemberName = "")
         {
-            Guard.ArgumentNotNullOrEmpty(keyParts, nameof(keyParts));
-            Guard.ArgumentNotNullOrEmpty(callerMemberName, nameof(callerMemberName));
+            if (keyParts.Length == 0)
+                throw new ArgumentException("The length cannot be null.", nameof(keyParts));
 
-            int partsCount = keyParts.Count();
+            Guard.ArgumentNotNullOrWhiteSpace(callerMemberName, nameof(callerMemberName));
+
+            int partsCount = keyParts.Length;
+
+            // It seems the typeof call is expensive on CLR vs .NET Core
             string typeName = typeof(T).FullName;
             int partsLengthTotal = -1;
 
@@ -30,7 +34,7 @@ namespace Umbrella.Utilities.Caching
                 if (part != null)
                     partsLengthTotal += part.Length + 1;
             }
-            
+
             int length = typeName.Length + callerMemberName.Length + partsLengthTotal + 2;
 
             Span<char> span = stackalloc char[length];
@@ -56,6 +60,7 @@ namespace Umbrella.Utilities.Caching
 
             span.ToUpperInvariant();
 
+            // This is the only part that allocates
             return span.ToString();
         }
 

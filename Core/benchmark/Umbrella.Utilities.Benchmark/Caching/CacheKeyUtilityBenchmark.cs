@@ -9,10 +9,11 @@ using Umbrella.Utilities.Caching;
 
 namespace Umbrella.Utilities.Benchmark.Caching
 {
-    [CoreJob]
+    [CoreJob, ClrJob]
     [MemoryDiagnoser]
     public class CacheKeyUtilityBenchmark
     {
+        private static readonly string[] _keyItems = new[] { "part1", "part2", "part3", "part4", "part5" };
         private readonly CacheKeyUtility _cacheKeyUtility;
 
         public CacheKeyUtilityBenchmark()
@@ -23,14 +24,16 @@ namespace Umbrella.Utilities.Benchmark.Caching
         [Benchmark]
         public string CreateCacheKey()
         {
-            return _cacheKeyUtility.Create<CacheKeyUtilityBenchmark>(new[] { "part1", "part2", "part3", "part4", "part5" });
+            return _cacheKeyUtility.Create<CacheKeyUtilityBenchmark>(_keyItems);
         }
 
 #if !AzureDevOps
         [Benchmark(Baseline = true)]
         public string CreateCacheKeyOld()
         {
-            return _cacheKeyUtility.CreateOld<CacheKeyUtilityBenchmark>(new[] { "part1", "part2", "part3", "part4", "part5" });
+#pragma warning disable CS0612 // Type or member is obsolete
+            return _cacheKeyUtility.CreateOld<CacheKeyUtilityBenchmark>(_keyItems);
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 #endif
     }
