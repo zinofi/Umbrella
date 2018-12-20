@@ -22,20 +22,20 @@ namespace Umbrella.Utilities.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int AppendInternalNetClr(this in Span<char> span, int startIndex, string value)
+        private static int AppendInternalNetClr(in Span<char> source, int startIndex, string value)
         {
             for (int i = 0; i < value.Length; i++)
             {
-                span[startIndex++] = value[i];
+                source[startIndex++] = value[i];
             }
 
             return startIndex;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int AppendInternalCoreClr(this in Span<char> span, int startIndex, string value)
+        private static int AppendInternalCoreClr(in Span<char> source, int startIndex, string value)
         {
-            value.AsSpan().CopyTo(span.Slice(startIndex, value.Length));
+            value.AsSpan().CopyTo(source.Slice(startIndex, value.Length));
 
             return startIndex + value.Length;
         }
@@ -43,30 +43,30 @@ namespace Umbrella.Utilities.Extensions
 
         #region Append ReadOnlySpan<char>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Append(this in Span<char> span, int startIndex, in ReadOnlySpan<char> value)
+        public static int Append(this in Span<char> source, int startIndex, in ReadOnlySpan<char> value)
         {
 #if NET47 || DEBUG
-            return AppendInternalNetClr(span, startIndex, value);
+            return AppendInternalNetClr(source, startIndex, value);
 #else
-            return AppendInternalCoreClr(span, startIndex, value);
+            return AppendInternalCoreClr(source, startIndex, value);
 #endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int AppendInternalNetClr(this in Span<char> span, int startIndex, in ReadOnlySpan<char> value)
+        private static int AppendInternalNetClr(in Span<char> source, int startIndex, in ReadOnlySpan<char> value)
         {
             for (int i = 0; i < value.Length; i++)
             {
-                span[startIndex++] = value[i];
+                source[startIndex++] = value[i];
             }
 
             return startIndex;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int AppendInternalCoreClr(this in Span<char> span, int startIndex, in ReadOnlySpan<char> value)
+        private static int AppendInternalCoreClr(in Span<char> source, int startIndex, in ReadOnlySpan<char> value)
         {
-            value.CopyTo(span.Slice(startIndex, value.Length));
+            value.CopyTo(source.Slice(startIndex, value.Length));
 
             return startIndex + value.Length;
         }
@@ -74,118 +74,66 @@ namespace Umbrella.Utilities.Extensions
 
         #region ToLower
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ToLower(this in Span<char> span)
+        public static void ToLower(this in Span<char> source, CultureInfo culture = null)
         {
 #if NET47 || DEBUG
-            ToLowerNetClr(span);
+            ToLowerNetClr(source, culture ?? CultureInfo.CurrentCulture);
 #else
-            ToLowerCoreClr(span);
+            ToLowerCoreClr(source, culture ?? CultureInfo.CurrentCulture);
 #endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToLowerNetClr(this in Span<char> span)
+        private static void ToLowerNetClr(in Span<char> source, CultureInfo culture)
         {
-            for (int i = 0; i < span.Length; i++)
+            for (int i = 0; i < source.Length; i++)
             {
-                span[i] = char.ToLower(span[i]);
+                source[i] = char.ToLower(source[i], culture);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToLowerCoreClr(this in Span<char> span)
+        private static void ToLowerCoreClr(in Span<char> source, CultureInfo culture)
         {
-            ReadOnlySpan<char> readOnlySpan = span;
+            ReadOnlySpan<char> readOnlySpan = source;
 
-            readOnlySpan.ToLower(span, CultureInfo.CurrentCulture);
-        }
-        #endregion
-
-        #region ToLowerInvariant
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ToLowerInvariant(this in Span<char> span)
-        {
-#if NET47 || DEBUG
-            ToLowerInvariantNetClr(span);
-#else
-            ToLowerInvariantCoreClr(span);
-#endif
+            readOnlySpan.ToLower(source, culture);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToLowerInvariantNetClr(this in Span<char> span)
-        {
-            for (int i = 0; i < span.Length; i++)
-            {
-                span[i] = char.ToLowerInvariant(span[i]);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToLowerInvariantCoreClr(this in Span<char> span)
-        {
-            ReadOnlySpan<char> readOnlySpan = span;
-
-            readOnlySpan.ToLowerInvariant(span);
-        }
+        public static void ToLowerInvariant(this in Span<char> source) => ToLower(source, CultureInfo.InvariantCulture);
         #endregion
 
         #region ToUpper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ToUpper(this in Span<char> span)
+        public static void ToUpper(this in Span<char> source, CultureInfo culture = null)
         {
 #if NET47 || DEBUG
-            ToUpperNetClr(span);
+            ToUpperNetClr(source, culture ?? CultureInfo.CurrentCulture);
 #else
-            ToUpperCoreClr(span);
+            ToUpperCoreClr(source, culture ?? CultureInfo.CurrentCulture);
 #endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToUpperNetClr(this in Span<char> span)
+        private static void ToUpperNetClr(in Span<char> source, CultureInfo culture)
         {
-            for (int i = 0; i < span.Length; i++)
+            for (int i = 0; i < source.Length; i++)
             {
-                span[i] = char.ToUpper(span[i]);
+                source[i] = char.ToUpper(source[i], culture);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToUpperCoreClr(this in Span<char> span)
+        private static void ToUpperCoreClr(in Span<char> source, CultureInfo culture)
         {
-            ReadOnlySpan<char> readOnlySpan = span;
+            ReadOnlySpan<char> readOnlySpan = source;
 
-            readOnlySpan.ToUpper(span, CultureInfo.CurrentCulture);
-        }
-        #endregion
-
-        #region ToUpperInvariant
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ToUpperInvariant(this in Span<char> span)
-        {
-#if NET47 || DEBUG
-            ToUpperInvariantNetClr(span);
-#else
-            ToUpperInvariantCoreClr(span);
-#endif
+            readOnlySpan.ToUpper(source, culture);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToUpperInvariantNetClr(this in Span<char> span)
-        {
-            for (int i = 0; i < span.Length; i++)
-            {
-                span[i] = char.ToUpperInvariant(span[i]);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void ToUpperInvariantCoreClr(this in Span<char> span)
-        {
-            ReadOnlySpan<char> readOnlySpan = span;
-
-            readOnlySpan.ToUpperInvariant(span);
-        }
+        public static void ToUpperInvariant(this in Span<char> source) => ToUpper(source, CultureInfo.InvariantCulture);
         #endregion
     }
 }

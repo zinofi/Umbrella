@@ -81,7 +81,7 @@ namespace Umbrella.Utilities.Test.Extensions
             Span<char> span = stackalloc char[10];
             span.Fill('A');
 
-            span.ToLower();
+            span.ToLowerInvariant();
 
             Assert.Equal("aaaaaaaaaa", span.ToString());
         }
