@@ -54,6 +54,9 @@ namespace Microsoft.Extensions.Logging
         #region Private Static Methods
         private static void LogDetails(ILogger log, LogLevel level, Exception exc, object state, string message, in EventId eventId, string methodName, string filePath, int lineNumber)
         {
+            if (!log.IsEnabled(level))
+                return;
+
             StringBuilder messageBuilder = new StringBuilder();
 
             var stateDictionary = new List<KeyValuePair<string, string>>
