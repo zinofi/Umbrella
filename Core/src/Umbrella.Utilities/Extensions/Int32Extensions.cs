@@ -7,19 +7,19 @@ namespace Umbrella.Utilities.Extensions
 {
     public static class Int32Extensions
     {
-        public static string ToOrdinal(this int value)
+        public static string ToOrdinalString(this int value)
         {
             // Start with the most common extension.
             string extension = "th";
 
             // Examine the last 2 digits.
-            int last_digits = value % 100;
+            int lastDigits = value % 100;
 
             // If the last digits are 11, 12, or 13, use th. Otherwise:
-            if (last_digits < 11 || last_digits > 13)
+            if (lastDigits < 11 || lastDigits > 13)
             {
                 // Check the last digit.
-                switch (last_digits % 10)
+                switch (lastDigits % 10)
                 {
                     case 1:
                         extension = "st";
@@ -34,6 +34,21 @@ namespace Umbrella.Utilities.Extensions
             }
 
             return value + extension;
+        }
+
+        public static T ToEnum<T>(this int value) => value.ToEnum<T>(default);
+
+        public static T ToEnum<T>(this int value, T defaultValue)
+        {
+            Type eType = typeof(T);
+
+            if (Enum.IsDefined(eType, value))
+            {
+                object obj = Enum.ToObject(eType, value);
+                return (T)obj;
+            }
+
+            return defaultValue;
         }
     }
 }

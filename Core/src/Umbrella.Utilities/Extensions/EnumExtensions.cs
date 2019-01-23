@@ -10,33 +10,6 @@ namespace Umbrella.Utilities.Extensions
     /// </summary>
     public static class EnumExtensions
     {
-        public static T ToEnum<T>(this string value) where T : struct, Enum => value.ToEnum(default(T));
-
-        public static T ToEnum<T>(this string value, T defaultValue) where T : struct, Enum
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
-
-            if (Enum.TryParse(value, true, out T result))
-                return result;
-
-            return defaultValue;
-        }
-
-        public static T ToEnum<T>(this int value) => value.ToEnum<T>(default);
-
-        public static T ToEnum<T>(this int value, T defaultValue)
-        {
-            Type eType = typeof(T);
-
-            if (Enum.IsDefined(eType, value))
-            {
-                object obj = Enum.ToObject(eType, value);
-                return (T)obj;
-            }
-
-            return defaultValue;
-        }
-
         // TODO: Add some internal caching to avoid repeatedly doing the same work.
         public static string ToFlagsString(this Enum options, Func<string, string> valueTransformer = null, string separator = ",")
         {

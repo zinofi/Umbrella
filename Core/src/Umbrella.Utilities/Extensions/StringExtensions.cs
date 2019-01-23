@@ -273,5 +273,15 @@ namespace Umbrella.Utilities.Extensions
 
             return target.IndexOf(value, comparisonType) >= 0;
         }
+
+        public static T ToEnum<T>(this string value) where T : struct, Enum => value.ToEnum(default(T));
+
+        public static T ToEnum<T>(this string value, T defaultValue) where T : struct, Enum
+        {
+            if (Enum.TryParse(value, true, out T result))
+                return result;
+
+            return defaultValue;
+        }
     }
 }
