@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Umbrella.Legacy.Utilities.Configuration;
 using Umbrella.Utilities.Configuration;
 
-namespace Umbrella.Legacy.Utilities
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
