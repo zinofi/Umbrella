@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;AzureDevOps</Configurations>
     <DocumentationFile>bin\Release\netstandard2.0\Umbrella.Utilities.xml</DocumentationFile>

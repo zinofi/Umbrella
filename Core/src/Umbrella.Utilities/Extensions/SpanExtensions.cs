@@ -14,7 +14,7 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Append(this in Span<char> span, int startIndex, string value)
         {
-#if NET47 || DEBUG
+#if NET461 || DEBUG
             return AppendInternalNetClr(span, startIndex, value);
 #else
             return AppendInternalCoreClr(span, startIndex, value);
@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Append(this in Span<char> source, int startIndex, in ReadOnlySpan<char> value)
         {
-#if NET47 || DEBUG
+#if NET461 || DEBUG
             return AppendInternalNetClr(source, startIndex, value);
 #else
             return AppendInternalCoreClr(source, startIndex, value);
@@ -76,7 +76,7 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToLower(this in Span<char> source, CultureInfo culture = null)
         {
-#if NET47 || DEBUG
+#if NET461 || DEBUG
             ToLowerNetClr(source, culture ?? CultureInfo.CurrentCulture);
 #else
             ToLowerCoreClr(source, culture ?? CultureInfo.CurrentCulture);
@@ -108,7 +108,7 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToUpper(this in Span<char> source, CultureInfo culture = null)
         {
-#if NET47 || DEBUG
+#if NET461 || DEBUG
             ToUpperNetClr(source, culture ?? CultureInfo.CurrentCulture);
 #else
             ToUpperCoreClr(source, culture ?? CultureInfo.CurrentCulture);

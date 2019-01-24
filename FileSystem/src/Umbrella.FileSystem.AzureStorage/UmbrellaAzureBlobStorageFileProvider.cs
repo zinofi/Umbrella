@@ -74,7 +74,7 @@ namespace Umbrella.FileSystem.AzureStorage
             string fileName = parts[1];
 
             CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
-#if NET47
+#if NET461
             await container.CreateIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
 #else
             await container.CreateIfNotExistsAsync().ConfigureAwait(false);
@@ -83,7 +83,7 @@ namespace Umbrella.FileSystem.AzureStorage
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
 
             //The call to ExistsAsync should force the properties of the blob to be populated
-#if NET47
+#if NET461
             if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
                 return null;
 #else

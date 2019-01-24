@@ -15,7 +15,7 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToLowerSlim(this in ReadOnlySpan<char> source, Span<char> destination, CultureInfo culture = null)
         {
-#if NET47 || DEBUG
+#if NET461 || DEBUG
             ToLowerSlimNetClr(source, destination, culture ?? CultureInfo.CurrentCulture);
 #else
             ToLowerSlimCoreClr(source, destination, culture ?? CultureInfo.CurrentCulture);
@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToUpperSlim(this in ReadOnlySpan<char> source, Span<char> destination, CultureInfo culture = null)
         {
-#if NET47 || DEBUG
+#if NET461 || DEBUG
             ToUpperSlimNetClr(source, destination, culture ?? CultureInfo.CurrentCulture);
 #else
             ToUpperSlimCoreClr(source, destination, culture ?? CultureInfo.CurrentCulture);
