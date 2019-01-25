@@ -8,9 +8,20 @@ using System.Web.Routing;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi.Helpers
 {
-	public static class UrlHelperExtensions
+    /// <summary>
+    /// <see cref="UrlHelper"/> extension methods targeting WebAPI.
+    /// </summary>
+    public static class UrlHelperExtensions
 	{
-		public static string RouteWebApiUrl(this UrlHelper helper, string controller, IDictionary<string, object> values = null, string routeName = "DefaultApi")
+        /// <summary>
+        /// Used to generate an outbound URL for a WebAPI controller.
+        /// </summary>
+        /// <param name="helper">The <see cref="UrlHelper"/> instance.</param>
+        /// <param name="controller">The name of the WebAPI controller.</param>
+        /// <param name="values">Route values.</param>
+        /// <param name="routeName">The name of the route.</param>
+        /// <returns>The generated URL.</returns>
+        public static string RouteWebApiUrl(this UrlHelper helper, string controller, IDictionary<string, object> values = null, string routeName = "DefaultApi")
 		{
 			if (values == null)
 				values = new Dictionary<string, object>();
@@ -18,7 +29,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Helpers
 			values.Add("httproute", "");
 			values.Add("controller", controller);
 
-			return helper.RouteUrl(routeName, new RouteValueDictionary(values));
+            return helper.RouteUrl(routeName, new RouteValueDictionary(values)).ToLowerInvariant();
 		}
 	}
 }

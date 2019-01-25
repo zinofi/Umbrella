@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Umbrella.WebUtilities.Http
 {
-    public class HttpHeaderValueUtility : IHttpHeaderValueUtility
+    internal class HttpHeaderValueUtility : IHttpHeaderValueUtility
     {
         #region IHttpHeaderValueUtility Members
         public string CreateLastModifiedHeaderValue(DateTimeOffset lastModified)

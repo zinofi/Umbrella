@@ -15,7 +15,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc
         public IBundleUtility Bundles => _bundleUtilityLazy.Value;
     }
 
-    public abstract class BaseViewPage<T> : WebViewPage<T>
+    public abstract class UmbrellaViewPage<T> : WebViewPage<T>
     {
         private readonly Lazy<IBundleUtility> _bundleUtilityLazy = new Lazy<IBundleUtility>(() => DependencyResolver.Current.GetService<IBundleUtility>());
 

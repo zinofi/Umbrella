@@ -13,6 +13,6 @@ namespace Umbrella.Legacy.WebUtilities.Middleware.Options
         public bool CacheEnabled { get; set; } = true;
         public TimeSpan CacheTimeout { get; set; } = TimeSpan.FromHours(1);
         public bool CacheSlidingExpiration { get; set; } = true;
-        public bool WatchFiles { get; set; } = true;
+        public bool WatchFiles { get; set; }
     }
 }

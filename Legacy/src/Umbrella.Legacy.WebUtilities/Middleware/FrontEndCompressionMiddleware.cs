@@ -53,6 +53,35 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             // Validate the options
             Guard.ArgumentNotNullOrEmpty(options.FrontEndRootFolderAppRelativePaths, nameof(options.FrontEndRootFolderAppRelativePaths));
             Guard.ArgumentNotNullOrEmpty(options.TargetFileExtensions, nameof(options.TargetFileExtensions));
+
+            // Clean paths
+            HashSet<string> lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            for (int i = 0; i < options.FrontEndRootFolderAppRelativePaths.Length; i++)
+            {
+                string path = options.FrontEndRootFolderAppRelativePaths[i];
+
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    i--;
+                    continue;
+                }
+
+                path = path.Trim();
+
+                if (path.StartsWith("~"))
+                    path = path.Remove(0, 1);
+
+                if (!path.StartsWith("/"))
+                    path = "/" + path;
+
+                lstCleanedPath.Add(path);
+            }
+
+            if (lstCleanedPath.Count == 0)
+                throw new ArgumentException($"The cleaned items provided in {nameof(options.FrontEndRootFolderAppRelativePaths)} has resulted in an empty list.");
+
+            options.FrontEndRootFolderAppRelativePaths = lstCleanedPath.ToArray();
         }
 
         public override async Task Invoke(IOwinContext context)

@@ -37,4 +37,8 @@
     <ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\Abstractions\" />
+  </ItemGroup>
+
 </Project>
