@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
     //TODO: Investigate making this readonly and passing around by reference to avoid copying if possible.
     //TODO: IEquatable
+    [StructLayout(LayoutKind.Auto)]
     public struct DynamicImageOptions
     {
         public static readonly DynamicImageOptions Empty = new DynamicImageOptions();

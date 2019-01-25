@@ -1,12 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Buffers;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 
@@ -14,17 +9,37 @@ namespace Umbrella.Utilities.Caching
 {
     public class CacheKeyUtility : ICacheKeyUtility
     {
-        public string Create<T>(in ReadOnlySpan<string> keyParts, [CallerMemberName]string callerMemberName = "")
+        public string Create<T>(string key) => Create(typeof(T), key);
+
+        public string Create(Type type, string key)
         {
+            Guard.ArgumentNotNull(type, nameof(type));
+            Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+            string typeName = type.FullName;
+
+            Span<char> span = stackalloc char[typeName.Length + key.Length + 1];
+            span.Append(0, typeName);
+            span.Append(typeName.Length, ":");
+            span.Append(typeName.Length + 1, key);
+            span.ToUpperInvariant();
+
+            return span.ToString();
+        }
+
+        public string Create<T>(in ReadOnlySpan<string> keyParts) => Create(typeof(T), keyParts);
+
+        public string Create(Type type, in ReadOnlySpan<string> keyParts)
+        {
+            Guard.ArgumentNotNull(type, nameof(type));
+
             if (keyParts.Length == 0)
                 throw new ArgumentException("The length cannot be null.", nameof(keyParts));
-
-            Guard.ArgumentNotNullOrWhiteSpace(callerMemberName, nameof(callerMemberName));
 
             int partsCount = keyParts.Length;
 
             // It seems the typeof call is expensive on CLR vs .NET Core
-            string typeName = typeof(T).FullName;
+            string typeName = type.FullName;
             int partsLengthTotal = -1;
 
             for (int i = 0; i < partsCount; i++)
@@ -35,14 +50,11 @@ namespace Umbrella.Utilities.Caching
                     partsLengthTotal += part.Length + 1;
             }
 
-            int length = typeName.Length + callerMemberName.Length + partsLengthTotal + 2;
+            int length = typeName.Length + partsLengthTotal + 1;
 
             Span<char> span = stackalloc char[length];
 
             int currentIndex = span.Append(0, typeName);
-            span[currentIndex++] = ':';
-
-            currentIndex = span.Append(currentIndex, callerMemberName);
             span[currentIndex++] = ':';
 
             for (int i = 0; i < partsCount; i++)
@@ -67,12 +79,11 @@ namespace Umbrella.Utilities.Caching
 #if !AzureDevOps
         [Obsolete]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal string CreateOld<T>(IEnumerable<string> keyParts, [CallerMemberName]string callerMemberName = "")
+        internal string CreateOld<T>(IEnumerable<string> keyParts)
         {
             Guard.ArgumentNotNullOrEmpty(keyParts, nameof(keyParts));
-            Guard.ArgumentNotNullOrEmpty(callerMemberName, nameof(callerMemberName));
 
-            return $"{typeof(T).FullName}:{callerMemberName}:{string.Join(":", keyParts)}".ToUpperInvariant();
+            return $"{typeof(T).FullName}:{string.Join(":", keyParts)}".ToUpperInvariant();
         }
 #endif
     }

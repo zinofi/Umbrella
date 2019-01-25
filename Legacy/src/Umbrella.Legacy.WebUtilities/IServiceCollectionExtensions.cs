@@ -4,7 +4,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Legacy.WebUtilities.Accessors;
+using Umbrella.Legacy.WebUtilities.Accessors.Abstractions;
 using Umbrella.Legacy.WebUtilities.Hosting;
+using Umbrella.Legacy.WebUtilities.Middleware;
+using Umbrella.Legacy.WebUtilities.Middleware.Options;
+using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Options;
 using Umbrella.Utilities.Hosting;
 using Umbrella.WebUtilities.Hosting;
 
@@ -26,7 +31,24 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
             services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<CleanupIDisposableMiddleware>();
+            services.AddSingleton<FrontEndCompressionMiddleware>();
+            services.AddSingleton<HttpContextAccessorMiddleware>();
+            services.AddSingleton<RobotsMiddleware>();
+
+            // Default Options - These can be replaced by calls to the Configure* methods below.
+            services.AddSingleton(new FrontEndCompressionMiddlewareOptions());
+            services.AddSingleton(new BundleUtilityOptions());
+
             return services;
         }
+
+        public static IServiceCollection ConfigureFrontEndCompressionMiddlewareOptions(this IServiceCollection services, Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> optionsBuilder)
+            => services.ConfigureUmbrellaOptions(optionsBuilder);
+
+        public static IServiceCollection ConfigureBundleUtilityOptions(this IServiceCollection services, Action<IServiceProvider, BundleUtilityOptions> optionsBuilder)
+            => services.ConfigureUmbrellaOptions(optionsBuilder);
     }
 }

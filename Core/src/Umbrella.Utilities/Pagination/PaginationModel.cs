@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Pagination
 {
-	public readonly struct PaginationModel
+    [StructLayout(LayoutKind.Auto)]
+    public readonly struct PaginationModel
 	{
-		public readonly struct PageItem
+        [StructLayout(LayoutKind.Auto)]
+        public readonly struct PageItem
 		{
 			public int Number { get; }
 			public bool IsCurrentPage { get; }

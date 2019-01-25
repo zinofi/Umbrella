@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -37,7 +38,7 @@ namespace Umbrella.Utilities.Hosting
 
             try
             {
-                // TODO: Can we take advantage of the ArrayPool stuff to make this even better?
+                // TODO: Can we take advantage of the ArrayPool / MemoryPool stuff to make this even better?
                 string key = CacheKeyUtility.Create<UmbrellaHostingEnvironment>(new string[] { virtualPath, fromContentRoot.ToString(), cache.ToString() });
                 
                 string physicalPath = MapPath(virtualPath, fromContentRoot);

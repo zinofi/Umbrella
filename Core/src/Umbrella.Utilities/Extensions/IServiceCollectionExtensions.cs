@@ -37,6 +37,14 @@ namespace Microsoft.Extensions.DependencyInjection
             where TImplementation : class, TService
             => services.Remove<TService>().AddSingleton<TService, TImplementation>();
 
+        public static IServiceCollection ReplaceSingleton<TService>(this IServiceCollection services, TService implementation)
+            where TService : class
+            => services.Remove<TService>().AddSingleton(implementation);
+
+        public static IServiceCollection ReplaceSingleton<TService>(this IServiceCollection services, Func<IServiceProvider, TService> implementationFactory)
+            where TService : class
+            => services.Remove<TService>().AddSingleton(implementationFactory);
+
         public static IServiceCollection Remove<TService>(this IServiceCollection services)
         {
             Guard.ArgumentNotNull(services, nameof(services));
@@ -45,6 +53,16 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (serviceToRemove != null)
                 services.Remove(serviceToRemove);
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
+            where TOptions : class, new()
+        {
+            var options = new TOptions();
+
+            services.ReplaceSingleton(optionsBuilder);
 
             return services;
         }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -330,6 +331,8 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
             return span.ToString();
         }
 
+        [Obsolete]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         internal string TransformPathOld(string virtualPath, bool ensureStartsWithTildeSlash, bool ensureNoTilde, bool ensureLeadingSlash)
         {
             StringBuilder sb = new StringBuilder(virtualPath)

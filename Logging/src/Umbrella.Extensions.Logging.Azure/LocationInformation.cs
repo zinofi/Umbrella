@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Umbrella.Extensions.Logging.Azure
 {
-   //TODO: Could convert to a readonly struct and then pass by ref / in - need to doing some reading on this stuff
-   public class LocationInformation
+    //TODO: Could convert to a readonly struct and then pass by ref / in - need to doing some reading on this stuff
+    [StructLayout(LayoutKind.Auto)]
+    public class LocationInformation
     {
         public string ClassName { get; }
         public string FileName { get; }

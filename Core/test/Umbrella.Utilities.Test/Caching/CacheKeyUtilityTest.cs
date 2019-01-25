@@ -14,11 +14,21 @@ namespace Umbrella.Utilities.Test.Caching
         public void CreateCacheKey_Valid()
         {
             var utility = CreateCacheKeyUtility();
+
+            string key = utility.Create<CacheKeyUtilityTest>("test:key");
+
+            Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:test:key".ToUpperInvariant(), key);
+        }
+
+        [Fact]
+        public void CreateCacheKey_Parts_Valid()
+        {
+            var utility = CreateCacheKeyUtility();
             var keyParts = new[] { "part1", "part2", "part3", "part4", "part5" };
 
             string key = utility.Create<CacheKeyUtilityTest>(keyParts);
 
-            Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:{nameof(CreateCacheKey_Valid)}:{string.Join(":", keyParts)}".ToUpperInvariant(), key);
+            Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:{string.Join(":", keyParts)}".ToUpperInvariant(), key);
         }
 
         private static CacheKeyUtility CreateCacheKeyUtility()

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Umbrella.Utilities.Json;
 
 namespace Umbrella.Utilities.Integration.NewtonsoftJson
 {
+    [StructLayout(LayoutKind.Auto)]
     internal readonly struct JsonSettingsCacheKey : IEquatable<JsonSettingsCacheKey>
     {
         public JsonSettingsCacheKey(bool useCamelCase, UmbrellaJsonTypeNameHandling typeNameHandling)

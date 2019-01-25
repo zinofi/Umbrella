@@ -6,6 +6,9 @@ namespace Umbrella.Utilities.Caching.Abstractions
 {
     public interface ICacheKeyUtility
     {
-        string Create<T>(in ReadOnlySpan<string> keyParts, [CallerMemberName] string callerMemberName = "");
+        string Create<T>(string key);
+        string Create(Type type, string key);
+        string Create<T>(in ReadOnlySpan<string> keyParts);
+        string Create(Type type, in ReadOnlySpan<string> keyParts);
     }
 }
