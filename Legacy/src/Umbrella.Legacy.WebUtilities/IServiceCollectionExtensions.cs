@@ -9,6 +9,8 @@ using Umbrella.Legacy.WebUtilities.Accessors.Abstractions;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
+using Umbrella.Legacy.WebUtilities.Mvc.Bundles;
+using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Abstractions;
 using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Options;
 using Umbrella.Utilities.Hosting;
 using Umbrella.WebUtilities.Hosting;
@@ -32,6 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IBundleUtility, BundleUtility>();
 
             services.AddSingleton<CleanupIDisposableMiddleware>();
             services.AddSingleton<FrontEndCompressionMiddleware>();
