@@ -60,9 +60,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
             where TOptions : class, new()
         {
-            var options = new TOptions();
+            Guard.ArgumentNotNull(services, nameof(services));
 
-            services.ReplaceSingleton(optionsBuilder);
+            services.ReplaceSingleton(serviceProvider =>
+            {
+                var options = new TOptions();
+                optionsBuilder?.Invoke(serviceProvider, options);
+
+                return options;
+            });
 
             return services;
         }

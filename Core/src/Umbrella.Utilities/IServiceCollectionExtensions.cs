@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
@@ -22,6 +23,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
         {
+            Guard.ArgumentNotNull(services, nameof(services));
+
             services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
             services.AddTransient<IEmailBuilder, EmailBuilder>();
             services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
@@ -47,6 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection ConfigureMultiCacheOptions(this IServiceCollection services, Action<IServiceProvider, MultiCacheOptions> optionsBuilder)
         {
+            Guard.ArgumentNotNull(services, nameof(services));
+
             services.ReplaceSingleton(serviceProvider =>
             {
                 var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
