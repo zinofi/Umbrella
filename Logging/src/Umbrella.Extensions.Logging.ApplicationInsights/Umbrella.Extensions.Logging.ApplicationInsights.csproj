@@ -1,46 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;AzureDevOps</Configurations>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <DocumentationFile>bin\Release\netstandard2.0\Umbrella.Extensions.Logging.ApplicationInsights.xml</DocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
+    <DefineConstants>AzureDevOps</DefineConstants>
   </PropertyGroup>
-  
+
   <PropertyGroup>
-    <PackageId>Umbrella.Legacy.Utilities</PackageId>
+    <PackageId>Umbrella.Extensions.Logging.ApplicationInsights</PackageId>
     <Version>2.1.0-rc-00017</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
     <Description>
-      This package contains a range of utility classes to aid application development with the legacy .NET stack, i.e. pre .NET Core.
+      This package contains implementations of the ILogger and ILoggerProvider to allow ApplicationInsights to be used with the Microsoft.Extensions.Logging infrastructure
+      inside an application that doesn't use the Microsoft.DependencyInjection package or one where it is not being used as the primary DI container.
+      The code in this package has been forked and modified from the source repository at: https://github.com/Microsoft/ApplicationInsights-aspnetcore and is the copyright of Microsoft.
+      The original license is here: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/develop/LICENSE
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
-  
+
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.8.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>

@@ -82,6 +82,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                 throw new ArgumentException($"The cleaned items provided in {nameof(options.FrontEndRootFolderAppRelativePaths)} has resulted in an empty list.");
 
             options.FrontEndRootFolderAppRelativePaths = lstCleanedPath.ToArray();
+
+            if (Log.IsEnabled(LogLevel.Debug))
+                Log.WriteDebug(new { options });
         }
 
         public override async Task Invoke(IOwinContext context)
@@ -90,16 +93,25 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             {
                 string path = context.Request.Path.Value.Trim();
 
+                if (Log.IsEnabled(LogLevel.Debug))
+                    Log.WriteDebug(new { path });
+
                 if (Options.FrontEndRootFolderAppRelativePaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
                     && Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase)
                     && context.Request.Headers.TryGetValue("accept-encoding", out string[] encodingValues))
                 {
                     string flattenedEncodingHeaders = string.Join(", ", encodingValues).ToLowerInvariant();
 
+                    if (Log.IsEnabled(LogLevel.Debug))
+                        Log.WriteDebug(new { flattenedEncodingHeaders });
+
                     CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
                     CancellationToken token = cts.Token;
 
                     string physicalPath = HostingEnvironment.MapPath(path);
+
+                    if (Log.IsEnabled(LogLevel.Debug))
+                        Log.WriteDebug(new { physicalPath });
 
                     FileInfo fileInfo = new FileInfo(physicalPath);
 
@@ -123,6 +135,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                         }
 
                         string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
+
+                        if (Log.IsEnabled(LogLevel.Debug))
+                            Log.WriteDebug(new { cacheKey });
 
                         var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
                         {

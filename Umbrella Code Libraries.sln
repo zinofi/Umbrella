@@ -218,11 +218,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Benchmar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Integration.NewtonsoftJson", "Core\src\Umbrella.Utilities.Integration.NewtonsoftJson\Umbrella.Utilities.Integration.NewtonsoftJson.csproj", "{F4596AFB-6E84-430C-9D38-90BD11C264DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.WebUtilities.Test", "Core\test\Umbrella.WebUtilities.Test\Umbrella.WebUtilities.Test.csproj", "{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities.Test", "Core\test\Umbrella.WebUtilities.Test\Umbrella.WebUtilities.Test.csproj", "{EB7B2014-DB57-4460-BDBF-A055A2F81D9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.Bundling", "Legacy\src\Umbrella.Legacy.WebUtilities.Bundling\Umbrella.Legacy.WebUtilities.Bundling.csproj", "{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.Bundling", "Legacy\src\Umbrella.Legacy.WebUtilities.Bundling\Umbrella.Legacy.WebUtilities.Bundling.csproj", "{BE5E8DB0-788E-42FA-99DF-862D8638E4C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.Benchmark", "Legacy\benchmark\Umbrella.Legacy.WebUtilities.Benchmark\Umbrella.Legacy.WebUtilities.Benchmark.csproj", "{0CF14D74-4F11-4233-A2EF-28965746F36B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.Benchmark", "Legacy\benchmark\Umbrella.Legacy.WebUtilities.Benchmark\Umbrella.Legacy.WebUtilities.Benchmark.csproj", "{0CF14D74-4F11-4233-A2EF-28965746F36B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Extensions.Logging.ApplicationInsights", "Logging\src\Umbrella.Extensions.Logging.ApplicationInsights\Umbrella.Extensions.Logging.ApplicationInsights.csproj", "{0CAE734E-FDB2-4960-A321-F34388C1E661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -579,6 +581,12 @@ Global
 		{0CF14D74-4F11-4233-A2EF-28965746F36B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CF14D74-4F11-4233-A2EF-28965746F36B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CF14D74-4F11-4233-A2EF-28965746F36B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CAE734E-FDB2-4960-A321-F34388C1E661}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CAE734E-FDB2-4960-A321-F34388C1E661}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{0CAE734E-FDB2-4960-A321-F34388C1E661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CAE734E-FDB2-4960-A321-F34388C1E661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CAE734E-FDB2-4960-A321-F34388C1E661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CAE734E-FDB2-4960-A321-F34388C1E661}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -678,6 +686,7 @@ Global
 		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F} = {D8B05C3A-5AAC-41F7-99C8-3279378B68AB}
 		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1} = {B1144C83-C2B3-40FB-8F68-22A3228E7725}
 		{0CF14D74-4F11-4233-A2EF-28965746F36B} = {631C6BA4-0152-44A1-9530-ABFBABB564DB}
+		{0CAE734E-FDB2-4960-A321-F34388C1E661} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

@@ -18,7 +18,7 @@
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Aurelia.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>2.1.0-rc-00016</Version>
+    <Version>2.1.0-rc-00017</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
