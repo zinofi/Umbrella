@@ -14,5 +14,6 @@ namespace Umbrella.Legacy.WebUtilities.Middleware.Options
         public TimeSpan CacheTimeout { get; set; } = TimeSpan.FromHours(1);
         public bool CacheSlidingExpiration { get; set; } = true;
         public bool WatchFiles { get; set; }
+        public string AcceptEncodingHeaderKey { get; set; } = "Accept-Encoding";
     }
 }

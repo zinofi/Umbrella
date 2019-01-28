@@ -53,6 +53,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             // Validate the options
             Guard.ArgumentNotNullOrEmpty(options.FrontEndRootFolderAppRelativePaths, nameof(options.FrontEndRootFolderAppRelativePaths));
             Guard.ArgumentNotNullOrEmpty(options.TargetFileExtensions, nameof(options.TargetFileExtensions));
+            Guard.ArgumentNotNullOrWhiteSpace(options.AcceptEncodingHeaderKey, nameof(options.AcceptEncodingHeaderKey));
+
+            options.AcceptEncodingHeaderKey = options.AcceptEncodingHeaderKey.Trim().ToLowerInvariant();
 
             // Clean paths
             HashSet<string> lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -93,25 +96,16 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             {
                 string path = context.Request.Path.Value.Trim();
 
-                if (Log.IsEnabled(LogLevel.Debug))
-                    Log.WriteDebug(new { path });
-
                 if (Options.FrontEndRootFolderAppRelativePaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
                     && Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase)
-                    && context.Request.Headers.TryGetValue("accept-encoding", out string[] encodingValues))
+                    && context.Request.Headers.TryGetValue(Options.AcceptEncodingHeaderKey, out string[] encodingValues))
                 {
                     string flattenedEncodingHeaders = string.Join(", ", encodingValues).ToLowerInvariant();
-
-                    if (Log.IsEnabled(LogLevel.Debug))
-                        Log.WriteDebug(new { flattenedEncodingHeaders });
 
                     CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
                     CancellationToken token = cts.Token;
 
                     string physicalPath = HostingEnvironment.MapPath(path);
-
-                    if (Log.IsEnabled(LogLevel.Debug))
-                        Log.WriteDebug(new { physicalPath });
 
                     FileInfo fileInfo = new FileInfo(physicalPath);
 
@@ -135,9 +129,6 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                         }
 
                         string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
-
-                        if (Log.IsEnabled(LogLevel.Debug))
-                            Log.WriteDebug(new { cacheKey });
 
                         var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
                         {

@@ -40,6 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IBundleUtility, BundleUtility>();
 
             services.AddSingleton<CleanupIDisposableMiddleware>();
+            services.AddSingleton<DebugRequestMiddleware>();
             services.AddSingleton<FrontEndCompressionMiddleware>();
             services.AddSingleton<HttpContextAccessorMiddleware>();
             services.AddSingleton<RobotsMiddleware>();
