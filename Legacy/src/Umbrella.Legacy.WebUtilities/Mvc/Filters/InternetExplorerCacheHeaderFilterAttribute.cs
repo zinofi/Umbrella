@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Umbrella.Legacy.WebUtilities.Extensions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Filters

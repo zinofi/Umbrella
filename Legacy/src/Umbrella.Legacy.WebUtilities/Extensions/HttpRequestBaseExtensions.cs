@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
-namespace System.Web
+namespace Umbrella.Legacy.WebUtilities.Extensions
 {
     /// <summary>
     /// Http Request Base Extensions
@@ -37,9 +38,9 @@ namespace System.Web
         {
             foreach (string key in AjaxOrFetchRequestHeaderKeys.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                if (request.Headers[key] != null)
+                if (bool.TryParse(request.Headers[key], out bool result))
                 {
-                    return true;
+                    return result;
                 }
             }
 

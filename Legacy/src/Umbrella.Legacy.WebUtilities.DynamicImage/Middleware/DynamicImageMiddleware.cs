@@ -13,6 +13,7 @@ using Umbrella.Utilities;
 using Umbrella.WebUtilities.Http;
 using System.Threading;
 using System.Collections.Generic;
+using Umbrella.Legacy.WebUtilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {

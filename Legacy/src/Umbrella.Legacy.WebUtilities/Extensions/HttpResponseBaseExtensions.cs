@@ -1,4 +1,6 @@
-﻿namespace System.Web
+﻿using System.Web;
+
+namespace Umbrella.Legacy.WebUtilities.Extensions
 {
     /// <summary>
     /// Contains extension methods for the <see cref="HttpResponseBase"/> type.

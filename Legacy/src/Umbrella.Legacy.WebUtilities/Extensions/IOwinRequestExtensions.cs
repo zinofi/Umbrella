@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Owin
+namespace Umbrella.Legacy.WebUtilities.Extensions
 {
     public static class IOwinRequestExtensions
     {

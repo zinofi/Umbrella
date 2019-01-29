@@ -11,6 +11,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.Legacy.WebUtilities.Extensions;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
