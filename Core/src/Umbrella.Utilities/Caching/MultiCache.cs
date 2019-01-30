@@ -120,6 +120,8 @@ namespace Umbrella.Utilities.Caching
 
                             if (cacheMetaEntry != null && TrackKeysAndHits)
                                 cacheMetaEntry.AddHit();
+
+                            return cacheItem;
                         }
                         catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: !throwOnCacheFailure))
                         {
@@ -207,6 +209,8 @@ namespace Umbrella.Utilities.Caching
 
                             if (cacheMetaEntry != null && TrackKeysAndHits)
                                 cacheMetaEntry.AddHit();
+
+                            return cacheItem;
                         }
                         catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: !throwOnCacheFailure))
                         {
@@ -243,7 +247,7 @@ namespace Umbrella.Utilities.Caching
                 }
                 else
                 {
-                    var found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
+                    bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
 
                     if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out MultiCacheMetaEntry cacheMetaEntry))
                         cacheMetaEntry.AddHit();
@@ -277,7 +281,7 @@ namespace Umbrella.Utilities.Caching
                 }
                 else
                 {
-                    var found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
+                    bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
 
                     if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out MultiCacheMetaEntry cacheMetaEntry))
                         cacheMetaEntry.AddHit();
@@ -308,7 +312,7 @@ namespace Umbrella.Utilities.Caching
                 }
                 else
                 {
-                    var options = BuildMemoryCacheEntryOptions(in expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+                    var options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
                     if(TrackKeys)
                         options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
@@ -345,7 +349,7 @@ namespace Umbrella.Utilities.Caching
                 }
                 else
                 {
-                    var options = BuildMemoryCacheEntryOptions(in expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+                    var options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
                     if (TrackKeys)
                         options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
@@ -406,12 +410,13 @@ namespace Umbrella.Utilities.Caching
             return options;
         }
 
-        private MemoryCacheEntryOptions BuildMemoryCacheEntryOptions(TimeSpan expirationTimeSpan, bool slidingExpiration, CacheItemPriority priority, Func<IEnumerable<IChangeToken>> expirationTokensBuilder)
-            => BuildMemoryCacheEntryOptions(in expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+        //TODO: Why was this added??
+        //private MemoryCacheEntryOptions BuildMemoryCacheEntryOptions(TimeSpan expirationTimeSpan, bool slidingExpiration, CacheItemPriority priority, Func<IEnumerable<IChangeToken>> expirationTokensBuilder)
+        //    => BuildMemoryCacheEntryOptions(in expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
         private MemoryCacheEntryOptions BuildMemoryCacheEntryOptions(in TimeSpan expirationTimeSpan, bool slidingExpiration, CacheItemPriority priority, Func<IEnumerable<IChangeToken>> expirationTokensBuilder)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions();
+            var options = new MemoryCacheEntryOptions();
 
             if (slidingExpiration)
             {
@@ -428,7 +433,8 @@ namespace Umbrella.Utilities.Caching
             {
                 foreach (var token in expirationTokensBuilder())
                 {
-                    options.AddExpirationToken(token);
+                    if(token != null)
+                        options.AddExpirationToken(token);
                 }
             }
 

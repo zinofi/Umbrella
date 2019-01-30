@@ -101,8 +101,6 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                     && Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase)
                     && context.Request.Headers.TryGetValue(Options.AcceptEncodingHeaderKey, out string[] encodingValues))
                 {
-                    string flattenedEncodingHeaders = string.Join(", ", encodingValues).ToLowerInvariant();
-
                     CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
                     CancellationToken token = cts.Token;
 
@@ -129,37 +127,50 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             return;
                         }
 
+                        // Ensure the values are sorted alphabetically before creating the cache key to prevent duplicate
+                        // cache entries for different value orders.
+                        string flattenedEncodingHeaders = string.Join(", ", encodingValues.OrderBy(x => x)).ToLowerInvariant();
                         string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
 
                         var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
                         {
+                            const int bufferSize = 81920;
                             string contentEncoding = null;
 
                             using (FileStream fs = fileInfo.OpenRead())
                             {
-                                using (MemoryStream ms = new MemoryStream())
+                                using (var ms = new MemoryStream())
                                 {
-                                    if (flattenedEncodingHeaders.Contains("br", StringComparison.OrdinalIgnoreCase) || flattenedEncodingHeaders.Contains("brotli", StringComparison.OrdinalIgnoreCase))
+                                    if (encodingValues.Contains("br", StringComparer.OrdinalIgnoreCase) || encodingValues.Contains("brotli", StringComparer.OrdinalIgnoreCase))
                                     {
-                                        using (BrotliStream br = new BrotliStream(ms, CompressionMode.Compress))
+                                        using (var br = new BrotliStream(ms, CompressionMode.Compress))
                                         {
-                                            await fs.CopyToAsync(br, 81920, token);
+                                            await fs.CopyToAsync(br, bufferSize, token);
                                         }
 
                                         contentEncoding = "br";
                                     }
-                                    else if (flattenedEncodingHeaders.Contains("gzip", StringComparison.OrdinalIgnoreCase))
+                                    else if (encodingValues.Contains("gzip", StringComparer.OrdinalIgnoreCase))
                                     {
-                                        using (GZipStream gz = new GZipStream(ms, CompressionMode.Compress))
+                                        using (var gz = new GZipStream(ms, CompressionMode.Compress))
                                         {
-                                            await fs.CopyToAsync(gz, 81920, token);
+                                            await fs.CopyToAsync(gz, bufferSize, token);
                                         }
 
                                         contentEncoding = "gzip";
                                     }
+                                    else if (encodingValues.Contains("deflate", StringComparer.OrdinalIgnoreCase))
+                                    {
+                                        using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
+                                        {
+                                            await fs.CopyToAsync(deflate, bufferSize, token);
+                                        }
+
+                                        contentEncoding = "deflate";
+                                    }
                                     else
                                     {
-                                        await fs.CopyToAsync(ms, 81920, token);
+                                        await fs.CopyToAsync(ms, bufferSize, token);
                                     }
 
                                     return (contentEncoding, ms.ToArray());
@@ -173,12 +184,29 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                         expirationTokensBuilder: () => Options.WatchFiles ? new[] { new PhysicalFileChangeToken(fileInfo) } : null,
                         cacheEnabledOverride: Options.CacheEnabled);
 
+                        if (Log.IsEnabled(LogLevel.Debug))
+                        {
+                            var logData = new
+                            {
+                                PathBase = context.Request.PathBase.Value,
+                                Path = context.Request.Path.Value,
+                                EncodingHeaders = encodingValues,
+                                CompressionAlgorithmUsed = result.contentEncoding,
+                                CompressedSize = result.bytes.Length
+                            };
+
+                            Log.WriteDebug(logData);
+                        }
+
                         await context.Response.Body.WriteAsync(result.bytes, 0, result.bytes.Length);
 
                         if (!string.IsNullOrEmpty(result.contentEncoding))
                             context.Response.Headers["Content-Encoding"] = result.contentEncoding;
 
                         context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Extension);
+
+                        // TODO: Possible append the new encoding header value here so that if the proxy cache is varying on what it thinks
+                        // is the wrong header then at least we can get somewhere!
                         context.Response.Headers["Vary"] = "Accept-Encoding";
 
                         context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastWriteTimeUtc);

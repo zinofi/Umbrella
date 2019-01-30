@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -133,12 +134,12 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
             }
         }
 
-        private MvcHtmlString BuildOutput(string bundleNameOrPath, Func<MvcHtmlString> builder)
+        private MvcHtmlString BuildOutput(string bundleNameOrPath, Func<MvcHtmlString> builder, [CallerMemberName] string caller = "")
         {
             // When watching the source files, we can't cache the generated HTML string here and need to rebuild it everytime.
             return Options.WatchFiles
                 ? builder()
-                : Cache.GetOrCreate(bundleNameOrPath,
+                : Cache.GetOrCreate(caller + ":" + bundleNameOrPath,
                 () => builder(),
                 () => Options.CacheTimeout,
                 slidingExpiration: Options.CacheSlidingExpiration,

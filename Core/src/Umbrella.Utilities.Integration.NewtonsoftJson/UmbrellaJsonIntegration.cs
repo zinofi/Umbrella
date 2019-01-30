@@ -7,7 +7,7 @@ namespace Umbrella.Utilities.Integration.NewtonsoftJson
     /// <summary>
     /// Provides functionality to integrate the Newtonsoft.Json library with the Umbrella packages.
     /// </summary>
-    public static class UmbrellaJsonIntegration
+    internal static class UmbrellaJsonIntegration
     {
         private static readonly ConcurrentDictionary<JsonSettingsCacheKey, JsonSerializerSettings> s_SettingsCache = new ConcurrentDictionary<JsonSettingsCacheKey, JsonSerializerSettings>();
 

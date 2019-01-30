@@ -8,6 +8,7 @@ using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    // TODO: Are these actually needed? Doesn't adding 2 things twice with different keys just mean last in wins?
     public static class IServiceCollectionExtensions2
     {
         public static IServiceCollection ReplaceTransient<TService>(this IServiceCollection services)
