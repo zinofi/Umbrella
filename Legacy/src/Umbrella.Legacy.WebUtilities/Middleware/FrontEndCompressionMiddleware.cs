@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -25,7 +26,26 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 {
     public class FrontEndCompressionMiddleware : OwinMiddleware
     {
+        private class SlimFileInfo
+        {
+            public SlimFileInfo(FileInfo fileInfo)
+            {
+                LastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
+                DirectoryName = fileInfo.DirectoryName;
+                Name = fileInfo.Name;
+                Length = fileInfo.Length;
+                Extension = fileInfo.Extension;
+            }
+
+            public DateTime LastWriteTimeUtc { get; }
+            public string DirectoryName { get; }
+            public string Name { get; }
+            public long Length { get; }
+            public string Extension { get; }
+        }
+
         private static readonly string _cackeKeyPrefix = $"{typeof(FrontEndCompressionMiddleware).FullName}";
+        private static readonly ConcurrentDictionary<string, SlimFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, SlimFileInfo>();
 
         protected ILogger Log { get; }
         protected IMultiCache Cache { get; }
@@ -59,7 +79,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             options.AcceptEncodingHeaderKey = options.AcceptEncodingHeaderKey.Trim().ToLowerInvariant();
 
             // Clean paths
-            HashSet<string> lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             for (int i = 0; i < options.FrontEndRootFolderAppRelativePaths.Length; i++)
             {
@@ -101,14 +121,14 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                     && Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase)
                     && context.Request.Headers.TryGetValue(Options.AcceptEncodingHeaderKey, out string[] encodingValues))
                 {
-                    CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
+                    var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
                     CancellationToken token = cts.Token;
 
                     string physicalPath = HostingEnvironment.MapPath(path);
 
-                    FileInfo fileInfo = new FileInfo(physicalPath);
-
-                    if (fileInfo.Exists)
+                    SlimFileInfo fileInfo = GetFileInfo(physicalPath);
+                    
+                    if (fileInfo != null)
                     {
                         // Check the cache headers
                         if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastWriteTimeUtc))
@@ -127,9 +147,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             return;
                         }
 
-                        // Ensure the values are sorted alphabetically before creating the cache key to prevent duplicate
-                        // cache entries for different value orders.
-                        string flattenedEncodingHeaders = string.Join(", ", encodingValues.OrderBy(x => x)).ToLowerInvariant();
+                        string flattenedEncodingHeaders = string.Join(", ", encodingValues).ToUpperInvariant();
                         string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
 
                         var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
@@ -137,11 +155,11 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             const int bufferSize = 81920;
                             string contentEncoding = null;
 
-                            using (FileStream fs = fileInfo.OpenRead())
+                            using (var fs = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
                             {
                                 using (var ms = new MemoryStream())
                                 {
-                                    if (encodingValues.Contains("br", StringComparer.OrdinalIgnoreCase) || encodingValues.Contains("brotli", StringComparer.OrdinalIgnoreCase))
+                                    if (flattenedEncodingHeaders.Contains("br", StringComparison.OrdinalIgnoreCase) || flattenedEncodingHeaders.Contains("brotli", StringComparison.OrdinalIgnoreCase))
                                     {
                                         using (var br = new BrotliStream(ms, CompressionMode.Compress))
                                         {
@@ -150,7 +168,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                                         contentEncoding = "br";
                                     }
-                                    else if (encodingValues.Contains("gzip", StringComparer.OrdinalIgnoreCase))
+                                    else if (flattenedEncodingHeaders.Contains("gzip", StringComparison.OrdinalIgnoreCase))
                                     {
                                         using (var gz = new GZipStream(ms, CompressionMode.Compress))
                                         {
@@ -159,7 +177,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                                         contentEncoding = "gzip";
                                     }
-                                    else if (encodingValues.Contains("deflate", StringComparer.OrdinalIgnoreCase))
+                                    else if (flattenedEncodingHeaders.Contains("deflate", StringComparison.OrdinalIgnoreCase))
                                     {
                                         using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
                                         {
@@ -181,7 +199,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                         () => Options.CacheTimeout,
                         slidingExpiration: Options.CacheSlidingExpiration,
                         priority: CacheItemPriority.High,
-                        expirationTokensBuilder: () => Options.WatchFiles ? new[] { new PhysicalFileChangeToken(fileInfo) } : null,
+                        expirationTokensBuilder: () => Options.WatchFiles ? new[] { new PhysicalFileChangeToken(fileInfo.DirectoryName, fileInfo.Name) } : null,
                         cacheEnabledOverride: Options.CacheEnabled);
 
                         if (Log.IsEnabled(LogLevel.Debug))
@@ -231,6 +249,22 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             {
                 throw;
             }
+        }
+
+        private SlimFileInfo GetFileInfo(string physicalPath)
+        {
+            SlimFileInfo LoadSlimFileInfo()
+            {
+                var fileInfo = new FileInfo(physicalPath);
+
+                return fileInfo.Exists
+                    ? new SlimFileInfo(fileInfo)
+                    : null;
+            }
+
+            return Options.WatchFiles
+                ? LoadSlimFileInfo()
+                : _fileInfoDictionary.GetOrAdd(physicalPath.ToUpperInvariant(), key => LoadSlimFileInfo());
         }
     }
 }

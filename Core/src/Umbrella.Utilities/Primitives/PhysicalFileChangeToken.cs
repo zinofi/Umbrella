@@ -16,8 +16,18 @@ namespace Umbrella.Utilities.Primitives
             bool expireOnError = true,
             bool expireOnDeleted = true,
             bool expireOnRenamed = true)
+            : this(fileInfo.DirectoryName, fileInfo.Name, expireOnChanged, expireOnError, expireOnDeleted, expireOnRenamed)
         {
-            var fsw = new FileSystemWatcher(fileInfo.DirectoryName, fileInfo.Name);
+        }
+
+        public PhysicalFileChangeToken(string directoryPath,
+            string fileName,
+            bool expireOnChanged = true,
+            bool expireOnError = true,
+            bool expireOnDeleted = true,
+            bool expireOnRenamed = true)
+        {
+            var fsw = new FileSystemWatcher(directoryPath, fileName);
 
             if (expireOnChanged)
                 fsw.Changed += (sender, args) => HasChanged = true;
