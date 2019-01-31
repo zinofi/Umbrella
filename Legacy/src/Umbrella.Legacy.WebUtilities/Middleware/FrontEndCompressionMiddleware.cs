@@ -232,6 +232,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             {
                                 PathBase = context.Request.PathBase.Value,
                                 Path = context.Request.Path.Value,
+                                UserAgent = context.Request.Headers["User-Agent"],
                                 OriginalOwinEncodingHeaders = encodingValues,
                                 // This is here to see if the Owin headers are not being set correctly when they're copied
                                 // from the AspNet headers collection.
