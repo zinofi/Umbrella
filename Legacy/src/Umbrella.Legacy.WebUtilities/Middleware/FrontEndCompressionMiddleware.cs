@@ -228,13 +228,15 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                         if (Log.IsEnabled(LogLevel.Debug))
                         {
-                            var logData = new {
+                            var logData = new
+                            {
                                 PathBase = context.Request.PathBase.Value,
                                 Path = context.Request.Path.Value,
-                                OwinEncodingHeaders = encodingValues,
+                                OriginalOwinEncodingHeaders = encodingValues,
                                 // This is here to see if the Owin headers are not being set correctly when they're copied
                                 // from the AspNet headers collection.
-                                AspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(Options.AcceptEncodingHeaderKey),
+                                OriginalAspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(Options.AcceptEncodingHeaderKey),
+                                TranformedOwinEncodingHeaders = lstEncodingValue,
                                 CompressionAlgorithmUsed = result.contentEncoding,
                                 CompressedSize = result.bytes.Length
                             };
