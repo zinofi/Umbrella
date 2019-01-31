@@ -431,10 +431,15 @@ namespace Umbrella.Utilities.Caching
 
             if (expirationTokensBuilder != null)
             {
-                foreach (var token in expirationTokensBuilder())
+                IEnumerable<IChangeToken> tokens = expirationTokensBuilder();
+
+                if (tokens != null)
                 {
-                    if(token != null)
-                        options.AddExpirationToken(token);
+                    foreach (var token in tokens)
+                    {
+                        if (token != null)
+                            options.AddExpirationToken(token);
+                    }
                 }
             }
 
