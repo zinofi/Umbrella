@@ -12,6 +12,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Umbrella.Legacy.WebUtilities.Extensions;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities;
@@ -44,6 +45,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             public string Extension { get; }
         }
 
+        private static readonly char[] _headerValueSplitters = new[] { ',' };
         private static readonly string _cackeKeyPrefix = $"{typeof(FrontEndCompressionMiddleware).FullName}";
         private static readonly ConcurrentDictionary<string, SlimFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, SlimFileInfo>();
 
@@ -127,7 +129,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                     string physicalPath = HostingEnvironment.MapPath(path);
 
                     SlimFileInfo fileInfo = GetFileInfo(physicalPath);
-                    
+
                     if (fileInfo != null)
                     {
                         // Check the cache headers
@@ -147,7 +149,29 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             return;
                         }
 
-                        string flattenedEncodingHeaders = string.Join(", ", encodingValues).ToUpperInvariant();
+                        // Parse the headers
+                        var lstEncodingValue = new HashSet<string>();
+
+                        foreach (string value in encodingValues)
+                        {
+                            if (string.IsNullOrWhiteSpace(value))
+                                continue;
+
+                            string[] parts = value.Split(_headerValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (string part in parts)
+                            {
+                                lstEncodingValue.AddNotNullTrimToLowerInvariant(part);
+                            }
+                        }
+
+                        // Allow the consumer to alter the accept-encoding values.
+                        // This is useful for situations where proxies have incorrectly rewritten encoding headers
+                        // and we need to check something like the User-Agent value to override the values,
+                        // e.g. Brotli doesn't work with IE
+                        Options?.AcceptEncodingModifier?.Invoke(context, lstEncodingValue);
+
+                        string flattenedEncodingHeaders = string.Join(", ", lstEncodingValue).ToUpperInvariant();
                         string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
 
                         var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
@@ -159,7 +183,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             {
                                 using (var ms = new MemoryStream())
                                 {
-                                    if (flattenedEncodingHeaders.Contains("br", StringComparison.OrdinalIgnoreCase) || flattenedEncodingHeaders.Contains("brotli", StringComparison.OrdinalIgnoreCase))
+                                    if (lstEncodingValue.Contains("br", StringComparer.OrdinalIgnoreCase) || lstEncodingValue.Contains("brotli", StringComparer.OrdinalIgnoreCase))
                                     {
                                         using (var br = new BrotliStream(ms, CompressionMode.Compress))
                                         {
@@ -168,7 +192,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                                         contentEncoding = "br";
                                     }
-                                    else if (flattenedEncodingHeaders.Contains("gzip", StringComparison.OrdinalIgnoreCase))
+                                    else if (lstEncodingValue.Contains("gzip", StringComparer.OrdinalIgnoreCase))
                                     {
                                         using (var gz = new GZipStream(ms, CompressionMode.Compress))
                                         {
@@ -177,7 +201,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                                         contentEncoding = "gzip";
                                     }
-                                    else if (flattenedEncodingHeaders.Contains("deflate", StringComparison.OrdinalIgnoreCase))
+                                    else if (lstEncodingValue.Contains("deflate", StringComparer.OrdinalIgnoreCase))
                                     {
                                         using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
                                         {
@@ -204,11 +228,13 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                         if (Log.IsEnabled(LogLevel.Debug))
                         {
-                            var logData = new
-                            {
+                            var logData = new {
                                 PathBase = context.Request.PathBase.Value,
                                 Path = context.Request.Path.Value,
-                                EncodingHeaders = encodingValues,
+                                OwinEncodingHeaders = encodingValues,
+                                // This is here to see if the Owin headers are not being set correctly when they're copied
+                                // from the AspNet headers collection.
+                                AspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(Options.AcceptEncodingHeaderKey),
                                 CompressionAlgorithmUsed = result.contentEncoding,
                                 CompressedSize = result.bytes.Length
                             };
@@ -223,9 +249,15 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
                         context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Extension);
 
-                        // TODO: Possible append the new encoding header value here so that if the proxy cache is varying on what it thinks
-                        // is the wrong header then at least we can get somewhere!
-                        context.Response.Headers["Vary"] = "Accept-Encoding";
+                        // Check if the Accept-Encoding key is different from the standard header key, e.g. when moved into a different
+                        // header by a proxy. We need to make sure the proxy varies the response by this new header in cases where it might be
+                        // caching some ouput value (even though in theory it shouldn't be as we have set the Cache-Control to private).
+                        string varyHeader = "Accept-Encoding";
+
+                        if (!Options.AcceptEncodingHeaderKey.Equals(varyHeader, StringComparison.OrdinalIgnoreCase))
+                            varyHeader += ", " + Options.AcceptEncodingHeaderKey;
+
+                        context.Response.Headers["Vary"] = varyHeader;
 
                         context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastWriteTimeUtc);
                         context.Response.ETag = eTagValue;

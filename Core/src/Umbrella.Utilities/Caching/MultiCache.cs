@@ -376,6 +376,10 @@ namespace Umbrella.Utilities.Caching
 
             try
             {
+                // TODO: Find a way of getting information about entries in the DistributedCache.
+                // Will need to create an abstraction to allow for this and have specific implementations, e.g. Redis
+                // Also, create a Remove and RemoveAll method (and async variants) to allow individual keys to be removed.
+                // Need some way of accessing the memory caches on a server farm too.
                 return MemoryCacheMetaEntryDictionary.Select(x => x.Value).ToList();
             }
             catch (Exception exc) when (Log.WriteError(exc))

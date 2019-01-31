@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions
 {
+    /// <summary>
+    /// Extension methods for <see cref="IOwinRequest"/>.
+    /// </summary>
     public static class IOwinRequestExtensions
     {
         public static bool IfModifiedSinceHeaderMatched(this IOwinRequest request, DateTimeOffset valueToMatch)
@@ -31,6 +35,21 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Determines whether the requesting client is IE by checking the User-Agent header to see if it contains
+        /// the strings "MSIE" or "Trident" using ordinal case-insensitive comparison rules.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        public static bool IsInternetExplorer(this IOwinRequest request)
+        {
+            string userAgent = request.Headers["User-Agent"];
+
+            if (string.IsNullOrWhiteSpace(userAgent))
+                return false;
+
+            return userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

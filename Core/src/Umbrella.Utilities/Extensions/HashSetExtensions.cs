@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
+    // TODO: Switch internally to use Span<T> methods.
     public static class HashSetExtensions
     {
         public static bool AddNotNull<T>(this HashSet<T> hashSet, T value)

@@ -22,13 +22,9 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Filters
             var request = filterContext.HttpContext.Request;
             var response = filterContext.HttpContext.Response;
 
-            // The User-Agent header might not always be available (e.g. if the site is being crawled by a rogue bot)
-            // so we need to guard against that.
-            string userAgent = request.Headers.GetValues("User-Agent")?.FirstOrDefault();
-
-            if (!string.IsNullOrWhiteSpace(userAgent) && response.IsSuccessStatusCode())
+            if (response.IsSuccessStatusCode())
             {
-                bool isInternetExplorer = userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase);
+                bool isInternetExplorer = filterContext.HttpContext.Request.IsInternetExplorer();
 
                 if (isInternetExplorer)
                 {
