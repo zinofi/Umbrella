@@ -15,7 +15,7 @@
   
   <PropertyGroup>
     <PackageId>Umbrella.Extensions.Logging.Azure</PackageId>
-    <Version>2.1.0-rc-00022</Version>
+    <Version>2.1.0-rc-00023</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2018</Copyright>
