@@ -179,14 +179,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EE10F9C4-1CC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CCC88454-5AA2-4E12-8834-7BDCDB0711FE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xamarin", "Xamarin", "{61397AAC-B910-4745-9FAA-6B88E3438D39}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AA344FCC-CD73-42BB-B465-1DF57EBB73CB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3A4EA172-0A66-4E92-83A2-95FC5C974FA3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{C6843AFC-6B62-4DC6-925A-E9B1B0D97987}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.SkiaSharp", "DynamicImage\src\Umbrella.DynamicImage.SkiaSharp\Umbrella.DynamicImage.SkiaSharp.csproj", "{61C816A8-2919-47D8-8D07-7B6F8CC1483D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.FreeImage", "DynamicImage\src\Umbrella.DynamicImage.FreeImage\Umbrella.DynamicImage.FreeImage.csproj", "{5AC3FA02-4826-470D-84D4-BC4D681B804C}"
@@ -225,7 +217,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilitie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilities.Benchmark", "Legacy\benchmark\Umbrella.Legacy.WebUtilities.Benchmark\Umbrella.Legacy.WebUtilities.Benchmark.csproj", "{0CF14D74-4F11-4233-A2EF-28965746F36B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Extensions.Logging.ApplicationInsights", "Logging\src\Umbrella.Extensions.Logging.ApplicationInsights\Umbrella.Extensions.Logging.ApplicationInsights.csproj", "{0CAE734E-FDB2-4960-A321-F34388C1E661}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.ApplicationInsights", "Logging\src\Umbrella.Extensions.Logging.ApplicationInsights\Umbrella.Extensions.Logging.ApplicationInsights.csproj", "{0CAE734E-FDB2-4960-A321-F34388C1E661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -667,9 +659,6 @@ Global
 		{6BC18CB7-B85E-4B98-8399-B77326D0168F} = {639382A5-6471-47A5-B762-36FDBA9EFC88}
 		{EE10F9C4-1CCF-4BD5-86E2-BEB0008804F6} = {639382A5-6471-47A5-B762-36FDBA9EFC88}
 		{CCC88454-5AA2-4E12-8834-7BDCDB0711FE} = {639382A5-6471-47A5-B762-36FDBA9EFC88}
-		{AA344FCC-CD73-42BB-B465-1DF57EBB73CB} = {61397AAC-B910-4745-9FAA-6B88E3438D39}
-		{3A4EA172-0A66-4E92-83A2-95FC5C974FA3} = {61397AAC-B910-4745-9FAA-6B88E3438D39}
-		{C6843AFC-6B62-4DC6-925A-E9B1B0D97987} = {61397AAC-B910-4745-9FAA-6B88E3438D39}
 		{61C816A8-2919-47D8-8D07-7B6F8CC1483D} = {495839BF-FFB6-4499-A175-05B00E9AEBE8}
 		{5AC3FA02-4826-470D-84D4-BC4D681B804C} = {495839BF-FFB6-4499-A175-05B00E9AEBE8}
 		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6} = {97D84008-D9A9-4A0C-B51C-144F3ABEEF11}
