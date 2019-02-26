@@ -56,7 +56,11 @@ namespace Umbrella.Utilities.Test
             => Assert.Throws<ArgumentException>(() => Guard.ArgumentNotNullOrEmpty("", "test"));
 
         [Fact]
-        public void ArgumentNotNullOrEmpty_Valid()
+        public void ArgumentNotNullOrEmpty_WhiteSpace_Valid()
+            => Guard.ArgumentNotNullOrEmpty(" ", "test");
+
+        [Fact]
+        public void ArgumentNotNullOrEmpty_String_Valid()
             => Guard.ArgumentNotNullOrEmpty("test", "test");
 
         [Fact]
@@ -106,5 +110,22 @@ namespace Umbrella.Utilities.Test
         [Fact]
         public void ArgumentOfTypeExact_Fails_B_To_A()
             => Assert.Throws<ArgumentOutOfRangeException>(() => Guard.ArgumentOfTypeExact<B>(new A(), "test"));
+
+        // TODO: Need to complete the below tests by adding more for invalid states
+        [Fact]
+        public void ArgumentLengthInRange_Valid()
+            => Guard.ArgumentLengthInRange("teststring", "test");
+
+        [Fact]
+        public void ArgumentLengthInRange_MinLength_Valid()
+            => Guard.ArgumentLengthInRange("teststring", "test", 3);
+
+        [Fact]
+        public void ArgumentLengthInRange_MaxLength_Valid()
+            => Guard.ArgumentLengthInRange("teststring", "test", maxLength: 10);
+
+        [Fact]
+        public void ArgumentLengthInRange_MinLength_MaxLength_Valid()
+            => Guard.ArgumentLengthInRange("teststring", "test", 2, 10);
     }
 }

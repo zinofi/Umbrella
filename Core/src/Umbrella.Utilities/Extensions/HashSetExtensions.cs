@@ -21,6 +21,6 @@ namespace Umbrella.Utilities.Extensions
             => AddNotNull(hashSet, value?.Trim());
 
         public static bool AddNotNullTrimToLowerInvariant(this HashSet<string> hashSet, string value)
-            => AddNotNull(hashSet, value?.Trim()?.ToLowerInvariant());
+            => AddNotNull(hashSet, value?.TrimToLowerInvariant());
     }
 }

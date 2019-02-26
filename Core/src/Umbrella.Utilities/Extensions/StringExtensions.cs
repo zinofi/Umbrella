@@ -1,10 +1,10 @@
-﻿using Umbrella.Utilities.StringMetric;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq.Expressions;
+using System.Globalization;
 
 namespace Umbrella.Utilities.Extensions
 {
@@ -49,16 +49,6 @@ namespace Umbrella.Utilities.Extensions
                 return allowNull;
 
             return value.Length >= minLength && value.Length <= maxLength;
-        }
-
-        public static int GetEditDistance(this string first, string second, StringMetricAlgorithmType algorithm)
-        {
-            switch (algorithm)
-            {
-                default:
-                case StringMetricAlgorithmType.DamerauLevenshtein:
-                    return StringMetricAlgorithms.GetEditDistanceDamerauLevenshtein(first, second);
-            }
         }
 
         public static string StripHtml(this string value)
@@ -283,5 +273,20 @@ namespace Umbrella.Utilities.Extensions
 
             return defaultValue;
         }
+
+        public static string TrimToLower(this string value, CultureInfo culture = null)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+
+            ReadOnlySpan<char> span = value.AsSpan().Trim();
+            Span<char> lowerSpan = stackalloc char[span.Length];
+            span.ToLowerSlim(lowerSpan, culture);
+
+            return lowerSpan.ToString();
+        }
+
+        public static string TrimToLowerInvariant(this string value)
+            => TrimToLower(value, CultureInfo.InvariantCulture);
     }
 }

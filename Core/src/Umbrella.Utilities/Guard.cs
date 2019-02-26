@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities
 {
-    // TODO: Look at possible making the methods that accept objects be generic instead to avoid accidently boxing something.
-    // Or just add a generic overload and then allow the caller to figure it out and hope they don't do stupid stuff!
     /// <summary>
     /// A static helper class that includes various parameter checking routines.
     /// </summary>
@@ -41,8 +39,8 @@ namespace Umbrella.Utilities
             if (argumentValue == null)
                 throw new ArgumentNullException($"{argumentName} cannot be null.");
 
-            if (string.IsNullOrWhiteSpace(argumentValue))
-                throw new ArgumentException($"{argumentName} cannot be empty, or only whitespace.");
+            if (string.IsNullOrEmpty(argumentValue))
+                throw new ArgumentException($"{argumentName} cannot be empty.");
         }
 
         /// <summary>
@@ -61,42 +59,6 @@ namespace Umbrella.Utilities
             if (string.IsNullOrWhiteSpace(argumentValue))
                 throw new ArgumentException($"{argumentName} cannot be empty, or only whitespace.");
         }
-
-        //TODO: Add a new ArgumentNotNullOrEmpty that accepts a string to avoid it being implicitly coverted to IEnumerable<char> and causing an allocation.
-
-        ///// <summary>
-        ///// Throws an exception if the tested <see cref="IList{T}"/> argument is null or empty.
-        ///// </summary>
-        ///// <exception cref="ArgumentNullException">The <see cref="IList{T}"/> is null.</exception>
-        ///// <exception cref="ArgumentException">The <see cref="IList{T}"/> is empty.</exception>
-        ///// <param name="argumentValue">The argument value to test.</param>
-        ///// <param name="argumentName">The name of the argument to test.</param>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public static void ArgumentNotNullOrEmpty<T>(IList<T> argumentValue, string argumentName)
-        //{
-        //    if (argumentValue == null)
-        //        throw new ArgumentNullException($"{argumentName} cannot be null.");
-
-        //    if (argumentValue.Count == 0)
-        //        throw new ArgumentException($"{argumentName} cannot be empty.");
-        //}
-
-        ///// <summary>
-        ///// Throws an exception if the tested <see cref="ICollection{T}"/> argument is null or empty.
-        ///// </summary>
-        ///// <exception cref="ArgumentNullException">The <see cref="ICollection{T}"/> is null.</exception>
-        ///// <exception cref="ArgumentException">The <see cref="ICollection{T}"/> is empty.</exception>
-        ///// <param name="argumentValue">The argument value to test.</param>
-        ///// <param name="argumentName">The name of the argument to test.</param>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public static void ArgumentNotNullOrEmpty<T>(ICollection<T> argumentValue, string argumentName)
-        //{
-        //    if (argumentValue == null)
-        //        throw new ArgumentNullException($"{argumentName} cannot be null.");
-
-        //    if (argumentValue.Count == 0)
-        //        throw new ArgumentException($"{argumentName} cannot be empty.");
-        //}
 
         /// <summary>
         /// Throws an exception if the tested <see cref="IEnumerable{T}"/> argument is null or empty.
@@ -151,6 +113,63 @@ namespace Umbrella.Utilities
 
             if (argumentValue.GetType() != typeof(T))
                 throw new ArgumentOutOfRangeException($"{argumentName} is not exactly of type {nameof(T)}: {typeof(T).FullName}. {customMessage}");
+        }
+
+        /// <summary>
+        /// Checks if a string is between a minimum and maximum length.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="argumentName">Name of the argument.</param>
+        /// <param name="minLength">The optional minimum length.</param>
+        /// <param name="maxLength">The optional maximum length.</param>
+        /// <exception cref="ArgumentNullException">The argument is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// The string must have a minimum length of {minLength}
+        /// or
+        /// The string must have a maximum length of {maxLength}
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ArgumentLengthInRange(string argumentValue, string argumentName, int? minLength = null, int? maxLength = null)
+        {
+            ArgumentNotNull(argumentValue, argumentName);
+
+            if (minLength.HasValue && argumentValue.Length < minLength)
+                throw new ArgumentOutOfRangeException(argumentName, $"The string must have a minimum length of {minLength}");
+
+            if (maxLength.HasValue && argumentValue.Length > maxLength)
+                throw new ArgumentOutOfRangeException(argumentName, $"The string must have a maximum length of {maxLength}");
+        }
+
+        /// <summary>
+        /// Checks if a value is within a specified range.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="argumentName">Name of the argument.</param>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
+        /// <param name="allowNull">if set to <c>true</c> [allow null].</param>
+        /// <exception cref="ArgumentNullException">The argument value provided cannot be null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// The value must be greater than or equal to {min}
+        /// or
+        /// The value must be less than or equal to {max}
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ArgumentInRange<T>(T? argumentValue, string argumentName, T? min = null, T? max = null, bool allowNull = true)
+            where T : struct, IComparable<T>
+        {
+            if (!argumentValue.HasValue && !allowNull)
+                throw new ArgumentNullException(argumentName, "The argument value provided cannot be null.");
+
+            if(argumentValue.HasValue)
+            {
+                if (min.HasValue && argumentValue.Value.CompareTo(min.Value) < 0)
+                    throw new ArgumentOutOfRangeException(argumentName, $"The value must be greater than or equal to {min}.");
+
+                if (max.HasValue && argumentValue.Value.CompareTo(max.Value) > 0)
+                    throw new ArgumentOutOfRangeException(argumentName, $"The value must be less than or equal to {max}.");
+            }
         }
     }
 }
