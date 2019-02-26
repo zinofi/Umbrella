@@ -156,7 +156,7 @@ namespace Umbrella.Utilities
         /// The value must be less than or equal to {max}
         /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ArgumentInRange<T>(T? argumentValue, string argumentName, T? min = null, T? max = null, bool allowNull = true)
+        public static void ArgumentInRange<T>(T? argumentValue, string argumentName, T? min = null, T? max = null, bool allowNull = false)
             where T : struct, IComparable<T>
         {
             if (!argumentValue.HasValue && !allowNull)
