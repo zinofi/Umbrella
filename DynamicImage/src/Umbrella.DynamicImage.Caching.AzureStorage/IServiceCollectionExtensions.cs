@@ -7,6 +7,9 @@ using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    // TODO: Alter all service registration methods that accept an options instance to
+    // use the Action<TOptions> builder pattern everywhere to make it all consistent.
+    // There are quite a few inconsistencies. Save until v3 though as will be a breaking change.
     public static class IServiceCollectionExtensions
     {
         /// <summary>

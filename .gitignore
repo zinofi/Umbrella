@@ -17,3 +17,4 @@ BenchmarkDotNet.Artifacts
 /git-mv-with-history.sh
 /DynamicImage/test/Umbrella.DynamicImage.Impl.Test/Output
 *.coverage
+/packages

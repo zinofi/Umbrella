@@ -2,6 +2,6 @@
 {
     public interface IMimeTypeUtility
     {
-        string GetMimeType(string extension);
+        string GetMimeType(string fileNameOrExtension);
     }
 }

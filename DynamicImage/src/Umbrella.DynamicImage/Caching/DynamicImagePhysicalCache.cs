@@ -11,6 +11,7 @@ using Umbrella.Utilities.Mime;
 
 namespace Umbrella.DynamicImage.Caching
 {
+    // TODO: Add a generic type here to ensure that the correct underlying file provider is always used correctly by the sub type.
     public abstract class DynamicImagePhysicalCache : DynamicImageCache, IDynamicImageCache
     {
         #region Public Properties

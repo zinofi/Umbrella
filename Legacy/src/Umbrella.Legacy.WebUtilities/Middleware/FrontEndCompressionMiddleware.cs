@@ -1,5 +1,6 @@
 ﻿using Brotli;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using System;
@@ -9,7 +10,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,34 +20,15 @@ using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Mime;
-using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Http;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
     public class FrontEndCompressionMiddleware : OwinMiddleware
     {
-        private class SlimFileInfo
-        {
-            public SlimFileInfo(FileInfo fileInfo)
-            {
-                LastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
-                DirectoryName = fileInfo.DirectoryName;
-                Name = fileInfo.Name;
-                Length = fileInfo.Length;
-                Extension = fileInfo.Extension;
-            }
-
-            public DateTime LastWriteTimeUtc { get; }
-            public string DirectoryName { get; }
-            public string Name { get; }
-            public long Length { get; }
-            public string Extension { get; }
-        }
-
         private static readonly char[] _headerValueSplitters = new[] { ',' };
         private static readonly string _cackeKeyPrefix = $"{typeof(FrontEndCompressionMiddleware).FullName}";
-        private static readonly ConcurrentDictionary<string, SlimFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, SlimFileInfo>();
+        private static readonly ConcurrentDictionary<string, IFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo>();
 
         protected ILogger Log { get; }
         protected IMultiCache Cache { get; }
@@ -55,6 +36,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
         protected IHttpHeaderValueUtility HttpHeaderValueUtility { get; }
         protected IMimeTypeUtility MimeTypeUtility { get; }
         protected FrontEndCompressionMiddlewareOptions Options { get; }
+
+        // Exposed as internal for unit testing / benchmarking mocks
+        protected internal IFileProvider FileProvider { get; internal set; }
 
         public FrontEndCompressionMiddleware(
             OwinMiddleware next,
@@ -72,13 +56,16 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             HttpHeaderValueUtility = httpHeaderValueUtility;
             MimeTypeUtility = mimeTypeUtility;
             Options = options;
-
+            
             // Validate the options
             Guard.ArgumentNotNullOrEmpty(options.FrontEndRootFolderAppRelativePaths, nameof(options.FrontEndRootFolderAppRelativePaths));
             Guard.ArgumentNotNullOrEmpty(options.TargetFileExtensions, nameof(options.TargetFileExtensions));
             Guard.ArgumentNotNullOrWhiteSpace(options.AcceptEncodingHeaderKey, nameof(options.AcceptEncodingHeaderKey));
 
             options.AcceptEncodingHeaderKey = options.AcceptEncodingHeaderKey.Trim().ToLowerInvariant();
+
+            // File Provider
+            FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/"));
 
             // Clean paths
             var lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -126,21 +113,19 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                     var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
                     CancellationToken token = cts.Token;
 
-                    string physicalPath = HostingEnvironment.MapPath(path);
-
-                    SlimFileInfo fileInfo = GetFileInfo(physicalPath);
+                    IFileInfo fileInfo = GetFileInfo(path);
 
                     if (fileInfo != null)
                     {
                         // Check the cache headers
-                        if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastWriteTimeUtc))
+                        if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified))
                         {
                             cts.Cancel();
                             await context.Response.SendStatusCode(HttpStatusCode.NotModified);
                             return;
                         }
 
-                        string eTagValue = HttpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastWriteTimeUtc, fileInfo.Length);
+                        string eTagValue = HttpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified, fileInfo.Length);
 
                         if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
                         {
@@ -179,7 +164,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             const int bufferSize = 81920;
                             string contentEncoding = null;
 
-                            using (var fs = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
+                            using (var fs = fileInfo.CreateReadStream())
                             {
                                 using (var ms = new MemoryStream())
                                 {
@@ -223,9 +208,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                         () => Options.CacheTimeout,
                         slidingExpiration: Options.CacheSlidingExpiration,
                         priority: CacheItemPriority.High,
-                        expirationTokensBuilder: () => Options.WatchFiles ? new[] { new PhysicalFileChangeToken(fileInfo.DirectoryName, fileInfo.Name) } : null,
+                        expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
                         cacheEnabledOverride: Options.CacheEnabled);
-
+                        
                         if (Log.IsEnabled(LogLevel.Debug))
                         {
                             var logData = new
@@ -250,7 +235,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                         if (!string.IsNullOrEmpty(result.contentEncoding))
                             context.Response.Headers["Content-Encoding"] = result.contentEncoding;
 
-                        context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Extension);
+                        context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Name);
 
                         // Check if the Accept-Encoding key is different from the standard header key, e.g. when moved into a different
                         // header by a proxy. We need to make sure the proxy varies the response by this new header in cases where it might be
@@ -261,8 +246,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                             varyHeader += ", " + Options.AcceptEncodingHeaderKey;
 
                         context.Response.Headers["Vary"] = varyHeader;
-
-                        context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastWriteTimeUtc);
+                        
+                        context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
                         context.Response.ETag = eTagValue;
                         context.Response.Expires = DateTimeOffset.UtcNow.AddYears(1);
                         context.Response.Headers["Cache-Control"] = "private, max-age=31557600, must-revalidate";
@@ -286,20 +271,18 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
             }
         }
 
-        private SlimFileInfo GetFileInfo(string physicalPath)
+        private IFileInfo GetFileInfo(string path)
         {
-            SlimFileInfo LoadSlimFileInfo()
+            IFileInfo LoadFileInfo()
             {
-                var fileInfo = new FileInfo(physicalPath);
+                var fileInfo = FileProvider.GetFileInfo(path);
 
-                return fileInfo.Exists
-                    ? new SlimFileInfo(fileInfo)
-                    : null;
+                return fileInfo.Exists ? fileInfo : null;
             }
 
             return Options.WatchFiles
-                ? LoadSlimFileInfo()
-                : _fileInfoDictionary.GetOrAdd(physicalPath.ToUpperInvariant(), key => LoadSlimFileInfo());
+                ? LoadFileInfo()
+                : _fileInfoDictionary.GetOrAdd(path.ToUpperInvariant(), key => LoadFileInfo());
         }
     }
 }

@@ -14,6 +14,10 @@ using Umbrella.Utilities.Mime;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
+    // TODO: Design - Create a generic overload of this class that allows the options type to be specified.
+    // That way a consuming application could extend this provider if required with custom options
+    // so that multiple file providers could be added to the same application concurrently and registered with DI
+    // without conflicting with each other.
     public class UmbrellaAzureBlobStorageFileProvider : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider
     {
         #region Private Static Members
