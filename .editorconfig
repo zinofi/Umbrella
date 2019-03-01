@@ -6,7 +6,7 @@
 #Core editorconfig formatting - indentation
 
 #use soft tabs (spaces) for indentation
-indent_style = space
+indent_style = tab
 
 #Formatting - indentation options
 
@@ -24,12 +24,13 @@ csharp_new_line_before_else = true
 #require finally statements to be on a new line after the closing brace
 csharp_new_line_before_finally = true
 #require braces to be on a new line for types, accessors, lambdas, methods, control_blocks, object_collection, and properties (also known as "Allman" style)
-csharp_new_line_before_open_brace = types, accessors, lambdas, methods, control_blocks, object_collection, properties
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_members_in_object_initializers = true
 
 #Formatting - organize using options
 
 #do not place System.* using directives before other using directives
-dotnet_sort_system_directives_first = false
+dotnet_sort_system_directives_first = true
 
 #Formatting - spacing options
 

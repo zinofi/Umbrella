@@ -14,6 +14,7 @@ using Umbrella.Utilities.Caching;
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting
 {
     [ClrJob]
+    [MemoryDiagnoser]
     public class UmbrellaWebHostingEnvironmentBenchmark
     {
         private readonly UmbrellaWebHostingEnvironment _umbrellaWebHostingEnvironment;

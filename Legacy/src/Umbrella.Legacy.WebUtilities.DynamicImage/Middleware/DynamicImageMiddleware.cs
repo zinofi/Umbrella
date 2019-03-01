@@ -117,7 +117,12 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
                     AppendResponseHeaders(context.Response, image);
 
                     await image.WriteContentToStreamAsync(context.Response.Body, token);
-                    return;
+
+					// Ensure the response stream is flushed async immediately here. If not, there could be content
+					// still buffered which will not be sent out until the stream is disposed at which point
+					// the IO will happen synchronously!
+					await context.Response.Body.FlushAsync(token);
+					return;
                 }
                 else
                 {
