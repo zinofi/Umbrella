@@ -18,7 +18,7 @@
     <Version>2.1.1</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2018</Copyright>
+    <Copyright>Zinofi Digital Ltd 2019</Copyright>
     <Description>
       This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
     </Description>

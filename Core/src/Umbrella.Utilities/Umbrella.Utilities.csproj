@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
@@ -14,16 +14,14 @@
     <Optimize>true</Optimize>
     <DefineConstants>AzureDevOps</DefineConstants>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <PackageId>Umbrella.Utilities</PackageId>
     <Version>2.1.1</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2018</Copyright>
-    <Description>
-      This package contains a range of utility classes to aid application development.
-    </Description>
+    <Copyright>Zinofi Digital Ltd 2019</Copyright>
+    <Description>This package contains a range of utility classes to aid application development.</Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>

@@ -18,7 +18,7 @@
     <Version>2.1.1</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2018</Copyright>
+    <Copyright>Zinofi Digital Ltd 2019</Copyright>
     <Description>This package is a placeholder for a future EF Core port of the Umbrella.DataAccess.EF6 package.</Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>

@@ -14,6 +14,13 @@ foreach ($file in $configFiles)
 		$affectedFiles.Add($file.Name)
 		$content -replace ("<Version>" + $previousBuild + "</Version>"), ("<Version>" + $currentBuild + "</Version>") | Set-Content $file.PSPath
 	}
+
+	# Ensure Copyright year is correct
+	if($content -like "*<Copyright>Zinofi Digital Ltd 2018</Copyright>*")
+	{
+		$affectedFiles.Add($file.Name)
+		$content -replace ("<Copyright>Zinofi Digital Ltd 2018</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2019</Copyright>") | Set-Content $file.PSPath
+	}
 }
 
 Write-Output ""

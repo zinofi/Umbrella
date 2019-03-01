@@ -18,7 +18,7 @@
     <Version>2.1.1</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2018</Copyright>
+    <Copyright>Zinofi Digital Ltd 2019</Copyright>
     <Description>
       This package builds on the Umbrella.DataAccess.EF6 repositories concept to allow for multi-tenanted application data access logic.
     </Description>

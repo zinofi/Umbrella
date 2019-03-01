@@ -18,7 +18,7 @@
     <Version>2.1.1</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2018</Copyright>
+    <Copyright>Zinofi Digital Ltd 2019</Copyright>
     <Description>
       This package contains implementations of the Umbrella.FileSystem.Abstractions types using Azure Blob Storage as the storage mechanism.
     </Description>
