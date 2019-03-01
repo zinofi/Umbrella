@@ -38,6 +38,7 @@ namespace Umbrella.Utilities.Encryption
         {
             try
             {
+				// TODO: Replace these checks with new Guard statements. Move outside try...catch.
                 if (length < 1)
                     throw new ArgumentOutOfRangeException(nameof(length), "Must be greater than or equal to 1.");
 
@@ -60,6 +61,8 @@ namespace Umbrella.Utilities.Encryption
 
                 int lowerCaseLettersLength = length - numbers - upperCaseLetters;
 
+				// TODO: Make the RNG provider a class member, implement IDisposable to clean it up, use RandomNumberGenerator class instead.
+				// Call RandomNumberGenerator.Create()
                 // We are building up a string here starting with lowercase letters, followed by uppercase and finally numbers.
                 using (RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider())
                 {
@@ -191,6 +194,7 @@ namespace Umbrella.Utilities.Encryption
             uint scale = uint.MaxValue;
             while (scale == uint.MaxValue)
             {
+				// TODO: Could use ArrayPool here.
                 // Get four random bytes.
                 byte[] four_bytes = new byte[4];
                 provider.GetBytes(four_bytes);
