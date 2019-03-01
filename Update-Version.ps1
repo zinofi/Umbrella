@@ -2,17 +2,17 @@
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
 # Manually alter the build number before pushing to NuGet feeds
-$previousBuild = "2.1.0-rc-00025"
-$currentBuild =  "2.1.0"
+$previousBuild = "2.1.0"
+$currentBuild =  "2.1.1"
 
 foreach ($file in $configFiles)
 {
 	$content = Get-Content $file.PSPath
 
-	if($content -like "*" + $previousBuild + "*")
+	if($content -like "*<Version>" + $previousBuild + "</Version>*")
 	{
 		$affectedFiles.Add($file.Name)
-		$content -replace $previousBuild, $currentBuild | Set-Content $file.PSPath
+		$content -replace ("<Version>" + $previousBuild + "</Version>"), ("<Version>" + $currentBuild + "</Version>") | Set-Content $file.PSPath
 	}
 }
 
