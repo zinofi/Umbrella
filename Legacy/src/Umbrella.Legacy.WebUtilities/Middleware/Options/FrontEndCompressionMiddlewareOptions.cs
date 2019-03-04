@@ -17,6 +17,5 @@ namespace Umbrella.Legacy.WebUtilities.Middleware.Options
         public bool WatchFiles { get; set; }
         public string AcceptEncodingHeaderKey { get; set; } = "Accept-Encoding";
         public Action<IOwinContext, HashSet<string>> AcceptEncodingModifier { get; set; }
-		public bool FlushAsync { get; set; } = true;
 	}
 }

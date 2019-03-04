@@ -66,7 +66,6 @@ namespace Umbrella.AspNet.Samples.Dependency
             {
                 options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
                 options.WatchFiles = true;
-				options.FlushAsync = false;
             });
         }
     }
