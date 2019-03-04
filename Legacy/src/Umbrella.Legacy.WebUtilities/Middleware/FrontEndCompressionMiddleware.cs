@@ -255,7 +255,10 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// Ensure the response stream is flushed async immediately here. If not, there could be content
 						// still buffered which will not be sent out until the stream is disposed at which point
 						// the IO will happen synchronously!
-						await context.Response.Body.FlushAsync(token);
+						// Allowing this to be controlled using the options because Google Lighthouse scores are negatively
+						// affected when this is enabled.
+						if (Options.FlushAsync)
+							await context.Response.Body.FlushAsync(token);
 
 						return;
                     }

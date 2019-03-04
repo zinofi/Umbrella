@@ -43,11 +43,11 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
         {
             Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-            try
-            {
-                if (!fromContentRoot)
-                    throw new ArgumentException("This value must always be true in a classic .NET application. It can only be set to false inside a .NET Core application.", nameof(fromContentRoot));
+			if (!fromContentRoot)
+				throw new ArgumentException("This value must always be true in a classic .NET application. It can only be set to false inside a .NET Core application.", nameof(fromContentRoot));
 
+			try
+            {
                 string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(new string[] { virtualPath, fromContentRoot.ToString() });
 
                 return Cache.GetOrCreate(key, entry =>
@@ -99,7 +99,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
                     {
                         string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
 
-                        FileInfo fileInfo = new FileInfo(physicalPath);
+                        var fileInfo = new FileInfo(physicalPath);
 
                         if (!fileInfo.Exists)
                             throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");

@@ -38,6 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IBundleUtility, BundleUtility>();
+            services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
 
             services.AddSingleton<CleanupIDisposableMiddleware>();
             services.AddSingleton<DebugRequestMiddleware>();
@@ -48,6 +49,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Default Options - These can be replaced by calls to the Configure* methods below.
             services.AddSingleton(new FrontEndCompressionMiddlewareOptions());
             services.AddSingleton(new BundleUtilityOptions());
+            services.AddSingleton(new WebpackBundleUtilityOptions());
 
             return services;
         }
@@ -57,5 +59,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection ConfigureBundleUtilityOptions(this IServiceCollection services, Action<IServiceProvider, BundleUtilityOptions> optionsBuilder)
             => services.ConfigureUmbrellaOptions(optionsBuilder);
-    }
+
+		public static IServiceCollection ConfigureWebpackBundleUtilityOptions(this IServiceCollection services, Action<IServiceProvider, WebpackBundleUtilityOptions> optionsBuilder)
+			=> services.ConfigureUmbrellaOptions(optionsBuilder);
+	}
 }

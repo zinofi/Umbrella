@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     @Bundles.GetStyleSheet("~/content/css/main")
+    @WebpackBundles.GetStyleSheet("main")
     @Bundles.GetScript("~/content/js/main")
+    @WebpackBundles.GetScript("main")
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">

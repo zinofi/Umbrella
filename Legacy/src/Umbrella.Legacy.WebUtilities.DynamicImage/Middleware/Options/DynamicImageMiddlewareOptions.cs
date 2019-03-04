@@ -11,5 +11,6 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options
         public string CacheControlHeaderValue { get; set; } = "no-cache";
         public string DynamicImagePathPrefix { get; set; } = "dynamicimage";
         public IUmbrellaFileProvider SourceFileProvider { get; set; }
-    }
+		public bool FlushAsync { get; set; } = true;
+	}
 }

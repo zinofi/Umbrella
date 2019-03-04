@@ -194,6 +194,8 @@
   <ItemGroup>
     <Content Include="Content\css\main.css" />
     <Content Include="Content\js\main.js" />
+    <Content Include="Content\dist\main.843532e72889e8f500c9.css" />
+    <Content Include="Content\dist\main.bbc8a3bc84bd5531b9c7.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -213,6 +215,7 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\dist\manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -121,7 +121,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 					// Ensure the response stream is flushed async immediately here. If not, there could be content
 					// still buffered which will not be sent out until the stream is disposed at which point
 					// the IO will happen synchronously!
-					await context.Response.Body.FlushAsync(token);
+					if(m_MiddlewareOptions.FlushAsync)
+						await context.Response.Body.FlushAsync(token);
+
 					return;
                 }
                 else

@@ -57,10 +57,16 @@ namespace Umbrella.AspNet.Samples.Dependency
                 options.DefaultBundleFolderAppRelativePath = "/content";
                 options.WatchFiles = true;
             });
-            services.ConfigureFrontEndCompressionMiddlewareOptions((serviceProvider, options) =>
+			services.ConfigureWebpackBundleUtilityOptions((serviceProvider, options) =>
+			{
+				options.DefaultBundleFolderAppRelativePath = "/content/dist";
+				options.WatchFiles = true;
+			});
+			services.ConfigureFrontEndCompressionMiddlewareOptions((serviceProvider, options) =>
             {
                 options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
                 options.WatchFiles = true;
+				options.FlushAsync = false;
             });
         }
     }
