@@ -10,6 +10,8 @@ using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Hosting
 {
+	// TODO: Removed the usage of the FileInfo class and switch to using the IFileProvider mechanism.
+	// Expose as a protected internal property to allow for unit testing.
     public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
     {
         #region Protected Properties
