@@ -10,11 +10,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using Umbrella.AspNet.Samples;
 using Umbrella.AspNet.Samples.Dependency;
 using Umbrella.Legacy.WebUtilities.Middleware;
+using Umbrella.Utilities.Encryption.Abstractions;
+using Umbrella.WebUtilities.Security;
 
 [assembly: OwinStartup(typeof(Startup))]
 
@@ -40,6 +43,17 @@ namespace Umbrella.AspNet.Samples
             app.UseAutofacLifetimeScopeInjector(container);
 
             app.UseMiddlewareFromContainer<FrontEndCompressionMiddleware>();
+
+			app.Use((context, next) =>
+			{
+				string nonce = container.Resolve<INonceGenerator>().Generate(SecurityConstants.DefaultNonceBytes);
+
+				context.Set(SecurityConstants.DefaultNonceKey, nonce);
+				// HttpContext.Current.Items[SecurityConstants.DefaultNonceKey] = nonce;
+				// HttpContext.Current.Request.RequestContext.HttpContext.Items[SecurityConstants.DefaultNonceKey] = nonce;
+
+				return next();
+			});
             
             app.UseStageMarker(PipelineStage.MapHandler);
         }

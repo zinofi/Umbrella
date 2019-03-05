@@ -9,10 +9,10 @@ namespace Umbrella.Utilities.Exceptions
 {
 	/// <summary>
 	/// Represents a generic exception thrown from a class in one of the Umbrella libraries. This class serves as the base exception
-	/// for more specific Umbrella exceptions.
+	/// for more specific Umbrella exceptions thrown from other Umbrella libraries.
 	/// </summary>
 	/// <seealso cref="Exception" />
-	public abstract class UmbrellaException : Exception
+	public class UmbrellaException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UmbrellaException"/> class.

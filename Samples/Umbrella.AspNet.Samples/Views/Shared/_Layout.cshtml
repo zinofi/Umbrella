@@ -9,7 +9,7 @@
     @Bundles.GetScript("~/content/js/main")
     @WebpackBundles.GetScript("main")
 </head>
-<body>
+<body data-nonce="@Html.GetCurrentRequestNonce()">
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">

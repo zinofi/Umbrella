@@ -140,28 +140,52 @@ namespace Umbrella.Utilities
                 throw new ArgumentOutOfRangeException(argumentName, $"The string must have a maximum length of {maxLength}");
         }
 
-        /// <summary>
-        /// Checks if a value is within a specified range.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="argumentName">Name of the argument.</param>
-        /// <param name="min">The minimum.</param>
-        /// <param name="max">The maximum.</param>
-        /// <param name="allowNull">if set to <c>true</c> [allow null].</param>
-        /// <exception cref="ArgumentNullException">The argument value provided cannot be null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The value must be greater than or equal to {min}
-        /// or
-        /// The value must be less than or equal to {max}
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		/// <summary>
+		/// Checks if a value is within a specified range.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="argumentName">Name of the argument.</param>
+		/// <param name="min">The minimum.</param>
+		/// <param name="max">The maximum.</param>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The value must be greater than or equal to {min}
+		/// or
+		/// The value must be less than or equal to {max}
+		/// </exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void ArgumentInRange<T>(T argumentValue, string argumentName, T? min = null, T? max = null)
+			where T : struct, IComparable<T>
+		{
+				if (min.HasValue && argumentValue.CompareTo(min.Value) < 0)
+					throw new ArgumentOutOfRangeException(argumentName, $"The value must be greater than or equal to {min}.");
+
+				if (max.HasValue && argumentValue.CompareTo(max.Value) > 0)
+					throw new ArgumentOutOfRangeException(argumentName, $"The value must be less than or equal to {max}.");
+		}
+
+		/// <summary>
+		/// Checks if a value is within a specified range.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="argumentName">Name of the argument.</param>
+		/// <param name="min">The minimum.</param>
+		/// <param name="max">The maximum.</param>
+		/// <param name="allowNull">if set to <c>true</c> [allow null].</param>
+		/// <exception cref="ArgumentNullException">The argument value provided cannot be null.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The value must be greater than or equal to {min}
+		/// or
+		/// The value must be less than or equal to {max}
+		/// </exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ArgumentInRange<T>(T? argumentValue, string argumentName, T? min = null, T? max = null, bool allowNull = false)
             where T : struct, IComparable<T>
         {
             if (!argumentValue.HasValue && !allowNull)
                 throw new ArgumentNullException(argumentName, "The argument value provided cannot be null.");
-
+			
             if(argumentValue.HasValue)
             {
                 if (min.HasValue && argumentValue.Value.CompareTo(min.Value) < 0)

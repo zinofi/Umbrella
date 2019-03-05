@@ -33,6 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ICertificateUtility, CertificateUtility>();
             services.AddSingleton<ISecureStringGenerator, SecureStringGenerator>();
             services.AddSingleton<IMultiCache, MultiCache>();
+            services.AddSingleton<INonceGenerator, NonceGenerator>();
 
             // Default Options - These can be replaced by calls to the Configure* methods below.
             services.AddSingleton(serviceProvider =>
