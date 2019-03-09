@@ -12,6 +12,7 @@ using Umbrella.Utilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
+	// TODO: Consider removing all the Robots stuff from the libraries. It's so trivial to setup in a consuming app!
     /// <summary>
     /// Owin Middleware to handle requests for robots.txt and send the correct response depending on the configuration in web.config.
     /// </summary>
