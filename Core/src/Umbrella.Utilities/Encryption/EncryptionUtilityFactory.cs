@@ -7,6 +7,9 @@ using Umbrella.Utilities.Encryption.Abstractions;
 
 namespace Umbrella.Utilities.Encryption
 {
+	// TODO: What was this used for?? Can't remember using it in a project. Must have done somewhere though!
+	// Consider deleting this and using DI to configure stuff.
+	[Obsolete]
     public class EncryptionUtilityFactory : IEncryptionUtilityFactory
     {
         #region Private Members

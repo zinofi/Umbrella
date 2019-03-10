@@ -27,7 +27,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
         public override Task Invoke(IOwinContext context)
         {
-            try
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
+
+			try
             {
                 if(Log.IsEnabled(LogLevel.Debug))
                 {

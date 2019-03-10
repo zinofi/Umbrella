@@ -13,11 +13,12 @@ using Umbrella.Utilities.Hosting;
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
 	// TODO: Consider removing all the Robots stuff from the libraries. It's so trivial to setup in a consuming app!
-    /// <summary>
-    /// Owin Middleware to handle requests for robots.txt and send the correct response depending on the configuration in web.config.
-    /// </summary>
-    /// <seealso cref="Microsoft.Owin.OwinMiddleware" />
-    public class RobotsMiddleware : OwinMiddleware
+	/// <summary>
+	/// Owin Middleware to handle requests for robots.txt and send the correct response depending on the configuration in web.config.
+	/// </summary>
+	/// <seealso cref="Microsoft.Owin.OwinMiddleware" />
+	[Obsolete]
+	public class RobotsMiddleware : OwinMiddleware
     {
         private static readonly string _cacheKeyPrefix = $"{typeof(RobotsMiddleware).FullName}:Robots";
         private const string c_RobotsNoIndex = "User-agent: *\r\nDisallow: /";
@@ -40,7 +41,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
         public override async Task Invoke(IOwinContext context)
         {
-            try
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
+
+			try
             {
                 if (!context.Request.Path.Value.Equals("/robots.txt", StringComparison.OrdinalIgnoreCase))
                 {
@@ -86,7 +89,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
                     return;
                 }
 
-                await context.Response.WriteAsync(c_RobotsNoIndex);
+                await context.Response.WriteAsync(c_RobotsNoIndex, context.Request.CallCancelled);
+				await context.Response.Body.FlushAsync(context.Request.CallCancelled);
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {

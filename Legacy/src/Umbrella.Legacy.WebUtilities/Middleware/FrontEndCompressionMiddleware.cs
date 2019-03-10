@@ -67,6 +67,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			// File Provider
 			FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/"));
 
+			// TODO: Do this cleanup work inside the Options class itself. See the UmbrellaFileProviderMiddlewareOptions.
 			// Clean paths
 			var lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -102,6 +103,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 		public override async Task Invoke(IOwinContext context)
 		{
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
+
 			try
 			{
 				string path = context.Request.Path.Value.Trim();
@@ -230,7 +233,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							Log.WriteDebug(logData);
 						}
 
-						await context.Response.Body.WriteAsync(result.bytes, 0, result.bytes.Length);
+						await context.Response.Body.WriteAsync(result.bytes, 0, result.bytes.Length, token);
 
 						if (!string.IsNullOrEmpty(result.contentEncoding))
 							context.Response.Headers["Content-Encoding"] = result.contentEncoding;

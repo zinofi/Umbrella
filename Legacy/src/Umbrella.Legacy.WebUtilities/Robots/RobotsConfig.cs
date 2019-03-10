@@ -7,7 +7,8 @@ using Umbrella.Legacy.Utilities.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.Robots
 {
-    public class RobotsConfig
+	[Obsolete]
+	public class RobotsConfig
     {
         private readonly Configuration m_Configuration;
 

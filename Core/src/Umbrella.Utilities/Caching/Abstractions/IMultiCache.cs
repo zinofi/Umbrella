@@ -21,5 +21,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
         T Set<T>(string cacheKey, T value, TimeSpan expirationTimeSpan, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null);
         Task<T> SetAsync<T>(string cacheKey, T value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null);
         IReadOnlyCollection<MultiCacheMetaEntry> GetAllMemoryCacheMetaEntries();
+		Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default);
+		void ClearMemoryCache();
     }
 }

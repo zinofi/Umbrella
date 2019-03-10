@@ -14,6 +14,21 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<DynamicImageMiddleware>();
 			services.ConfigureUmbrellaOptions(optionsBuilder);
 
+			services.AddSingleton(ctx =>
+			{
+				var options = new DynamicImageMiddlewareOptions();
+				optionsBuilder(ctx, options);
+
+				// TODO: V3 Need to alter the constructor of the Middleware to accept just the options instance instead of an action.
+				// This is a breaking change though so wait until the v3 release.
+				return new Action<DynamicImageMiddlewareOptions>(opts =>
+				{
+					opts.CacheControlHeaderValue = options.CacheControlHeaderValue;
+					opts.DynamicImagePathPrefix = options.DynamicImagePathPrefix;
+					opts.SourceFileProvider = options.SourceFileProvider;
+				});
+			});
+
 			return services;
 		}
 	}

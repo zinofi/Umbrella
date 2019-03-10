@@ -6,6 +6,7 @@ using Umbrella.FileSystem.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options
 {
+	// TODO: Consider moving to the common WebUtilities project
     public class DynamicImageMiddlewareOptions
     {
         public string CacheControlHeaderValue { get; set; } = "no-cache";

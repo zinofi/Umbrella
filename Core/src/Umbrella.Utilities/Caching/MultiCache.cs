@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
+using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Caching
 {
@@ -25,9 +26,12 @@ namespace Umbrella.Utilities.Caching
     /// The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked.
     /// </summary>
     /// <seealso cref="IMultiCache" />
-    public class MultiCache : IMultiCache
+    public class MultiCache : IMultiCache, IDisposable
     {
-        protected ILogger Log { get; }
+		private readonly ReaderWriterLockSlim _nukeReaderWriterLock = new ReaderWriterLockSlim();
+		private CancellationTokenSource _nukeTokenSource = new CancellationTokenSource();
+
+		protected ILogger Log { get; }
         protected MultiCacheOptions Options { get; }
         protected bool TrackKeys { get; }
         protected bool TrackKeysAndHits { get; }
@@ -129,7 +133,7 @@ namespace Umbrella.Utilities.Caching
                         }
                     }
                 }
-
+				
                 return actionFunction();
             }
             catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
@@ -355,7 +359,7 @@ namespace Umbrella.Utilities.Caching
                         options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
 
                     MemoryCache.Set(cacheKeyInternal, value, options);
-
+					
                     if (TrackKeys)
                         MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new MultiCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
                 }
@@ -382,11 +386,51 @@ namespace Umbrella.Utilities.Caching
                 // Need some way of accessing the memory caches on a server farm too.
                 return MemoryCacheMetaEntryDictionary.Select(x => x.Value).ToList();
             }
-            catch (Exception exc) when (Log.WriteError(exc))
+            catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
             {
                 throw new MultiCacheException("There has been a problem reading the memory cache keys.", exc);
             }
         }
+
+		public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
+
+			try
+			{
+				string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
+
+				MemoryCache.Remove(cacheKeyInternal);
+				await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey }, returnValue: true))
+			{
+				throw new MultiCacheException("There has been a problem removing the item with the key: " + cacheKey, exc);
+			}
+		}
+
+		public void ClearMemoryCache()
+		{
+			_nukeReaderWriterLock.EnterWriteLock();
+
+			try
+			{
+				_nukeTokenSource.Cancel();
+				_nukeTokenSource.Dispose();
+
+				// Reset things to that all future items added to the MemoryCache use a new CancellationToken.
+				_nukeTokenSource = new CancellationTokenSource();
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new MultiCacheException("There was a problem clearing all items from the memory cache.", exc);
+			}
+			finally
+			{
+				_nukeReaderWriterLock.ExitWriteLock();
+			}
+		}
 
         protected virtual string CreateCacheKey<T>(string key)
             => Options.CacheKeyBuilder?.Invoke(typeof(T), key)?.ToUpperInvariant() ?? key.ToUpperInvariant();
@@ -447,7 +491,25 @@ namespace Umbrella.Utilities.Caching
                 }
             }
 
+			_nukeReaderWriterLock.EnterReadLock();
+
+			try
+			{
+				options.AddExpirationToken(new CancellationChangeToken(_nukeTokenSource.Token));
+			}
+			finally
+			{
+				_nukeReaderWriterLock.ExitReadLock();
+			}
+
             return options;
         }
-    }
+
+		#region IDisposable Members
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public void Dispose() => _nukeTokenSource.Dispose();
+		#endregion
+	}
 }

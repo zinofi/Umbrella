@@ -6,7 +6,8 @@ using System.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.Robots
 {
-    public class RobotElementCollection : ConfigurationElementCollection
+	[Obsolete]
+	public class RobotElementCollection : ConfigurationElementCollection
     {
         #region Overridden Properties
         public override ConfigurationElementCollectionType CollectionType

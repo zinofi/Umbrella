@@ -6,7 +6,8 @@ using System.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.Robots
 {
-    public class RobotElement : ConfigurationElement
+	[Obsolete]
+	public class RobotElement : ConfigurationElement
     {
         #region Public Properties
         [ConfigurationProperty("hostName", IsRequired = true, IsKey = true)]

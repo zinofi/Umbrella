@@ -7,7 +7,8 @@ using System.Configuration;
 
 namespace Umbrella.Legacy.WebUtilities.Robots
 {
-    public class RobotMappingsSection : ConfigurationSection
+	[Obsolete]
+	public class RobotMappingsSection : ConfigurationSection
     {
         #region Public Properties
         [ConfigurationProperty("robots")]

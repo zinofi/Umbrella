@@ -28,7 +28,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 		public override async Task Invoke(IOwinContext context)
 		{
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
 			await Next.Invoke(context);
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
 
 			try
 			{

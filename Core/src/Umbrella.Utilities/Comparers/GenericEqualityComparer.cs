@@ -5,13 +5,23 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Comparers
 {
-    /// <summary>
-    /// A generic comparer to allow for determining equality between 2 object instances
-    /// of the same type.
-    /// </summary>
-    /// <typeparam name="TObject">The type of the object instances to compare.</typeparam>
-    /// <typeparam name="TProperty">The type of the property used for comparison.</typeparam>
-    public class GenericEqualityComparer<TObject, TProperty> : EqualityComparer<TObject>
+	public class GenericEqualityComparer<TObject> : GenericEqualityComparer<TObject, TObject>
+	{
+		public GenericEqualityComparer(
+			Func<TObject, TObject> propertySelector,
+			Func<TObject, TObject, bool> customComparer = null)
+			: base(propertySelector, customComparer)
+		{
+		}
+	}
+
+	/// <summary>
+	/// A generic comparer to allow for determining equality between 2 object instances
+	/// of the same type.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object instances to compare.</typeparam>
+	/// <typeparam name="TProperty">The type of the property used for comparison.</typeparam>
+	public class GenericEqualityComparer<TObject, TProperty> : EqualityComparer<TObject>
     {
         private readonly Func<TObject, TProperty> m_PropertySelector;
         private readonly Func<TObject, TObject, bool> m_CustomComparer;

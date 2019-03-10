@@ -191,6 +191,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNet.Samples", "Samples\Umbrella.AspNet.Samples\Umbrella.AspNet.Samples.csproj", "{BABCE2CE-43CC-4BAF-BFAA-B17A11033ACE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Legacy.WebUtilities.FileSystem", "Legacy\src\Umbrella.Legacy.WebUtilities.FileSystem\Umbrella.Legacy.WebUtilities.FileSystem.csproj", "{2E033F87-5595-4F68-889A-348B6F5B2482}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -540,6 +542,12 @@ Global
 		{BABCE2CE-43CC-4BAF-BFAA-B17A11033ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BABCE2CE-43CC-4BAF-BFAA-B17A11033ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BABCE2CE-43CC-4BAF-BFAA-B17A11033ACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E033F87-5595-4F68-889A-348B6F5B2482}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E033F87-5595-4F68-889A-348B6F5B2482}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{2E033F87-5595-4F68-889A-348B6F5B2482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E033F87-5595-4F68-889A-348B6F5B2482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E033F87-5595-4F68-889A-348B6F5B2482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E033F87-5595-4F68-889A-348B6F5B2482}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -626,6 +634,7 @@ Global
 		{0CF14D74-4F11-4233-A2EF-28965746F36B} = {631C6BA4-0152-44A1-9530-ABFBABB564DB}
 		{0CAE734E-FDB2-4960-A321-F34388C1E661} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 		{BABCE2CE-43CC-4BAF-BFAA-B17A11033ACE} = {2606B945-AF74-4E4B-A665-BF5DBA99C332}
+		{2E033F87-5595-4F68-889A-348B6F5B2482} = {B1144C83-C2B3-40FB-8F68-22A3228E7725}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

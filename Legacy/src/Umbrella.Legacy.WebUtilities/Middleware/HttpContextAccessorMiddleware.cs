@@ -27,20 +27,27 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
         public override async Task Invoke(IOwinContext context)
         {
-            try
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
+
+			try
             {
                 // Assign the context at the start of the request.
                 HttpContextAccessor.HttpContext = HttpContext.Current;
 
                 await Next.Invoke(context);
+				context.Request.CallCancelled.ThrowIfCancellationRequested();
 
-                // Clear the context at the end of the request.
-                HttpContextAccessor.HttpContext = null;
+				// Clear the context at the end of the request.
+				HttpContextAccessor.HttpContext = null;
             }
             catch (Exception exc) when (Log.WriteError(exc))
             {
                 throw;
             }
+			finally
+			{
+				// TODO: Should the clearing be done here.
+			}
         }
     }
 }

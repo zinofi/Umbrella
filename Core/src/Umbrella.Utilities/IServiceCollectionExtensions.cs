@@ -69,5 +69,15 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+
+		// TODO: Really need have an encryption utility options class with properties for key and iv and register with DI
+		// It's a breaking change though so leave until v3.
+		//public static IServiceCollection AddUmbrellaEncryptionUtility<T>(this IServiceCollection services, string encryptionKey, string iv)
+		//	where T : class, IEncryptionUtility
+		//{
+		//	services.AddSingleton<IEncryptionUtility, T>
+
+		//	return services;
+		//}
     }
 }

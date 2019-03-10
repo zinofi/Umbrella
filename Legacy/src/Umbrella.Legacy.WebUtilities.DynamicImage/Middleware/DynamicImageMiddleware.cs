@@ -36,6 +36,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 		private DynamicImageConfigurationOptions ConfigurationOptions => m_ConfigurationOptions.Value;
 		#endregion
 
+		// TODO: V3 - Change the optionsBuilder to options.
 		#region Constructors
 		public DynamicImageMiddleware(OwinMiddleware next,
 			ILogger<DynamicImageMiddleware> logger,
@@ -66,7 +67,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 		#region Overridden Methods
 		public override async Task Invoke(IOwinContext context)
 		{
-			CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
+			context.Request.CallCancelled.ThrowIfCancellationRequested();
+
+			var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 			CancellationToken token = cts.Token;
 
 			try

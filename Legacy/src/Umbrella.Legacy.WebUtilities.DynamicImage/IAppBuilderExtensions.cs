@@ -12,6 +12,7 @@ using Umbrella.WebUtilities.Http;
 
 namespace Owin
 {
+	// TODO: V3 - Remove this.
     public static class IAppBuilderExtensions
     {
         public static IAppBuilder UseUmbrellaDynamicImage(this IAppBuilder builder,
