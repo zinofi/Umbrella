@@ -194,37 +194,23 @@ namespace Umbrella.Utilities.Extensions
             return cleanedValue;
         }
 
-        private static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
-            => ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, false);
+        public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true, CultureInfo cultureInfo = null)
+            => ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, cultureInfo ?? CultureInfo.CurrentCulture);
 
-        private static string ToSnakeCaseInvariant(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
-        => ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, true);
+		public static string ToSnakeCaseInvariant(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
+        => ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, CultureInfo.InvariantCulture);
 
-        private static string ToSnakeCaseInternal(string value, bool lowerCase, bool removeWhiteSpace, bool useInvariantCulture)
+        private static string ToSnakeCaseInternal(string value, bool lowerCase, bool removeWhiteSpace, CultureInfo cultureInfo)
         {
-            Func<string, string> stringLower = null;
-            Func<char, char> charLower = null;
-
-            if (useInvariantCulture)
-            {
-                stringLower = x => x.ToLowerInvariant();
-                charLower = char.ToLowerInvariant;
-            }
-            else
-            {
-                stringLower = x => x.ToLower();
-                charLower = char.ToLower;
-            }
-
             if (string.IsNullOrWhiteSpace(value))
                 return value;
 
             if (value.Length == 1)
-                return lowerCase ? stringLower(value) : value;
+                return lowerCase ? value.ToLower(cultureInfo) : value;
 
-            List<char> buffer = new List<char>(value.Length)
+            var buffer = new List<char>(value.Length)
             {
-                lowerCase ? charLower(value[0]) : value[0]
+                lowerCase ? char.ToLower(value[0], cultureInfo) : value[0]
             };
 
             for (int i = 1; i < value.Length; i++)
@@ -237,15 +223,17 @@ namespace Umbrella.Utilities.Extensions
                 if (char.IsUpper(value[i]))
                 {
                     if (lowerCase)
-                        current = charLower(current);
+                        current = char.ToLower(current, cultureInfo);
 
                     buffer.Add('_');
                 }
 
                 buffer.Add(current);
             }
-
-            //TODO: Can this be made more efficient somehow by avoiding the intermediate array??
+			
+            // TODO: We can make this more efficient by resizing the buffer and returning it instead of creating a new copy.
+			// Will require the list to be an array to start with though instead of a List<char>
+			// Could also do it as a stack operation using Span<T>
             return new string(buffer.ToArray());
         }
 
