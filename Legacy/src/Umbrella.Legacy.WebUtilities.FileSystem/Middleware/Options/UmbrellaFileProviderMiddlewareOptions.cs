@@ -5,7 +5,7 @@ using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.Exceptions;
-using Umbrella.Utilities.Comparers;
+using System.ComponentModel;
 
 namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options
 {
@@ -28,6 +28,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options
 
 		public List<UmbrellaFileProviderMiddlewareMapping> Mappings { get; set; }
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IUmbrellaFileProvider GetFileProvider(string searchPath)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(searchPath, nameof(searchPath));

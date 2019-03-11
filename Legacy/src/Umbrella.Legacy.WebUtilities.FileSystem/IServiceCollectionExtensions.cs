@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 using Umbrella.Legacy.WebUtilities.FileSystem.Middleware;
 using Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options;
 using Umbrella.Utilities;
 
-namespace Umbrella.Legacy.WebUtilities.FileSystem
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
