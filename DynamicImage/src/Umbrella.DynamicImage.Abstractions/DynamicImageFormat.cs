@@ -19,7 +19,8 @@ namespace Umbrella.DynamicImage.Abstractions
         Bmp = 0,
         Gif = 1,
         Jpeg = 2,
-        Png = 3
+        Png = 3,
+		WebP = 4
     }
 
     public static class DynamicImageFormatExtensions
@@ -31,7 +32,7 @@ namespace Umbrella.DynamicImage.Abstractions
                 case DynamicImageFormat.Jpeg:
                     return "jpg";
                 default:
-                    return value.ToString().ToLower();
+                    return value.ToString().ToLowerInvariant();
             }
         }
     }

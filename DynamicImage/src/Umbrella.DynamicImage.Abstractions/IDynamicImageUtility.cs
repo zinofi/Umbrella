@@ -8,7 +8,7 @@ namespace Umbrella.DynamicImage.Abstractions
     public interface IDynamicImageUtility
     {
         DynamicImageFormat ParseImageFormat(string format);
-        (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl);
+        (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl, DynamicImageFormat? overrideFormat = null);
         bool ImageOptionsValid(DynamicImageOptions imageOptions, DynamicImageConfigurationOptions configOptions);
         string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options);
     }

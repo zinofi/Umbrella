@@ -74,7 +74,18 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 			try
 			{
-				var (status, imageOptions) = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, context.Request.Path.Value);
+				string path = context.Request.Path.Value;
+
+				DynamicImageFormat? overrideFormat = null;
+
+				if(m_MiddlewareOptions.EnableJpgPngWebPOverride
+					&& (path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+					&& context.Request.AcceptsWebP())
+				{
+					overrideFormat = DynamicImageFormat.WebP;
+				}
+
+				var (status, imageOptions) = m_DynamicImageUtility.TryParseUrl(m_MiddlewareOptions.DynamicImagePathPrefix, path, overrideFormat);
 
 				if (status == DynamicImageParseUrlResult.Skip)
 				{
@@ -88,7 +99,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 					await context.Response.SendStatusCode(HttpStatusCode.NotFound);
 					return;
 				}
-
+				
 				DynamicImageItem image = await m_DynamicImageResizer.GenerateImageAsync(m_MiddlewareOptions.SourceFileProvider, imageOptions, token);
 
 				if (image == null)
@@ -147,7 +158,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 		#region Private Methods
 		private void AppendResponseHeaders(IOwinResponse response, DynamicImageItem image)
 		{
-			response.ContentType = "image/" + image.ImageOptions.Format.ToString().ToLower();
+			response.ContentType = "image/" + image.ImageOptions.Format.ToString().ToLowerInvariant();
 			response.Headers["Last-Modified"] = m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
 			response.ETag = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
 
@@ -157,8 +168,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 		private static DynamicImageConfigurationOptions LoadConfigurationOptions()
 		{
-			DynamicImageMappingsConfig mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
-			DynamicImageConfigurationOptions options = (DynamicImageConfigurationOptions)mappingsConfig;
+			var mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
+			var options = (DynamicImageConfigurationOptions)mappingsConfig;
 
 			return options;
 		}

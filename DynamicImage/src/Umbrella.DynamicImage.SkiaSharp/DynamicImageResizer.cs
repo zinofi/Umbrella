@@ -18,7 +18,8 @@ namespace Umbrella.DynamicImage.SkiaSharp
     public class DynamicImageResizer : DynamicImageResizerBase
     {
         #region Constructors
-        public DynamicImageResizer(ILogger<DynamicImageResizer> logger,
+        public DynamicImageResizer(
+			ILogger<DynamicImageResizer> logger,
             IDynamicImageCache dynamicImageCache)
             : base(logger, dynamicImageCache)
         {
@@ -28,10 +29,10 @@ namespace Umbrella.DynamicImage.SkiaSharp
         #region Overridden Methods
         public override bool IsImage(byte[] bytes)
         {
-            try
-            {
-                Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+			Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
 
+			try
+            {
                 using (var image = LoadBitmap(bytes))
                 {
                     return image != null;
@@ -43,12 +44,13 @@ namespace Umbrella.DynamicImage.SkiaSharp
             }
         }
 
+		// TODO: V3 Design - Add a new parameter to allow the quality values to be controlled.
         public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
         {
-            try
-            {
-                Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
+			Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
 
+			try
+            {
                 using (var image = LoadBitmap(originalImage))
                 {
                     SKBitmap imageToResize = image;
@@ -65,7 +67,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
                             image.ExtractSubset(imageToResize, cropRect);
                         }
 
-                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKBitmapResizeMethod.Lanczos3))
+                        using (var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKFilterQuality.High))
                         {
                             using (var outputImage = SKImage.FromBitmap(resizedImage))
                             {
@@ -126,6 +128,8 @@ namespace Umbrella.DynamicImage.SkiaSharp
                     return SKEncodedImageFormat.Jpeg;
                 case DynamicImageFormat.Png:
                     return SKEncodedImageFormat.Png;
+				case DynamicImageFormat.WebP:
+					return SKEncodedImageFormat.Webp;
                 default:
                     return default;
             }

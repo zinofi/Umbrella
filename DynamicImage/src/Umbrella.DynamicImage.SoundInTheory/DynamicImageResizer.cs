@@ -101,7 +101,9 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 case UDynamicImageFormat.Jpeg:
                     return SDynamicImageFormat.Jpeg;
                 case UDynamicImageFormat.Png:
-                    return SDynamicImageFormat.Png;
+					return SDynamicImageFormat.Png;
+				case UDynamicImageFormat.WebP:
+					throw new NotSupportedException("WebP is not supported.");
                 default:
                     return default;
             }
@@ -127,6 +129,8 @@ namespace Umbrella.DynamicImage.SoundInTheory
                 case UDynamicImageFormat.Png:
                     encoder = new PngBitmapEncoder();
                     break;
+				case UDynamicImageFormat.WebP:
+					throw new NotSupportedException("WebP is not supported.");
             }
 
             encoder.Frames.Add(frame);

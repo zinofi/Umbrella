@@ -8,48 +8,52 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions
 {
-    /// <summary>
-    /// Extension methods for <see cref="IOwinRequest"/>.
-    /// </summary>
-    public static class IOwinRequestExtensions
-    {
-        public static bool IfModifiedSinceHeaderMatched(this IOwinRequest request, DateTimeOffset valueToMatch)
-        {
-            string ifModifiedSince = request.Headers["If-Modified-Since"];
-            if (!string.IsNullOrWhiteSpace(ifModifiedSince))
-            {
-                DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
+	/// <summary>
+	/// Extension methods for <see cref="IOwinRequest"/>.
+	/// </summary>
+	public static class IOwinRequestExtensions
+	{
+		public static bool IfModifiedSinceHeaderMatched(this IOwinRequest request, DateTimeOffset valueToMatch)
+		{
+			string ifModifiedSince = request.Headers["If-Modified-Since"];
+			if (!string.IsNullOrWhiteSpace(ifModifiedSince))
+			{
+				DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
 
-                return lastModified == valueToMatch;
-            }
+				return lastModified == valueToMatch;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        public static bool IfNoneMatchHeaderMatched(this IOwinRequest request, string valueToMatch)
-        {
-            string ifNoneMatch = request.Headers["If-None-Match"];
-            if (!string.IsNullOrWhiteSpace(ifNoneMatch))
-            {
-                return string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0;
-            }
+		public static bool IfNoneMatchHeaderMatched(this IOwinRequest request, string valueToMatch)
+		{
+			string ifNoneMatch = request.Headers["If-None-Match"];
+			if (!string.IsNullOrWhiteSpace(ifNoneMatch))
+			{
+				return string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        /// <summary>
-        /// Determines whether the requesting client is IE by checking the User-Agent header to see if it contains
-        /// the strings "MSIE" or "Trident" using ordinal case-insensitive comparison rules.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        public static bool IsInternetExplorer(this IOwinRequest request)
-        {
-            string userAgent = request.Headers["User-Agent"];
+		public static bool AcceptsWebP(this IOwinRequest request) => request.Headers.TryGetValue("Accept", out string[] values)
+				? values.Contains("image/webp", StringComparer.OrdinalIgnoreCase)
+				: false;
 
-            if (string.IsNullOrWhiteSpace(userAgent))
-                return false;
+		/// <summary>
+		/// Determines whether the requesting client is IE by checking the User-Agent header to see if it contains
+		/// the strings "MSIE" or "Trident" using ordinal case-insensitive comparison rules.
+		/// </summary>
+		/// <param name="request">The request.</param>
+		public static bool IsInternetExplorer(this IOwinRequest request)
+		{
+			string userAgent = request.Headers["User-Agent"];
 
-            return userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase);
-        }
-    }
+			if (string.IsNullOrWhiteSpace(userAgent))
+				return false;
+
+			return userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase);
+		}
+	}
 }

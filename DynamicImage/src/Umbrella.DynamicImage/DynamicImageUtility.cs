@@ -38,6 +38,8 @@ namespace Umbrella.DynamicImage
         #region Public Methods
         public virtual DynamicImageFormat ParseImageFormat(string format)
         {
+			Guard.ArgumentNotNullOrWhiteSpace(format, nameof(format));
+
             switch (format?.TrimStart('.').Trim()?.ToLowerInvariant())
             {
                 case "png":
@@ -48,18 +50,20 @@ namespace Umbrella.DynamicImage
                     return DynamicImageFormat.Jpeg;
                 case "gif":
                     return DynamicImageFormat.Gif;
+				case "webp":
+					return DynamicImageFormat.WebP;
                 default:
                     return default;
             }
         }
 
-        public virtual (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl)
+        public virtual (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl, DynamicImageFormat? overrideFormat = null)
         {
-            try
-            {
-                Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
-                Guard.ArgumentNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
+			Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
+			Guard.ArgumentNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
 
+			try
+            {
                 string pathPrefix = dynamicImagePathPrefix.ToLowerInvariant();
                 string url = relativeUrl?.Trim()?.ToLowerInvariant();
 
@@ -114,12 +118,12 @@ namespace Umbrella.DynamicImage
                     }
                 }
 
-                DynamicImageOptions imageOptions = new DynamicImageOptions
+                var imageOptions = new DynamicImageOptions
                 {
                     Width = width,
                     Height = height,
                     ResizeMode = mode,
-                    Format = ParseImageFormat(targetExtension),
+                    Format = overrideFormat ?? ParseImageFormat(targetExtension),
                     SourcePath = sourcePath
                 };
 
@@ -146,10 +150,10 @@ namespace Umbrella.DynamicImage
 
         public virtual string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options)
         {
-            try
-            {
-                Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
+			Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
 
+			try
+            {
                 string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
 
                 string path = options.SourcePath.Replace("~/", "");

@@ -105,6 +105,8 @@ namespace Umbrella.DynamicImage.FreeImage
                     return FREE_IMAGE_FORMAT.FIF_JPEG;
                 case DynamicImageFormat.Png:
                     return FREE_IMAGE_FORMAT.FIF_PNG;
+				case DynamicImageFormat.WebP:
+					throw new NotSupportedException("WebP is not supported.");
                 default:
                     return default;
             }
@@ -122,7 +124,10 @@ namespace Umbrella.DynamicImage.FreeImage
                     return default;
                 case DynamicImageFormat.Png:
                     return FREE_IMAGE_SAVE_FLAGS.PNG_Z_BEST_COMPRESSION;
-            }
+				case DynamicImageFormat.WebP:
+					throw new NotSupportedException("WebP is not supported.");
+
+			}
         }
         #endregion
     }
