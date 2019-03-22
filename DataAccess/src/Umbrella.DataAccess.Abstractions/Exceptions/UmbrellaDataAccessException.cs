@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Exceptions
 {
-	public class DataAccessException : Exception
+	public class UmbrellaDataAccessException : Exception
 	{
-		public DataAccessException()
+		public UmbrellaDataAccessException()
 		{
 		}
 
-		public DataAccessException(string message)
+		public UmbrellaDataAccessException(string message)
 			: base(message)
 		{
 		}
 
-		public DataAccessException(string message, Exception innerException)
+		public UmbrellaDataAccessException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
 
-		protected DataAccessException(SerializationInfo info, StreamingContext context)
+		protected UmbrellaDataAccessException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

@@ -11,7 +11,14 @@ namespace Umbrella.DataAccess.Abstractions
     /// </summary>
     public class RepoOptions
     {
-        public virtual bool SanitizeEntity { get; set; } = true;
+		public RepoOptions(bool sanitizeEntity = true, bool validateEntity = true, bool processChildren = false)
+		{
+			SanitizeEntity = sanitizeEntity;
+			ValidateEntity = validateEntity;
+			ProcessChildren = processChildren;
+		}
+
+		public virtual bool SanitizeEntity { get; set; } = true;
         public virtual bool ValidateEntity { get; set; } = true;
 
 		// TODO: V3 This currently isn't used by the EF6 repos. Look at doing something with it.

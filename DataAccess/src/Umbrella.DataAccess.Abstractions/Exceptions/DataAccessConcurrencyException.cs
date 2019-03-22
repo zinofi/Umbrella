@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Exceptions
 {
-	public class DataAccessConcurrencyException : DataAccessException
+	// TODO: V3 - Prefix name with Umbrella
+	public class DataAccessConcurrencyException : UmbrellaDataAccessException
 	{
 		public DataAccessConcurrencyException()
 		{
