@@ -30,6 +30,7 @@ namespace Umbrella.Utilities.Extensions
                 .Select(x => x.Select(v => v.Value));
 		}
 
+		// TODO: V3 - Move to the Sorting namespace
         public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
         {
             Guard.ArgumentNotNull(source, nameof(source));

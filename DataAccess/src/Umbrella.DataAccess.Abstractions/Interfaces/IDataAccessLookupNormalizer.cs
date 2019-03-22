@@ -2,6 +2,6 @@
 {
     public interface IDataAccessLookupNormalizer
     {
-        string Normalize(string value);
+        string Normalize(string value, bool trim = true);
     }
 }

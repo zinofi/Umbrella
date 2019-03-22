@@ -40,12 +40,11 @@ namespace Umbrella.DataAccess.Abstractions
         {
             object lstObject = GetMetaDataObjectEntry<object>(key);
 
-            if (lstObject is List<T>)
-                return lstObject as List<T>;
+			if (lstObject is List<T> list)
+				return list;
 
-            // TODO: Need to abstract this away somehow. Can't even remember what this does :(
-            if (lstObject is JArray)
-                return ((JArray)lstObject).Select(x => x.Value<T>()).ToList();
+            if (lstObject is JArray jArray)
+                return jArray.Select(x => x.Value<T>()).ToList();
 
             return null;
         }

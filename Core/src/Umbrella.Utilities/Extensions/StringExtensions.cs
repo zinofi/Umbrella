@@ -276,5 +276,46 @@ namespace Umbrella.Utilities.Extensions
 
         public static string TrimToLowerInvariant(this string value)
             => TrimToLower(value, CultureInfo.InvariantCulture);
-    }
+
+		/// <summary>
+		/// Attempts to convert the name of a person into some kind of normalized format
+		/// where the name is not presently in a reasonable format, e.g. riCHARd would be better transformed
+		/// into Richard. This method only deals with the simplest of cases currently.
+		/// </summary>
+		/// <param name="name">The name.</param>
+		/// <returns>The normalized name</returns>
+		public static string ToPersonNameCase(this string name)
+		{
+			if (string.IsNullOrWhiteSpace(name))
+			{
+				return name;
+			}
+
+			Span<char> span = stackalloc char[name.Length];
+
+			for (int i = 0; i < name.Length; i++)
+			{
+				char currentChar = name[i];
+
+				// First letter should always be uppercase
+				if (i == 0)
+				{
+					span[i] = char.ToUpper(currentChar);
+					continue;
+				}
+
+				span[i] = char.ToLower(currentChar);
+
+				if (currentChar == '-' && i < name.Length - 1)
+				{
+					// Ensure the next letter is in uppercase as we are most likely dealing with a double barrelled name
+					span[i + 1] = char.ToUpper(name[i + 1]);
+					i++;
+					continue;
+				}
+			}
+
+			return span.ToString();
+		}
+	}
 }

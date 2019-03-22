@@ -7,6 +7,7 @@ using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.Utilities.Extensions
 {
+	// TODO: V3 - Move to Sorting namespace.
 	/// <summary>
 	/// Extension methods for the <see cref="SortDirection"/> enum.
 	/// </summary>

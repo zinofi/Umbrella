@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Interfaces
 {
+	// TODO: V3 - Remove all sync methods. Shouldn't be writing sync code anymore. Will massively simplify things!
     public interface IReadOnlyGenericRepository<TEntity> : IReadOnlyGenericRepository<TEntity, int>
         where TEntity : class, IEntity<int>
     {

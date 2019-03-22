@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Interfaces
 {
+	// TODO: V3 - Rename to ICurrentUserIdAccessor
     public interface IUserAuditDataFactory : IUserAuditDataFactory<int>
     {
     }
