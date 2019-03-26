@@ -54,6 +54,6 @@ namespace Umbrella.Utilities.Sorting
 		}
 
 		public static IEnumerable<SortExpressionSerializable> ToSortExpressionSerializables<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
-			=> sortExpressions.Cast<SortExpressionSerializable>();
+			=> sortExpressions.Select(x => (SortExpressionSerializable)x);
 	}
 }

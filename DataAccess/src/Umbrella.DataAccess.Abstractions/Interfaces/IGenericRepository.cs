@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace Umbrella.DataAccess.Abstractions.Interfaces
 {
+	// TODO: V3 Rename these to be more reflective of their use with databases, e.g. EF, or Maybe put Db in the names somewhere?
     public interface IGenericRepository<TEntity> : IGenericRepository<TEntity, int>
         where TEntity : class, IEntity<int>
     {

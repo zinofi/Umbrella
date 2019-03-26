@@ -13,11 +13,10 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using Umbrella.Utilities;
 using Umbrella.DataAccess.Abstractions;
-using System.Collections.Concurrent;
 
 namespace Umbrella.DataAccess.EF6
 {
-    public abstract class GenericRepository<TEntity, TDbContext> : GenericRepository<TEntity, TDbContext, RepoOptions>
+	public abstract class GenericRepository<TEntity, TDbContext> : GenericRepository<TEntity, TDbContext, RepoOptions>
         where TEntity : class, IEntity<int>
         where TDbContext : UmbrellaDbContext
     {

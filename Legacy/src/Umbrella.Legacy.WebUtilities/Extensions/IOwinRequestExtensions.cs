@@ -38,7 +38,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 		}
 
 		public static bool AcceptsWebP(this IOwinRequest request) => request.Headers.TryGetValue("Accept", out string[] values)
-				? values.Contains("image/webp", StringComparer.OrdinalIgnoreCase)
+				? values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/webp", StringComparison.OrdinalIgnoreCase))
 				: false;
 
 		/// <summary>

@@ -11,6 +11,10 @@ namespace Umbrella.DataAccess.Abstractions
     /// </summary>
     public class RepoOptions
     {
+		public RepoOptions()
+		{
+		}
+
 		public RepoOptions(bool sanitizeEntity = true, bool validateEntity = true, bool processChildren = false)
 		{
 			SanitizeEntity = sanitizeEntity;
