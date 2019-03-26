@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Exceptions
 {
+	// TODO: V3 - Change validation behaviour to not throw exceptions. Use the SaveResult class so that validation errors can be aggregated
+	// and returned to the user instead of 1 at a time using exceptions.
 	// TODO: V3 - Prefix name with Umbrella
 	public class DataAccessValidationException : UmbrellaDataAccessException
 	{

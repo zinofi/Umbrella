@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions
 {
+	// TODO: V3 - Consider moving into an EF base package
     public class CacheEntry<TItem>
     {
         #region Public Properties

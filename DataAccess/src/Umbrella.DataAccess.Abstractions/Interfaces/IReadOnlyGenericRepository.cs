@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Interfaces
 {
+	// TODO: V3 - Consider moving into an EF base package
 	// TODO: V3 - Remove all sync methods. Shouldn't be writing sync code anymore. Will massively simplify things!
-    public interface IReadOnlyGenericRepository<TEntity> : IReadOnlyGenericRepository<TEntity, int>
+	// TODO: V3 - Alter the FindAllMethods to accept pagination parameters.
+	public interface IReadOnlyGenericRepository<TEntity> : IReadOnlyGenericRepository<TEntity, int>
         where TEntity : class, IEntity<int>
     {
     }

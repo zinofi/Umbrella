@@ -7,25 +7,20 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.Abstractions.Exceptions
 {
-	public class UmbrellaForbiddenDataAccessException : UmbrellaDataAccessException
+	public sealed class UmbrellaForbiddenDataAccessException : UmbrellaDataAccessException
 	{
-		public UmbrellaForbiddenDataAccessException()
+		internal UmbrellaForbiddenDataAccessException()
 			: base("The current user is forbidden from accessing the specified resource.")
 		{
 		}
 
-		public UmbrellaForbiddenDataAccessException(string message)
+		internal UmbrellaForbiddenDataAccessException(string message)
 			: base(message)
 		{
 		}
 
-		public UmbrellaForbiddenDataAccessException(string message, Exception innerException)
+		internal UmbrellaForbiddenDataAccessException(string message, Exception innerException)
 			: base(message, innerException)
-		{
-		}
-
-		protected UmbrellaForbiddenDataAccessException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
 		{
 		}
 	}

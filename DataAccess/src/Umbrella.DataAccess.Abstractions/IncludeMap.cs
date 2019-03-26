@@ -9,7 +9,8 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Abstractions
 {
-    public class IncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
+	// TODO: V3 - Consider moving into an EF base package
+	public class IncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
     {
         #region Public Properties
         public HashSet<Expression<Func<TEntity, object>>> Includes { get; } = new HashSet<Expression<Func<TEntity, object>>>();

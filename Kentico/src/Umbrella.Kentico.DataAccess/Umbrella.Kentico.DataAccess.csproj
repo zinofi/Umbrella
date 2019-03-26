@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;AzureDevOps</Configurations>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
@@ -12,31 +12,30 @@
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
   </PropertyGroup>
-  
+
   <PropertyGroup>
-    <PackageId>Umbrella.DataAccess.Abstractions</PackageId>
+    <PackageId>Umbrella.Kentico.DataAccess</PackageId>
     <Version>2.6.0-preview-00001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
     <Description>
-      This package contains Data Access abstractions upon which the Umbrella.DataAccess.EF6 and Umbrella.DataAccess.EntityFrameworkCore packages depend.
+      This package contains Data Access infrastructure for working with Kentico Custom Tables.
     </Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kentico.Libraries" Version="10.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
