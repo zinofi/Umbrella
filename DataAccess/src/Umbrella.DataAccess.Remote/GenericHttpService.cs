@@ -9,7 +9,7 @@ using Umbrella.DataAccess.Remote.Exceptions;
 
 namespace Umbrella.DataAccess.Remote
 {
-    public class GenericHttpService
+    public abstract class GenericHttpService
     {
 		#region Protected Constants
 		protected const string UnauthorizedErrorMessage = "You need to be logged in to perform the current action.";

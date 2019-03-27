@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -41,5 +40,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// A list of validation results that contain messages detailing why it might be the case that the item couldn't be saved.
 		/// </summary>
 		public IReadOnlyCollection<ValidationResult> ValidationResults { get; set; }
+
+		public string PrimaryValidationMessage => ValidationResults?.FirstOrDefault()?.ErrorMessage;
 	}
 }
