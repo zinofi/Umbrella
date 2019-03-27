@@ -197,9 +197,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kentico", "Kentico", "{D5FC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2E027172-C23B-49D2-A8C7-A61708B69C91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Kentico.DataAccess", "Kentico\src\Umbrella.Kentico.DataAccess\Umbrella.Kentico.DataAccess.csproj", "{20F00B25-4333-4EC5-A426-E773D7572A95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Kentico.DataAccess", "Kentico\src\Umbrella.Kentico.DataAccess\Umbrella.Kentico.DataAccess.csproj", "{20F00B25-4333-4EC5-A426-E773D7572A95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DataAccess.Remote", "DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj", "{04E66834-571E-4717-8904-654D38D265FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Remote", "DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj", "{04E66834-571E-4717-8904-654D38D265FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Kentico.Utilities", "Kentico\src\Umbrella.Kentico.Utilities\Umbrella.Kentico.Utilities.csproj", "{501243D7-3307-4728-BD11-BD98DA082409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -568,6 +570,12 @@ Global
 		{04E66834-571E-4717-8904-654D38D265FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04E66834-571E-4717-8904-654D38D265FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04E66834-571E-4717-8904-654D38D265FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{501243D7-3307-4728-BD11-BD98DA082409}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{501243D7-3307-4728-BD11-BD98DA082409}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{501243D7-3307-4728-BD11-BD98DA082409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{501243D7-3307-4728-BD11-BD98DA082409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{501243D7-3307-4728-BD11-BD98DA082409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{501243D7-3307-4728-BD11-BD98DA082409}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -658,6 +666,7 @@ Global
 		{2E027172-C23B-49D2-A8C7-A61708B69C91} = {D5FCC9FC-913D-4535-A56D-2F1AB4D52B46}
 		{20F00B25-4333-4EC5-A426-E773D7572A95} = {2E027172-C23B-49D2-A8C7-A61708B69C91}
 		{04E66834-571E-4717-8904-654D38D265FD} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
+		{501243D7-3307-4728-BD11-BD98DA082409} = {2E027172-C23B-49D2-A8C7-A61708B69C91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
