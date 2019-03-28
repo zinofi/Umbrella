@@ -22,7 +22,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 	}
 
-	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TUserId> : GenericUserScopedRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>, TUserId>
+	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TUserId> : GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>, TUserId>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, IUserScopedRemoteItem<TUserId>, new()
 		where TRemoteSource : Enum
 		where TRepoOptions : RepoOptions, new()
@@ -37,7 +37,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 	}
 
-	public abstract class GenericUserScopedRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService, TUserId> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService>
+	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService, TUserId> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, IUserScopedRemoteItem<TUserId>, new()
 		where TRemoteSource : Enum
 		where TRepoOptions : RepoOptions, new()
@@ -46,7 +46,7 @@ namespace Umbrella.DataAccess.Remote
 		protected IUserAuditDataFactory<TUserId> CurrentUserIdAccessor { get; }
 		protected TUserId CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
 
-		public GenericUserScopedRemoteRepository(
+		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
 			IUserAuditDataFactory<TUserId> currentUserIdAccessor,
