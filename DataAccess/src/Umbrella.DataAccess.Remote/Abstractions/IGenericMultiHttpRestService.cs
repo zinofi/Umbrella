@@ -19,7 +19,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		Task<(HttpStatusCode statusCode, string message, TItem result)> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
 		Task<(HttpStatusCode statusCode, string message, TItem result)> SaveAsync(TItem item, CancellationToken cancellationToken = default);
 		Task<(HttpStatusCode statusCode, string message, IReadOnlyCollection<TItem> results)> SaveAllAsync(IEnumerable<TItem> items, CancellationToken cancellationToken = default);
-		Task<(HttpStatusCode statusCode, string message, bool exists)> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
-		Task<(HttpStatusCode statusCode, string message, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default);
+		//Task<(HttpStatusCode statusCode, string message, bool exists)> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
+		//Task<(HttpStatusCode statusCode, string message, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default);
 	}
 }

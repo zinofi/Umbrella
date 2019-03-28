@@ -16,11 +16,11 @@ using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.DataAccess.Remote
 {
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRemoteSource> : GenericRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions>
+	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
 		where TRemoteSource : Enum
 	{
-		public GenericRemoteRepository(
+		public GenericMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
@@ -29,12 +29,12 @@ namespace Umbrella.DataAccess.Remote
 		}
 	}
 
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions> : GenericRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>>
+	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
 		where TRemoteSource : Enum
 		where TRepoOptions : RepoOptions, new()
 	{
-		public GenericRemoteRepository(
+		public GenericMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
@@ -44,7 +44,7 @@ namespace Umbrella.DataAccess.Remote
 	}
 
 	//TODO: Pass through more detailed error messages / codes to callers
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService> : IGenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService>
+	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService> : IGenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
 		where TRemoteSource : Enum
 		where TRepoOptions : RepoOptions, new()
@@ -68,7 +68,7 @@ namespace Umbrella.DataAccess.Remote
 		#endregion
 
 		#region Constructors
-		public GenericRemoteRepository(
+		public GenericMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
 			params TService[] services)
@@ -189,72 +189,72 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
-		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
+		//public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
+		//{
+		//	cancellationToken.ThrowIfCancellationRequested();
 
-			try
-			{
-				var lstTask = new Task[ServiceList.Count];
-				var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode status, string message, int totalCount)>>(ServiceList.Count);
+		//	try
+		//	{
+		//		var lstTask = new Task[ServiceList.Count];
+		//		var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode status, string message, int totalCount)>>(ServiceList.Count);
 
-				for (int i = 0; i < ServiceList.Count; i++)
-				{
-					var task = ServiceList[i].FindTotalCountAsync(cancellationToken);
+		//		for (int i = 0; i < ServiceList.Count; i++)
+		//		{
+		//			var task = ServiceList[i].FindTotalCountAsync(cancellationToken);
 
-					lstTask[i] = task;
-					dicTask.Add(ServiceList[i].RemoteSourceType, task);
-				}
+		//			lstTask[i] = task;
+		//			dicTask.Add(ServiceList[i].RemoteSourceType, task);
+		//		}
 
-				await Task.WhenAll(lstTask).ConfigureAwait(false);
+		//		await Task.WhenAll(lstTask).ConfigureAwait(false);
 
-				bool success = true;
-				List<RemoteSourceFailure<TRemoteSource>> lstSourceFailure = null;
-				int count = 0;
+		//		bool success = true;
+		//		List<RemoteSourceFailure<TRemoteSource>> lstSourceFailure = null;
+		//		int count = 0;
 
-				foreach (var item in dicTask)
-				{
-					var (status, message, totalCount) = item.Value.Result;
+		//		foreach (var item in dicTask)
+		//		{
+		//			var (status, message, totalCount) = item.Value.Result;
 
-					switch (status)
-					{
-						case HttpStatusCode.OK:
-							count += totalCount;
-							break;
-						default:
-							success = false;
-							lstSourceFailure = lstSourceFailure ?? new List<RemoteSourceFailure<TRemoteSource>>();
-							lstSourceFailure.Add(new RemoteSourceFailure<TRemoteSource>(item.Key, message));
-							break;
-					}
-				}
+		//			switch (status)
+		//			{
+		//				case HttpStatusCode.OK:
+		//					count += totalCount;
+		//					break;
+		//				default:
+		//					success = false;
+		//					lstSourceFailure = lstSourceFailure ?? new List<RemoteSourceFailure<TRemoteSource>>();
+		//					lstSourceFailure.Add(new RemoteSourceFailure<TRemoteSource>(item.Key, message));
+		//					break;
+		//			}
+		//		}
 
-				return (success, lstSourceFailure ?? _emptyRemoteSourceFailuresList, count);
-			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There has been a problem finding the total count of all items.", exc);
-			}
-		}
+		//		return (success, lstSourceFailure ?? _emptyRemoteSourceFailuresList, count);
+		//	}
+		//	catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+		//	{
+		//		throw new UmbrellaDataAccessException("There has been a problem finding the total count of all items.", exc);
+		//	}
+		//}
 
-		public virtual async Task<(bool success, string message, bool exists)> ExistsByIdAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(id, nameof(id));
+		//public virtual async Task<(bool success, string message, bool exists)> ExistsByIdAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default)
+		//{
+		//	cancellationToken.ThrowIfCancellationRequested();
+		//	Guard.ArgumentNotNull(id, nameof(id));
 
-			try
-			{
-				var service = ServiceDictionary[remoteSourceType];
+		//	try
+		//	{
+		//		var service = ServiceDictionary[remoteSourceType];
 
-				var (statusCode, message, exists) = await service.ExistsByIdAsync(id, cancellationToken);
+		//		var (statusCode, message, exists) = await service.ExistsByIdAsync(id, cancellationToken);
 
-				return (IsSuccessStatusCode(statusCode), message, exists);
-			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There has been a problem determining if the item with the specified id exists.", exc);
-			}
-		}
+		//		return (IsSuccessStatusCode(statusCode), message, exists);
+		//	}
+		//	catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+		//	{
+		//		throw new UmbrellaDataAccessException("There has been a problem determining if the item with the specified id exists.", exc);
+		//	}
+		//}
 
 		public virtual async Task<SaveResult<TItem>> SaveAsync(TItem item, CancellationToken cancellationToken = default, TRepoOptions options = null)
 		{

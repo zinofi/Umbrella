@@ -124,37 +124,37 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
-		public virtual async Task<(HttpStatusCode statusCode, string message, bool exists)> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
+		//public virtual async Task<(HttpStatusCode statusCode, string message, bool exists)> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		//{
+		//	cancellationToken.ThrowIfCancellationRequested();
 
-			try
-			{
-				var (statusCode, message, result) = await FindByIdAsync(id, cancellationToken).ConfigureAwait(false);
+		//	try
+		//	{
+		//		var (statusCode, message, result) = await FindByIdAsync(id, cancellationToken).ConfigureAwait(false);
 
-				// TODO: Decide on a better way to handle this.
-				return (statusCode, message, result != null);
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { id }, returnValue: true))
-			{
-				throw CreateServiceAccessException(exc);
-			}
-		}
+		//		// TODO: Decide on a better way to handle this.
+		//		return (statusCode, message, result != null);
+		//	}
+		//	catch (Exception exc) when (Log.WriteError(exc, new { id }, returnValue: true))
+		//	{
+		//		throw CreateServiceAccessException(exc);
+		//	}
+		//}
 
-		public Task<(HttpStatusCode statusCode, string message, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
+		//public Task<(HttpStatusCode statusCode, string message, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
+		//{
+		//	cancellationToken.ThrowIfCancellationRequested();
 
-			try
-			{
-				// TODO: Need to come up with a way of implementing this.
-				throw new NotImplementedException("This functionality has not yet been implemented.");
-			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
-			{
-				throw CreateServiceAccessException(exc);
-			}
-		}
+		//	try
+		//	{
+		//		// TODO: Need to come up with a way of implementing this.
+		//		throw new NotImplementedException("This functionality has not yet been implemented.");
+		//	}
+		//	catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+		//	{
+		//		throw CreateServiceAccessException(exc);
+		//	}
+		//}
 
 		public virtual async Task<(HttpStatusCode statusCode, string message, TItem result)> SaveAsync(TItem item, CancellationToken cancellationToken = default)
 		{
