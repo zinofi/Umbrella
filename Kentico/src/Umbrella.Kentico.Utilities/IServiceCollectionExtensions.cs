@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<KenticoContactManagerOptions>();
 
 			// Middleware
-			services.AddSingleton<MergeMarketingContactMiddleware>();
+			services.AddScoped<MergeMarketingContactMiddleware>();
 
 			return services;
 		}
