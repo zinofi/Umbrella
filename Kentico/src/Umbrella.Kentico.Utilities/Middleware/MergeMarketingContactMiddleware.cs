@@ -31,7 +31,6 @@ namespace Umbrella.Kentico.Utilities.Middleware
 			OwinMiddleware next)
 			: base(next)
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(options.CookieDomain, nameof(options.CookieDomain));
 			Guard.ArgumentNotNullOrWhiteSpace(options.IsSigningInClaimType, nameof(options.IsSigningInClaimType));
 			Guard.ArgumentNotNullOrWhiteSpace(options.KenticoSiteName, nameof(options.KenticoSiteName));
 			Guard.ArgumentNotNull(options.ShouldExecuteForPathDeterminer, nameof(options.ShouldExecuteForPathDeterminer));
