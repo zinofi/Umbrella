@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using CMS.ContactManagement;
+﻿using CMS.ContactManagement;
 using CMS.ContactManagement.Internal;
 using CMS.Core;
 using Umbrella.Kentico.Utilities.ContactManagement.Abstractions;
@@ -9,7 +8,7 @@ using Umbrella.Kentico.Utilities.Users;
 using Umbrella.Kentico.Utilities.ContactManagement.Options;
 using System;
 
-namespace Umbrella.Kentico.Utilities
+namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class IServiceCollectionExtensions
     {
