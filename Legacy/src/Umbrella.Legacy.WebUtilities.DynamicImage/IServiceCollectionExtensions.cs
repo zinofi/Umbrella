@@ -26,6 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
 					opts.CacheControlHeaderValue = options.CacheControlHeaderValue;
 					opts.DynamicImagePathPrefix = options.DynamicImagePathPrefix;
 					opts.SourceFileProvider = options.SourceFileProvider;
+					opts.EnableJpgPngWebPOverride = options.EnableJpgPngWebPOverride;
 				});
 			});
 
