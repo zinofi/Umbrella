@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@ namespace Umbrella.DataAccess.Remote
 
 		#region Protected Static Properties
 		protected static HttpMethod PatchHttpMethod { get; } = new HttpMethod("PATCH");
+		protected static JsonMediaTypeFormatter JsonFormatter { get; } = new JsonMediaTypeFormatter();
 		#endregion
 
 		#region Protected Properties
@@ -38,6 +40,8 @@ namespace Umbrella.DataAccess.Remote
 		#endregion
 
 		#region Protected Methods
+		protected ObjectContent CreateJsonContent(object value) => new ObjectContent<object>(value, JsonFormatter);
+
 		protected UmbrellaHttpServiceAccessException CreateServiceAccessException(Exception exception)
 		{
 			// If we already have an exception of the requested type just return it
