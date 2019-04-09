@@ -19,9 +19,9 @@ namespace Umbrella.Kentico.DataAccess.CustomTables
 				int enumValue = GetIntegerValue(propertyName, -1);
 
 				// For new items, the item will initially be stored on the object as an Enum, not an integer
-				// so we need to read it as an enum. After it has been saved, it will be an integer and will
-				// need to be converted.
-				if (enumValue == -1 && ItemID == 0)
+				// so we need to read it as an enum. This is still the case even after saving until the object is loaded
+				// from the database.
+				if (enumValue == -1)
 					return ValidationHelper.GetValue(GetValue(propertyName, defaultValue), defaultValue);
 
 				return ValidationHelper.GetValue(enumValue.ToEnum(defaultValue), defaultValue);
