@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.FileSystem.Abstractions
 {
-    //TODO: Add support for writing out to streams in chunks
+    // TODO: Add support for writing out to streams in chunks
     public interface IUmbrellaFileInfo
     {
         bool IsNew { get; }
@@ -21,6 +21,7 @@ namespace Umbrella.FileSystem.Abstractions
         Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default);
         Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default);
         Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
+		Task<Stream> OpenReadAsync(CancellationToken cancellationToken = default, int bufferSize = 4096);
         Task<bool> DeleteAsync(CancellationToken cancellationToken = default);
         Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default);
         Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default);

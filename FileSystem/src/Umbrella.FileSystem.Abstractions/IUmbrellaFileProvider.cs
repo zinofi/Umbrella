@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.FileSystem.Abstractions
 {
+	// TODO: V3 Design - Consider implementing IFileProvider from the Microsoft.Extensions namespace for better compatibility
+	// moving forwards. Not a breaking change so could do it as part of 2.x
     public interface IUmbrellaFileProvider
     {
         Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default);
