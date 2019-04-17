@@ -217,16 +217,16 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
-		public async Task<Stream> OpenReadAsync(CancellationToken cancellationToken = default, int bufferSize = 4096)
+		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentInRange(bufferSize, nameof(bufferSize), 1);
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 			try
 			{
-				return await Task.FromResult(new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true)).ConfigureAwait(false);
+				return await Task.FromResult(new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true)).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bufferSize }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}

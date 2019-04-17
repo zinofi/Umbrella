@@ -266,33 +266,33 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
-		public async Task<Stream> OpenReadAsync(CancellationToken cancellationToken = default, int bufferSize = 4096)
+		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentInRange(bufferSize, nameof(bufferSize), 1);
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 			try
 			{
-				Blob.StreamMinimumReadSizeInBytes = bufferSize;
+				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				return await Blob.OpenReadAsync(cancellationToken).ConfigureAwait(false);
 #else
-			return await Blob.OpenReadAsync().ConfigureAwait(false);
+				return await Blob.OpenReadAsync().ConfigureAwait(false);
 #endif
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bufferSize }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
-#endregion
+		#endregion
 
-#region Private Methods
+		#region Private Methods
 		private void ThrowIfIsNew()
 		{
 			if (IsNew)
 				throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
 		}
-#endregion
+		#endregion
 	}
 }

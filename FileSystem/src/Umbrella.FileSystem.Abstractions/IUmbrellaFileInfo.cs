@@ -21,7 +21,7 @@ namespace Umbrella.FileSystem.Abstractions
         Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default);
         Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default);
         Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
-		Task<Stream> OpenReadAsync(CancellationToken cancellationToken = default, int bufferSize = 4096);
+		Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
         Task<bool> DeleteAsync(CancellationToken cancellationToken = default);
         Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default);
         Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default);
