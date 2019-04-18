@@ -46,6 +46,7 @@ namespace Umbrella.FileSystem.AzureStorage
         protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
             //TODO: Need to keep a list of incoming container names and map these to cleaned names so that we can throw an
             //exception in cases where two different incoming names map to the same cleaned name which could potentially

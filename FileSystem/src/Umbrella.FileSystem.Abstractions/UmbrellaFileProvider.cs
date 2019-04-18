@@ -156,7 +156,7 @@ namespace Umbrella.FileSystem.Abstractions
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
+        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
         {
             try
             {
@@ -165,17 +165,17 @@ namespace Umbrella.FileSystem.Abstractions
                 Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
 
                 IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
-                await file.WriteFromByteArrayAsync(bytes, cacheContents, cancellationToken).ConfigureAwait(false);
+                await file.WriteFromByteArrayAsync(bytes, cacheContents, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
                 return file;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }
         }
 
-        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default)
+        public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
         {
             try
             {
@@ -184,11 +184,11 @@ namespace Umbrella.FileSystem.Abstractions
                 Guard.ArgumentNotNull(stream, nameof(stream));
 
                 IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
-                await file.WriteFromStreamAsync(stream, cancellationToken).ConfigureAwait(false);
+                await file.WriteFromStreamAsync(stream, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
                 return file;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+            catch (Exception exc) when (Log.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
             {
                 throw new UmbrellaFileSystemException(exc.Message, exc);
             }

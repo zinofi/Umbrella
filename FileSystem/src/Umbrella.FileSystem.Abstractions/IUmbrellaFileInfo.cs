@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Umbrella.FileSystem.Abstractions
 {
-    // TODO: Add support for writing out to streams in chunks
+    // TODO: Add a new parameter to the end of each method called bufferSizeOverride.
+	// Internally, each method will use the Small or Large buffer size defaults. At least then consumers have control.
     public interface IUmbrellaFileInfo
     {
         bool IsNew { get; }
@@ -17,10 +18,10 @@ namespace Umbrella.FileSystem.Abstractions
         DateTimeOffset? LastModified { get; }
         string ContentType { get; }
         Task<bool> ExistsAsync(CancellationToken cancellationToken = default);
-        Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true);
-        Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default);
-        Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default);
-        Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default);
+        Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null);
+        Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+        Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+        Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
 		Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
         Task<bool> DeleteAsync(CancellationToken cancellationToken = default);
         Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default);

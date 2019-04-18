@@ -138,7 +138,7 @@ namespace Umbrella.DynamicImage.Impl.Test
             byte[] bytes = Convert.FromBase64String(base64Image);
 
             var fileMock = new Mock<IUmbrellaFileInfo>();
-            fileMock.Setup(x => x.ReadAsByteArrayAsync(default, true)).Returns(Task.FromResult(bytes));
+            fileMock.Setup(x => x.ReadAsByteArrayAsync(default, true, null)).Returns(Task.FromResult(bytes));
             fileMock.Setup(x => x.LastModified).Returns(DateTimeOffset.UtcNow);
             fileMock.Setup(x => x.ExistsAsync(default)).Returns(Task.FromResult(true));
             fileMock.Setup(x => x.Length).Returns(bytes.LongLength);

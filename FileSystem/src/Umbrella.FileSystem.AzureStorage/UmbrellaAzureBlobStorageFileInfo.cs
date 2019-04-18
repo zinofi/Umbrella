@@ -98,12 +98,13 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
-		public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true)
+		public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				ThrowIfIsNew();
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 				if (cacheContents && m_Contents != null)
 					return m_Contents;
@@ -112,6 +113,8 @@ namespace Umbrella.FileSystem.AzureStorage
 					throw new UmbrellaFileNotFoundException(SubPath);
 
 				byte[] bytes = new byte[Blob.Properties.Length];
+
+				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.DownloadToByteArrayAsync(bytes, 0, cancellationToken).ConfigureAwait(false);
 #else
@@ -122,38 +125,43 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return bytes;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
 
-		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default)
+		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				ThrowIfIsNew();
 				Guard.ArgumentNotNull(target, nameof(target));
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
+				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.DownloadToStreamAsync(target, cancellationToken).ConfigureAwait(false);
 #else
                 await Blob.DownloadToStreamAsync(target).ConfigureAwait(false);
 #endif
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
 
-		public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
+		public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
+				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
 #else
@@ -170,19 +178,21 @@ namespace Umbrella.FileSystem.AzureStorage
 				m_Contents = cacheContents ? bytes : null;
 				IsNew = false;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
 
-		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				Guard.ArgumentNotNull(stream, nameof(stream));
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
+				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.UploadFromStreamAsync(stream, cancellationToken).ConfigureAwait(false);
 #else
@@ -198,7 +208,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				IsNew = false;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -269,6 +279,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
 			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 			try

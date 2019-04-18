@@ -31,6 +31,7 @@ namespace Umbrella.FileSystem.Disk
         protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
             //Sanitize subpath
             StringBuilder pathBuilder = new StringBuilder(subpath)
@@ -43,7 +44,7 @@ namespace Umbrella.FileSystem.Disk
             if (Log.IsEnabled(LogLevel.Debug))
                 Log.WriteDebug(new { subpath, physicalPath });
 
-            FileInfo physicalFileInfo = new FileInfo(physicalPath);
+            var physicalFileInfo = new FileInfo(physicalPath);
 
             if (!isNew && !physicalFileInfo.Exists)
                 return null;

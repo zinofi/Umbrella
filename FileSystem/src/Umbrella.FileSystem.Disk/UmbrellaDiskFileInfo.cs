@@ -124,19 +124,20 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
-		public async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true)
+		public async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				ThrowIfIsNew();
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 				if (cacheContents && m_Contents != null)
 					return m_Contents;
 
 				byte[] bytes = new byte[PhysicalFileInfo.Length];
 
-				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true))
 				{
 					await fs.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
 				}
@@ -145,42 +146,46 @@ namespace Umbrella.FileSystem.Disk
 
 				return bytes;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
 
-		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default)
+		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				ThrowIfIsNew();
 				Guard.ArgumentNotNull(target, nameof(target));
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
-				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+				int bufferSize = bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize;
+
+				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
 				{
-					await fs.CopyToAsync(target, 4096, cancellationToken).ConfigureAwait(false);
+					await fs.CopyToAsync(target, bufferSize, cancellationToken).ConfigureAwait(false);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
 
-		public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default)
+		public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 				if (!PhysicalFileInfo.Directory.Exists)
 					PhysicalFileInfo.Directory.Create();
 
-				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
+				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true))
 				{
 					await fs.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
 				}
@@ -188,30 +193,33 @@ namespace Umbrella.FileSystem.Disk
 				m_Contents = cacheContents ? bytes : null;
 				IsNew = false;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
 		}
 
-		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			try
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 				Guard.ArgumentNotNull(stream, nameof(stream));
+				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 				if (!PhysicalFileInfo.Directory.Exists)
 					PhysicalFileInfo.Directory.Create();
 
-				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
+				int bufferSize = bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize;
+
+				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, bufferSize, true))
 				{
-					await stream.CopyToAsync(fs, 4096, cancellationToken).ConfigureAwait(false);
+					await stream.CopyToAsync(fs, bufferSize, cancellationToken).ConfigureAwait(false);
 				}
 
 				IsNew = false;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -220,6 +228,7 @@ namespace Umbrella.FileSystem.Disk
 		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
 			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
 
 			try
