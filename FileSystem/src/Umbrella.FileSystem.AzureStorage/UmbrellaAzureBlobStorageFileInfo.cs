@@ -70,9 +70,10 @@ namespace Umbrella.FileSystem.AzureStorage
 		#region IUmbrellaFileInfo Members
 		public virtual async Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
 #if NET461
 				return await Blob.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
 #else
@@ -87,10 +88,10 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public virtual async Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-
 #if NET461
 				return await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
 #else
@@ -105,12 +106,12 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				ThrowIfIsNew();
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				if (cacheContents && m_Contents != null)
 					return m_Contents;
 
@@ -138,13 +139,13 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentNotNull(target, nameof(target));
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				ThrowIfIsNew();
-				Guard.ArgumentNotNull(target, nameof(target));
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.DownloadToStreamAsync(target, cancellationToken).ConfigureAwait(false);
@@ -160,12 +161,12 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
@@ -191,12 +192,13 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(stream, nameof(stream));
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNull(stream, nameof(stream));
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
+				stream.Position = 0;
 				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
 #if NET461
 				await Blob.UploadFromStreamAsync(stream, cancellationToken).ConfigureAwait(false);
@@ -221,11 +223,11 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
-
 				if (!await ExistsAsync(cancellationToken))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
@@ -244,7 +246,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -252,11 +254,11 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<UmbrellaAzureBlobStorageFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentOfType<UmbrellaAzureBlobStorageFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
-
 				if (!await ExistsAsync(cancellationToken))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
@@ -275,7 +277,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}

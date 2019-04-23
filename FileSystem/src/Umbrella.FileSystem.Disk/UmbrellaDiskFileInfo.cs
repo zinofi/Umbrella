@@ -60,11 +60,11 @@ namespace Umbrella.FileSystem.Disk
 		#region IUmbrellaFileInfo Members
 		public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
-
 				if (!await ExistsAsync(cancellationToken))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
@@ -75,19 +75,19 @@ namespace Umbrella.FileSystem.Disk
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There was a problem copying the current file to the specified destination.", exc);
 			}
 		}
 
 		public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<UmbrellaDiskFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentOfType<UmbrellaDiskFileInfo>(destinationFile, nameof(destinationFile));
-
 				if (!await ExistsAsync(cancellationToken))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
@@ -98,18 +98,18 @@ namespace Umbrella.FileSystem.Disk
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There was a problem copying the current file to the specified destination.", exc);
 			}
 		}
 
 		public Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-
 				PhysicalFileInfo.Delete();
 				File.Delete(_metadataFullFileName);
 
@@ -117,32 +117,32 @@ namespace Umbrella.FileSystem.Disk
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There was a problem deleting the current file.", exc);
 			}
 		}
 
 		public Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-
 				return Task.FromResult(PhysicalFileInfo.Exists);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There was a problem determining if the current file exists.", exc);
 			}
 		}
 
 		public async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				ThrowIfIsNew();
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				if (cacheContents && m_Contents != null)
 					return m_Contents;
 
@@ -165,13 +165,13 @@ namespace Umbrella.FileSystem.Disk
 
 		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentNotNull(target, nameof(target));
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				ThrowIfIsNew();
-				Guard.ArgumentNotNull(target, nameof(target));
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				int bufferSize = bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize;
 
 				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
@@ -187,12 +187,12 @@ namespace Umbrella.FileSystem.Disk
 
 		public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				if (!PhysicalFileInfo.Directory.Exists)
 					PhysicalFileInfo.Directory.Create();
 
@@ -212,12 +212,12 @@ namespace Umbrella.FileSystem.Disk
 
 		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(stream, nameof(stream));
+			Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNull(stream, nameof(stream));
-				Guard.ArgumentInRange(bufferSizeOverride, nameof(bufferSizeOverride), 1, allowNull: true);
-
 				if (!PhysicalFileInfo.Directory.Exists)
 					PhysicalFileInfo.Directory.Create();
 
@@ -225,6 +225,7 @@ namespace Umbrella.FileSystem.Disk
 
 				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, bufferSize, true))
 				{
+					stream.Position = 0;
 					await stream.CopyToAsync(fs, bufferSize, cancellationToken).ConfigureAwait(false);
 				}
 
