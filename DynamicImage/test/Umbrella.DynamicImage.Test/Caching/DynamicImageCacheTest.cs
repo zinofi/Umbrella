@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging.Abstractions.Internal;
 using Umbrella.DynamicImage.Caching.AzureStorage;
 using Umbrella.Utilities.Hosting;
 using Umbrella.FileSystem.AzureStorage;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.DynamicImage.Test.Caching
 {
@@ -226,12 +227,14 @@ namespace Umbrella.DynamicImage.Test.Caching
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
-            var fileProviderOptions = new UmbrellaDiskFileProviderOptions
+			var genericTypeConverter = new Mock<IGenericTypeConverter>();
+
+			var fileProviderOptions = new UmbrellaDiskFileProviderOptions
             {
                 RootPhysicalPath = BaseDirectory
             };
 
-            var fileProvider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, fileProviderOptions);
+            var fileProvider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, fileProviderOptions);
 
             return new DynamicImageDiskCache(cacheLogger.Object, memoryCache, cacheOptions, fileProvider, diskCacheOptions);
         }
@@ -283,12 +286,14 @@ namespace Umbrella.DynamicImage.Test.Caching
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
+			var genericTypeConverter = new Mock<IGenericTypeConverter>();
+
             var options = new UmbrellaAzureBlobStorageFileProviderOptions
             {
                 StorageConnectionString = c_StorageConnectionString
             };
 
-            var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
+            var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);
 
             var blobStorageCacheOptions = new DynamicImageAzureBlobStorageCacheOptions();
 

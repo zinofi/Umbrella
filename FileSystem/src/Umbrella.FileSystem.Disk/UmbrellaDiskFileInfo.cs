@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
@@ -13,12 +15,15 @@ namespace Umbrella.FileSystem.Disk
 	public class UmbrellaDiskFileInfo : IUmbrellaFileInfo
 	{
 		#region Private Members
+		private readonly string _metadataFullFileName;
 		private byte[] m_Contents;
+		private Dictionary<string, string> _metadataDictionary;
 		#endregion
 
 		#region Protected Properties
 		protected ILogger Log { get; }
 		protected UmbrellaDiskFileProvider Provider { get; }
+		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion
 
 		#region Internal Properties
@@ -34,6 +39,7 @@ namespace Umbrella.FileSystem.Disk
 
 		internal UmbrellaDiskFileInfo(ILogger<UmbrellaDiskFileInfo> logger,
 			IMimeTypeUtility mimeTypeUtility,
+			IGenericTypeConverter genericTypeConverter,
 			string subpath,
 			UmbrellaDiskFileProvider provider,
 			FileInfo physicalFileInfo,
@@ -41,13 +47,17 @@ namespace Umbrella.FileSystem.Disk
 		{
 			Log = logger;
 			Provider = provider;
+			GenericTypeConverter = genericTypeConverter;
 			PhysicalFileInfo = physicalFileInfo;
 			IsNew = isNew;
 			SubPath = subpath;
 
 			ContentType = mimeTypeUtility.GetMimeType(Name);
+
+			_metadataFullFileName = PhysicalFileInfo.FullName + ".meta";
 		}
 
+		#region IUmbrellaFileInfo Members
 		public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			try
@@ -101,6 +111,7 @@ namespace Umbrella.FileSystem.Disk
 				cancellationToken.ThrowIfCancellationRequested();
 
 				PhysicalFileInfo.Delete();
+				File.Delete(_metadataFullFileName);
 
 				return Task.FromResult(true);
 			}
@@ -241,7 +252,154 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+			try
+			{
+				if (_metadataDictionary == null)
+					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
+
+				_metadataDictionary.TryGetValue(key, out string rawValue);
+
+				return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error getting the metadata value for the specified key.", exc);
+			}
+		}
+
+		public async Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+			try
+			{
+				if (_metadataDictionary == null)
+					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
+
+				if (value == null)
+				{
+					_metadataDictionary.Remove(key);
+				}
+				else
+				{
+					_metadataDictionary[key] = value.ToString();
+				}
+
+				if (writeChanges)
+					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error setting the metadata value for the specified key.", exc);
+			}
+		}
+
+		public async Task RemoveMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, bool writeChanges = true)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
+
+			try
+			{
+				if (_metadataDictionary == null)
+					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
+
+				_metadataDictionary.Remove(key);
+
+				if (writeChanges)
+					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { key, writeChanges }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error removing the metadata value for the specified key.", exc);
+			}
+		}
+
+		public async Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+
+			try
+			{
+				if (_metadataDictionary?.Count > 0)
+				{
+					string json = UmbrellaStatics.SerializeJson(_metadataDictionary);
+
+					using (var fs = new FileStream(_metadataFullFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true))
+					{
+						using (var sr = new StreamWriter(fs))
+						{
+							await sr.WriteAsync(json).ConfigureAwait(false);
+						}
+					}
+				}
+				else
+				{
+					File.Delete(_metadataFullFileName);
+				}
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
+			}
+		}
+		#endregion
+
 		#region Private Methods
+		private async Task ReloadMetadataAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+
+			try
+			{
+				string json = null;
+
+				if (!File.Exists(_metadataFullFileName))
+				{
+					_metadataDictionary = new Dictionary<string, string>();
+					return;
+				}
+
+				using (var fs = new FileStream(_metadataFullFileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+				{
+					using (var sr = new StreamReader(fs))
+					{
+						json = await sr.ReadToEndAsync().ConfigureAwait(false);
+					}
+				}
+
+				if (string.IsNullOrWhiteSpace(json))
+				{
+					_metadataDictionary = new Dictionary<string, string>();
+					return;
+				}
+
+				try
+				{
+					_metadataDictionary = UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json);
+				}
+				catch (Exception exc) when (Log.WriteError(exc, new { json }, "The JSON value stored in the Comment metadata property could not be deserialized to a Dictionary. This error has been handled silently.", returnValue: true))
+				{
+					_metadataDictionary = new Dictionary<string, string>();
+				}
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error reloading the metadata for the file.", exc);
+			}
+		}
+
 		private void ThrowIfIsNew()
 		{
 			if (IsNew)

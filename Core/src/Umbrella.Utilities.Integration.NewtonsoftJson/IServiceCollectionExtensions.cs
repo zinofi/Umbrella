@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Integration.NewtonsoftJson;
+
+[assembly: InternalsVisibleTo("Umbrella.FileSystem.Test")]
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddUmbrellaUtilitiesNewtonsoftJson(this IServiceCollection services)
-        {
-            UmbrellaJsonIntegration.Initialize();
+	public static class IServiceCollectionExtensions
+	{
+		public static IServiceCollection AddUmbrellaUtilitiesNewtonsoftJson(this IServiceCollection services)
+		{
+			UmbrellaJsonIntegration.Initialize();
 
-            return services;
-        }
-    }
+			return services;
+		}
+	}
 }

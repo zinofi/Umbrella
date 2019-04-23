@@ -9,6 +9,7 @@ using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
@@ -17,8 +18,9 @@ namespace Umbrella.FileSystem.Disk
         #region Constructors
         public UmbrellaDiskFileProvider(ILoggerFactory loggerFactory,
             IMimeTypeUtility mimeTypeUtility,
-            UmbrellaDiskFileProviderOptions options)
-            : base(loggerFactory.CreateLogger<UmbrellaDiskFileProvider>(), loggerFactory, mimeTypeUtility, options)
+			IGenericTypeConverter genericTypeConverter,
+			UmbrellaDiskFileProviderOptions options)
+            : base(loggerFactory.CreateLogger<UmbrellaDiskFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter, options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(options.RootPhysicalPath, nameof(options.RootPhysicalPath));
 
@@ -52,7 +54,7 @@ namespace Umbrella.FileSystem.Disk
             if (!await CheckFileAccessAsync(physicalFileInfo, cancellationToken))
                 throw new UmbrellaFileAccessDeniedException(subpath);
 
-            return new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, physicalFileInfo, isNew);
+            return new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, physicalFileInfo, isNew);
         }
         #endregion
 

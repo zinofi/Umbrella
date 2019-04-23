@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions
 {
@@ -17,7 +18,8 @@ namespace Umbrella.FileSystem.Abstractions
         protected ILogger Log { get; }
         protected ILoggerFactory LoggerFactory { get; }
         protected IMimeTypeUtility MimeTypeUtility { get; }
-        protected TOptions Options { get; }
+		protected IGenericTypeConverter GenericTypeConverter { get; }
+		protected TOptions Options { get; }
         protected ILogger<TFileInfo> FileInfoLoggerInstance { get; }
         #endregion
 
@@ -25,11 +27,13 @@ namespace Umbrella.FileSystem.Abstractions
         public UmbrellaFileProvider(ILogger logger,
             ILoggerFactory loggerFactory,
             IMimeTypeUtility mimeTypeUtility,
-            TOptions options)
+			IGenericTypeConverter genericTypeConverter,
+			TOptions options)
         {
             Log = logger;
             LoggerFactory = loggerFactory;
             MimeTypeUtility = mimeTypeUtility;
+			GenericTypeConverter = genericTypeConverter;
             Options = options;
             FileInfoLoggerInstance = LoggerFactory.CreateLogger<TFileInfo>();
         }

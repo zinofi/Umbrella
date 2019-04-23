@@ -10,6 +10,10 @@
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
@@ -22,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities.Integration.NewtonsoftJson\Umbrella.Utilities.Integration.NewtonsoftJson.csproj" />
     <ProjectReference Include="..\..\src\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj" />
     <ProjectReference Include="..\..\src\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj" />
   </ItemGroup>

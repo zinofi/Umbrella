@@ -13,6 +13,9 @@ using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions.Internal;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
+using Umbrella.Utilities.TypeConverters.Abstractions;
+using Umbrella.Utilities;
+using Umbrella.Utilities.Integration.NewtonsoftJson;
 
 namespace Umbrella.FileSystem.Test
 {
@@ -71,6 +74,8 @@ namespace Umbrella.FileSystem.Test
                     ProvidersAndPathsMemberData.Add(new object[] { provider, path });
                 }
             }
+
+			UmbrellaJsonIntegration.Initialize();
         }
 
         [Theory]
@@ -566,7 +571,7 @@ namespace Umbrella.FileSystem.Test
         {
             await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
             {
-                //Should fail because you can't copy a new file
+                // Should fail because you can't copy a new file
                 var fileInfo = await provider.CreateAsync("~/images/testimage.jpg");
 
                 var copy = await provider.CopyAsync(fileInfo, "~/images/copy.jpg");
@@ -583,6 +588,40 @@ namespace Umbrella.FileSystem.Test
             Assert.True(deleted);
         }
 
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task Set_Get_MetadataValueAsync(IUmbrellaFileProvider provider)
+		{
+			// Arrange
+			var physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{c_TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, c_TestFileName);
+
+			// Act
+			await file.SetMetadataValueAsync("FirstName", "Richard");
+			await file.SetMetadataValueAsync("LastName", "Edwards");
+
+			// Assert
+			file = await provider.GetAsync(subpath);
+
+			Assert.False(file.IsNew);
+			Assert.Equal("Richard", await file.GetMetadataValueAsync<string>("FirstName"));
+			Assert.Equal("Edwards", await file.GetMetadataValueAsync<string>("LastName"));
+
+			// Cleanup
+			await provider.DeleteAsync(file);
+		}
+
         private static IUmbrellaFileProvider CreateAzureBlobFileProvider()
         {
             var logger = new Mock<ILogger<UmbrellaAzureBlobStorageFileProvider>>();
@@ -594,12 +633,15 @@ namespace Umbrella.FileSystem.Test
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
-            var options = new UmbrellaAzureBlobStorageFileProviderOptions
+			var genericTypeConverter = new Mock<IGenericTypeConverter>();
+			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
+
+			var options = new UmbrellaAzureBlobStorageFileProviderOptions
             {
                 StorageConnectionString = c_StorageConnectionString
             };
 
-            return new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
+            return new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);
         }
 
         private static IUmbrellaFileProvider CreateDiskFileProvider()
@@ -613,12 +655,15 @@ namespace Umbrella.FileSystem.Test
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
             mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
-            var options = new UmbrellaDiskFileProviderOptions
+			var genericTypeConverter = new Mock<IGenericTypeConverter>();
+			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
+
+			var options = new UmbrellaDiskFileProviderOptions
             {
                 RootPhysicalPath = BaseDirectory
             };
 
-            return new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, options);
+            return new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);
         }
 
         private void CheckWrittenFileAssertions(IUmbrellaFileProvider provider, IUmbrellaFileInfo file, int length, string fileName)

@@ -14,6 +14,8 @@ using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.FriendlyUrl;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.TypeConverters;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 [assembly: InternalsVisibleTo("Umbrella.Utilities.Benchmark")]
 
@@ -34,6 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ISecureStringGenerator, SecureStringGenerator>();
             services.AddSingleton<IMultiCache, MultiCache>();
             services.AddSingleton<INonceGenerator, NonceGenerator>();
+            services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 
             // Default Options - These can be replaced by calls to the Configure* methods below.
             services.AddSingleton(serviceProvider =>

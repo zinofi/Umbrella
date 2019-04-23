@@ -5,12 +5,13 @@ using System.Runtime.CompilerServices;
 
 namespace Umbrella.Utilities.Configuration
 {
-    /// <summary>
-    /// The base class for an AppSettings class that contains property definitions for settings that are read from the appSettings section
-    /// of the application config file, e.g. app.config, web.config.
-    /// </summary>
-    /// <seealso cref="ReadOnlyAppSettingsBase{IReadOnlyAppSettingsSource}"/>
-    public abstract class ReadOnlyAppSettingsBase : ReadOnlyAppSettingsBase<IReadOnlyAppSettingsSource>
+	//TODO: V3 - Swap the code internally to use the IGenericTypeConverter
+	/// <summary>
+	/// The base class for an AppSettings class that contains property definitions for settings that are read from the appSettings section
+	/// of the application config file, e.g. app.config, web.config.
+	/// </summary>
+	/// <seealso cref="ReadOnlyAppSettingsBase{IReadOnlyAppSettingsSource}"/>
+	public abstract class ReadOnlyAppSettingsBase : ReadOnlyAppSettingsBase<IReadOnlyAppSettingsSource>
     {
         #region Constructors
         public ReadOnlyAppSettingsBase(ILogger logger,

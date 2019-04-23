@@ -11,6 +11,7 @@ using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
@@ -32,8 +33,9 @@ namespace Umbrella.FileSystem.AzureStorage
         #region Constructors
         public UmbrellaAzureBlobStorageFileProvider(ILoggerFactory loggerFactory,
             IMimeTypeUtility mimeTypeUtility,
-            UmbrellaAzureBlobStorageFileProviderOptions options)
-            : base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, options)
+			IGenericTypeConverter genericTypeConverter,
+			UmbrellaAzureBlobStorageFileProviderOptions options)
+            : base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter, options)
         {
             Guard.ArgumentNotNullOrWhiteSpace(options.StorageConnectionString, nameof(options.StorageConnectionString));
 
@@ -99,7 +101,7 @@ namespace Umbrella.FileSystem.AzureStorage
             if (!await CheckFileAccessAsync(containerName, fileName, cancellationToken))
                 throw new UmbrellaFileAccessDeniedException(subpath);
 
-            return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, subpath, this, blob, isNew);
+            return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
         }
         #endregion
 
