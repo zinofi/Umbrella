@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider, TFileProvider>();
 
             // TODO: Remove this so that the consuming app has to make an explicit choice about the file provider used as default - pass in a param to say "bindToDefault" or something.
+			// The consuming app can always override this though afterwards!
             services.AddSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaAzureBlobStorageFileProvider>());
 
             return services;

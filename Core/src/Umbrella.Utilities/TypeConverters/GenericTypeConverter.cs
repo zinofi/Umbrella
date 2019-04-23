@@ -9,7 +9,7 @@ namespace Umbrella.Utilities.TypeConverters
 	{
 		private readonly ILogger _log;
 
-		public GenericTypeConverter(ILogger logger)
+		public GenericTypeConverter(ILogger<GenericTypeConverter> logger)
 		{
 			_log = logger;
 		}
@@ -20,9 +20,9 @@ namespace Umbrella.Utilities.TypeConverters
 
 			try
 			{
-				return Convert<T>(value, fallbackCreator(), customValueConverter);
+				return Convert(value, fallbackCreator(), customValueConverter);
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { value, fallbackCreator, customValueConverter }))
+			catch (Exception exc) when (_log.WriteError(exc, new { value, fallbackCreator, customValueConverter }, returnValue: true))
 			{
 				throw new UmbrellaException("There has been a problem converting the value.", exc);
 			}
@@ -41,7 +41,7 @@ namespace Umbrella.Utilities.TypeConverters
 					? (T)System.Convert.ChangeType(string.Empty, type)
 					: fallback;
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { value, fallback, customValueConverter }))
+			catch (Exception exc) when (_log.WriteError(exc, new { value, fallback, customValueConverter }, returnValue: true))
 			{
 				throw new UmbrellaException("There has been a problem converting the value.", exc);
 			}
