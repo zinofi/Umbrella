@@ -22,7 +22,21 @@ namespace Umbrella.Utilities.Test.Mime
             Assert.Throws<ArgumentException>(() => CreateMimeTypeUtility().GetMimeType("    "));
         }
 
-        [Fact]
+		[Fact]
+		public void GetMimeType_Dot()
+		{
+			string mimeType = CreateMimeTypeUtility().GetMimeType(".");
+			Assert.Equal("application/octet-stream", mimeType);
+		}
+
+		[Fact]
+		public void GetMimeType_NamePlusDot()
+		{
+			string mimeType = CreateMimeTypeUtility().GetMimeType("name.");
+			Assert.Equal("application/octet-stream", mimeType);
+		}
+
+		[Fact]
         public void GetMimeType_Extension()
         {
             string mimeType = CreateMimeTypeUtility().GetMimeType(".png");
