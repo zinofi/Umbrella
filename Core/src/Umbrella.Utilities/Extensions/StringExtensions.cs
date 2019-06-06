@@ -59,9 +59,13 @@ namespace Umbrella.Utilities.Extensions
             return s_HtmlTagPatternRegex.Replace(value, string.Empty);
         }
 
+		// TODO: V3 - Add an additional parameter to allow the caller to specify whether the method
+		// should transform something like this: MOVChecked to either this movChecked (which is the current behaviour)
+		// or this mOVChecked. Not sure why I did it like this. Must have been required on a project somewhere.
         public static string ToCamelCase(this string value) => ToCamelCaseInternal(value, false);
         public static string ToCamelCaseInvariant(this string value) => ToCamelCaseInternal(value, true);
 
+		// TODO: Internally reimplement using local functions and Span<char>
         public static string ToCamelCaseInternal(string value, bool useInvariantCulture)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -316,6 +320,19 @@ namespace Umbrella.Utilities.Extensions
 			}
 
 			return span.ToString();
+		}
+
+		private static string ToTitleCase(this string value, bool trim = true)
+		{
+			if (string.IsNullOrEmpty(value))
+				return value;
+
+			throw new NotImplementedException();
+		}
+
+		private static string UppercaseFirst(this string value, bool trim = true)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

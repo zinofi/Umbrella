@@ -23,6 +23,8 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 {
     // TODO: Add IHostingEnvironmentAccessor and IHttpContextAccessor abstractions as per ASP.NET Core
     // so that this class can be fully tested.
+	// TODO: Find all usage of the stackalloc keyword and allocate to the heap where the length of data we are dealing
+	// with is below a certain value, e.g. 128. For all other instances, allocate to the heap to avoid stack overflow.
     public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
     {
         #region Private Static Members
