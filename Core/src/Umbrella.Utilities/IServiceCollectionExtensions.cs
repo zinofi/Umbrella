@@ -13,6 +13,7 @@ using Umbrella.Utilities.Email.Interfaces;
 using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.FriendlyUrl;
+using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
@@ -37,6 +38,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IMultiCache, MultiCache>();
             services.AddSingleton<INonceGenerator, NonceGenerator>();
             services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
+			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
+			services.AddSingleton<HttpResourceInfoUtilityOptions>();
 
             // Default Options - These can be replaced by calls to the Configure* methods below.
             services.AddSingleton(serviceProvider =>
