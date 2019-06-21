@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -252,8 +253,19 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 						context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
 						context.Response.ETag = eTagValue;
-						context.Response.Expires = DateTimeOffset.UtcNow.AddYears(1);
-						context.Response.Headers["Cache-Control"] = "private, max-age=31557600, must-revalidate";
+
+						if(Options.MaxAgeSeconds.HasValue)
+							context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(Options.MaxAgeSeconds.Value);
+
+						var sbCacheControl = new StringBuilder(Options.HttpCacheability.ToCacheControlString());
+
+						if (Options.MaxAgeSeconds.HasValue)
+							sbCacheControl.Append(", max-age=" + Options.MaxAgeSeconds);
+
+						if (Options.MustRevalidate)
+							sbCacheControl.Append(", must-revalidate");
+
+						context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
 
 						// Ensure the response stream is flushed async immediately here. If not, there could be content
 						// still buffered which will not be sent out until the stream is disposed at which point

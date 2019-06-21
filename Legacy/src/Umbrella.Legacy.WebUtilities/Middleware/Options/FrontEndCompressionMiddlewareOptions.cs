@@ -19,5 +19,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware.Options
         public bool WatchFiles { get; set; }
         public string AcceptEncodingHeaderKey { get; set; } = "Accept-Encoding";
         public Action<IOwinContext, HashSet<string>> AcceptEncodingModifier { get; set; }
+		public int? MaxAgeSeconds { get; set; } = 31557600;
+		public FrontEndCompressionMiddlewareHttpCacheability HttpCacheability { get; set; } = FrontEndCompressionMiddlewareHttpCacheability.Private;
+		public bool MustRevalidate { get; set; } = true;
 	}
 }
