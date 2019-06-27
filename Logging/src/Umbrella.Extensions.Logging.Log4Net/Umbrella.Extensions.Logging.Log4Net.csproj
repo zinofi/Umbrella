@@ -15,7 +15,7 @@
   
   <PropertyGroup>
     <PackageId>Umbrella.Extensions.Logging.Log4Net</PackageId>
-    <Version>2.8.0</Version>
+    <Version>2.8.1</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
