@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 
 namespace Umbrella.FileSystem.Abstractions
 {
-	// TODO: Add a new parameter to the end of each method called bufferSizeOverride.
-	// Internally, each method will use the Small or Large buffer size defaults. At least then consumers have control.
 	public interface IUmbrellaFileInfo
 	{
 		bool IsNew { get; }

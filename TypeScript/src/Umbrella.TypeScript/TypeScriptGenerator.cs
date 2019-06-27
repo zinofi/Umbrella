@@ -3,203 +3,225 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Umbrella.TypeScript.Exceptions;
 using Umbrella.TypeScript.Generators;
 using Umbrella.TypeScript.Generators.Interfaces;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Comparers;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript
 {
-    //This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
-    //i.e. a type that is part of the .NET framework other than a primitive, DateTime or string, array or IEnumerable
-    public class TypeScriptGenerator
-    {
-        #region Private Members
-        private readonly List<Type> m_Types;
-        private bool m_StrictNullChecks;
-        private TypeScriptPropertyMode m_TypeScriptPropertyMode;
-        #endregion
+	//This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
+	//i.e. a type that is part of the .NET framework other than a primitive, DateTime or string, array or IEnumerable
+	public class TypeScriptGenerator
+	{
+		#region Private Members
+		private readonly List<Type> m_Types;
+		private bool m_StrictNullChecks;
+		private TypeScriptPropertyMode m_TypeScriptPropertyMode;
+		#endregion
 
-        #region Public Properties
-        public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator, Type>(x => x.GetType()));
-        #endregion
+		#region Public Properties
+		public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator, Type>(x => x.GetType()));
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        /// <summary>
-        /// Create a new <see cref="TypeScriptGenerator"/> instance.
-        /// </summary>
-        /// <param name="onlyNamedAssemblies">
-        /// A list of assembly names to scan for <see cref="TypeScriptModelAttribute"/> declarations.
-        /// If no names are specified then all assemblies in the current <see cref="AppDomain"/> will be loaded
-        /// and scanned.
-        /// </param>
-        public TypeScriptGenerator(params string[] onlyNamedAssemblies)
-        {
-            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
+		/// <summary>
+		/// Create a new <see cref="TypeScriptGenerator"/> instance.
+		/// </summary>
+		/// <param name="onlyNamedAssemblies">
+		/// A list of assembly names to scan for <see cref="TypeScriptModelAttribute"/> declarations.
+		/// If no names are specified then all assemblies in the current <see cref="AppDomain"/> will be loaded
+		/// and scanned.
+		/// </param>
+		public TypeScriptGenerator(params string[] onlyNamedAssemblies)
+		{
+			try
+			{
+				IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            if (onlyNamedAssemblies?.Length > 0)
-                assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.GetName().Name));
+				if (onlyNamedAssemblies?.Length > 0)
+					assemblies = assemblies.Where(x => onlyNamedAssemblies.Contains(x.GetName().Name));
 
-            m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
-        }
+				m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
+			}
+			catch (ReflectionTypeLoadException exc)
+			{
+				var messageBuilder = new StringBuilder("There has been a problem loading the specified assemblies. The following loader exception messages have been encountered:")
+					.AppendLine()
+					.AppendLine();
 
-        public TypeScriptGenerator(List<Assembly> assemblies)
-        {
-            m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
-        }
+				foreach (string message in exc.LoaderExceptions.Select(x => x.Message))
+				{
+					if (!string.IsNullOrWhiteSpace(message))
+						messageBuilder.AppendLine("\t - " + message);
+				}
 
-        public TypeScriptGenerator IncludeStandardGenerators()
-        {
-            Generators.Add(new StandardInterfaceGenerator());
-            Generators.Add(new StandardClassGenerator());
+				throw new UmbrellaTypeScriptException("There has been a problem loading the specified assemblies.", exc);
+			}
+			catch (Exception exc)
+			{
+				throw new UmbrellaTypeScriptException("There has been a problem loading the TypeScript generator.", exc);
+			}
+		}
 
-            return this;
-        }
+		public TypeScriptGenerator(List<Assembly> assemblies)
+		{
+			m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
+		}
 
-        public TypeScriptGenerator IncludeKnockoutGenerators()
-        {
-            Generators.Add(new KnockoutInterfaceGenerator());
-            Generators.Add(new KnockoutClassGenerator());
+		public TypeScriptGenerator IncludeStandardGenerators()
+		{
+			Generators.Add(new StandardInterfaceGenerator());
+			Generators.Add(new StandardClassGenerator());
 
-            return this;
-        }
+			return this;
+		}
 
-        public TypeScriptGenerator IncludeGenerator<T>()
-            where T : IGenerator, new()
-        {
-            Generators.Add(new T());
+		public TypeScriptGenerator IncludeKnockoutGenerators()
+		{
+			Generators.Add(new KnockoutInterfaceGenerator());
+			Generators.Add(new KnockoutClassGenerator());
 
-            return this;
-        }
+			return this;
+		}
 
-        public string GenerateAll(bool outputAsModuleExport = true, bool strictNullChecks = true, TypeScriptPropertyMode propertyMode = TypeScriptPropertyMode.Model)
-        {
-            m_StrictNullChecks = strictNullChecks;
-            m_TypeScriptPropertyMode = propertyMode;
+		public TypeScriptGenerator IncludeGenerator<T>()
+			where T : IGenerator, new()
+		{
+			Generators.Add(new T());
 
-            StringBuilder sbNamespaces = new StringBuilder();
+			return this;
+		}
 
-            //Before processing the models, firstly find all the enums that need to be generated
-            var enumItems = GetEnumItems().ToList();
-            Dictionary<string, List<TypeInfo>> enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
+		public string GenerateAll(bool outputAsModuleExport = true, bool strictNullChecks = true, TypeScriptPropertyMode propertyMode = TypeScriptPropertyMode.Model)
+		{
+			m_StrictNullChecks = strictNullChecks;
+			m_TypeScriptPropertyMode = propertyMode;
 
-            //Start of TypeScript namespace or module export
-            string namespaceOrModuleStart = outputAsModuleExport
-                ? "export module"
-                : "namespace";
+			StringBuilder sbNamespaces = new StringBuilder();
 
-            //Generate the models
-            foreach (var group in GetModelItems().GroupBy(x => x.ModelType.Namespace))
-            {
-                string nsName = group.Key;
+			//Before processing the models, firstly find all the enums that need to be generated
+			var enumItems = GetEnumItems().ToList();
+			Dictionary<string, List<TypeInfo>> enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
 
-                sbNamespaces.AppendLine($"{namespaceOrModuleStart} {nsName}")
-                    .AppendLine("{");
+			//Start of TypeScript namespace or module export
+			string namespaceOrModuleStart = outputAsModuleExport
+				? "export module"
+				: "namespace";
 
-                //Generate enum definitions for this namespace if any exist
-                if (enumGroups.ContainsKey(nsName))
-                {
-                    List<TypeInfo> lstEnumToGenerate = enumGroups[nsName];
+			//Generate the models
+			foreach (var group in GetModelItems().GroupBy(x => x.ModelType.Namespace))
+			{
+				string nsName = group.Key;
 
-                    foreach (TypeInfo enumType in lstEnumToGenerate)
-                    {
-                        string enumOutput = GenerateEnumDefinition(enumType);
+				sbNamespaces.AppendLine($"{namespaceOrModuleStart} {nsName}")
+					.AppendLine("{");
 
-                        sbNamespaces.AppendLine(enumOutput);
-                    }
+				//Generate enum definitions for this namespace if any exist
+				if (enumGroups.ContainsKey(nsName))
+				{
+					List<TypeInfo> lstEnumToGenerate = enumGroups[nsName];
 
-                    //Remove this key from the dictionary seeing as it has now been processed
-                    enumGroups.Remove(nsName);
-                }
+					foreach (TypeInfo enumType in lstEnumToGenerate)
+					{
+						string enumOutput = GenerateEnumDefinition(enumType);
 
-                //Generate model interfaces and classes
-                foreach (TypeScriptModelGeneratorItem item in group)
-                {
-                    //Generate the models using the registered generators
-                    foreach (IGenerator generator in Generators)
-                    {
-                        TypeScriptModelAttribute attribute = item.ModelAttribute;
+						sbNamespaces.AppendLine(enumOutput);
+					}
 
-                        if (attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
-                        {
-                            string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules, m_StrictNullChecks, m_TypeScriptPropertyMode);
+					//Remove this key from the dictionary seeing as it has now been processed
+					enumGroups.Remove(nsName);
+				}
 
-                            sbNamespaces.AppendLine(generatorOutput);
-                        }
-                    }
-                }
+				//Generate model interfaces and classes
+				foreach (TypeScriptModelGeneratorItem item in group)
+				{
+					//Generate the models using the registered generators
+					foreach (IGenerator generator in Generators)
+					{
+						TypeScriptModelAttribute attribute = item.ModelAttribute;
 
-                //End of TypeScript namespace
-                sbNamespaces.AppendLine("}");
-            }
+						if (attribute.OutputModelTypes.HasFlag(generator.OutputModelType))
+						{
+							string generatorOutput = generator.Generate(item.ModelType, attribute.GenerateValidationRules, m_StrictNullChecks, m_TypeScriptPropertyMode);
 
-            //Now generate enums in namespaces that couldn't be placed within the same namespace as any of the generated models
-            foreach (var group in enumGroups)
-            {
-                //Start of TypeScript namespace
-                sbNamespaces.AppendLine($"{namespaceOrModuleStart} {group.Key}")
-                    .AppendLine("{");
+							sbNamespaces.AppendLine(generatorOutput);
+						}
+					}
+				}
 
-                foreach (TypeInfo enumType in group.Value)
-                {
-                    string enumOutput = GenerateEnumDefinition(enumType);
+				//End of TypeScript namespace
+				sbNamespaces.AppendLine("}");
+			}
 
-                    sbNamespaces.AppendLine(enumOutput);
-                }
+			//Now generate enums in namespaces that couldn't be placed within the same namespace as any of the generated models
+			foreach (var group in enumGroups)
+			{
+				//Start of TypeScript namespace
+				sbNamespaces.AppendLine($"{namespaceOrModuleStart} {group.Key}")
+					.AppendLine("{");
 
-                //End of TypeScript namespace
-                sbNamespaces.AppendLine("}");
-            }
+				foreach (TypeInfo enumType in group.Value)
+				{
+					string enumOutput = GenerateEnumDefinition(enumType);
 
-            return sbNamespaces.ToString();
-        }
-        #endregion
+					sbNamespaces.AppendLine(enumOutput);
+				}
 
-        #region Private Methods
-        private string GenerateEnumDefinition(TypeInfo enumType)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendLine($"\texport enum {enumType.Name}");
-            builder.AppendLine("\t{");
+				//End of TypeScript namespace
+				sbNamespaces.AppendLine("}");
+			}
 
-            foreach (var enumItem in enumType.GetEnumDictionary())
-            {
-                builder.AppendLine($"\t\t{enumItem.Value} = {enumItem.Key},");
-            }
+			return sbNamespaces.ToString();
+		}
+		#endregion
 
-            builder.AppendLine("\t}");
-            return builder.ToString();
-        }
+		#region Private Methods
+		private string GenerateEnumDefinition(TypeInfo enumType)
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.AppendLine($"\texport enum {enumType.Name}");
+			builder.AppendLine("\t{");
 
-        private IEnumerable<TypeScriptModelGeneratorItem> GetModelItems()
-        {
-            foreach (Type type in m_Types)
-            {
-                TypeScriptModelAttribute modelAttribute = type.GetTypeInfo().GetCustomAttribute<TypeScriptModelAttribute>();
+			foreach (var enumItem in enumType.GetEnumDictionary())
+			{
+				builder.AppendLine($"\t\t{enumItem.Value} = {enumItem.Key},");
+			}
 
-                if (modelAttribute == null)
-                    continue;
+			builder.AppendLine("\t}");
+			return builder.ToString();
+		}
 
-                yield return new TypeScriptModelGeneratorItem { ModelType = type, ModelAttribute = modelAttribute };
-            }
-        }
+		private IEnumerable<TypeScriptModelGeneratorItem> GetModelItems()
+		{
+			foreach (Type type in m_Types)
+			{
+				TypeScriptModelAttribute modelAttribute = type.GetTypeInfo().GetCustomAttribute<TypeScriptModelAttribute>();
 
-        private IEnumerable<TypeInfo> GetEnumItems()
-        {
-            foreach (var type in m_Types.Select(x => x.GetTypeInfo()))
-            {
-                if (!type.IsEnum)
-                    continue;
+				if (modelAttribute == null)
+					continue;
 
-                TypeScriptEnumAttribute enumAttribute = type.GetCustomAttribute<TypeScriptEnumAttribute>();
+				yield return new TypeScriptModelGeneratorItem { ModelType = type, ModelAttribute = modelAttribute };
+			}
+		}
 
-                if (enumAttribute == null)
-                    continue;
+		private IEnumerable<TypeInfo> GetEnumItems()
+		{
+			foreach (var type in m_Types.Select(x => x.GetTypeInfo()))
+			{
+				if (!type.IsEnum)
+					continue;
 
-                yield return type;
-            }
-        }
-        #endregion
-    }
+				TypeScriptEnumAttribute enumAttribute = type.GetCustomAttribute<TypeScriptEnumAttribute>();
+
+				if (enumAttribute == null)
+					continue;
+
+				yield return type;
+			}
+		}
+		#endregion
+	}
 }
