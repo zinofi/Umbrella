@@ -195,7 +195,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { item.Id, item.Source, url, isNew }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { item.Id, item.AssetSource, url, isNew }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -250,7 +250,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { items = items.Where(x => x != null).Select(x => (x.Id, x.Source)), url }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { items = items.Where(x => x != null).Select(x => (x.Id, x.AssetSource)), url }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -329,8 +329,8 @@ namespace Umbrella.DataAccess.Remote
 		#endregion
 
 		#region Protected Methods
-		protected virtual void ApplyRemoteSourceType(TItem item) => item.Source = RemoteSourceType;
-		protected virtual void ApplyRemoteSourceType(List<TItem> items) => items.ForEach(x => x.Source = RemoteSourceType);
+		protected virtual void ApplyRemoteSourceType(TItem item) => item.AssetSource = RemoteSourceType;
+		protected virtual void ApplyRemoteSourceType(List<TItem> items) => items.ForEach(x => x.AssetSource = RemoteSourceType);
 		protected virtual object CreatePostModel(TItem source) => source;
 		protected virtual object CreatePutModel(TItem source) => source;
 		#endregion
