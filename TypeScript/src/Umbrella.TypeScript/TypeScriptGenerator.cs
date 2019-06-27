@@ -52,13 +52,16 @@ namespace Umbrella.TypeScript
 					.AppendLine()
 					.AppendLine();
 
-				foreach (string message in exc.LoaderExceptions.Select(x => x.Message))
+				if (exc.LoaderExceptions?.Length > 0)
 				{
-					if (!string.IsNullOrWhiteSpace(message))
-						messageBuilder.AppendLine("\t - " + message);
+					foreach (string message in exc.LoaderExceptions.Select(x => x.Message))
+					{
+						if (!string.IsNullOrWhiteSpace(message))
+							messageBuilder.AppendLine("\t - " + message);
+					}
 				}
 
-				throw new UmbrellaTypeScriptException("There has been a problem loading the specified assemblies.", exc);
+				throw new UmbrellaTypeScriptException(messageBuilder.ToString(), exc);
 			}
 			catch (Exception exc)
 			{
