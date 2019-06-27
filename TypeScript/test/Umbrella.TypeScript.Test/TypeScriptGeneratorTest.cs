@@ -22,7 +22,21 @@ namespace Umbrella.TypeScript.Test
 
             Assert.NotNull(output);
         }
-    }
+
+		[Fact]
+		public void GenerateAllUsingOnlyNamedAssembliesTest()
+		{
+			var testAssembly = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
+
+			TypeScriptGenerator generator = new TypeScriptGenerator("Umbrella.TypeScript.Test")
+				.IncludeStandardGenerators()
+				.IncludeKnockoutGenerators();
+
+			string output = generator.GenerateAll(true, true, TypeScriptPropertyMode.Model);
+
+			Assert.NotNull(output);
+		}
+	}
 
     [TypeScriptEnum]
     public enum TestEnum
