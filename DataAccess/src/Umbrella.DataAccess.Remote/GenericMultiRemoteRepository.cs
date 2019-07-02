@@ -169,7 +169,7 @@ namespace Umbrella.DataAccess.Remote
 					// Filter out any items that fail the access check
 					if (!await CheckAccessAsync(item, cancellationToken).ConfigureAwait(false))
 					{
-						Log.WriteWarning(state: new { item.Id, item.AssetSource }, message: "The specified item failed the access check. This should not happen.");
+						Log.WriteWarning(state: new { item.Id, item.Source }, message: "The specified item failed the access check. This should not happen.");
 
 						lstItem.RemoveAt(i);
 						i--;
@@ -282,7 +282,7 @@ namespace Umbrella.DataAccess.Remote
 				if (!await CheckAccessAsync(item, cancellationToken).ConfigureAwait(false))
 					throw new UmbrellaForbiddenDataAccessException();
 
-				var service = ServiceDictionary[item.AssetSource];
+				var service = ServiceDictionary[item.Source];
 
 				var (statusCode, message, result) = await service.SaveAsync(item, cancellationToken).ConfigureAwait(false);
 
@@ -349,7 +349,7 @@ namespace Umbrella.DataAccess.Remote
 						throw new UmbrellaForbiddenDataAccessException();
 				}
 
-				var groups = items.GroupBy(x => x.AssetSource).ToList();
+				var groups = items.GroupBy(x => x.Source).ToList();
 
 				var lstTask = new Task[groups.Count];
 				var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode statusCode, string message, IReadOnlyCollection<TItem> results)>>(groups.Count);
