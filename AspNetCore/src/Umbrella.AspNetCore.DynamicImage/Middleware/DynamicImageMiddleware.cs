@@ -30,10 +30,12 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
         private readonly IHostingEnvironment m_HostingEnvironment;
         private readonly IHttpHeaderValueUtility m_HeaderValueUtility;
         private readonly DynamicImageMiddlewareOptions m_MiddlewareOptions = new DynamicImageMiddlewareOptions();
-        #endregion
+		#endregion
 
-        #region Constructors
-        public DynamicImageMiddleware(RequestDelegate next,
+		#region Constructors
+
+		// TODO: V3 - Change the optionsBuilder to options.
+		public DynamicImageMiddleware(RequestDelegate next,
             ILogger<DynamicImageMiddleware> logger,
             IOptions<DynamicImageConfigurationOptions> configOptions,
             IDynamicImageUtility dynamicImageUtility,
