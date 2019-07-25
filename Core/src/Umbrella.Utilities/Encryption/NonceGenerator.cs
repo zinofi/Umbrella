@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Exceptions;
@@ -55,14 +51,35 @@ namespace Umbrella.Utilities.Encryption
 			}
 			finally
 			{
-				if(buffer != null)
+				if (buffer != null)
 					ArrayPool<byte>.Shared.Return(buffer, true);
 			}
 		}
 
+		#region IDisposable Support
+		private bool _isDisposed = false;
+
 		/// <summary>
-		/// Disposes of the current instance
+		/// Releases unmanaged and - optionally - managed resources.
 		/// </summary>
-		public void Dispose() => _random.Dispose();
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_isDisposed)
+			{
+				if (disposing)
+				{
+					_random.Dispose();
+				}
+
+				_isDisposed = true;
+			}
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public void Dispose() => Dispose(true); // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+		#endregion
 	}
 }
