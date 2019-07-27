@@ -64,6 +64,9 @@ namespace Umbrella.DynamicImage
 
 			try
             {
+				// TODO: Check if the path has an extension. If not, return the invalid result.
+				// TODO: Add Unit Tests for the above.
+
                 string pathPrefix = dynamicImagePathPrefix.ToLowerInvariant();
                 string url = relativeUrl?.Trim()?.ToLowerInvariant();
 
