@@ -783,6 +783,7 @@ namespace Umbrella.Utilities.Mime
 			["movie"] = "video/x-sgi-movie",
 			["smv"] = "video/x-smv",
 			["ice"] = "x-conference/x-cooltalk",
+			["cr2"] = "image/x-canon-cr2"
 		};
 		#endregion
 
@@ -792,7 +793,7 @@ namespace Umbrella.Utilities.Mime
 		/// If the extension cannot be identified then the default type of application/octet-stream will be returned.
 		/// </summary>
 		/// <param name="fileNameOrExtension">The file name or extension.</param>
-		public string GetMimeType(string fileNameOrExtension)
+		public virtual string GetMimeType(string fileNameOrExtension)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(fileNameOrExtension, nameof(fileNameOrExtension));
 
