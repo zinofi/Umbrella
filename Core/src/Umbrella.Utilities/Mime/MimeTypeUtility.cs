@@ -787,7 +787,11 @@ namespace Umbrella.Utilities.Mime
 		};
 		#endregion
 
-		#region IMimeTypeUtility		
+		#region Constructors
+		// TODO V3: Add a ctor that accepts a logger and wrap the public method bodies in try...catch.
+		#endregion
+
+		#region IMimeTypeUtility Members	
 		/// <summary>
 		/// Gets the MIME Type of the specified filename or extension.
 		/// If the extension cannot be identified then the default type of application/octet-stream will be returned.
