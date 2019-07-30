@@ -3,6 +3,7 @@ using Umbrella.Utilities.Json;
 
 namespace Umbrella.Utilities
 {
+	// TODO V3: Switch to use the new Microsoft JSON packages
     public static class UmbrellaStatics
     {
         public delegate string SerializeJsonDelegate(object value, bool useCamelCasingRules, UmbrellaJsonTypeNameHandling typeNameHandling);
