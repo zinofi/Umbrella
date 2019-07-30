@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+// TODO: V3 - Move to abstractions namespace - check everywhere else too to make this consistent.
 namespace Umbrella.Utilities.Email.Interfaces
 {
     public interface IEmailBuilder
