@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
@@ -15,6 +12,8 @@ using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.FriendlyUrl;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Numerics;
+using Umbrella.Utilities.Numerics.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -22,59 +21,79 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
-        {
-            Guard.ArgumentNotNull(services, nameof(services));
+	/// <summary>
+	/// Extension methods used to register services for the Umbrella.Utilities package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// </summary>
+	public static class IServiceCollectionExtensions
+	{
+		/// <summary>
+		/// Adds the Umbrella.Utilities services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
-            services.AddTransient<IEmailBuilder, EmailBuilder>();
-            services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
-            services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
-            services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
-            services.AddSingleton<ICertificateUtility, CertificateUtility>();
-            services.AddSingleton<ISecureStringGenerator, SecureStringGenerator>();
-            services.AddSingleton<IMultiCache, MultiCache>();
-            services.AddSingleton<INonceGenerator, NonceGenerator>();
-            services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
+			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
+			services.AddTransient<IEmailBuilder, EmailBuilder>();
+			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
+			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
+			services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
+			services.AddSingleton<ICertificateUtility, CertificateUtility>();
+			services.AddSingleton<ISecureStringGenerator, SecureStringGenerator>();
+			services.AddSingleton<IMultiCache, MultiCache>();
+			services.AddSingleton<INonceGenerator, NonceGenerator>();
+			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
 			services.AddSingleton<HttpResourceInfoUtilityOptions>();
+			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
 
-            // Default Options - These can be replaced by calls to the Configure* methods below.
-            services.AddSingleton(serviceProvider =>
-            {
-                var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
+			// Default Options - These can be replaced by calls to the Configure* methods below.
+			services.AddSingleton(serviceProvider =>
+			{
+				var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
 
-                return new MultiCacheOptions
-                {
-                    CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
-                };
-            });
+				return new MultiCacheOptions
+				{
+					CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
+				};
+			});
 
-            return services;
-        }
+			return services;
+		}
 
-        public static IServiceCollection ConfigureMultiCacheOptions(this IServiceCollection services, Action<IServiceProvider, MultiCacheOptions> optionsBuilder)
-        {
-            Guard.ArgumentNotNull(services, nameof(services));
+		/// <summary>
+		/// Configures the <see cref="MultiCacheOptions"/> for use with the <see cref="MultiCache"/>.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <param name="optionsBuilder">An optional delegate used to build the <see cref="MultiCacheOptions"/>.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// /// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection ConfigureMultiCacheOptions(this IServiceCollection services, Action<IServiceProvider, MultiCacheOptions> optionsBuilder)
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            services.ReplaceSingleton(serviceProvider =>
-            {
-                var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
+			services.ReplaceSingleton(serviceProvider =>
+			{
+				var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
 
-                var options = new MultiCacheOptions
-                {
-                    CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
-                };
+				var options = new MultiCacheOptions
+				{
+					CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
+				};
 
-                optionsBuilder?.Invoke(serviceProvider, options);
+				// TODO V3: This should not be allowed to be null. Add a Guard check above and add an <exception> comment to the xml docs.
+				optionsBuilder?.Invoke(serviceProvider, options);
 
-                return options;
-            });
+				return options;
+			});
 
-            return services;
-        }
+			return services;
+		}
 
 		// TODO: Really need have an encryption utility options class with properties for key and iv and register with DI
 		// It's a breaking change though so leave until v3.
@@ -85,5 +104,5 @@ namespace Microsoft.Extensions.DependencyInjection
 
 		//	return services;
 		//}
-    }
+	}
 }
