@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Numerics.Abstractions
 {
@@ -22,7 +23,8 @@ namespace Umbrella.Utilities.Numerics.Abstractions
 		/// is less than one or is greater than the difference between <paramref name="min"/> and <paramref name="max"/> such that it will be
 		/// impossible to generate a collection of the size of the specified <paramref name="count"/> value.
 		/// </exception>
-		IReadOnlyCollection<int> GenerateDistinctList(int min, int max, int count, bool shuffle);
+		/// <exception cref="UmbrellaException">An error has occurred while generating the collection.</exception>
+		IReadOnlyCollection<int> GenerateDistinctCollection(int min, int max, int count, bool shuffle = false);
 
 		/// <summary>
 		/// Gets the next random number based on the specified <paramref name="min"/> and <paramref name="max"/> values.
@@ -34,7 +36,15 @@ namespace Umbrella.Utilities.Numerics.Abstractions
 		/// that is, the range of return values includes <paramref name="min"/> but not <paramref name="max"/>. If <paramref name="min"/>
 		/// equals <paramref name="max"/>, <paramref name="min"/> is returned.</returns>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.</exception>
+		/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
 		int Next(int min = 0, int max = 0);
+
+		/// <summary>
+		/// Returns a non-negative random integer.
+		/// </summary>
+		/// <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="int.MaxValue"/>.</returns>
+		/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
+		int Next();
 
 		/// <summary>
 		/// Returns a specified number of random elements from a sequence.

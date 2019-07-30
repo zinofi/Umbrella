@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Numerics.Abstractions;
 
 namespace Umbrella.Utilities.Numerics
@@ -32,6 +33,23 @@ namespace Umbrella.Utilities.Numerics
 		}
 
 		/// <summary>
+		/// Returns a non-negative random integer.
+		/// </summary>
+		/// <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="int.MaxValue"/>.</returns>
+		/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
+		public int Next()
+		{
+			try
+			{
+				return _threadLocalRandom.Value.Next();
+			}
+			catch (Exception exc) when (_log.WriteError(exc))
+			{
+				throw new UmbrellaException("An error has occurred while generating the random number.", exc);
+			}
+		}
+
+		/// <summary>
 		/// Gets the next random number based on the specified <paramref name="min"/> and <paramref name="max"/> values.
 		/// </summary>
 		/// <param name="min">The inclusive lower bound of the random number returned.</param>
@@ -41,10 +59,11 @@ namespace Umbrella.Utilities.Numerics
 		/// that is, the range of return values includes <paramref name="min"/> but not <paramref name="max"/>. If <paramref name="min"/>
 		/// equals <paramref name="max"/>, <paramref name="min"/> is returned.</returns>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.</exception>
+		/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
 		public int Next(int min = 0, int max = 0)
 		{
-			Guard.ArgumentInRange(min, nameof(min), 0);
-			Guard.ArgumentInRange(max, nameof(max), 0);
+			Guard.ArgumentInRange(min, nameof(min), 0, int.MaxValue);
+			Guard.ArgumentInRange(max, nameof(max), 0, int.MaxValue);
 
 			if (min == max)
 				return min;
@@ -53,19 +72,11 @@ namespace Umbrella.Utilities.Numerics
 
 			try
 			{
-				Random random = _threadLocalRandom.Value;
-
-				if (min > 0 && max > 0)
-					return random.Next(min, max);
-
-				if (max > 0)
-					return random.Next(max);
-
-				return random.Next();
+				return _threadLocalRandom.Value.Next(min, max);
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { min, max }))
 			{
-				throw;
+				throw new UmbrellaException("An error has occurred while generating the random number.", exc);
 			}
 		}
 
@@ -83,7 +94,8 @@ namespace Umbrella.Utilities.Numerics
 		/// is less than one or is greater than the difference between <paramref name="min"/> and <paramref name="max"/> such that it will be
 		/// impossible to generate a collection of the size of the specified <paramref name="count"/> value.
 		/// </exception>
-		public IReadOnlyCollection<int> GenerateDistinctList(int min, int max, int count, bool shuffle)
+		/// <exception cref="UmbrellaException">An error has occurred while generating the collection.</exception>
+		public IReadOnlyCollection<int> GenerateDistinctCollection(int min, int max, int count, bool shuffle = false)
 		{
 			Guard.ArgumentInRange(min, nameof(min), 0);
 			Guard.ArgumentInRange(max, nameof(max), 0);
@@ -125,7 +137,7 @@ namespace Umbrella.Utilities.Numerics
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { min, max, count, shuffle }))
 			{
-				throw;
+				throw new UmbrellaException("An error has occurred while generating the collection.", exc);
 			}
 		}
 
@@ -142,14 +154,15 @@ namespace Umbrella.Utilities.Numerics
 		public IEnumerable<T> TakeRandom<T>(IEnumerable<T> source, int count, bool shuffle = false)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
-			Guard.ArgumentInRange(count, nameof(count), 1);
 
 			int sourceCount = source.Count();
 
 			if (sourceCount == 0)
 				yield break;
 
-			var indexes = GenerateDistinctList(0, sourceCount, count, shuffle);
+			Guard.ArgumentInRange(count, nameof(count), 1, sourceCount);
+
+			var indexes = GenerateDistinctCollection(0, sourceCount, count, shuffle);
 
 			foreach (int idx in indexes)
 			{
