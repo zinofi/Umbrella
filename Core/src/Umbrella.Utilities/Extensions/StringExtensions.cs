@@ -139,18 +139,19 @@ namespace Umbrella.Utilities.Extensions
 			if (string.IsNullOrEmpty(value))
 				return value;
 
-			StringBuilder sb = new StringBuilder(value);
+			var sb = new StringBuilder(value);
 			sb.ConvertHtmlBrTagsToReplacement("\n");
 
 			return sb.ToString();
 		}
 
+		[Obsolete("This will be removed in the next major version. It's become a bit of a mess over time and has defeated it's original purpose!")]
 		public static string Clean(this string value, bool convertBrTagsToNl = false, bool trim = true, bool trimNewLines = true, bool stripHtml = true, bool stripNbsp = true, bool decodeHtmlEncodedLineBreaks = true)
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				return null;
 
-			StringBuilder sb = new StringBuilder(value);
+			var sb = new StringBuilder(value);
 
 			if (convertBrTagsToNl)
 				sb.ConvertHtmlBrTagsToReplacement("\n");
@@ -168,12 +169,13 @@ namespace Umbrella.Utilities.Extensions
 					.Replace("&#13;", "\r");
 			}
 
-			//Replace the following in strings
+			// Replace the following in strings
 			sb.Replace("&amp;", "&");
 			sb.Replace("&#39;", "'");
 			sb.Replace("&quot;", "\"");
-			sb.Replace("&#8216;", "'"); //Left quote
-			sb.Replace("&#8217;", "'"); //Right quote
+			sb.Replace("&#8216;", "'"); // Left quote
+			sb.Replace("&#8217;", "'"); // Right quote
+			sb.Replace("&#163;", "£");
 
 			if (trimNewLines)
 			{
