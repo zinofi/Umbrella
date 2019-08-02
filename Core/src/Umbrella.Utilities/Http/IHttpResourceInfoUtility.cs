@@ -8,7 +8,7 @@ namespace Umbrella.Utilities.Http
 	/// <summary>
 	/// A utility class used to get basic details of a resource on a URL.
 	/// </summary>
-	public interface IHttpResourceInfoUtility : IDisposable
+	public interface IHttpResourceInfoUtility : IDisposable // TODO V3: This should not implement IDisposable - only the concrete type should!
 	{
 		/// <summary>
 		/// Gets the <see cref="HttpResourceInfo"/> for the specified <paramref name="url"/>. Returns null where the resource cannot be found.

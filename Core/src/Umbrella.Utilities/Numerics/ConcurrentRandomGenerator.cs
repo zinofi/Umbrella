@@ -172,22 +172,13 @@ namespace Umbrella.Utilities.Numerics
 
 		private Random CreateRandom()
 		{
-			byte[] buffer = null;
+			// TODO: Revisit using ArrayPool at some point.
+			byte[] buffer = new byte[4];
+			_randomNumberGenerator.GetBytes(buffer);
 
-			try
-			{
-				buffer = ArrayPool<byte>.Shared.Rent(4);
-				_randomNumberGenerator.GetBytes(buffer);
+			int seed = BitConverter.ToInt32(buffer, 0);
 
-				int seed = BitConverter.ToInt32(buffer, 0);
-
-				return new Random(seed);
-			}
-			finally
-			{
-				if (buffer != null)
-					ArrayPool<byte>.Shared.Return(buffer);
-			}
+			return new Random(seed);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Encryption.Abstractions;
@@ -36,11 +35,10 @@ namespace Umbrella.Utilities.Encryption
 		{
 			Guard.ArgumentInRange(lengthInBytes, nameof(lengthInBytes), 1, 1024);
 
-			byte[] buffer = null;
-
 			try
 			{
-				buffer = ArrayPool<byte>.Shared.Rent(lengthInBytes);
+				// TODO: Revisit using ArrayPool at some point.
+				byte[] buffer = new byte[lengthInBytes];
 				_random.GetBytes(buffer);
 
 				return Convert.ToBase64String(buffer);
@@ -48,11 +46,6 @@ namespace Umbrella.Utilities.Encryption
 			catch (Exception exc) when (_log.WriteError(exc, new { lengthInBytes }, returnValue: true))
 			{
 				throw new UmbrellaException($"An error has occurred whilst generating the nonce of {lengthInBytes}.", exc);
-			}
-			finally
-			{
-				if (buffer != null)
-					ArrayPool<byte>.Shared.Return(buffer, true);
 			}
 		}
 
@@ -79,7 +72,18 @@ namespace Umbrella.Utilities.Encryption
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
-		public void Dispose() => Dispose(true); // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+		public void Dispose()
+		{
+			try
+			{
+				// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+				Dispose(true);
+			}
+			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem disposing this instance.", exc);
+			}
+		}
 		#endregion
 	}
 }

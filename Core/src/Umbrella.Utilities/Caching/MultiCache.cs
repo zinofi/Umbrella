@@ -191,6 +191,9 @@ namespace Umbrella.Utilities.Caching
                             if (TrackKeys)
                                 MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out cacheMetaEntry);
 
+							// TODO: Investigate using AsyncLazy<T> to ensure that the factory only executes once. Internally, MemoryCache doesn't use locking
+							// so the factory could run multiple times. Only a problem if the factory is expensive though.
+							// Replace the boolean 'useMemoryCache' with an enum: CacheMode: Memory, MemoryMutex, Distributed.
                             T cacheItem = await MemoryCache.GetOrCreateAsync(cacheKeyInternal, async entry =>
                             {
                                 TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.MaxCacheTimeout;
@@ -373,7 +376,16 @@ namespace Umbrella.Utilities.Caching
             return value;
         }
 
-        public IReadOnlyCollection<MultiCacheMetaEntry> GetAllMemoryCacheMetaEntries()
+		/// <summary>
+		/// Gets all memory cache meta entries.
+		/// </summary>
+		/// <returns>A collection of <see cref="MultiCacheMetaEntry"/> instances.</returns>
+		/// <exception cref="MultiCacheException">
+		/// Meta entries cannot be retrieved when analytics is disabled.
+		/// or
+		/// There has been a problem reading the memory cache keys.
+		/// </exception>
+		public IReadOnlyCollection<MultiCacheMetaEntry> GetAllMemoryCacheMetaEntries()
         {
             if (!TrackKeys)
                 throw new MultiCacheException("Meta entries cannot be retrieved when analytics is disabled.");
@@ -392,6 +404,14 @@ namespace Umbrella.Utilities.Caching
             }
         }
 
+		/// <summary>
+		/// Removes the item with the specified <paramref name="cacheKey"/> from the cache.
+		/// </summary>
+		/// <typeparam name="T">The type of the cached item.</typeparam>
+		/// <param name="cacheKey">The cache key.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A task which can be awaited to indicate completion.</returns>
+		/// <exception cref="MultiCacheException">There has been a problem removing the item with the key: " + <paramref name="cacheKey"/></exception>
 		public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -410,6 +430,10 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <summary>
+		/// Clears the memory cache.
+		/// </summary>
+		/// <exception cref="MultiCacheException">There was a problem clearing all items from the memory cache.</exception>
 		public void ClearMemoryCache()
 		{
 			_nukeReaderWriterLock.EnterWriteLock();
@@ -419,7 +443,7 @@ namespace Umbrella.Utilities.Caching
 				_nukeTokenSource.Cancel();
 				_nukeTokenSource.Dispose();
 
-				// Reset things to that all future items added to the MemoryCache use a new CancellationToken.
+				// Reset things so that all future items added to the MemoryCache use a new CancellationToken.
 				_nukeTokenSource = new CancellationTokenSource();
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
@@ -505,11 +529,43 @@ namespace Umbrella.Utilities.Caching
             return options;
         }
 
-		#region IDisposable Members
+		#region IDisposable Support
+		private bool _isDisposed = false; // To detect redundant calls
+
+		/// <summary>
+		/// Releases unmanaged and - optionally - managed resources.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_isDisposed)
+			{
+				if (disposing)
+				{
+					_nukeTokenSource.Cancel();
+					_nukeTokenSource.Dispose();
+					_nukeReaderWriterLock.Dispose();
+				}
+
+				_isDisposed = true;
+			}
+		}
+
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
-		public void Dispose() => _nukeTokenSource.Dispose();
+		public void Dispose()
+		{
+			try
+			{
+				// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+				Dispose(true);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new MultiCacheException("There has been a problem disposing this instance.", exc);
+			}
+		}
 		#endregion
 	}
 }

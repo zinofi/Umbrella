@@ -12,5 +12,6 @@ namespace Umbrella.FileSystem.AzureStorage
     /// </summary>
     public interface IUmbrellaAzureBlobStorageFileProvider : IUmbrellaFileProvider
     {
+		void ClearContainerResolutionCache();
     }
 }
