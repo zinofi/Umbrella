@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Mime
 {
@@ -787,8 +789,19 @@ namespace Umbrella.Utilities.Mime
 		};
 		#endregion
 
-		#region Constructors
-		// TODO V3: Add a ctor that accepts a logger and wrap the public method bodies in try...catch.
+		#region Private Members
+		private readonly ILogger _log;
+		#endregion
+
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MimeTypeUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		public MimeTypeUtility(ILogger<MimeTypeUtility> logger)
+		{
+			_log = logger;
+		}
 		#endregion
 
 		#region IMimeTypeUtility Members	
@@ -801,19 +814,26 @@ namespace Umbrella.Utilities.Mime
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(fileNameOrExtension, nameof(fileNameOrExtension));
 
-			fileNameOrExtension = fileNameOrExtension.Trim().ToLowerInvariant();
+			try
+			{
+				fileNameOrExtension = fileNameOrExtension.Trim().ToLowerInvariant();
 
-			//Assume the filename is the extension
-			//If it contains any . chars run it through the Path utility method.
-			fileNameOrExtension = fileNameOrExtension.IndexOf('.') == -1 ? fileNameOrExtension : Path.GetExtension(fileNameOrExtension).TrimStart('.');
+				//Assume the filename is the extension
+				//If it contains any . chars run it through the Path utility method.
+				fileNameOrExtension = fileNameOrExtension.IndexOf('.') == -1 ? fileNameOrExtension : Path.GetExtension(fileNameOrExtension).TrimStart('.');
 
-			if (string.IsNullOrWhiteSpace(fileNameOrExtension))
+				if (string.IsNullOrWhiteSpace(fileNameOrExtension))
+					return _defaultMimeType;
+
+				if (_mimeTypeDictionary.TryGetValue(fileNameOrExtension, out string mimeType))
+					return mimeType;
+
 				return _defaultMimeType;
-
-			if (_mimeTypeDictionary.TryGetValue(fileNameOrExtension, out string mimeType))
-				return mimeType;
-
-			return _defaultMimeType;
+			}
+			catch (Exception exc) when (_log.WriteError(exc, new { fileNameOrExtension }, returnValue: true))
+			{
+				throw new UmbrellaException($"There was a problem identifying the mime type of the specified file name or extension: {fileNameOrExtension}", exc);
+			}
 		}
 		#endregion
 	}
