@@ -283,6 +283,21 @@ namespace Umbrella.Utilities.Extensions
 		public static string TrimToLowerInvariant(this string value)
 			=> TrimToLower(value, CultureInfo.InvariantCulture);
 
+		public static string TrimToUpper(this string value, CultureInfo culture = null)
+		{
+			if (string.IsNullOrEmpty(value))
+				return value;
+
+			ReadOnlySpan<char> span = value.AsSpan().Trim();
+			Span<char> upperSpan = stackalloc char[span.Length];
+			span.ToUpperSlim(upperSpan, culture);
+
+			return upperSpan.ToString();
+		}
+
+		public static string TrimToUpperInvariant(this string value)
+			=> TrimToUpper(value, CultureInfo.InvariantCulture);
+
 		/// <summary>
 		/// Attempts to convert the name of a person into some kind of normalized format
 		/// where the name is not presently in a reasonable format, e.g. riCHARd would be better transformed

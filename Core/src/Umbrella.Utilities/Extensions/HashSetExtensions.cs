@@ -2,6 +2,10 @@
 
 namespace Umbrella.Utilities.Extensions
 {
+	// TODO: Add more method variants.
+	// AddNotNullTrimToLower
+	// AddNotNullTrimToUpper
+	// AddNotNullTrimToUpperInvariant
 	/// <summary>
 	/// A set of extension methods for the <see cref="HashSet{T}"/> type.
 	/// </summary>
