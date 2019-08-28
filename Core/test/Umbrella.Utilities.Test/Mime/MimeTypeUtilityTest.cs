@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Umbrella.Utilities.Mime;
 using Xunit;
 
@@ -79,6 +81,6 @@ namespace Umbrella.Utilities.Test.Mime
         }
 
         private IMimeTypeUtility CreateMimeTypeUtility()
-            => new MimeTypeUtility();
+            => new MimeTypeUtility(new Mock<ILogger<MimeTypeUtility>>().Object);
     }
 }

@@ -51,9 +51,9 @@ namespace Umbrella.DataAccess.Remote
 		where TService : IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>
 	{
 		#region Private Static Members
-		private static readonly IReadOnlyCollection<TItem> _emptyItemList = new List<TItem>();
-		private static readonly IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> _emptyRemoteSourceFailuresList = new List<RemoteSourceFailure<TRemoteSource>>().AsReadOnly();
-		private static readonly IReadOnlyCollection<ValidationResult> _emptyValidationResultList = new List<ValidationResult>().AsReadOnly();
+		private static readonly IReadOnlyCollection<TItem> _emptyItemList = Array.Empty<TItem>();
+		private static readonly IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> _emptyRemoteSourceFailuresList = Array.Empty<RemoteSourceFailure<TRemoteSource>>();
+		private static readonly IReadOnlyCollection<ValidationResult> _emptyValidationResultList = Array.Empty<ValidationResult>();
 		#endregion
 
 		#region Private Members
@@ -137,7 +137,7 @@ namespace Umbrella.DataAccess.Remote
 
 				bool allSuccess = true;
 				List<RemoteSourceFailure<TRemoteSource>> lstSourceFailure = null;
-				List<TItem> lstResult = new List<TItem>();
+				var lstResult = new List<TItem>();
 
 				foreach (var item in dicTask)
 				{
@@ -157,7 +157,7 @@ namespace Umbrella.DataAccess.Remote
 
 				var sortedResults = lstResult.ApplySortExpressions(sortExpressions, new SortExpression<TItem>(x => x.Id, SortDirection.Ascending));
 
-				List<TItem> lstItem = sortedResults.ToList();
+				var lstItem = sortedResults.ToList();
 
 				if (lstItem.Count == 0)
 					return (allSuccess, lstSourceFailure ?? _emptyRemoteSourceFailuresList, _emptyItemList);
