@@ -181,7 +181,7 @@ namespace Umbrella.DataAccess.Remote
 
 				await AfterAllItemsLoadedAsync(lstItem, cancellationToken, options).ConfigureAwait(false);
 
-				return (allSuccess, lstSourceFailure ?? _emptyRemoteSourceFailuresList, lstItem.Take(pageSizeRequest).ToList());
+				return (allSuccess, lstSourceFailure ?? _emptyRemoteSourceFailuresList, lstItem.Take(pageSizeRequest).ToArray());
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSizeRequest, options }, returnValue: true))
 			{
