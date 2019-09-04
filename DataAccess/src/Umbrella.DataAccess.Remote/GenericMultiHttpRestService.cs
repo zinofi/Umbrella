@@ -174,7 +174,9 @@ namespace Umbrella.DataAccess.Remote
 				{
 					case HttpStatusCode.OK when isNew:
 					case HttpStatusCode.Created when isNew:
-						return (HttpStatusCode.Created, null, await response.Content.ReadAsAsync<TItem>().ConfigureAwait(false));
+						TItem savedItem = await response.Content.ReadAsAsync<TItem>().ConfigureAwait(false);
+						ApplyRemoteSourceType(savedItem);
+						return (HttpStatusCode.Created, null, savedItem);
 					case HttpStatusCode.OK when !isNew:
 					case HttpStatusCode.NoContent when !isNew:
 						return (HttpStatusCode.NoContent, null, null);
@@ -219,16 +221,17 @@ namespace Umbrella.DataAccess.Remote
 				{
 					case HttpStatusCode.OK when atLeastOneNewItem:
 					case HttpStatusCode.Created when atLeastOneNewItem:
-						TItem[] results = null;
+						List<TItem> results = null;
 						if (itemsCount == 1)
 						{
 							TItem result = await response.Content.ReadAsAsync<TItem>().ConfigureAwait(false);
-							results = new[] { result };
+							results = new List<TItem> { result };
 						}
 						else
 						{
-							results = await response.Content.ReadAsAsync<TItem[]>().ConfigureAwait(false);
+							results = await response.Content.ReadAsAsync<List<TItem>>().ConfigureAwait(false);
 						}
+						ApplyRemoteSourceType(results);
 						return (HttpStatusCode.Created, null, results);
 					case HttpStatusCode.OK when !atLeastOneNewItem:
 					case HttpStatusCode.NoContent when !atLeastOneNewItem:

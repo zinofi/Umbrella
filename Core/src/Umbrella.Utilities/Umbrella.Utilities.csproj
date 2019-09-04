@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Utilities</PackageId>
-    <Version>2.9.3</Version>
+    <Version>2.9.4</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
