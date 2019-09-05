@@ -15,14 +15,14 @@ namespace Umbrella.Utilities.Benchmark.Encryption
     [MemoryDiagnoser]
     public class SecureStringGeneratorBenchmark
     {
-        private readonly SecureStringGenerator _secureStringGenerator;
+        private readonly SecureRandomStringGenerator _secureStringGenerator;
 
         public SecureStringGeneratorBenchmark()
         {
-            var logger = new Mock<ILogger<SecureStringGenerator>>();
-			var options = new SecureStringGeneratorOptions();
+            var logger = new Mock<ILogger<SecureRandomStringGenerator>>();
+			var options = new SecureRandomStringGeneratorOptions();
 
-            _secureStringGenerator = new SecureStringGenerator(logger.Object, options);
+            _secureStringGenerator = new SecureRandomStringGenerator(logger.Object, options);
         }
 
         [Benchmark]

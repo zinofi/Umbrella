@@ -44,7 +44,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
 			services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
 			services.AddSingleton<ICertificateUtility, CertificateUtility>();
-			services.AddSingleton<ISecureStringGenerator, SecureStringGenerator>();
+			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
 			services.AddSingleton<IMultiCache, MultiCache>();
 			services.AddSingleton<INonceGenerator, NonceGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
@@ -62,7 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
 				};
 			});
 			services.AddSingleton<HttpResourceInfoUtilityOptions>();
-			services.AddSingleton<SecureStringGeneratorOptions>();
+			services.AddSingleton<SecureRandomStringGeneratorOptions>();
 
 			return services;
 		}

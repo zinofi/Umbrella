@@ -9,7 +9,12 @@ using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Encryption
 {
-	public class SecureStringGenerator : ISecureStringGenerator, IDisposable
+	/// <summary>
+	/// A utility to generate random strings using the default cryptographically strong <see cref="RandomNumberGenerator"/> class internally.
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.Encryption.Abstractions.ISecureRandomStringGenerator" />
+	/// <seealso cref="System.IDisposable" />
+	public class SecureRandomStringGenerator : ISecureRandomStringGenerator, IDisposable
 	{
 		#region Private Static Members
 		private static readonly char[] _lowerCaseLettersArray = new char[26]
@@ -21,14 +26,19 @@ namespace Umbrella.Utilities.Encryption
 
 		#region Private Members
 		private readonly ILogger _log;
-		private readonly SecureStringGeneratorOptions _options;
+		private readonly SecureRandomStringGeneratorOptions _options;
 		private readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
 		#endregion
 
-		#region Constructors
-		public SecureStringGenerator(
-			ILogger<SecureStringGenerator> logger,
-			SecureStringGeneratorOptions options)
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SecureRandomStringGenerator"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="options">The options.</param>
+		public SecureRandomStringGenerator(
+			ILogger<SecureRandomStringGenerator> logger,
+			SecureRandomStringGeneratorOptions options)
 
 		{
 			_log = logger;
@@ -39,6 +49,16 @@ namespace Umbrella.Utilities.Encryption
 		#endregion
 
 		#region IPasswordGenerator Members
+		/// <summary>
+		/// Generates a random string of the specified length using the specified options.
+		/// If the sum of <paramref name="numbers"/>, <paramref name="upperCaseCharacters"/> and <paramref name="specialCharacters"/>
+		/// is less than the <paramref name="length"/>, the remaining characters of the generated string will be filled using lowercase characters.
+		/// </summary>
+		/// <param name="length">The length.</param>
+		/// <param name="numbers">The number of numbers.</param>
+		/// <param name="upperCaseCharacters">The number of upper case letters.</param>
+		/// <param name="specialCharacters">The number of special characters.</param>
+		/// <returns>The generated string.</returns>
 		public string Generate(int length = 8, int numbers = 0, int upperCaseCharacters = 0, int specialCharacters = 0)
 		{
 			Guard.ArgumentInRange(length, nameof(length), 1);

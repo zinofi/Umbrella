@@ -30,7 +30,7 @@ namespace Umbrella.Utilities.Test.Encryption
 			new object[] { 8, 0, 3, 3 }
 		};
 
-		private static SecureStringGeneratorOptions _options = new SecureStringGeneratorOptions();
+		private static SecureRandomStringGeneratorOptions _options = new SecureRandomStringGeneratorOptions();
 
 		[Theory]
 		[MemberData(nameof(OptionsList))]
@@ -119,11 +119,11 @@ namespace Umbrella.Utilities.Test.Encryption
 			Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(10, 6, 6, 6));
 		}
 
-		private ISecureStringGenerator CreateSecureStringGenerator()
+		private ISecureRandomStringGenerator CreateSecureStringGenerator()
 		{
-			var logger = new Mock<ILogger<SecureStringGenerator>>();
+			var logger = new Mock<ILogger<SecureRandomStringGenerator>>();
 
-			return new SecureStringGenerator(logger.Object, _options);
+			return new SecureRandomStringGenerator(logger.Object, _options);
 		}
 	}
 }

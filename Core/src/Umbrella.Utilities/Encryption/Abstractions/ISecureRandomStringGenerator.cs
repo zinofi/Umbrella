@@ -5,7 +5,7 @@ namespace Umbrella.Utilities.Encryption.Abstractions
 	/// <summary>
 	/// A utility to generate random strings using the default cryptographically strong <see cref="RandomNumberGenerator"/> class internally.
 	/// </summary>
-	public interface ISecureStringGenerator
+	public interface ISecureRandomStringGenerator
     {
 		/// <summary>
 		/// Generates a random string of the specified length using the specified options.

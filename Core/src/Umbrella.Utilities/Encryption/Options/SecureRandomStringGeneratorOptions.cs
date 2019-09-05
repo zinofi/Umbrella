@@ -3,9 +3,9 @@
 namespace Umbrella.Utilities.Encryption.Options
 {
 	/// <summary>
-	/// Options for the <see cref="SecureStringGenerator"/> class.
+	/// Options for the <see cref="SecureRandomStringGenerator"/> class.
 	/// </summary>
-	public class SecureStringGeneratorOptions
+	public class SecureRandomStringGeneratorOptions
 	{
 		/// <summary>
 		/// Gets or sets the special characters to choose from. The default characters are: !@#$&amp;%
