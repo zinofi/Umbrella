@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -14,7 +12,7 @@ namespace Umbrella.Utilities.Http
 	/// <summary>
 	/// A utility class used to get basic details of a resource on a URL.
 	/// </summary>
-	public class HttpResourceInfoUtility : IHttpResourceInfoUtility
+	public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 	{
 		private readonly ILogger _log;
 		private readonly HttpClient _httpClient = new HttpClient();

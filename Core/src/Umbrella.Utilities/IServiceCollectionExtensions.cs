@@ -72,7 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <param name="optionsBuilder">An optional delegate used to build the <see cref="MultiCacheOptions"/>.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
-		/// /// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection ConfigureMultiCacheOptions(this IServiceCollection services, Action<IServiceProvider, MultiCacheOptions> optionsBuilder)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
