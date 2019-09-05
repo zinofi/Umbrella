@@ -21,6 +21,13 @@ foreach ($file in $configFiles)
 		$affectedFiles.Add($file.Name)
 		$content -replace ("<Copyright>Zinofi Digital Ltd 2018</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2019</Copyright>") | Set-Content $file.PSPath
 	}
+
+	# Ensure Authors is correct
+	if($content -like "*<Authors>Richard Edwards</Authors>*")
+	{
+		$affectedFiles.Add($file.Name)
+		$content -replace ("<Authors>Richard Edwards</Authors>"), ("<Authors>Zinofi Digital Ltd</Authors>") | Set-Content $file.PSPath
+	}
 }
 
 Write-Output ""
