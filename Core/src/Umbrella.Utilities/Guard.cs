@@ -195,5 +195,25 @@ namespace Umbrella.Utilities
                     throw new ArgumentOutOfRangeException(argumentName, $"The value must be less than or equal to {max}.");
             }
         }
-    }
+
+		/// <summary>
+		/// Ensures the <paramref name="min"/> value is less than or equal to the <paramref name="max"/> value.
+		/// </summary>
+		/// <typeparam name="T">The type of the arguments.</typeparam>
+		/// <param name="min">The minimum.</param>
+		/// <param name="max">The maximum.</param>
+		/// <param name="minArgumentName">The name of the <paramref name="min"/> argument.</param>
+		/// <param name="maxArgumentName">The name of the <paramref name="max"/> argument.</param>
+		/// <exception cref="System.ArgumentOutOfRangeException">Thrown if the <paramref name="min"/> is greater than the <paramref name="max"/> value.</exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void EnsureMinLtEqMax<T>(T min, T max, string minArgumentName = "min", string maxArgumentName = "max")
+			where T : struct, IComparable<T>
+		{
+			ArgumentNotNullOrWhiteSpace(minArgumentName, nameof(minArgumentName));
+			ArgumentNotNullOrWhiteSpace(maxArgumentName, nameof(maxArgumentName));
+
+			if (min.CompareTo(max) == 1)
+				throw new ArgumentOutOfRangeException($"{minArgumentName} = {min} must be less than {maxArgumentName} = {max}");
+		}
+	}
 }

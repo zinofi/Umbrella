@@ -9,6 +9,7 @@ using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Interfaces;
 using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Abstractions;
+using Umbrella.Utilities.Encryption.Options;
 using Umbrella.Utilities.FriendlyUrl;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Mime;
@@ -48,7 +49,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<INonceGenerator, NonceGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
-			services.AddSingleton<HttpResourceInfoUtilityOptions>();
 			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
 
 			// Default Options - These can be replaced by calls to the Configure* methods below.
@@ -61,6 +61,8 @@ namespace Microsoft.Extensions.DependencyInjection
 					CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
 				};
 			});
+			services.AddSingleton<HttpResourceInfoUtilityOptions>();
+			services.AddSingleton<SecureStringGeneratorOptions>();
 
 			return services;
 		}

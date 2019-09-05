@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Encryption;
+using Umbrella.Utilities.Encryption.Options;
 
 namespace Umbrella.Utilities.Benchmark.Encryption
 {
@@ -19,7 +20,9 @@ namespace Umbrella.Utilities.Benchmark.Encryption
         public SecureStringGeneratorBenchmark()
         {
             var logger = new Mock<ILogger<SecureStringGenerator>>();
-            _secureStringGenerator = new SecureStringGenerator(logger.Object);
+			var options = new SecureStringGeneratorOptions();
+
+            _secureStringGenerator = new SecureStringGenerator(logger.Object, options);
         }
 
         [Benchmark]

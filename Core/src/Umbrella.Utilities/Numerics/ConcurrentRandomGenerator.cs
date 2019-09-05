@@ -2,7 +2,6 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 using Microsoft.Extensions.Logging;
@@ -18,10 +17,13 @@ namespace Umbrella.Utilities.Numerics
 	/// <seealso cref="IDisposable" />
 	public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	{
+		#region Private Members
 		private readonly ILogger _log;
 		private readonly RandomNumberGenerator _randomNumberGenerator = RandomNumberGenerator.Create();
 		private readonly ThreadLocal<Random> _threadLocalRandom;
+		#endregion
 
+		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ConcurrentRandomGenerator"/> class.
 		/// </summary>
@@ -31,7 +33,9 @@ namespace Umbrella.Utilities.Numerics
 			_log = logger;
 			_threadLocalRandom = new ThreadLocal<Random>(CreateRandom);
 		}
+		#endregion
 
+		#region IConcurrentRandomGenerator Members
 		/// <summary>
 		/// Returns a non-negative random integer.
 		/// </summary>
@@ -68,7 +72,7 @@ namespace Umbrella.Utilities.Numerics
 			if (min == max)
 				return min;
 
-			CheckMinMaxValues(min, max);
+			Guard.EnsureMinLtEqMax(min, max);
 
 			try
 			{
@@ -103,7 +107,7 @@ namespace Umbrella.Utilities.Numerics
 			if (min == max)
 				return new int[] { min };
 
-			CheckMinMaxValues(min, max);
+			Guard.EnsureMinLtEqMax(min, max);
 			Guard.ArgumentInRange(count, nameof(count), 1, max - min);
 
 			try
@@ -169,7 +173,9 @@ namespace Umbrella.Utilities.Numerics
 				yield return source.ElementAt(idx);
 			}
 		}
+		#endregion
 
+		#region Private Methods
 		private Random CreateRandom()
 		{
 			// TODO: Revisit using ArrayPool at some point.
@@ -180,13 +186,7 @@ namespace Umbrella.Utilities.Numerics
 
 			return new Random(seed);
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void CheckMinMaxValues(int min, int max)
-		{
-			if (min > max)
-				throw new ArgumentOutOfRangeException($"{nameof(min)} = {min} must be less than {nameof(max)} = {max}");
-		}
+		#endregion
 
 		#region IDisposable Support
 		private bool _isDisposed = false;

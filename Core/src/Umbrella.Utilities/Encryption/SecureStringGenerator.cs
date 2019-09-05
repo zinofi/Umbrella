@@ -1,212 +1,258 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Encryption.Abstractions;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Encryption.Options;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Encryption
 {
-    //TODO: Add support for special chars, e.g. !@#$!&
-    public class SecureStringGenerator : ISecureStringGenerator
-    {
-        #region Private Static Members
-        private static readonly char[] m_LowerCaseLettersArray = new char[26]
-        {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-        };
-        private static readonly char[] m_UpperCaseLettersArray = m_LowerCaseLettersArray.Select(x => char.ToUpperInvariant(x)).ToArray();
-        #endregion
+	public class SecureStringGenerator : ISecureStringGenerator, IDisposable
+	{
+		#region Private Static Members
+		private static readonly char[] _lowerCaseLettersArray = new char[26]
+		{
+			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+		};
+		private static readonly char[] _upperCaseLettersArray = _lowerCaseLettersArray.Select(x => char.ToUpperInvariant(x)).ToArray();
+		#endregion
 
-        #region Private Members
-        private readonly ILogger Log;
-        #endregion
+		#region Private Members
+		private readonly ILogger _log;
+		private readonly SecureStringGeneratorOptions _options;
+		private readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
+		#endregion
 
-        #region Constructors
-        public SecureStringGenerator(ILogger<SecureStringGenerator> logger)
-        {
-            Log = logger;
-        }
-        #endregion
+		#region Constructors
+		public SecureStringGenerator(
+			ILogger<SecureStringGenerator> logger,
+			SecureStringGeneratorOptions options)
 
-        #region IPasswordGenerator Members
-        public string Generate(int length = 8, int numbers = 1, int upperCaseLetters = 1)
-        {
-            try
-            {
-				// TODO: Replace these checks with new Guard statements. Move outside try...catch.
-                if (length < 1)
-                    throw new ArgumentOutOfRangeException(nameof(length), "Must be greater than or equal to 1.");
+		{
+			_log = logger;
+			_options = options;
 
-                if (numbers < 0)
-                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be greater than or equal to 0.");
+			Guard.ArgumentNotNull(options.SpecialCharacters, nameof(options.SpecialCharacters));
+		}
+		#endregion
 
-                if (numbers > length)
-                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be less than or equal to length.");
+		#region IPasswordGenerator Members
+		public string Generate(int length = 8, int numbers = 0, int upperCaseCharacters = 0, int specialCharacters = 0)
+		{
+			Guard.ArgumentInRange(length, nameof(length), 1);
+			Guard.ArgumentInRange(numbers, nameof(numbers), 0);
+			Guard.ArgumentInRange(upperCaseCharacters, nameof(upperCaseCharacters), 0);
+			Guard.ArgumentInRange(specialCharacters, nameof(specialCharacters), 0);
 
-                if (upperCaseLetters < 0)
-                    throw new ArgumentOutOfRangeException(nameof(upperCaseLetters), "Must be greater than or equal to 0.");
+			int nonLowerCaseLength = numbers + upperCaseCharacters + specialCharacters;
 
-                if (upperCaseLetters > length)
-                    throw new ArgumentOutOfRangeException(nameof(upperCaseLetters), "Must be less than or equal to length.");
+			Guard.EnsureMinLtEqMax(nonLowerCaseLength, length, "numbers + upperCaseCharacters + specialCharacters", nameof(length));
 
-                if (numbers + upperCaseLetters > length)
-                    throw new ArgumentOutOfRangeException($"{nameof(numbers)}, {nameof(upperCaseLetters)}", $"The sum of the {nameof(numbers)} and the {nameof(upperCaseLetters)} arguments is greater than the length.");
+			try
+			{
+				Span<char> randomString = stackalloc char[length];
 
-                Span<char> password = stackalloc char[length];
+				// We are building up a string here starting with lowercase letters, followed by uppercase and finally numbers.
+				int idx = 0;
 
-                int lowerCaseLettersLength = length - numbers - upperCaseLetters;
+				// Numbers
+				while (idx < numbers)
+				{
+					int number = GenerateRandomInteger(0, 10);
 
-				// TODO: Make the RNG provider a class member, implement IDisposable to clean it up, use RandomNumberGenerator class instead.
-				// Call RandomNumberGenerator.Create()
-                // We are building up a string here starting with lowercase letters, followed by uppercase and finally numbers.
-                using (RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider())
-                {
-                    int idx = 0;
+					randomString[idx++] = number.ToString()[0];
+				}
 
-                    while (idx < lowerCaseLettersLength)
-                    {
-                        int index = GenerateRandomInteger(rngProvider, 0, 26);
-                        char letter = m_LowerCaseLettersArray[index];
+				// Uppercase
+				while (idx < upperCaseCharacters + numbers)
+				{
+					int index = GenerateRandomInteger(0, 26);
+					char letter = _upperCaseLettersArray[index];
 
-                        password[idx++] = letter;
-                    }
+					randomString[idx++] = letter;
+				}
 
-                    while (idx < length - numbers)
-                    {
-                        int index = GenerateRandomInteger(rngProvider, 0, 26);
-                        char letter = m_UpperCaseLettersArray[index];
+				// Special Characters
+				while (idx < upperCaseCharacters + numbers + specialCharacters)
+				{
+					int index = GenerateRandomInteger(0, _options.SpecialCharacters.Count);
+					char letter = _options.SpecialCharacters[index];
 
-                        password[idx++] = letter;
-                    }
+					randomString[idx++] = letter;
+				}
 
-                    while (idx < length)
-                    {
-                        int number = GenerateRandomInteger(rngProvider, 0, 10);
+				// Lowercase
+				while (idx < length)
+				{
+					int index = GenerateRandomInteger(0, 26);
+					char letter = _lowerCaseLettersArray[index];
 
-                        password[idx++] = number.ToString()[0];
-                    }
+					randomString[idx++] = letter;
+				}
 
-                    // Randomly shuffle the generated password
-                    int n = password.Length;
-                    while (n > 1)
-                    {
-                        int k = GenerateRandomInteger(rngProvider, 0, n--);
-                        char temp = password[n];
-                        password[n] = password[k];
-                        password[k] = temp;
-                    }
-                }
+				// Randomly shuffle the generated string
+				int n = randomString.Length;
+				while (n > 1)
+				{
+					int k = GenerateRandomInteger(0, n--);
+					char temp = randomString[n];
+					randomString[n] = randomString[k];
+					randomString[k] = temp;
+				}
 
-                return password.ToString();
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { length, numbers }))
-            {
-                throw;
-            }
-        }
+				return randomString.ToString();
+			}
+			catch (Exception exc) when (_log.WriteError(exc, new { length, numbers }))
+			{
+				throw new UmbrellaException("There has been a problem generating the random string.", exc);
+			}
+		}
 
 #if !AzureDevOps
-        [Obsolete]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal string GenerateOld(int length = 8, int numbers = 1, int upperCaseLetters = 1)
-        {
-            try
-            {
-                if (length < 1)
-                    throw new ArgumentOutOfRangeException(nameof(length), "Must be greater than or equal to 1.");
+		[Obsolete]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		internal string GenerateOld(int length = 8, int numbers = 0, int upperCaseCharacters = 0, int specialCharacters = 0)
+		{
+			try
+			{
+				if (length < 1)
+					throw new ArgumentOutOfRangeException(nameof(length), "Must be greater than or equal to 1.");
 
-                if (numbers < 0)
-                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be greater than or equal to 0.");
+				if (numbers < 0)
+					throw new ArgumentOutOfRangeException(nameof(numbers), "Must be greater than or equal to 0.");
 
-                if (numbers > length)
-                    throw new ArgumentOutOfRangeException(nameof(numbers), "Must be less than or equal to length.");
+				if (numbers > length)
+					throw new ArgumentOutOfRangeException(nameof(numbers), "Must be less than or equal to length.");
 
-                if (upperCaseLetters < 0)
-                    throw new ArgumentOutOfRangeException(nameof(upperCaseLetters), "Must be greater than or equal to 0.");
+				if (upperCaseCharacters < 0)
+					throw new ArgumentOutOfRangeException(nameof(upperCaseCharacters), "Must be greater than or equal to 0.");
 
-                if (upperCaseLetters > length)
-                    throw new ArgumentOutOfRangeException(nameof(upperCaseLetters), "Must be less than or equal to length.");
+				if (upperCaseCharacters > length)
+					throw new ArgumentOutOfRangeException(nameof(upperCaseCharacters), "Must be less than or equal to length.");
 
-                if (numbers + upperCaseLetters > length)
-                    throw new ArgumentOutOfRangeException($"{nameof(numbers)}, {nameof(upperCaseLetters)}", $"The sum of the {nameof(numbers)} and the {nameof(upperCaseLetters)} arguments is greater than the length.");
+				if (numbers + upperCaseCharacters > length)
+					throw new ArgumentOutOfRangeException($"{nameof(numbers)}, {nameof(upperCaseCharacters)}", $"The sum of the {nameof(numbers)} and the {nameof(upperCaseCharacters)} arguments is greater than the length.");
 
-                char[] password = new char[length];
+				char[] password = new char[length];
 
-                int lowerCaseLettersLength = length - numbers - upperCaseLetters;
+				int idx = 0;
 
-                // We are building up a string here starting with lowercase letters, followed by uppercase and finally numbers.
-                using (RNGCryptoServiceProvider rngProvider = new RNGCryptoServiceProvider())
-                {
-                    int idx = 0;
+				// Numbers
+				while (idx < numbers)
+				{
+					int number = GenerateRandomInteger(0, 10);
 
-                    while (idx < lowerCaseLettersLength)
-                    {
-                        int index = GenerateRandomInteger(rngProvider, 0, 26);
-                        char letter = m_LowerCaseLettersArray[index];
+					password[idx++] = number.ToString()[0];
+				}
 
-                        password[idx++] = letter;
-                    }
+				// Uppercase
+				while (idx < upperCaseCharacters + numbers)
+				{
+					int index = GenerateRandomInteger(0, 26);
+					char letter = _upperCaseLettersArray[index];
 
-                    while (idx < length - numbers)
-                    {
-                        int index = GenerateRandomInteger(rngProvider, 0, 26);
-                        char letter = m_UpperCaseLettersArray[index];
+					password[idx++] = letter;
+				}
 
-                        password[idx++] = letter;
-                    }
+				// Special Characters
+				while (idx < upperCaseCharacters + numbers + specialCharacters)
+				{
+					int index = GenerateRandomInteger(0, _options.SpecialCharacters.Count);
+					char letter = _options.SpecialCharacters[index];
 
-                    while (idx < length)
-                    {
-                        int number = GenerateRandomInteger(rngProvider, 0, 10);
+					password[idx++] = letter;
+				}
 
-                        password[idx++] = number.ToString().ToCharArray()[0];
-                    }
+				// Lowercase
+				while (idx < length)
+				{
+					int index = GenerateRandomInteger(0, 26);
+					char letter = _lowerCaseLettersArray[index];
 
-                    // Randomly shuffle the generated password
-                    int n = password.Length;
-                    while (n > 1)
-                    {
-                        int k = GenerateRandomInteger(rngProvider, 0, n--);
-                        char temp = password[n];
-                        password[n] = password[k];
-                        password[k] = temp;
-                    }
-                }
+					password[idx++] = letter;
+				}
 
-                return new string(password);
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { length, numbers }))
-            {
-                throw;
-            }
-        }
+				// Randomly shuffle the generated string
+				int n = password.Length;
+				while (n > 1)
+				{
+					int k = GenerateRandomInteger(0, n--);
+					char temp = password[n];
+					password[n] = password[k];
+					password[k] = temp;
+				}
+
+				return new string(password);
+			}
+			catch (Exception exc) when (_log.WriteError(exc, new { length, numbers }))
+			{
+				throw;
+			}
+		}
 #endif
-        #endregion
+		#endregion
 
-        #region Private Members
-        private int GenerateRandomInteger(RNGCryptoServiceProvider provider, int min, int max)
-        {
-            uint scale = uint.MaxValue;
-            while (scale == uint.MaxValue)
-            {
-				// TODO: Could use ArrayPool here.
-                // Get four random bytes.
-                byte[] four_bytes = new byte[4];
-                provider.GetBytes(four_bytes);
+		#region Private Members
+		private int GenerateRandomInteger(int min, int max)
+		{
+			if (min == max)
+				return min;
 
-                // Convert that into an uint.
-                scale = BitConverter.ToUInt32(four_bytes, 0);
-            }
+			uint scale = uint.MaxValue;
+			while (scale == uint.MaxValue)
+			{
+				// TODO: Could use ArrayPool here?
+				// Get four random bytes.
+				byte[] four_bytes = new byte[4];
+				_random.GetBytes(four_bytes);
 
-            // Add min to the scaled difference between max and min.
-            return (int)(min + (max - min) *
-                (scale / (double)uint.MaxValue));
-        }
-        #endregion
-    }
+				// Convert that into an uint.
+				scale = BitConverter.ToUInt32(four_bytes, 0);
+			}
+
+			// Add min to the scaled difference between max and min.
+			return (int)(min + (max - min) *
+				(scale / (double)uint.MaxValue));
+		}
+		#endregion
+
+		#region IDisposable Support
+		private bool _isDisposed = false;
+
+		/// <summary>
+		/// Releases unmanaged and - optionally - managed resources.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_isDisposed)
+			{
+				if (disposing)
+				{
+					_random.Dispose();
+				}
+
+				_isDisposed = true;
+			}
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public void Dispose()
+		{
+			try
+			{
+				// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+				Dispose(true);
+			}
+			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem disposing this instance.", exc);
+			}
+		}
+		#endregion
+	}
 }
