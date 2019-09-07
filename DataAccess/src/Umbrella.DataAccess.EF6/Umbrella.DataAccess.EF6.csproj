@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\Umbrella.DataAccess.EF.Abstractions\Umbrella.DataAccess.EF.Abstractions.csproj" />
   </ItemGroup>
   
 </Project>

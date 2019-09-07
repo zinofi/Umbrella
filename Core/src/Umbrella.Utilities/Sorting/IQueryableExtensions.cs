@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,6 +52,18 @@ namespace Umbrella.Utilities.Sorting
 			}
 
 			return query;
+		}
+
+		public static IOrderedQueryable<TSource> OrderBySortDirection<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction)
+		{
+			switch (direction)
+			{
+				default:
+				case SortDirection.Ascending:
+					return source.OrderBy(keySelector);
+				case SortDirection.Descending:
+					return source.OrderByDescending(keySelector);
+			}
 		}
 	}
 }

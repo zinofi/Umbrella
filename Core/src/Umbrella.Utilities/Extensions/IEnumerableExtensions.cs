@@ -20,31 +20,13 @@ namespace Umbrella.Utilities.Extensions
 		public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> source, int itemsPerGroup)
 		{
             Guard.ArgumentNotNull(source, nameof(source));
-
-            if (itemsPerGroup < 1)
-                throw new ArgumentOutOfRangeException(nameof(itemsPerGroup), $"The {nameof(itemsPerGroup)} parameter value must be greater than or equal to 1.");
+			Guard.ArgumentInRange(itemsPerGroup, nameof(itemsPerGroup), 1);
 
             return source
                 .Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / itemsPerGroup)
                 .Select(x => x.Select(v => v.Value));
 		}
-
-		// TODO: V3 - Move to the Sorting namespace
-        public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
-        {
-            Guard.ArgumentNotNull(source, nameof(source));
-            Guard.ArgumentNotNull(keySelector, nameof(keySelector));
-
-            switch (direction)
-            {
-                default:
-                case SortDirection.Ascending:
-                    return comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer);
-                case SortDirection.Descending:
-                    return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
-            }
-        }
 
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
         {

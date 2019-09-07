@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
-			services.ReplaceSingleton(serviceProvider =>
+			services.AddSingleton(serviceProvider =>
 			{
 				var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
 

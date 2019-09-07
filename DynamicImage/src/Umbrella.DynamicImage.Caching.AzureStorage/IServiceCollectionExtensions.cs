@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Guard.ArgumentNotNull(cacheOptions, nameof(cacheOptions));
 
             services.AddSingleton(cacheOptions);
-            services.ReplaceSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();
+            services.AddSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();
 
             return services;
         }

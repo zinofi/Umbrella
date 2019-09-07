@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DataAccess.Mapping.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DataAccess.MultiTenant.Abstractions.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -15,28 +15,24 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.DataAccess.Mapping</PackageId>
+		<PackageId>Umbrella.DataAccess.MultiTenant.Abstractions</PackageId>
 		<Version>2.9.4</Version>
 		<Authors>Richard Edwards</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
 		<Description>
-			This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
+			This package contains abstractions for building data access code for multi-tenanted applications.
 		</Description>
 		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="6.2.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

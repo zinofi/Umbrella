@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddUmbrellaAspNetCoreDataAnnotations(this IServiceCollection services)
         {
-            services.ReplaceSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
+            services.AddSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
 
             return services;
         }

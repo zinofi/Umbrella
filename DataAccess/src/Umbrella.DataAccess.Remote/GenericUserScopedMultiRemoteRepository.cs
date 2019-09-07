@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.DataAccess.Abstractions.Interfaces;
 using Umbrella.DataAccess.Remote.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
@@ -15,7 +14,7 @@ namespace Umbrella.DataAccess.Remote
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
-			IUserAuditDataFactory<TUserId> currentUserIdAccessor,
+			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, currentUserIdAccessor, services)
 		{
@@ -30,7 +29,7 @@ namespace Umbrella.DataAccess.Remote
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
-			IUserAuditDataFactory<TUserId> currentUserIdAccessor,
+			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, currentUserIdAccessor, services)
 		{
@@ -43,13 +42,13 @@ namespace Umbrella.DataAccess.Remote
 		where TRepoOptions : RepoOptions, new()
 		where TService : IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>
 	{
-		protected IUserAuditDataFactory<TUserId> CurrentUserIdAccessor { get; }
+		protected ICurrentUserIdAccessor<TUserId> CurrentUserIdAccessor { get; }
 		protected TUserId CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
 
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
-			IUserAuditDataFactory<TUserId> currentUserIdAccessor,
+			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
 			params TService[] services)
 			: base(logger, dataAccessLookupNormalizer, services)
 		{

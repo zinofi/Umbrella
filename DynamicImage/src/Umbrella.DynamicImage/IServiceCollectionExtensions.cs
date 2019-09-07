@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Guard.ArgumentNotNull(cacheOptions, nameof(cacheOptions));
 
             services.AddSingleton(cacheOptions);
-            services.ReplaceSingleton<IDynamicImageCache, DynamicImageMemoryCache>();
+            services.AddSingleton<IDynamicImageCache, DynamicImageMemoryCache>();
 
             return services;
         }
@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Guard.ArgumentNotNull(cacheOptions, nameof(cacheOptions));
 
             services.AddSingleton(cacheOptions);
-            services.ReplaceSingleton<IDynamicImageCache, DynamicImageDiskCache>();
+            services.AddSingleton<IDynamicImageCache, DynamicImageDiskCache>();
 
             return services;
         }

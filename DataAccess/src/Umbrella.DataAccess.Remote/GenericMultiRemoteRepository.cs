@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
-using Umbrella.DataAccess.Abstractions.Interfaces;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;

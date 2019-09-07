@@ -74,7 +74,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
         #endregion
 
         #region Protected Methods
-        protected IActionResult HandleDataValidationException(DataAccessValidationException exc)
+        protected IActionResult HandleDataValidationException(UmbrellaDataAccessValidationException exc)
         {
             switch (exc.ValidationType)
             {

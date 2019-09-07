@@ -53,6 +53,21 @@ namespace Umbrella.Utilities.Sorting
 			return query;
 		}
 
+		public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
+		{
+			Guard.ArgumentNotNull(source, nameof(source));
+			Guard.ArgumentNotNull(keySelector, nameof(keySelector));
+
+			switch (direction)
+			{
+				default:
+				case SortDirection.Ascending:
+					return comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer);
+				case SortDirection.Descending:
+					return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
+			}
+		}
+
 		public static IEnumerable<SortExpressionSerializable> ToSortExpressionSerializables<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
 			=> sortExpressions.Select(x => (SortExpressionSerializable)x);
 	}
