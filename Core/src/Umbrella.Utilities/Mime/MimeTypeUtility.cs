@@ -458,6 +458,7 @@ namespace Umbrella.Utilities.Mime
 			["ufd"] = "application/vnd.ufdl",
 			["utz"] = "application/vnd.uiq.theme",
 			["umj"] = "application/vnd.umajin",
+			["unity3d"] = "application/vnd.unity3d",
 			["unityweb"] = "application/vnd.unity",
 			["uoml"] = "application/vnd.uoml+xml",
 			["vcx"] = "application/vnd.vcx",
