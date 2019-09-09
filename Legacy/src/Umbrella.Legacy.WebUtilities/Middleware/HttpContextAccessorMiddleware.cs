@@ -10,7 +10,7 @@ using Umbrella.Legacy.WebUtilities.Accessors.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
-    public class HttpContextAccessorMiddleware : OwinMiddleware
+    internal class HttpContextAccessorMiddleware : OwinMiddleware
     {
         protected ILogger Log { get; }
         protected IHttpContextAccessor HttpContextAccessor { get; }

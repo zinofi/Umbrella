@@ -5,7 +5,10 @@ using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
+	/// <summary>
+	/// 
+	/// </summary>
+	public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddUmbrellaLegacyWebUtilitiesFileSystem(this IServiceCollection services, Action<IServiceProvider, UmbrellaFileProviderMiddlewareOptions> optionsBuilder)
 		{

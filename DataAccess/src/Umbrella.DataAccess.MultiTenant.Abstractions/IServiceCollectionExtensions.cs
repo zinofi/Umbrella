@@ -3,7 +3,7 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>
-	/// This class contains extension methods used to add the MultiTenant orientated services with the specified
+	/// This class contains extension methods used to add the Multi-Tenant Data Access services with the specified
 	/// <see cref="IServiceCollection"/>.
 	/// </summary>
 	public static class IServiceCollectionExtensions

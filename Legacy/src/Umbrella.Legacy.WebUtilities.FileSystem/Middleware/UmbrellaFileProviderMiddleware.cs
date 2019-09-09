@@ -57,7 +57,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 						return;
 					}
 
-					//Check the cache headers
+					// Check the cache headers
 					if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified.Value.UtcDateTime))
 					{
 						cts.Cancel();
