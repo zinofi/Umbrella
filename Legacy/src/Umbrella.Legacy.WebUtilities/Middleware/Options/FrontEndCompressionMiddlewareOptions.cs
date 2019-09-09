@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using Microsoft.Extensions.FileProviders;
+using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace Umbrella.Legacy.WebUtilities.Middleware.Options
 {
 	// TODO: V3 - Consider moving to the common WebUtilities project for reuse with ASP.NET Core
+	// Also, prefix the MultiCache properties so they can be distinguised from other caching flags.
     public class FrontEndCompressionMiddlewareOptions
     {
 		// TODO: V3 Consider changing the arrays to HashSets for faster lookups
@@ -22,5 +24,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware.Options
 		public int? MaxAgeSeconds { get; set; } = 31557600;
 		public FrontEndCompressionMiddlewareHttpCacheability HttpCacheability { get; set; } = FrontEndCompressionMiddlewareHttpCacheability.Private;
 		public bool MustRevalidate { get; set; } = true;
+		public bool ResponseCacheEnabled { get; set; } = true;
+		public bool CompressionEnabled { get; set; } = true;
+		public int BufferSizeBytes { get; set; } = 81920;
+		public Func<IOwinContext, IFileInfo, bool> ResponseCacheDeterminer { get; set; }
 	}
 }

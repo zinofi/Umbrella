@@ -10,22 +10,22 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-		<Optimize>true</Optimize>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<PackageId>Umbrella.DataAccess.Mapping</PackageId>
-		<Version>2.9.4</Version>
-		<Authors>Richard Edwards</Authors>
-		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
-		<Description>
-			This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
-		</Description>
-		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
-		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <PackageId>Umbrella.DataAccess.Mapping</PackageId>
+    <Version>2.9.5</Version>
+    <Authors>Richard Edwards</Authors>
+    <Company>Zinofi Digital Ltd</Company>
+    <Copyright>Zinofi Digital Ltd 2019</Copyright>
+    <Description>
+      This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
+    </Description>
+    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="6.2.2" />

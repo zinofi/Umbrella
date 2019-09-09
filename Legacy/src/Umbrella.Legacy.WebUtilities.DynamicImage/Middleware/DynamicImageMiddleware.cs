@@ -159,6 +159,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 		private void AppendResponseHeaders(IOwinResponse response, DynamicImageItem image)
 		{
 			response.ContentType = "image/" + image.ImageOptions.Format.ToString().ToLowerInvariant();
+			response.ContentLength = image.Length;
 			response.Headers["Last-Modified"] = m_HeaderValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
 			response.ETag = m_HeaderValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
 

@@ -62,6 +62,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			Guard.ArgumentNotNullOrEmpty(options.FrontEndRootFolderAppRelativePaths, nameof(options.FrontEndRootFolderAppRelativePaths));
 			Guard.ArgumentNotNullOrEmpty(options.TargetFileExtensions, nameof(options.TargetFileExtensions));
 			Guard.ArgumentNotNullOrWhiteSpace(options.AcceptEncodingHeaderKey, nameof(options.AcceptEncodingHeaderKey));
+			Guard.ArgumentInRange(options.BufferSizeBytes, nameof(options.BufferSizeBytes), 1);
 
 			options.AcceptEncodingHeaderKey = options.AcceptEncodingHeaderKey.Trim().ToLowerInvariant();
 
@@ -111,33 +112,74 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				string path = context.Request.Path.Value.Trim();
 
 				if (Options.FrontEndRootFolderAppRelativePaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
-					&& Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase)
-					&& context.Request.Headers.TryGetValue(Options.AcceptEncodingHeaderKey, out string[] encodingValues))
+					&& Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
 				{
 					var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
 					IFileInfo fileInfo = GetFileInfo(path);
 
-					if (fileInfo != null)
+					if (fileInfo == null)
 					{
-						// Check the cache headers
-						if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified))
+						cts.Cancel();
+						await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+						return;
+					}
+
+					if (Options.ResponseCacheEnabled)
+					{
+						bool shouldCache = Options.ResponseCacheDeterminer?.Invoke(context, fileInfo) ?? true;
+
+						if (shouldCache)
 						{
-							cts.Cancel();
-							await context.Response.SendStatusCode(HttpStatusCode.NotModified);
-							return;
+							// Check Request headers
+							if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified))
+							{
+								cts.Cancel();
+								await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+								return;
+							}
+
+							string eTagValue = HttpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified, fileInfo.Length);
+
+							if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
+							{
+								cts.Cancel();
+								await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+								return;
+							}
+
+							// Set the Response headers
+							context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
+							context.Response.ETag = eTagValue;
+
+							if (Options.MaxAgeSeconds.HasValue)
+								context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(Options.MaxAgeSeconds.Value);
+
+							var sbCacheControl = new StringBuilder(Options.HttpCacheability.ToCacheControlString());
+
+							if (Options.MaxAgeSeconds.HasValue)
+								sbCacheControl.Append(", max-age=" + Options.MaxAgeSeconds);
+
+							if (Options.MustRevalidate)
+								sbCacheControl.Append(", must-revalidate");
+
+							context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
 						}
-
-						string eTagValue = HttpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified, fileInfo.Length);
-
-						if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
+						else
 						{
-							cts.Cancel();
-							await context.Response.SendStatusCode(HttpStatusCode.NotModified);
-							return;
+							context.Response.Headers["Cache-Control"] = "no-store";
 						}
+					}
+					else
+					{
+						context.Response.Headers["Cache-Control"] = Options.HttpCacheability.ToCacheControlString();
+					}
 
+					byte[] bytes = null;
+
+					if (Options.CompressionEnabled && context.Request.Headers.TryGetValue(Options.AcceptEncodingHeaderKey, out string[] encodingValues))
+					{
 						// Parse the headers
 						var lstEncodingValue = new HashSet<string>();
 
@@ -165,7 +207,6 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 						var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
 						{
-							const int bufferSize = 81920;
 							string contentEncoding = null;
 
 							using (var fs = fileInfo.CreateReadStream())
@@ -176,7 +217,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 									{
 										using (var br = new BrotliStream(ms, CompressionMode.Compress))
 										{
-											await fs.CopyToAsync(br, bufferSize, token);
+											await fs.CopyToAsync(br, Options.BufferSizeBytes, token);
 										}
 
 										contentEncoding = "br";
@@ -185,7 +226,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 									{
 										using (var gz = new GZipStream(ms, CompressionMode.Compress))
 										{
-											await fs.CopyToAsync(gz, bufferSize, token);
+											await fs.CopyToAsync(gz, Options.BufferSizeBytes, token);
 										}
 
 										contentEncoding = "gzip";
@@ -194,14 +235,16 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 									{
 										using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
 										{
-											await fs.CopyToAsync(deflate, bufferSize, token);
+											await fs.CopyToAsync(deflate, Options.BufferSizeBytes, token);
 										}
 
 										contentEncoding = "deflate";
 									}
 									else
 									{
-										await fs.CopyToAsync(ms, bufferSize, token);
+										// If we get here then we are dealing with an unknown content encoding.
+										// Just read the file into memory as it is.
+										await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
 									}
 
 									return (contentEncoding, ms.ToArray());
@@ -234,12 +277,10 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							Log.WriteDebug(logData);
 						}
 
-						await context.Response.Body.WriteAsync(result.bytes, 0, result.bytes.Length, token);
+						bytes = result.bytes;
 
 						if (!string.IsNullOrEmpty(result.contentEncoding))
 							context.Response.Headers["Content-Encoding"] = result.contentEncoding;
-
-						context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Name);
 
 						// Check if the Accept-Encoding key is different from the standard header key, e.g. when moved into a different
 						// header by a proxy. We need to make sure the proxy varies the response by this new header in cases where it might be
@@ -250,36 +291,45 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							varyHeader += ", " + Options.AcceptEncodingHeaderKey;
 
 						context.Response.Headers["Vary"] = varyHeader;
-
-						context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
-						context.Response.ETag = eTagValue;
-
-						if(Options.MaxAgeSeconds.HasValue)
-							context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(Options.MaxAgeSeconds.Value);
-
-						var sbCacheControl = new StringBuilder(Options.HttpCacheability.ToCacheControlString());
-
-						if (Options.MaxAgeSeconds.HasValue)
-							sbCacheControl.Append(", max-age=" + Options.MaxAgeSeconds);
-
-						if (Options.MustRevalidate)
-							sbCacheControl.Append(", must-revalidate");
-
-						context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
-
-						// Ensure the response stream is flushed async immediately here. If not, there could be content
-						// still buffered which will not be sent out until the stream is disposed at which point
-						// the IO will happen synchronously!
-						await context.Response.Body.FlushAsync(token);
-
-						return;
 					}
-					else
+
+					if (bytes == null)
 					{
-						cts.Cancel();
-						await context.Response.SendStatusCode(HttpStatusCode.NotFound);
-						return;
+						// Getting here means that compression is disabled or there isn't an Accept-Encoding header.
+						// Therefore, we have to just read the file as it is and return it
+						// as it is stored on disk.
+						bytes = await Cache.GetOrCreateAsync<byte[]>($"{_cackeKeyPrefix}:{path}", async () =>
+						{
+							using (var fs = fileInfo.CreateReadStream())
+							{
+								using (var ms = new MemoryStream())
+								{
+									await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+
+									return ms.ToArray();
+								}
+							}
+						},
+						context.Request.CallCancelled,
+						() => Options.CacheTimeout,
+						slidingExpiration: Options.CacheSlidingExpiration,
+						priority: CacheItemPriority.High,
+						expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
+						cacheEnabledOverride: Options.CacheEnabled);
 					}
+
+					await context.Response.Body.WriteAsync(bytes, 0, bytes.Length, token);
+
+					// Common headers
+					context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Name);
+					context.Response.ContentLength = bytes.LongLength;
+
+					// Ensure the response stream is flushed async immediately here. If not, there could be content
+					// still buffered which will not be sent out until the stream is disposed at which point
+					// the IO will happen synchronously!
+					await context.Response.Body.FlushAsync(token);
+
+					return;
 				}
 
 				await Next.Invoke(context);
