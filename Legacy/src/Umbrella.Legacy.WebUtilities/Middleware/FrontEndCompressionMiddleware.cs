@@ -62,7 +62,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			Guard.ArgumentNotNullOrEmpty(options.FrontEndRootFolderAppRelativePaths, nameof(options.FrontEndRootFolderAppRelativePaths));
 			Guard.ArgumentNotNullOrEmpty(options.TargetFileExtensions, nameof(options.TargetFileExtensions));
 			Guard.ArgumentNotNullOrWhiteSpace(options.AcceptEncodingHeaderKey, nameof(options.AcceptEncodingHeaderKey));
-			Guard.ArgumentInRange(options.BufferSizeBytes, nameof(options.BufferSizeBytes), 1, 0);
+			Guard.ArgumentInRange(options.BufferSizeBytes, nameof(options.BufferSizeBytes), 1);
 
 			options.AcceptEncodingHeaderKey = options.AcceptEncodingHeaderKey.Trim().ToLowerInvariant();
 
