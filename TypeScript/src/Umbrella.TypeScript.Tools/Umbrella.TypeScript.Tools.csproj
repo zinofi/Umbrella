@@ -18,7 +18,7 @@
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>2.9.4</Version>
+    <Version>2.9.5-preview-001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
