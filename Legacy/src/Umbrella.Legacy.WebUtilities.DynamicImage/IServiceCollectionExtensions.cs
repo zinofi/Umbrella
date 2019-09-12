@@ -5,30 +5,27 @@ using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+	/// <summary>
+	/// Extension methods used to register services for the <see cref="Umbrella.Legacy.WebUtilities.DynamicImage"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// </summary>
 	public static class IServiceCollectionExtensions
 	{
+		/// <summary>
+		/// Adds the <see cref="Umbrella.Legacy.WebUtilities.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="optionsBuilder">The <see cref="DynamicImageMiddlewareOptions"/> builder.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaLegacyWebUtilitiesDynamicImage(this IServiceCollection services, Action<IServiceProvider, DynamicImageMiddlewareOptions> optionsBuilder)
 		{
+			Guard.ArgumentNotNull(services, nameof(services));
 			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
 			services.AddSingleton<DynamicImageMiddleware>();
 			services.ConfigureUmbrellaOptions(optionsBuilder);
-
-			services.AddSingleton(ctx =>
-			{
-				var options = new DynamicImageMiddlewareOptions();
-				optionsBuilder(ctx, options);
-
-				// TODO: V3 Need to alter the constructor of the Middleware to accept just the options instance instead of an action.
-				// This is a breaking change though so wait until the v3 release.
-				return new Action<DynamicImageMiddlewareOptions>(opts =>
-				{
-					opts.CacheControlHeaderValue = options.CacheControlHeaderValue;
-					opts.DynamicImagePathPrefix = options.DynamicImagePathPrefix;
-					opts.SourceFileProvider = options.SourceFileProvider;
-					opts.EnableJpgPngWebPOverride = options.EnableJpgPngWebPOverride;
-				});
-			});
 
 			return services;
 		}

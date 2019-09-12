@@ -1,19 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.FreeImage;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddUmbrellaDynamicImageFreeImage(this IServiceCollection services)
-        {
-            services.AddSingleton<IDynamicImageResizer, DynamicImageResizer>();
+	/// <summary>
+	/// Extension methods used to register services for the <see cref="Umbrella.DynamicImage.FreeImage"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// </summary>
+	public static class IServiceCollectionExtensions
+	{
+		/// <summary>
+		/// Adds the <see cref="Umbrella.DynamicImage.FreeImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaDynamicImageFreeImage(this IServiceCollection services)
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            return services;
-        }
-    }
+			services.AddSingleton<IDynamicImageResizer, DynamicImageResizer>();
+
+			return services;
+		}
+	}
 }

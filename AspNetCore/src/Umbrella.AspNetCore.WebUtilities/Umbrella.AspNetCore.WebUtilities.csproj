@@ -1,47 +1,49 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;AzureDevOps</Configurations>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Configurations>Debug;Release;AzureDevOps</Configurations>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.AspNetCore.WebUtilities.xml</DocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <PackageId>Umbrella.AspNetCore.WebUtilities</PackageId>
-    <Version>2.9.5</Version>
-    <Authors>Richard Edwards</Authors>
-    <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2019</Copyright>
-    <Description>
-      This package contains a range of utility classes to aid web application development.
-    </Description>
-    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+		<Optimize>true</Optimize>
+		<DefineConstants>AzureDevOps</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj" />
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<PackageId>Umbrella.AspNetCore.WebUtilities</PackageId>
+		<Version>2.9.5</Version>
+		<Authors>Richard Edwards</Authors>
+		<Company>Zinofi Digital Ltd</Company>
+		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Description>
+			This package contains a range of utility classes to aid web application development.
+		</Description>
+		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.1.3" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.ModelState\Umbrella.WebUtilities.ModelState.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.1.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.1.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.1.3" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
 </Project>

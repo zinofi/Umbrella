@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
@@ -9,9 +9,10 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-    <Optimize>true</Optimize>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+		<Optimize>true</Optimize>
+		<DefineConstants>AzureDevOps</DefineConstants>
+	</PropertyGroup>
   
   <PropertyGroup>
     <PackageId>Umbrella.Extensions.Logging.Azure</PackageId>
@@ -19,9 +20,7 @@
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
-    <Description>
-      This package contains the core abstractions and management infrastructure for writing log messages to Azure Table Storage.
-    </Description>
+    <Description>This package contains the core abstractions and management infrastructure for writing log messages to Azure Table Storage.</Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>

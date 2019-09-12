@@ -1,20 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
+using Umbrella.Utilities;
 using Umbrella.WebUtilities.Http;
 
 [assembly: InternalsVisibleTo("Umbrella.WebUtilities.Test")]
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddUmbrellaWebUtilities(this IServiceCollection services)
-        {
-            services.AddSingleton<IHttpHeaderValueUtility, HttpHeaderValueUtility>();
+	/// <summary>
+	/// Extension methods used to register services for the <see cref="Umbrella.WebUtilities"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// </summary>
+	public static class IServiceCollectionExtensions
+	{
+		/// <summary>
+		/// Adds the <see cref="Umbrella.WebUtilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaWebUtilities(this IServiceCollection services)
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            return services;
-        }
-    }
+			services.AddSingleton<IHttpHeaderValueUtility, HttpHeaderValueUtility>();
+
+			return services;
+		}
+	}
 }

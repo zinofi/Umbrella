@@ -1,72 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
-using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
+using Xunit;
 
 namespace Umbrella.DynamicImage.Test
 {
-    public class DynamicImageUtilityTest
-    {
-        [Fact]
-        public void TryParseUrl()
-        {
-            var utility = CreateDynamicImageUtility();
+	public class DynamicImageUtilityTest
+	{
+		[Fact]
+		public void TryParseUrl()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-            string path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
+			var path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
 
-            var (status, imageOptions) = utility.TryParseUrl("dynamicimage", path);
+			(DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
-            Assert.Equal(DynamicImageParseUrlResult.Success, status);
+			Assert.Equal(DynamicImageParseUrlResult.Success, status);
 
-            var options = new DynamicImageOptions("/images/mobile-devices.png", 680 * 2, 649 * 2, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg);
+			var options = new DynamicImageOptions("/images/mobile-devices.png", 680 * 2, 649 * 2, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg);
 
-            Assert.Equal(options, imageOptions);
-        }
+			Assert.Equal(options, imageOptions);
+		}
 
-        [Fact]
-        public void TryParseUrl_InvalidPathPrefix()
-        {
-            var utility = CreateDynamicImageUtility();
+		[Fact]
+		public void TryParseUrl_InvalidPathPrefix()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-            string path = "/dynamicinvalidimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
+			var path = "/dynamicinvalidimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
+			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
-            var (status, imageOptions) = utility.TryParseUrl("dynamicimage", path);
+			Assert.Equal(DynamicImageParseUrlResult.Skip, status);
+		}
 
-            Assert.Equal(DynamicImageParseUrlResult.Skip, status);
-        }
+		[Fact]
+		public void TryParseUrl_InvalidPathSegmentOrder()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-        [Fact]
-        public void TryParseUrl_InvalidPathSegmentOrder()
-        {
-            var utility = CreateDynamicImageUtility();
+			var path = "/dynamicimage/images/649/Uniform/png/680/mobile-devices@2x.jpg";
+			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
-            string path = "/dynamicimage/images/649/Uniform/png/680/mobile-devices@2x.jpg";
+			Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
+		}
 
-            var (status, imageOptions) = utility.TryParseUrl("dynamicimage", path);
+		[Fact]
+		public void TryParseUrl_InvalidSegmentCount()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-            Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
-        }
+			var path = "/dynamicimage/649/Uniform/png/mobile-devices@2x.jpg";
+			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
-        [Fact]
-        public void TryParseUrl_InvalidSegmentCount()
-        {
-            var utility = CreateDynamicImageUtility();
+			Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
+		}
 
-            string path = "/dynamicimage/649/Uniform/png/mobile-devices@2x.jpg";
+		private DynamicImageUtility CreateDynamicImageUtility()
+		{
+			var logger = new Mock<ILogger<DynamicImageUtility>>();
 
-            var (status, imageOptions) = utility.TryParseUrl("dynamicimage", path);
-
-            Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
-        }
-
-        private DynamicImageUtility CreateDynamicImageUtility()
-        {
-            var logger = new Mock<ILogger<DynamicImageUtility>>();
-
-            return new DynamicImageUtility(logger.Object);
-        }
-    }
+			return new DynamicImageUtility(logger.Object);
+		}
+	}
 }

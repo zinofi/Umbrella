@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Umbrella.Legacy.WebUtilities.Accessors;
 using Umbrella.Legacy.WebUtilities.Accessors.Abstractions;
 using Umbrella.Legacy.WebUtilities.Hosting;
@@ -21,46 +17,72 @@ using Umbrella.WebUtilities.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddUmbrellaLegacyWebUtilities(this IServiceCollection services)
-            => services.AddUmbrellaLegacyWebUtilities<UmbrellaWebHostingEnvironment>();
+	/// <summary>
+	/// Extension methods used to register services for the <see cref="Umbrella.Legacy.WebUtilities"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// </summary>
+	public static class IServiceCollectionExtensions
+	{
+		/// <summary>
+		/// Adds the <see cref="Umbrella.Legacy.WebUtilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="frontEndCompressionMiddlewareOptionsBuilder">The optional <see cref="FrontEndCompressionMiddlewareOptions"/> builder.</param>
+		/// <param name="bundleUtilityOptionsBuilder">The optional <see cref="BundleUtilityOptions"/> builder.</param>
+		/// <param name="webpackBundleUtilityOptionsBuilder">The optional <see cref="WebpackBundleUtilityOptions"/> builder.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaLegacyWebUtilities(
+			this IServiceCollection services,
+			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, BundleUtilityOptions> bundleUtilityOptionsBuilder = null,
+			Action<IServiceProvider, WebpackBundleUtilityOptions> webpackBundleUtilityOptionsBuilder = null)
+			=> services.AddUmbrellaLegacyWebUtilities<UmbrellaWebHostingEnvironment>(frontEndCompressionMiddlewareOptionsBuilder, bundleUtilityOptionsBuilder, webpackBundleUtilityOptionsBuilder);
 
-        public static IServiceCollection AddUmbrellaLegacyWebUtilities<TUmbrellaWebHostingEnvironment>(this IServiceCollection services)
-            where TUmbrellaWebHostingEnvironment : class, IUmbrellaWebHostingEnvironment
-        {
-            Guard.ArgumentNotNull(services, nameof(services));
+		/// <summary>
+		/// Adds the <see cref="Umbrella.Legacy.WebUtilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <typeparam name="TUmbrellaWebHostingEnvironment">
+		/// The concrete implementation of <see cref="IUmbrellaWebHostingEnvironment"/> to register. This allows consuming applications to override the default implementation and allow it to be
+		/// resolved from the container correctly for both the <see cref="IUmbrellaHostingEnvironment"/> and <see cref="IUmbrellaWebHostingEnvironment"/> interfaces.
+		/// </typeparam>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="frontEndCompressionMiddlewareOptionsBuilder">The optional <see cref="FrontEndCompressionMiddlewareOptions"/> builder.</param>
+		/// <param name="bundleUtilityOptionsBuilder">The optional <see cref="BundleUtilityOptions"/> builder.</param>
+		/// <param name="webpackBundleUtilityOptionsBuilder">The optional <see cref="WebpackBundleUtilityOptions"/> builder.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaLegacyWebUtilities<TUmbrellaWebHostingEnvironment>(
+			this IServiceCollection services,
+			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, BundleUtilityOptions> bundleUtilityOptionsBuilder = null,
+			Action<IServiceProvider, WebpackBundleUtilityOptions> webpackBundleUtilityOptionsBuilder = null)
 
-            // Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
-            services.AddSingleton<TUmbrellaWebHostingEnvironment>();
-            services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
-            services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+			where TUmbrellaWebHostingEnvironment : class, IUmbrellaWebHostingEnvironment
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IBundleUtility, BundleUtility>();
-            services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
+			// Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
+			services.AddSingleton<TUmbrellaWebHostingEnvironment>();
+			services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+			services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
-            services.AddSingleton<CleanupIDisposableMiddleware>();
-            services.AddSingleton<DebugRequestMiddleware>();
-            services.AddSingleton<FrontEndCompressionMiddleware>();
-            services.AddSingleton<HttpContextAccessorMiddleware>();
-            services.AddSingleton<RobotsMiddleware>();
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddSingleton<IBundleUtility, BundleUtility>();
+			services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
 
-            // Default Options - These can be replaced by calls to the Configure* methods below.
-            services.AddSingleton(new FrontEndCompressionMiddlewareOptions());
-            services.AddSingleton(new BundleUtilityOptions());
-            services.AddSingleton(new WebpackBundleUtilityOptions());
+			services.AddSingleton<CleanupIDisposableMiddleware>();
+			services.AddSingleton<DebugRequestMiddleware>();
+			services.AddSingleton<FrontEndCompressionMiddleware>();
+			services.AddSingleton<HttpContextAccessorMiddleware>();
+			services.AddSingleton<RobotsMiddleware>();
 
-            return services;
-        }
+			// Options
+			services.ConfigureUmbrellaOptions(frontEndCompressionMiddlewareOptionsBuilder);
+			services.ConfigureUmbrellaOptions(bundleUtilityOptionsBuilder);
+			services.ConfigureUmbrellaOptions(webpackBundleUtilityOptionsBuilder);
 
-        public static IServiceCollection ConfigureFrontEndCompressionMiddlewareOptions(this IServiceCollection services, Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> optionsBuilder)
-            => services.ConfigureUmbrellaOptions(optionsBuilder);
-
-        public static IServiceCollection ConfigureBundleUtilityOptions(this IServiceCollection services, Action<IServiceProvider, BundleUtilityOptions> optionsBuilder)
-            => services.ConfigureUmbrellaOptions(optionsBuilder);
-
-		public static IServiceCollection ConfigureWebpackBundleUtilityOptions(this IServiceCollection services, Action<IServiceProvider, WebpackBundleUtilityOptions> optionsBuilder)
-			=> services.ConfigureUmbrellaOptions(optionsBuilder);
+			return services;
+		}
 	}
 }

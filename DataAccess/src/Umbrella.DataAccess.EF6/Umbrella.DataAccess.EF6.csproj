@@ -1,47 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;AzureDevOps</Configurations>
-	<PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Configurations>Debug;Release;AzureDevOps</Configurations>
+		<DocumentationFile>bin\Release\net461\Umbrella.DataAccess.EF6.xml</DocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <PackageId>Umbrella.DataAccess.EF6</PackageId>
-    <Version>2.9.5</Version>
-    <Authors>Richard Edwards</Authors>
-    <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2019</Copyright>
-    <Description>
-      This package contains data access infrastructure to allow for the simple creation of Entity Framework 6 repositories.
-    </Description>
-    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+		<Optimize>true</Optimize>
+		<DefineConstants>AzureDevOps</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.2.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<PropertyGroup>
+		<PackageId>Umbrella.DataAccess.EF6</PackageId>
+		<Version>2.9.5</Version>
+		<Authors>Richard Edwards</Authors>
+		<Company>Zinofi Digital Ltd</Company>
+		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Description>
+			This package contains data access infrastructure to allow for the simple creation of Entity Framework 6 repositories.
+		</Description>
+		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Data" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="EntityFramework" Version="6.2.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Umbrella.DataAccess.EF.Abstractions\Umbrella.DataAccess.EF.Abstractions.csproj" />
-  </ItemGroup>
-  
+	<ItemGroup>
+		<Reference Include="System.Data" />
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Umbrella.DataAccess.EF.Abstractions\Umbrella.DataAccess.EF.Abstractions.csproj" />
+	</ItemGroup>
+
 </Project>

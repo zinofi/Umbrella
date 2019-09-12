@@ -1,28 +1,41 @@
 ﻿using System;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.DynamicImage.Caching;
 using Umbrella.DynamicImage.Caching.AzureStorage;
 using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>
-	/// 
+	/// Extension methods used to register services for the <see cref="Umbrella.DynamicImage.Caching.AzureStorage"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	public static class IServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Used to register the Dynamic Image Azure Blob Storage Cache services with the DI container for the application.
-		/// Any existing registrations for <see cref="IDynamicImageCache"/> will be replaced with <see cref="DynamicImageAzureBlobStorageCache"/>.
+		/// Adds the <see cref="Umbrella.DataAccess.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
+		/// with Azure Blob Storage caching.
 		/// </summary>
-		/// <param name="services">The <see cref="IServiceCollection"/> for the application.</param>
-		/// <param name="optionsBuilder">The <see cref="DynamicImageAzureBlobStorageCacheOptions"/> cache options.</param>
-		/// <returns>The services collection for the application.</returns>
-		public static IServiceCollection AddUmbrellaDynamicImageAzureBlobStorageCache(this IServiceCollection services, Action<IServiceProvider, DynamicImageAzureBlobStorageCacheOptions> optionsBuilder)
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheOptions"/> builder.</param>
+		/// <param name="dynamicImageAzureBlobStorageCacheOptionsBuilder">The <see cref="DynamicImageAzureBlobStorageCacheOptions"/> builder.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="dynamicImageCacheCoreOptionsBuilder"/> is null.</exception>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="dynamicImageAzureBlobStorageCacheOptionsBuilder"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaDynamicImageAzureBlobStorageCache(
+			this IServiceCollection services,
+			Action<IServiceProvider, DynamicImageCacheOptions> dynamicImageCacheCoreOptionsBuilder,
+			Action<IServiceProvider, DynamicImageAzureBlobStorageCacheOptions> dynamicImageAzureBlobStorageCacheOptionsBuilder)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
+			Guard.ArgumentNotNull(dynamicImageCacheCoreOptionsBuilder, nameof(dynamicImageCacheCoreOptionsBuilder));
+			Guard.ArgumentNotNull(dynamicImageAzureBlobStorageCacheOptionsBuilder, nameof(dynamicImageAzureBlobStorageCacheOptionsBuilder));
 
+			services.AddUmbrellaDynamicImage();
 			services.AddSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();
-			services.ConfigureUmbrellaOptions(optionsBuilder);
+			services.ConfigureUmbrellaOptions(dynamicImageCacheCoreOptionsBuilder);
+			services.ConfigureUmbrellaOptions(dynamicImageAzureBlobStorageCacheOptionsBuilder);
 
 			return services;
 		}

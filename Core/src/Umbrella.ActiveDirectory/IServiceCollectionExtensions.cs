@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Umbrella.ActiveDirectory;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -10,17 +9,20 @@ namespace Microsoft.Extensions.DependencyInjection
 	/// <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	public static class IServiceCollectionExtensions
-    {
+	{
 		/// <summary>
-		/// Adds the services for the 
+		/// Adds the <see cref="Umbrella.ActiveDirectory"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
-		/// <param name="services">The services.</param>
-		/// <returns></returns>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaActiveDirectory(this IServiceCollection services)
-        {
-            services.AddSingleton<IAuthenticationTokenUtility, AuthenticationTokenUtility>();
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            return services;
-        }
-    }
+			services.AddSingleton<IAuthenticationTokenUtility, AuthenticationTokenUtility>();
+
+			return services;
+		}
+	}
 }

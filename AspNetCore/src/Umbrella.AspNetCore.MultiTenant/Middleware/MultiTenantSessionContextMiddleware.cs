@@ -1,36 +1,57 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.MultiTenant.Abstractions;
 
 namespace Umbrella.AspNetCore.MultiTenant.Middleware
 {
+	/// <summary>
+	/// This Middleware is used to populate the values of the scoped instance of <see cref="DbAppTenantSessionContext{TAppTenantKey}"/> on the application's dependency
+	/// injection container with the value stored in the claims for the current user for the current HTTP request. The name of the claim type is injected into the constructor
+	/// by the ASP.NET Core infrastructure using the value registered when configuring the <see cref="IApplicationBuilder"/> in Startup.cs.
+	/// </summary>
+	/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
 	public class MultiTenantSessionContextMiddleware<TAppTenantKey>
 	{
-		private readonly RequestDelegate m_Next;
-		private readonly ILogger m_Logger;
-		private readonly string m_TenantClaimType;
+		private readonly RequestDelegate _next;
+		private readonly ILogger _log;
+		private readonly string _tenantClaimType;
 
-		public MultiTenantSessionContextMiddleware(RequestDelegate next, ILogger<MultiTenantSessionContextMiddleware<TAppTenantKey>> logger, string tenantClaimType)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey}"/> class.
+		/// </summary>
+		/// <param name="next">The next piece of middleware to be executed.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="tenantClaimType">Type of the tenant claim to be read from the current user's claims.</param>
+		public MultiTenantSessionContextMiddleware(
+			RequestDelegate next,
+			ILogger<MultiTenantSessionContextMiddleware<TAppTenantKey>> logger,
+			string tenantClaimType)
 		{
-			m_Next = next;
-			m_Logger = logger;
-			m_TenantClaimType = tenantClaimType;
+			_next = next;
+			_log = logger;
+			_tenantClaimType = tenantClaimType;
 		}
 
+		/// <summary>
+		/// Invokes the middleware in the context of the current request. This method is called by the ASP.NET Core infrastructure.
+		/// </summary>
+		/// <param name="context">The current <see cref="HttpContext"/>.</param>
+		/// <param name="dbAppAuthSessionContext">The database application authentication session context.</param>
 		public async Task Invoke(HttpContext context, DbAppTenantSessionContext<TAppTenantKey> dbAppAuthSessionContext)
 		{
 			try
 			{
 				if (context.User.Identity.IsAuthenticated)
 				{
-					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == m_TenantClaimType)?.Value;
+					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _tenantClaimType)?.Value;
 
 					if (!string.IsNullOrWhiteSpace(strAppTenantId))
 					{
-						TAppTenantKey id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey));
+						var id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey));
 
 						dbAppAuthSessionContext.AppTenantId = id;
 					}
@@ -38,39 +59,61 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 					dbAppAuthSessionContext.IsAuthenticated = true;
 				}
 
-				await m_Next.Invoke(context);
+				await _next.Invoke(context);
 			}
-			catch (Exception exc) when (m_Logger.WriteError(exc))
+			catch (Exception exc) when (_log.WriteError(exc))
 			{
 				throw;
 			}
 		}
 	}
 
+	/// <summary>
+	/// This Middleware is used to populate the values of the scoped instances of <see cref="DbAppTenantSessionContext{TAppTenantKey}"/> and <see cref="DbAppTenantSessionContext{TNullableAppTenantKey}"/>
+	/// on the application's dependency injection container with the value stored in the claims for the current user for the current HTTP request. The name of the claim type is injected into the constructor
+	/// by the ASP.NET Core infrastructure using the value registered when configuring the <see cref="IApplicationBuilder"/> in Startup.cs.
+	/// </summary>
+	/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
+	/// <typeparam name="TNullableAppTenantKey">The type of the nullable application tenant key.</typeparam>
 	public class MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>
 	{
-		private readonly RequestDelegate m_Next;
-		private readonly ILogger m_Logger;
-		private readonly string m_TenantClaimType;
+		private readonly RequestDelegate _next;
+		private readonly ILogger _log;
+		private readonly string _tenantClaimType;
 
-		public MultiTenantSessionContextMiddleware(RequestDelegate next, ILogger<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>> logger, string tenantClaimType)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey, TNullableAppTenantKey}"/> class.
+		/// </summary>
+		/// <param name="next">The next piece of middleware to be executed.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="tenantClaimType">Type of the tenant claim to be read from the current user's claims.</param>
+		public MultiTenantSessionContextMiddleware(
+			RequestDelegate next,
+			ILogger<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>> logger,
+			string tenantClaimType)
 		{
-			m_Next = next;
-			m_Logger = logger;
-			m_TenantClaimType = tenantClaimType;
+			_next = next;
+			_log = logger;
+			_tenantClaimType = tenantClaimType;
 		}
 
+		/// <summary>
+		/// Invokes the middleware in the context of the current request. This method is called by the ASP.NET Core infrastructure.
+		/// </summary>
+		/// <param name="context">The current <see cref="HttpContext"/>.</param>
+		/// <param name="dbAppAuthSessionContext">The database application authentication session context.</param>
+		/// <param name="dbNullableAppAuthSessionContext">The nullable database application authentication session context.</param>
 		public async Task Invoke(HttpContext context, DbAppTenantSessionContext<TAppTenantKey> dbAppAuthSessionContext, DbAppTenantSessionContext<TNullableAppTenantKey> dbNullableAppAuthSessionContext)
 		{
 			try
 			{
 				if (context.User.Identity.IsAuthenticated)
 				{
-					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == m_TenantClaimType)?.Value;
+					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _tenantClaimType)?.Value;
 
 					if (!string.IsNullOrWhiteSpace(strAppTenantId))
 					{
-						TAppTenantKey id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey));
+						var id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey));
 
 						dbAppAuthSessionContext.AppTenantId = id;
 
@@ -82,9 +125,9 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 					dbNullableAppAuthSessionContext.IsAuthenticated = true;
 				}
 
-				await m_Next.Invoke(context);
+				await _next.Invoke(context);
 			}
-			catch (Exception exc) when (m_Logger.WriteError(exc))
+			catch (Exception exc) when (_log.WriteError(exc))
 			{
 				throw;
 			}

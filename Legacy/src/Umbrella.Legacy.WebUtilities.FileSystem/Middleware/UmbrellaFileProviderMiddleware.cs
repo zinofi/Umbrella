@@ -13,6 +13,7 @@ using Umbrella.WebUtilities.Http;
 
 namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 {
+	// TODO: Port this to ASP.NET Core. Will need it for the BCC project to restrict file access.
 	public class UmbrellaFileProviderMiddleware : OwinMiddleware
 	{
 		protected ILogger Log { get; }

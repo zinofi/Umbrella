@@ -1,20 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Umbrella.AspNetCore.DataAnnotations;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddUmbrellaAspNetCoreDataAnnotations(this IServiceCollection services)
-        {
-            services.AddSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
+	/// <summary>
+	/// Extension methods used to register services for the <see cref="Umbrella.AspNetCore.DataAnnotations"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// </summary>
+	public static class IServiceCollectionExtensions
+	{
+		/// <summary>
+		/// Adds the <see cref="Umbrella.AspNetCore.DataAnnotations"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// </summary>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
+		public static IServiceCollection AddUmbrellaAspNetCoreDataAnnotations(this IServiceCollection services)
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
 
-            return services;
-        }
-    }
+			services.AddSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
+
+			return services;
+		}
+	}
 }

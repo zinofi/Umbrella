@@ -8,7 +8,7 @@ namespace Umbrella.DynamicImage.Abstractions
     [StructLayout(LayoutKind.Auto)]
     public struct DynamicImageOptions
     {
-        public static readonly DynamicImageOptions Empty = new DynamicImageOptions();
+		public static readonly DynamicImageOptions Empty = default;
 
         public int Width { get; set; }
         public int Height { get; set; }

@@ -23,18 +23,25 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>
-	/// Extension methods used to register services for the Umbrella.Utilities package with a specified
+	/// Extension methods used to register services for the <see cref="Umbrella.Utilities"/> package with a specified
 	/// <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	public static class IServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Adds the Umbrella.Utilities services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// Adds the <see cref="Umbrella.Utilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="hybridCacheOptionsBuilder">The optional <see cref="MultiCacheOptions"/> builder.</param>
+		/// <param name="httpResourceInfoUtilityOptionsBuilder">The optional <see cref="HttpResourceInfoUtilityOptions"/> builder.</param>
+		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaUtilities(
+			this IServiceCollection services,
+			Action<IServiceProvider, MultiCacheOptions> hybridCacheOptionsBuilder = null,
+			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
+			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -51,48 +58,27 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
 			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
 
-			// Default Options - These can be replaced by calls to the Configure* methods below.
-			services.AddSingleton(serviceProvider =>
+			if (hybridCacheOptionsBuilder == null)
 			{
-				var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
-
-				return new MultiCacheOptions
+				// The HybridCacheOptions needs a default for the key builder which we need to create here
+				// if no builder has been provided.
+				services.AddSingleton(serviceProvider =>
 				{
-					CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
-				};
-			});
-			services.AddSingleton<HttpResourceInfoUtilityOptions>();
-			services.AddSingleton<SecureRandomStringGeneratorOptions>();
+					var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
 
-			return services;
-		}
-
-		/// <summary>
-		/// Configures the <see cref="MultiCacheOptions"/> for use with the <see cref="MultiCache"/>.
-		/// </summary>
-		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
-		/// <param name="optionsBuilder">An optional delegate used to build the <see cref="MultiCacheOptions"/>.</param>
-		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection ConfigureMultiCacheOptions(this IServiceCollection services, Action<IServiceProvider, MultiCacheOptions> optionsBuilder)
-		{
-			Guard.ArgumentNotNull(services, nameof(services));
-
-			services.AddSingleton(serviceProvider =>
+					return new MultiCacheOptions
+					{
+						CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
+					};
+				});
+			}
+			else
 			{
-				var cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
+				services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
+			}
 
-				var options = new MultiCacheOptions
-				{
-					CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
-				};
-
-				// TODO V3: This should not be allowed to be null. Add a Guard check above and add an <exception> comment to the xml docs.
-				optionsBuilder?.Invoke(serviceProvider, options);
-
-				return options;
-			});
+			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
+			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
 
 			return services;
 		}

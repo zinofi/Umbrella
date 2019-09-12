@@ -66,12 +66,10 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 		#region Constructors
 		public AzureTableStorageLogManager(ILogger<AzureTableStorageLogManager> logger,
-			IOptions<AzureTableStorageLogManagementOptions> managementOptions,
+			AzureTableStorageLogManagementOptions options,
 			IMemoryCache memoryCache,
 			IDistributedCache distributedCache)
 		{
-			var options = managementOptions.Value;
-
 			Guard.ArgumentNotNullOrWhiteSpace(options.AzureStorageConnectionString, nameof(options.AzureStorageConnectionString));
 
 			if (options.CacheLifetimeMinutes < 0)

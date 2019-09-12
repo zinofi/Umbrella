@@ -1,20 +1,25 @@
-﻿using Umbrella.DataAccess.MultiTenant.Abstractions;
+﻿using System;
+using Umbrella.DataAccess.MultiTenant.Abstractions;
+using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>
-	/// This class contains extension methods used to add the Multi-Tenant Data Access services with the specified
-	/// <see cref="IServiceCollection"/>.
+	/// Extension methods used to register services for the <see cref="Umbrella.DataAccess.MultiTenant"/> package with a specified
+	/// <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	public static class IServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Adds the Umbrella MultiTenant Data Access services to the specified service colletion.
+		/// Adds the <see cref="Umbrella.DataAccess.MultiTenant"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
-		/// <param name="services">The <see cref="IServiceCollection"/> to which services will be added.</param>
-		/// <returns>The same <see cref="IServiceCollection"/> as was passed in but which now has the MultiTenant services added to it.</returns>
+		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDataAccessMultiTenant(this IServiceCollection services)
 		{
+			Guard.ArgumentNotNull(services, nameof(services));
+
 			services.AddScoped(typeof(DbAppTenantSessionContext<>));
 
 			return services;

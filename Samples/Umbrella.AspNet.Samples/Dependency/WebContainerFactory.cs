@@ -44,29 +44,31 @@ namespace Umbrella.AspNet.Samples.Dependency
 
         private void ConfigureUmbrella(IServiceCollection services)
         {
-            services.AddUmbrellaUtilities();
+            services.AddUmbrellaUtilities(
+				hybridCacheOptionsBuilder: (serviceProvider, options) =>
+			{
+				options.CacheEnabled = true;
+			});
+
             services.AddUmbrellaUtilitiesNewtonsoftJson();
             services.AddUmbrellaWebUtilities();
-            services.AddUmbrellaLegacyWebUtilities();
-            services.ConfigureMultiCacheOptions((serviceProvider, options) =>
-            {
-                options.CacheEnabled = true;
-            });
-            services.ConfigureBundleUtilityOptions((serviceProvider, options) =>
-            {
-                options.DefaultBundleFolderAppRelativePath = "/content";
-                options.WatchFiles = true;
-            });
-			services.ConfigureWebpackBundleUtilityOptions((serviceProvider, options) =>
-			{
-				options.DefaultBundleFolderAppRelativePath = "/content/dist";
-				options.WatchFiles = true;
-			});
-			services.ConfigureFrontEndCompressionMiddlewareOptions((serviceProvider, options) =>
-            {
-                options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
-                options.WatchFiles = true;
-            });
+
+			services.AddUmbrellaLegacyWebUtilities(
+				frontEndCompressionMiddlewareOptionsBuilder: (serviceProvider, options) =>
+				{
+					options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
+					options.WatchFiles = true;
+				},
+				bundleUtilityOptionsBuilder: (serviceProvider, options) =>
+				{
+					options.DefaultBundleFolderAppRelativePath = "/content";
+					options.WatchFiles = true;
+				},
+				webpackBundleUtilityOptionsBuilder: (serviceProvider, options) =>
+				{
+					options.DefaultBundleFolderAppRelativePath = "/content/dist";
+					options.WatchFiles = true;
+				});
         }
     }
 }

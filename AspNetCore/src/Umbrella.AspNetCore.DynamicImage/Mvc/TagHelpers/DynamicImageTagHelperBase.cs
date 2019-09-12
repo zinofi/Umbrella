@@ -1,87 +1,143 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers;
-using Umbrella.WebUtilities.Hosting;
 using Umbrella.DynamicImage.Abstractions;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Umbrella.Utilities;
+using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.DynamicImage.Mvc.TagHelpers
 {
-    public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
-    {
-        protected const string RequiredAttributeNames = "src," + WidthRequestAttributeName + "," + HeightRequestAttributeName + "," + ResizeModeAttributeName;
+	/// <summary>
+	/// The base class used for all Dynamic Image tag helpers.
+	/// </summary>
+	/// <seealso cref="ResponsiveImageTagHelper" />
+	public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
+	{
+		#region Protected Constants
+		/// <summary>
+		/// The required attribute names
+		/// </summary>
+		protected const string RequiredAttributeNames = "src," + WidthRequestAttributeName + "," + HeightRequestAttributeName + "," + ResizeModeAttributeName;
 
-        protected const string WidthRequestAttributeName = "width-request";
-        protected const string HeightRequestAttributeName = "height-request";
-        protected const string ResizeModeAttributeName = "resize-mode";
+		/// <summary>
+		/// The width request attribute name
+		/// </summary>
+		protected const string WidthRequestAttributeName = "width-request";
 
-        protected IDynamicImageUtility DynamicImageUtility { get; }
-        protected abstract string OutputTagName { get; }
+		/// <summary>
+		/// The height request attribute name
+		/// </summary>
+		protected const string HeightRequestAttributeName = "height-request";
 
-        /// <summary>
-        /// This is the path prefix used for all generated image urls unless overridden using the "path-prefix" attribute on the tag.
-        /// </summary>
-        public static string GlobalDynamicImagePathPrefix { get; set; } = "dynamicimage";
+		/// <summary>
+		/// The resize mode attribute name
+		/// </summary>
+		protected const string ResizeModeAttributeName = "resize-mode";
+		#endregion
 
-        [HtmlAttributeName(WidthRequestAttributeName)]
-        public int WidthRequest { get; set; }
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the <see cref="IDynamicImageUtility"/>.
+		/// </summary>
+		protected IDynamicImageUtility DynamicImageUtility { get; }
 
-        [HtmlAttributeName(HeightRequestAttributeName)]
-        public int HeightRequest { get; set; }
+		/// <summary>
+		/// Gets the name of the output tag. This is abstract and always overridden.
+		/// </summary>
+		protected abstract string OutputTagName { get; }
+		#endregion
 
-        [HtmlAttributeName(ResizeModeAttributeName)]
-        public DynamicResizeMode ResizeMode { get; set; }
-        public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
-        
+		// TODO: Can we not register an options class and use that??
+		/// <summary>
+		/// This is the path prefix used for all generated image urls unless overridden using the "path-prefix" attribute on the tag.
+		/// </summary>
+		public static string GlobalDynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
 
-        [HtmlAttributeName("path-prefix")]
-        public string DynamicImagePathPrefix { get; set; } = GlobalDynamicImagePathPrefix;
+		/// <summary>
+		/// Gets or sets the width request in pixels.
+		/// </summary>
+		[HtmlAttributeName(WidthRequestAttributeName)]
+		public int WidthRequest { get; set; }
 
-        public DynamicImageTagHelperBase(IMemoryCache memoryCache,
-            IDynamicImageUtility dynamicImageUtility,
-            IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
-            : base(umbrellaHostingEnvironment, memoryCache)
-        {
-            DynamicImageUtility = dynamicImageUtility;
-        }
+		/// <summary>
+		/// Gets or sets the height request in pixels.
+		/// </summary>
+		[HtmlAttributeName(HeightRequestAttributeName)]
+		public int HeightRequest { get; set; }
 
-        public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-        {
-            BuildCoreTag(output);
+		/// <summary>
+		/// Gets or sets the <see cref="DynamicResizeMode"/>.
+		/// </summary>
+		[HtmlAttributeName(ResizeModeAttributeName)]
+		public DynamicResizeMode ResizeMode { get; set; }
 
-            await base.ProcessAsync(context, output);
-        }
+		// TODO: Does this not need an attribute??
+		/// <summary>
+		/// Gets or sets the <see cref="DynamicImageFormat"/>.
+		/// </summary>
+		public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
 
-        protected string BuildCoreTag(TagHelperOutput output)
-        {
-            if (WidthRequest <= 0)
-                throw new Exception($"The {WidthRequestAttributeName} value must be greater than 0.");
+		/// <summary>
+		/// Gets or sets the dynamic image path prefix. This defaults to "dynamicimage".
+		/// </summary>
+		[HtmlAttributeName("path-prefix")]
+		public string DynamicImagePathPrefix { get; set; } = GlobalDynamicImagePathPrefix;
 
-            if (HeightRequest <= 0)
-                throw new Exception($"The {HeightRequestAttributeName} value must be greater than 0.");
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageTagHelperBase"/> class.
+		/// </summary>
+		/// <param name="memoryCache">The <see cref="IMemoryCache"/>.</param>
+		/// <param name="dynamicImageUtility">The <see cref="IDynamicImageUtility"/>.</param>
+		/// <param name="umbrellaHostingEnvironment">The <see cref="IUmbrellaWebHostingEnvironment"/>.</param>
+		public DynamicImageTagHelperBase(
+			IMemoryCache memoryCache,
+			IDynamicImageUtility dynamicImageUtility,
+			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
+			: base(umbrellaHostingEnvironment, memoryCache)
+		{
+			DynamicImageUtility = dynamicImageUtility;
+		}
 
-            Guard.ArgumentNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
+		/// <summary>
+		/// Asynchronously executes the <see cref="TagHelper"/> with the given <paramref name="context"/> and <paramref name="output"/>.
+		/// </summary>
+		/// <param name="context">Contains information associated with the current HTML tag.</param>
+		/// <param name="output">A stateful HTML element used to generate an HTML tag.</param>
+		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+		{
+			BuildCoreTag(output);
 
-            TagHelperAttribute attrSrc = output.Attributes["src"];
-            string src = attrSrc?.Value?.ToString();
+			await base.ProcessAsync(context, output);
+		}
 
-            Guard.ArgumentNotNullOrWhiteSpace(src, nameof(src));
+		/// <summary>
+		/// Builds the core tag and returns the 'src' attribute.
+		/// </summary>
+		/// <param name="output">A stateful HTML element used to generate an HTML tag.</param>
+		/// <returns>The 'src' attribute of the tag.</returns>
+		protected string BuildCoreTag(TagHelperOutput output)
+		{
+			Guard.ArgumentInRange(WidthRequest, nameof(WidthRequestAttributeName), 1);
+			Guard.ArgumentInRange(HeightRequest, nameof(HeightRequestAttributeName), 1);
+			Guard.ArgumentNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
 
-            var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
+			TagHelperAttribute attrSrc = output.Attributes["src"];
+			string src = attrSrc?.Value?.ToString();
 
-            string x1Url = DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options);
+			Guard.ArgumentNotNullOrWhiteSpace(src, nameof(src));
 
-            output.Attributes.Remove(attrSrc);
-            output.Attributes.Add("src", ResolveImageUrl(x1Url));
+			var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
 
-            output.TagName = OutputTagName;
+			string x1Url = DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options);
 
-            return src;
-        }
-    }
+			output.Attributes.Remove(attrSrc);
+			output.Attributes.Add("src", ResolveImageUrl(x1Url));
+
+			output.TagName = OutputTagName;
+
+			return src;
+		}
+	}
 }

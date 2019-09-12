@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
+// TODO: Move to Options namespace
 namespace Umbrella.Extensions.Logging.Azure.Management.Configuration
 {
     public class AzureTableStorageLogManagementOptions

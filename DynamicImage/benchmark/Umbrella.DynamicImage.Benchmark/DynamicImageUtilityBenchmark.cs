@@ -24,7 +24,7 @@ namespace Umbrella.DynamicImage.Benchmark
         [Benchmark]
         public DynamicImageOptions TryParseUrl()
         {
-            var (status, imageOptions) = m_DynamicImageUtility.TryParseUrl("dynamicimage", "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg");
+            var (status, imageOptions) = m_DynamicImageUtility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg");
 
             return imageOptions;
         }
