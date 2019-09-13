@@ -66,7 +66,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 			var logger = new Mock<ILogger<FrontEndCompressionMiddleware>>();
 			logger.Setup(x => x.IsEnabled(LogLevel.Debug)).Returns(false);
 
-			var cache = new Mock<IMultiCache>();
+			var cache = new Mock<IHybridCache>();
 			cache.SetReturnsDefault<Task<(string, byte[])>>(Task.FromResult(("br", _testContent)));
 
 			var hostingEnvironment = new Mock<IUmbrellaHostingEnvironment>();

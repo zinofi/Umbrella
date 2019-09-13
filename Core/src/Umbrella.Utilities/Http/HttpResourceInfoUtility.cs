@@ -16,7 +16,7 @@ namespace Umbrella.Utilities.Http
 	{
 		private readonly ILogger _log;
 		private readonly HttpClient _httpClient = new HttpClient();
-		private readonly IMultiCache _multiCache;
+		private readonly IHybridCache _multiCache;
 		private readonly ICacheKeyUtility _cacheKeyUtility;
 		private readonly HttpResourceInfoUtilityOptions _options;
 
@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Http
 		/// <param name="options">The options.</param>
 		public HttpResourceInfoUtility(
 			ILogger<HttpResourceInfoUtility> logger,
-			IMultiCache multiCache,
+			IHybridCache multiCache,
 			ICacheKeyUtility cacheKeyUtility,
 			HttpResourceInfoUtilityOptions options)
 		{

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Caching
 {
-    public enum MultiCacheAnalyticsMode
+    public enum HybridCacheAnalyticsMode
     {
         None = 0,
         TrackKeys = 1,

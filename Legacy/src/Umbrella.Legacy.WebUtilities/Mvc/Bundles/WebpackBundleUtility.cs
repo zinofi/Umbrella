@@ -28,7 +28,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 		public WebpackBundleUtility(
 			ILogger<WebpackBundleUtility> logger,
 			WebpackBundleUtilityOptions options,
-			IMultiCache multiCache,
+			IHybridCache multiCache,
 			IUmbrellaWebHostingEnvironment hostingEnvironment,
 			ICacheKeyUtility cacheKeyUtility)
 			: base(logger, options, multiCache, hostingEnvironment)

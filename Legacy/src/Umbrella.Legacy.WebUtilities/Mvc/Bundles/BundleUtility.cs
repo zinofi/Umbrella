@@ -22,7 +22,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 		public BundleUtility(
 			ILogger<BundleUtility> logger,
 			BundleUtilityOptions options,
-			IMultiCache multiCache,
+			IHybridCache multiCache,
 			IUmbrellaWebHostingEnvironment hostingEnvironment)
 			: base(logger, options, multiCache, hostingEnvironment)
 		{
@@ -34,13 +34,13 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 	{
         protected ILogger Log { get; }
         protected TOptions Options { get; }
-        protected IMultiCache Cache { get; }
+        protected IHybridCache Cache { get; }
         protected IUmbrellaWebHostingEnvironment HostingEnvironment { get; }
 
         public BundleUtility(
             ILogger logger,
             TOptions options,
-            IMultiCache multiCache,
+            IHybridCache multiCache,
             IUmbrellaWebHostingEnvironment hostingEnvironment)
         {
             Log = logger;

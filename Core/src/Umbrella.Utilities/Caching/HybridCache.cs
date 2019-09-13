@@ -24,22 +24,22 @@ namespace Umbrella.Utilities.Caching
 	/// A multi cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
 	/// The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked.
 	/// </summary>
-	/// <seealso cref="IMultiCache" />
-	public class MultiCache : IMultiCache, IDisposable // Rename to HybridCache.
+	/// <seealso cref="IHybridCache" />
+	public class HybridCache : IHybridCache, IDisposable // Rename to HybridCache.
 	{
 		private readonly ReaderWriterLockSlim _nukeReaderWriterLock = new ReaderWriterLockSlim();
 		private CancellationTokenSource _nukeTokenSource = new CancellationTokenSource();
 
 		protected ILogger Log { get; }
-		protected MultiCacheOptions Options { get; }
+		protected HybridCacheOptions Options { get; }
 		protected bool TrackKeys { get; }
 		protected bool TrackKeysAndHits { get; }
 		protected IDistributedCache DistributedCache { get; }
 		protected IMemoryCache MemoryCache { get; }
-		protected ConcurrentDictionary<string, MultiCacheMetaEntry> MemoryCacheMetaEntryDictionary { get; } = new ConcurrentDictionary<string, MultiCacheMetaEntry>();
+		protected ConcurrentDictionary<string, HybridCacheMetaEntry> MemoryCacheMetaEntryDictionary { get; } = new ConcurrentDictionary<string, HybridCacheMetaEntry>();
 
-		public MultiCache(ILogger<MultiCache> logger,
-			MultiCacheOptions options,
+		public HybridCache(ILogger<HybridCache> logger,
+			HybridCacheOptions options,
 			IDistributedCache distributedCache,
 			IMemoryCache memoryCache)
 		{
@@ -48,8 +48,8 @@ namespace Umbrella.Utilities.Caching
 			DistributedCache = distributedCache;
 			MemoryCache = memoryCache;
 
-			TrackKeys = (Options.AnalyticsMode & MultiCacheAnalyticsMode.TrackKeys) == MultiCacheAnalyticsMode.TrackKeys;
-			TrackKeysAndHits = (Options.AnalyticsMode & MultiCacheAnalyticsMode.TrackKeysAndHits) == MultiCacheAnalyticsMode.TrackKeysAndHits;
+			TrackKeys = (Options.AnalyticsMode & HybridCacheAnalyticsMode.TrackKeys) == HybridCacheAnalyticsMode.TrackKeys;
+			TrackKeysAndHits = (Options.AnalyticsMode & HybridCacheAnalyticsMode.TrackKeysAndHits) == HybridCacheAnalyticsMode.TrackKeysAndHits;
 		}
 
 		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan> expirationTimeSpanBuilder = null, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null, bool? cacheEnabledOverride = null)
@@ -97,7 +97,7 @@ namespace Umbrella.Utilities.Caching
 					{
 						try
 						{
-							MultiCacheMetaEntry cacheMetaEntry = null;
+							HybridCacheMetaEntry cacheMetaEntry = null;
 
 							if (TrackKeys)
 								MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out cacheMetaEntry);
@@ -113,9 +113,9 @@ namespace Umbrella.Utilities.Caching
 
 								if (entryToAdd != null && TrackKeys)
 								{
-									cacheMetaEntry = new MultiCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
+									cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 									MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
-									entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
+									entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
 								}
 
 								return entryToAdd;
@@ -138,7 +138,7 @@ namespace Umbrella.Utilities.Caching
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
 			{
 				// If we get this far then there has definitely been a problem with the actionFunction. We need to always throw here.
-				throw new MultiCacheException("There has been a problem with the cache.", exc);
+				throw new HybridCacheException("There has been a problem with the cache.", exc);
 			}
 		}
 
@@ -185,7 +185,7 @@ namespace Umbrella.Utilities.Caching
 					{
 						try
 						{
-							MultiCacheMetaEntry cacheMetaEntry = null;
+							HybridCacheMetaEntry cacheMetaEntry = null;
 
 							if (TrackKeys)
 								MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out cacheMetaEntry);
@@ -204,9 +204,9 @@ namespace Umbrella.Utilities.Caching
 
 								if (entryToAdd != null && TrackKeys)
 								{
-									cacheMetaEntry = new MultiCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
+									cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 									MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
-									entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
+									entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
 								}
 
 								return entryToAdd;
@@ -230,7 +230,7 @@ namespace Umbrella.Utilities.Caching
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
 			{
 				// If we get this far then there has definitely been a problem with the actionFunction. We need to throw here.
-				throw new MultiCacheException("There has been a problem with the cache.", exc);
+				throw new HybridCacheException("There has been a problem with the cache.", exc);
 			}
 		}
 
@@ -255,7 +255,7 @@ namespace Umbrella.Utilities.Caching
 				{
 					bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
 
-					if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out MultiCacheMetaEntry cacheMetaEntry))
+					if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry cacheMetaEntry))
 						cacheMetaEntry.AddHit();
 
 					return (found, value);
@@ -289,7 +289,7 @@ namespace Umbrella.Utilities.Caching
 				{
 					bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
 
-					if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out MultiCacheMetaEntry cacheMetaEntry))
+					if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry cacheMetaEntry))
 						cacheMetaEntry.AddHit();
 
 					return (found, value);
@@ -321,18 +321,18 @@ namespace Umbrella.Utilities.Caching
 					var options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
 					if (TrackKeys)
-						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
+						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
 
 					MemoryCache.Set(cacheKeyInternal, value, options);
 
 					if (TrackKeys)
-						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new MultiCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
+						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
 			{
 				if (throwOnCacheFailure)
-					throw new MultiCacheException("There has been a problem setting the specified item in the cache.", exc);
+					throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
 			}
 
 			return value;
@@ -358,18 +358,18 @@ namespace Umbrella.Utilities.Caching
 					var options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
 					if (TrackKeys)
-						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out MultiCacheMetaEntry removedEntry));
+						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
 
 					MemoryCache.Set(cacheKeyInternal, value, options);
 
 					if (TrackKeys)
-						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new MultiCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
+						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
 			{
 				if (throwOnCacheFailure)
-					throw new MultiCacheException("There has been a problem setting the specified item in the cache.", exc);
+					throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
 			}
 
 			return value;
@@ -378,16 +378,16 @@ namespace Umbrella.Utilities.Caching
 		/// <summary>
 		/// Gets all memory cache meta entries.
 		/// </summary>
-		/// <returns>A collection of <see cref="MultiCacheMetaEntry"/> instances.</returns>
-		/// <exception cref="MultiCacheException">
+		/// <returns>A collection of <see cref="HybridCacheMetaEntry"/> instances.</returns>
+		/// <exception cref="HybridCacheException">
 		/// Meta entries cannot be retrieved when analytics is disabled.
 		/// or
 		/// There has been a problem reading the memory cache keys.
 		/// </exception>
-		public IReadOnlyCollection<MultiCacheMetaEntry> GetAllMemoryCacheMetaEntries()
+		public IReadOnlyCollection<HybridCacheMetaEntry> GetAllMemoryCacheMetaEntries()
 		{
 			if (!TrackKeys)
-				throw new MultiCacheException("Meta entries cannot be retrieved when analytics is disabled.");
+				throw new HybridCacheException("Meta entries cannot be retrieved when analytics is disabled.");
 
 			try
 			{
@@ -399,7 +399,7 @@ namespace Umbrella.Utilities.Caching
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new MultiCacheException("There has been a problem reading the memory cache keys.", exc);
+				throw new HybridCacheException("There has been a problem reading the memory cache keys.", exc);
 			}
 		}
 
@@ -410,7 +410,7 @@ namespace Umbrella.Utilities.Caching
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A task which can be awaited to indicate completion.</returns>
-		/// <exception cref="MultiCacheException">There has been a problem removing the item with the key: " + <paramref name="cacheKey"/></exception>
+		/// <exception cref="HybridCacheException">There has been a problem removing the item with the key: " + <paramref name="cacheKey"/></exception>
 		public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -425,14 +425,14 @@ namespace Umbrella.Utilities.Caching
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey }, returnValue: true))
 			{
-				throw new MultiCacheException("There has been a problem removing the item with the key: " + cacheKey, exc);
+				throw new HybridCacheException("There has been a problem removing the item with the key: " + cacheKey, exc);
 			}
 		}
 
 		/// <summary>
 		/// Clears the memory cache.
 		/// </summary>
-		/// <exception cref="MultiCacheException">There was a problem clearing all items from the memory cache.</exception>
+		/// <exception cref="HybridCacheException">There was a problem clearing all items from the memory cache.</exception>
 		public void ClearMemoryCache()
 		{
 			_nukeReaderWriterLock.EnterWriteLock();
@@ -447,7 +447,7 @@ namespace Umbrella.Utilities.Caching
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new MultiCacheException("There was a problem clearing all items from the memory cache.", exc);
+				throw new HybridCacheException("There was a problem clearing all items from the memory cache.", exc);
 			}
 			finally
 			{
@@ -480,10 +480,6 @@ namespace Umbrella.Utilities.Caching
 
 			return options;
 		}
-
-		//TODO: Why was this added??
-		//private MemoryCacheEntryOptions BuildMemoryCacheEntryOptions(TimeSpan expirationTimeSpan, bool slidingExpiration, CacheItemPriority priority, Func<IEnumerable<IChangeToken>> expirationTokensBuilder)
-		//    => BuildMemoryCacheEntryOptions(in expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
 		private MemoryCacheEntryOptions BuildMemoryCacheEntryOptions(in TimeSpan expirationTimeSpan, bool slidingExpiration, CacheItemPriority priority, Func<IEnumerable<IChangeToken>> expirationTokensBuilder)
 		{
@@ -562,7 +558,7 @@ namespace Umbrella.Utilities.Caching
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new MultiCacheException("There has been a problem disposing this instance.", exc);
+				throw new HybridCacheException("There has been a problem disposing this instance.", exc);
 			}
 		}
 		#endregion

@@ -7,7 +7,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
-    //TODO: Need to replicate the functionality from the legacy version - remember about PathBase for virtual applications.
+    //TODO: Need to replicate the functionality from the legacy version - remember about PathBase for virtual applications. - NEEDED THOUGH????
     public static class StringExtensions
     {
         /// <summary>

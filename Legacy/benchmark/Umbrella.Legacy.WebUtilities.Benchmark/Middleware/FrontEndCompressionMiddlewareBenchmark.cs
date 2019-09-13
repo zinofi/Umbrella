@@ -27,7 +27,7 @@ namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware
 		public FrontEndCompressionMiddlewareBenchmark()
 		{
 			var logger = new Mock<ILogger<FrontEndCompressionMiddleware>>();
-			var cache = new Mock<IMultiCache>();
+			var cache = new Mock<IHybridCache>();
 			var hostingEnvironment = new Mock<IUmbrellaHostingEnvironment>();
 			var httpHeaderValueUtility = new Mock<IHttpHeaderValueUtility>();
 			var mimeTypeUtility = new Mock<IMimeTypeUtility>();

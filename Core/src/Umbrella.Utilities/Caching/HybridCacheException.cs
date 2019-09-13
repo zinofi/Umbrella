@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Caching
 {
-    public class MultiCacheException : Exception
+    public class HybridCacheException : Exception
     {
-        public MultiCacheException()
+        public HybridCacheException()
         {
         }
 
-        public MultiCacheException(string message)
+        public HybridCacheException(string message)
             : base(message)
         {
         }
 
-        public MultiCacheException(string message, Exception innerException)
+        public HybridCacheException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        protected MultiCacheException(SerializationInfo info, StreamingContext context)
+        protected HybridCacheException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

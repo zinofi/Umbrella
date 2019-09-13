@@ -32,7 +32,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		private static readonly ConcurrentDictionary<string, IFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo>();
 
 		protected ILogger Log { get; }
-		protected IMultiCache Cache { get; }
+		protected IHybridCache Cache { get; }
 		protected IUmbrellaHostingEnvironment HostingEnvironment { get; }
 		protected IHttpHeaderValueUtility HttpHeaderValueUtility { get; }
 		protected IMimeTypeUtility MimeTypeUtility { get; }
@@ -44,7 +44,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		public FrontEndCompressionMiddleware(
 			OwinMiddleware next,
 			ILogger<FrontEndCompressionMiddleware> logger,
-			IMultiCache cache,
+			IHybridCache cache,
 			IUmbrellaHostingEnvironment hostingEnvironment,
 			IHttpHeaderValueUtility httpHeaderValueUtility,
 			IMimeTypeUtility mimeTypeUtility,
