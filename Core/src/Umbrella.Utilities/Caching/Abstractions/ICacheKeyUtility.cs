@@ -8,7 +8,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
     {
         string Create<T>(string key);
         string Create(Type type, string key);
-        string Create<T>(in ReadOnlySpan<string> keyParts);
-        string Create(Type type, in ReadOnlySpan<string> keyParts);
+        string Create<T>(in ReadOnlySpan<string> keyParts, int? keyPartsLength = null);
+        string Create(Type type, in ReadOnlySpan<string> keyParts, int? keyPartsLength = null);
     }
 }

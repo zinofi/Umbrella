@@ -3,7 +3,7 @@ using Umbrella.AspNetCore.WebUtilities.Hosting;
 using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelState;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 using Umbrella.WebUtilities.ModelState;
 

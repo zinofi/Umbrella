@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using Umbrella.Legacy.WebUtilities.Accessors;
-using Umbrella.Legacy.WebUtilities.Accessors.Abstractions;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
@@ -9,7 +7,7 @@ using Umbrella.Legacy.WebUtilities.Mvc.Bundles;
 using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Abstractions;
 using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Options;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
 [assembly: InternalsVisibleTo("Umbrella.Legacy.WebUtilities.Test")]
@@ -67,15 +65,12 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 			services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
-			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<IBundleUtility, BundleUtility>();
 			services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
 
 			services.AddSingleton<CleanupIDisposableMiddleware>();
 			services.AddSingleton<DebugRequestMiddleware>();
 			services.AddSingleton<FrontEndCompressionMiddleware>();
-			services.AddSingleton<HttpContextAccessorMiddleware>();
-			services.AddSingleton<RobotsMiddleware>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(frontEndCompressionMiddlewareOptionsBuilder);

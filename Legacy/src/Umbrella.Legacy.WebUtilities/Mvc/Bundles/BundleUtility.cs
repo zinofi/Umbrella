@@ -148,9 +148,13 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
             => HostingEnvironment.MapWebPath(DetermineBundlePath(bundleNameOrPath, bundleType), appendVersion: Options.AppendVersion ?? appendVersion, watchWhenAppendVersion: Options.WatchFiles);
 
 		protected string ResolveBundleContent(string bundleNameOrPath, string bundleType)
-            => HostingEnvironment.GetFileContent(DetermineBundlePath(bundleNameOrPath, bundleType), Options.CacheEnabled, Options.WatchFiles);
+		{
+			ConfiguredTaskAwaitable<string> task = HostingEnvironment.GetFileContentAsync(DetermineBundlePath(bundleNameOrPath, bundleType), Options.CacheEnabled, Options.WatchFiles).ConfigureAwait(false);
 
-        protected virtual string DetermineBundlePath(string bundleNameOrPath, string bundleType)
+			return task.GetAwaiter().GetResult();
+		}
+
+		protected virtual string DetermineBundlePath(string bundleNameOrPath, string bundleType)
         {
 			if (Path.HasExtension(bundleNameOrPath))
 				bundleNameOrPath = bundleNameOrPath.Substring(0, bundleNameOrPath.LastIndexOf('.'));

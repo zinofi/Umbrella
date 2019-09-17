@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Exceptions;
 
-namespace Umbrella.Utilities.Http
+namespace Umbrella.Utilities.Http.Abstractions
 {
 	/// <summary>
 	/// A utility class used to get basic details of a resource on a URL.
@@ -14,9 +13,8 @@ namespace Umbrella.Utilities.Http
 		/// </summary>
 		/// <param name="url">The URL.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="useCache">if set to  [use cache].</param>
-		/// <returns></returns>
-		/// <exception cref="UmbrellaException">There was a problem retrieving data for the specified url: {url}</exception>
+		/// <param name="useCache">Determines whether to cache the resource info.</param>
+		/// <returns>The <see cref="HttpResourceInfo"/>.</returns>
 		Task<HttpResourceInfo> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true);
 	}
 }

@@ -32,7 +32,7 @@ namespace Umbrella.Utilities.TypeConverters
 		{
 			try
 			{
-				var type = typeof(T);
+				Type type = typeof(T);
 
 				if (!string.IsNullOrEmpty(value))
 					return customValueConverter != null ? customValueConverter(value) : (T)System.Convert.ChangeType(value, type);

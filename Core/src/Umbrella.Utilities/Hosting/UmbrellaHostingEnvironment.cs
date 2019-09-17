@@ -1,80 +1,111 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Exceptions;
+using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Hosting
 {
-	// TODO: Removed the usage of the FileInfo class and switch to using the IFileProvider mechanism.
-	// Expose as a protected internal property to allow for unit testing.
-    public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
-    {
-        #region Protected Properties
-        protected ILogger Log { get; }
-        protected IMemoryCache Cache { get; }
-        protected ICacheKeyUtility CacheKeyUtility { get; }
-        #endregion
+	public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
+	{
+		#region Protected Properties
+		protected ILogger Log { get; }
+		protected IMemoryCache Cache { get; }
+		protected ICacheKeyUtility CacheKeyUtility { get; }
 
-        #region Constructors
-        public UmbrellaHostingEnvironment(ILogger logger,
-            IMemoryCache cache,
-            ICacheKeyUtility cacheKeyUtility)
-        {
-            Log = logger;
-            Cache = cache;
-            CacheKeyUtility = cacheKeyUtility;
-        }
-        #endregion
+		// Exposed as internal for unit testing / benchmarking mocks
+		protected internal IFileProvider ContentRootFileProvider { get; set; }
 
-        #region IUmbrellaHostingEnvironment Members
-        public abstract string MapPath(string virtualPath, bool fromContentRoot = true);
+		// Exposed as internal for unit testing / benchmarking mocks
+		protected internal IFileProvider WebRootFileProvider { get; set; }
+		#endregion
 
-        public virtual string GetFileContent(string virtualPath, bool fromContentRoot = true, bool cache = true, bool watch = true)
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+		#region Constructors
+		public UmbrellaHostingEnvironment(
+			ILogger logger,
+			IMemoryCache cache,
+			ICacheKeyUtility cacheKeyUtility)
+		{
+			Log = logger;
+			Cache = cache;
+			CacheKeyUtility = cacheKeyUtility;
+		}
+		#endregion
 
-            try
-            {
-                // TODO: Can we take advantage of the ArrayPool / MemoryPool stuff to make this even better?
-                string key = CacheKeyUtility.Create<UmbrellaHostingEnvironment>(new string[] { virtualPath, fromContentRoot.ToString(), cache.ToString() });
-                
-                string physicalPath = MapPath(virtualPath, fromContentRoot);
+		#region IUmbrellaHostingEnvironment Members
+		public abstract string MapPath(string virtualPath, bool fromContentRoot = true);
 
-                string ReadContent()
-                {
-                    if (File.Exists(physicalPath))
-                        return File.ReadAllText(physicalPath);
+		public virtual async Task<string> GetFileContentAsync(string virtualPath, bool fromContentRoot = true, bool cache = true, bool watch = true)
+		{
+			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-                    return null;
-                }
+			string[] cacheKeyParts = null;
 
-                if (cache)
-                {
-                    return Cache.GetOrCreate(key, entry =>
-                    {
-                        entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+			try
+			{
+				cacheKeyParts = ArrayPool<string>.Shared.Rent(4);
+				cacheKeyParts[0] = virtualPath;
+				cacheKeyParts[1] = fromContentRoot.ToString();
+				cacheKeyParts[2] = cache.ToString();
+				cacheKeyParts[3] = watch.ToString();
 
-                        if(watch)
-                            entry.AddExpirationToken(new PhysicalFileChangeToken(new FileInfo(physicalPath)));
+				string key = CacheKeyUtility.Create<UmbrellaHostingEnvironment>(cacheKeyParts, 4);
 
-                        return ReadContent();
-                    });
-                }
-                else
-                {
-                    return ReadContent();
-                }
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot, cache }))
-            {
-                throw;
-            }
-        } 
-        #endregion
-    }
+				string physicalPath = MapPath(virtualPath, fromContentRoot);
+
+				async Task<string> ReadContent()
+				{
+					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider : WebRootFileProvider;
+					IFileInfo fileInfo = fileProvider.GetFileInfo(physicalPath);
+
+					if (fileInfo.Exists)
+					{
+						using (Stream fs = fileInfo.CreateReadStream())
+						{
+							using (var sr = new StreamReader(fs))
+							{
+								// This is all going to end up in the cache anyway so we can live with sync here.
+								return await sr.ReadToEndAsync().ConfigureAwait(false);
+							}
+						}
+					}
+
+					return null;
+				}
+
+				if (cache)
+				{
+					return await Cache.GetOrCreateAsync(key, async entry =>
+					{
+						entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+
+						if (watch)
+							entry.AddExpirationToken(new PhysicalFileChangeToken(new FileInfo(physicalPath)));
+
+						return await ReadContent().ConfigureAwait(false);
+					});
+				}
+				else
+				{
+					return await ReadContent().ConfigureAwait(false);
+				}
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot, cache, watch }, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem reading the contents of the specified file.", exc);
+			}
+			finally
+			{
+				if (cacheKeyParts != null)
+					ArrayPool<string>.Shared.Return(cacheKeyParts);
+			}
+		}
+		#endregion
+	}
 }

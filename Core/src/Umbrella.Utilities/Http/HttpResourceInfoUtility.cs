@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Exceptions;
+using Umbrella.Utilities.Http.Abstractions;
 
 namespace Umbrella.Utilities.Http
 {
@@ -16,7 +17,7 @@ namespace Umbrella.Utilities.Http
 	{
 		private readonly ILogger _log;
 		private readonly HttpClient _httpClient = new HttpClient();
-		private readonly IHybridCache _multiCache;
+		private readonly IHybridCache _hybridCache;
 		private readonly ICacheKeyUtility _cacheKeyUtility;
 		private readonly HttpResourceInfoUtilityOptions _options;
 
@@ -34,7 +35,7 @@ namespace Umbrella.Utilities.Http
 			HttpResourceInfoUtilityOptions options)
 		{
 			_log = logger;
-			_multiCache = multiCache;
+			_hybridCache = multiCache;
 			_cacheKeyUtility = cacheKeyUtility;
 			_options = options;
 		}
@@ -45,8 +46,8 @@ namespace Umbrella.Utilities.Http
 		/// </summary>
 		/// <param name="url">The URL.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="useCache">if set to  [use cache].</param>
-		/// <returns></returns>
+		/// <param name="useCache">Determines whether to cache the resource info.</param>
+		/// <returns>The <see cref="HttpResourceInfo"/>.</returns>
 		/// <exception cref="UmbrellaException">There was a problem retrieving data for the specified url: {url}</exception>
 		public async Task<HttpResourceInfo> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true)
 		{
@@ -55,7 +56,7 @@ namespace Umbrella.Utilities.Http
 
 			try
 			{
-				return await _multiCache.GetOrCreateAsync(
+				return await _hybridCache.GetOrCreateAsync(
 					_cacheKeyUtility.Create<HttpResourceInfoUtility>(url),
 					async () =>
 					{
@@ -73,7 +74,7 @@ namespace Umbrella.Utilities.Http
 								Url = url
 							};
 
-							if (response.Headers.TryGetValues("Last-Modified", out var values) && DateTime.TryParse(values.FirstOrDefault(), out DateTime lastModified))
+							if (response.Headers.TryGetValues("Last-Modified", out System.Collections.Generic.IEnumerable<string> values) && DateTime.TryParse(values.FirstOrDefault(), out DateTime lastModified))
 								info.LastModified = lastModified;
 
 							return info;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Encryption.Abstractions;
@@ -35,17 +36,24 @@ namespace Umbrella.Utilities.Encryption
 		{
 			Guard.ArgumentInRange(lengthInBytes, nameof(lengthInBytes), 1, 1024);
 
+			byte[] buffer = null;
+
 			try
 			{
-				// TODO: Revisit using ArrayPool at some point.
-				byte[] buffer = new byte[lengthInBytes];
-				_random.GetBytes(buffer);
+				buffer = ArrayPool<byte>.Shared.Rent(lengthInBytes);
 
-				return Convert.ToBase64String(buffer);
+				_random.GetBytes(buffer, 0, lengthInBytes);
+
+				return Convert.ToBase64String(buffer, 0, lengthInBytes);
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { lengthInBytes }, returnValue: true))
 			{
 				throw new UmbrellaException($"An error has occurred whilst generating the nonce of {lengthInBytes}.", exc);
+			}
+			finally
+			{
+				if (buffer != null)
+					ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}
 

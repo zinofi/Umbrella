@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles.Options
 {
-    public class BundleUtilityOptions
+    public class BundleUtilityOptions : CacheableUmbrellaOptions
     {
         public string DefaultBundleFolderAppRelativePath { get; set; }
-        public bool CacheEnabled { get; set; } = true;
-        public TimeSpan CacheTimeout { get; set; } = TimeSpan.FromHours(1);
-        public bool CacheSlidingExpiration { get; set; } = true;
         public bool WatchFiles { get; set; }
 		public bool? AppendVersion { get; set; }
 	}

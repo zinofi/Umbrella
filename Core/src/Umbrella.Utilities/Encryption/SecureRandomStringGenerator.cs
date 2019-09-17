@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
@@ -36,15 +37,22 @@ namespace Umbrella.Utilities.Encryption
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="options">The options.</param>
+		/// <exception cref="UmbrellaException">There has been a problem creating this instance using the specified options.</exception>
 		public SecureRandomStringGenerator(
 			ILogger<SecureRandomStringGenerator> logger,
 			SecureRandomStringGeneratorOptions options)
-
 		{
 			_log = logger;
 			_options = options;
 
-			Guard.ArgumentNotNull(options.SpecialCharacters, nameof(options.SpecialCharacters));
+			try
+			{
+				options.Validate();
+			}
+			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem creating this instance using the specified options.", exc);
+			}
 		}
 		#endregion
 
@@ -59,6 +67,11 @@ namespace Umbrella.Utilities.Encryption
 		/// <param name="upperCaseCharacters">The number of upper case letters.</param>
 		/// <param name="specialCharacters">The number of special characters.</param>
 		/// <returns>The generated string.</returns>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="length"/> is less than 1.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="numbers"/> is less than 0.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="upperCaseCharacters"/> is less than 0.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="specialCharacters"/> is less than 0.</exception>
+		/// <exception cref="UmbrellaException">There has been a problem generating the random string.</exception>
 		public string Generate(int length = 8, int numbers = 0, int upperCaseCharacters = 0, int specialCharacters = 0)
 		{
 			Guard.ArgumentInRange(length, nameof(length), 1);
@@ -124,7 +137,7 @@ namespace Umbrella.Utilities.Encryption
 
 				return randomString.ToString();
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { length, numbers }))
+			catch (Exception exc) when (_log.WriteError(exc, new { length, numbers, upperCaseCharacters, specialCharacters }, returnValue: true))
 			{
 				throw new UmbrellaException("There has been a problem generating the random string.", exc);
 			}
@@ -221,15 +234,25 @@ namespace Umbrella.Utilities.Encryption
 				return min;
 
 			uint scale = uint.MaxValue;
+
 			while (scale == uint.MaxValue)
 			{
-				// TODO: Could use ArrayPool here?
-				// Get four random bytes.
-				byte[] four_bytes = new byte[4];
-				_random.GetBytes(four_bytes);
+				byte[] buffer = null;
 
-				// Convert that into an uint.
-				scale = BitConverter.ToUInt32(four_bytes, 0);
+				try
+				{
+					buffer = ArrayPool<byte>.Shared.Rent(4);
+
+					_random.GetBytes(buffer, 0, 4);
+
+					// Convert that into an uint.
+					scale = BitConverter.ToUInt32(buffer, 0);
+				}
+				finally
+				{
+					if (buffer != null)
+						ArrayPool<byte>.Shared.Return(buffer);
+				}
 			}
 
 			// Add min to the scaled difference between max and min.

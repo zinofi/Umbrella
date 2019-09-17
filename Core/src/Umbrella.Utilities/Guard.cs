@@ -77,6 +77,34 @@ namespace Umbrella.Utilities
                 throw new ArgumentException($"{argumentName} cannot be empty.");
         }
 
+		/// <summary>
+		/// Throws an exception if the tested <see cref="Span{T}"/> argument empty.
+		/// </summary>
+		/// <typeparam name="T">The type of the items in the <see cref="Span{T}"/> instance.</typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="argumentName">Name of the argument.</param>
+		/// <exception cref="ArgumentException">The <see cref="Span{T}"/> is empty.</exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void ArgumentNotEmpty<T>(in Span<T> argumentValue, string argumentName)
+		{
+			if (argumentValue.Length == 0)
+				throw new ArgumentException($"{argumentName} cannot be empty.");
+		}
+
+		/// <summary>
+		/// Throws an exception if the tested <see cref="ReadOnlySpan{T}"/> argument empty.
+		/// </summary>
+		/// <typeparam name="T">The type of the items in the <see cref="ReadOnlySpan{T}"/> instance.</typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="argumentName">Name of the argument.</param>
+		/// <exception cref="ArgumentException">The <see cref="ReadOnlySpan{T}"/> is empty.</exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void ArgumentNotEmpty<T>(in ReadOnlySpan<T> argumentValue, string argumentName)
+		{
+			if (argumentValue.Length == 0)
+				throw new ArgumentException($"{argumentName} cannot be empty.");
+		}
+
         /// <summary>
         /// Checks if the <paramref name="argumentValue"/> is of type <typeparamref name="T"/> or a type in it's type hierarchy.
         /// Calls <see cref="ArgumentNotNull{T}(T, string)"/> internally.

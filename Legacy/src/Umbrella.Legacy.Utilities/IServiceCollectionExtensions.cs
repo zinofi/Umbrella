@@ -1,7 +1,7 @@
 ﻿using System;
 using Umbrella.Legacy.Utilities.Configuration;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Configuration;
+using Umbrella.Utilities.Configuration.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

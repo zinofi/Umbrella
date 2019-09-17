@@ -6,12 +6,15 @@ using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
 using Umbrella.Utilities.DependencyInjection;
 using Umbrella.Utilities.Email;
-using Umbrella.Utilities.Email.Interfaces;
+using Umbrella.Utilities.Email.Abstractions;
+using Umbrella.Utilities.Email.Options;
 using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Encryption.Options;
 using Umbrella.Utilities.FriendlyUrl;
+using Umbrella.Utilities.FriendlyUrl.Abstractions;
 using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Numerics;
 using Umbrella.Utilities.Numerics.Abstractions;
@@ -32,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.Utilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="emailBuilderOptionsBuilder">The optional <see cref="EmailBuilderOptions"/> builder.</param>
 		/// <param name="hybridCacheOptionsBuilder">The optional <see cref="HybridCacheOptions"/> builder.</param>
 		/// <param name="httpResourceInfoUtilityOptionsBuilder">The optional <see cref="HttpResourceInfoUtilityOptions"/> builder.</param>
 		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
@@ -39,24 +43,25 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
 			this IServiceCollection services,
+			Action<IServiceProvider, EmailBuilderOptions> emailBuilderOptionsBuilder = null,
 			Action<IServiceProvider, HybridCacheOptions> hybridCacheOptionsBuilder = null,
 			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
 			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
-			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
-			services.AddTransient<IEmailBuilder, EmailBuilder>();
-			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
-			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
 			services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
 			services.AddSingleton<ICertificateUtility, CertificateUtility>();
-			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
-			services.AddSingleton<IHybridCache, HybridCache>();
-			services.AddSingleton<INonceGenerator, NonceGenerator>();
+			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
+			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
-			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
+			services.AddSingleton<IHybridCache, HybridCache>();
+			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
+			services.AddSingleton<INonceGenerator, NonceGenerator>();
+			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
+			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
+			services.AddTransient<IEmailBuilder, EmailBuilder>();
 
 			if (hybridCacheOptionsBuilder == null)
 			{
@@ -77,6 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
 				services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
 			}
 
+			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);
 			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
 

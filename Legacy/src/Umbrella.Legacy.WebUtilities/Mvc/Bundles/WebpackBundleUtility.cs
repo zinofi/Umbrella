@@ -23,6 +23,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 		private readonly string _manifestJsonFileSubPath;
 
 		protected ICacheKeyUtility CacheKeyUtility { get; }
+
+		// Exposed as internal for unit testing / benchmarking mocks
 		protected internal IFileProvider FileProvider { get; internal set; }
 
 		public WebpackBundleUtility(

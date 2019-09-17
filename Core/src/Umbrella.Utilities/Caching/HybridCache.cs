@@ -14,15 +14,9 @@ using Umbrella.Utilities.Caching.Options;
 
 namespace Umbrella.Utilities.Caching
 {
-	// TODO: We could implement something to allow cache keys to be tracked and add a method to allow a key to be removed
-	// from the cache. Would solve Matt's problem with not having any visibility of cache keys.
-	// For the memory cache we can register a post-eviction callback so we can keep the list of keys up-to-date. Can't do that with the
-	// distributed cache though.
-	// Need some mechanism to clear other memory cache entries when running on a web farm though. Would be Azure specific though and
-	// involve making http requests out to some endpoint with the azure app instance ids. Hmm...
 	/// <summary>
 	/// A multi cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
-	/// The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked.
+	/// The cache includes the option to allow internal errors that occur when adding or retrieving items from the caches to be masked in the event of transient errors.
 	/// </summary>
 	/// <seealso cref="IHybridCache" />
 	public class HybridCache : IHybridCache, IDisposable // Rename to HybridCache.
@@ -72,7 +66,7 @@ namespace Umbrella.Utilities.Caching
 					{
 						try
 						{
-							var (cacheItem, exception) = DistributedCache.GetOrCreate(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpanBuilder, slidingExpiration), false);
+							(T cacheItem, UmbrellaDistributedCacheException exception) = DistributedCache.GetOrCreate(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpanBuilder, slidingExpiration), false);
 
 							if (exception != null)
 							{
@@ -104,7 +98,7 @@ namespace Umbrella.Utilities.Caching
 
 							T cacheItem = MemoryCache.GetOrCreate(cacheKeyInternal, entry =>
 							{
-								TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.MaxCacheTimeout;
+								TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.DefaultCacheTimeout;
 
 								MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 								entry.SetOptions(options);
@@ -142,6 +136,22 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null, bool? cacheEnabledOverride = null)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
+			Guard.ArgumentNotNull(actionFunction, nameof(actionFunction));
+
+			try
+			{
+				return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), cancellationToken, expirationTimeSpanBuilder, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority, expirationTokensBuilder, cacheEnabledOverride);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
+			{
+				throw new HybridCacheException("There has been a problem with the cache.", exc);
+			}
+		}
+
 		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null, bool? cacheEnabledOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -163,7 +173,7 @@ namespace Umbrella.Utilities.Caching
 					{
 						try
 						{
-							var (cacheItem, exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpanBuilder, slidingExpiration), cancellationToken, false).ConfigureAwait(false);
+							(T cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpanBuilder, slidingExpiration), cancellationToken, false).ConfigureAwait(false);
 
 							if (!throwOnCacheFailure)
 							{
@@ -195,7 +205,7 @@ namespace Umbrella.Utilities.Caching
 							// Replace the boolean 'useMemoryCache' with an enum: CacheMode: Memory, MemoryMutex, Distributed.
 							T cacheItem = await MemoryCache.GetOrCreateAsync(cacheKeyInternal, async entry =>
 							{
-								TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.MaxCacheTimeout;
+								TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.DefaultCacheTimeout;
 
 								MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 								entry.SetOptions(options);
@@ -244,7 +254,7 @@ namespace Umbrella.Utilities.Caching
 
 				if (!useMemoryCache)
 				{
-					var (itemFound, cacheItem, exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
+					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
 
 					if (exception != null)
 						Log.WriteError(exception, new { cacheKey, useMemoryCache });
@@ -278,7 +288,7 @@ namespace Umbrella.Utilities.Caching
 
 				if (!useMemoryCache)
 				{
-					var (itemFound, cacheItem, exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
+					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 
 					if (exception != null)
 						Log.WriteError(exception, new { cacheKey, cacheKeyInternal, useMemoryCache });
@@ -312,13 +322,13 @@ namespace Umbrella.Utilities.Caching
 
 				if (!useMemoryCache)
 				{
-					var options = BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
+					DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
 
 					DistributedCache.Set(cacheKeyInternal, value, options);
 				}
 				else
 				{
-					var options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+					MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
 					if (TrackKeys)
 						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
@@ -349,13 +359,13 @@ namespace Umbrella.Utilities.Caching
 
 				if (!useMemoryCache)
 				{
-					var options = BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
+					DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
 
 					await DistributedCache.SetAsync(cacheKeyInternal, value, options, cancellationToken);
 				}
 				else
 				{
-					var options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+					MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 
 					if (TrackKeys)
 						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
@@ -460,7 +470,7 @@ namespace Umbrella.Utilities.Caching
 
 		private DistributedCacheEntryOptions BuildDistributedCacheEntryOptions(Func<TimeSpan> expirationTimeSpanBuilder, bool slidingExpiration)
 		{
-			TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.MaxCacheTimeout;
+			TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.DefaultCacheTimeout;
 
 			return BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
 		}
@@ -502,7 +512,7 @@ namespace Umbrella.Utilities.Caching
 
 				if (tokens != null)
 				{
-					foreach (var token in tokens)
+					foreach (IChangeToken token in tokens)
 					{
 						if (token != null)
 							options.AddExpirationToken(token);

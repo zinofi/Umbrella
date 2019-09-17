@@ -339,6 +339,7 @@ namespace Umbrella.Utilities.Extensions
 			return span.ToString();
 		}
 
+		#region Future Stuff
 		private static string ToTitleCase(this string value, bool trim = true)
 		{
 			if (string.IsNullOrEmpty(value))
@@ -369,7 +370,7 @@ namespace Umbrella.Utilities.Extensions
 			return lstIndex;
 		}
 
-		// TODO: Need to flesh this out when I have time.
+		// TODO vNext: Need to flesh this out when I have time.
 		//private static Span<int> SplitValueAt(this string value, int index, char splitter)
 		//{
 		//	if (string.IsNullOrEmpty(value))
@@ -384,6 +385,7 @@ namespace Umbrella.Utilities.Extensions
 		//		if(previous == splitter)
 
 		//	}
-		//}
+		//} 
+		#endregion
 	}
 }

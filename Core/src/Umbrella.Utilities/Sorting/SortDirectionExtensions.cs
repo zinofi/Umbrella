@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Sorting;
-
-namespace Umbrella.Utilities.Extensions
+﻿namespace Umbrella.Utilities.Sorting
 {
-	// TODO: V3 - Move to Sorting namespace.
 	/// <summary>
 	/// Extension methods for the <see cref="SortDirection"/> enum.
 	/// </summary>
 	public static class SortDirectionExtensions
-    {
+	{
 		/// <summary>
 		/// Converts the provided <see cref="SortDirection"/> to the corresponding SQL sort direction, i.e. ASC or DESC
 		/// </summary>

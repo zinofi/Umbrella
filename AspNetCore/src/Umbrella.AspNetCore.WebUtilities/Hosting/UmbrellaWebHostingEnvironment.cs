@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
@@ -20,174 +17,172 @@ using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Hosting
 {
-    public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
-    {
-        #region Private Static Members
-        private static readonly string s_CacheKeyPrefix = typeof(UmbrellaWebHostingEnvironment).FullName;
-        private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        #endregion
+	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
+	{
+		#region Private Static Members
+		private static readonly string s_CacheKeyPrefix = typeof(UmbrellaWebHostingEnvironment).FullName;
+		private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+		#endregion
 
-        #region Protected Properties
-        protected IHostingEnvironment HostingEnvironment { get; }
-        protected IHttpContextAccessor HttpContextAccessor { get; }
-        #endregion
+		#region Protected Properties
+		protected IHostingEnvironment HostingEnvironment { get; }
+		protected IHttpContextAccessor HttpContextAccessor { get; }
+		#endregion
 
-        #region Constructors
-        public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
-            IHostingEnvironment hostingEnvironment,
-            IHttpContextAccessor httpContextAccessor,
-            IMemoryCache cache,
-            ICacheKeyUtility cacheKeyUtility)
-            : base(logger, cache, cacheKeyUtility)
-        {
-            HostingEnvironment = hostingEnvironment;
-            HttpContextAccessor = httpContextAccessor;
-        }
-        #endregion
+		#region Constructors
+		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
+			IHostingEnvironment hostingEnvironment,
+			IHttpContextAccessor httpContextAccessor,
+			IMemoryCache cache,
+			ICacheKeyUtility cacheKeyUtility)
+			: base(logger, cache, cacheKeyUtility)
+		{
+			HostingEnvironment = hostingEnvironment;
+			HttpContextAccessor = httpContextAccessor;
+		}
+		#endregion
 
-        #region IUmbrellaHostingEnvironment Members
-        public override string MapPath(string virtualPath, bool fromContentRoot = true)
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+		#region IUmbrellaHostingEnvironment Members
+		public override string MapPath(string virtualPath, bool fromContentRoot = true)
+		{
+			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-            try
-            {
-                string key = $"{s_CacheKeyPrefix}:{nameof(MapPath)}:{virtualPath}:{fromContentRoot}".ToUpperInvariant();
+			try
+			{
+				string key = $"{s_CacheKeyPrefix}:{nameof(MapPath)}:{virtualPath}:{fromContentRoot}".ToUpperInvariant();
 
-                return Cache.GetOrCreate(key, entry =>
-                {
-                    entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+				return Cache.GetOrCreate(key, entry =>
+				{
+					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 
-                    //Trim and remove the ~/ from the front of the path
-                    //Also change forward slashes to back slashes
-                    string cleanedPath = TransformPath(virtualPath, true, false, true);
+					//Trim and remove the ~/ from the front of the path
+					//Also change forward slashes to back slashes
+					string cleanedPath = TransformPath(virtualPath, true, false, true);
 
-                    string rootPath = fromContentRoot
-                        ? HostingEnvironment.ContentRootPath
-                        : HostingEnvironment.WebRootPath;
+					string rootPath = fromContentRoot
+						? HostingEnvironment.ContentRootPath
+						: HostingEnvironment.WebRootPath;
 
-                    return Path.Combine(rootPath, cleanedPath);
-                });
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
-            {
-                throw;
-            }
-        }
-        #endregion
+					return Path.Combine(rootPath, cleanedPath);
+				});
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
+			{
+				throw;
+			}
+		}
+		#endregion
 
-        #region IUmbrellaWebHostingEnvironment Members
-        public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
-        {
-            try
-            {
-                Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-                Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
-                Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
+		#region IUmbrellaWebHostingEnvironment Members
+		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
+		{
+			try
+			{
+				Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+				Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
+				Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
-                string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}:{watchWhenAppendVersion}".ToUpperInvariant();
-                
-                return Cache.GetOrCreate(key, entry =>
-                {
-                    entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+				string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}:{watchWhenAppendVersion}".ToUpperInvariant();
 
-                    string cleanedPath = TransformPath(virtualPath, false, true, false);
+				return Cache.GetOrCreate(key, entry =>
+				{
+					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 
-                    var applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
+					string cleanedPath = TransformPath(virtualPath, false, true, false);
 
-                    PathString virtualApplicationPath = applicationPath != "/"
-                        ? applicationPath
-                        : PathString.Empty;
+					PathString applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
 
-                    //Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
-                    string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
-                        ? cleanedPath
-                        : virtualApplicationPath.Add(cleanedPath).Value;
+					PathString virtualApplicationPath = applicationPath != "/"
+						? applicationPath
+						: PathString.Empty;
 
-                    if (toAbsoluteUrl)
-                        url = $"{scheme}://{ResolveHttpHost()}{url}";
+					//Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
+					string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
+						? cleanedPath
+						: virtualApplicationPath.Add(cleanedPath).Value;
 
-                    if(appendVersion)
-                    {
-                        string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
+					if (toAbsoluteUrl)
+						url = $"{scheme}://{ResolveHttpHost()}{url}";
 
-                        FileInfo fileInfo = new FileInfo(physicalPath);
+					if (appendVersion)
+					{
+						string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
 
-                        if (!fileInfo.Exists)
-                            throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
+						var fileInfo = new FileInfo(physicalPath);
 
-                        if (watchWhenAppendVersion)
-                            entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
+						if (!fileInfo.Exists)
+							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
 
-                        long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
-                        string version = Convert.ToString(versionHash, 16);
+						if (watchWhenAppendVersion)
+							entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
 
-                        string qsStart = url.Contains("?") ? "&" : "?";
+						long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
+						string version = Convert.ToString(versionHash, 16);
 
-                        url = $"{url}{qsStart}{versionParameterName}={version}";
-                    }
+						string qsStart = url.Contains("?") ? "&" : "?";
 
-                    return url;
-                });
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }))
-            {
-                throw;
-            }
-        }
+						url = $"{url}{qsStart}{versionParameterName}={version}";
+					}
 
-        public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
-        {
-            try
-            {
-                Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
-                Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+					return url;
+				});
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }))
+			{
+				throw;
+			}
+		}
 
-                if (routeValues == null)
-                    routeValues = new Dictionary<string, object>();
+		public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
+		{
+			try
+			{
+				Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
+				Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
 
-                throw new NotImplementedException();
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
-            {
-                throw;
-            }
-        }
+				if (routeValues == null)
+					routeValues = new Dictionary<string, object>();
 
-        public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
-        {
-            //TODO: Should this call into the method above? Or should we just throw as below? Maybe with a better message?
-            throw new InvalidOperationException();
-        }
-        #endregion
+				throw new NotImplementedException();
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
+			{
+				throw;
+			}
+		}
 
-        #region Protected Methods
-        protected virtual string ResolveHttpHost() => HttpContextAccessor.HttpContext.Request.Host.Value;
-        #endregion
+		public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi") =>
+			//TODO: Should this call into the method above? Or should we just throw as below? Maybe with a better message?
+			throw new InvalidOperationException();
+		#endregion
 
-        #region Public Methods
-        public string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
-        {
-            StringBuilder sb = new StringBuilder(virtualPath)
-                .Trim()
-                .Trim('~');
+		#region Protected Methods
+		protected virtual string ResolveHttpHost() => HttpContextAccessor.HttpContext.Request.Host.Value;
+		#endregion
 
-            if (removeLeadingSlash && ensureLeadingSlash)
-                throw new ArgumentException($"{nameof(removeLeadingSlash)} and {nameof(ensureLeadingSlash)} are both set to true. This is not allowed.");
+		#region Public Methods
+		public string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
+		{
+			StringBuilder sb = new StringBuilder(virtualPath)
+				.Trim()
+				.Trim('~');
 
-            if (removeLeadingSlash)
-                sb.Trim('/');
+			if (removeLeadingSlash && ensureLeadingSlash)
+				throw new ArgumentException($"{nameof(removeLeadingSlash)} and {nameof(ensureLeadingSlash)} are both set to true. This is not allowed.");
 
-            if (ensureLeadingSlash && !sb.StartsWith('/'))
-                sb.Insert(0, '/');
+			if (removeLeadingSlash)
+				sb.Trim('/');
 
-            string path = s_Regex.Replace(sb.ToString(), "/");
+			if (ensureLeadingSlash && !sb.StartsWith('/'))
+				sb.Insert(0, '/');
 
-            if (convertForwardSlashesToBackSlashes)
-                path = path.Replace("/", @"\");
+			string path = s_Regex.Replace(sb.ToString(), "/");
 
-            return path;
-        }
-        #endregion
-    }
+			if (convertForwardSlashesToBackSlashes)
+				path = path.Replace("/", @"\");
+
+			return path;
+		}
+		#endregion
+	}
 }

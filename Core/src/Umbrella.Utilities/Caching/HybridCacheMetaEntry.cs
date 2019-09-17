@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Threading;
 
 namespace Umbrella.Utilities.Caching
 {
+	/// <summary>
+	/// Represents the meta-data of an entry stored in the <see cref="HybridCache"/> when the cached item is stored in-memory.
+	/// No such entries are created when items are stored in a distributed cache as they cannot be reliably tracked.
+	/// </summary>
 	public class HybridCacheMetaEntry
 	{
-		private int _hits;
-
 		public HybridCacheMetaEntry(string key, in TimeSpan timeout, bool isSlidingExpiration)
 		{
 			Key = key;
@@ -20,12 +21,13 @@ namespace Umbrella.Utilities.Caching
 		public TimeSpan Timeout { get; }
 		public bool IsSlidingExpiration { get; }
 		public DateTime LastAccessedDate { get; private set; }
-		public int Hits => _hits;
+		public int Hits { get; private set; }
 
 		public void AddHit()
 		{
-			// TODO: Could we save any time here by running this op on a different thread to avoid blocking the caller?
-			Interlocked.Increment(ref _hits);
+			// NB: Multiple threads could cause these values to not be 100% accurate. Can't lock here though as it
+			// could become a bottleneck.
+			Hits++;
 			LastAccessedDate = DateTime.UtcNow;
 		}
 	}

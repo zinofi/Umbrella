@@ -178,13 +178,23 @@ namespace Umbrella.Utilities.Numerics
 		#region Private Methods
 		private Random CreateRandom()
 		{
-			// TODO: Revisit using ArrayPool at some point.
-			byte[] buffer = new byte[4];
-			_randomNumberGenerator.GetBytes(buffer);
+			byte[] buffer = null;
 
-			int seed = BitConverter.ToInt32(buffer, 0);
+			try
+			{
+				buffer = ArrayPool<byte>.Shared.Rent(4);
 
-			return new Random(seed);
+				_randomNumberGenerator.GetBytes(buffer, 0, 4);
+
+				int seed = BitConverter.ToInt32(buffer, 0);
+
+				return new Random(seed);
+			}
+			finally
+			{
+				if (buffer != null)
+					ArrayPool<byte>.Shared.Return(buffer);
+			}
 		}
 		#endregion
 

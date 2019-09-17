@@ -20,6 +20,7 @@ using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime;
 using Umbrella.WebUtilities.Http;
 

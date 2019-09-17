@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -17,6 +19,7 @@ using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Primitives;
+using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Hosting
@@ -27,16 +30,16 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 	// with is below a certain value, e.g. 128. For all other instances, allocate to the heap to avoid stack overflow.
     public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
     {
-        #region Private Static Members
-        private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        #endregion
-
-        #region Constructors
-        public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
+		#region Constructors
+		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
             IMemoryCache cache,
             ICacheKeyUtility cacheKeyUtility)
             : base(logger, cache, cacheKeyUtility)
         {
+			var fileProvider = new PhysicalFileProvider(MapPath("~/"));
+
+			ContentRootFileProvider = fileProvider;
+			WebRootFileProvider = fileProvider;
         }
         #endregion
 
@@ -48,12 +51,19 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 			if (!fromContentRoot)
 				throw new ArgumentException("This value must always be true in a classic .NET application. It can only be set to false inside a .NET Core application.", nameof(fromContentRoot));
 
+			string[] cacheKeyParts = null;
+
 			try
             {
-                string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(new string[] { virtualPath, fromContentRoot.ToString() });
+				cacheKeyParts = ArrayPool<string>.Shared.Rent(2);
+				cacheKeyParts[0] = virtualPath;
+				cacheKeyParts[1] = fromContentRoot.ToString();
+
+                string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 2);
 
                 return Cache.GetOrCreate(key, entry =>
                 {
+					// TODO: Move to an Options class!
                     entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 
                     string cleanedPath = TransformPath(virtualPath, true, false, false);
@@ -61,23 +71,39 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
                     return System.Web.Hosting.HostingEnvironment.MapPath(cleanedPath);
                 });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
+            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
             {
-                throw;
+				throw new UmbrellaWebException("There has been a problem mapping the specified virtual path.", exc);
             }
+			finally
+			{
+				if (cacheKeyParts != null)
+					ArrayPool<string>.Shared.Return(cacheKeyParts);
+			}
         }
-        #endregion
+		#endregion
 
-        #region IUmbrellaWebHostingEnvironment Members
-        public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
+		#region IUmbrellaWebHostingEnvironment Members
+		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
         {
             Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
             Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
             Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
-            try
+			string[] cacheKeyParts = null;
+
+			try
             {
-                string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(new string[] { virtualPath, toAbsoluteUrl.ToString(), scheme, appendVersion.ToString(), versionParameterName, mapFromContentRoot.ToString(), watchWhenAppendVersion.ToString() });
+				cacheKeyParts = ArrayPool<string>.Shared.Rent(7);
+				cacheKeyParts[0] = virtualPath;
+				cacheKeyParts[1] = toAbsoluteUrl.ToString();
+				cacheKeyParts[2] = scheme;
+				cacheKeyParts[3] = appendVersion.ToString();
+				cacheKeyParts[4] = versionParameterName;
+				cacheKeyParts[5] = mapFromContentRoot.ToString();
+				cacheKeyParts[6] = watchWhenAppendVersion.ToString();
+
+                string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 7);
 
                 return Cache.GetOrCreate(key, entry =>
                 {
@@ -120,11 +146,16 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
                     return url;
                 });
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }))
+            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot, watchWhenAppendVersion }, returnValue: true))
             {
-                throw;
-            }
-        }
+				throw new UmbrellaWebException("There has been a problem mapping the specified virtual path.", exc);
+			}
+			finally
+			{
+				if (cacheKeyParts != null)
+					ArrayPool<string>.Shared.Return(cacheKeyParts);
+			}
+		}
 
         public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
         {

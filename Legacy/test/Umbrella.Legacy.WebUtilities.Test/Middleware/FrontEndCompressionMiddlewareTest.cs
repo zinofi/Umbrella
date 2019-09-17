@@ -11,14 +11,14 @@ using Moq;
 using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime;
 using Umbrella.WebUtilities.Http;
 using Xunit;
 
 namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 {
-    public class FrontEndCompressionMiddlewareTest
+	public class FrontEndCompressionMiddlewareTest
     {
 		private const string _dummyETagHeaderValue = nameof(_dummyETagHeaderValue);
 		private const string _dummyLastModifiedHeaderValue = nameof(_dummyLastModifiedHeaderValue);

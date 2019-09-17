@@ -4,11 +4,11 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.Utilities.Configuration;
+using Umbrella.Utilities.Configuration.Abstractions;
 
 namespace Umbrella.Legacy.Utilities.Configuration
 {
-    public class AppConfigReadOnlyAppSettingsSource : IReadOnlyAppSettingsSource
+	public class AppConfigReadOnlyAppSettingsSource : IReadOnlyAppSettingsSource
     {
         #region IReadOnlyAppSettingsAccessor Members
         public string GetValue(string key) => ConfigurationManager.AppSettings[key];

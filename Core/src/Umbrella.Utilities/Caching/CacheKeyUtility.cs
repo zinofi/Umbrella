@@ -27,16 +27,15 @@ namespace Umbrella.Utilities.Caching
             return span.ToString();
         }
 
-        public string Create<T>(in ReadOnlySpan<string> keyParts) => Create(typeof(T), keyParts);
+        public string Create<T>(in ReadOnlySpan<string> keyParts, int? keyPartsLength = null) => Create(typeof(T), keyParts, keyPartsLength);
 
-        public string Create(Type type, in ReadOnlySpan<string> keyParts)
+        public string Create(Type type, in ReadOnlySpan<string> keyParts, int? keyPartsLength = null)
         {
             Guard.ArgumentNotNull(type, nameof(type));
+			Guard.ArgumentNotEmpty(keyParts, nameof(keyParts));
+            Guard.ArgumentInRange(keyPartsLength, nameof(keyPartsLength), 1, keyParts.Length, allowNull: true);
 
-            if (keyParts.Length == 0)
-                throw new ArgumentException("The length cannot be null.", nameof(keyParts));
-
-            int partsCount = keyParts.Length;
+			int partsCount = keyPartsLength ?? keyParts.Length;
 
             // It seems the typeof call is expensive on CLR vs .NET Core
             string typeName = type.FullName;

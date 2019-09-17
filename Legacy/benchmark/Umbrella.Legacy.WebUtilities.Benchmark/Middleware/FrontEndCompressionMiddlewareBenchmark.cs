@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime;
 using Umbrella.WebUtilities.Http;
 
