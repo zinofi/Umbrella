@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk

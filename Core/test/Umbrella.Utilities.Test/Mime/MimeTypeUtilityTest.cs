@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Mime.Abstractions;
 using Xunit;
 
 namespace Umbrella.Utilities.Test.Mime
 {
-    public class MimeTypeUtilityTest
+	public class MimeTypeUtilityTest
     {
         [Fact]
         public void GetMimeType_Empty()

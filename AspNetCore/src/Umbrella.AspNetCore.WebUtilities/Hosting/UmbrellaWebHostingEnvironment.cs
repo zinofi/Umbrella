@@ -12,6 +12,7 @@ using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Hosting;
 
@@ -33,9 +34,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
 			IHostingEnvironment hostingEnvironment,
 			IHttpContextAccessor httpContextAccessor,
+			UmbrellaHostingEnvironmentOptions options,
 			IMemoryCache cache,
 			ICacheKeyUtility cacheKeyUtility)
-			: base(logger, cache, cacheKeyUtility)
+			: base(logger, options, cache, cacheKeyUtility)
 		{
 			HostingEnvironment = hostingEnvironment;
 			HttpContextAccessor = httpContextAccessor;

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Hosting.Abstractions;
+using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Hosting
@@ -16,6 +17,7 @@ namespace Umbrella.Utilities.Hosting
 	{
 		#region Protected Properties
 		protected ILogger Log { get; }
+		protected UmbrellaHostingEnvironmentOptions Options { get; }
 		protected IMemoryCache Cache { get; }
 		protected ICacheKeyUtility CacheKeyUtility { get; }
 
@@ -29,10 +31,12 @@ namespace Umbrella.Utilities.Hosting
 		#region Constructors
 		public UmbrellaHostingEnvironment(
 			ILogger logger,
+			UmbrellaHostingEnvironmentOptions options,
 			IMemoryCache cache,
 			ICacheKeyUtility cacheKeyUtility)
 		{
 			Log = logger;
+			Options = options;
 			Cache = cache;
 			CacheKeyUtility = cacheKeyUtility;
 		}

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Hosting.Options;
 using Xunit;
 
 namespace Umbrella.Legacy.WebUtilities.Test.Hosting
@@ -51,7 +52,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Hosting
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
             var cacheKeyUtility = new CacheKeyUtility();
 
-            return new UmbrellaWebHostingEnvironment(logger.Object, memoryCache, cacheKeyUtility);
+            return new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
         }
     }
 }

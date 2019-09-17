@@ -3,10 +3,10 @@ using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Configuration.Abstractions;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.Utilities.Configuration
 {
-	// TODO: V3 - Swap the code internally to use the IGenericTypeConverter
 	/// <summary>
 	/// The base class for an AppSettings class that contains property definitions for settings that are read from the appSettings section
 	/// of the application config file, e.g. app.config, web.config.
@@ -17,8 +17,9 @@ namespace Umbrella.Utilities.Configuration
 		#region Constructors
 		public ReadOnlyAppSettingsBase(ILogger logger,
 			IMemoryCache cache,
-			IReadOnlyAppSettingsSource appSettingsSource)
-			: base(logger, cache, appSettingsSource)
+			IReadOnlyAppSettingsSource appSettingsSource,
+			IGenericTypeConverter genericTypeConverter)
+			: base(logger, cache, appSettingsSource, genericTypeConverter)
 		{
 		}
 		#endregion
@@ -39,22 +40,26 @@ namespace Umbrella.Utilities.Configuration
 
 		#region Protected Properties
 		protected ILogger Log { get; }
-		protected IMemoryCache Cache { get; } // TODO: Swap everything to go via the HybridCache to allow visibility of cache keys.
+		protected IMemoryCache Cache { get; } // TODO: Swap everything to go via the HybridCache to allow visibility of cache keys. Overhead of this though!!! Hmmm....
 		protected TAppSettingsSource AppSettingsSource { get; }
+		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion
 
 		#region Constructors
 		public ReadOnlyAppSettingsBase(ILogger logger,
 			IMemoryCache cache,
-			TAppSettingsSource appSettingsSource)
+			TAppSettingsSource appSettingsSource,
+			IGenericTypeConverter genericTypeConverter)
 		{
 			Log = logger;
 			Cache = cache;
 			AppSettingsSource = appSettingsSource;
+			GenericTypeConverter = genericTypeConverter;
 		}
 		#endregion
 
 		#region Protected Methods
+		// Move to Options class
 		protected virtual string GenerateCacheKey(string settingKey) => $"{s_CacheKeyPrefix}:{settingKey}";
 		protected virtual Func<MemoryCacheEntryOptions> GetCacheEntryOptionsFunc() => null;
 		protected virtual T FromJson<T>(string value) => UmbrellaStatics.DeserializeJson<T>(value);
@@ -69,16 +74,10 @@ namespace Umbrella.Utilities.Configuration
 				{
 					string value = AppSettingsSource.GetValue(key);
 
-					Type type = typeof(T);
-
-					if (!string.IsNullOrEmpty(value))
-						return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
-					else if (throwException)
+					if(string.IsNullOrWhiteSpace(value) && throwException)
 						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
 
-					return type == typeof(string) && fallback == null
-						? (T)Convert.ChangeType(string.Empty, type)
-						: fallback;
+					return GenericTypeConverter.Convert(value, fallback, customValueConverter);
 				}
 
 				return useCache
@@ -105,18 +104,10 @@ namespace Umbrella.Utilities.Configuration
 				{
 					string value = AppSettingsSource.GetValue(key);
 
-					Type type = typeof(T);
-
-					if (!string.IsNullOrEmpty(value))
-						return customValueConverter != null ? customValueConverter(value) : (T)Convert.ChangeType(value, type);
-					else if (throwException)
+					if (string.IsNullOrWhiteSpace(value) && throwException)
 						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
 
-					T defaultValue = fallbackCreator != null ? fallbackCreator() : default;
-
-					return type == typeof(string) && defaultValue == null
-						? (T)Convert.ChangeType(string.Empty, type)
-						: defaultValue;
+					return GenericTypeConverter.Convert(value, fallbackCreator, customValueConverter);
 				}
 
 				return useCache
@@ -144,12 +135,10 @@ namespace Umbrella.Utilities.Configuration
 				{
 					string value = AppSettingsSource.GetValue(key);
 
-					if (!string.IsNullOrEmpty(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out T output))
-						return output;
-					else if (throwException)
-						throw new ArgumentException($"The value for key: {key} is not valid. An enum app setting with that key cannot be found.");
+					if (string.IsNullOrWhiteSpace(value) && throwException)
+						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
 
-					return fallback;
+					return GenericTypeConverter.ConvertToEnum(value, fallback);
 				}
 
 				return useCache

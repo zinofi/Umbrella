@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions
 {
-    public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
+	public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
         where TFileInfo : IUmbrellaFileInfo
     {
         #region Protected Properties

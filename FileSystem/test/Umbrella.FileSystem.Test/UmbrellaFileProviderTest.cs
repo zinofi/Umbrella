@@ -6,7 +6,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
-using Umbrella.Utilities.Mime;
 using Xunit;
 using Umbrella.Utilities.Compilation;
 using System.Linq;
@@ -16,10 +15,11 @@ using Umbrella.FileSystem.Disk;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Integration.NewtonsoftJson;
+using Umbrella.Utilities.Mime.Abstractions;
 
 namespace Umbrella.FileSystem.Test
 {
-    public class UmbrellaFileProviderTest
+	public class UmbrellaFileProviderTest
     {
 #if AZUREDEVOPS
         private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");

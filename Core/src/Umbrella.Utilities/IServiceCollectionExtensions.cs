@@ -13,9 +13,11 @@ using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Encryption.Options;
 using Umbrella.Utilities.FriendlyUrl;
 using Umbrella.Utilities.FriendlyUrl.Abstractions;
+using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.Numerics;
 using Umbrella.Utilities.Numerics.Abstractions;
 using Umbrella.Utilities.TypeConverters;
@@ -39,6 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="hybridCacheOptionsBuilder">The optional <see cref="HybridCacheOptions"/> builder.</param>
 		/// <param name="httpResourceInfoUtilityOptionsBuilder">The optional <see cref="HttpResourceInfoUtilityOptions"/> builder.</param>
 		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
+		/// <param name="umbrellaHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaHostingEnvironmentOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
@@ -46,7 +49,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, EmailBuilderOptions> emailBuilderOptionsBuilder = null,
 			Action<IServiceProvider, HybridCacheOptions> hybridCacheOptionsBuilder = null,
 			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
-			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null)
+			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
+			Action<IServiceProvider, UmbrellaHostingEnvironmentOptions> umbrellaHostingEnvironmentOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -85,6 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);
 			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
+			services.ConfigureUmbrellaOptions(umbrellaHostingEnvironmentOptionsBuilder);
 
 			return services;
 		}

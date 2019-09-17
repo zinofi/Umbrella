@@ -237,9 +237,6 @@ namespace Umbrella.Utilities.Extensions
 				buffer.Add(current);
 			}
 
-			// TODO: We can make this more efficient by resizing the buffer and returning it instead of creating a new copy.
-			// Will require the list to be an array to start with though instead of a List<char>
-			// Could also do it as a stack operation using Span<T>
 			return new string(buffer.ToArray());
 		}
 

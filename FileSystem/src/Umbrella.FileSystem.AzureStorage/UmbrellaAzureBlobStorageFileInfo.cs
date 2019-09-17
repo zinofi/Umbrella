@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage

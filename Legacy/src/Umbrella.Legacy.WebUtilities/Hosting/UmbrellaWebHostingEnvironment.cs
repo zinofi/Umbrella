@@ -18,6 +18,7 @@ using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
+using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
@@ -32,9 +33,10 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
     {
 		#region Constructors
 		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
-            IMemoryCache cache,
+			UmbrellaHostingEnvironmentOptions options,
+			IMemoryCache cache,
             ICacheKeyUtility cacheKeyUtility)
-            : base(logger, cache, cacheKeyUtility)
+            : base(logger, options, cache, cacheKeyUtility)
         {
 			var fileProvider = new PhysicalFileProvider(MapPath("~/"));
 

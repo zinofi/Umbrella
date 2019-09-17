@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Caching;
-using Umbrella.Utilities.Mime;
 using Xunit;
 using Umbrella.Utilities.Compilation;
 using Umbrella.FileSystem.Disk;
@@ -18,10 +17,11 @@ using Umbrella.DynamicImage.Caching.AzureStorage;
 using Umbrella.Utilities.Hosting;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.Utilities.TypeConverters.Abstractions;
+using Umbrella.Utilities.Mime.Abstractions;
 
 namespace Umbrella.DynamicImage.Test.Caching
 {
-    public class DynamicImageCacheTest
+	public class DynamicImageCacheTest
     {
 #if AZUREDEVOPS
         private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");

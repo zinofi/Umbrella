@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Configuration.Abstractions;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.Utilities.Configuration
 {
@@ -12,8 +13,9 @@ namespace Umbrella.Utilities.Configuration
 		#region Constructors
 		public AppSettingsBase(ILogger logger,
 			IMemoryCache cache,
-			IAppSettingsSource appSettingsSource)
-			: base(logger, cache, appSettingsSource)
+			IAppSettingsSource appSettingsSource,
+			IGenericTypeConverter genericTypeConverter)
+			: base(logger, cache, appSettingsSource, genericTypeConverter)
 		{
 		}
 		#endregion

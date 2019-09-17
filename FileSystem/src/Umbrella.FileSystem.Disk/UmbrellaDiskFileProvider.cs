@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Mime;
+using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
-    public class UmbrellaDiskFileProvider : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
+	public class UmbrellaDiskFileProvider : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
     {
         #region Constructors
         public UmbrellaDiskFileProvider(ILoggerFactory loggerFactory,
