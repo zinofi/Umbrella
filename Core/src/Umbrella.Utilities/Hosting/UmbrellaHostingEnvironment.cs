@@ -22,10 +22,10 @@ namespace Umbrella.Utilities.Hosting
 		protected ICacheKeyUtility CacheKeyUtility { get; }
 
 		// Exposed as internal for unit testing / benchmarking mocks
-		protected internal IFileProvider ContentRootFileProvider { get; set; }
+		protected internal Lazy<IFileProvider> ContentRootFileProvider { get; set; }
 
 		// Exposed as internal for unit testing / benchmarking mocks
-		protected internal IFileProvider WebRootFileProvider { get; set; }
+		protected internal Lazy<IFileProvider> WebRootFileProvider { get; set; }
 		#endregion
 
 		#region Constructors
@@ -65,7 +65,7 @@ namespace Umbrella.Utilities.Hosting
 
 				async Task<string> ReadContent()
 				{
-					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider : WebRootFileProvider;
+					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider.Value : WebRootFileProvider.Value;
 					IFileInfo fileInfo = fileProvider.GetFileInfo(physicalPath);
 
 					if (fileInfo.Exists)
@@ -87,7 +87,7 @@ namespace Umbrella.Utilities.Hosting
 				{
 					return await Cache.GetOrCreateAsync(key, async entry =>
 					{
-						entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+						entry.SetSlidingExpiration(Options.CacheTimeout);
 
 						if (watch)
 							entry.AddExpirationToken(new PhysicalFileChangeToken(new FileInfo(physicalPath)));

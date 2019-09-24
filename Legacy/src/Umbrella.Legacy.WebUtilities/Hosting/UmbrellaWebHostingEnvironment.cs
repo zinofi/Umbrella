@@ -38,10 +38,10 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
             ICacheKeyUtility cacheKeyUtility)
             : base(logger, options, cache, cacheKeyUtility)
         {
-			var fileProvider = new PhysicalFileProvider(MapPath("~/"));
+			var fileProviderLazy = new Lazy<IFileProvider>(() => new PhysicalFileProvider(MapPath("~/")));
 
-			ContentRootFileProvider = fileProvider;
-			WebRootFileProvider = fileProvider;
+			ContentRootFileProvider = fileProviderLazy;
+			WebRootFileProvider = fileProviderLazy;
         }
         #endregion
 
@@ -65,8 +65,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
                 return Cache.GetOrCreate(key, entry =>
                 {
-					// TODO: Move to an Options class!
-                    entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+                    entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
                     string cleanedPath = TransformPath(virtualPath, true, false, false);
 
@@ -109,7 +108,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
                 return Cache.GetOrCreate(key, entry =>
                 {
-                    entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+                    entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
                     
                     string cleanedPath = TransformPath(virtualPath, false, true, true);
 

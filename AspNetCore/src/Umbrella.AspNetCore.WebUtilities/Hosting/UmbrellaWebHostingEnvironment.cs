@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,6 +15,7 @@ using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Primitives;
+using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Hosting
@@ -41,6 +43,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		{
 			HostingEnvironment = hostingEnvironment;
 			HttpContextAccessor = httpContextAccessor;
+
+			ContentRootFileProvider = new Lazy<IFileProvider>(() => HostingEnvironment.ContentRootFileProvider);
+			WebRootFileProvider = new Lazy<IFileProvider>(() => HostingEnvironment.WebRootFileProvider);
 		}
 		#endregion
 
@@ -49,13 +54,19 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
+			string[] cacheKeyParts = null;
+
 			try
 			{
-				string key = $"{s_CacheKeyPrefix}:{nameof(MapPath)}:{virtualPath}:{fromContentRoot}".ToUpperInvariant();
+				cacheKeyParts = ArrayPool<string>.Shared.Rent(2);
+				cacheKeyParts[0] = virtualPath;
+				cacheKeyParts[1] = fromContentRoot.ToString();
+
+				string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 2);
 
 				return Cache.GetOrCreate(key, entry =>
 				{
-					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
 					//Trim and remove the ~/ from the front of the path
 					//Also change forward slashes to back slashes
@@ -68,9 +79,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 					return Path.Combine(rootPath, cleanedPath);
 				});
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
 			{
-				throw;
+				throw new UmbrellaWebException("There has been a problem mapping the specified virtual path.", exc);
+			}
+			finally
+			{
+				if (cacheKeyParts != null)
+					ArrayPool<string>.Shared.Return(cacheKeyParts);
 			}
 		}
 		#endregion
@@ -78,17 +94,28 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		#region IUmbrellaWebHostingEnvironment Members
 		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
 		{
+			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+			Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
+			Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
+
+			string[] cacheKeyParts = null;
+
 			try
 			{
-				Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-				Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
-				Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
+				cacheKeyParts = ArrayPool<string>.Shared.Rent(7);
+				cacheKeyParts[0] = virtualPath;
+				cacheKeyParts[1] = toAbsoluteUrl.ToString();
+				cacheKeyParts[2] = scheme;
+				cacheKeyParts[3] = appendVersion.ToString();
+				cacheKeyParts[4] = versionParameterName;
+				cacheKeyParts[5] = mapFromContentRoot.ToString();
+				cacheKeyParts[6] = watchWhenAppendVersion.ToString();
 
-				string key = $"{s_CacheKeyPrefix}:{nameof(MapWebPath)}:{virtualPath}:{toAbsoluteUrl}:{scheme}:{appendVersion}:{versionParameterName}:{mapFromContentRoot}:{watchWhenAppendVersion}".ToUpperInvariant();
+				string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 7);
 
 				return Cache.GetOrCreate(key, entry =>
 				{
-					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
 					string cleanedPath = TransformPath(virtualPath, false, true, false);
 
@@ -137,11 +164,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
 		public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
 		{
+			Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
+			Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+
 			try
 			{
-				Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
-				Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-
 				if (routeValues == null)
 					routeValues = new Dictionary<string, object>();
 

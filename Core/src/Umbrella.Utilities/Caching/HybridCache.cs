@@ -202,7 +202,7 @@ namespace Umbrella.Utilities.Caching
 							
 							// TODO: Investigate using AsyncLazy<T> to ensure that the factory only executes once. Internally, MemoryCache doesn't use locking
 							// so the factory could run multiple times. Only a problem if the factory is expensive though.
-							// Replace the boolean 'useMemoryCache' with an enum: CacheMode: Memory, MemoryMutex, Distributed.
+							// Replace the boolean 'useMemoryCache' with an enum: CacheMode: Memory, MemoryMutex, Distributed, DistributedMutex
 							T cacheItem = await MemoryCache.GetOrCreateAsync(cacheKeyInternal, async entry =>
 							{
 								TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.DefaultCacheTimeout;

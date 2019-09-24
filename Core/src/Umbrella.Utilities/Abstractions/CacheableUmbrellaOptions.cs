@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Caching.Memory;
+using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.Utilities.Abstractions
 {
@@ -25,14 +26,13 @@ namespace Umbrella.Utilities.Abstractions
 		public virtual bool CacheSlidingExpiration { get; set; } = true;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether or not to cache items in memory or use whatever the chosen distributed
-		/// caching mechanism is for the application. Defaults to <see langword="true" />.
+		/// Gets or sets the cache mode. Defaults to <see cref="HybridCacheMode.Memory"/>.
 		/// </summary>
-		public virtual bool UseMemoryCache { get; set; } = true;
+		public virtual HybridCacheMode CacheMode { get; set; }
 
 		/// <summary>
 		/// Gets or sets the cache priority when caching items in memory. Defaults to <see cref="CacheItemPriority.Normal"/>.
 		/// </summary>
-		public virtual CacheItemPriority MemoryCachePriority { get; set; } = CacheItemPriority.Normal;
+		public virtual CacheItemPriority CachePriority { get; set; } = CacheItemPriority.Normal;
 	}
 }
