@@ -4,6 +4,7 @@
 	{
 	}
 
+	// TODO: Split into 2
 	public interface IUserAuditEntity<T>
 	{
 		T CreatedById { get; set; }
