@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
-using Umbrella.TypeScript.Generators.Interfaces;
+using Umbrella.TypeScript.Generators.Abstractions;
 
 namespace Umbrella.TypeScript.Generators
 {
-    public abstract class BaseGenerator : IGenerator
+	public abstract class BaseGenerator : IGenerator
     {
         public abstract TypeScriptOutputModelType OutputModelType { get; }
         protected abstract bool SupportsValidationRules { get; }

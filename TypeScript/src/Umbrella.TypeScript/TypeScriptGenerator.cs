@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using Umbrella.TypeScript.Exceptions;
 using Umbrella.TypeScript.Generators;
-using Umbrella.TypeScript.Generators.Interfaces;
+using Umbrella.TypeScript.Generators.Abstractions;
 using Umbrella.Utilities.Comparers;
 using Umbrella.Utilities.Extensions;
 
