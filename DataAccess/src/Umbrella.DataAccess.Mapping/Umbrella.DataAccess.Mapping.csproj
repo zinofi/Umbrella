@@ -29,7 +29,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="6.2.2" />
+		<PackageReference Include="AutoMapper" Version="9.0.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
