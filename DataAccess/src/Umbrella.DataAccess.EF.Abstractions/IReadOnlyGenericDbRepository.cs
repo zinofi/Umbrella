@@ -6,7 +6,6 @@ using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.DataAccess.Abstractions
 {
-	// TODO: V3 - Alter the FindAllMethods to accept pagination parameters.
 	public interface IReadOnlyGenericDbRepository<TEntity> : IReadOnlyGenericDbRepository<TEntity, int>
 		where TEntity : class, IEntity<int>
 	{

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Extensions;
 
@@ -28,8 +29,10 @@ namespace Umbrella.Utilities.Caching
 			try
 			{
 				string typeName = type.FullName;
+				int length = typeName.Length + key.Length + 1;
 
-				Span<char> span = stackalloc char[typeName.Length + key.Length + 1];
+				// TODO: vFuture - look at using pooled arrays to reduce allocations. Will need considerable API changes to work though.
+				Span<char> span = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
 				span.Append(0, typeName);
 				span.Append(typeName.Length, ":");
 				span.Append(typeName.Length + 1, key);
@@ -69,7 +72,7 @@ namespace Umbrella.Utilities.Caching
 
 				int length = typeName.Length + partsLengthTotal + 1;
 
-				Span<char> span = stackalloc char[length];
+				Span<char> span = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
 
 				int currentIndex = span.Append(0, typeName);
 				span[currentIndex++] = ':';

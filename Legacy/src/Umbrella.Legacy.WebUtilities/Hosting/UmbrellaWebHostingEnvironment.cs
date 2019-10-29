@@ -1,21 +1,18 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Hosting.Options;
@@ -25,30 +22,26 @@ using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Hosting
 {
-    // TODO: Add IHostingEnvironmentAccessor and IHttpContextAccessor abstractions as per ASP.NET Core
-    // so that this class can be fully tested.
-	// TODO: Find all usage of the stackalloc keyword and allocate to the heap where the length of data we are dealing
-	// with is below a certain value, e.g. 128. For all other instances, allocate to the heap to avoid stack overflow.
-    public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
-    {
+	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
+	{
 		#region Constructors
 		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
 			UmbrellaHostingEnvironmentOptions options,
 			IMemoryCache cache,
-            ICacheKeyUtility cacheKeyUtility)
-            : base(logger, options, cache, cacheKeyUtility)
-        {
+			ICacheKeyUtility cacheKeyUtility)
+			: base(logger, options, cache, cacheKeyUtility)
+		{
 			var fileProviderLazy = new Lazy<IFileProvider>(() => new PhysicalFileProvider(MapPath("~/")));
 
 			ContentRootFileProvider = fileProviderLazy;
 			WebRootFileProvider = fileProviderLazy;
-        }
-        #endregion
+		}
+		#endregion
 
-        #region IUmbrellaHostingEnvironment Members
-        public override string MapPath(string virtualPath, bool fromContentRoot = true)
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+		#region IUmbrellaHostingEnvironment Members
+		public override string MapPath(string virtualPath, bool fromContentRoot = true)
+		{
+			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
 			if (!fromContentRoot)
 				throw new ArgumentException("This value must always be true in a classic .NET application. It can only be set to false inside a .NET Core application.", nameof(fromContentRoot));
@@ -56,45 +49,45 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 			string[] cacheKeyParts = null;
 
 			try
-            {
+			{
 				cacheKeyParts = ArrayPool<string>.Shared.Rent(2);
 				cacheKeyParts[0] = virtualPath;
 				cacheKeyParts[1] = fromContentRoot.ToString();
 
-                string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 2);
+				string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 2);
 
-                return Cache.GetOrCreate(key, entry =>
-                {
-                    entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
+				return Cache.GetOrCreate(key, entry =>
+				{
+					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
-                    string cleanedPath = TransformPath(virtualPath, true, false, false);
+					string cleanedPath = TransformPath(virtualPath, true, false, false);
 
-                    return System.Web.Hosting.HostingEnvironment.MapPath(cleanedPath);
-                });
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
-            {
+					return System.Web.Hosting.HostingEnvironment.MapPath(cleanedPath);
+				});
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
+			{
 				throw new UmbrellaWebException("There has been a problem mapping the specified virtual path.", exc);
-            }
+			}
 			finally
 			{
 				if (cacheKeyParts != null)
 					ArrayPool<string>.Shared.Return(cacheKeyParts);
 			}
-        }
+		}
 		#endregion
 
 		#region IUmbrellaWebHostingEnvironment Members
 		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
-            Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
-            Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
+		{
+			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+			Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
+			Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
 			string[] cacheKeyParts = null;
 
 			try
-            {
+			{
 				cacheKeyParts = ArrayPool<string>.Shared.Rent(7);
 				cacheKeyParts[0] = virtualPath;
 				cacheKeyParts[1] = toAbsoluteUrl.ToString();
@@ -104,51 +97,51 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 				cacheKeyParts[5] = mapFromContentRoot.ToString();
 				cacheKeyParts[6] = watchWhenAppendVersion.ToString();
 
-                string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 7);
+				string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 7);
 
-                return Cache.GetOrCreate(key, entry =>
-                {
-                    entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
-                    
-                    string cleanedPath = TransformPath(virtualPath, false, true, true);
+				return Cache.GetOrCreate(key, entry =>
+				{
+					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
-                    string virtualApplicationPath = HttpRuntime.AppDomainAppVirtualPath != "/"
-                        ? HttpRuntime.AppDomainAppVirtualPath
-                        : "";
+					string cleanedPath = TransformPath(virtualPath, false, true, true);
 
-                    //Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
-                    string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
-                        ? cleanedPath
-                        : virtualApplicationPath + cleanedPath;
+					string virtualApplicationPath = HttpRuntime.AppDomainAppVirtualPath != "/"
+						? HttpRuntime.AppDomainAppVirtualPath
+						: "";
 
-                    if (toAbsoluteUrl)
-                        url = $"{scheme}://{ResolveHttpHost()}{url}";
+					//Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
+					string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
+						? cleanedPath
+						: virtualApplicationPath + cleanedPath;
 
-                    if (appendVersion)
-                    {
-                        string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
+					if (toAbsoluteUrl)
+						url = $"{scheme}://{ResolveHttpHost()}{url}";
 
-                        var fileInfo = new FileInfo(physicalPath);
+					if (appendVersion)
+					{
+						string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
 
-                        if (!fileInfo.Exists)
-                            throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
+						var fileInfo = new FileInfo(physicalPath);
 
-                        if (watchWhenAppendVersion)
-                            entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
+						if (!fileInfo.Exists)
+							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
 
-                        long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
-                        string version = Convert.ToString(versionHash, 16);
+						if (watchWhenAppendVersion)
+							entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
 
-                        string qsStart = url.Contains("?") ? "&" : "?";
+						long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
+						string version = Convert.ToString(versionHash, 16);
 
-                        url = $"{url}{qsStart}{versionParameterName}={version}";
-                    }
+						string qsStart = url.Contains("?") ? "&" : "?";
 
-                    return url;
-                });
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot, watchWhenAppendVersion }, returnValue: true))
-            {
+						url = $"{url}{qsStart}{versionParameterName}={version}";
+					}
+
+					return url;
+				});
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot, watchWhenAppendVersion }, returnValue: true))
+			{
 				throw new UmbrellaWebException("There has been a problem mapping the specified virtual path.", exc);
 			}
 			finally
@@ -158,242 +151,256 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 			}
 		}
 
-        public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
-            Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+		public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
+		{
+			Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
+			Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
 
-            try
-            {
-                if (routeValues == null)
-                    routeValues = new Dictionary<string, object>();
+			try
+			{
+				if (routeValues == null)
+					routeValues = new Dictionary<string, object>();
 
-                return UrlHelper.GenerateUrl(routeName, actionName, controllerName, new RouteValueDictionary(routeValues), RouteTable.Routes, HttpContext.Current.Request.RequestContext, false);
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
-            {
-                throw;
-            }
-        }
+				return UrlHelper.GenerateUrl(routeName, actionName, controllerName, new RouteValueDictionary(routeValues), RouteTable.Routes, HttpContext.Current.Request.RequestContext, false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
+			{
+				throw;
+			}
+		}
 
-        public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-            Guard.ArgumentNotNullOrWhiteSpace(routeName, nameof(routeName));
+		public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
+		{
+			Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
+			Guard.ArgumentNotNullOrWhiteSpace(routeName, nameof(routeName));
 
-            try
-            {
-                var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext, RouteTable.Routes);
+			try
+			{
+				var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext, RouteTable.Routes);
 
-                if (routeValues == null)
-                    routeValues = new Dictionary<string, object>();
+				if (routeValues == null)
+					routeValues = new Dictionary<string, object>();
 
-                routeValues.Add("httproute", "");
-                routeValues.Add("controller", controllerName);
+				routeValues.Add("httproute", "");
+				routeValues.Add("controller", controllerName);
 
-                return urlHelper.RouteUrl(routeName, new RouteValueDictionary(routeValues));
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { controllerName, routeValues, routeName }))
-            {
-                throw;
-            }
-        }
-        #endregion
+				return urlHelper.RouteUrl(routeName, new RouteValueDictionary(routeValues));
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { controllerName, routeValues, routeName }))
+			{
+				throw;
+			}
+		}
+		#endregion
 
-        #region Protected Methods
-        protected virtual string ResolveHttpHost() => HttpContext.Current.Request.Url.Host;
-        #endregion
+		#region Protected Methods
+		protected virtual string ResolveHttpHost() => HttpContext.Current.Request.Url.Host;
+		#endregion
 
-        #region Internal Methods
-        internal string TransformPath(string virtualPath, bool ensureStartsWithTildeSlash, bool ensureNoTilde, bool ensureLeadingSlash)
-        {
-            ReadOnlySpan<char> span = virtualPath.AsSpan().Trim();
+		#region Internal Methods
+		internal string TransformPath(string virtualPath, bool ensureStartsWithTildeSlash, bool ensureNoTilde, bool ensureLeadingSlash)
+		{
+			ReadOnlySpan<char> span = virtualPath.AsSpan().Trim();
 
-            int length = span.Length;
+			int length = span.Length;
 
-            if (ensureNoTilde && span[0] == '~')
-                span = span.TrimStart('~');
+			if (ensureNoTilde && span[0] == '~')
+				span = span.TrimStart('~');
 
-            bool leadingSlashToInsert = false;
+			bool leadingSlashToInsert = false;
 
-            if (ensureLeadingSlash && span[0] != '/')
-                leadingSlashToInsert = true;
+			if (ensureLeadingSlash && span[0] != '/')
+				leadingSlashToInsert = true;
 
-            bool leadingTildaToInsert = false;
-            bool leadingTildaSlashToInsert = false;
+			bool leadingTildaToInsert = false;
+			bool leadingTildaSlashToInsert = false;
 
-            if (ensureStartsWithTildeSlash && !span.StartsWith("~/".AsSpan(), StringComparison.Ordinal))
-            {
-                if (span[0] == '/')
-                    leadingTildaToInsert = true;
-                else
-                    leadingTildaSlashToInsert = true;
-            }
+			if (ensureStartsWithTildeSlash && !span.StartsWith("~/".AsSpan(), StringComparison.Ordinal))
+			{
+				if (span[0] == '/')
+					leadingTildaToInsert = true;
+				else
+					leadingTildaSlashToInsert = true;
+			}
 
-            int duplicateSlashCount = 0;
+			int duplicateSlashCount = 0;
 
-            if (leadingTildaSlashToInsert)
-            {
-                Span<char> outputSpan = stackalloc char[span.Length + 2];
-                outputSpan[0] = '~';
-                outputSpan[1] = '/';
-                span.CopyTo(outputSpan.Slice(2));
+			if (leadingTildaSlashToInsert)
+			{
+				int newLength = span.Length + 2;
 
-                for (int i = 0; i < outputSpan.Length; i++)
-                {
-                    if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
-                    {
-                        duplicateSlashCount++;
-                    }
-                }
+				Span<char> outputSpan = newLength <= StackAllocConstants.MaxCharSize ? stackalloc char[newLength] : new char[newLength];
+				outputSpan[0] = '~';
+				outputSpan[1] = '/';
+				span.CopyTo(outputSpan.Slice(2));
 
-                if (duplicateSlashCount > 0)
-                {
-                    Span<char> cleanedSpan = stackalloc char[outputSpan.Length - duplicateSlashCount];
+				for (int i = 0; i < outputSpan.Length; i++)
+				{
+					if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
+					{
+						duplicateSlashCount++;
+					}
+				}
 
-                    int j = 0;
-                    for (int i = 0; i < outputSpan.Length; i++)
-                    {
-                        if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
-                        {
-                            continue;
-                        }
+				if (duplicateSlashCount > 0)
+				{
+					int duplicateSlashCountNewLength = outputSpan.Length - duplicateSlashCount;
 
-                        cleanedSpan[j++] = outputSpan[i];
-                    }
+					Span<char> cleanedSpan = duplicateSlashCountNewLength <= StackAllocConstants.MaxCharSize ? stackalloc char[duplicateSlashCountNewLength] : new char[duplicateSlashCountNewLength];
 
-                    return cleanedSpan.ToString();
-                }
+					int j = 0;
+					for (int i = 0; i < outputSpan.Length; i++)
+					{
+						if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
+						{
+							continue;
+						}
 
-                return outputSpan.ToString();
-            }
-            else if (leadingTildaToInsert)
-            {
-                Span<char> outputSpan = stackalloc char[span.Length + 1];
-                outputSpan[0] = '~';
-                span.CopyTo(outputSpan.Slice(1));
+						cleanedSpan[j++] = outputSpan[i];
+					}
 
-                for (int i = 0; i < outputSpan.Length; i++)
-                {
-                    if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
-                    {
-                        duplicateSlashCount++;
-                    }
-                }
+					return cleanedSpan.ToString();
+				}
 
-                if (duplicateSlashCount > 0)
-                {
-                    Span<char> cleanedSpan = stackalloc char[outputSpan.Length - duplicateSlashCount];
+				return outputSpan.ToString();
+			}
+			else if (leadingTildaToInsert)
+			{
+				int newLength = span.Length + 1;
 
-                    int j = 0;
-                    for (int i = 0; i < outputSpan.Length; i++)
-                    {
-                        if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
-                        {
-                            continue;
-                        }
+				Span<char> outputSpan = newLength <= StackAllocConstants.MaxCharSize ? stackalloc char[newLength] : new char[newLength];
+				outputSpan[0] = '~';
+				span.CopyTo(outputSpan.Slice(1));
 
-                        cleanedSpan[j++] = outputSpan[i];
-                    }
+				for (int i = 0; i < outputSpan.Length; i++)
+				{
+					if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
+					{
+						duplicateSlashCount++;
+					}
+				}
 
-                    return cleanedSpan.ToString();
-                }
+				if (duplicateSlashCount > 0)
+				{
+					int duplicateSlashCountNewLength = outputSpan.Length - duplicateSlashCount;
 
-                return outputSpan.ToString();
-            }
-            else if (leadingSlashToInsert)
-            {
-                Span<char> outputSpan = stackalloc char[span.Length + 1];
-                outputSpan[0] = '/';
-                span.CopyTo(outputSpan.Slice(1));
+					Span<char> cleanedSpan = duplicateSlashCountNewLength <= StackAllocConstants.MaxCharSize ? stackalloc char[duplicateSlashCountNewLength] : new char[duplicateSlashCountNewLength];
 
-                for (int i = 0; i < outputSpan.Length; i++)
-                {
-                    if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
-                    {
-                        duplicateSlashCount++;
-                    }
-                }
+					int j = 0;
+					for (int i = 0; i < outputSpan.Length; i++)
+					{
+						if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
+						{
+							continue;
+						}
 
-                if (duplicateSlashCount > 0)
-                {
-                    Span<char> cleanedSpan = stackalloc char[outputSpan.Length - duplicateSlashCount];
+						cleanedSpan[j++] = outputSpan[i];
+					}
 
-                    int j = 0;
-                    for (int i = 0; i < outputSpan.Length; i++)
-                    {
-                        if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
-                        {
-                            continue;
-                        }
+					return cleanedSpan.ToString();
+				}
 
-                        cleanedSpan[j++] = outputSpan[i];
-                    }
+				return outputSpan.ToString();
+			}
+			else if (leadingSlashToInsert)
+			{
+				int newLength = span.Length + 1;
 
-                    return cleanedSpan.ToString();
-                }
+				Span<char> outputSpan = newLength <= StackAllocConstants.MaxCharSize ? stackalloc char[newLength] : new char[newLength];
+				outputSpan[0] = '/';
+				span.CopyTo(outputSpan.Slice(1));
 
-                return outputSpan.ToString();
-            }
+				for (int i = 0; i < outputSpan.Length; i++)
+				{
+					if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
+					{
+						duplicateSlashCount++;
+					}
+				}
 
-            for (int i = 0; i < span.Length; i++)
-            {
-                if (i > 0 && span[i] == '/' && span[i - 1] == '/')
-                {
-                    duplicateSlashCount++;
-                }
-            }
+				if (duplicateSlashCount > 0)
+				{
+					int duplicateSlashCountNewLength = outputSpan.Length - duplicateSlashCount;
 
-            if (duplicateSlashCount > 0)
-            {
-                Span<char> cleanedSpan = stackalloc char[span.Length - duplicateSlashCount];
+					Span<char> cleanedSpan = duplicateSlashCountNewLength <= StackAllocConstants.MaxCharSize ? stackalloc char[duplicateSlashCountNewLength] : new char[duplicateSlashCountNewLength];
 
-                int j = 0;
-                for (int i = 0; i < span.Length; i++)
-                {
-                    if (i > 0 && span[i] == '/' && span[i - 1] == '/')
-                    {
-                        continue;
-                    }
+					int j = 0;
+					for (int i = 0; i < outputSpan.Length; i++)
+					{
+						if (i > 0 && outputSpan[i] == '/' && outputSpan[i - 1] == '/')
+						{
+							continue;
+						}
 
-                    cleanedSpan[j++] = span[i];
-                }
+						cleanedSpan[j++] = outputSpan[i];
+					}
 
-                return cleanedSpan.ToString();
-            }
+					return cleanedSpan.ToString();
+				}
 
-            return span.ToString();
-        }
+				return outputSpan.ToString();
+			}
 
-        [Obsolete]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal string TransformPathOld(string virtualPath, bool ensureStartsWithTildeSlash, bool ensureNoTilde, bool ensureLeadingSlash)
-        {
-            StringBuilder sb = new StringBuilder(virtualPath)
-                .Trim();
+			for (int i = 0; i < span.Length; i++)
+			{
+				if (i > 0 && span[i] == '/' && span[i - 1] == '/')
+				{
+					duplicateSlashCount++;
+				}
+			}
 
-            if (ensureNoTilde && sb.StartsWith("~"))
-                sb.Remove(0, 1);
+			if (duplicateSlashCount > 0)
+			{
+				int duplicateSlashCountNewLength = span.Length - duplicateSlashCount;
 
-            if (ensureLeadingSlash && !sb.StartsWith('/'))
-                sb.Insert(0, '/');
+				Span<char> cleanedSpan = duplicateSlashCountNewLength <= StackAllocConstants.MaxCharSize ? stackalloc char[duplicateSlashCountNewLength] : new char[duplicateSlashCountNewLength];
 
-            if (ensureStartsWithTildeSlash && !sb.StartsWith("~/"))
-            {
-                if (sb.StartsWith('/'))
-                    sb.Insert(0, '~');
-                else
-                    sb.Insert(0, "~/");
-            }
+				int j = 0;
+				for (int i = 0; i < span.Length; i++)
+				{
+					if (i > 0 && span[i] == '/' && span[i - 1] == '/')
+					{
+						continue;
+					}
 
-            for (int i = 0; i < sb.Length; i++)
-            {
-                if (i > 0 && sb[i] == '/' && sb[i - 1] == '/')
-                    sb.Remove(i--, 1);
-            }
+					cleanedSpan[j++] = span[i];
+				}
 
-            return sb.ToString();
-        }
-        #endregion
-    }
+				return cleanedSpan.ToString();
+			}
+
+			return span.ToString();
+		}
+
+		[Obsolete]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		internal string TransformPathOld(string virtualPath, bool ensureStartsWithTildeSlash, bool ensureNoTilde, bool ensureLeadingSlash)
+		{
+			StringBuilder sb = new StringBuilder(virtualPath)
+				.Trim();
+
+			if (ensureNoTilde && sb.StartsWith("~"))
+				sb.Remove(0, 1);
+
+			if (ensureLeadingSlash && !sb.StartsWith('/'))
+				sb.Insert(0, '/');
+
+			if (ensureStartsWithTildeSlash && !sb.StartsWith("~/"))
+			{
+				if (sb.StartsWith('/'))
+					sb.Insert(0, '~');
+				else
+					sb.Insert(0, "~/");
+			}
+
+			for (int i = 0; i < sb.Length; i++)
+			{
+				if (i > 0 && sb[i] == '/' && sb[i - 1] == '/')
+					sb.Remove(i--, 1);
+			}
+
+			return sb.ToString();
+		}
+		#endregion
+	}
 }

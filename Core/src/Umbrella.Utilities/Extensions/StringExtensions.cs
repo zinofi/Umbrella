@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq.Expressions;
 using System.Globalization;
+using Umbrella.Utilities.Constants;
 
 namespace Umbrella.Utilities.Extensions
 {
@@ -271,7 +272,7 @@ namespace Umbrella.Utilities.Extensions
 				return value;
 
 			ReadOnlySpan<char> span = value.AsSpan().Trim();
-			Span<char> lowerSpan = stackalloc char[span.Length];
+			Span<char> lowerSpan = span.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[span.Length] : new char[span.Length];
 			span.ToLowerSlim(lowerSpan, culture);
 
 			return lowerSpan.ToString();
@@ -286,7 +287,7 @@ namespace Umbrella.Utilities.Extensions
 				return value;
 
 			ReadOnlySpan<char> span = value.AsSpan().Trim();
-			Span<char> upperSpan = stackalloc char[span.Length];
+			Span<char> upperSpan = span.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[span.Length] : new char[span.Length];
 			span.ToUpperSlim(upperSpan, culture);
 
 			return upperSpan.ToString();
@@ -309,7 +310,7 @@ namespace Umbrella.Utilities.Extensions
 				return name;
 			}
 
-			Span<char> span = stackalloc char[name.Length];
+			Span<char> span = name.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[name.Length] : new char[name.Length];
 
 			for (int i = 0; i < name.Length; i++)
 			{

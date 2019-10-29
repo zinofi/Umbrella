@@ -9,8 +9,6 @@ using Umbrella.Utilities.Abstractions;
 
 namespace Umbrella.Utilities.Caching.Abstractions
 {
-	// TODO: Need a mechanism in future to allow cache keys to be cleared for web farm scenarios...
-
     /// <summary>
     /// A multi cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
     /// The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked so that transient errors with the cache, e.g. a Redis error where

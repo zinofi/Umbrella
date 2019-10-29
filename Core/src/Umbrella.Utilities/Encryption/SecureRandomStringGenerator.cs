@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Encryption.Options;
 using Umbrella.Utilities.Exceptions;
@@ -85,7 +86,7 @@ namespace Umbrella.Utilities.Encryption
 
 			try
 			{
-				Span<char> randomString = stackalloc char[length];
+				Span<char> randomString = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
 
 				// We are building up a string here starting with lowercase letters, followed by uppercase and finally numbers.
 				int idx = 0;

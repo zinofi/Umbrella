@@ -36,7 +36,6 @@
 		/// </summary>
 		public virtual bool ValidateEntity { get; set; } = true;
 
-		// TODO: V3 This currently isn't used by the EF6 repos. Look at doing something with it.		
 		/// <summary>
 		/// Gets or sets a value indicating whether children of the entity will be processed.
 		/// </summary>
