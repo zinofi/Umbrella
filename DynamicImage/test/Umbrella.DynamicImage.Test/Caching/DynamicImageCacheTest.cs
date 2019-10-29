@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions.Internal;
 using Microsoft.Extensions.Options;
 using Moq;
 using Umbrella.DynamicImage.Abstractions;
@@ -14,6 +13,7 @@ using Umbrella.DynamicImage.Caching.AzureStorage;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Utilities.Compilation;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
@@ -25,9 +25,9 @@ namespace Umbrella.DynamicImage.Test.Caching
 #if AZUREDEVOPS
         private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 #else
-		private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+		private const string StorageConnectionString = "UseDevelopmentStorage=true";
 #endif
-		private const string c_TestFileName = "aspnet-mvc-logo.png";
+		private const string TestFileName = "aspnet-mvc-logo.png";
 
 		private static readonly List<IDynamicImageCache> CacheList = new List<IDynamicImageCache>
 		{
@@ -59,7 +59,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task AddAsync_RemoveAsync_Bytes(IDynamicImageCache cache)
 		{
-			string physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			var item = new DynamicImageItem
 			{
@@ -94,7 +94,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task AddAsync_RemoveAsync_Stream(IDynamicImageCache cache)
 		{
-			string physicalPath = $@"{BaseDirectory}\{c_TestFileName}";
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			var item = new DynamicImageItem
 			{
@@ -152,7 +152,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task AddAsync_GetAsync_Expired(IDynamicImageCache cache)
 		{
-			string path = $@"{BaseDirectory}\{c_TestFileName}";
+			string path = $@"{BaseDirectory}\{TestFileName}";
 
 			var item = new DynamicImageItem
 			{
@@ -192,11 +192,11 @@ namespace Umbrella.DynamicImage.Test.Caching
 			var fileProviderLogger = new Mock<ILogger<UmbrellaDiskFileProvider>>();
 
 			var loggerFactory = new Mock<ILoggerFactory>();
-			loggerFactory.Setup(x => x.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(UmbrellaDiskFileProvider)))).Returns(fileProviderLogger.Object);
+			loggerFactory.Setup(x => x.CreateLogger(typeof(UmbrellaDiskFileProvider).FullName)).Returns(fileProviderLogger.Object);
 
 			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
+			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.TrimToLowerInvariant().EndsWith("png")))).Returns("image/png");
+			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.TrimToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
 
 			var genericTypeConverter = new Mock<IGenericTypeConverter>();
 
@@ -251,7 +251,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 			var fileProviderLogger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
 
 			var loggerFactory = new Mock<ILoggerFactory>();
-			loggerFactory.Setup(x => x.CreateLogger(TypeNameHelper.GetTypeDisplayName(typeof(UmbrellaAzureBlobStorageFileProvider)))).Returns(fileProviderLogger.Object);
+			loggerFactory.Setup(x => x.CreateLogger(typeof(UmbrellaAzureBlobStorageFileProvider).FullName)).Returns(fileProviderLogger.Object);
 
 			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
 			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
@@ -261,7 +261,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 			var options = new UmbrellaAzureBlobStorageFileProviderOptions
 			{
-				StorageConnectionString = c_StorageConnectionString
+				StorageConnectionString = StorageConnectionString
 			};
 
 			var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);

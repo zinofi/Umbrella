@@ -19,7 +19,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 	public class DynamicImageMiddleware
 	{
 		#region Private Static Members
-		private static List<string> s_RegisteredDynamicImagePathPrefixList = new List<string>();
+		private static readonly List<string> s_RegisteredDynamicImagePathPrefixList = new List<string>();
 		#endregion
 
 		#region Private Members
