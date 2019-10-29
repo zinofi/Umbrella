@@ -8,6 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Umbrella.Utilities.Abstractions;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
@@ -19,7 +20,7 @@ namespace Umbrella.Utilities.Caching
 	/// The cache includes the option to allow internal errors that occur when adding or retrieving items from the caches to be masked in the event of transient errors.
 	/// </summary>
 	/// <seealso cref="IHybridCache" />
-	public class HybridCache : IHybridCache, IDisposable // Rename to HybridCache.
+	public class HybridCache : IHybridCache, IDisposable
 	{
 		private readonly ReaderWriterLockSlim _nukeReaderWriterLock = new ReaderWriterLockSlim();
 		private CancellationTokenSource _nukeTokenSource = new CancellationTokenSource();
@@ -46,23 +47,18 @@ namespace Umbrella.Utilities.Caching
 			TrackKeysAndHits = (Options.AnalyticsMode & HybridCacheAnalyticsMode.TrackKeysAndHits) == HybridCacheAnalyticsMode.TrackKeysAndHits;
 		}
 
-		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan> expirationTimeSpanBuilder = null, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null, bool? cacheEnabledOverride = null)
+		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 			Guard.ArgumentNotNull(actionFunction, nameof(actionFunction));
 
 			try
 			{
-				bool cacheEnabled = Options.CacheEnabled;
-
-				if (cacheEnabledOverride.HasValue)
-					cacheEnabled = cacheEnabledOverride.Value;
-
-				if (cacheEnabled)
+				if (IsCacheEnabled(cacheEnabledOverride))
 				{
 					string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
 
-					if (!useMemoryCache)
+					if (cacheMode == HybridCacheMode.Distributed)
 					{
 						try
 						{
@@ -72,7 +68,7 @@ namespace Umbrella.Utilities.Caching
 							{
 								if (!throwOnCacheFailure)
 								{
-									Log.WriteError(exception, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority });
+									Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride });
 								}
 								else
 								{
@@ -82,9 +78,10 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: !throwOnCacheFailure))
+						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
-							// Silently mask the exception when not throwing on cache failure.
+							if (throwOnCacheFailure)
+								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
 						}
 					}
 					else
@@ -120,23 +117,27 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: !throwOnCacheFailure))
+						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
-							// Silently mask the exception when not throwing on cache failure.
+							if (throwOnCacheFailure)
+								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
 						}
 					}
 				}
 
 				return actionFunction();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				// If we get this far then there has definitely been a problem with the actionFunction. We need to always throw here.
 				throw new HybridCacheException("There has been a problem with the cache.", exc);
 			}
 		}
 
-		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null, bool? cacheEnabledOverride = null)
+		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+			=> GetOrCreate(cacheKey, actionFunction, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+
+		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -144,15 +145,18 @@ namespace Umbrella.Utilities.Caching
 
 			try
 			{
-				return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), cancellationToken, expirationTimeSpanBuilder, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority, expirationTokensBuilder, cacheEnabledOverride);
+				return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), cancellationToken, expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				throw new HybridCacheException("There has been a problem with the cache.", exc);
 			}
 		}
 
-		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null, bool? cacheEnabledOverride = null)
+		public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheThrowOnFailure, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled,expirationTokensBuilder);
+
+		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -160,16 +164,11 @@ namespace Umbrella.Utilities.Caching
 
 			try
 			{
-				bool cacheEnabled = Options.CacheEnabled;
-
-				if (cacheEnabledOverride.HasValue)
-					cacheEnabled = cacheEnabledOverride.Value;
-
-				if (cacheEnabled)
+				if (IsCacheEnabled(cacheEnabledOverride))
 				{
 					string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
 
-					if (!useMemoryCache)
+					if (cacheMode == HybridCacheMode.Distributed)
 					{
 						try
 						{
@@ -177,7 +176,7 @@ namespace Umbrella.Utilities.Caching
 
 							if (!throwOnCacheFailure)
 							{
-								Log.WriteError(exception, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority });
+								Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride });
 							}
 							else
 							{
@@ -186,9 +185,10 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: !throwOnCacheFailure))
+						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
-							// Silently mask the exception when not throwing on cache failure.
+							if (throwOnCacheFailure)
+								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
 						}
 					}
 					else
@@ -228,23 +228,27 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: !throwOnCacheFailure))
+						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
-							// Silently mask the exception when not throwing on cache failure.
+							if(throwOnCacheFailure)
+								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
 						}
 					}
 				}
 
 				return await actionFunction();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				// If we get this far then there has definitely been a problem with the actionFunction. We need to throw here.
 				throw new HybridCacheException("There has been a problem with the cache.", exc);
 			}
 		}
 
-		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, bool useMemoryCache = true)
+		public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+
+		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -252,12 +256,12 @@ namespace Umbrella.Utilities.Caching
 			{
 				string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
 
-				if (!useMemoryCache)
+				if (cacheMode == HybridCacheMode.Distributed)
 				{
 					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
 
 					if (exception != null)
-						Log.WriteError(exception, new { cacheKey, useMemoryCache });
+						Log.WriteError(exception, new { cacheKey, cacheMode });
 
 					return (itemFound, cacheItem);
 				}
@@ -271,13 +275,13 @@ namespace Umbrella.Utilities.Caching
 					return (found, value);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
 			{
 				return default;
 			}
 		}
 
-		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, bool useMemoryCache = true)
+		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -286,12 +290,12 @@ namespace Umbrella.Utilities.Caching
 			{
 				string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
 
-				if (!useMemoryCache)
+				if (cacheMode == HybridCacheMode.Distributed)
 				{
 					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 
 					if (exception != null)
-						Log.WriteError(exception, new { cacheKey, cacheKeyInternal, useMemoryCache });
+						Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode });
 
 					return (itemFound, cacheItem);
 				}
@@ -305,30 +309,35 @@ namespace Umbrella.Utilities.Caching
 					return (found, value);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, useMemoryCache }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
 			{
 				return default;
 			}
 		}
 
-		public T Set<T>(string cacheKey, T value, TimeSpan expirationTimeSpan, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+		public T Set<T>(string cacheKey, T value, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 			Guard.ArgumentNotNull(value, nameof(value));
 
 			try
 			{
+				if (!IsCacheEnabled(cacheEnabledOverride))
+					return value;
+
 				string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
 
-				if (!useMemoryCache)
+				TimeSpan tsExpiration = expirationTimeSpan ?? Options.DefaultCacheTimeout;
+
+				if (cacheMode == HybridCacheMode.Distributed)
 				{
-					DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
+					DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(tsExpiration, slidingExpiration);
 
 					DistributedCache.Set(cacheKeyInternal, value, options);
 				}
 				else
 				{
-					MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+					MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(tsExpiration, slidingExpiration, priority, expirationTokensBuilder);
 
 					if (TrackKeys)
 						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
@@ -336,10 +345,10 @@ namespace Umbrella.Utilities.Caching
 					MemoryCache.Set(cacheKeyInternal, value, options);
 
 					if (TrackKeys)
-						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
+						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, tsExpiration, slidingExpiration));
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				if (throwOnCacheFailure)
 					throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
@@ -348,24 +357,32 @@ namespace Umbrella.Utilities.Caching
 			return value;
 		}
 
-		public async Task<T> SetAsync<T>(string cacheKey, T value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default, bool useMemoryCache = true, bool slidingExpiration = false, bool throwOnCacheFailure = false, CacheItemPriority priority = CacheItemPriority.Normal, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+		public T Set<T>(string cacheKey, T value, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+			=> Set(cacheKey, value, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+
+		public async Task<T> SetAsync<T>(string cacheKey, T value, CancellationToken cancellationToken = default, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
 			try
 			{
+				if (!IsCacheEnabled(cacheEnabledOverride))
+					return value;
+
 				string cacheKeyInternal = CreateCacheKey<T>(cacheKey);
 
-				if (!useMemoryCache)
+				TimeSpan tsExpiration = expirationTimeSpan ?? Options.DefaultCacheTimeout;
+
+				if (cacheMode == HybridCacheMode.Distributed)
 				{
-					DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration);
+					DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(tsExpiration, slidingExpiration);
 
 					await DistributedCache.SetAsync(cacheKeyInternal, value, options, cancellationToken);
 				}
 				else
 				{
-					MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
+					MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(tsExpiration, slidingExpiration, priority, expirationTokensBuilder);
 
 					if (TrackKeys)
 						options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
@@ -373,10 +390,10 @@ namespace Umbrella.Utilities.Caching
 					MemoryCache.Set(cacheKeyInternal, value, options);
 
 					if (TrackKeys)
-						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration));
+						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, tsExpiration, slidingExpiration));
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, useMemoryCache, slidingExpiration, throwOnCacheFailure, priority }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				if (throwOnCacheFailure)
 					throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
@@ -384,6 +401,9 @@ namespace Umbrella.Utilities.Caching
 
 			return value;
 		}
+
+		public Task<T> SetAsync<T>(string cacheKey, T value, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
+			=> SetAsync(cacheKey, value, cancellationToken, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 		/// <summary>
 		/// Gets all memory cache meta entries.
@@ -467,6 +487,9 @@ namespace Umbrella.Utilities.Caching
 
 		protected virtual string CreateCacheKey<T>(string key)
 			=> Options.CacheKeyBuilder?.Invoke(typeof(T), key)?.ToUpperInvariant() ?? key.ToUpperInvariant();
+
+		private bool IsCacheEnabled(bool? cacheEnabledOverride)
+			=> Options.CacheEnabled && cacheEnabledOverride.HasValue ? cacheEnabledOverride.Value : Options.CacheEnabled;
 
 		private DistributedCacheEntryOptions BuildDistributedCacheEntryOptions(Func<TimeSpan> expirationTimeSpanBuilder, bool slidingExpiration)
 		{

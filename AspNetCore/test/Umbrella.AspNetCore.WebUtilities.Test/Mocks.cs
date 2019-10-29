@@ -46,7 +46,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
                 httpContextAccessor.Object,
 				new UmbrellaHostingEnvironmentOptions(),
                 CreateMemoryCache(),
-                new CacheKeyUtility());
+                new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object));
         }
 
         public static IMemoryCache CreateMemoryCache() => new MemoryCache(Options.Create(new MemoryCacheOptions()));

@@ -24,7 +24,7 @@ namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting
         {
             var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-            var cacheKeyUtility = new CacheKeyUtility();
+            var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object);
 
             _umbrellaWebHostingEnvironment = new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
         }

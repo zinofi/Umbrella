@@ -1,9 +1,4 @@
-﻿using Brotli;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Microsoft.Owin;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +9,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Brotli;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+using Microsoft.Owin;
 using Umbrella.Legacy.WebUtilities.Extensions;
 using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.WebUtilities.Http;
@@ -206,58 +204,52 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						string flattenedEncodingHeaders = string.Join(", ", lstEncodingValue).ToUpperInvariant();
 						string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
 
-						var result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
+						(string contentEncoding, byte[] bytes) result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
 						{
 							string contentEncoding = null;
 
-							using (var fs = fileInfo.CreateReadStream())
+							using Stream fs = fileInfo.CreateReadStream();
+							using var ms = new MemoryStream();
+
+							if (lstEncodingValue.Contains("br", StringComparer.OrdinalIgnoreCase) || lstEncodingValue.Contains("brotli", StringComparer.OrdinalIgnoreCase))
 							{
-								using (var ms = new MemoryStream())
+								using (var br = new BrotliStream(ms, CompressionMode.Compress))
 								{
-									if (lstEncodingValue.Contains("br", StringComparer.OrdinalIgnoreCase) || lstEncodingValue.Contains("brotli", StringComparer.OrdinalIgnoreCase))
-									{
-										using (var br = new BrotliStream(ms, CompressionMode.Compress))
-										{
-											await fs.CopyToAsync(br, Options.BufferSizeBytes, token);
-										}
-
-										contentEncoding = "br";
-									}
-									else if (lstEncodingValue.Contains("gzip", StringComparer.OrdinalIgnoreCase))
-									{
-										using (var gz = new GZipStream(ms, CompressionMode.Compress))
-										{
-											await fs.CopyToAsync(gz, Options.BufferSizeBytes, token);
-										}
-
-										contentEncoding = "gzip";
-									}
-									else if (lstEncodingValue.Contains("deflate", StringComparer.OrdinalIgnoreCase))
-									{
-										using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
-										{
-											await fs.CopyToAsync(deflate, Options.BufferSizeBytes, token);
-										}
-
-										contentEncoding = "deflate";
-									}
-									else
-									{
-										// If we get here then we are dealing with an unknown content encoding.
-										// Just read the file into memory as it is.
-										await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
-									}
-
-									return (contentEncoding, ms.ToArray());
+									await fs.CopyToAsync(br, Options.BufferSizeBytes, token);
 								}
+
+								contentEncoding = "br";
 							}
+							else if (lstEncodingValue.Contains("gzip", StringComparer.OrdinalIgnoreCase))
+							{
+								using (var gz = new GZipStream(ms, CompressionMode.Compress))
+								{
+									await fs.CopyToAsync(gz, Options.BufferSizeBytes, token);
+								}
+
+								contentEncoding = "gzip";
+							}
+							else if (lstEncodingValue.Contains("deflate", StringComparer.OrdinalIgnoreCase))
+							{
+								using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
+								{
+									await fs.CopyToAsync(deflate, Options.BufferSizeBytes, token);
+								}
+
+								contentEncoding = "deflate";
+							}
+							else
+							{
+								// If we get here then we are dealing with an unknown content encoding.
+								// Just read the file into memory as it is.
+								await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+							}
+
+							return (contentEncoding, ms.ToArray());
 						},
+						Options,
 						context.Request.CallCancelled,
-						() => Options.CacheTimeout,
-						slidingExpiration: Options.CacheSlidingExpiration,
-						priority: CacheItemPriority.High,
-						expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
-						cacheEnabledOverride: Options.CacheEnabled);
+						() => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 
 						if (Log.IsEnabled(LogLevel.Debug))
 						{
@@ -299,24 +291,18 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// Getting here means that compression is disabled or there isn't an Accept-Encoding header.
 						// Therefore, we have to just read the file as it is and return it
 						// as it is stored on disk.
-						bytes = await Cache.GetOrCreateAsync<byte[]>($"{_cackeKeyPrefix}:{path}", async () =>
+						bytes = await Cache.GetOrCreateAsync($"{_cackeKeyPrefix}:{path}", async () =>
 						{
-							using (var fs = fileInfo.CreateReadStream())
-							{
-								using (var ms = new MemoryStream())
-								{
-									await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+							using Stream fs = fileInfo.CreateReadStream();
+							using var ms = new MemoryStream();
 
-									return ms.ToArray();
-								}
-							}
+							await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+
+							return ms.ToArray();
 						},
+						Options,
 						context.Request.CallCancelled,
-						() => Options.CacheTimeout,
-						slidingExpiration: Options.CacheSlidingExpiration,
-						priority: CacheItemPriority.High,
-						expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
-						cacheEnabledOverride: Options.CacheEnabled);
+						() => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 					}
 
 					await context.Response.Body.WriteAsync(bytes, 0, bytes.Length, token);
@@ -346,7 +332,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		{
 			IFileInfo LoadFileInfo()
 			{
-				var fileInfo = FileProvider.GetFileInfo(path);
+				IFileInfo fileInfo = FileProvider.GetFileInfo(path);
 
 				return fileInfo.Exists ? fileInfo : null;
 			}

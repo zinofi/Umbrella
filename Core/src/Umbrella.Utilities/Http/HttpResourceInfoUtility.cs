@@ -84,8 +84,10 @@ namespace Umbrella.Utilities.Http
 					},
 					cancellationToken,
 					() => _options.CacheTimeout,
-					_options.UseMemoryCache,
+					_options.CacheMode,
 					_options.CacheSlidingExpiration,
+					_options.CacheThrowOnFailure,
+					_options.CachePriority,
 					cacheEnabledOverride: _options.CacheEnabled && useCache);
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { url }, returnValue: true))

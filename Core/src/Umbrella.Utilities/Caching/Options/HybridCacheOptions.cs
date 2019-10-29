@@ -16,7 +16,8 @@ namespace Umbrella.Utilities.Caching.Options
 	public class HybridCacheOptions
 	{
 		/// <summary>
-		/// Gets or sets a value indicating whether caching is enabled. This value can be overridden by callers of the various methods on the <see cref="HybridCache"/>.
+		/// Gets or sets a value indicating whether caching is enabled. This value can be overridden by the individual methods of the <see cref="HybridCache"/>.
+		/// However, if this property is set to <see langword="false"/>, caching will be disabled globally and the overrides will have no effect.
 		/// </summary>
 		public bool CacheEnabled { get; set; }
 

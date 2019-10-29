@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Caching.Memory;
-using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Caching.Options;
 
 namespace Umbrella.Utilities.Abstractions
 {
@@ -34,5 +35,11 @@ namespace Umbrella.Utilities.Abstractions
 		/// Gets or sets the cache priority when caching items in memory. Defaults to <see cref="CacheItemPriority.Normal"/>.
 		/// </summary>
 		public virtual CacheItemPriority CachePriority { get; set; } = CacheItemPriority.Normal;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether to override the global <see cref="HybridCacheOptions.CacheEnabled"/> property. However, this override is only used when that property is set to <see langword="true"/>.
+		/// If it is set to <see langword="false"/> then this override has no effect.
+		/// </summary>
+		public virtual bool CacheThrowOnFailure { get; set; } = true;
 	}
 }

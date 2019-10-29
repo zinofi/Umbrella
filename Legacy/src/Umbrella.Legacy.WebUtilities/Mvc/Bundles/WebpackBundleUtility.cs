@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Abstractions;
 using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Options;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -113,31 +109,24 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 					if (!fileInfo.Exists)
 						throw new Exception("The specified Webpack Manifest JSON file does not exist.");
 
-					using (Stream stream = fileInfo.CreateReadStream())
+					using Stream stream = fileInfo.CreateReadStream();
+					using var sr = new StreamReader(stream);
+					string json = sr.ReadToEnd();
+
+					return UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json).ToDictionary(x => x.Key.ToLowerInvariant(), x =>
 					{
-						using (var sr = new StreamReader(stream))
-						{
-							string json = sr.ReadToEnd();
+						string loweredPath = x.Value.ToLowerInvariant();
 
-							return UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json).ToDictionary(x => x.Key.ToLowerInvariant(), x =>
-							{
-								string loweredPath = x.Value.ToLowerInvariant();
+						int idxLastSlash = loweredPath.LastIndexOf('/');
 
-								int idxLastSlash = loweredPath.LastIndexOf('/');
+						if (idxLastSlash != -1)
+							loweredPath = loweredPath.Substring(idxLastSlash + 1);
 
-								if(idxLastSlash != -1)
-									loweredPath = loweredPath.Substring(idxLastSlash + 1);
-
-								return Path.Combine(Options.DefaultBundleFolderAppRelativePath, loweredPath);
-							});
-						}
-					}
+						return Path.Combine(Options.DefaultBundleFolderAppRelativePath, loweredPath);
+					});
 				},
-				() => Options.CacheTimeout,
-				slidingExpiration: Options.CacheSlidingExpiration,
-				priority: CacheItemPriority.NeverRemove,
-				expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(_manifestJsonFileSubPath) } : null,
-				cacheEnabledOverride: Options.CacheEnabled);
+				Options,
+				expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(_manifestJsonFileSubPath) } : null);
 			}
 			catch (Exception exc)
 			{

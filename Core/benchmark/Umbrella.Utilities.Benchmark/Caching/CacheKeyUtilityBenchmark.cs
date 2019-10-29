@@ -1,4 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace Umbrella.Utilities.Benchmark.Caching
 
         public CacheKeyUtilityBenchmark()
         {
-            _cacheKeyUtility = new CacheKeyUtility();
+            _cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object);
         }
 
         [Benchmark]
