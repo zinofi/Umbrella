@@ -6,11 +6,6 @@ namespace Microsoft.AspNetCore.Builder
 {
 	public static class IApplicationBuilderExtensions
 	{
-		public static IApplicationBuilder UseUmbrellaCleanupIDisposable(this IApplicationBuilder builder)
-		{
-			return builder.UseMiddleware<CleanupIDisposableMiddleware>();
-		}
-
 		public static IApplicationBuilder UseUmbrellaQueryStringParameterToHttpHeader(
 			this IApplicationBuilder builder,
 			string queryStringParameterName,

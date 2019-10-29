@@ -8,7 +8,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.FreeImage
 {
-	//TODO: Handle issues with transparency information being lost on resize
+	// TODO: Handle issues with transparency information being lost on resize
 	public class DynamicImageResizer : DynamicImageResizerBase
 	{
 		#region Constructors

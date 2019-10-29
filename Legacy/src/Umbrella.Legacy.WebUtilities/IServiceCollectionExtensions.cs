@@ -68,7 +68,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IBundleUtility, BundleUtility>();
 			services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
 
-			services.AddSingleton<CleanupIDisposableMiddleware>();
 			services.AddSingleton<DebugRequestMiddleware>();
 			services.AddSingleton<FrontEndCompressionMiddleware>();
 

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.Utilities.Configuration;
 
@@ -11,43 +7,40 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 {
 	public class DynamicImageMappingsConfig
 	{
-        #region Private Static Members
-        private static readonly object s_Lock = new object();
+		#region Private Static Members
+		private static readonly object s_Lock = new object();
 		private static List<DynamicImageMapping> s_DynamicImageMappingList;
 		private static DynamicImageMappingsSection s_Section;
-        #endregion
+		#endregion
 
-        #region Constructors
-        public DynamicImageMappingsConfig(System.Configuration.Configuration config)
+		#region Constructors
+		public DynamicImageMappingsConfig(System.Configuration.Configuration config)
 		{
-            UmbrellaSectionGroup group = UmbrellaSectionGroup.GetSectionGroup(config);
+			var group = UmbrellaSectionGroup.GetSectionGroup(config);
 			if (group != null)
 			{
 				s_Section = group.GetConfigurationSection<DynamicImageMappingsSection>("dynamicImageMappings");
 			}
 		}
-        #endregion
+		#endregion
 
-        #region Public Properties
-        public List<DynamicImageMapping> Settings
+		#region Public Properties
+		public List<DynamicImageMapping> Settings
 		{
 			get
 			{
-				if(s_DynamicImageMappingList == null)
+				if (s_DynamicImageMappingList == null)
 				{
-					lock(s_Lock)
+					lock (s_Lock)
 					{
-						if(s_DynamicImageMappingList == null)
+						if (s_DynamicImageMappingList == null)
 						{
 							if (s_Section != null)
 							{
-								s_DynamicImageMappingList = s_Section.Mappings.OfType<DynamicImageMappingElement>().Select(x => new DynamicImageMapping
-                                {
-                                    Format = x.Format,
-                                    Height = x.Height,
-                                    ResizeMode = x.ResizeMode,
-                                    Width = x.Width
-                                }).ToList();
+								s_DynamicImageMappingList = s_Section.Mappings
+									.OfType<DynamicImageMappingElement>()
+									.Select(x => new DynamicImageMapping(x.Width, x.Height, x.ResizeMode, x.Format))
+									.ToList();
 							}
 
 							//If no config settings can be found, initialize as empty
@@ -61,18 +54,15 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Configuration
 			}
 		}
 
-        public bool Enabled => s_Section?.Enabled ?? false;
-        #endregion
+		public bool Enabled => s_Section?.Enabled ?? false;
+		#endregion
 
-        #region Operators
-        public static explicit operator DynamicImageConfigurationOptions(DynamicImageMappingsConfig config)
-        {
-            return new DynamicImageConfigurationOptions
-            {
-                Enabled = config.Enabled,
-                Mappings = config.Settings
-            };
-        }
-        #endregion
-    }
+		#region Operators
+		public static explicit operator DynamicImageConfigurationOptions(DynamicImageMappingsConfig config) => new DynamicImageConfigurationOptions
+		{
+			Enabled = config.Enabled,
+			Mappings = config.Settings
+		};
+		#endregion
+	}
 }

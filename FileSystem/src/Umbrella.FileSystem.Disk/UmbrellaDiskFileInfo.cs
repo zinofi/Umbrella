@@ -11,8 +11,7 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
-	//TODO: Override Equals, GetHashCode, etc to allow for equality comparisons
-	public class UmbrellaDiskFileInfo : IUmbrellaFileInfo
+	public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFileInfo>
 	{
 		#region Private Members
 		private readonly string _metadataFullFileName;
@@ -30,14 +29,18 @@ namespace Umbrella.FileSystem.Disk
 		internal FileInfo PhysicalFileInfo { get; }
 		#endregion
 
+		#region Public Properties
 		public bool IsNew { get; private set; }
 		public string Name => PhysicalFileInfo.Name;
 		public string SubPath { get; }
 		public long Length => PhysicalFileInfo.Exists && !IsNew ? PhysicalFileInfo.Length : -1;
 		public DateTimeOffset? LastModified => PhysicalFileInfo.Exists && !IsNew ? PhysicalFileInfo.LastWriteTimeUtc : (DateTimeOffset?)null;
 		public string ContentType { get; }
+		#endregion
 
-		internal UmbrellaDiskFileInfo(ILogger<UmbrellaDiskFileInfo> logger,
+		#region Constructors
+		internal UmbrellaDiskFileInfo(
+			ILogger<UmbrellaDiskFileInfo> logger,
 			IMimeTypeUtility mimeTypeUtility,
 			IGenericTypeConverter genericTypeConverter,
 			string subpath,
@@ -55,7 +58,8 @@ namespace Umbrella.FileSystem.Disk
 			ContentType = mimeTypeUtility.GetMimeType(Name);
 
 			_metadataFullFileName = PhysicalFileInfo.FullName + ".meta";
-		}
+		} 
+		#endregion
 
 		#region IUmbrellaFileInfo Members
 		public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
@@ -354,6 +358,40 @@ namespace Umbrella.FileSystem.Disk
 				throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 			}
 		}
+		#endregion
+
+		#region IEquatable Members
+		public bool Equals(UmbrellaDiskFileInfo other)
+			=> other != null &&
+				IsNew == other.IsNew &&
+				Name == other.Name &&
+				SubPath == other.SubPath &&
+				Length == other.Length &&
+				EqualityComparer<DateTimeOffset?>.Default.Equals(LastModified, other.LastModified) &&
+				ContentType == other.ContentType;
+		#endregion
+
+		#region Overridden Methods
+		public override bool Equals(object obj) => Equals(obj as UmbrellaDiskFileInfo);
+
+		public override int GetHashCode()
+		{
+			int hashCode = 260482354;
+			hashCode = hashCode * -1521134295 + IsNew.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(SubPath);
+			hashCode = hashCode * -1521134295 + Length.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContentType);
+
+			return hashCode;
+		}
+		#endregion
+
+		#region Operators
+		public static bool operator ==(UmbrellaDiskFileInfo left, UmbrellaDiskFileInfo right) => EqualityComparer<UmbrellaDiskFileInfo>.Default.Equals(left, right);
+
+		public static bool operator !=(UmbrellaDiskFileInfo left, UmbrellaDiskFileInfo right) => !(left == right);
 		#endregion
 
 		#region Private Methods

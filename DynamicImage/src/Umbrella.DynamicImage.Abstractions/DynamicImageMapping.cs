@@ -1,56 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
-	public class DynamicImageMapping
+	[StructLayout(LayoutKind.Auto)]
+	public readonly struct DynamicImageMapping : IEquatable<DynamicImageMapping>
 	{
-		public int Width { get; set; }
-		public int Height { get; set; }
-		public DynamicResizeMode ResizeMode { get; set; }
-		public DynamicImageFormat Format { get; set; }
+		#region Public Properties
+		public int Width { get; }
+		public int Height { get; }
+		public DynamicResizeMode ResizeMode { get; }
+		public DynamicImageFormat Format { get; }
+		#endregion
 
-		public override string ToString()
+		#region Constructors
+		public DynamicImageMapping(int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
 		{
-			return string.Format("{0}-{1}-{2}-{3}",
-				Width,
-				Height,
-				ResizeMode,
-				Format);
+			Width = width;
+			Height = height;
+			ResizeMode = resizeMode;
+			Format = format;
 		}
+		#endregion
+
+		#region Overridden Methods
+		public override string ToString() => $"{Width}-{Height}-{ResizeMode}-{Format}";
+
+		public override bool Equals(object obj) => obj is DynamicImageMapping mapping && Equals(mapping);
 
 		public override int GetHashCode()
 		{
-			return ToString().GetHashCode();
+			int hashCode = -1481175575;
+			hashCode = hashCode * -1521134295 + Width.GetHashCode();
+			hashCode = hashCode * -1521134295 + Height.GetHashCode();
+			hashCode = hashCode * -1521134295 + ResizeMode.GetHashCode();
+			hashCode = hashCode * -1521134295 + Format.GetHashCode();
+			return hashCode;
 		}
+		#endregion
 
-		public override bool Equals(object obj)
-		{
-			if (obj == null)
-				return false;
+		#region IEquatable Members
+		public bool Equals(DynamicImageMapping other)
+			=> Width == other.Width &&
+				Height == other.Height &&
+				ResizeMode == other.ResizeMode &&
+				Format == other.Format;
+		#endregion
 
-			return Equals((DynamicImageMapping)obj);
-		}
+		#region Operators
+		public static bool operator ==(DynamicImageMapping left, DynamicImageMapping right) => left.Equals(right);
 
-		public bool Equals(DynamicImageMapping mapping)
-		{
-			return this == mapping;
-		}
-
-		public static bool operator == (DynamicImageMapping a, DynamicImageMapping b)
-		{
-			return a.Width == b.Width
-				&& a.Height == b.Height
-				&& a.ResizeMode == b.ResizeMode
-				&& a.Format == b.Format;
-		}
-
-		public static bool operator != (DynamicImageMapping a, DynamicImageMapping b)
-		{
-			return !(a == b);
-		}
+		public static bool operator !=(DynamicImageMapping left, DynamicImageMapping right) => !(left == right);
+		#endregion
 	}
 }
