@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,8 +12,7 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
-	//TODO: Override Equals, GetHashCode, etc to allow for equality comparisons
-	public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo
+	public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaAzureBlobStorageFileInfo>
 	{
 		#region Private Members
 		private byte[] m_Contents;
@@ -393,6 +393,39 @@ namespace Umbrella.FileSystem.AzureStorage
 			if (IsNew)
 				throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
 		}
+		#endregion
+
+		#region IEquatable Members
+		public bool Equals(UmbrellaAzureBlobStorageFileInfo other)
+			=> other != null &&
+				IsNew == other.IsNew &&
+				Name == other.Name &&
+				SubPath == other.SubPath &&
+				Length == other.Length &&
+				EqualityComparer<DateTimeOffset?>.Default.Equals(LastModified, other.LastModified) &&
+				ContentType == other.ContentType;
+		#endregion
+
+		#region Overridden Methods
+		public override bool Equals(object obj) => Equals(obj as UmbrellaAzureBlobStorageFileInfo);
+
+		public override int GetHashCode()
+		{
+			int hashCode = 260482354;
+			hashCode = hashCode * -1521134295 + IsNew.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(SubPath);
+			hashCode = hashCode * -1521134295 + Length.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContentType);
+			return hashCode;
+		}
+		#endregion
+
+		#region Operators
+		public static bool operator ==(UmbrellaAzureBlobStorageFileInfo left, UmbrellaAzureBlobStorageFileInfo right) => EqualityComparer<UmbrellaAzureBlobStorageFileInfo>.Default.Equals(left, right);
+
+		public static bool operator !=(UmbrellaAzureBlobStorageFileInfo left, UmbrellaAzureBlobStorageFileInfo right) => !(left == right);
 		#endregion
 	}
 }

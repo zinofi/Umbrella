@@ -37,3 +37,7 @@ namespace Umbrella.Utilities.Caching.Options
 		public HybridCacheAnalyticsMode AnalyticsMode { get; set; }
 	}
 }
+
+// TODO: For all Options types, allow them to be validated and where necessary, sanitized - maybe an ISanitizableUmbrellaOptions interface?
+// We could even have something that runs after the container has been built that finds all types that implement the interface and call the relevant methods
+// so we don't have to do that manually?? Hmmmm...

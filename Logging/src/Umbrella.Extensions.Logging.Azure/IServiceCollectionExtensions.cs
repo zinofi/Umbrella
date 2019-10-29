@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Umbrella.Extensions.Logging.Azure.Management;
-using Umbrella.Extensions.Logging.Azure.Management.Configuration;
+using Umbrella.Extensions.Logging.Azure.Management.Options;
 using Umbrella.Utilities;
 
 [assembly: InternalsVisibleTo("Umbrella.Extensions.Logging.Azure.Test")]
@@ -28,9 +28,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IAzureTableStorageLogManager, AzureTableStorageLogManager>();
 			services.ConfigureUmbrellaOptions(optionsBuilder);
-
-			// TODO: Consider altering the ConfigureUmbrellaOptions method to return the options object instead
-			// so that we can validate the options here instead of having that code fragmented and duplicated across the rest of the code.
 
 			return services;
 		}

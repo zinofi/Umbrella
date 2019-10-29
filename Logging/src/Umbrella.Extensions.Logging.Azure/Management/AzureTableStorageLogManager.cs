@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Umbrella.Extensions.Logging.Azure.Configuration;
 using Umbrella.Extensions.Logging.Azure.Management.Configuration;
+using Umbrella.Extensions.Logging.Azure.Management.Options;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Comparers;
@@ -70,10 +71,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			IMemoryCache memoryCache,
 			IDistributedCache distributedCache)
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(options.AzureStorageConnectionString, nameof(options.AzureStorageConnectionString));
-
-			if (options.CacheLifetimeMinutes < 0)
-				throw new AzureTableStorageLogManagementException($"The value of {nameof(options.CacheLifetimeMinutes)} cannot be less than zero");
+			options.Validate();
 
 			Log = logger;
 			LogManagementOptions = options;
