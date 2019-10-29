@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Umbrella.Utilities.Sorting
 {
 	[Serializable]
-    public readonly struct SortExpressionSerializable
-    {
+	[StructLayout(LayoutKind.Auto)]
+	public readonly struct SortExpressionSerializable
+	{
 		internal SortExpressionSerializable(string memberName, string direction)
 		{
 			MemberName = memberName;

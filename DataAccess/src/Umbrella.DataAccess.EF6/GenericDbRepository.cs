@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -101,7 +102,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Save
-		public virtual async Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+		public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions options = null, params RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(entity, nameof(entity));
@@ -109,7 +110,7 @@ namespace Umbrella.DataAccess.EF6
 			try
 			{
 				// Ensure the default options are used when not explicitly provided.
-				options = options ?? s_DefaultRepoOptions;
+				options ??= s_DefaultRepoOptions;
 
 				if (options.SanitizeEntity)
 					await SanitizeEntityAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
@@ -118,9 +119,13 @@ namespace Umbrella.DataAccess.EF6
 				await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
 
 				if (options.ValidateEntity)
-					await ValidateEntityAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+				{
+					ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
 
-				// Common work shared between the synchronous and asynchronous version of the Save method
+					return new SaveResult<TEntity>(false, entity, lstValidationResult);
+				}
+
+				// Common work
 				PreSaveWork(entity, addToContext, out bool isNew);
 
 				// Additional processing after changes have been reflected in the database context but not yet pushed to the database
@@ -130,6 +135,8 @@ namespace Umbrella.DataAccess.EF6
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+				return new SaveResult<TEntity>(true, entity);
 			}
 			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
@@ -137,16 +144,24 @@ namespace Umbrella.DataAccess.EF6
 			}
 			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", returnValue: true))
 			{
-				LogDbEntityValidationExceptionDetails(exc);
-				throw;
+				try
+				{
+					LogDbEntityValidationExceptionDetails(exc);
+
+					return CreateSaveResultFromDbEntityValidationException(exc);
+				}
+				catch (Exception excInner)
+				{
+					throw new UmbrellaDataAccessAggregateException($"Initally, an exception of type {nameof(DbEntityValidationException)} was encountered. However, whilst trying to evaluate this exception, another exception was encountered.", exc, excInner);
+				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Failed for Id"))
+			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Failed for Id", returnValue: true))
 			{
-				throw;
+				throw new UmbrellaDataAccessException("There was a problem saving the entity.", exc);
 			}
 		}
 
-		public virtual async Task SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions options = null, params RepoOptions[] childOptions)
+		public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions options = null, params RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
@@ -156,22 +171,42 @@ namespace Umbrella.DataAccess.EF6
 				// Save all changes - do not push to the database yet
 				if (!bypassSaveLogic)
 				{
+					var lstSaveResult = new List<SaveResult<TEntity>>();
+
 					foreach (TEntity entity in entities)
 					{
-						await SaveAsync(entity, cancellationToken, false, true, options, childOptions).ConfigureAwait(false);
+						SaveResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, options, childOptions).ConfigureAwait(false);
+						lstSaveResult.Add(saveResult);
 					}
+
+					return lstSaveResult;
 				}
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+				return entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 			}
 			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }))
+			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Data Validation Exception for Ids", returnValue: true))
 			{
-				throw;
+				try
+				{
+					LogDbEntityValidationExceptionDetails(exc);
+
+					return CreateSaveResultsFromDbEntityValidationException(exc);
+				}
+				catch (Exception excInner)
+				{
+					throw new UmbrellaDataAccessAggregateException($"Initally, an exception of type {nameof(DbEntityValidationException)} was encountered. However, whilst trying to evaluate this exception, another exception was encountered.", exc, excInner);
+				}
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, returnValue: true))
+			{
+				throw new UmbrellaDataAccessException("There has been a problem saving the specified entities.", exc);
 			}
 		}
 		#endregion
@@ -185,7 +220,7 @@ namespace Umbrella.DataAccess.EF6
 			try
 			{
 				// Ensure the default options are used when not explicitly provided.
-				options = options ?? s_DefaultRepoOptions;
+				options ??= s_DefaultRepoOptions;
 
 				await BeforeContextDeletingAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
 
@@ -203,9 +238,9 @@ namespace Umbrella.DataAccess.EF6
 			{
 				throw new UmbrellaDataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Failed for Id"))
+			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Failed for Id", returnValue: true))
 			{
-				throw;
+				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entity.", exc);
 			}
 		}
 
@@ -228,9 +263,9 @@ namespace Umbrella.DataAccess.EF6
 			{
 				throw new UmbrellaDataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }))
+			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, returnValue: true))
 			{
-				throw;
+				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entities.", exc);
 			}
 		}
 
@@ -247,9 +282,6 @@ namespace Umbrella.DataAccess.EF6
 			// Look for the entity in the context - this action will allow us to determine it's state
 			DbEntityEntry<TEntity> dbEntity = Context.Entry(entity);
 
-			var datedEntity = entity as IDateAuditEntity;
-			var userAuditEntity = entity as IUserAuditEntity<TUserAuditKey>;
-
 			// Set the Concurrency Stamp
 			if (entity is IConcurrencyStamp concurrencyStampEntity)
 				concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
@@ -259,10 +291,10 @@ namespace Umbrella.DataAccess.EF6
 			{
 				isNew = true;
 
-				if (datedEntity != null)
-					datedEntity.CreatedDate = DateTime.UtcNow;
+				if (entity is ICreatedDateAuditEntity dateAuditEntity)
+					dateAuditEntity.CreatedDate = DateTime.UtcNow;
 
-				if (userAuditEntity != null)
+				if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 					userAuditEntity.CreatedById = UserAuditDataFactory.CurrentUserId;
 
 				if (addToContext)
@@ -271,10 +303,10 @@ namespace Umbrella.DataAccess.EF6
 
 			if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
 			{
-				if (datedEntity != null)
-					datedEntity.UpdatedDate = DateTime.UtcNow;
+				if (entity is IUpdatedDateAuditEntity dateAuditEntity)
+					dateAuditEntity.UpdatedDate = DateTime.UtcNow;
 
-				if (userAuditEntity != null)
+				if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 					userAuditEntity.UpdatedById = UserAuditDataFactory.CurrentUserId;
 			}
 		}
@@ -296,23 +328,51 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
-		#region Events
+		protected virtual SaveResult<TEntity> CreateSaveResultFromDbEntityValidationException(DbEntityValidationException exc)
+			=> CreateSaveResultsFromDbEntityValidationException(exc).Single();
+
+		protected virtual List<SaveResult<TEntity>> CreateSaveResultsFromDbEntityValidationException(DbEntityValidationException exc)
+		{
+			var lstSaveResult = new List<SaveResult<TEntity>>();
+
+			foreach (var item in exc.EntityValidationErrors)
+			{
+				if (item.Entry.Entity is TEntity entity)
+				{
+					var lstValidationResult = item.ValidationErrors.GroupBy(x => x.ErrorMessage).Select(x => new ValidationResult(x.Key, x.Select(y => y.PropertyName)));
+
+					var saveResult = new SaveResult<TEntity>(false, entity, lstValidationResult);
+					lstSaveResult.Add(saveResult);
+				}
+			}
+
+			return lstSaveResult;
+		}
+
+		#region Events		
 		/// <summary>
 		/// Overriding this method allows you to perform custom validation on the entity before its state on the database context is affected.
 		/// </summary>
-		/// <param name="entity">The entity to validate.</param>
-		protected virtual Task ValidateEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
+		protected virtual Task<ValidationResult[]> ValidateEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			return Task.CompletedTask;
+			return Task.FromResult(Array.Empty<ValidationResult>());
 		}
 
 		/// <summary>
 		/// Overriding this method allows you to perform work before the state of the entity on the database context is affected.
 		/// </summary>
-		/// <param name="entity">The entity</param>
-		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -325,7 +385,10 @@ namespace Umbrella.DataAccess.EF6
 		/// the changes have been pushed to the database.
 		/// </summary>
 		/// <param name="entity">The entity</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task AfterContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -336,8 +399,12 @@ namespace Umbrella.DataAccess.EF6
 		/// <summary>
 		/// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChangesAsync()"/> has taken place.
 		/// </summary>
-		/// <param name="entity">The entity</param>
+		/// <param name="entity">The entity.</param>
+		/// <param name="isNew">Specifies if the entity is new.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -349,7 +416,10 @@ namespace Umbrella.DataAccess.EF6
 		/// Overriding this method allows you to perform work before the state of the entity on the database context is affected.
 		/// </summary>
 		/// <param name="entity">The entity</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task BeforeContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -361,7 +431,10 @@ namespace Umbrella.DataAccess.EF6
 		/// Overriding this method allows you to perform work after the state of the entity on the database context is affected.
 		/// </summary>
 		/// <param name="entity">The entity</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task AfterContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -369,12 +442,17 @@ namespace Umbrella.DataAccess.EF6
 			return Task.CompletedTask;
 		}
 
+#pragma warning disable CS0419 // Ambiguous reference in cref attribute
 		/// <summary>
-		/// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChangesAsync"/> has taken place.
+		/// Overriding this method allows you to perform any work after the call to either <see cref="UmbrellaDbContext.SaveChangesAsync"/> or <see cref="UmbrellaDbContext.SaveChangesAsync(CancellationToken)"/> has taken place.
 		/// </summary>
 		/// <param name="entity">The entity</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task AfterContextDeletedChangesAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+#pragma warning restore CS0419 // Ambiguous reference in cref attribute
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -385,18 +463,12 @@ namespace Umbrella.DataAccess.EF6
 		#region SyncDependencies
 		protected Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
 			where TTargetEntity : class, IEntity
-			where TTargetRepository : IGenericDbRepository<TTargetEntity>
-		{
-			return SyncDependenciesAsync<TTargetEntity, int, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
-		}
+			where TTargetRepository : IGenericDbRepository<TTargetEntity> => SyncDependenciesAsync<TTargetEntity, int, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
 
 		protected Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
 			where TTargetEntity : class, IEntity<TTargetEntityKey>
 			where TTargetEntityKey : IEquatable<TTargetEntityKey>
-			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityKey>
-		{
-			return SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, RepoOptions, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
-		}
+			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityKey> => SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, RepoOptions, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
 
 		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
 			where TTargetEntity : class, IEntity<TTargetEntityKey>
@@ -406,14 +478,18 @@ namespace Umbrella.DataAccess.EF6
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
+			// Find the RepoOptions for this repository if provided in the options collection
+			TTargetEntityRepoOptions targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
+
+			// If the options specify that children should not be processed here, abort.
+			if (!targetOptions.ProcessChildren)
+				return;
+
 			//Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
 			//but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
 			//any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
 			//to a new List first to stop this from happening.
 			alteredColl = new List<TTargetEntity>(alteredColl);
-
-			//Find the RepoOptions for this repository if provided in the options collection
-			TTargetEntityRepoOptions targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
 			//Ensure we have deleted the dependencies (children) we no longer need
 			foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))
@@ -449,18 +525,16 @@ namespace Umbrella.DataAccess.EF6
 
 		#region Validation
 
-		protected virtual void ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true)
-		{
-			if (!value.IsValidLength(minLength, maxLength, !required))
-				throw new UmbrellaDataAccessValidationException(string.Format(c_InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength));
-		}
+		protected virtual ValidationResult ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true)
+			=> !value.IsValidLength(minLength, maxLength, !required)
+				? new ValidationResult(string.Format(c_InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName })
+				: ValidationResult.Success;
 
-		protected virtual void ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true)
+		protected virtual ValidationResult ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true)
 			where TProperty : struct, IComparable<TProperty>
-		{
-			if (!value.IsValidRange(min, max, !required))
-				throw new UmbrellaDataAccessValidationException(string.Format(c_InvalidPropertyNumberRangeErrorMessageFormat, propertyName, min, max));
-		}
+			=> !value.IsValidRange(min, max, !required)
+				? new ValidationResult(string.Format(c_InvalidPropertyNumberRangeErrorMessageFormat, propertyName, min, max), new[] { propertyName })
+				: ValidationResult.Success;
 		#endregion
 
 		#region Sanitize Methods
@@ -500,7 +574,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				entities.Remove(entity);
 
-				//Make sure it is removed from the Context if it has just been added - make it detached
+				// Make sure it is removed from the Context if it has just been added - make it detached
 				DbEntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
 
 				if (dbEntityEntry.State == EntityState.Added)

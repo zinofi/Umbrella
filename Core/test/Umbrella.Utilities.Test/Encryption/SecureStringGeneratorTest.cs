@@ -30,7 +30,7 @@ namespace Umbrella.Utilities.Test.Encryption
 			new object[] { 8, 0, 3, 3 }
 		};
 
-		private static SecureRandomStringGeneratorOptions _options = new SecureRandomStringGeneratorOptions();
+		private static readonly SecureRandomStringGeneratorOptions _options = new SecureRandomStringGeneratorOptions();
 
 		[Theory]
 		[MemberData(nameof(OptionsList))]

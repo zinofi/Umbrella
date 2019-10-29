@@ -72,19 +72,5 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			return StatusCode(statusCode);
 		}
 		#endregion
-
-		#region Protected Methods
-		protected IActionResult HandleDataValidationException(UmbrellaDataAccessValidationException exc)
-		{
-			switch (exc.ValidationType)
-			{
-				case DataValidationType.Conflict:
-					return Conflict(exc.Message);
-				case DataValidationType.Invalid:
-				default:
-					return BadRequest(exc.Message);
-			}
-		}
-		#endregion
 	}
 }

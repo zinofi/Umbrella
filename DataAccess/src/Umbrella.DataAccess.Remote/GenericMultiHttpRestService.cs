@@ -78,7 +78,7 @@ namespace Umbrella.DataAccess.Remote
 
 			if ((pageNumber > 0 && pageSize > 0) || sortExpressions?.Length > 0)
 			{
-				StringBuilder urlBuilder = new StringBuilder(url);
+				var urlBuilder = new StringBuilder(url);
 
 				if (pageNumber > 0 && pageSize > 0)
 					urlBuilder.Append($"?pageNumber={pageNumber}&pageSize={pageSize}");

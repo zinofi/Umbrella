@@ -26,10 +26,20 @@
 			ProcessChildren = processChildren;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether to sanitize the entity.
+		/// </summary>
 		public virtual bool SanitizeEntity { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether to validate the entity.
+		/// </summary>
 		public virtual bool ValidateEntity { get; set; } = true;
 
-		// TODO: V3 This currently isn't used by the EF6 repos. Look at doing something with it.
+		// TODO: V3 This currently isn't used by the EF6 repos. Look at doing something with it.		
+		/// <summary>
+		/// Gets or sets a value indicating whether children of the entity will be processed.
+		/// </summary>
 		public virtual bool ProcessChildren { get; set; }
 	}
 }

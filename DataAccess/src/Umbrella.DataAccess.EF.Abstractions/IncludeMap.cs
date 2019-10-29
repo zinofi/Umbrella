@@ -6,6 +6,7 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EF.Abstractions
 {
+	// TODO: Convert to struct?
 	public class IncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
 	{
 		#region Public Properties
@@ -26,6 +27,10 @@ namespace Umbrella.DataAccess.EF.Abstractions
 					PropertyNames.Add(propertyName);
 			}
 		}
+		#endregion
+
+		#region Overridden Methods
+		public override string ToString() => string.Join(", ", PropertyNames);
 		#endregion
 
 		#region IEnumerable Members

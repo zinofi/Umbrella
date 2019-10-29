@@ -368,7 +368,7 @@ namespace Umbrella.DataAccess.Remote
 
 				bool success = true;
 				List<RemoteSourceFailure<TRemoteSource>> lstSourceFailure = null;
-				List<SaveResult<TItem>> lstSaveResult = new List<SaveResult<TItem>>();
+				var lstSaveResult = new List<SaveResult<TItem>>();
 
 				foreach (var item in dicTask)
 				{
@@ -531,9 +531,9 @@ namespace Umbrella.DataAccess.Remote
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			List<ValidationResult> lstResult = new List<ValidationResult>();
+			var lstResult = new List<ValidationResult>();
 
-			ValidationContext ctx = new ValidationContext(item);
+			var ctx = new ValidationContext(item);
 			bool isValid = Validator.TryValidateObject(item, ctx, lstResult);
 
 			return Task.FromResult((isValid, lstResult));
@@ -550,7 +550,7 @@ namespace Umbrella.DataAccess.Remote
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			Task[] tasks = new Task[items.Count];
+			var tasks = new Task[items.Count];
 
 			for (int i = 0; i < items.Count; i++)
 			{

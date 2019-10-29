@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions.Exceptions;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Abstractions
 {
@@ -20,15 +21,12 @@ namespace Umbrella.DataAccess.Abstractions
 		#region IDataAccessLookupNormalizer Members
 		public string Normalize(string value, bool trim = true)
 		{
-			if (value == null)
+			if (value is null)
 				return null;
 
 			try
 			{
-				if (trim)
-					value = value.Trim();
-
-				return value.Normalize().ToUpperInvariant();
+				return trim ? value.Normalize().TrimToUpperInvariant() : value.Normalize().ToUpperInvariant();
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { value = "Value not logged for security reasons.", trim }, "String normalization to form C failed. The source string has not been logged for security reasons.", returnValue: true))
 			{
