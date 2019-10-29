@@ -34,16 +34,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Helpers
 		{
 			var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
 
-			var options = new DynamicImageOptions
-			{
-				Format = format,
-				Height = height,
-				ResizeMode = resizeMode,
-				SourcePath = path,
-				Width = width
-			};
+			var options = new DynamicImageOptions(path, width, height, resizeMode, format);
 
-			var url = utility.GenerateVirtualPath(dynamicImagePathPrefix, options);
+			string url = utility.GenerateVirtualPath(dynamicImagePathPrefix, options);
 
 			if (toAbsolutePath)
 				url = url.ToAbsoluteUrl(helper.ViewContext.RequestContext.HttpContext.Request.Url, schemeOverride, hostOverride, portOverride);

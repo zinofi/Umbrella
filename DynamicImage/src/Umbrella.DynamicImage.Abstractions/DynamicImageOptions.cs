@@ -6,16 +6,16 @@ namespace Umbrella.DynamicImage.Abstractions
     //TODO: Investigate making this readonly and passing around by reference to avoid copying if possible.
     //TODO: IEquatable
     [StructLayout(LayoutKind.Auto)]
-    public struct DynamicImageOptions
+    public readonly struct DynamicImageOptions
     {
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public DynamicResizeMode ResizeMode { get; set; }
-        public DynamicImageFormat Format { get; set; }
+        public int Width { get; }
+        public int Height { get; }
+        public DynamicResizeMode ResizeMode { get; }
+        public DynamicImageFormat Format { get; }
         /// <summary>
         /// This represents the source path and could be a physical path or URL.
         /// </summary>
-        public string SourcePath { get; set; }
+        public string SourcePath { get; }
 
         public DynamicImageOptions(string path, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
         {

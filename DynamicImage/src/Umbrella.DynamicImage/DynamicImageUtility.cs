@@ -121,14 +121,7 @@ namespace Umbrella.DynamicImage
                     }
                 }
 
-                var imageOptions = new DynamicImageOptions
-                {
-                    Width = width,
-                    Height = height,
-                    ResizeMode = mode,
-                    Format = overrideFormat ?? ParseImageFormat(targetExtension),
-                    SourcePath = sourcePath
-                };
+				var imageOptions = new DynamicImageOptions(sourcePath, width, height, mode, overrideFormat ?? ParseImageFormat(targetExtension));
 
                 return (DynamicImageParseUrlResult.Success, imageOptions);
             }
