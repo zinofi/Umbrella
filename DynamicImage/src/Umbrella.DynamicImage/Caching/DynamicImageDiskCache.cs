@@ -19,7 +19,7 @@ namespace Umbrella.DynamicImage.Caching
         #region Constructors
         public DynamicImageDiskCache(ILogger<DynamicImageDiskCache> logger,
             IMemoryCache cache,
-            DynamicImageCacheOptions cacheOptions,
+            DynamicImageCacheCoreOptions cacheOptions,
             IUmbrellaDiskFileProvider fileProvider,
             DynamicImageDiskCacheOptions diskCacheOptions)
             : base(logger, cache, cacheOptions, fileProvider)

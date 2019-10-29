@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// with in-memory caching.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheOptions"/> builder.</param>
+		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheCoreOptions"/> builder.</param>
 		/// <param name="dynamicImageMemoryCacheOptionsBuilder">The <see cref="DynamicImageMemoryCacheOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="dynamicImageMemoryCacheOptionsBuilder"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDynamicImageMemoryCache(
 			this IServiceCollection services,
-			Action<IServiceProvider, DynamicImageCacheOptions> dynamicImageCacheCoreOptionsBuilder,
+			Action<IServiceProvider, DynamicImageCacheCoreOptions> dynamicImageCacheCoreOptionsBuilder,
 			Action<IServiceProvider, DynamicImageMemoryCacheOptions> dynamicImageMemoryCacheOptionsBuilder)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
@@ -63,7 +63,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// with disk caching.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheOptions"/> builder.</param>
+		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheCoreOptions"/> builder.</param>
 		/// <param name="dynamicImageDiskCacheOptionsBuilder">The <see cref="DynamicImageDiskCacheOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
@@ -71,7 +71,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="dynamicImageDiskCacheOptionsBuilder"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDynamicImageDiskCache(
 			this IServiceCollection services,
-			Action<IServiceProvider, DynamicImageCacheOptions> dynamicImageCacheCoreOptionsBuilder,
+			Action<IServiceProvider, DynamicImageCacheCoreOptions> dynamicImageCacheCoreOptionsBuilder,
 			Action<IServiceProvider, DynamicImageDiskCacheOptions> dynamicImageDiskCacheOptionsBuilder)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));

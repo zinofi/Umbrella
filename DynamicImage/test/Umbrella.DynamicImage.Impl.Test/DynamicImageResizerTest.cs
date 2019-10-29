@@ -12,8 +12,6 @@ using Umbrella.FileSystem.Abstractions;
 using System.Threading;
 using System.IO;
 using Umbrella.Utilities.Compilation;
-using Umbrella.DynamicImage.SoundInTheory;
-using SoundInTheoryImageResizer = Umbrella.DynamicImage.SoundInTheory.DynamicImageResizer;
 using FreeImageResizer = Umbrella.DynamicImage.FreeImage.DynamicImageResizer;
 using SkiaSharpResizer = Umbrella.DynamicImage.SkiaSharp.DynamicImageResizer;
 using System.Drawing;
@@ -110,22 +108,20 @@ namespace Umbrella.DynamicImage.Impl.Test
 
         public static List<object[]> ResizersList = new List<object[]>
         {
-            new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>() },
             new object[] { CreateDynamicImageResizer<FreeImageResizer>() },
             new object[] { CreateDynamicImageResizer<SkiaSharpResizer>() },
         };
 
         static DynamicImageResizerTest()
         {
-            //Just assigning a dummy JSON Serialization implementation here. Not important for it to return anything of value for these tests.
+            // Just assigning a dummy JSON Serialization implementation here. Not important for it to return anything of value for these tests.
             UmbrellaStatics.JsonSerializer = (obj, useCamelCase, typeNameHandling) => "";
 
             foreach (var option in s_OptionsList)
             {
-                OptionsList.Add(new object[] { CreateDynamicImageResizer<SoundInTheoryImageResizer>(), option, TestPNG });
                 OptionsList.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option, TestPNG });
 
-                //TODO: SkiaSharp has issues converting PNG to BMP and GIF
+                // TODO: SkiaSharp has issues converting PNG to BMP and GIF
                 if(option.Options.Format != DynamicImageFormat.Bmp && option.Options.Format != DynamicImageFormat.Gif)
                     OptionsList.Add(new object[] { CreateDynamicImageResizer<SkiaSharpResizer>(), option, TestPNG });
             }

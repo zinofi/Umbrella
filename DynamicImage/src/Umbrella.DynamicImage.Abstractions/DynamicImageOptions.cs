@@ -8,8 +8,6 @@ namespace Umbrella.DynamicImage.Abstractions
     [StructLayout(LayoutKind.Auto)]
     public struct DynamicImageOptions
     {
-		public static readonly DynamicImageOptions Empty = default;
-
         public int Width { get; set; }
         public int Height { get; set; }
         public DynamicResizeMode ResizeMode { get; set; }
@@ -52,7 +50,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
         public static bool operator ==(DynamicImageOptions item1, DynamicImageOptions item2) => item1.Equals(item2);
         public static bool operator !=(DynamicImageOptions item1, DynamicImageOptions item2) => !item1.Equals(item2);
-        public static bool IsEmpty(DynamicImageOptions options) => options == Empty;
+        public static bool IsEmpty(DynamicImageOptions options) => options == default;
 
         public static explicit operator DynamicImageMapping(DynamicImageOptions options)
         {

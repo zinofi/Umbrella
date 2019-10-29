@@ -204,7 +204,7 @@ namespace Umbrella.DynamicImage.Test.Caching
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-            var cacheOptions = new DynamicImageCacheOptions
+            var cacheOptions = new DynamicImageCacheCoreOptions
             {
                 CacheKeyCacheOptions = new MemoryCacheEntryOptions
                 {
@@ -243,7 +243,7 @@ namespace Umbrella.DynamicImage.Test.Caching
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-            var cacheOptions = new DynamicImageCacheOptions
+            var cacheOptions = new DynamicImageCacheCoreOptions
             {
                 CacheKeyCacheOptions = new MemoryCacheEntryOptions
                 {
@@ -268,7 +268,7 @@ namespace Umbrella.DynamicImage.Test.Caching
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-            var cacheOptions = new DynamicImageCacheOptions
+            var cacheOptions = new DynamicImageCacheCoreOptions
             {
                 CacheKeyCacheOptions = new MemoryCacheEntryOptions
                 {

@@ -18,13 +18,14 @@ namespace Umbrella.DynamicImage.Caching
         #region Protected Properties
         protected ILogger Log { get; }
         protected IMemoryCache Cache { get; }
-        protected DynamicImageCacheOptions CacheOptions { get; }
+        protected DynamicImageCacheCoreOptions CacheOptions { get; }
         #endregion
 
         #region Constructors
-        public DynamicImageCache(ILogger logger,
+        public DynamicImageCache(
+			ILogger logger,
             IMemoryCache cache,
-            DynamicImageCacheOptions cacheOptions)
+            DynamicImageCacheCoreOptions cacheOptions)
         {
             Log = logger;
             Cache = cache;
@@ -48,7 +49,7 @@ namespace Umbrella.DynamicImage.Caching
 
                         byte[] bytes = s_Hasher.ComputeHash(Encoding.UTF8.GetBytes(rawKey));
 
-                        StringBuilder stringBuilder = new StringBuilder(bytes.Length * 2);
+                        var stringBuilder = new StringBuilder(bytes.Length * 2);
 
                         foreach (byte num in bytes)
                             stringBuilder.Append(num.ToString("x").PadLeft(2, '0'));

@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// with Azure Blob Storage caching.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheOptions"/> builder.</param>
+		/// <param name="dynamicImageCacheCoreOptionsBuilder">The <see cref="DynamicImageCacheCoreOptions"/> builder.</param>
 		/// <param name="dynamicImageAzureBlobStorageCacheOptionsBuilder">The <see cref="DynamicImageAzureBlobStorageCacheOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="dynamicImageAzureBlobStorageCacheOptionsBuilder"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDynamicImageAzureBlobStorageCache(
 			this IServiceCollection services,
-			Action<IServiceProvider, DynamicImageCacheOptions> dynamicImageCacheCoreOptionsBuilder,
+			Action<IServiceProvider, DynamicImageCacheCoreOptions> dynamicImageCacheCoreOptionsBuilder,
 			Action<IServiceProvider, DynamicImageAzureBlobStorageCacheOptions> dynamicImageAzureBlobStorageCacheOptionsBuilder)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));

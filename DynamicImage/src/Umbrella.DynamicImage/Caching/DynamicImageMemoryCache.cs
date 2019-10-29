@@ -23,7 +23,7 @@ namespace Umbrella.DynamicImage.Caching
         #region Constructors
         public DynamicImageMemoryCache(ILogger<DynamicImageMemoryCache> logger,
             IMemoryCache cache,
-            DynamicImageCacheOptions cacheOptions,
+            DynamicImageCacheCoreOptions cacheOptions,
             DynamicImageMemoryCacheOptions memoryCacheOptions)
             : base(logger, cache, cacheOptions)
         {

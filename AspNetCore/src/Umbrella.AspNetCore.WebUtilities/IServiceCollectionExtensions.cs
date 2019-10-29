@@ -1,11 +1,8 @@
 ﻿using System;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
-using Umbrella.AspNetCore.WebUtilities.Mvc.ModelState;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.WebUtilities.Hosting;
-using Umbrella.WebUtilities.ModelState;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -39,20 +36,10 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
-			services.AddSingleton<ValidateModelStateAttribute>();
-
 			// Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
 			services.AddSingleton<TUmbrellaWebHostingEnvironment>();
 			services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 			services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
-
-			// TODO: This ModelState stuff was added to try and standardize the error output from Web API endpoints. Need to look at the new "Problem Details" (RFC 7807)
-			// stuff added in ASP.NET Core 2.1
-			// Add the default ModelStateTransformer. This will need to replaced in consuming applications
-			// where specific customizations need to be made to the ModelState and ModelStateEntry classes.
-			// e.g. to apply TypeScript code generation attributes to each type.
-			services.AddSingleton<IModelStateTransformer, ModelStateTransformer<DefaultTransformedModelState<DefaultTransformedModelStateEntry>, DefaultTransformedModelStateEntry>>();
-			services.AddSingleton<ModelStateTransformerOptions>();
 
 			return services;
 		}

@@ -33,7 +33,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
         #region Constructors
         public DynamicImageAzureBlobStorageCache(ILogger<DynamicImageAzureBlobStorageCache> logger,
             IMemoryCache cache,
-            DynamicImageCacheOptions cacheOptions,
+            DynamicImageCacheCoreOptions cacheOptions,
             IUmbrellaAzureBlobStorageFileProvider fileProvider,
             DynamicImageAzureBlobStorageCacheOptions blobStorageCacheOptions)
             : base(logger, cache, cacheOptions, fileProvider)

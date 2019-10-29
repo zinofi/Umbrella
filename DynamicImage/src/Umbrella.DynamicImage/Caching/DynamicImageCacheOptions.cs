@@ -1,13 +1,15 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Umbrella.DynamicImage.Caching
 {
-	// TODO: Rename to DynamicImageCacheCoreOptions
-    public class DynamicImageCacheOptions
-    {
-        public MemoryCacheEntryOptions CacheKeyCacheOptions { get; set; }
-    }
+	/// <summary>
+	/// Used to specify the core Dynamic Image options.
+	/// </summary>
+	public class DynamicImageCacheCoreOptions
+	{
+		/// <summary>
+		/// Gets or sets the <see cref="MemoryCacheEntryOptions"/> used for caching the generated cache keys which correspond to cached filenames.
+		/// </summary>
+		public MemoryCacheEntryOptions CacheKeyCacheOptions { get; set; }
+	}
 }

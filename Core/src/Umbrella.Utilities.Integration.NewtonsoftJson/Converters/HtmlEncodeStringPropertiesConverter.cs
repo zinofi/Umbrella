@@ -1,21 +1,34 @@
 ﻿using System;
 using System.Net;
 using Newtonsoft.Json;
-using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Integration.NewtonsoftJson.Converters
 {
-	// TODO V3: Rework this so that nothing is encoded on the way in as per Microsoft's advice: https://docs.microsoft.com/en-us/aspnet/core/security/cross-site-scripting
-	// The general accepted practice is that encoding takes place at the point of output and encoded values should never be stored in a database.
-	// Encoding at the point of output allows you to change the use of data, for example, from HTML to a query string value.
-	// It also enables you to easily search your data without having to encode values before searching and allows you to take advantage of any changes or bug fixes made to encoders.
 	/// <summary>
-	/// A custom <see cref="JsonConverter"/> to ensure string values are properly encoded and decoded to mitigate XSS attacks.
+	/// A custom <see cref="JsonConverter"/> to ensure string values are properly encoded when they are output to mitigate XSS attacks.
 	/// </summary>
 	/// <seealso cref="Newtonsoft.Json.JsonConverter" />
+	/// <remarks>
+	/// This has been altered as of v3 so that nothing is encoded on the way in as per Microsoft's advice: https://docs.microsoft.com/en-us/aspnet/core/security/cross-site-scripting
+	/// The general accepted practice is that encoding takes place at the point of output and encoded values should never be stored in a database.
+	/// Encoding at the point of output allows you to change the use of data, for example, from HTML to a query string value.
+	/// It also enables you to easily search your data without having to encode values before searching and allows you to take advantage of any changes or bug fixes made to encoders.
+	/// </remarks>
 	public class HtmlEncodeStringPropertiesConverter : JsonConverter
 	{
-		#region Overridden Methods		
+		#region Static Delegates
+		/// <summary>
+		/// Gets or sets the optional delegate invoked at the end of the <see cref="ReadJson(JsonReader, Type, object, JsonSerializer)"/> method immediately before returning.
+		/// </summary>
+		public static Func<JsonReader, Type, JsonSerializer, string, string> OnReadJson { get; set; }
+
+		/// <summary>
+		/// Gets or sets the optional delegate invoked at the end of the <see cref="WriteJson(JsonWriter, object, JsonSerializer)"/> method immediately before returning.
+		/// </summary>
+		public static Func<JsonWriter, JsonSerializer, string, string> OnWriteJson { get; set; }
+		#endregion
+
+		#region Overridden Methods
 		/// <summary>
 		/// Determines whether this instance can convert the specified object type.
 		/// </summary>
@@ -38,17 +51,11 @@ namespace Umbrella.Utilities.Integration.NewtonsoftJson.Converters
 		/// <exception cref="ArgumentNullException">reader</exception>
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
-			string value = reader.Value as string;
+			string valueToRead = reader.Value as string;
 
-			if (!string.IsNullOrEmpty(value))
-			{
-				// Clean the incoming string before running through the sanitizer and then again afterwards
-				// to prevent double encoding of things we don't want encoding.
-				// TODO: Remove this completely.
-				value = WebUtility.HtmlEncode(value.Clean()).Clean();
-			}
+			OnReadJson?.Invoke(reader, objectType, serializer, valueToRead);
 
-			return value;
+			return valueToRead;
 		}
 
 		/// <summary>
@@ -63,18 +70,14 @@ namespace Umbrella.Utilities.Integration.NewtonsoftJson.Converters
 
 			if (!string.IsNullOrEmpty(valueToWrite))
 			{
-				// Cleaning again on the way out to ensure that anything that is encoded
-				// that shouldn't be is decoded properly.
-				// TODO: This is wrong. Always send out encoded content and allow the client to decode it if deemed necessary.
-				valueToWrite = valueToWrite.Clean();
+				// Always encode on the way out and leave it to the client to decide on what to do.
+				valueToWrite = WebUtility.HtmlEncode(valueToWrite);
 			}
 
-			writer.WriteValue(valueToWrite ?? string.Empty);
+			OnWriteJson?.Invoke(writer, serializer, valueToWrite);
+
+			writer.WriteValue(valueToWrite);
 		}
 		#endregion
-
-		// TODO: What about providing hooks to allow behaviour to be overridden, for example, for a specific URL?
-		// What about creating a few different converters, e.g. one that strips out HTML on the way in when we know the user shouldn't
-		// be posting HTML to the server?
 	}
 }
