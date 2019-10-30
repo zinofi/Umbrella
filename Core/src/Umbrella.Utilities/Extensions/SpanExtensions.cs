@@ -95,10 +95,11 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ToLowerCoreClr(in Span<char> source, CultureInfo culture)
         {
-            ReadOnlySpan<char> readOnlySpan = source;
-
-            readOnlySpan.ToLower(source, culture);
-        }
+			for (int i = 0; i < source.Length; i++)
+			{
+				source[i] = char.ToLower(source[i], culture);
+			}
+		}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToLowerInvariant(this in Span<char> source) => ToLower(source, CultureInfo.InvariantCulture);
@@ -127,10 +128,11 @@ namespace Umbrella.Utilities.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ToUpperCoreClr(in Span<char> source, CultureInfo culture)
         {
-            ReadOnlySpan<char> readOnlySpan = source;
-
-            readOnlySpan.ToUpper(source, culture);
-        }
+			for (int i = 0; i < source.Length; i++)
+			{
+				source[i] = char.ToUpper(source[i], culture);
+			}
+		}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ToUpperInvariant(this in Span<char> source) => ToUpper(source, CultureInfo.InvariantCulture);
