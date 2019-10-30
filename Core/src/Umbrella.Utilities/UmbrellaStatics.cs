@@ -1,35 +1,41 @@
 ﻿using System;
-using Umbrella.Utilities.Json;
+using System.Text.Json;
 
 namespace Umbrella.Utilities
 {
-	// TODO V3: Switch to use the new Microsoft JSON packages
     public static class UmbrellaStatics
     {
-        public delegate string SerializeJsonDelegate(object value, bool useCamelCasingRules, UmbrellaJsonTypeNameHandling typeNameHandling);
-        public delegate object DeserializeJsonDelegate(string value, Type type, UmbrellaJsonTypeNameHandling typeNameHandling);
+		private static readonly JsonSerializerOptions _camelCaseOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+		private static readonly JsonSerializerOptions _ignoreCaseOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        public static SerializeJsonDelegate JsonSerializer { private get; set; }
-        public static DeserializeJsonDelegate JsonDeserializer { private get; set; }
+        public delegate string SerializeJsonDelegate(object value, bool useCamelCasingRules);
+        public delegate object DeserializeJsonDelegate(string value, Type type);
 
-        public static string SerializeJson(object value, bool useCamelCasingRules = false, UmbrellaJsonTypeNameHandling typeNameHandling = UmbrellaJsonTypeNameHandling.None)
+		public static SerializeJsonDelegate JsonSerializerImplementation { private get; set; } = DefaultSerialize;
+		public static DeserializeJsonDelegate JsonDeserializerImplementation { private get; set; } = DefaultDeserialize;
+
+        public static string SerializeJson(object value, bool useCamelCasingRules = false)
         {
             Guard.ArgumentNotNull(value, nameof(value));
 
-            if(JsonSerializer == null)
+            if(JsonSerializerImplementation == null)
                 throw new Exception("The JsonSerializer has not been assigned. This should be done on application startup.");
 
-            return JsonSerializer(value, useCamelCasingRules, typeNameHandling);
+            return JsonSerializerImplementation(value, useCamelCasingRules);
         }
 
-        public static T DeserializeJson<T>(string value, UmbrellaJsonTypeNameHandling typeNameHandling = UmbrellaJsonTypeNameHandling.None)
+        public static T DeserializeJson<T>(string value)
         {
             Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
 
-            if(JsonDeserializer == null)
+            if(JsonDeserializerImplementation == null)
                 throw new Exception("The JsonDeserializer has not been assigned. This should be done on application startup.");
 
-            return (T)JsonDeserializer(value, typeof(T), typeNameHandling);
+            return (T)JsonDeserializerImplementation(value, typeof(T));
         }
+
+		public static string DefaultSerialize(object value, bool useCamelCasingRules) => JsonSerializer.Serialize(value, value.GetType(), useCamelCasingRules ? _camelCaseOptions : null);
+
+		public static object DefaultDeserialize(string value, Type type) => JsonSerializer.Deserialize(value, type, _ignoreCaseOptions);
     }
 }

@@ -114,9 +114,6 @@ namespace Umbrella.DynamicImage.Impl.Test
 
         static DynamicImageResizerTest()
         {
-            // Just assigning a dummy JSON Serialization implementation here. Not important for it to return anything of value for these tests.
-            UmbrellaStatics.JsonSerializer = (obj, useCamelCase, typeNameHandling) => "";
-
             foreach (var option in s_OptionsList)
             {
                 OptionsList.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option, TestPNG });
