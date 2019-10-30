@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
@@ -45,15 +44,6 @@ namespace Umbrella.Utilities.Encryption
 		{
 			_log = logger;
 			_options = options;
-
-			try
-			{
-				options.Validate();
-			}
-			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
-			{
-				throw new UmbrellaException("There has been a problem creating this instance using the specified options.", exc);
-			}
 		}
 		#endregion
 

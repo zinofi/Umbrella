@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
@@ -9,17 +8,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Moq;
 using Umbrella.Legacy.WebUtilities.Middleware;
-using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
-using Umbrella.WebUtilities.Http;
-using Xunit;
+using Umbrella.WebUtilities.Http.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 {
 	public class FrontEndCompressionMiddlewareTest
-    {
+	{
 		private const string _dummyETagHeaderValue = nameof(_dummyETagHeaderValue);
 		private const string _dummyLastModifiedHeaderValue = nameof(_dummyLastModifiedHeaderValue);
 
@@ -44,7 +42,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 		{
 			var context = new Mock<IOwinContext>();
 
-		    // Request
+			// Request
 			var request = new Mock<IOwinRequest>();
 			request.SetupAllProperties();
 			request.Setup(x => x.Headers).Returns(new HeaderDictionary(new Dictionary<string, string[]>()));
@@ -55,13 +53,13 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 			var response = new Mock<IOwinResponse>();
 			response.Setup(x => x.Body).Returns(new MemoryStream());
 			response.Setup(x => x.Headers).Returns(new HeaderDictionary(new Dictionary<string, string[]>()));
-			
+
 			context.Setup(x => x.Response).Returns(response.Object);
 
 			return context.Object;
 		}
 
-        private FrontEndCompressionMiddleware CreateMiddleware()
+		private FrontEndCompressionMiddleware CreateMiddleware()
 		{
 			var logger = new Mock<ILogger<FrontEndCompressionMiddleware>>();
 			logger.Setup(x => x.IsEnabled(LogLevel.Debug)).Returns(false);
@@ -117,5 +115,5 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 
 			return file.Object;
 		}
-    }
+	}
 }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Options;
 
-namespace Umbrella.Utilities.Abstractions
+namespace Umbrella.Utilities.Options
 {
 	/// <summary>
 	/// An abstract class that serves as the base class for all Umbrella Options classes that have cacheable properties.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Umbrella.WebUtilities.Http
+namespace Umbrella.WebUtilities.Http.Abstractions
 {
     public interface IHttpHeaderValueUtility
     {

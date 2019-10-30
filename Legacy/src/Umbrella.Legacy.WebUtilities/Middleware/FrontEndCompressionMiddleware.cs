@@ -14,13 +14,12 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Umbrella.Legacy.WebUtilities.Extensions;
-using Umbrella.Legacy.WebUtilities.Middleware.Options;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
-using Umbrella.WebUtilities.Http;
+using Umbrella.WebUtilities.Http.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
@@ -57,49 +56,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			MimeTypeUtility = mimeTypeUtility;
 			Options = options;
 
-			// Validate the options
-			Guard.ArgumentNotNullOrEmpty(options.FrontEndRootFolderAppRelativePaths, nameof(options.FrontEndRootFolderAppRelativePaths));
-			Guard.ArgumentNotNullOrEmpty(options.TargetFileExtensions, nameof(options.TargetFileExtensions));
-			Guard.ArgumentNotNullOrWhiteSpace(options.AcceptEncodingHeaderKey, nameof(options.AcceptEncodingHeaderKey));
-			Guard.ArgumentInRange(options.BufferSizeBytes, nameof(options.BufferSizeBytes), 1);
-
-			options.AcceptEncodingHeaderKey = options.AcceptEncodingHeaderKey.Trim().ToLowerInvariant();
-
 			// File Provider
 			FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/"));
-
-			// TODO: Do this cleanup work inside the Options class itself. See the UmbrellaFileProviderMiddlewareOptions.
-			// Clean paths
-			var lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-			for (int i = 0; i < options.FrontEndRootFolderAppRelativePaths.Length; i++)
-			{
-				string path = options.FrontEndRootFolderAppRelativePaths[i];
-
-				if (string.IsNullOrWhiteSpace(path))
-				{
-					i--;
-					continue;
-				}
-
-				path = path.Trim();
-
-				if (path.StartsWith("~"))
-					path = path.Remove(0, 1);
-
-				if (!path.StartsWith("/"))
-					path = "/" + path;
-
-				lstCleanedPath.Add(path);
-			}
-
-			if (lstCleanedPath.Count == 0)
-				throw new ArgumentException($"The cleaned items provided in {nameof(options.FrontEndRootFolderAppRelativePaths)} has resulted in an empty list.");
-
-			options.FrontEndRootFolderAppRelativePaths = lstCleanedPath.ToArray();
-
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { options });
 		}
 
 		public override async Task Invoke(IOwinContext context)
@@ -121,13 +79,13 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 					if (fileInfo == null)
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
 						return;
 					}
 
 					if (Options.ResponseCacheEnabled)
 					{
-						bool shouldCache = Options.ResponseCacheDeterminer?.Invoke(context, fileInfo) ?? true;
+						bool shouldCache = Options.ResponseCacheDeterminer?.Invoke(fileInfo) ?? true;
 
 						if (shouldCache)
 						{
@@ -135,7 +93,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified))
 							{
 								cts.Cancel();
-								await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+								await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
 								return;
 							}
 
@@ -144,7 +102,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 							{
 								cts.Cancel();
-								await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+								await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
 								return;
 							}
 
@@ -199,7 +157,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// This is useful for situations where proxies have incorrectly rewritten encoding headers
 						// and we need to check something like the User-Agent value to override the values,
 						// e.g. Brotli doesn't work with IE
-						Options?.AcceptEncodingModifier?.Invoke(context, lstEncodingValue);
+						Options?.AcceptEncodingModifier?.Invoke(context.Request.Headers.ToDictionary(x => x.Key, x => x.Value.AsEnumerable()), lstEncodingValue);
 
 						string flattenedEncodingHeaders = string.Join(", ", lstEncodingValue).ToUpperInvariant();
 						string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";

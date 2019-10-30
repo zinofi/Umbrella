@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\net461\Umbrella.Legacy.WebUtilities.FileSystem.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.WebUtilities.DynamicImage.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -16,24 +16,28 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.Legacy.WebUtilities.FileSystem</PackageId>
+		<PackageId>Umbrella.WebUtilities.DynamicImage</PackageId>
 		<Version>3.0.0-preview-0001</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
-		<Description>This package contains OWIN middleware to be used in conjunction with the Umbrella.FileSystem.* packages.</Description>
+		<Description>
+			This package contains core code for using the DynamicImage packages with web projects.
+		</Description>
 		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.FileSystem\Umbrella.WebUtilities.FileSystem.csproj" />
-		<ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
-		<ProjectReference Include="..\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
+	</ItemGroup>
+	
 </Project>

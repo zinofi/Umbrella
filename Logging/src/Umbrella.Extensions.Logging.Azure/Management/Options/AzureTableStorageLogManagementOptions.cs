@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Umbrella.Extensions.Logging.Azure.Management.Configuration;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Abstractions;
+using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.Extensions.Logging.Azure.Management.Options
 {

@@ -6,14 +6,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Legacy.WebUtilities.Extensions;
-using Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options;
 using Umbrella.Utilities;
 using Umbrella.WebUtilities.Exceptions;
-using Umbrella.WebUtilities.Http;
+using Umbrella.WebUtilities.FileSystem.Middleware.Options;
+using Umbrella.WebUtilities.Http.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 {
-	// TODO: Port this to ASP.NET Core. Will need it for the BCC project to restrict file access.
 	public class UmbrellaFileProviderMiddleware : OwinMiddleware
 	{
 		protected ILogger Log { get; }
@@ -27,8 +26,6 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			UmbrellaFileProviderMiddlewareOptions options)
 			: base(next)
 		{
-			Guard.ArgumentNotNull(options, nameof(options));
-
 			Log = logger;
 			HttpHeaderValueUtility = httpHeaderValueUtility;
 			Options = options;
@@ -46,7 +43,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 
 				if (fileProvider != null)
 				{
-					var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
+					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
 					IUmbrellaFileInfo fileInfo = await fileProvider.GetAsync(path, token);
@@ -54,7 +51,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					if (fileInfo == null)
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
 						return;
 					}
 
@@ -62,7 +59,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified.Value.UtcDateTime))
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
 						return;
 					}
 
@@ -71,7 +68,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
 						return;
 					}
 
@@ -89,6 +86,12 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 				{
 					await Next.Invoke(context);
 				}
+			}
+			catch (UmbrellaFileAccessDeniedException exc) when (Log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			{
+				// TODO: Should this be a 401 or 403? Or even a 404 where we don't want necessarily want a bad actor to know that file exists.
+				// Maybe add a new Options property to configure that behaviour.
+				await context.Response.SendStatusCodeAsync(HttpStatusCode.Forbidden);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { Path = context.Request.Path.Value }, returnValue: true))
 			{

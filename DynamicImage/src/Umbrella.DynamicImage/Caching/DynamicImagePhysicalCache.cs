@@ -8,22 +8,22 @@ using Umbrella.FileSystem.Abstractions;
 
 namespace Umbrella.DynamicImage.Caching
 {
-	// TODO: Add a generic type here to ensure that the correct underlying file provider is always used correctly by the sub type.
-	public abstract class DynamicImagePhysicalCache : DynamicImageCache, IDynamicImageCache
+	public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCache, IDynamicImageCache
+		where TFileProvider : IUmbrellaFileProvider
 	{
 		#region Public Properties
 		public virtual string CachePathFormat => @"\{0}.{1}";
 		#endregion
 
 		#region Protected Properties
-		protected IUmbrellaFileProvider FileProvider { get; }
+		protected TFileProvider FileProvider { get; }
 		#endregion
 
 		#region Constructors
 		public DynamicImagePhysicalCache(ILogger logger,
 			IMemoryCache cache,
 			DynamicImageCacheCoreOptions cacheOptions,
-			IUmbrellaFileProvider fileProvider)
+			TFileProvider fileProvider)
 			: base(logger, cache, cacheOptions)
 		{
 			FileProvider = fileProvider;

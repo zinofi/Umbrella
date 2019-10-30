@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Umbrella.Legacy.WebUtilities.Middleware.Options
+namespace Umbrella.WebUtilities.Middleware.Options
 {
 	public enum FrontEndCompressionMiddlewareHttpCacheability
 	{

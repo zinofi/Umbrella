@@ -1,19 +1,18 @@
-﻿using Microsoft.Owin;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Extensions;
-using System.Net;
-using System.Web.Configuration;
-using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
-using Microsoft.Extensions.Logging;
-using Umbrella.DynamicImage.Abstractions;
-using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options;
-using Umbrella.Utilities;
-using Umbrella.WebUtilities.Http;
-using System.Threading;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Owin;
+using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Umbrella.Legacy.WebUtilities.Extensions;
+using Umbrella.Utilities.Extensions;
+using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
+using Umbrella.WebUtilities.Http.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
@@ -51,10 +50,9 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 			_headerValueUtility = headerValueUtility;
 			_options = options;
 
-			Guard.ArgumentNotNull(_options.SourceFileProvider, nameof(_options.SourceFileProvider));
-			Guard.ArgumentNotNullOrWhiteSpace(_options.DynamicImagePathPrefix, nameof(_options.DynamicImagePathPrefix));
+			options.Validate();
 
-			//Ensure that only one instance of the middleware can be registered for a specified path prefix value
+			// Ensure that only one instance of the middleware can be registered for a specified path prefix value
 			if (_registeredDynamicImagePathPrefixList.Contains(_options.DynamicImagePathPrefix, StringComparer.OrdinalIgnoreCase))
 				throw new DynamicImageException($"The application is trying to register multiple instances of the {nameof(DynamicImageMiddleware)} with the same prefix: {_options.DynamicImagePathPrefix}. This is not allowed.");
 
@@ -76,7 +74,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 				DynamicImageFormat? overrideFormat = null;
 
-				if(_options.EnableJpgPngWebPOverride
+				if (_options.EnableJpgPngWebPOverride
 					&& (path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
 					&& context.Request.AcceptsWebP())
 				{
@@ -94,16 +92,16 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (status == DynamicImageParseUrlResult.Invalid || !_dynamicImageUtility.ImageOptionsValid(imageOptions, ConfigurationOptions))
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
 					return;
 				}
-				
+
 				DynamicImageItem image = await _dynamicImageResizer.GenerateImageAsync(_options.SourceFileProvider, imageOptions, token);
 
 				if (image == null)
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
 					return;
 				}
 
@@ -111,7 +109,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (context.Request.IfModifiedSinceHeaderMatched(image.LastModified))
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
 					return;
 				}
 
@@ -120,7 +118,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCode(HttpStatusCode.NotModified);
+					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
 					return;
 				}
 
@@ -140,14 +138,14 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				else
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
 					return;
 				}
 			}
 			catch (Exception exc) when (_log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
 			{
 				cts.Cancel();
-				await context.Response.SendStatusCode(HttpStatusCode.NotFound);
+				await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
 				return;
 			}
 		}

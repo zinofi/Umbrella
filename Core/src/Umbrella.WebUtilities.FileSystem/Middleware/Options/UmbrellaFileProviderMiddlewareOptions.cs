@@ -5,7 +5,7 @@ using System.Linq;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 
-namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options
+namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 {
 	public class UmbrellaFileProviderMiddlewareOptions
 	{
@@ -24,7 +24,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options
 		private readonly object _syncRoot = new object();
 		private List<PathMapping> _flattenedMappingList;
 
-		public List<UmbrellaFileProviderMiddlewareMapping> Mappings { get; set; }
+		public List<UmbrellaFileProviderMapping> Mappings { get; set; }
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IUmbrellaFileProvider GetFileProvider(string searchPath)

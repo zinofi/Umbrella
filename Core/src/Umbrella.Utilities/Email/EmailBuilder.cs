@@ -57,24 +57,19 @@ namespace Umbrella.Utilities.Email
 					{
 						if (!_isInitialized)
 						{
-							options.Validate();
-
 							string absolutePath = _hostingEnvironment.MapPath(options.TemplatesVirtualPath);
 
 							var dicItems = new Dictionary<string, string>();
 
 							foreach (string filename in Directory.EnumerateFiles(absolutePath, "*.html", SearchOption.TopDirectoryOnly))
 							{
-								//Read all template files into memory and store in the dictionary
-								using (var fileStream = new FileStream(filename, FileMode.Open))
-								{
-									using (var reader = new StreamReader(fileStream))
-									{
-										string template = reader.ReadToEnd();
+								// Read all template files into memory and store in the dictionary
+								using var fileStream = new FileStream(filename, FileMode.Open);
+								using var reader = new StreamReader(fileStream);
 
-										dicItems.Add(Path.GetFileNameWithoutExtension(filename), template);
-									}
-								}
+								string template = reader.ReadToEnd();
+
+								dicItems.Add(Path.GetFileNameWithoutExtension(filename), template);
 							}
 
 							_emailTemplateDictionary = dicItems;
@@ -201,12 +196,12 @@ namespace Umbrella.Utilities.Email
 		/// <exception cref="UmbrellaException">There has been a problem replacing the specified token with the specified value.</exception>
 		public EmailBuilder ReplaceToken(string tokenName, string value)
 		{
+			ThrowIfNotInitialized();
 			Guard.ArgumentNotNullOrWhiteSpace(tokenName, nameof(tokenName));
 			Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
 
 			try
 			{
-				ThrowIfNotInitialized();
 				_builder.Replace("{" + tokenName + "}", value);
 
 				return this;
@@ -228,10 +223,10 @@ namespace Umbrella.Utilities.Email
 		/// <exception cref="UmbrellaException">There was a problem outputting this instance to a string.</exception>
 		public override string ToString()
 		{
+			ThrowIfNotInitialized();
+
 			try
 			{
-				ThrowIfNotInitialized();
-
 				return _builder.Replace("{rows}", _rowsBuilder.ToString()).ToString();
 			}
 			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))

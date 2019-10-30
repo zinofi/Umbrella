@@ -22,7 +22,7 @@ namespace Microsoft.AspNetCore.Builder
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="builder"/> is null.</exception>
 		/// <exception cref="ArgumentNullException">Thrown in the <paramref name="tenantClaimType"/> is null.</exception>
 		/// <exception cref="ArgumentException">Thrown in the <paramref name="tenantClaimType"/> is empty or whitespace.</exception>
-		public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey>(this IApplicationBuilder builder, string tenantClaimType)
+		public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey>(this IApplicationBuilder builder, string tenantClaimType) // TODO: Alter to follow the options pattern
 		{
 			Guard.ArgumentNotNull(builder, nameof(builder));
 			Guard.ArgumentNotNullOrWhiteSpace(tenantClaimType, nameof(tenantClaimType));

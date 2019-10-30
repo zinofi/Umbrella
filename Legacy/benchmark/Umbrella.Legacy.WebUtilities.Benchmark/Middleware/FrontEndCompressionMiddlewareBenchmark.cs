@@ -1,20 +1,15 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
+﻿using System.Threading.Tasks;
+using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbrella.Legacy.WebUtilities.Middleware;
-using Umbrella.Legacy.WebUtilities.Middleware.Options;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
-using Umbrella.WebUtilities.Http;
+using Umbrella.WebUtilities.Http.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware
 {

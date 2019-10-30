@@ -8,14 +8,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Umbrella.AspNetCore.DynamicImage.Middleware.Options;
 using Umbrella.DynamicImage.Abstractions;
-using Umbrella.Utilities;
-using Umbrella.WebUtilities.Http;
+using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
+using Umbrella.WebUtilities.Http.Abstractions;
 
 namespace Umbrella.AspNetCore.DynamicImage.Middleware
 {
-	// TODO: Scrap this and re-port the legacy version. Try and abstract common code into the WebUtilities class or a common class somewhere.
 	public class DynamicImageMiddleware
 	{
 		#region Private Static Members
@@ -34,9 +32,6 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 		#endregion
 
 		#region Constructors
-
-		// TODO: V3 - Change the optionsBuilder to options.
-		// Should we register with DI?
 		public DynamicImageMiddleware(RequestDelegate next,
 			ILogger<DynamicImageMiddleware> logger,
 			IOptions<DynamicImageConfigurationOptions> configOptions,
@@ -44,7 +39,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 			IDynamicImageResizer dynamicImageResizer,
 			IHostingEnvironment hostingEnvironment,
 			IHttpHeaderValueUtility headerValueUtility,
-			Action<DynamicImageMiddlewareOptions> optionsBuilder)
+			DynamicImageMiddlewareOptions options)
 		{
 			m_Next = next;
 			m_Logger = logger;
@@ -53,12 +48,7 @@ namespace Umbrella.AspNetCore.DynamicImage.Middleware
 			m_DynamicImageResizer = dynamicImageResizer;
 			m_HostingEnvironment = hostingEnvironment;
 			m_HeaderValueUtility = headerValueUtility;
-
-			optionsBuilder?.Invoke(m_MiddlewareOptions);
-
-			// TODO: Move this validation elsewhere.
-			Guard.ArgumentNotNull(m_MiddlewareOptions.SourceFileProvider, nameof(m_MiddlewareOptions.SourceFileProvider));
-			Guard.ArgumentNotNullOrWhiteSpace(m_MiddlewareOptions.DynamicImagePathPrefix, nameof(m_MiddlewareOptions.DynamicImagePathPrefix));
+			m_MiddlewareOptions = options;
 
 			//Ensure that only one instance of the middleware can be registered for a specified path prefix value
 			if (s_RegisteredDynamicImagePathPrefixList.Contains(m_MiddlewareOptions.DynamicImagePathPrefix, StringComparer.OrdinalIgnoreCase))

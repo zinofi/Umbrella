@@ -98,6 +98,9 @@ namespace Umbrella.FileSystem.AzureStorage
 			string containerName = parts[0].ToLowerInvariant();
 			string fileName = parts[1];
 
+			if (!await CheckFileAccessAsync(containerName, fileName, cancellationToken))
+				throw new UmbrellaFileAccessDeniedException(subpath);
+
 			CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
 
 			// TODO: Replace this mechanism with the MultiCache when it supports AsyncLazy internally. That way the calls to AzureStorage will only happen once. Possibility for a race condition
@@ -124,9 +127,6 @@ namespace Umbrella.FileSystem.AzureStorage
 			if (!isNew && !await blob.ExistsAsync().ConfigureAwait(false))
 				return null;
 #endif
-
-			if (!await CheckFileAccessAsync(containerName, fileName, cancellationToken))
-				throw new UmbrellaFileAccessDeniedException(subpath);
 
 			return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
 		}

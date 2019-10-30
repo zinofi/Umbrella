@@ -11,7 +11,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 {
 	public static class IOwinResponseExtensions
 	{
-		public static Task SendStatusCode(this IOwinResponse response, HttpStatusCode statusCode, bool sendNullBody = true)
+		public static Task SendStatusCodeAsync(this IOwinResponse response, HttpStatusCode statusCode, bool sendNullBody = true)
 		{
 			response.StatusCode = (int)statusCode;
 

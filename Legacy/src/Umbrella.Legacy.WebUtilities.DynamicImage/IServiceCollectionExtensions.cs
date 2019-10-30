@@ -1,6 +1,5 @@
 ﻿using System;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware;
-using Umbrella.Legacy.WebUtilities.DynamicImage.Middleware.Options;
 using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -15,17 +14,13 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.Legacy.WebUtilities.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <param name="optionsBuilder">The <see cref="DynamicImageMiddlewareOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaLegacyWebUtilitiesDynamicImage(this IServiceCollection services, Action<IServiceProvider, DynamicImageMiddlewareOptions> optionsBuilder)
+		public static IServiceCollection AddUmbrellaLegacyWebUtilitiesDynamicImage(this IServiceCollection services)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
-			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
 			services.AddSingleton<DynamicImageMiddleware>();
-			services.ConfigureUmbrellaOptions(optionsBuilder);
 
 			return services;
 		}

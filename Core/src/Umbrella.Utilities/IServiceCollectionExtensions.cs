@@ -16,10 +16,12 @@ using Umbrella.Utilities.FriendlyUrl.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Http.Options;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.Numerics;
 using Umbrella.Utilities.Numerics.Abstractions;
+using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -90,6 +92,38 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaHostingEnvironmentOptionsBuilder);
+
+			return services;
+		}
+
+		/// <summary>
+		/// Configures the specified Umbrella Options denoted by <typeparamref name="TOptions"/>.
+		/// </summary>
+		/// <typeparam name="TOptions">The type of the options.</typeparam>
+		/// <param name="services">The services.</param>
+		/// <param name="optionsBuilder">The options builder.</param>
+		/// <returns>
+		/// The same instance of <see cref="IServiceCollection"/> as passed in but with the Umbrella Options type specified by
+		/// <typeparamref name="TOptions"/> added to it.
+		/// </returns>
+		public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
+			where TOptions : class, new()
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
+
+			services.AddSingleton(serviceProvider =>
+			{
+				var options = new TOptions();
+				optionsBuilder?.Invoke(serviceProvider, options);
+
+				if (options is ISanitizableUmbrellaOptions sanitizableOptions)
+					sanitizableOptions.Sanitize();
+
+				if (options is IValidatableUmbrellaOptions validatableOptions)
+					validatableOptions.Validate();
+
+				return options;
+			});
 
 			return services;
 		}

@@ -1,5 +1,5 @@
 ﻿using System;
-using Umbrella.Utilities.Abstractions;
+using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.Utilities.Email.Options
 {

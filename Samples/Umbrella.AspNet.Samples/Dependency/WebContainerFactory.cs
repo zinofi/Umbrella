@@ -51,14 +51,13 @@ namespace Umbrella.AspNet.Samples.Dependency
 			});
 
             services.AddUmbrellaUtilitiesNewtonsoftJson();
-            services.AddUmbrellaWebUtilities();
+            services.AddUmbrellaWebUtilities((serviceProvider, options) =>
+			{
+				options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
+				options.WatchFiles = true;
+			});
 
 			services.AddUmbrellaLegacyWebUtilities(
-				frontEndCompressionMiddlewareOptionsBuilder: (serviceProvider, options) =>
-				{
-					options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
-					options.WatchFiles = true;
-				},
 				bundleUtilityOptionsBuilder: (serviceProvider, options) =>
 				{
 					options.DefaultBundleFolderAppRelativePath = "/content";

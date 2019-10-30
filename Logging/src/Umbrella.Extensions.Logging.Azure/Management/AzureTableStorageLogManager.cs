@@ -71,8 +71,6 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			IMemoryCache memoryCache,
 			IDistributedCache distributedCache)
 		{
-			options.Validate();
-
 			Log = logger;
 			LogManagementOptions = options;
 			StorageAccount = CloudStorageAccount.Parse(options.AzureStorageConnectionString);

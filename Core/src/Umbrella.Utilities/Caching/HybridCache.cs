@@ -8,10 +8,10 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Umbrella.Utilities.Abstractions;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
+using Umbrella.Utilities.Options;
 
 namespace Umbrella.Utilities.Caching
 {

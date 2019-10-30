@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
-using Umbrella.Utilities.Abstractions;
+using Umbrella.Utilities.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles.Options
 {
-    public class BundleUtilityOptions : CacheableUmbrellaOptions
+	public class BundleUtilityOptions : CacheableUmbrellaOptions
     {
         public string DefaultBundleFolderAppRelativePath { get; set; }
         public bool WatchFiles { get; set; }

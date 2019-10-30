@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Extensions;
-using Umbrella.WebUtilities.Exceptions;
 
-namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options
+namespace Umbrella.FileSystem.Abstractions
 {
-	// TODO: Move to a common project somewhere.
-	public class UmbrellaFileProviderMiddlewareMapping
+	public class UmbrellaFileProviderMapping
 	{
-		public UmbrellaFileProviderMiddlewareMapping(IUmbrellaFileProvider fileProvider, params string[] appRelativeFolderPaths)
+		public UmbrellaFileProviderMapping(IUmbrellaFileProvider fileProvider, params string[] appRelativeFolderPaths)
 		{
 			Guard.ArgumentNotNull(fileProvider, nameof(fileProvider));
 			Guard.ArgumentNotNullOrEmpty(appRelativeFolderPaths, nameof(appRelativeFolderPaths));
@@ -27,7 +25,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware.Options
 
 			// Validate the end result of the paths cleanup.
 			if (AppRelativeFolderPaths.Count == 0)
-				throw new UmbrellaWebException($"The sanitized {nameof(appRelativeFolderPaths)} collection is empty. Please ensure some valid paths have been provided. All paths must have a leading forward slash '/'.");
+				throw new UmbrellaException($"The sanitized {nameof(appRelativeFolderPaths)} collection is empty. Please ensure some valid paths have been provided. All paths must have a leading forward slash '/'.");
 		}
 
 		public IUmbrellaFileProvider FileProvider { get; }

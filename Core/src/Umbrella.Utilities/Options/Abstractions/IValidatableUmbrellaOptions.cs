@@ -1,4 +1,4 @@
-﻿namespace Umbrella.Utilities.Abstractions
+﻿namespace Umbrella.Utilities.Options.Abstractions
 {
 	/// <summary>
 	/// An interface used to allow Umbrella Options types to be validated.

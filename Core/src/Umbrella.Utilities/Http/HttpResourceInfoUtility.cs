@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Http.Options;
 
 namespace Umbrella.Utilities.Http
 {
