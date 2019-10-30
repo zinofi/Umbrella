@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DataAccess.EF6
 {
-	// TODO: We MAY be able to target netstandard2.0 with the port of EF to .NET Core.
 	public class UmbrellaDbContext : DbContext
 	{
 		#region Protected Properties
