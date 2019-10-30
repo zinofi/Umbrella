@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -17,8 +17,8 @@
   
   <PropertyGroup>
     <PackageId>Umbrella.DataAccess.Mapping</PackageId>
-    <Version>2.9.5</Version>
-    <Authors>Richard Edwards</Authors>
+    <Version>3.0.0-preview-0001</Version>
+    <Authors>Zinofi Digital Ltd</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
     <Description>
