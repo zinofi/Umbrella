@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>dotnet-umbrella-ts</AssemblyName>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp2.1</TargetFramework>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>

@@ -47,7 +47,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp2.1");
+					int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.0");
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
