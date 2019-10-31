@@ -12,7 +12,7 @@ namespace Umbrella.DynamicImage.Test
 		{
 			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-			var path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
+			string path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
 
 			(DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
@@ -28,7 +28,7 @@ namespace Umbrella.DynamicImage.Test
 		{
 			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-			var path = "/dynamicinvalidimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
+			string path = "/dynamicinvalidimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
 			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
 			Assert.Equal(DynamicImageParseUrlResult.Skip, status);
@@ -39,7 +39,7 @@ namespace Umbrella.DynamicImage.Test
 		{
 			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-			var path = "/dynamicimage/images/649/Uniform/png/680/mobile-devices@2x.jpg";
+			string path = "/dynamicimage/images/649/Uniform/png/680/mobile-devices@2x.jpg";
 			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
 			Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
@@ -50,7 +50,18 @@ namespace Umbrella.DynamicImage.Test
 		{
 			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-			var path = "/dynamicimage/649/Uniform/png/mobile-devices@2x.jpg";
+			string path = "/dynamicimage/649/Uniform/png/mobile-devices@2x.jpg";
+			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
+
+			Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
+		}
+
+		[Fact]
+		public void TryParseUrl_MissingExtension()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
+
+			string path = "/dynamicimage/649/Uniform/png/mobile-devices@2x";
 			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
 			Assert.Equal(DynamicImageParseUrlResult.Invalid, status);

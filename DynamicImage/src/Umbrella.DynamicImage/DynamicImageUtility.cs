@@ -64,13 +64,14 @@ namespace Umbrella.DynamicImage
 
 			try
             {
-				// TODO: Check if the path has an extension. If not, return the invalid result.
-				// TODO: Add Unit Tests for the above.
+                string url = relativeUrl?.TrimToLowerInvariant();
 
-                string pathPrefix = dynamicImagePathPrefix.ToLowerInvariant();
-                string url = relativeUrl?.Trim()?.ToLowerInvariant();
+				if (!Path.HasExtension(url))
+					return (DynamicImageParseUrlResult.Invalid, default);
 
-                if (string.IsNullOrEmpty(url) || !url.StartsWith($"/{pathPrefix}/"))
+				string pathPrefix = dynamicImagePathPrefix.TrimToLowerInvariant();
+
+				if (string.IsNullOrEmpty(url) || !url.StartsWith($"/{pathPrefix}/"))
                     return s_SkipParseUrlResult;
 
                 string[] prefixSegments = pathPrefix.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
