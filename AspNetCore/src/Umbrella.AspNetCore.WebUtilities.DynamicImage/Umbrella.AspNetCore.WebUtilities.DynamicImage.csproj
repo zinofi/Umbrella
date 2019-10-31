@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -17,7 +17,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.AspNetCore.WebUtilities.DynamicImage</PackageId>
-		<Version>3.0.0-preview-0001</Version>
+		<Version>3.0.0-preview-0002</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
