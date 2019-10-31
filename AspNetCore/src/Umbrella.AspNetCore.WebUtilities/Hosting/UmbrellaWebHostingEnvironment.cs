@@ -180,9 +180,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 			}
 		}
 
-		public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi") =>
-			//TODO: Should this call into the method above? Or should we just throw as below? Maybe with a better message?
-			throw new InvalidOperationException();
+		public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
+			=> GenerateActionUrl(null, controllerName, routeValues, routeName);
 		#endregion
 
 		#region Protected Methods

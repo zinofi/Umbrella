@@ -63,7 +63,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Annotat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript.Tools", "TypeScript\src\Umbrella.TypeScript.Tools\Umbrella.TypeScript.Tools.csproj", "{8DE8C471-2ED0-4B28-94D0-742BF89D543F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DynamicImage", "AspNetCore\src\Umbrella.AspNetCore.DynamicImage\Umbrella.AspNetCore.DynamicImage.csproj", "{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.DynamicImage", "AspNetCore\src\Umbrella.AspNetCore.WebUtilities.DynamicImage\Umbrella.AspNetCore.WebUtilities.DynamicImage.csproj", "{2C6B1D0D-EDA4-4125-B3A3-EFAD6D8C7A15}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.TypeScript", "TypeScript\src\Umbrella.TypeScript\Umbrella.TypeScript.csproj", "{26DE1D59-0106-4C38-9722-1A3C373C662E}"
 EndProject
@@ -161,7 +161,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{97D84008-D9A9-4A0C-B51C-144F3ABEEF11}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DynamicImage.Test", "AspNetCore\test\Umbrella.AspNetCore.DynamicImage.Test\Umbrella.AspNetCore.DynamicImage.Test.csproj", "{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.DynamicImage.Test", "AspNetCore\test\Umbrella.AspNetCore.WebUtilities.DynamicImage.Test\Umbrella.AspNetCore.WebUtilities.DynamicImage.Test.csproj", "{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Azure", "Logging\src\Umbrella.Extensions.Logging.Azure\Umbrella.Extensions.Logging.Azure.csproj", "{37FF704B-43D7-4B73-9CD2-736E1DDBD082}"
 EndProject
@@ -189,9 +189,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EntityF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.Abstractions", "DataAccess\src\Umbrella.DataAccess.MultiTenant.Abstractions\Umbrella.DataAccess.MultiTenant.Abstractions.csproj", "{49EFE21B-B52C-491C-AB4E-8915A94B6276}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.WebUtilities.DynamicImage", "Core\src\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.csproj", "{9719FC0C-7517-4450-A0DC-2A64A41B84F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities.DynamicImage", "Core\src\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.csproj", "{9719FC0C-7517-4450-A0DC-2A64A41B84F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.WebUtilities.FileSystem", "Core\src\Umbrella.WebUtilities.FileSystem\Umbrella.WebUtilities.FileSystem.csproj", "{A17DC258-AADB-45B0-B0E3-364A2D21B19B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities.FileSystem", "Core\src\Umbrella.WebUtilities.FileSystem\Umbrella.WebUtilities.FileSystem.csproj", "{A17DC258-AADB-45B0-B0E3-364A2D21B19B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.FileSystem", "AspNetCore\src\Umbrella.AspNetCore.WebUtilities.FileSystem\Umbrella.AspNetCore.WebUtilities.FileSystem.csproj", "{46416A5E-DE1A-4500-AF89-FD43C320F2FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -536,18 +538,24 @@ Global
 		{49EFE21B-B52C-491C-AB4E-8915A94B6276}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49EFE21B-B52C-491C-AB4E-8915A94B6276}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49EFE21B-B52C-491C-AB4E-8915A94B6276}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
-		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
-		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -635,6 +643,7 @@ Global
 		{49EFE21B-B52C-491C-AB4E-8915A94B6276} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B} = {84D45264-D944-4A17-A230-AAEECE889301}
+		{46416A5E-DE1A-4500-AF89-FD43C320F2FD} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

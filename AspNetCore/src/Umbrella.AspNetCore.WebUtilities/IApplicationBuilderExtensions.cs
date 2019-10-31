@@ -15,6 +15,7 @@ namespace Microsoft.AspNetCore.Builder
 			return builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParameterName, headerName, valueTransformer);
 		}
 
+		// TODO: DI the Options class
 		public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder, Action<InternetExplorerCacheHeaderOptions> optionsBuilder)
 		{
 			return builder.UseMiddleware<InternetExplorerCacheHeaderMiddleware>(optionsBuilder);

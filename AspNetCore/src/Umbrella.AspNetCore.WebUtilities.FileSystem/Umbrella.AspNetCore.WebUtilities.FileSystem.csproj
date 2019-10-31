@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.AspNetCore.DynamicImage.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.AspNetCore.FileSystem.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -16,13 +16,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.AspNetCore.DynamicImage</PackageId>
+		<PackageId>Umbrella.AspNetCore.FileSystem</PackageId>
 		<Version>3.0.0-preview-0001</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
 		<Description>
-			This package contains middleware and tag helpers to be used in conjunction with the Umbrella.DynamicImage.* packages.
+			This package contains middleware to be used in conjunction with the Umbrella.FileSystem.* packages.
 		</Description>
 		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
@@ -36,8 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.csproj" />
-		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.FileSystem\Umbrella.WebUtilities.FileSystem.csproj" />
 		<ProjectReference Include="..\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
 	</ItemGroup>
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
-namespace Umbrella.AspNetCore.DynamicImage.Mvc.TagHelpers
+namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 {
 	/// <summary>
 	/// A tag helper used to generate img tags have the correct URLs for use with the DynamicImage infrastructure.

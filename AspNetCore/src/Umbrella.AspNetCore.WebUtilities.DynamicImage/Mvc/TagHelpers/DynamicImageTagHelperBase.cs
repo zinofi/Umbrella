@@ -7,7 +7,7 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.WebUtilities.Hosting;
 
-namespace Umbrella.AspNetCore.DynamicImage.Mvc.TagHelpers
+namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 {
 	/// <summary>
 	/// The base class used for all Dynamic Image tag helpers.

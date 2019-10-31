@@ -12,7 +12,7 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
 using Umbrella.WebUtilities.Http.Abstractions;
 
-namespace Umbrella.AspNetCore.DynamicImage.Middleware
+namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 {
 	public class DynamicImageMiddleware
 	{
