@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -23,7 +24,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
 	{
 		#region Private Static Members
-		private static readonly string s_CacheKeyPrefix = typeof(UmbrellaWebHostingEnvironment).FullName;
 		private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 		#endregion
 
@@ -43,7 +43,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		{
 			HostingEnvironment = hostingEnvironment;
 			HttpContextAccessor = httpContextAccessor;
-
 			ContentRootFileProvider = new Lazy<IFileProvider>(() => HostingEnvironment.ContentRootFileProvider);
 			WebRootFileProvider = new Lazy<IFileProvider>(() => HostingEnvironment.WebRootFileProvider);
 		}
@@ -161,27 +160,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 				throw;
 			}
 		}
-
-		public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
-		{
-			Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
-			Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-
-			try
-			{
-				if (routeValues == null)
-					routeValues = new Dictionary<string, object>();
-
-				throw new NotImplementedException();
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
-			{
-				throw;
-			}
-		}
-
-		public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
-			=> GenerateActionUrl(null, controllerName, routeValues, routeName);
 		#endregion
 
 		#region Protected Methods

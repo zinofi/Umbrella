@@ -150,47 +150,6 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 					ArrayPool<string>.Shared.Return(cacheKeyParts);
 			}
 		}
-
-		public virtual string GenerateActionUrl(string actionName, string controllerName, IDictionary<string, object> routeValues = null, string routeName = null)
-		{
-			Guard.ArgumentNotNullOrWhiteSpace(actionName, nameof(actionName));
-			Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-
-			try
-			{
-				if (routeValues == null)
-					routeValues = new Dictionary<string, object>();
-
-				return UrlHelper.GenerateUrl(routeName, actionName, controllerName, new RouteValueDictionary(routeValues), RouteTable.Routes, HttpContext.Current.Request.RequestContext, false);
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { actionName, controllerName, routeValues, routeName }))
-			{
-				throw;
-			}
-		}
-
-		public virtual string GenerateWebApiUrl(string controllerName, IDictionary<string, object> routeValues = null, string routeName = "DefaultApi")
-		{
-			Guard.ArgumentNotNullOrWhiteSpace(controllerName, nameof(controllerName));
-			Guard.ArgumentNotNullOrWhiteSpace(routeName, nameof(routeName));
-
-			try
-			{
-				var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext, RouteTable.Routes);
-
-				if (routeValues == null)
-					routeValues = new Dictionary<string, object>();
-
-				routeValues.Add("httproute", "");
-				routeValues.Add("controller", controllerName);
-
-				return urlHelper.RouteUrl(routeName, new RouteValueDictionary(routeValues));
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { controllerName, routeValues, routeName }))
-			{
-				throw;
-			}
-		}
 		#endregion
 
 		#region Protected Methods
