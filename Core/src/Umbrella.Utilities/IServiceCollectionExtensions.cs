@@ -69,27 +69,10 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
 			services.AddTransient<IEmailBuilder, EmailBuilder>();
 
-			if (hybridCacheOptionsBuilder == null)
-			{
-				// The HybridCacheOptions needs a default for the key builder which we need to create here
-				// if no builder has been provided.
-				services.AddSingleton(serviceProvider =>
-				{
-					ICacheKeyUtility cacheKeyUtility = serviceProvider.GetService<ICacheKeyUtility>();
-
-					return new HybridCacheOptions
-					{
-						CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
-					};
-				});
-			}
-			else
-			{
-				services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
-			}
-
+			// Options
 			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);
 			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
+			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
 			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaHostingEnvironmentOptionsBuilder);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities;
+using Umbrella.WebUtilities.Bundling.Options;
 using Umbrella.WebUtilities.Http;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
@@ -19,19 +20,25 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.WebUtilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="bundleUtilityOptionsBuilder">The optional <see cref="BundleUtilityOptions"/> builder.</param>
 		/// <param name="frontEndCompressionMiddlewareOptionsBuilder">The optional <see cref="FrontEndCompressionMiddlewareOptions"/> builder.</param>
+		/// <param name="webpackBundleUtilityOptionsBuilder">The optional <see cref="WebpackBundleUtilityOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilities(
 			this IServiceCollection services,
-			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null)
+			Action<IServiceProvider, BundleUtilityOptions> bundleUtilityOptionsBuilder = null,
+			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, WebpackBundleUtilityOptions> webpackBundleUtilityOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
 			services.AddSingleton<IHttpHeaderValueUtility, HttpHeaderValueUtility>();
 
 			// Options
+			services.ConfigureUmbrellaOptions(bundleUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(frontEndCompressionMiddlewareOptionsBuilder);
+			services.ConfigureUmbrellaOptions(webpackBundleUtilityOptionsBuilder);
 
 			return services;
 		}

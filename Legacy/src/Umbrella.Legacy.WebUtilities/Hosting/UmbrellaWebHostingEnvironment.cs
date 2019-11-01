@@ -43,9 +43,6 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-			if (!fromContentRoot)
-				throw new ArgumentException("This value must always be true in a classic .NET application. It can only be set to false inside a .NET Core application.", nameof(fromContentRoot));
-
 			string[] cacheKeyParts = null;
 
 			try

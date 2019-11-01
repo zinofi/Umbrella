@@ -6,20 +6,20 @@ namespace Umbrella.Legacy.WebUtilities.Mvc
 {
 	public abstract class UmbrellaViewPage : WebViewPage
 	{
-		private readonly Lazy<IBundleUtility> _bundleUtilityLazy = new Lazy<IBundleUtility>(() => DependencyResolver.Current.GetService<IBundleUtility>());
-		private readonly Lazy<IWebpackBundleUtility> _webpackBundleUtilityLazy = new Lazy<IWebpackBundleUtility>(() => DependencyResolver.Current.GetService<IWebpackBundleUtility>());
+		private readonly Lazy<IMvcBundleUtility> _bundleUtilityLazy = new Lazy<IMvcBundleUtility>(() => DependencyResolver.Current.GetService<IMvcBundleUtility>());
+		private readonly Lazy<IMvcWebpackBundleUtility> _webpackBundleUtilityLazy = new Lazy<IMvcWebpackBundleUtility>(() => DependencyResolver.Current.GetService<IMvcWebpackBundleUtility>());
 
-		public IBundleUtility Bundles => _bundleUtilityLazy.Value;
-		public IWebpackBundleUtility WebpackBundles => _webpackBundleUtilityLazy.Value;
+		public IMvcBundleUtility Bundles => _bundleUtilityLazy.Value;
+		public IMvcWebpackBundleUtility WebpackBundles => _webpackBundleUtilityLazy.Value;
 
 	}
 
 	public abstract class UmbrellaViewPage<T> : WebViewPage<T>
 	{
-		private readonly Lazy<IBundleUtility> _bundleUtilityLazy = new Lazy<IBundleUtility>(() => DependencyResolver.Current.GetService<IBundleUtility>());
-		private readonly Lazy<IWebpackBundleUtility> _webpackBundleUtilityLazy = new Lazy<IWebpackBundleUtility>(() => DependencyResolver.Current.GetService<IWebpackBundleUtility>());
+		private readonly Lazy<IMvcBundleUtility> _bundleUtilityLazy = new Lazy<IMvcBundleUtility>(() => DependencyResolver.Current.GetService<IMvcBundleUtility>());
+		private readonly Lazy<IMvcWebpackBundleUtility> _webpackBundleUtilityLazy = new Lazy<IMvcWebpackBundleUtility>(() => DependencyResolver.Current.GetService<IMvcWebpackBundleUtility>());
 
-		public IBundleUtility Bundles => _bundleUtilityLazy.Value;
-		public IWebpackBundleUtility WebpackBundles => _webpackBundleUtilityLazy.Value;
+		public IMvcBundleUtility Bundles => _bundleUtilityLazy.Value;
+		public IMvcWebpackBundleUtility WebpackBundles => _webpackBundleUtilityLazy.Value;
 	}
 }

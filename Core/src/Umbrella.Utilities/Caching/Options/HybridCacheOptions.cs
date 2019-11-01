@@ -3,7 +3,7 @@
 namespace Umbrella.Utilities.Caching.Options
 {
 	/// <summary>
-	/// A delegate for specifiying the cache key builder.
+	/// A delegate for specifiying the optional cache key builder.
 	/// </summary>
 	/// <param name="type">The type.</param>
 	/// <param name="key">The key.</param>
@@ -22,7 +22,8 @@ namespace Umbrella.Utilities.Caching.Options
 		public bool CacheEnabled { get; set; }
 
 		/// <summary>
-		/// Gets or sets the cache key builder.
+		/// Gets or sets the cache key builder. This is only really needed when you want the cache key to have some kind of common element to the key, e.g. a prefix
+		/// so that items that have gone into the Memory or Distributed cache have done so via the <see cref="HybridCache"/>.
 		/// </summary>
 		public HybridCacheKeyBuilder CacheKeyBuilder { get; set; }
 
@@ -37,7 +38,3 @@ namespace Umbrella.Utilities.Caching.Options
 		public HybridCacheAnalyticsMode AnalyticsMode { get; set; }
 	}
 }
-
-// TODO: For all Options types, allow them to be validated and where necessary, sanitized - maybe an ISanitizableUmbrellaOptions interface?
-// We could even have something that runs after the container has been built that finds all types that implement the interface and call the relevant methods
-// so we don't have to do that manually?? Hmmmm...
