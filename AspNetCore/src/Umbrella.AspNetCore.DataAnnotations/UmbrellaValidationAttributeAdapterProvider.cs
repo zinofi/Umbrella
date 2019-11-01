@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
 using Microsoft.Extensions.Localization;
 using Umbrella.DataAnnotations;
 
@@ -38,7 +37,7 @@ namespace Umbrella.AspNetCore.DataAnnotations
 
 				if (type == typeof(UmbrellaPostcodeAttribute) || type == typeof(UmbrellaPhoneAttribute))
 				{
-					adapter = new RegularExpressionAttributeAdapter((RegularExpressionAttribute)attribute, stringLocalizer);
+					// TODO: adapter = new RegularExpressionAttributeAdapter((RegularExpressionAttribute)attribute, stringLocalizer);
 				}
 				else
 				{

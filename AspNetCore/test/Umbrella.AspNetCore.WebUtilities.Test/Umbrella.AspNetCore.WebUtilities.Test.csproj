@@ -10,6 +10,10 @@
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
   </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\src\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
