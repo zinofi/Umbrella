@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
 {
+	// TODO: Move to out of the MVC namespace. Same for the Image tag helper and dynamic stuff.
     [HtmlTargetElement("li", Attributes = ActionAttributeName, ParentTag = "ul")]
     [HtmlTargetElement("li", Attributes = ControllerAttributeName, ParentTag = "ul")]
     public class NavigationListItemTagHelper : AnchorTagHelper

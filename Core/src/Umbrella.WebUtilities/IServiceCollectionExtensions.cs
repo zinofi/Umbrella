@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities;
+using Umbrella.WebUtilities.Bundling;
+using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Bundling.Options;
 using Umbrella.WebUtilities.Http;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
+using Umbrella.WebUtilities.Security;
 
 [assembly: InternalsVisibleTo("Umbrella.WebUtilities.Test")]
 
@@ -33,7 +36,11 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
+			services.AddSingleton<IBundleUtility, BundleUtility>();
 			services.AddSingleton<IHttpHeaderValueUtility, HttpHeaderValueUtility>();
+			services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
+
+			services.AddScoped<NonceContext>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(bundleUtilityOptionsBuilder);
