@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
-using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.Utilities.Hosting
 {
@@ -25,6 +25,7 @@ namespace Umbrella.Utilities.Hosting
 		// Exposed as internal for unit testing / benchmarking mocks
 		protected internal Lazy<IFileProvider> ContentRootFileProvider { get; set; }
 
+		// TODO: This shouldn't be on here. 
 		// Exposed as internal for unit testing / benchmarking mocks
 		protected internal Lazy<IFileProvider> WebRootFileProvider { get; set; }
 		#endregion
@@ -63,26 +64,24 @@ namespace Umbrella.Utilities.Hosting
 
 				string key = CacheKeyUtility.Create<UmbrellaHostingEnvironment>(cacheKeyParts, 4);
 
-				string physicalPath = MapPath(virtualPath, fromContentRoot);
+				string cleanedPath = TransformPathForFileProvider(virtualPath);
 
-				async Task<string> ReadContent()
+				async Task<(string content, IChangeToken changeToken)> ReadContentAsync()
 				{
 					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider.Value : WebRootFileProvider.Value;
-					IFileInfo fileInfo = fileProvider.GetFileInfo(physicalPath);
+					IFileInfo fileInfo = fileProvider.GetFileInfo(cleanedPath);
 
 					if (fileInfo.Exists)
 					{
-						using (Stream fs = fileInfo.CreateReadStream())
-						{
-							using (var sr = new StreamReader(fs))
-							{
-								// This is all going to end up in the cache anyway so we can live with sync here.
-								return await sr.ReadToEndAsync().ConfigureAwait(false);
-							}
-						}
+						using Stream fs = fileInfo.CreateReadStream();
+						using var sr = new StreamReader(fs);
+
+						string content = await sr.ReadToEndAsync().ConfigureAwait(false);
+
+						return watch ? (content, fileProvider.Watch(cleanedPath)) : (content, null);
 					}
 
-					return null;
+					return default;
 				}
 
 				if (cache)
@@ -91,15 +90,19 @@ namespace Umbrella.Utilities.Hosting
 					{
 						entry.SetSlidingExpiration(Options.CacheTimeout);
 
-						if (watch)
-							entry.AddExpirationToken(new PhysicalFileChangeToken(new FileInfo(physicalPath)));
+						var (content, changeToken) = await ReadContentAsync().ConfigureAwait(false);
 
-						return await ReadContent().ConfigureAwait(false);
+						if (watch && changeToken != null)
+							entry.AddExpirationToken(changeToken);
+
+						return content;
 					});
 				}
 				else
 				{
-					return await ReadContent().ConfigureAwait(false);
+					var (content, changeToken) = await ReadContentAsync().ConfigureAwait(false);
+
+					return content;
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot, cache, watch }, returnValue: true))
@@ -112,6 +115,15 @@ namespace Umbrella.Utilities.Hosting
 					ArrayPool<string>.Shared.Return(cacheKeyParts);
 			}
 		}
+		#endregion
+
+		#region Protected Methods		
+		/// <summary>
+		/// Transforms the path for use with an <see cref="IFileProvider"/>.
+		/// </summary>
+		/// <param name="virtualPath">The virtual path.</param>
+		/// <returns>The transformed path.</returns>
+		protected abstract string TransformPathForFileProvider(string virtualPath);
 		#endregion
 	}
 }

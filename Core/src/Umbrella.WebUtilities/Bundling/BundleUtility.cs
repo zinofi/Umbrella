@@ -15,7 +15,7 @@ namespace Umbrella.WebUtilities.Bundling
 	/// <summary>
 	/// A utility for resolving named CSS or JS bundles or relative paths to such bundles.
 	/// </summary>
-	public abstract class BundleUtility : BundleUtility<BundleUtilityOptions>
+	public class BundleUtility : BundleUtility<BundleUtilityOptions>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="BundleUtility"/> class.

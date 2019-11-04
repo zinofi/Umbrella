@@ -67,14 +67,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 				{
 					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
-					//Trim and remove the ~/ from the front of the path
-					//Also change forward slashes to back slashes
+					// Trim and remove the ~/ from the front of the path
+					// Also change forward slashes to back slashes
 					string cleanedPath = TransformPath(virtualPath, true, false, true);
 
 					string rootPath = fromContentRoot
 						? HostingEnvironment.ContentRootPath
 						: HostingEnvironment.WebRootPath;
-
+					
 					return Path.Combine(rootPath, cleanedPath);
 				});
 			}
@@ -116,7 +116,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 				{
 					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
-					string cleanedPath = TransformPath(virtualPath, false, true, false);
+					string cleanedPath = TransformPathForFileProvider(virtualPath);
 
 					PathString applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
 
@@ -124,7 +124,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 						? applicationPath
 						: PathString.Empty;
 
-					//Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
+					// Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
 					string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
 						? cleanedPath
 						: virtualApplicationPath.Add(cleanedPath).Value;
@@ -134,17 +134,19 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
 					if (appendVersion)
 					{
-						string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
+						IFileProvider fileProvider = mapFromContentRoot
+							? ContentRootFileProvider.Value
+							: WebRootFileProvider.Value;
 
-						var fileInfo = new FileInfo(physicalPath);
-
+						IFileInfo fileInfo = fileProvider.GetFileInfo(cleanedPath);
+						
 						if (!fileInfo.Exists)
-							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
+							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {fileInfo.PhysicalPath}.");
 
 						if (watchWhenAppendVersion)
-							entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
+							entry.AddExpirationToken(fileProvider.Watch(cleanedPath));
 
-						long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
+						long versionHash = fileInfo.LastModified.UtcDateTime.ToFileTimeUtc() ^ fileInfo.Length;
 						string version = Convert.ToString(versionHash, 16);
 
 						string qsStart = url.Contains("?") ? "&" : "?";
@@ -164,10 +166,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
 		#region Protected Methods
 		protected virtual string ResolveHttpHost() => HttpContextAccessor.HttpContext.Request.Host.Value;
+		protected override string TransformPathForFileProvider(string virtualPath) => TransformPath(virtualPath, false, true, false);
 		#endregion
 
-		#region Public Methods
-		public string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
+		#region Internal Methods
+		internal string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
 		{
 			StringBuilder sb = new StringBuilder(virtualPath)
 				.Trim()

@@ -57,9 +57,14 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 				{
 					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
 
-					string cleanedPath = TransformPath(virtualPath, true, false, false);
+					if (virtualPath == "~/")
+						return System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
 
-					return System.Web.Hosting.HostingEnvironment.MapPath(cleanedPath);
+					string cleanedPath = TransformPathForFileProvider(virtualPath);
+
+					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider.Value : WebRootFileProvider.Value;
+
+					return fileProvider.GetFileInfo(cleanedPath)?.PhysicalPath;
 				});
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
@@ -118,6 +123,9 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 					{
 						string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
 
+						if(string.IsNullOrWhiteSpace(physicalPath))
+							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
+
 						var fileInfo = new FileInfo(physicalPath);
 
 						if (!fileInfo.Exists)
@@ -151,6 +159,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
 		#region Protected Methods
 		protected virtual string ResolveHttpHost() => HttpContext.Current.Request.Url.Host;
+		protected override string TransformPathForFileProvider(string virtualPath) => TransformPath(virtualPath, false, true, true);
 		#endregion
 
 		#region Internal Methods

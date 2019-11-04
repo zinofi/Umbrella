@@ -20,7 +20,7 @@ namespace Umbrella.WebUtilities.Bundling
 	/// </summary>
 	/// <seealso cref="BundleUtility{WebpackBundleUtilityOptions}" />
 	/// <seealso cref="IWebpackBundleUtility" />
-	public abstract class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, IWebpackBundleUtility
+	public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, IWebpackBundleUtility
 	{
 		/// <summary>
 		/// Gets the file provider.
