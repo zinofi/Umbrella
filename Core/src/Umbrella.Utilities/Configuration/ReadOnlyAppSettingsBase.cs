@@ -40,7 +40,7 @@ namespace Umbrella.Utilities.Configuration
 
 		#region Protected Properties
 		protected ILogger Log { get; }
-		protected IMemoryCache Cache { get; } // TODO: Swap everything to go via the HybridCache to allow visibility of cache keys. Overhead of this though!!! Hmmm....
+		protected IMemoryCache Cache { get; }
 		protected TAppSettingsSource AppSettingsSource { get; }
 		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion

@@ -40,9 +40,11 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(services, nameof(services));
 			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
-			services.AddSingleton(optionsBuilder);
 			services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider, TFileProvider>();
 			services.AddSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaAzureBlobStorageFileProvider>());
+
+			// Options
+			services.ConfigureUmbrellaOptions(optionsBuilder);
 
 			return services;
 		}

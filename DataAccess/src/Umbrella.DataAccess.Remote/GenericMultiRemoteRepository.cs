@@ -11,6 +11,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.DataAccess.Remote
@@ -21,7 +22,7 @@ namespace Umbrella.DataAccess.Remote
 	{
 		public GenericMultiRemoteRepository(
 			ILogger logger,
-			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
+			ILookupNormalizer dataAccessLookupNormalizer,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, services)
 		{
@@ -35,7 +36,7 @@ namespace Umbrella.DataAccess.Remote
 	{
 		public GenericMultiRemoteRepository(
 			ILogger logger,
-			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
+			ILookupNormalizer dataAccessLookupNormalizer,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, services)
 		{
@@ -61,7 +62,7 @@ namespace Umbrella.DataAccess.Remote
 
 		#region Protected Properties
 		protected ILogger Log { get; }
-		protected IDataAccessLookupNormalizer DataAccessLookupNormalizer { get; }
+		protected ILookupNormalizer LookupNormalizer { get; }
 		protected IReadOnlyList<TService> ServiceList { get; }
 		protected IReadOnlyDictionary<TRemoteSource, TService> ServiceDictionary { get; }
 		#endregion
@@ -69,13 +70,13 @@ namespace Umbrella.DataAccess.Remote
 		#region Constructors
 		public GenericMultiRemoteRepository(
 			ILogger logger,
-			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
+			ILookupNormalizer lookupNormalizer,
 			params TService[] services)
 		{
 			Guard.ArgumentNotNullOrEmpty(services, nameof(services));
 
 			Log = logger;
-			DataAccessLookupNormalizer = dataAccessLookupNormalizer;
+			LookupNormalizer = lookupNormalizer;
 			ServiceList = services;
 			ServiceDictionary = services.ToDictionary(x => x.RemoteSourceType, x => x);
 			_typedServiceDictionary = services.ToDictionary(x => x.GetType().GetInterfaces().First(y => y.Name.EndsWith(x.GetType().Name, StringComparison.OrdinalIgnoreCase)), x => x);

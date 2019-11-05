@@ -3,42 +3,35 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Umbrella.Internal.Mocks;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting
 {
-    [ClrJob]
-    [MemoryDiagnoser]
-    public class UmbrellaWebHostingEnvironmentBenchmark
-    {
-        private readonly UmbrellaWebHostingEnvironment _umbrellaWebHostingEnvironment;
+	[ClrJob]
+	[MemoryDiagnoser]
+	public class UmbrellaWebHostingEnvironmentBenchmark
+	{
+		private readonly UmbrellaWebHostingEnvironment _umbrellaWebHostingEnvironment;
 
-        public UmbrellaWebHostingEnvironmentBenchmark()
-        {
-            var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
-            var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-            var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object);
+		public UmbrellaWebHostingEnvironmentBenchmark()
+		{
+			var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
+			var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
 
-            _umbrellaWebHostingEnvironment = new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
-        }
+			var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
 
-        [Benchmark]
-        public string TransformPath()
-        {
-            return _umbrellaWebHostingEnvironment.TransformPath("~/path/to/a/resource.jpg", true, false, false);
-        }
+			_umbrellaWebHostingEnvironment = new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
+		}
 
-        [Benchmark]
-        public string TransformPathOld()
-        {
-            return _umbrellaWebHostingEnvironment.TransformPathOld("~/path/to/a/resource.jpg", true, false, false);
-        }
-    }
+		[Benchmark]
+		public string TransformPath() => _umbrellaWebHostingEnvironment.TransformPath("~/path/to/a/resource.jpg", true, false, false);
+
+		[Benchmark]
+		public string TransformPathOld() => _umbrellaWebHostingEnvironment.TransformPathOld("~/path/to/a/resource.jpg", true, false, false);
+	}
 }

@@ -195,6 +195,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.WebUtilities.FileS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.FileSystem", "AspNetCore\src\Umbrella.AspNetCore.WebUtilities.FileSystem\Umbrella.AspNetCore.WebUtilities.FileSystem.csproj", "{46416A5E-DE1A-4500-AF89-FD43C320F2FD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{0C59D50A-7EAC-44EE-9652-8A4E4157CFE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Internal.Mocks", "Internal\src\Umbrella.Internal.Mocks\Umbrella.Internal.Mocks.csproj", "{A9513EE8-19C4-449D-ADE5-EAA5E828B996}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -556,6 +560,12 @@ Global
 		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46416A5E-DE1A-4500-AF89-FD43C320F2FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -644,6 +654,7 @@ Global
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{46416A5E-DE1A-4500-AF89-FD43C320F2FD} = {A592A2ED-763F-4172-95DB-316662A0A42E}
+		{A9513EE8-19C4-449D-ADE5-EAA5E828B996} = {0C59D50A-7EAC-44EE-9652-8A4E4157CFE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

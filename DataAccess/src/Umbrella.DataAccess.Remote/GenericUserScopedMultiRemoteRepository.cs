@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Remote.Abstractions;
+using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
 {
@@ -13,7 +14,7 @@ namespace Umbrella.DataAccess.Remote
 	{
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
-			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
+			ILookupNormalizer dataAccessLookupNormalizer,
 			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, currentUserIdAccessor, services)
@@ -28,7 +29,7 @@ namespace Umbrella.DataAccess.Remote
 	{
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
-			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
+			ILookupNormalizer dataAccessLookupNormalizer,
 			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
 			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, currentUserIdAccessor, services)
@@ -47,7 +48,7 @@ namespace Umbrella.DataAccess.Remote
 
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
-			IDataAccessLookupNormalizer dataAccessLookupNormalizer,
+			ILookupNormalizer dataAccessLookupNormalizer,
 			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
 			params TService[] services)
 			: base(logger, dataAccessLookupNormalizer, services)

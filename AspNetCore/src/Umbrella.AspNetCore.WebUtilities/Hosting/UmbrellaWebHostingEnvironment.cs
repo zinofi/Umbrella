@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -15,7 +13,6 @@ using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Hosting.Options;
-using Umbrella.Utilities.Primitives;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -24,17 +21,17 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
 	{
 		#region Private Static Members
-		private static readonly Regex s_Regex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+		private static readonly Regex _multipleForwardSlashRegex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 		#endregion
 
 		#region Protected Properties
-		protected IHostingEnvironment HostingEnvironment { get; }
+		protected IWebHostEnvironment HostingEnvironment { get; }
 		protected IHttpContextAccessor HttpContextAccessor { get; }
 		#endregion
 
 		#region Constructors
 		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
-			IHostingEnvironment hostingEnvironment,
+			IWebHostEnvironment hostingEnvironment,
 			IHttpContextAccessor httpContextAccessor,
 			UmbrellaHostingEnvironmentOptions options,
 			IMemoryCache cache,
@@ -74,7 +71,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 					string rootPath = fromContentRoot
 						? HostingEnvironment.ContentRootPath
 						: HostingEnvironment.WebRootPath;
-					
+
 					return Path.Combine(rootPath, cleanedPath);
 				});
 			}
@@ -139,7 +136,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 							: WebRootFileProvider.Value;
 
 						IFileInfo fileInfo = fileProvider.GetFileInfo(cleanedPath);
-						
+
 						if (!fileInfo.Exists)
 							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {fileInfo.PhysicalPath}.");
 
@@ -185,7 +182,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 			if (ensureLeadingSlash && !sb.StartsWith('/'))
 				sb.Insert(0, '/');
 
-			string path = s_Regex.Replace(sb.ToString(), "/");
+			string path = _multipleForwardSlashRegex.Replace(sb.ToString(), "/");
 
 			if (convertForwardSlashesToBackSlashes)
 				path = path.Replace("/", @"\");

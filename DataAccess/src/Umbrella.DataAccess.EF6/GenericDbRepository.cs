@@ -13,6 +13,7 @@ using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EF6
@@ -25,7 +26,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
 		{
 		}
@@ -40,7 +41,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
 		{
 		}
@@ -56,7 +57,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
 		{
 		}
@@ -94,7 +95,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<TUserAuditKey> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer)
 			: base(dbContext, logger, lookupNormalizer)
 		{
 			UserAuditDataFactory = userAuditDataFactory;

@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Internal.Mocks;
 using Umbrella.Legacy.WebUtilities.Hosting;
 using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
 using Xunit;
 
@@ -50,7 +52,8 @@ namespace Umbrella.Legacy.WebUtilities.Test.Hosting
         {
             var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-            var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object);
+			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+			var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
 
             return new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
         }

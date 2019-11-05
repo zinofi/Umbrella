@@ -28,8 +28,25 @@ namespace Umbrella.Utilities.Caching.Abstractions
         T Set<T>(string cacheKey, T value, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null);
         Task<T> SetAsync<T>(string cacheKey, T value, CancellationToken cancellationToken = default, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null);
         Task<T> SetAsync<T>(string cacheKey, T value, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null);
-        IReadOnlyCollection<HybridCacheMetaEntry> GetAllMemoryCacheMetaEntries();
+
+		/// <summary>
+		/// Gets all memory cache meta entries.
+		/// </summary>
+		/// <returns>A collection of <see cref="HybridCacheMetaEntry"/> instances.</returns>
+		IReadOnlyCollection<HybridCacheMetaEntry> GetAllMemoryCacheMetaEntries();
+
+		/// <summary>
+		/// Removes the item with the specified <paramref name="cacheKey"/> from the cache.
+		/// </summary>
+		/// <typeparam name="T">The type of the cached item.</typeparam>
+		/// <param name="cacheKey">The cache key.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A task which can be awaited to indicate completion.</returns>
 		Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// Clears the memory cache.
+		/// </summary>
 		void ClearMemoryCache();
     }
 }

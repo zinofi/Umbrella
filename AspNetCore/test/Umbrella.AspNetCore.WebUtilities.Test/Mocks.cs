@@ -19,7 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
+using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test
@@ -30,7 +32,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
         {
             var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 
-            var hostingEnvironment = new Mock<IHostingEnvironment>();
+            var hostingEnvironment = new Mock<IWebHostEnvironment>();
             hostingEnvironment.Setup(x => x.ContentRootPath).Returns(@"C:\MockedWebApp\src\");
             hostingEnvironment.Setup(x => x.WebRootPath).Returns(@"C:\MockedWebApp\src\wwwroot\");
 
@@ -41,12 +43,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
 
             httpContextAccessor.Setup(x => x.HttpContext).Returns(context);
 
-            return new UmbrellaWebHostingEnvironment(logger.Object,
+			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+
+			return new UmbrellaWebHostingEnvironment(logger.Object,
                 hostingEnvironment.Object,
                 httpContextAccessor.Object,
 				new UmbrellaHostingEnvironmentOptions(),
                 CreateMemoryCache(),
-                new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object));
+                new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer));
         }
 
         public static IMemoryCache CreateMemoryCache() => new MemoryCache(Options.Create(new MemoryCacheOptions()));

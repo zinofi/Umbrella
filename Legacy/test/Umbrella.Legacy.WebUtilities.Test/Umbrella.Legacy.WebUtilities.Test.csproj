@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Internal\src\Umbrella.Internal.Mocks\Umbrella.Internal.Mocks.csproj" />
     <ProjectReference Include="..\..\src\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj" />
   </ItemGroup>
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.EF6;
 using Umbrella.DataAccess.MultiTenant.Abstractions;
+using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.MultiTenant.EF6
 {
@@ -14,7 +15,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer,
+			ILookupNormalizer lookupNormalizer,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
 		{
@@ -30,7 +31,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer,
+			ILookupNormalizer lookupNormalizer,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
 		{
@@ -47,7 +48,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer,
+			ILookupNormalizer lookupNormalizer,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
 		{
@@ -64,7 +65,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer,
+			ILookupNormalizer lookupNormalizer,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
 		{
@@ -83,7 +84,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<TUserAuditKey> userAuditDataFactory,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer,
+			ILookupNormalizer lookupNormalizer,
 			DbAppTenantSessionContext<TAppTenantKey> dbAppTenantSessionContext)
 			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
 		{

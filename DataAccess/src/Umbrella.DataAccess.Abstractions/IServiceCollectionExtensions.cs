@@ -21,7 +21,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(services, nameof(services));
 
 			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
-			services.AddSingleton<IDataAccessLookupNormalizer, DataAccessUpperInvariantLookupNormalizer>();
 
 			return services;
 		}

@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Constants;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Extensions;
 
@@ -13,10 +14,14 @@ namespace Umbrella.Utilities.Caching
 	public class CacheKeyUtility : ICacheKeyUtility
 	{
 		private readonly ILogger _log;
+		private readonly ILookupNormalizer _lookupNormalizer;
 
-		public CacheKeyUtility(ILogger<CacheKeyUtility> logger)
+		public CacheKeyUtility(
+			ILogger<CacheKeyUtility> logger,
+			ILookupNormalizer lookupNormalizer)
 		{
 			_log = logger;
+			_lookupNormalizer = lookupNormalizer;
 		}
 
 		public string Create<T>(string key) => Create(typeof(T), key);
@@ -36,9 +41,8 @@ namespace Umbrella.Utilities.Caching
 				span.Append(0, typeName);
 				span.Append(typeName.Length, ":");
 				span.Append(typeName.Length + 1, key);
-				span.ToUpperInvariant();
 
-				return span.ToString();
+				return _lookupNormalizer.Normalize(span.ToString());
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { type, key }, returnValue: true))
 			{
@@ -90,10 +94,8 @@ namespace Umbrella.Utilities.Caching
 					}
 				}
 
-				span.ToUpperInvariant();
-
 				// This is the only part that allocates
-				return span.ToString();
+				return _lookupNormalizer.Normalize(span.ToString());
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { type, keyParts = keyParts.ToArray(), keyPartsLength }, returnValue: true))
 			{

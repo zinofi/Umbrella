@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
+using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Data.Abstractions;
 using Xunit;
 
 namespace Umbrella.Utilities.Test.Caching
@@ -28,6 +30,10 @@ namespace Umbrella.Utilities.Test.Caching
 			Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:{string.Join(":", keyParts)}".ToUpperInvariant(), key);
 		}
 
-		private static CacheKeyUtility CreateCacheKeyUtility() => new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object);
+		private static CacheKeyUtility CreateCacheKeyUtility()
+		{
+			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+			return new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
+		}
 	}
 }

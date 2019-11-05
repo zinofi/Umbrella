@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Benchmark.Caching
 {
@@ -20,7 +22,8 @@ namespace Umbrella.Utilities.Benchmark.Caching
 
         public CacheKeyUtilityBenchmark()
         {
-            _cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object);
+			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+			_cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
         }
 
         [Benchmark]

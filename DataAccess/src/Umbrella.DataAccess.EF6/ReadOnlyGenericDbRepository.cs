@@ -9,6 +9,7 @@ using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Sorting;
 
@@ -22,7 +23,7 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer)
 			: base(dbContext, logger, lookupNormalizer)
 		{
 		}
@@ -37,7 +38,7 @@ namespace Umbrella.DataAccess.EF6
 		#region Protected Properties
 		protected TDbContext Context { get; }
 		protected ILogger Log { get; }
-		protected IDataAccessLookupNormalizer LookupNormalizer { get; }
+		protected ILookupNormalizer LookupNormalizer { get; }
 		protected IQueryable<TEntity> Items => Context.Set<TEntity>();
 		#endregion
 
@@ -45,7 +46,7 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			IDataAccessLookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer)
 		{
 			Context = dbContext;
 			Log = logger;

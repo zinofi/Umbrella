@@ -4,6 +4,8 @@ using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
+using Umbrella.Utilities.Data;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.DependencyInjection;
 using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Abstractions;
@@ -59,6 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
 			services.AddSingleton<ICertificateUtility, CertificateUtility>();
 			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
+			services.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
 			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();

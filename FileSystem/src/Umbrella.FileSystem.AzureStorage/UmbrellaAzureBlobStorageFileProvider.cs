@@ -38,8 +38,6 @@ namespace Umbrella.FileSystem.AzureStorage
 			UmbrellaAzureBlobStorageFileProviderOptions options)
 			: base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter, options)
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(options.StorageConnectionString, nameof(options.StorageConnectionString));
-
 			StorageAccount = CloudStorageAccount.Parse(options.StorageConnectionString);
 			BlobClient = StorageAccount.CreateCloudBlobClient();
 
