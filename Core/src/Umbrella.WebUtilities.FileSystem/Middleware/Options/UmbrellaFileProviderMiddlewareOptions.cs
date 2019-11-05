@@ -9,6 +9,10 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 {
 	public class UmbrellaFileProviderMiddlewareOptions
 	{
+		// TODO: Somewhere in here it would be useful to allow the cache headers to be varied on a per provider basis.
+		// This same approach should be adopted by both the FrontEndCompressionMiddleware and DynamicImageMiddleware
+		// to allow for maximum flexibility.
+		// Room for creating common abstractions too.
 		private class PathMapping
 		{
 			public PathMapping(string path, IUmbrellaFileProvider fileProvider)

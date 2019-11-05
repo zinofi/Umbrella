@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Net;
+using Microsoft.AspNetCore.Http;
 
-namespace Microsoft.AspNetCore.Http
+namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
 	/// <summary>
 	/// Contains extension methods for the <see cref="HttpResponse"/> type.

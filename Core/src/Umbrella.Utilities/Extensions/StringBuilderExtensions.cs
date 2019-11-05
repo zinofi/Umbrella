@@ -125,7 +125,7 @@ namespace Umbrella.Utilities.Extensions
 			{
 				int length = 0;
 				int num2 = sb.Length;
-				while ((sb[length] == c) && (length < num2))
+				while ((length < num2) && (sb[length] == c))
 				{
 					length++;
 				}
@@ -135,7 +135,7 @@ namespace Umbrella.Utilities.Extensions
 					num2 = sb.Length;
 				}
 				length = num2 - 1;
-				while ((sb[length] == c) && (length > -1))
+				while ((length > -1) && (sb[length] == c))
 				{
 					length--;
 				}

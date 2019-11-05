@@ -3,8 +3,16 @@ using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
+	/// <summary>
+	/// Contains extension methods for the <see cref="CacheControlHeaderValue"/> type.
+	/// </summary>
 	public static class CacheControlHeaderValueExtensions
 	{
+		/// <summary>
+		/// Sets the correct caching properties on the specified <see cref="CacheControlHeaderValue"/> using the specified <see cref="FrontEndCompressionMiddlewareHttpCacheability"/> value.
+		/// </summary>
+		/// <param name="cacheControlHeaderValue">The cache control header value.</param>
+		/// <param name="httpCacheability">The HTTP cacheability.</param>
 		public static void SetFrontEndCompressionMiddlewareHttpCacheability(this CacheControlHeaderValue cacheControlHeaderValue, FrontEndCompressionMiddlewareHttpCacheability httpCacheability)
 		{
 			switch (httpCacheability)

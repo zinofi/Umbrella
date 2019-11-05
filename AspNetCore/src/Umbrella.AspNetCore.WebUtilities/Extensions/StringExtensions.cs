@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Umbrella.Utilities;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
@@ -11,7 +7,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 	/// Contains ASP.NET Core specific string extensions, primarily for performing operations on URLs.
 	/// </summary>
 	public static class StringExtensions
-    {
+	{
 		/// <summary>
 		/// Converts the provided app-relative path into an absolute Url containing the full host name.
 		/// </summary>
