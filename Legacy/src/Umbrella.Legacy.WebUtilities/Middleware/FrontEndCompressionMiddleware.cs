@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -26,10 +27,10 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 	public class FrontEndCompressionMiddleware : OwinMiddleware
 	{
 		private static readonly char[] _headerValueSplitters = new[] { ',' };
-		private static readonly string _cackeKeyPrefix = $"{typeof(FrontEndCompressionMiddleware).FullName}";
 		private static readonly ConcurrentDictionary<string, IFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo>();
 
 		protected ILogger Log { get; }
+		protected ICacheKeyUtility CacheKeyUtility { get; }
 		protected IHybridCache Cache { get; }
 		protected IUmbrellaHostingEnvironment HostingEnvironment { get; }
 		protected IHttpHeaderValueUtility HttpHeaderValueUtility { get; }
@@ -42,6 +43,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		public FrontEndCompressionMiddleware(
 			OwinMiddleware next,
 			ILogger<FrontEndCompressionMiddleware> logger,
+			ICacheKeyUtility cacheKeyUtility,
 			IHybridCache cache,
 			IUmbrellaHostingEnvironment hostingEnvironment,
 			IHttpHeaderValueUtility httpHeaderValueUtility,
@@ -50,6 +52,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			: base(next)
 		{
 			Log = logger;
+			CacheKeyUtility = cacheKeyUtility;
 			Cache = cache;
 			HostingEnvironment = hostingEnvironment;
 			HttpHeaderValueUtility = httpHeaderValueUtility;
@@ -160,78 +163,92 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						Options?.AcceptEncodingModifier?.Invoke(context.Request.Headers.ToDictionary(x => x.Key, x => x.Value.AsEnumerable()), lstEncodingValue);
 
 						string flattenedEncodingHeaders = string.Join(", ", lstEncodingValue).ToUpperInvariant();
-						string cacheKey = $"{_cackeKeyPrefix}:{path}:{flattenedEncodingHeaders}";
+						string[] cacheKeyParts = null;
 
-						(string contentEncoding, byte[] bytes) result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
+						try
 						{
-							string contentEncoding = null;
+							cacheKeyParts = ArrayPool<string>.Shared.Rent(2);
+							cacheKeyParts[0] = path;
+							cacheKeyParts[1] = flattenedEncodingHeaders;
 
-							using Stream fs = fileInfo.CreateReadStream();
-							using var ms = new MemoryStream();
+							string cacheKey = CacheKeyUtility.Create<FrontEndCompressionMiddleware>(cacheKeyParts, 2);
 
-							if (lstEncodingValue.Contains("br", StringComparer.OrdinalIgnoreCase) || lstEncodingValue.Contains("brotli", StringComparer.OrdinalIgnoreCase))
+							(string contentEncoding, byte[] bytes) result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
 							{
-								using (var br = new BrotliStream(ms, CompressionMode.Compress))
+								string contentEncoding = null;
+
+								using Stream fs = fileInfo.CreateReadStream();
+								using var ms = new MemoryStream();
+
+								if (lstEncodingValue.Contains("br", StringComparer.OrdinalIgnoreCase) || lstEncodingValue.Contains("brotli", StringComparer.OrdinalIgnoreCase))
 								{
-									await fs.CopyToAsync(br, Options.BufferSizeBytes, token);
+									using (var br = new BrotliStream(ms, CompressionMode.Compress))
+									{
+										await fs.CopyToAsync(br, Options.BufferSizeBytes, token);
+									}
+
+									contentEncoding = "br";
+								}
+								else if (lstEncodingValue.Contains("gzip", StringComparer.OrdinalIgnoreCase))
+								{
+									using (var gz = new GZipStream(ms, CompressionMode.Compress))
+									{
+										await fs.CopyToAsync(gz, Options.BufferSizeBytes, token);
+									}
+
+									contentEncoding = "gzip";
+								}
+								else if (lstEncodingValue.Contains("deflate", StringComparer.OrdinalIgnoreCase))
+								{
+									using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
+									{
+										await fs.CopyToAsync(deflate, Options.BufferSizeBytes, token);
+									}
+
+									contentEncoding = "deflate";
+								}
+								else
+								{
+									// If we get here then we are dealing with an unknown content encoding.
+									// Just read the file into memory as it is.
+									await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
 								}
 
-								contentEncoding = "br";
-							}
-							else if (lstEncodingValue.Contains("gzip", StringComparer.OrdinalIgnoreCase))
+								return (contentEncoding, ms.ToArray());
+							},
+							Options,
+							context.Request.CallCancelled,
+							() => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+
+							if (Log.IsEnabled(LogLevel.Debug))
 							{
-								using (var gz = new GZipStream(ms, CompressionMode.Compress))
+								var logData = new
 								{
-									await fs.CopyToAsync(gz, Options.BufferSizeBytes, token);
-								}
+									PathBase = context.Request.PathBase.Value,
+									Path = context.Request.Path.Value,
+									UserAgent = context.Request.Headers["User-Agent"],
+									OriginalOwinEncodingHeaders = encodingValues,
+									// This is here to see if the Owin headers are not being set correctly when they're copied
+									// from the AspNet headers collection.
+									OriginalAspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(Options.AcceptEncodingHeaderKey),
+									TranformedOwinEncodingHeaders = lstEncodingValue,
+									CompressionAlgorithmUsed = result.contentEncoding,
+									CompressedSize = result.bytes.Length
+								};
 
-								contentEncoding = "gzip";
-							}
-							else if (lstEncodingValue.Contains("deflate", StringComparer.OrdinalIgnoreCase))
-							{
-								using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
-								{
-									await fs.CopyToAsync(deflate, Options.BufferSizeBytes, token);
-								}
-
-								contentEncoding = "deflate";
-							}
-							else
-							{
-								// If we get here then we are dealing with an unknown content encoding.
-								// Just read the file into memory as it is.
-								await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+								Log.WriteDebug(logData);
 							}
 
-							return (contentEncoding, ms.ToArray());
-						},
-						Options,
-						context.Request.CallCancelled,
-						() => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+							bytes = result.bytes;
 
-						if (Log.IsEnabled(LogLevel.Debug))
-						{
-							var logData = new
-							{
-								PathBase = context.Request.PathBase.Value,
-								Path = context.Request.Path.Value,
-								UserAgent = context.Request.Headers["User-Agent"],
-								OriginalOwinEncodingHeaders = encodingValues,
-								// This is here to see if the Owin headers are not being set correctly when they're copied
-								// from the AspNet headers collection.
-								OriginalAspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(Options.AcceptEncodingHeaderKey),
-								TranformedOwinEncodingHeaders = lstEncodingValue,
-								CompressionAlgorithmUsed = result.contentEncoding,
-								CompressedSize = result.bytes.Length
-							};
-
-							Log.WriteDebug(logData);
+							if (!string.IsNullOrEmpty(result.contentEncoding))
+								context.Response.Headers["Content-Encoding"] = result.contentEncoding;
 						}
-
-						bytes = result.bytes;
-
-						if (!string.IsNullOrEmpty(result.contentEncoding))
-							context.Response.Headers["Content-Encoding"] = result.contentEncoding;
+						finally
+						{
+							if (cacheKeyParts != null)
+								ArrayPool<string>.Shared.Return(cacheKeyParts);
+						}
 
 						// Check if the Accept-Encoding key is different from the standard header key, e.g. when moved into a different
 						// header by a proxy. We need to make sure the proxy varies the response by this new header in cases where it might be
@@ -249,7 +266,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// Getting here means that compression is disabled or there isn't an Accept-Encoding header.
 						// Therefore, we have to just read the file as it is and return it
 						// as it is stored on disk.
-						bytes = await Cache.GetOrCreateAsync($"{_cackeKeyPrefix}:{path}", async () =>
+						string cacheKey = CacheKeyUtility.Create<FrontEndCompressionMiddleware>(path);
+
+						bytes = await Cache.GetOrCreateAsync(cacheKey, async () =>
 						{
 							using Stream fs = fileInfo.CreateReadStream();
 							using var ms = new MemoryStream();
