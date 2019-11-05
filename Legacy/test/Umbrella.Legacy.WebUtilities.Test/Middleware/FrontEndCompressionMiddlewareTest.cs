@@ -7,6 +7,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Moq;
+using Umbrella.Internal.Mocks;
 using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Hosting.Abstractions;
@@ -92,6 +93,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 			var middleware = new FrontEndCompressionMiddleware(
 				null,
 				logger.Object,
+				CoreUtilitiesMocks.CreateCacheKeyUtility(),
 				cache.Object,
 				hostingEnvironment.Object,
 				httpHeaderValueUtility.Object,

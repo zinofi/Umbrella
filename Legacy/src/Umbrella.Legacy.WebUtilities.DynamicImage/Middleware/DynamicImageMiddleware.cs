@@ -92,7 +92,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (status == DynamicImageParseUrlResult.Invalid || !_dynamicImageUtility.ImageOptionsValid(imageOptions, ConfigurationOptions))
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
+					context.Response.SendStatusCode(HttpStatusCode.NotFound);
 					return;
 				}
 
@@ -101,7 +101,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (image == null)
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
+					context.Response.SendStatusCode(HttpStatusCode.NotFound);
 					return;
 				}
 
@@ -109,7 +109,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (context.Request.IfModifiedSinceHeaderMatched(image.LastModified))
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
+					context.Response.SendStatusCode(HttpStatusCode.NotModified);
 					return;
 				}
 
@@ -118,7 +118,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
+					context.Response.SendStatusCode(HttpStatusCode.NotModified);
 					return;
 				}
 
@@ -138,14 +138,14 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				else
 				{
 					cts.Cancel();
-					await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
+					context.Response.SendStatusCode(HttpStatusCode.NotFound);
 					return;
 				}
 			}
 			catch (Exception exc) when (_log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
 			{
 				cts.Cancel();
-				await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
+				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
 		}

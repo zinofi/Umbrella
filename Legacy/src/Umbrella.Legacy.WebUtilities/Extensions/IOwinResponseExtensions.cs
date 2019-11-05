@@ -1,27 +1,29 @@
-﻿using Microsoft.Owin;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Owin;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions
 {
+	/// <summary>
+	/// Contains extension methods for the <see cref="IOwinResponse"/> type.
+	/// </summary>
 	public static class IOwinResponseExtensions
 	{
-		public static Task SendStatusCodeAsync(this IOwinResponse response, HttpStatusCode statusCode, bool sendNullBody = true)
+		/// <summary>
+		/// Sends the specified status code.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <param name="statusCode">The status code.</param>
+		/// <param name="sendNullBody">if set to <see langword="true"/>, sets <see cref="IOwinResponse.Body" /> to <see cref="Stream.Null"/>.</param>
+		public static void SendStatusCode(this IOwinResponse response, HttpStatusCode statusCode, bool sendNullBody = true)
 		{
 			response.StatusCode = (int)statusCode;
 
-			if(sendNullBody)
+			if (sendNullBody)
 			{
 				response.Body.Close();
 				response.Body = Stream.Null;
 			}
-
-            return Task.CompletedTask;
 		}
 	}
 }

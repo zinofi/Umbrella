@@ -51,7 +51,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					if (fileInfo == null)
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
+						context.Response.SendStatusCode(HttpStatusCode.NotFound);
 						return;
 					}
 
@@ -59,7 +59,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified.Value.UtcDateTime))
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
+						context.Response.SendStatusCode(HttpStatusCode.NotModified);
 						return;
 					}
 
@@ -68,7 +68,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
+						context.Response.SendStatusCode(HttpStatusCode.NotModified);
 						return;
 					}
 
@@ -91,7 +91,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			{
 				// TODO: Should this be a 401 or 403? Or even a 404 where we don't want necessarily want a bad actor to know that file exists.
 				// Maybe add a new Options property to configure that behaviour.
-				await context.Response.SendStatusCodeAsync(HttpStatusCode.Forbidden);
+				context.Response.SendStatusCode(HttpStatusCode.Forbidden);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { Path = context.Request.Path.Value }, returnValue: true))
 			{

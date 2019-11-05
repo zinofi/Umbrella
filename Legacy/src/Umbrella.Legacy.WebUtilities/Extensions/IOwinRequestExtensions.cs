@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions
@@ -15,6 +16,8 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 	{
 		public static bool IfModifiedSinceHeaderMatched(this IOwinRequest request, DateTimeOffset valueToMatch)
 		{
+			Guard.ArgumentNotNull(request, nameof(request));
+
 			string ifModifiedSince = request.Headers["If-Modified-Since"];
 			if (!string.IsNullOrWhiteSpace(ifModifiedSince))
 			{
@@ -28,13 +31,14 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 
 		public static bool IfNoneMatchHeaderMatched(this IOwinRequest request, string valueToMatch)
 		{
-			string ifNoneMatch = request.Headers["If-None-Match"];
-			if (!string.IsNullOrWhiteSpace(ifNoneMatch))
-			{
-				return string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0;
-			}
+			Guard.ArgumentNotNull(request, nameof(request));
+			Guard.ArgumentNotNullOrWhiteSpace(valueToMatch, nameof(valueToMatch));
 
-			return false;
+			string ifNoneMatch = request.Headers["If-None-Match"];
+
+			return !string.IsNullOrWhiteSpace(ifNoneMatch)
+				? string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0
+				: false;
 		}
 
 		public static bool AcceptsWebP(this IOwinRequest request) => request.Headers.TryGetValue("Accept", out string[] values)

@@ -24,22 +24,43 @@ using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Middleware
 {
+	/// <summary>
+	/// OWIN Middleware that is used to provide caching and compression of front-end assets.
+	/// </summary>
+	/// <seealso cref="OwinMiddleware" />
 	public class FrontEndCompressionMiddleware : OwinMiddleware
 	{
+		#region Private Static Members
 		private static readonly char[] _headerValueSplitters = new[] { ',' };
 		private static readonly ConcurrentDictionary<string, IFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo>();
+		#endregion
 
-		protected ILogger Log { get; }
-		protected ICacheKeyUtility CacheKeyUtility { get; }
-		protected IHybridCache Cache { get; }
-		protected IUmbrellaHostingEnvironment HostingEnvironment { get; }
-		protected IHttpHeaderValueUtility HttpHeaderValueUtility { get; }
-		protected IMimeTypeUtility MimeTypeUtility { get; }
-		protected FrontEndCompressionMiddlewareOptions Options { get; }
+		#region Private Members
+		private readonly ILogger _log;
+		private readonly ICacheKeyUtility _cacheKeyUtility;
+		private readonly IHybridCache _cache;
+		private readonly IHttpHeaderValueUtility _httpHeaderValueUtility;
+		private readonly IMimeTypeUtility _mimeTypeUtility;
+		private readonly FrontEndCompressionMiddlewareOptions _options;
+		#endregion
 
+		#region Internal Properties
 		// Exposed as internal for unit testing / benchmarking mocks
-		protected internal IFileProvider FileProvider { get; internal set; }
+		internal IFileProvider FileProvider { get; set; }
+		#endregion
 
+		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FrontEndCompressionMiddleware"/> class.
+		/// </summary>
+		/// <param name="next">The next.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="hostingEnvironment">The hosting environment.</param>
+		/// <param name="httpHeaderValueUtility">The HTTP header value utility.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="options">The options.</param>
 		public FrontEndCompressionMiddleware(
 			OwinMiddleware next,
 			ILogger<FrontEndCompressionMiddleware> logger,
@@ -51,18 +72,23 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			FrontEndCompressionMiddlewareOptions options)
 			: base(next)
 		{
-			Log = logger;
-			CacheKeyUtility = cacheKeyUtility;
-			Cache = cache;
-			HostingEnvironment = hostingEnvironment;
-			HttpHeaderValueUtility = httpHeaderValueUtility;
-			MimeTypeUtility = mimeTypeUtility;
-			Options = options;
+			_log = logger;
+			_cacheKeyUtility = cacheKeyUtility;
+			_cache = cache;
+			_httpHeaderValueUtility = httpHeaderValueUtility;
+			_mimeTypeUtility = mimeTypeUtility;
+			_options = options;
 
 			// File Provider
 			FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/"));
 		}
+		#endregion
 
+		#region Overridden Methods
+		/// <summary>
+		/// Process an individual request.
+		/// </summary>
+		/// <param name="context">The current <see cref="IOwinContext"/>.</param>
 		public override async Task Invoke(IOwinContext context)
 		{
 			context.Request.CallCancelled.ThrowIfCancellationRequested();
@@ -71,8 +97,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			{
 				string path = context.Request.Path.Value.Trim();
 
-				if (Options.FrontEndRootFolderAppRelativePaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
-					&& Options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
+				if (_options.FrontEndRootFolderAppRelativePaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
+					&& _options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
 				{
 					var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
@@ -82,13 +108,13 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 					if (fileInfo == null)
 					{
 						cts.Cancel();
-						await context.Response.SendStatusCodeAsync(HttpStatusCode.NotFound);
+						context.Response.SendStatusCode(HttpStatusCode.NotFound);
 						return;
 					}
 
-					if (Options.ResponseCacheEnabled)
+					if (_options.ResponseCacheEnabled)
 					{
-						bool shouldCache = Options.ResponseCacheDeterminer?.Invoke(fileInfo) ?? true;
+						bool shouldCache = _options.ResponseCacheDeterminer?.Invoke(fileInfo) ?? true;
 
 						if (shouldCache)
 						{
@@ -96,32 +122,32 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified))
 							{
 								cts.Cancel();
-								await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
+								context.Response.SendStatusCode(HttpStatusCode.NotModified);
 								return;
 							}
 
-							string eTagValue = HttpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified, fileInfo.Length);
+							string eTagValue = _httpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified, fileInfo.Length);
 
 							if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 							{
 								cts.Cancel();
-								await context.Response.SendStatusCodeAsync(HttpStatusCode.NotModified);
+								context.Response.SendStatusCode(HttpStatusCode.NotModified);
 								return;
 							}
 
 							// Set the Response headers
-							context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
+							context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
 							context.Response.ETag = eTagValue;
 
-							if (Options.MaxAgeSeconds.HasValue)
-								context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(Options.MaxAgeSeconds.Value);
+							if (_options.MaxAgeSeconds.HasValue)
+								context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(_options.MaxAgeSeconds.Value);
 
-							var sbCacheControl = new StringBuilder(Options.HttpCacheability.ToCacheControlString());
+							var sbCacheControl = new StringBuilder(_options.HttpCacheability.ToCacheControlString());
 
-							if (Options.MaxAgeSeconds.HasValue)
-								sbCacheControl.Append(", max-age=" + Options.MaxAgeSeconds);
+							if (_options.MaxAgeSeconds.HasValue)
+								sbCacheControl.Append(", max-age=" + _options.MaxAgeSeconds);
 
-							if (Options.MustRevalidate)
+							if (_options.MustRevalidate)
 								sbCacheControl.Append(", must-revalidate");
 
 							context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
@@ -133,12 +159,12 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 					}
 					else
 					{
-						context.Response.Headers["Cache-Control"] = Options.HttpCacheability.ToCacheControlString();
+						context.Response.Headers["Cache-Control"] = _options.HttpCacheability.ToCacheControlString();
 					}
 
 					byte[] bytes = null;
 
-					if (Options.CompressionEnabled && context.Request.Headers.TryGetValue(Options.AcceptEncodingHeaderKey, out string[] encodingValues))
+					if (_options.CompressionEnabled && context.Request.Headers.TryGetValue(_options.AcceptEncodingHeaderKey, out string[] encodingValues))
 					{
 						// Parse the headers
 						var lstEncodingValue = new HashSet<string>();
@@ -160,7 +186,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// This is useful for situations where proxies have incorrectly rewritten encoding headers
 						// and we need to check something like the User-Agent value to override the values,
 						// e.g. Brotli doesn't work with IE
-						Options?.AcceptEncodingModifier?.Invoke(context.Request.Headers.ToDictionary(x => x.Key, x => x.Value.AsEnumerable()), lstEncodingValue);
+						_options.AcceptEncodingModifier?.Invoke(context.Request.Headers.ToDictionary(x => x.Key, x => x.Value.AsEnumerable()), lstEncodingValue);
 
 						string flattenedEncodingHeaders = string.Join(", ", lstEncodingValue).ToUpperInvariant();
 						string[] cacheKeyParts = null;
@@ -171,9 +197,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							cacheKeyParts[0] = path;
 							cacheKeyParts[1] = flattenedEncodingHeaders;
 
-							string cacheKey = CacheKeyUtility.Create<FrontEndCompressionMiddleware>(cacheKeyParts, 2);
+							string cacheKey = _cacheKeyUtility.Create<FrontEndCompressionMiddleware>(cacheKeyParts, 2);
 
-							(string contentEncoding, byte[] bytes) result = await Cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
+							(string contentEncoding, byte[] bytes) result = await _cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
 							{
 								string contentEncoding = null;
 
@@ -184,7 +210,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 								{
 									using (var br = new BrotliStream(ms, CompressionMode.Compress))
 									{
-										await fs.CopyToAsync(br, Options.BufferSizeBytes, token);
+										await fs.CopyToAsync(br, _options.BufferSizeBytes, token);
 									}
 
 									contentEncoding = "br";
@@ -193,7 +219,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 								{
 									using (var gz = new GZipStream(ms, CompressionMode.Compress))
 									{
-										await fs.CopyToAsync(gz, Options.BufferSizeBytes, token);
+										await fs.CopyToAsync(gz, _options.BufferSizeBytes, token);
 									}
 
 									contentEncoding = "gzip";
@@ -202,7 +228,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 								{
 									using (var deflate = new DeflateStream(ms, CompressionMode.Compress))
 									{
-										await fs.CopyToAsync(deflate, Options.BufferSizeBytes, token);
+										await fs.CopyToAsync(deflate, _options.BufferSizeBytes, token);
 									}
 
 									contentEncoding = "deflate";
@@ -211,16 +237,16 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 								{
 									// If we get here then we are dealing with an unknown content encoding.
 									// Just read the file into memory as it is.
-									await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+									await fs.CopyToAsync(ms, _options.BufferSizeBytes, token);
 								}
 
 								return (contentEncoding, ms.ToArray());
 							},
-							Options,
+							_options,
 							context.Request.CallCancelled,
-							() => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+							() => _options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 
-							if (Log.IsEnabled(LogLevel.Debug))
+							if (_log.IsEnabled(LogLevel.Debug))
 							{
 								var logData = new
 								{
@@ -230,13 +256,13 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 									OriginalOwinEncodingHeaders = encodingValues,
 									// This is here to see if the Owin headers are not being set correctly when they're copied
 									// from the AspNet headers collection.
-									OriginalAspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(Options.AcceptEncodingHeaderKey),
+									OriginalAspNetEncodingHeaders = HttpContext.Current?.Request?.Headers?.GetValues(_options.AcceptEncodingHeaderKey),
 									TranformedOwinEncodingHeaders = lstEncodingValue,
 									CompressionAlgorithmUsed = result.contentEncoding,
 									CompressedSize = result.bytes.Length
 								};
 
-								Log.WriteDebug(logData);
+								_log.WriteDebug(logData);
 							}
 
 							bytes = result.bytes;
@@ -255,8 +281,8 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// caching some ouput value (even though in theory it shouldn't be as we have set the Cache-Control to private).
 						string varyHeader = "Accept-Encoding";
 
-						if (!Options.AcceptEncodingHeaderKey.Equals(varyHeader, StringComparison.OrdinalIgnoreCase))
-							varyHeader += ", " + Options.AcceptEncodingHeaderKey;
+						if (!_options.AcceptEncodingHeaderKey.Equals(varyHeader, StringComparison.OrdinalIgnoreCase))
+							varyHeader += ", " + _options.AcceptEncodingHeaderKey;
 
 						context.Response.Headers["Vary"] = varyHeader;
 					}
@@ -266,26 +292,26 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						// Getting here means that compression is disabled or there isn't an Accept-Encoding header.
 						// Therefore, we have to just read the file as it is and return it
 						// as it is stored on disk.
-						string cacheKey = CacheKeyUtility.Create<FrontEndCompressionMiddleware>(path);
+						string cacheKey = _cacheKeyUtility.Create<FrontEndCompressionMiddleware>(path);
 
-						bytes = await Cache.GetOrCreateAsync(cacheKey, async () =>
+						bytes = await _cache.GetOrCreateAsync(cacheKey, async () =>
 						{
 							using Stream fs = fileInfo.CreateReadStream();
 							using var ms = new MemoryStream();
 
-							await fs.CopyToAsync(ms, Options.BufferSizeBytes, token);
+							await fs.CopyToAsync(ms, _options.BufferSizeBytes, token);
 
 							return ms.ToArray();
 						},
-						Options,
+						_options,
 						context.Request.CallCancelled,
-						() => Options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+						() => _options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 					}
 
 					await context.Response.Body.WriteAsync(bytes, 0, bytes.Length, token);
 
 					// Common headers
-					context.Response.ContentType = MimeTypeUtility.GetMimeType(fileInfo.Name);
+					context.Response.ContentType = _mimeTypeUtility.GetMimeType(fileInfo.Name);
 					context.Response.ContentLength = bytes.LongLength;
 
 					// Ensure the response stream is flushed async immediately here. If not, there could be content
@@ -299,12 +325,14 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				await Next.Invoke(context);
 				return;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { Path = context.Request.Path.Value }))
+			catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }))
 			{
 				throw;
 			}
 		}
+		#endregion
 
+		#region Private Methods
 		private IFileInfo GetFileInfo(string path)
 		{
 			IFileInfo LoadFileInfo()
@@ -314,9 +342,10 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				return fileInfo.Exists ? fileInfo : null;
 			}
 
-			return Options.WatchFiles
+			return _options.WatchFiles
 				? LoadFileInfo()
 				: _fileInfoDictionary.GetOrAdd(path.ToUpperInvariant(), key => LoadFileInfo());
-		}
+		} 
+		#endregion
 	}
 }

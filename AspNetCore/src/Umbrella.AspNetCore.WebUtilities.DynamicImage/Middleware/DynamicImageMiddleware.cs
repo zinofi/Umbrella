@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
 using Umbrella.WebUtilities.Http.Abstractions;

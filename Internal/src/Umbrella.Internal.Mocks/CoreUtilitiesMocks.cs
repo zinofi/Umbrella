@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
+using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Internal.Mocks
@@ -18,5 +21,7 @@ namespace Umbrella.Internal.Mocks
 
 			return lookupNormalizer.Object;
 		}
+
+		public static ICacheKeyUtility CreateCacheKeyUtility() => new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, CreateILookupNormalizer());
 	}
 }
