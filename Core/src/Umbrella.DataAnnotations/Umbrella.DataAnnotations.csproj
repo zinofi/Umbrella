@@ -17,7 +17,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DataAnnotations</PackageId>
-		<Version>3.0.0-preview-0011</Version>
+		<Version>3.0.0-preview-0015</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
@@ -26,7 +26,7 @@
 			This package was originally cloned from: https://foolproof.codeplex.com/ and contains fixes and enhancements to the original code.
 			This license for the original code can be found here: https://foolproof.codeplex.com/license
 		</Description>
-		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 	</PropertyGroup>
 

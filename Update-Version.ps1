@@ -2,8 +2,8 @@
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
 # Manually alter the build number before pushing to NuGet feeds
-$previousBuild = "3.0.0-preview-0010"
-$currentBuild =  "3.0.0-preview-0011"
+$previousBuild = "3.0.0-preview-0014"
+$currentBuild =  "3.0.0-preview-0015"
 
 foreach ($file in $configFiles)
 {
@@ -27,6 +27,13 @@ foreach ($file in $configFiles)
 	{
 		$affectedFiles.Add($file.Name)
 		$content -replace ("<Authors>Richard Edwards</Authors>"), ("<Authors>Zinofi Digital Ltd</Authors>") | Set-Content $file.PSPath
+	}
+
+	# Ensure License is correct
+	if($content -like "*<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>*")
+	{
+		$affectedFiles.Add($file.Name)
+		$content -replace ("<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>"), ("<PackageLicenseExpression>MIT</PackageLicenseExpression>") | Set-Content $file.PSPath
 	}
 }
 

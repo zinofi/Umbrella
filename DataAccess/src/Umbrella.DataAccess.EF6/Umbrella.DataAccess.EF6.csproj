@@ -17,14 +17,14 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DataAccess.EF6</PackageId>
-		<Version>3.0.0-preview-0011</Version>
+		<Version>3.0.0-preview-0015</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
 		<Description>
 			This package contains data access infrastructure to allow for the simple creation of Entity Framework 6 repositories.
 		</Description>
-		<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 	</PropertyGroup>
 

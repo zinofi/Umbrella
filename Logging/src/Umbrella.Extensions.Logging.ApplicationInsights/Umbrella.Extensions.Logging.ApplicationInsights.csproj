@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Extensions.Logging.ApplicationInsights</PackageId>
-    <Version>3.0.0-preview-0011</Version>
+    <Version>3.0.0-preview-0015</Version>
     <Authors>Zinofi Digital Ltd</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
@@ -27,7 +27,7 @@
       The code in this package has been forked and modified from the source repository at: https://github.com/Microsoft/ApplicationInsights-aspnetcore and is the copyright of Microsoft.
       The original license is here: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/develop/LICENSE
     </Description>
-    <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
   </PropertyGroup>
 
