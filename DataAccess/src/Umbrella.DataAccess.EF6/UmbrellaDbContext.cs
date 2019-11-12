@@ -8,11 +8,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DataAccess.EF6
 {
-	public class UmbrellaDbContext : DbContext
+	// TODO: Why isn't this abstract?
+	public abstract class UmbrellaDbContext : DbContext
 	{
 		#region Protected Properties
 		protected ILogger Log { get; }
-		protected Dictionary<object, Func<Task>> PostSaveChangesSaveActionDictionary { get; } = new Dictionary<object, Func<Task>>();
+		protected Dictionary<object, Func<CancellationToken, Task>> PostSaveChangesSaveActionDictionary { get; } = new Dictionary<object, Func<CancellationToken, Task>>();
 		#endregion
 
 		#region Constructors
@@ -29,16 +30,20 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Public Methods
-		public virtual void RegisterPostSaveChangesActionAsync(object entity, Func<Task> wrappedAction)
+		public virtual void RegisterPostSaveChangesActionAsync(object entity, Func<CancellationToken, Task> wrappedAction, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
 
 			if (Log.IsEnabled(LogLevel.Debug))
 				Log.WriteDebug(message: "Post save callback registered");
 		}
 
-		public virtual async Task ExecutePostSaveChangesActionsAsync()
+		public virtual async Task ExecutePostSaveChangesActionsAsync(CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			if (Log.IsEnabled(LogLevel.Debug))
 				Log.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
 
@@ -55,7 +60,7 @@ namespace Umbrella.DataAccess.EF6
 			// because of the overheads unless we encounter problems.
 			foreach (var func in dicItem.Values)
 			{
-				Task task = func?.Invoke();
+				Task task = func?.Invoke(cancellationToken);
 
 				if (task != null)
 				{
@@ -121,6 +126,8 @@ namespace Umbrella.DataAccess.EF6
 
 		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			try
 			{
 				if (Log.IsEnabled(LogLevel.Debug))
@@ -128,7 +135,7 @@ namespace Umbrella.DataAccess.EF6
 
 				int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-				await ExecutePostSaveChangesActionsAsync().ConfigureAwait(false);
+				await ExecutePostSaveChangesActionsAsync(cancellationToken).ConfigureAwait(false);
 
 				if (Log.IsEnabled(LogLevel.Debug))
 					Log.WriteDebug(message: "Finished SaveChangesAsync()");

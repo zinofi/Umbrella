@@ -1,6 +1,6 @@
 ﻿namespace Umbrella.DataAccess.Abstractions
 {
-	public interface ICreatedUserAuditEntity : IUpdatedUserAuditEntity<int>
+	public interface ICreatedUserAuditEntity : ICreatedUserAuditEntity<int>
 	{
 	}
 
