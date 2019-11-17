@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.Utilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <param name="emailBuilderOptionsBuilder">The optional <see cref="EmailBuilderOptions"/> builder.</param>
+		/// <param name="emailBuilderOptionsBuilder">The optional <see cref="EmailFactoryOptions"/> builder.</param>
 		/// <param name="hybridCacheOptionsBuilder">The optional <see cref="HybridCacheOptions"/> builder.</param>
 		/// <param name="httpResourceInfoUtilityOptionsBuilder">The optional <see cref="HttpResourceInfoUtilityOptions"/> builder.</param>
 		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
@@ -50,7 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
 			this IServiceCollection services,
-			Action<IServiceProvider, EmailBuilderOptions> emailBuilderOptionsBuilder = null,
+			Action<IServiceProvider, EmailFactoryOptions> emailBuilderOptionsBuilder = null,
 			Action<IServiceProvider, HybridCacheOptions> hybridCacheOptionsBuilder = null,
 			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
 			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
@@ -70,7 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<INonceGenerator, NonceGenerator>();
 			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
-			services.AddTransient<IEmailBuilder, EmailBuilder>();
+			services.AddSingleton<IEmailFactory, EmailFactory>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);

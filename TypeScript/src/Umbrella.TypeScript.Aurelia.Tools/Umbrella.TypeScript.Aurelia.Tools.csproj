@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>dotnet-umbrella-ts-aurelia</AssemblyName>
@@ -19,7 +19,7 @@
   <PropertyGroup>
     <PackageId>Umbrella.TypeScript.Aurelia.Tools</PackageId>
     <PackageType>DotnetCliTool</PackageType>
-    <Version>3.0.0-preview-0015</Version>
+    <Version>3.0.0-preview-0018</Version>
     <Authors>Zinofi Digital Ltd</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>

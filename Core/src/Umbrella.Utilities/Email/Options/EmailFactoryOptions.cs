@@ -4,9 +4,9 @@ using Umbrella.Utilities.Options.Abstractions;
 namespace Umbrella.Utilities.Email.Options
 {
 	/// <summary>
-	/// Options for the <see cref="EmailBuilder"/>.
+	/// Options for the <see cref="EmailFactory"/>.
 	/// </summary>
-	public class EmailBuilderOptions : IValidatableUmbrellaOptions
+	public class EmailFactoryOptions : IValidatableUmbrellaOptions
 	{
 		/// <summary>
 		/// Gets or sets the virtual path of the folder containing the email templates. This defaults to "~/Content/EmailTemplates/".

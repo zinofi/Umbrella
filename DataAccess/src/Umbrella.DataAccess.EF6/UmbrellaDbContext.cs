@@ -30,10 +30,8 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Public Methods
-		public virtual void RegisterPostSaveChangesActionAsync(object entity, Func<CancellationToken, Task> wrappedAction, CancellationToken cancellationToken = default)
+		public virtual void RegisterPostSaveChangesAction(object entity, Func<CancellationToken, Task> wrappedAction)
 		{
-			cancellationToken.ThrowIfCancellationRequested();
-
 			PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
 
 			if (Log.IsEnabled(LogLevel.Debug))
