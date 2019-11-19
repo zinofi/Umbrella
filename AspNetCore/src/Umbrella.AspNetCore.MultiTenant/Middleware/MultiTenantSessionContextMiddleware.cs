@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Umbrella.AspNetCore.MultiTenant.Middleware.Options;
 using Umbrella.DataAccess.MultiTenant.Abstractions;
 
 namespace Umbrella.AspNetCore.MultiTenant.Middleware
@@ -18,22 +19,22 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 	{
 		private readonly RequestDelegate _next;
 		private readonly ILogger _log;
-		private readonly string _tenantClaimType;
+		private readonly MultiTenantSessionContextMiddlewareOptions _options;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey}"/> class.
 		/// </summary>
 		/// <param name="next">The next piece of middleware to be executed.</param>
 		/// <param name="logger">The logger.</param>
-		/// <param name="tenantClaimType">Type of the tenant claim to be read from the current user's claims.</param>
+		/// <param name="options">The options.</param>
 		public MultiTenantSessionContextMiddleware(
 			RequestDelegate next,
 			ILogger<MultiTenantSessionContextMiddleware<TAppTenantKey>> logger,
-			string tenantClaimType)
+			MultiTenantSessionContextMiddlewareOptions options)
 		{
 			_next = next;
 			_log = logger;
-			_tenantClaimType = tenantClaimType;
+			_options = options;
 		}
 
 		/// <summary>
@@ -41,13 +42,13 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 		/// </summary>
 		/// <param name="context">The current <see cref="HttpContext"/>.</param>
 		/// <param name="dbAppAuthSessionContext">The database application authentication session context.</param>
-		public async Task Invoke(HttpContext context, DbAppTenantSessionContext<TAppTenantKey> dbAppAuthSessionContext)
+		public async Task InvokeAsync(HttpContext context, DbAppTenantSessionContext<TAppTenantKey> dbAppAuthSessionContext)
 		{
 			try
 			{
 				if (context.User.Identity.IsAuthenticated)
 				{
-					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _tenantClaimType)?.Value;
+					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
 
 					if (!string.IsNullOrWhiteSpace(strAppTenantId))
 					{
@@ -79,22 +80,22 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 	{
 		private readonly RequestDelegate _next;
 		private readonly ILogger _log;
-		private readonly string _tenantClaimType;
+		private readonly MultiTenantSessionContextMiddlewareOptions _options;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey, TNullableAppTenantKey}"/> class.
 		/// </summary>
 		/// <param name="next">The next piece of middleware to be executed.</param>
 		/// <param name="logger">The logger.</param>
-		/// <param name="tenantClaimType">Type of the tenant claim to be read from the current user's claims.</param>
+		/// <param name="options">The options.</param>
 		public MultiTenantSessionContextMiddleware(
 			RequestDelegate next,
 			ILogger<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>> logger,
-			string tenantClaimType)
+			MultiTenantSessionContextMiddlewareOptions options)
 		{
 			_next = next;
 			_log = logger;
-			_tenantClaimType = tenantClaimType;
+			_options = options;
 		}
 
 		/// <summary>
@@ -109,7 +110,7 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 			{
 				if (context.User.Identity.IsAuthenticated)
 				{
-					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _tenantClaimType)?.Value;
+					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
 
 					if (!string.IsNullOrWhiteSpace(strAppTenantId))
 					{

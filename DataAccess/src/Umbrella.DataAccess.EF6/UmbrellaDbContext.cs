@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DataAccess.EF6
 {
-	// TODO: Why isn't this abstract?
 	public abstract class UmbrellaDbContext : DbContext
 	{
 		#region Protected Properties
