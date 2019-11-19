@@ -6,6 +6,7 @@ namespace Umbrella.FileSystem.Abstractions
 {
 	public interface IUmbrellaFileProvider
 	{
+		void InitializeOptions(IUmbrellaFileProviderOptions options);
 		Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default);
 		Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default);
 		Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default);

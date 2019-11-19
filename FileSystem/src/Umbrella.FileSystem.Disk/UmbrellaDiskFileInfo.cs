@@ -21,7 +21,7 @@ namespace Umbrella.FileSystem.Disk
 
 		#region Protected Properties
 		protected ILogger Log { get; }
-		protected UmbrellaDiskFileProvider Provider { get; }
+		protected IUmbrellaDiskFileProvider Provider { get; }
 		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion
 
@@ -44,7 +44,7 @@ namespace Umbrella.FileSystem.Disk
 			IMimeTypeUtility mimeTypeUtility,
 			IGenericTypeConverter genericTypeConverter,
 			string subpath,
-			UmbrellaDiskFileProvider provider,
+			IUmbrellaDiskFileProvider provider,
 			FileInfo physicalFileInfo,
 			bool isNew)
 		{
@@ -412,10 +412,8 @@ namespace Umbrella.FileSystem.Disk
 
 				using (var fs = new FileStream(_metadataFullFileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
 				{
-					using (var sr = new StreamReader(fs))
-					{
-						json = await sr.ReadToEndAsync().ConfigureAwait(false);
-					}
+					using var sr = new StreamReader(fs);
+					json = await sr.ReadToEndAsync().ConfigureAwait(false);
 				}
 
 				if (string.IsNullOrWhiteSpace(json))

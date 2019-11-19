@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Umbrella.FileSystem.Abstractions;
+using Umbrella.FileSystem.AzureStorage.Extensions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
@@ -15,38 +15,71 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
-	// TODO V3: Design - Create a generic overload of this class that allows the options type to be specified.
-	// That way a consuming application could extend this provider if required with custom options
-	// so that multiple file providers could be added to the same application concurrently and registered with DI
-	// without conflicting with each other.
-	public class UmbrellaAzureBlobStorageFileProvider : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider
+	public class UmbrellaAzureBlobStorageFileProvider : UmbrellaAzureBlobStorageFileProvider<UmbrellaAzureBlobStorageFileProviderOptions>
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaAzureBlobStorageFileProvider"/> class.
+		/// </summary>
+		/// <param name="loggerFactory">The logger factory.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
+		public UmbrellaAzureBlobStorageFileProvider(
+			ILoggerFactory loggerFactory,
+			IMimeTypeUtility mimeTypeUtility,
+			IGenericTypeConverter genericTypeConverter)
+			: base(loggerFactory, mimeTypeUtility, genericTypeConverter)
+		{
+		}
+	}
+
+	public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider, IDisposable
+		where TOptions : UmbrellaAzureBlobStorageFileProviderOptions
 	{
 		#region Private Static Members
-		private static readonly char[] s_DirectorySeparatorArray = new[] { '/', '\\' };
+		private static readonly char[] _directorySeparatorArray = new[] { '/', '\\' };
 		#endregion
 
-		#region Protected Properties
-		protected CloudStorageAccount StorageAccount { get; }
-		protected CloudBlobClient BlobClient { get; }
-		protected ConcurrentDictionary<string, bool> ContainerResolutionCache { get; }
+		#region Private Members
+		private readonly SemaphoreSlim _containerCacheLock = new SemaphoreSlim(1, 1);
 		#endregion
 
-		#region Constructors
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the storage account.
+		/// </summary>
+		protected CloudStorageAccount StorageAccount { get; set; }
+
+		/// <summary>
+		/// Gets the BLOB client.
+		/// </summary>
+		protected CloudBlobClient BlobClient { get; set; }
+
+		/// <summary>
+		/// Gets the container resolution cache.
+		/// </summary>
+		protected ConcurrentDictionary<string, bool> ContainerResolutionCache { get; set; }
+		#endregion
+
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaAzureBlobStorageFileProvider{TOptions}"/> class.
+		/// </summary>
+		/// <param name="loggerFactory">The logger factory.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public UmbrellaAzureBlobStorageFileProvider(ILoggerFactory loggerFactory,
 			IMimeTypeUtility mimeTypeUtility,
-			IGenericTypeConverter genericTypeConverter,
-			UmbrellaAzureBlobStorageFileProviderOptions options)
-			: base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter, options)
+			IGenericTypeConverter genericTypeConverter)
+			: base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter)
 		{
-			StorageAccount = CloudStorageAccount.Parse(options.StorageConnectionString);
-			BlobClient = StorageAccount.CreateCloudBlobClient();
-
-			if (Options.CacheContainerResolutions)
-				ContainerResolutionCache = new ConcurrentDictionary<string, bool>();
 		}
 		#endregion
 
-		#region IUmbrellaAzureBlobStorageFileProvider Members
+		#region IUmbrellaAzureBlobStorageFileProvider Members		
+		/// <summary>
+		/// Clears the storage container resolution cache.
+		/// </summary>
+		/// <exception cref="UmbrellaFileSystemException">There has been a problem clearing the container resolution cache.</exception>
 		public void ClearContainerResolutionCache()
 		{
 			try
@@ -61,6 +94,17 @@ namespace Umbrella.FileSystem.AzureStorage
 		#endregion
 
 		#region Overridden Methods
+		public override void InitializeOptions(IUmbrellaFileProviderOptions options)
+		{
+			base.InitializeOptions(options);
+
+			StorageAccount = CloudStorageAccount.Parse(Options.StorageConnectionString);
+			BlobClient = StorageAccount.CreateCloudBlobClient();
+
+			if (Options.CacheContainerResolutions)
+				ContainerResolutionCache = new ConcurrentDictionary<string, bool>();
+		}
+
 		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -87,9 +131,9 @@ namespace Umbrella.FileSystem.AzureStorage
 			if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				Log.WriteDebug(new { subpath, cleanedPath });
 
-			string[] parts = cleanedPath.Split(s_DirectorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-			//TODO: Should extend this to allow for nested folder structures
+			// TODO: Should extend this to allow for nested folder structures
 			if (parts.Length != 2)
 				throw new UmbrellaFileSystemException($"The value for {nameof(subpath)} must contain exactly 2 segments, i.e. folder name and file name. The folder name is used as the blob storage container name. The invalid value is {subpath}");
 
@@ -101,30 +145,32 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
 
-			// TODO: Replace this mechanism with the MultiCache when it supports AsyncLazy internally. That way the calls to AzureStorage will only happen once. Possibility for a race condition
-			// with the current approach. Hardly a big deal though!!
 			if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
 			{
-#if NET461
-				await container.CreateIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
-#else
-				await container.CreateIfNotExistsAsync().ConfigureAwait(false);
-#endif
-				// The value can be anything here but we need to use ConcurrentDictioary because there isn't a ConcurrentHashSet type.
-				// Could implement our own locking mechanism around a HashSet but not worth it. Maybe consider in the future or see TODO above.
-				ContainerResolutionCache.TryAdd(containerName, true);
+				await _containerCacheLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+				try
+				{
+					if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
+					{
+						await container.CreateIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
+
+						// The value can be anything here but we need to use ConcurrentDictioary because there isn't a ConcurrentHashSet type.
+						// Could implement our own locking mechanism around a HashSet but not worth it. Maybe consider in the future or see TODO above.
+						ContainerResolutionCache.TryAdd(containerName, true);
+					}
+				}
+				finally
+				{
+					_containerCacheLock.Release();
+				}
 			}
 
 			CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
 
-			//The call to ExistsAsync should force the properties of the blob to be populated
-#if NET461
-            if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
-                return null;
-#else
-			if (!isNew && !await blob.ExistsAsync().ConfigureAwait(false))
+			// The call to ExistsAsync should force the properties of the blob to be populated
+			if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
 				return null;
-#endif
 
 			return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
 		}
@@ -137,6 +183,34 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			return Task.FromResult(true);
 		}
+		#endregion
+
+		#region IDisposable Support
+		private bool _isDisposed = false; // To detect redundant calls
+
+		/// <summary>
+		/// Releases unmanaged and - optionally - managed resources.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_isDisposed)
+			{
+				if (disposing)
+				{
+					_containerCacheLock.Dispose();
+				}
+
+				_isDisposed = true;
+			}
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public void Dispose() =>
+			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+			Dispose(true);
 		#endregion
 	}
 }

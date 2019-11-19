@@ -205,7 +205,8 @@ namespace Umbrella.DynamicImage.Test.Caching
 				RootPhysicalPath = BaseDirectory
 			};
 
-			var fileProvider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, fileProviderOptions);
+			var fileProvider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
+			fileProvider.InitializeOptions(fileProviderOptions);
 
 			return new DynamicImageDiskCache(cacheLogger.Object, memoryCache, cacheOptions, fileProvider, diskCacheOptions);
 		}
@@ -264,7 +265,8 @@ namespace Umbrella.DynamicImage.Test.Caching
 				StorageConnectionString = StorageConnectionString
 			};
 
-			var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);
+			var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
+			fileProvider.InitializeOptions(options);
 
 			var blobStorageCacheOptions = new DynamicImageAzureBlobStorageCacheOptions();
 

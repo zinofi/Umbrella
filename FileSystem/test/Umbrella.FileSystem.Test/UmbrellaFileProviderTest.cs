@@ -629,7 +629,10 @@ namespace Umbrella.FileSystem.Test
 				StorageConnectionString = StorageConnectionString
 			};
 
-			return new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);
+			var provider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
+			provider.InitializeOptions(options);
+
+			return provider;
 		}
 
 		private static IUmbrellaFileProvider CreateDiskFileProvider()
@@ -651,7 +654,10 @@ namespace Umbrella.FileSystem.Test
 				RootPhysicalPath = BaseDirectory
 			};
 
-			return new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object, options);
+			var provider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
+			provider.InitializeOptions(options);
+
+			return provider;
 		}
 
 		private void CheckWrittenFileAssertions(IUmbrellaFileProvider provider, IUmbrellaFileInfo file, int length, string fileName)

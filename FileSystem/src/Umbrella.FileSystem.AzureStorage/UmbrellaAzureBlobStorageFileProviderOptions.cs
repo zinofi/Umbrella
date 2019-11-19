@@ -1,4 +1,5 @@
-﻿using Umbrella.Utilities;
+﻿using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage
@@ -6,7 +7,7 @@ namespace Umbrella.FileSystem.AzureStorage
 	/// <summary>
 	/// The options for the UmbrellaAzureBlobStorageFileProvider.
 	/// </summary>
-	public class UmbrellaAzureBlobStorageFileProviderOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public class UmbrellaAzureBlobStorageFileProviderOptions : IUmbrellaFileProviderOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
 		/// <summary>
 		/// The connection string for the Azure storage account in which the blobs will be stored.

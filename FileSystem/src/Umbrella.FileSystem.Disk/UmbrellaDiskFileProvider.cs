@@ -13,58 +13,66 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
-	public class UmbrellaDiskFileProvider : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
-    {
-        #region Constructors
-        public UmbrellaDiskFileProvider(ILoggerFactory loggerFactory,
-            IMimeTypeUtility mimeTypeUtility,
-			IGenericTypeConverter genericTypeConverter,
-			UmbrellaDiskFileProviderOptions options)
-            : base(loggerFactory.CreateLogger<UmbrellaDiskFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter, options)
-        {
-            Guard.ArgumentNotNullOrWhiteSpace(options.RootPhysicalPath, nameof(options.RootPhysicalPath));
+	public class UmbrellaDiskFileProvider : UmbrellaDiskFileProvider<UmbrellaDiskFileProviderOptions>
+	{
+		public UmbrellaDiskFileProvider(
+			ILoggerFactory loggerFactory,
+			IMimeTypeUtility mimeTypeUtility,
+			IGenericTypeConverter genericTypeConverter)
+			: base(loggerFactory, mimeTypeUtility, genericTypeConverter)
+		{
+		}
+	}
 
-            //Sanitize the root path
-            options.RootPhysicalPath = options.RootPhysicalPath.Trim().TrimEnd('\\');
-        }
-        #endregion
+	public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
+		where TOptions : UmbrellaDiskFileProviderOptions
+	{
+		#region Constructors
+		public UmbrellaDiskFileProvider(
+			ILoggerFactory loggerFactory,
+			IMimeTypeUtility mimeTypeUtility,
+			IGenericTypeConverter genericTypeConverter)
+			: base(loggerFactory.CreateLogger<UmbrellaDiskFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter)
+		{
+		}
+		#endregion
 
-        #region Overridden Methods
-        protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+		#region Overridden Methods
+		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
-            //Sanitize subpath
-            StringBuilder pathBuilder = new StringBuilder(subpath)
-                .Trim(' ', '~', '\\', '/', ' ')
-                .Replace('/', '\\')
-                .Insert(0, Options.RootPhysicalPath + @"\");
+			//Sanitize subpath
+			StringBuilder pathBuilder = new StringBuilder(subpath)
+				.Trim(' ', '~', '\\', '/', ' ')
+				.Replace('/', '\\')
+				.Insert(0, Options.RootPhysicalPath + @"\");
 
-            string physicalPath = pathBuilder.ToString();
+			string physicalPath = pathBuilder.ToString();
 
-            if (Log.IsEnabled(LogLevel.Debug))
-                Log.WriteDebug(new { subpath, physicalPath });
+			if (Log.IsEnabled(LogLevel.Debug))
+				Log.WriteDebug(new { subpath, physicalPath });
 
-            var physicalFileInfo = new FileInfo(physicalPath);
+			var physicalFileInfo = new FileInfo(physicalPath);
 
-            if (!isNew && !physicalFileInfo.Exists)
-                return null;
+			if (!isNew && !physicalFileInfo.Exists)
+				return null;
 
-            if (!await CheckFileAccessAsync(physicalFileInfo, cancellationToken))
-                throw new UmbrellaFileAccessDeniedException(subpath);
+			if (!await CheckFileAccessAsync(physicalFileInfo, cancellationToken))
+				throw new UmbrellaFileAccessDeniedException(subpath);
 
-            return new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, physicalFileInfo, isNew);
-        }
-        #endregion
+			return new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, physicalFileInfo, isNew);
+		}
+		#endregion
 
-        #region Protected Methods
-        protected virtual Task<bool> CheckFileAccessAsync(FileInfo fileInfo, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+		#region Protected Methods
+		protected virtual Task<bool> CheckFileAccessAsync(FileInfo fileInfo, CancellationToken cancellationToken)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult(true);
-        }
-        #endregion
-    }
+			return Task.FromResult(true);
+		}
+		#endregion
+	}
 }
