@@ -293,8 +293,14 @@ namespace Umbrella.Utilities.Extensions
 			return upperSpan.ToString();
 		}
 
-		public static string TrimToUpperInvariant(this string value)
-			=> TrimToUpper(value, CultureInfo.InvariantCulture);
+		public static string TrimToUpperInvariant(this string value) => TrimToUpper(value, CultureInfo.InvariantCulture);
+
+		/// <summary>
+		/// Trims the specified value in a null-safe manner.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The trimmed value or <see langword="null"/>.</returns>
+		public static string TrimNull(this string value) => value?.Trim();
 
 		/// <summary>
 		/// Attempts to convert the name of a person into some kind of normalized format

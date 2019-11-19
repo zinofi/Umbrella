@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Umbrella.DataAccess.Abstractions.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -19,7 +19,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <summary>
 		/// Gets the hosting environment.
 		/// </summary>
-		protected IHostingEnvironment HostingEnvironment { get; }
+		protected IWebHostEnvironment HostingEnvironment { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether the application is running in development mode.
@@ -35,42 +35,89 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="hostingEnvironment">The hosting environment.</param>
 		public UmbrellaApiController(
 			ILogger logger,
-			IHostingEnvironment hostingEnvironment)
+			IWebHostEnvironment hostingEnvironment)
 		{
 			Log = logger;
 			HostingEnvironment = hostingEnvironment;
 		}
 		#endregion
 
-		// TODO: Review the legacy controller
-		#region Public Methods
-		[NonAction]
-		public virtual IActionResult Created() => StatusCode(201);
+		#region Protected Methods
 
-		[NonAction]
-		public virtual IActionResult Forbidden(string message = null) => HttpObjectOrStatusResult(message, 403);
+		/// <summary>
+		/// Creates a 201 Created <see cref="StatusCodeResult"/>.
+		/// </summary>
+		/// <returns>A <see cref="StatusCodeResult"/> of 201.</returns>
+		protected virtual StatusCodeResult Created() => StatusCode(201);
 
-		[NonAction]
-		public virtual IActionResult Conflict(string message = null) => HttpObjectOrStatusResult(message, 409);
+		/// <summary>
+		/// Creates a 201 Created <see cref="CreatedResult"/> with the specified content.
+		/// </summary>
+		/// <param name="content">The content.</param>
+		/// <returns>A <see cref="CreatedResult"/> of 201.</returns>
+		protected virtual CreatedResult Created(object content) => Created("", content);
 
-		[NonAction]
-		public virtual IActionResult InternalServerError(string message = null) => HttpObjectOrStatusResult(message, 500, true);
+		/// <summary>
+		/// Creates a 404 NotFound <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 404.</returns>
+		protected virtual ContentResult NotFound(string reason) => CreateStringContentResult(404, reason);
 
-		[NonAction]
-		public virtual IActionResult HttpObjectOrStatusResult(string message, int statusCode, bool wrapMessage = false)
+		/// <summary>
+		/// Creates a 409 Conflict <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 409.</returns>
+		protected virtual ContentResult Conflict(string reason) => CreateStringContentResult(409, reason);
+
+		/// <summary>
+		/// Creates a 500 InternalServerError <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 500.</returns>
+		protected virtual ContentResult InternalServerError(string reason) => CreateStringContentResult(500, reason);
+
+		/// <summary>
+		/// Creates a 401 Unauthorized <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 501.</returns>
+		protected virtual ContentResult Unauthorized(string reason) => CreateStringContentResult(401, reason);
+
+		/// <summary>
+		/// Creates a 403 Forbidden <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 403.</returns>
+		protected virtual ContentResult Forbidden(string reason) => CreateStringContentResult(403, reason);
+
+		/// <summary>
+		/// Creates a 405 MethodNotAllowed <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 405.</returns>
+		protected virtual ContentResult MethodNotAllowed(string reason) => CreateStringContentResult(405, reason);
+
+		/// <summary>
+		/// Creates a 429 TooManyRequests <see cref="ContentResult"/> with the specified reason.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ContentResult"/> of 429.</returns>
+		protected virtual ContentResult TooManyRequests(string reason) => CreateStringContentResult(429, reason);
+
+		/// <summary>
+		/// Creates a string <see cref="ContentResult"/> with the specified reason and status code.
+		/// </summary>
+		/// <param name="statusCode">The status code.</param>
+		/// <param name="reason">The reason.</param>
+		/// <returns>The <see cref="ContentResult"/>.</returns>
+		protected virtual ContentResult CreateStringContentResult(int statusCode, string reason) => new ContentResult
 		{
-			if (!string.IsNullOrWhiteSpace(message))
-			{
-				object value = message;
-
-				if (wrapMessage)
-					value = new { message };
-
-				return StatusCode(statusCode, value);
-			}
-
-			return StatusCode(statusCode);
-		}
+			Content = reason,
+			ContentType = "text/plain",
+			StatusCode = statusCode
+		};
 		#endregion
 	}
 }

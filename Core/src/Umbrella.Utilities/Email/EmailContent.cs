@@ -120,7 +120,7 @@ namespace Umbrella.Utilities.Email
 
 			try
 			{
-				_builder.Replace("{" + tokenName + "}", value);
+				_builder.Replace("{{" + tokenName + "}}", value);
 
 				return this;
 			}
@@ -143,7 +143,7 @@ namespace Umbrella.Utilities.Email
 		{
 			try
 			{
-				return _rowsBuilder != null ? _builder.Replace("{rows}", _rowsBuilder.ToString()).ToString() : _builder.ToString();
+				return _rowsBuilder != null ? _builder.Replace("{{rows}}", _rowsBuilder.ToString()).ToString() : _builder.ToString();
 			}
 			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
 			{
