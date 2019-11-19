@@ -43,13 +43,14 @@ namespace Umbrella.FileSystem.Disk
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
-			//Sanitize subpath
-			StringBuilder pathBuilder = new StringBuilder(subpath)
-				.Trim(' ', '~', '\\', '/', ' ')
+			// Sanitize subpath
+			string coreSubpath = SanitizeSubPathCore(subpath);
+
+			var cleanedPathBuilder = new StringBuilder(coreSubpath)
 				.Replace('/', '\\')
 				.Insert(0, Options.RootPhysicalPath + @"\");
 
-			string physicalPath = pathBuilder.ToString();
+			string physicalPath = cleanedPathBuilder.ToString();
 
 			if (Log.IsEnabled(LogLevel.Debug))
 				Log.WriteDebug(new { subpath, physicalPath });

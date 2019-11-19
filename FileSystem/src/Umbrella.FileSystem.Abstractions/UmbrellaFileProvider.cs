@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -15,6 +16,11 @@ namespace Umbrella.FileSystem.Abstractions
 		where TFileInfo : IUmbrellaFileInfo
 		where TOptions : IUmbrellaFileProviderOptions
 	{
+		#region Private Static Members
+		private static readonly char[] _subpathTrimCharacters = new[] { ' ', '\\', '/', '~', ' ' };
+		private static readonly Regex _multipleSlashSelector = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		#endregion
+
 		#region Protected Properties
 		protected ILogger Log { get; }
 		protected ILoggerFactory LoggerFactory { get; }
@@ -221,6 +227,22 @@ namespace Umbrella.FileSystem.Abstractions
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
+		}
+		#endregion
+
+		#region Protected Methods		
+		/// <summary>
+		/// Performs core sanitization of the subpath.
+		/// </summary>
+		/// <param name="subpath">The subpath.</param>
+		/// <returns>The sanitized subpath.</returns>
+		protected string SanitizeSubPathCore(string subpath)
+		{
+			StringBuilder pathBuilder = new StringBuilder(subpath)
+				.Trim(_subpathTrimCharacters)
+				.Replace('\\', '/');
+
+			return _multipleSlashSelector.Replace(pathBuilder.ToString(), "/");
 		}
 		#endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		where TOptions : UmbrellaAzureBlobStorageFileProviderOptions
 	{
 		#region Private Static Members
-		private static readonly char[] _directorySeparatorArray = new[] { '/', '\\' };
+		private static readonly char[] _directorySeparatorArray = new[] { '/' };
 		#endregion
 
 		#region Private Members
@@ -110,37 +111,20 @@ namespace Umbrella.FileSystem.AzureStorage
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
-			//TODO: Need to keep a list of incoming container names and map these to cleaned names so that we can throw an
-			//exception in cases where two different incoming names map to the same cleaned name which could potentially
-			//cause issues with unintentionally overwriting files that have the same name
-
-			//TODO: Use a regex here to only allow the characters permitted by Azure which are:
-			//Length: between 3 and 63 chars
-			//Lowercase letters
-			//Numbers
-			//Hyphens
-			//Can't contain consecutive hyphens
-			//Begin and end with a letter or number
-			StringBuilder pathBuilder = new StringBuilder(subpath)
-				.Trim(' ', '\\', '/', '~', '_', ' ')
-				.Replace("_", "")
-				.Replace(" ", "");
-
-			string cleanedPath = pathBuilder.ToString();
+			string cleanedPath = SanitizeSubPathCore(subpath);
 
 			if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				Log.WriteDebug(new { subpath, cleanedPath });
 
 			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-			// TODO: Should extend this to allow for nested folder structures
-			if (parts.Length != 2)
-				throw new UmbrellaFileSystemException($"The value for {nameof(subpath)} must contain exactly 2 segments, i.e. folder name and file name. The folder name is used as the blob storage container name. The invalid value is {subpath}");
-
 			string containerName = parts[0].ToLowerInvariant();
-			string fileName = parts[1];
+			string blobName = string.Join("/", parts.Skip(1));
 
-			if (!await CheckFileAccessAsync(containerName, fileName, cancellationToken))
+			NameValidator.ValidateContainerName(containerName);
+			NameValidator.ValidateBlobName(blobName);
+
+			if (!await CheckFileAccessAsync(containerName, blobName, cancellationToken))
 				throw new UmbrellaFileAccessDeniedException(subpath);
 
 			CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
@@ -166,7 +150,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				}
 			}
 
-			CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
+			CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
 
 			// The call to ExistsAsync should force the properties of the blob to be populated
 			if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
@@ -177,7 +161,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		#endregion
 
 		#region Protected Methods
-		protected virtual Task<bool> CheckFileAccessAsync(string containerName, string fileName, CancellationToken cancellationToken)
+		protected virtual Task<bool> CheckFileAccessAsync(string containerName, string blobName, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

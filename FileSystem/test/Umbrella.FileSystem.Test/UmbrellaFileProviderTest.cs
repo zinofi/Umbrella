@@ -53,9 +53,13 @@ namespace Umbrella.FileSystem.Test
 		{
 			$"~/images/{TestFileName}",
 			$"/images/{TestFileName}",
-			$"/_ images/{TestFileName}",
 			$@"\images\{TestFileName}",
-			$@"\images/{TestFileName}"
+			$@"\images/{TestFileName}",
+			$@"\images\\\\\\subbie\\\\{TestFileName}",
+			$"/images/subfolder1/sub2/{TestFileName}",
+			$"/images//////subfolder1/////sub2/{TestFileName}",
+			$"/images/subfolder1/su345  __---!!^^%b2/{TestFileName}",
+			$"/images/subfolder1/sub   2/{TestFileName}"
 		};
 
 		public static List<object[]> ProvidersMemberData = Providers.Select(x => new object[] { x }).ToList();
@@ -674,10 +678,10 @@ namespace Umbrella.FileSystem.Test
 		{
 			switch (provider)
 			{
-				case UmbrellaAzureBlobStorageFileProvider azureProvider:
+				case UmbrellaAzureBlobStorageFileProvider _:
 					Assert.IsType<UmbrellaAzureBlobStorageFileInfo>(file);
 					break;
-				case UmbrellaDiskFileProvider diskProvider:
+				case UmbrellaDiskFileProvider _:
 					Assert.IsType<UmbrellaDiskFileInfo>(file);
 					break;
 				default:

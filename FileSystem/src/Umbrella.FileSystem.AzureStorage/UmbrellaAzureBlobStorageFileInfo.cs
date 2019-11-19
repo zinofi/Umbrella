@@ -32,7 +32,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		#region Public Properties
 		public bool IsNew { get; private set; }
-		public string Name => Blob.Name;
+		public string Name => Path.GetFileName(SubPath);
 		public string SubPath { get; }
 		public long Length
 		{
