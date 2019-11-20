@@ -18,24 +18,24 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 	/// is provided using the <see cref="Umbrella.FileSystem"/> infrastructure.
 	/// </summary>
 	/// <seealso cref="Microsoft.Owin.OwinMiddleware" />
-	public class UmbrellaFileProviderMiddleware : OwinMiddleware
+	public class FileSystemMiddleware : OwinMiddleware
 	{
 		private readonly ILogger _log;
 		private readonly IHttpHeaderValueUtility _httpHeaderValueUtility;
-		private readonly UmbrellaFileProviderMiddlewareOptions _options;
+		private readonly FileSystemMiddlewareOptions _options;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaFileProviderMiddleware"/> class.
+		/// Initializes a new instance of the <see cref="FileSystemMiddleware"/> class.
 		/// </summary>
 		/// <param name="next">The next middleware.</param>
 		/// <param name="logger">The logger.</param>
 		/// <param name="httpHeaderValueUtility">The HTTP header value utility.</param>
 		/// <param name="options">The options.</param>
-		public UmbrellaFileProviderMiddleware(
+		public FileSystemMiddleware(
 			OwinMiddleware next,
-			ILogger<UmbrellaFileProviderMiddleware> logger,
+			ILogger<FileSystemMiddleware> logger,
 			IHttpHeaderValueUtility httpHeaderValueUtility,
-			UmbrellaFileProviderMiddlewareOptions options)
+			FileSystemMiddlewareOptions options)
 			: base(next)
 		{
 			_log = logger;
@@ -55,7 +55,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			{
 				string path = context.Request.Path.Value;
 
-				UmbrellaFileProviderMiddlewareMapping mapping = _options.GetMapping(path);
+				FileSystemMiddlewareMapping mapping = _options.GetMapping(path);
 
 				if (mapping != null)
 				{

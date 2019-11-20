@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
-			services.AddSingleton<UmbrellaFileProviderMiddleware>();
+			services.AddSingleton<FileSystemMiddleware>();
 
 			return services;
 		}

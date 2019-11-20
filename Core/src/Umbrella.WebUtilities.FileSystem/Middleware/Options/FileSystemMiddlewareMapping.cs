@@ -11,7 +11,7 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 	/// </summary>
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
-	public class UmbrellaFileProviderMiddlewareMapping : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
+	public class FileSystemMiddlewareMapping : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
 	{
 		/// <summary>
 		/// Gets or sets the cacheability.

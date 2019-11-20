@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
-using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 {
 	/// <summary>
-	/// Options for implementations of the UmbrellaFileProviderMiddleware in the ASP.NET and ASP.NET Core projects.
+	/// Options for implementations of the FileSystemMiddleware in the ASP.NET and ASP.NET Core projects.
 	/// </summary>
 	/// <seealso cref="ISanitizableUmbrellaOptions" />
 	/// <seealso cref="IValidatableUmbrellaOptions" />
-	public class UmbrellaFileProviderMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
-		private Dictionary<string, UmbrellaFileProviderMiddlewareMapping> _flattenedMappings;
+		private Dictionary<string, FileSystemMiddlewareMapping> _flattenedMappings;
 
 		/// <summary>
 		/// Gets or sets the mappings.
 		/// </summary>
-		public List<UmbrellaFileProviderMiddlewareMapping> Mappings { get; set; }
+		public List<FileSystemMiddlewareMapping> Mappings { get; set; }
 
 		/// <summary>
 		/// Gets the file provider for the specified <paramref name="searchPath"/>.
@@ -29,7 +27,7 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 		/// <param name="searchPath">The search path.</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public UmbrellaFileProviderMiddlewareMapping GetMapping(string searchPath)
+		public FileSystemMiddlewareMapping GetMapping(string searchPath)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(searchPath, nameof(searchPath));
 
