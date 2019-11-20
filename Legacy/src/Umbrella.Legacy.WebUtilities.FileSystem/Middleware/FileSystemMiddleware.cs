@@ -72,29 +72,36 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 						return;
 					}
 
+					string eTagValue = null;
+
 					// Check the cache headers
-					if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified.Value.UtcDateTime))
+					if (fileInfo.LastModified.HasValue)
 					{
-						cts.Cancel();
-						context.Response.SendStatusCode(HttpStatusCode.NotModified);
+						if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified.Value.UtcDateTime))
+						{
+							cts.Cancel();
+							context.Response.SendStatusCode(HttpStatusCode.NotModified);
 
-						return;
-					}
+							return;
+						}
 
-					string eTagValue = _httpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified.Value, fileInfo.Length);
+						eTagValue = _httpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified.Value, fileInfo.Length);
 
-					if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
-					{
-						cts.Cancel();
-						context.Response.SendStatusCode(HttpStatusCode.NotModified);
+						if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
+						{
+							cts.Cancel();
+							context.Response.SendStatusCode(HttpStatusCode.NotModified);
 
-						return;
+							return;
+						}
 					}
 
 					context.Response.ContentType = fileInfo.ContentType;
 
 					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache)
 					{
+						eTagValue ??= _httpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified.Value, fileInfo.Length);
+
 						context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified.Value);
 						context.Response.Headers["ETag"] = eTagValue;
 						context.Response.Headers["Cache-Control"] = "no-cache";
