@@ -97,7 +97,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			{
 				string path = context.Request.Path.Value.Trim();
 
-				var mapping = _options.GetMapping(path);
+				FrontEndCompressionMiddlewareMapping mapping = _options.GetMapping(path);
 
 				if (mapping == null)
 				{
@@ -108,7 +108,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				if (mapping.AppRelativeFolderPaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
 					&& mapping.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
 				{
-					var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
+					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
 					IFileInfo fileInfo = GetFileInfo(path, mapping.WatchFiles);
