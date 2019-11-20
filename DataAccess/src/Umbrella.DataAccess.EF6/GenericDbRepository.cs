@@ -14,7 +14,6 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Data.Abstractions;
-using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -26,8 +25,9 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
 		{
 		}
 	}
@@ -41,8 +41,9 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
 		{
 		}
 	}
@@ -57,8 +58,9 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
 		{
 		}
 	}
@@ -74,13 +76,6 @@ namespace Umbrella.DataAccess.EF6
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
-		#region Private Constants
-		private const string c_InvalidPropertyStringLengthErrorMessageFormat = "The {0} value must be between {1} and {2} characters in length.";
-		private const string c_InvalidPropertyNumberRangeErrorMessageFormat = "The {0} value must be between {1} and {2}.";
-		private const string c_BulkActionConcurrencyExceptionErrorMessage = "A concurrency error has occurred whilst trying to update the items.";
-		private const string c_ConcurrencyExceptionErrorMessageFormat = "A concurrency error has occurred whilst trying to save the item with id {0} or one of its dependants.";
-		#endregion
-
 		#region Private Static Members
 		private static readonly TRepoOptions s_DefaultRepoOptions = new TRepoOptions();
 		#endregion
@@ -88,6 +83,7 @@ namespace Umbrella.DataAccess.EF6
 		#region Protected Properties
 		protected TUserAuditKey CurrentUserId => UserAuditDataFactory.CurrentUserId;
 		protected ICurrentUserIdAccessor<TUserAuditKey> UserAuditDataFactory { get; }
+		protected IEntityValidator EntityValidator { get; }
 		#endregion
 
 		#region Constructors
@@ -95,10 +91,12 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<TUserAuditKey> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator)
 			: base(dbContext, logger, lookupNormalizer)
 		{
 			UserAuditDataFactory = userAuditDataFactory;
+			EntityValidator = entityValidator;
 		}
 		#endregion
 
@@ -141,7 +139,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
-				throw new UmbrellaDataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
 			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", returnValue: true))
 			{
@@ -190,7 +188,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
 			{
-				throw new UmbrellaDataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
+				throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
 			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Data Validation Exception for Ids", returnValue: true))
 			{
@@ -237,7 +235,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
-				throw new UmbrellaDataAccessConcurrencyException(string.Format(c_ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Failed for Id", returnValue: true))
 			{
@@ -262,7 +260,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
 			{
-				throw new UmbrellaDataAccessConcurrencyException(c_BulkActionConcurrencyExceptionErrorMessage, exc);
+				throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, returnValue: true))
 			{
@@ -480,7 +478,7 @@ namespace Umbrella.DataAccess.EF6
 			cancellationToken.ThrowIfCancellationRequested();
 
 			// Find the RepoOptions for this repository if provided in the options collection
-			TTargetEntityRepoOptions targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
+			TTargetEntityRepoOptions targetOptions = options.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
 			// If the options specify that children should not be processed here, abort.
 			if (!targetOptions.ProcessChildren)
@@ -524,20 +522,6 @@ namespace Umbrella.DataAccess.EF6
 		}
 		#endregion
 
-		#region Validation
-
-		protected virtual ValidationResult ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true)
-			=> !value.IsValidLength(minLength, maxLength, !required)
-				? new ValidationResult(string.Format(c_InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName })
-				: ValidationResult.Success;
-
-		protected virtual ValidationResult ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true)
-			where TProperty : struct, IComparable<TProperty>
-			=> !value.IsValidRange(min, max, !required)
-				? new ValidationResult(string.Format(c_InvalidPropertyNumberRangeErrorMessageFormat, propertyName, min, max), new[] { propertyName })
-				: ValidationResult.Success;
-		#endregion
-
 		#region Sanitize Methods
 		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
 		{
@@ -561,7 +545,7 @@ namespace Umbrella.DataAccess.EF6
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			TRepoOptions targetOptions = options?.OfType<TRepoOptions>().FirstOrDefault() ?? new TRepoOptions();
+			TRepoOptions targetOptions = options.OfType<TRepoOptions>().FirstOrDefault() ?? new TRepoOptions();
 
 			var lstToRemove = new List<TEntity>();
 

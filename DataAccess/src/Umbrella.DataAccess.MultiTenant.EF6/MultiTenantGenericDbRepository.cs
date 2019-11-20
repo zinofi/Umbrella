@@ -16,8 +16,9 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -32,8 +33,9 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -49,8 +51,9 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -66,8 +69,9 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -85,8 +89,9 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			ICurrentUserIdAccessor<TUserAuditKey> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			IEntityValidator entityValidator,
 			DbAppTenantSessionContext<TAppTenantKey> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
 		{
 			AppTenantSessionContext = dbAppTenantSessionContext;
 		}

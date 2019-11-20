@@ -23,6 +23,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
 			services.AddSingleton<ICurrentUserIdAccessor, DefaultUserIdAccessor>();
 
+			services.AddSingleton<IEntityValidator, EntityValidator>();
+
 			return services;
 		}
 
@@ -40,6 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<ICurrentUserIdAccessor, TCurrentUserIdAccessor>();
 			services.AddSingleton<ICurrentUserIdAccessor<int>>(x => x.GetService<ICurrentUserIdAccessor>());
+
+			services.AddSingleton<IEntityValidator, EntityValidator>();
 
 			return services;
 		}
