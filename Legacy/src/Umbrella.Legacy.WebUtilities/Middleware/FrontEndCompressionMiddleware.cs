@@ -97,13 +97,21 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			{
 				string path = context.Request.Path.Value.Trim();
 
-				if (_options.FrontEndRootFolderAppRelativePaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
-					&& _options.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
+				var mapping = _options.GetMapping(path);
+
+				if (mapping == null)
+				{
+					await Next.Invoke(context);
+					return;
+				}
+
+				if (mapping.AppRelativeFolderPaths.Any(x => path.StartsWith(x, StringComparison.OrdinalIgnoreCase))
+					&& mapping.TargetFileExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
 				{
 					var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
-					IFileInfo fileInfo = GetFileInfo(path);
+					IFileInfo fileInfo = GetFileInfo(path, mapping.WatchFiles);
 
 					if (fileInfo == null)
 					{
@@ -112,7 +120,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						return;
 					}
 
-					if (_options.ResponseCacheEnabled)
+					if (mapping.ResponseCacheEnabled)
 					{
 						bool shouldCache = _options.ResponseCacheDeterminer?.Invoke(fileInfo) ?? true;
 
@@ -136,24 +144,24 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							}
 
 							// Set the Response headers
-							if (_options.Cacheability == MiddlewareHttpCacheability.NoCache)
+							if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache)
 							{
 								context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
 								context.Response.ETag = eTagValue;
 
-								context.Response.Headers["Cache-Control"] = _options.Cacheability.ToCacheControlString();
+								context.Response.Headers["Cache-Control"] = mapping.Cacheability.ToCacheControlString();
 							}
-							else if (_options.Cacheability == MiddlewareHttpCacheability.Private)
+							else if (mapping.Cacheability == MiddlewareHttpCacheability.Private)
 							{
-								if (_options.MaxAgeSeconds.HasValue)
-									context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(_options.MaxAgeSeconds.Value);
+								if (mapping.MaxAgeSeconds.HasValue)
+									context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(mapping.MaxAgeSeconds.Value);
 
-								var sbCacheControl = new StringBuilder(_options.Cacheability.ToCacheControlString());
+								var sbCacheControl = new StringBuilder(mapping.Cacheability.ToCacheControlString());
 
-								if (_options.MaxAgeSeconds.HasValue)
-									sbCacheControl.Append(", max-age=" + _options.MaxAgeSeconds);
+								if (mapping.MaxAgeSeconds.HasValue)
+									sbCacheControl.Append(", max-age=" + mapping.MaxAgeSeconds);
 
-								if (_options.MustRevalidate)
+								if (mapping.MustRevalidate)
 									sbCacheControl.Append(", must-revalidate");
 
 								context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
@@ -171,7 +179,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 					byte[] bytes = null;
 
-					if (_options.CompressionEnabled && context.Request.Headers.TryGetValue(_options.AcceptEncodingHeaderKey, out string[] encodingValues))
+					if (mapping.CompressionEnabled && context.Request.Headers.TryGetValue(_options.AcceptEncodingHeaderKey, out string[] encodingValues))
 					{
 						// Parse the headers
 						var lstEncodingValue = new HashSet<string>();
@@ -206,7 +214,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 							string cacheKey = _cacheKeyUtility.Create<FrontEndCompressionMiddleware>(cacheKeyParts, 2);
 
-							(string contentEncoding, byte[] bytes) result = await _cache.GetOrCreateAsync<(string contentEncoding, byte[] bytes)>(cacheKey, async () =>
+							(string contentEncoding, byte[] bytes) result = await _cache.GetOrCreateAsync(cacheKey, async () =>
 							{
 								string contentEncoding = null;
 
@@ -249,9 +257,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 								return (contentEncoding, ms.ToArray());
 							},
-							_options,
+							mapping,
 							context.Request.CallCancelled,
-							() => _options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+							() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 
 							if (_log.IsEnabled(LogLevel.Debug))
 							{
@@ -310,9 +318,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 							return ms.ToArray();
 						},
-						_options,
+						mapping,
 						context.Request.CallCancelled,
-						() => _options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+						() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 					}
 
 					// Common headers
@@ -330,7 +338,6 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				}
 
 				await Next.Invoke(context);
-				return;
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }))
 			{
@@ -340,7 +347,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		#endregion
 
 		#region Private Methods
-		private IFileInfo GetFileInfo(string path)
+		private IFileInfo GetFileInfo(string path, bool watchFiles)
 		{
 			IFileInfo LoadFileInfo()
 			{
@@ -349,10 +356,10 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 				return fileInfo.Exists ? fileInfo : null;
 			}
 
-			return _options.WatchFiles
+			return watchFiles
 				? LoadFileInfo()
 				: _fileInfoDictionary.GetOrAdd(path.ToUpperInvariant(), key => LoadFileInfo());
-		} 
+		}
 		#endregion
 	}
 }

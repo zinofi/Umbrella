@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,13 @@ namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware
 
 			var options = new FrontEndCompressionMiddlewareOptions
 			{
-				FrontEndRootFolderAppRelativePaths = new[] { "/sitefiles" }
+				Mappings = new List<FrontEndCompressionMiddlewareMapping>
+				{
+					new FrontEndCompressionMiddlewareMapping
+					{
+						AppRelativeFolderPaths = new[] { "/sitefiles" }
+					}
+				}
 			};
 
 			_frontEndCompressionMiddleware = new FrontEndCompressionMiddleware(

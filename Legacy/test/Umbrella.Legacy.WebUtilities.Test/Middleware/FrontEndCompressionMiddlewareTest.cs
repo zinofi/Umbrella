@@ -81,7 +81,13 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 
 			var options = new FrontEndCompressionMiddlewareOptions
 			{
-				FrontEndRootFolderAppRelativePaths = new[] { "/sitefiles" }
+				Mappings = new List<FrontEndCompressionMiddlewareMapping>
+				{
+					new FrontEndCompressionMiddlewareMapping
+					{
+						AppRelativeFolderPaths = new[] { "/sitefiles" }
+					}
+				}
 			};
 
 			var fileProvider = new Mock<IFileProvider>();

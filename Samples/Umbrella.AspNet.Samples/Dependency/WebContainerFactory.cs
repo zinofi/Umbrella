@@ -4,7 +4,9 @@ using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Web.Http;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.AspNet.Samples.Dependency
 {
@@ -54,8 +56,14 @@ namespace Umbrella.AspNet.Samples.Dependency
 			services.AddUmbrellaWebUtilities(
 				frontEndCompressionMiddlewareOptionsBuilder: (serviceProvider, options) =>
 				{
-					options.FrontEndRootFolderAppRelativePaths = new[] { "/content" };
-					options.WatchFiles = true;
+					options.Mappings = new List<FrontEndCompressionMiddlewareMapping>
+					{
+						new FrontEndCompressionMiddlewareMapping
+						{
+							AppRelativeFolderPaths = new[] { "/content" },
+							WatchFiles = true
+						}
+					};
 				},
 				bundleUtilityOptionsBuilder: (serviceProvider, options) =>
 				{
