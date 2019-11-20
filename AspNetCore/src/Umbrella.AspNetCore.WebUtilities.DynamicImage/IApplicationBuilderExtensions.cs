@@ -1,5 +1,4 @@
 ﻿using System;
-using Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware;
 using Umbrella.Utilities;
 
 namespace Microsoft.AspNetCore.Builder
@@ -19,7 +18,7 @@ namespace Microsoft.AspNetCore.Builder
 		{
 			Guard.ArgumentNotNull(builder, nameof(builder));
 
-			return builder.UseMiddleware<DynamicImageMiddleware>();
+			return builder;
 		}
 	}
 }

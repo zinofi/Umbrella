@@ -44,4 +44,8 @@
 		<ProjectReference Include="..\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Middleware\" />
+	</ItemGroup>
+
 </Project>

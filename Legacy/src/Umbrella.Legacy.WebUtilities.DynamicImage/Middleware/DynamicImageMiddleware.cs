@@ -1,46 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Umbrella.DynamicImage.Abstractions;
-using Umbrella.Legacy.WebUtilities.DynamicImage.Configuration;
 using Umbrella.Legacy.WebUtilities.Extensions;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
+using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Http.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 {
+	/// <summary>
+	/// OWIN Middleware that is used to return a dynamically resized version of a source image. The source image and resizing options
+	/// are determined by parsing the incoming request URL.
+	/// </summary>
+	/// <seealso cref="Microsoft.Owin.OwinMiddleware" />
 	public class DynamicImageMiddleware : OwinMiddleware
 	{
-		#region Private Static Members
-		private static readonly List<string> _registeredDynamicImagePathPrefixList = new List<string>();
-		#endregion
-
 		#region Private Members
 		private readonly ILogger _log;
 		private readonly IDynamicImageUtility _dynamicImageUtility;
 		private readonly IDynamicImageResizer _dynamicImageResizer;
 		private readonly IHttpHeaderValueUtility _headerValueUtility;
-		private readonly Lazy<DynamicImageConfigurationOptions> _configurationOptions = new Lazy<DynamicImageConfigurationOptions>(LoadConfigurationOptions);
+		private readonly IMimeTypeUtility _mimeTypeUtility;
 		private readonly DynamicImageMiddlewareOptions _options;
 		#endregion
 
-		#region Private Properties
-		private DynamicImageConfigurationOptions ConfigurationOptions => _configurationOptions.Value;
-		#endregion
-
-		#region Constructors
-		public DynamicImageMiddleware(OwinMiddleware next,
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageMiddleware"/> class.
+		/// </summary>
+		/// <param name="next">The next middleware.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
+		/// <param name="dynamicImageResizer">The dynamic image resizer.</param>
+		/// <param name="headerValueUtility">The header value utility.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="options">The options.</param>
+		public DynamicImageMiddleware(
+			OwinMiddleware next,
 			ILogger<DynamicImageMiddleware> logger,
 			IDynamicImageUtility dynamicImageUtility,
 			IDynamicImageResizer dynamicImageResizer,
 			IHttpHeaderValueUtility headerValueUtility,
+			IMimeTypeUtility mimeTypeUtility,
 			DynamicImageMiddlewareOptions options)
 			: base(next)
 		{
@@ -48,19 +55,17 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 			_dynamicImageUtility = dynamicImageUtility;
 			_dynamicImageResizer = dynamicImageResizer;
 			_headerValueUtility = headerValueUtility;
+			_mimeTypeUtility = mimeTypeUtility;
 			_options = options;
-
-			options.Validate();
-
-			// Ensure that only one instance of the middleware can be registered for a specified path prefix value
-			if (_registeredDynamicImagePathPrefixList.Contains(_options.DynamicImagePathPrefix, StringComparer.OrdinalIgnoreCase))
-				throw new DynamicImageException($"The application is trying to register multiple instances of the {nameof(DynamicImageMiddleware)} with the same prefix: {_options.DynamicImagePathPrefix}. This is not allowed.");
-
-			_registeredDynamicImagePathPrefixList.Add(_options.DynamicImagePathPrefix);
 		}
 		#endregion
 
-		#region Overridden Methods
+		#region Overridden Methods		
+		/// <summary>
+		/// Process an individual request.
+		/// </summary>
+		/// <param name="context">The current <see cref="IOwinContext"/>.</param>
+		/// <exception cref="UmbrellaWebException">An error has occurred whilst executing the request.</exception>
 		public override async Task Invoke(IOwinContext context)
 		{
 			context.Request.CallCancelled.ThrowIfCancellationRequested();
@@ -89,14 +94,23 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 					return;
 				}
 
-				if (status == DynamicImageParseUrlResult.Invalid || !_dynamicImageUtility.ImageOptionsValid(imageOptions, ConfigurationOptions))
+				if (status == DynamicImageParseUrlResult.Invalid)
 				{
 					cts.Cancel();
 					context.Response.SendStatusCode(HttpStatusCode.NotFound);
 					return;
 				}
 
-				DynamicImageItem image = await _dynamicImageResizer.GenerateImageAsync(_options.SourceFileProvider, imageOptions, token);
+				DynamicImageMiddlewareMapping mapping = _options.GetMapping(imageOptions.SourcePath);
+
+				if (mapping == null || (mapping.EnableValidation && !_dynamicImageUtility.ImageOptionsValid(imageOptions, mapping.ValidMappings)))
+				{
+					cts.Cancel();
+					context.Response.SendStatusCode(HttpStatusCode.NotFound);
+					return;
+				}
+
+				DynamicImageItem image = await _dynamicImageResizer.GenerateImageAsync(mapping.FileProviderMapping.FileProvider, imageOptions, token);
 
 				if (image == null)
 				{
@@ -124,7 +138,19 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 
 				if (image.Length > 0)
 				{
-					AppendResponseHeaders(context.Response, image);
+					context.Response.ContentType = _mimeTypeUtility.GetMimeType(image.ImageOptions.Format.ToFileExtensionString());
+					context.Response.ContentLength = image.Length;
+
+					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache)
+					{
+						context.Response.Headers["Last-Modified"] = _headerValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
+						context.Response.ETag = _headerValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
+						context.Response.Headers["Cache-Control"] = "no-cache";
+					}
+					else
+					{
+						context.Response.Headers["Cache-Control"] = "no-store";
+					}
 
 					await image.WriteContentToStreamAsync(context.Response.Body, token);
 
@@ -148,27 +174,10 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
-		}
-		#endregion
-
-		#region Private Methods
-		private void AppendResponseHeaders(IOwinResponse response, DynamicImageItem image)
-		{
-			response.ContentType = "image/" + image.ImageOptions.Format.ToString().ToLowerInvariant();
-			response.ContentLength = image.Length;
-			response.Headers["Last-Modified"] = _headerValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
-			response.ETag = _headerValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
-
-			if (!string.IsNullOrWhiteSpace(_options.CacheControlHeaderValue))
-				response.Headers["Cache-Control"] = _options.CacheControlHeaderValue.Trim().ToLowerInvariant();
-		}
-
-		private static DynamicImageConfigurationOptions LoadConfigurationOptions()
-		{
-			var mappingsConfig = new DynamicImageMappingsConfig(WebConfigurationManager.OpenWebConfiguration("~/web.config"));
-			var options = (DynamicImageConfigurationOptions)mappingsConfig;
-
-			return options;
+			finally
+			{
+				cts.Dispose();
+			}
 		}
 		#endregion
 	}

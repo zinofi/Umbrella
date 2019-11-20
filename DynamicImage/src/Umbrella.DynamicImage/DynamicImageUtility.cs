@@ -11,60 +11,61 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DynamicImage
 {
-    public class DynamicImageUtility : IDynamicImageUtility
-    {
-        #region Private Constants
-        private const string c_VirtualPathFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
-        #endregion
+	public class DynamicImageUtility : IDynamicImageUtility
+	{
+		#region Private Constants
+		private const string c_VirtualPathFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
+		#endregion
 
-        #region Private Static Members
-        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
-        private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
-        private static readonly Regex s_DensityRegex = new Regex("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private static readonly char[] s_SegmentSeparatorArray = new[] { '/' };
-        #endregion
+		#region Private Static Members
+		private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
+		private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
+		private static readonly Regex s_DensityRegex = new Regex("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		private static readonly char[] s_SegmentSeparatorArray = new[] { '/' };
+		#endregion
 
-        #region Protected Properties
-        protected ILogger Log { get; }
-        #endregion
+		#region Protected Properties
+		protected ILogger Log { get; }
+		#endregion
 
-        #region Constructors
-        public DynamicImageUtility(ILogger<DynamicImageUtility> logger)
-        {
-            Log = logger;
-        }
-        #endregion
+		#region Constructors
+		public DynamicImageUtility(ILogger<DynamicImageUtility> logger)
+		{
+			Log = logger;
+		}
+		#endregion
 
-        #region Public Methods
-        public virtual DynamicImageFormat ParseImageFormat(string format)
-        {
+		#region Public Methods
+		public virtual DynamicImageFormat ParseImageFormat(string format)
+		{
 			Guard.ArgumentNotNullOrWhiteSpace(format, nameof(format));
 
-            switch (format?.TrimStart('.').Trim()?.ToLowerInvariant())
-            {
-                case "png":
-                    return DynamicImageFormat.Png;
-                case "bmp":
-                    return DynamicImageFormat.Bmp;
-                case "jpg":
-                    return DynamicImageFormat.Jpeg;
-                case "gif":
-                    return DynamicImageFormat.Gif;
-				case "webp":
-					return DynamicImageFormat.WebP;
-                default:
-                    return default;
-            }
-        }
+			try
+			{
+				return (format?.TrimStart('.').Trim()?.ToLowerInvariant()) switch
+				{
+					"png" => DynamicImageFormat.Png,
+					"bmp" => DynamicImageFormat.Bmp,
+					"jpg" => DynamicImageFormat.Jpeg,
+					"gif" => DynamicImageFormat.Gif,
+					"webp" => DynamicImageFormat.WebP,
+					_ => default,
+				};
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { format }, returnValue: true))
+			{
+				throw new DynamicImageException("There has been a problem parsing the image format.", exc);
+			}
+		}
 
-        public virtual (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl, DynamicImageFormat? overrideFormat = null)
-        {
+		public virtual (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl, DynamicImageFormat? overrideFormat = null)
+		{
 			Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
 			Guard.ArgumentNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
 
 			try
-            {
-                string url = relativeUrl?.TrimToLowerInvariant();
+			{
+				string url = relativeUrl?.TrimToLowerInvariant();
 
 				if (!Path.HasExtension(url))
 					return (DynamicImageParseUrlResult.Invalid, default);
@@ -72,104 +73,108 @@ namespace Umbrella.DynamicImage
 				string pathPrefix = dynamicImagePathPrefix.TrimToLowerInvariant();
 
 				if (string.IsNullOrEmpty(url) || !url.StartsWith($"/{pathPrefix}/"))
-                    return s_SkipParseUrlResult;
+					return s_SkipParseUrlResult;
 
-                string[] prefixSegments = pathPrefix.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
-                string[] allSegments = url.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+				string[] prefixSegments = pathPrefix.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+				string[] allSegments = url.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-                if (allSegments.Length - prefixSegments.Length < 5)
-                    return s_InvalidParseUrlResult;
+				if (allSegments.Length - prefixSegments.Length < 5)
+					return s_InvalidParseUrlResult;
 
-                //Ignore the prefix segments
-                int.TryParse(allSegments[prefixSegments.Length], out int width);
-                int.TryParse(allSegments[prefixSegments.Length + 1], out int height);
+				//Ignore the prefix segments
+				int.TryParse(allSegments[prefixSegments.Length], out int width);
+				int.TryParse(allSegments[prefixSegments.Length + 1], out int height);
 
-                if (width <= 0 || height <= 0)
-                    return s_InvalidParseUrlResult;
+				if (width <= 0 || height <= 0)
+					return s_InvalidParseUrlResult;
 
-                DynamicResizeMode mode = allSegments[prefixSegments.Length + 2].ToEnum<DynamicResizeMode>();
-                string originalExtension = allSegments[prefixSegments.Length + 3];
+				DynamicResizeMode mode = allSegments[prefixSegments.Length + 2].ToEnum<DynamicResizeMode>();
+				string originalExtension = allSegments[prefixSegments.Length + 3];
 
-                //The extension of this path is the target format the image will be resized as.
-                string path = "/" + string.Join("/", allSegments.Skip(prefixSegments.Length + 4));
-                string targetExtension = Path.GetExtension(path);
+				//The extension of this path is the target format the image will be resized as.
+				string path = "/" + string.Join("/", allSegments.Skip(prefixSegments.Length + 4));
+				string targetExtension = Path.GetExtension(path);
 
-                string sourcePath = Path.ChangeExtension(path, "." + originalExtension);
+				string sourcePath = Path.ChangeExtension(path, "." + originalExtension);
 
-                //Parse the sourcePath for the pixel density information here
-                string pathWithoutExtension = Path.GetFileNameWithoutExtension(path);
+				//Parse the sourcePath for the pixel density information here
+				string pathWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
-                //Check to see if the path has a density identifier at the end
-                Match densityMatch = s_DensityRegex.Match(pathWithoutExtension);
+				//Check to see if the path has a density identifier at the end
+				Match densityMatch = s_DensityRegex.Match(pathWithoutExtension);
 
-                if (densityMatch.Success)
-                {
-                    //Get the density from the 2nd group
-                    if (densityMatch.Groups.Count == 2)
-                    {
-                        int density = int.Parse(densityMatch.Groups[1].Value);
-                        int densityIdentifierLength = densityMatch.Value.Length;
+				if (densityMatch.Success)
+				{
+					//Get the density from the 2nd group
+					if (densityMatch.Groups.Count == 2)
+					{
+						int density = int.Parse(densityMatch.Groups[1].Value);
+						int densityIdentifierLength = densityMatch.Value.Length;
 
-                        //Remove the density identifier from the path
-                        string extension = Path.GetExtension(sourcePath);
-                        int charsToRemove = extension.Length + densityIdentifierLength;
+						//Remove the density identifier from the path
+						string extension = Path.GetExtension(sourcePath);
+						int charsToRemove = extension.Length + densityIdentifierLength;
 
-                        sourcePath = sourcePath.Remove(sourcePath.Length - charsToRemove, charsToRemove) + extension;
+						sourcePath = sourcePath.Remove(sourcePath.Length - charsToRemove, charsToRemove) + extension;
 
-                        //Double the dimensions
-                        width *= density;
-                        height *= density;
-                    }
-                }
+						//Double the dimensions
+						width *= density;
+						height *= density;
+					}
+				}
 
 				var imageOptions = new DynamicImageOptions(sourcePath, width, height, mode, overrideFormat ?? ParseImageFormat(targetExtension));
 
-                return (DynamicImageParseUrlResult.Success, imageOptions);
-            }
-            catch(Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }, returnValue: true))
-            {
-                return s_InvalidParseUrlResult;
-            }
-        }
+				return (DynamicImageParseUrlResult.Success, imageOptions);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }, returnValue: true))
+			{
+				return s_InvalidParseUrlResult;
+			}
+		}
 
-        public virtual bool ImageOptionsValid(DynamicImageOptions imageOptions, DynamicImageConfigurationOptions configOptions)
-        {
-            if(configOptions.Enabled)
-            {
-                var mapping = (DynamicImageMapping)imageOptions;
+		public virtual bool ImageOptionsValid(DynamicImageOptions imageOptions, IEnumerable<DynamicImageMapping> validMappings)
+		{
+			try
+			{
+				var mapping = (DynamicImageMapping)imageOptions;
 
-                if (!configOptions.Mappings.Contains(mapping))
-                    return false;
-            }
+				if (!validMappings.Contains(mapping))
+					return false;
 
-            return true;
-        }
+				return true;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { imageOptions, validMappings }, returnValue: true))
+			{
+				throw new DynamicImageException("An error has occurred whilst validating the image options.", exc);
+			}
+		}
 
-        public virtual string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options)
-        {
+		public virtual string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options)
+		{
 			Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
 
 			try
-            {
-                string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
+			{
+				string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
 
-                string path = options.SourcePath.Replace("~/", "");
+				string path = options.SourcePath.Replace("~/", "");
 
-                string virtualPath = string.Format(c_VirtualPathFormat,
-                    dynamicImagePathPrefix,
-                    options.Width,
-                    options.Height,
-                    options.ResizeMode,
-                    originalExtension,
-                    path.Replace(originalExtension, options.Format.ToFileExtensionString()));
+				string virtualPath = string.Format(c_VirtualPathFormat,
+					dynamicImagePathPrefix,
+					options.Width,
+					options.Height,
+					options.ResizeMode,
+					originalExtension,
+					path.Replace(originalExtension, options.Format.ToFileExtensionString()));
 
-                return virtualPath;
-            }
-            catch (Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, options }))
-            {
-                throw;
-            }
-        }
-        #endregion
-    }
+				return virtualPath;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, options }, returnValue: true))
+			{
+				throw new DynamicImageException("An error has occurred whilst generating the virtual path.", exc);
+			}
+		}
+		#endregion
+	}
 }

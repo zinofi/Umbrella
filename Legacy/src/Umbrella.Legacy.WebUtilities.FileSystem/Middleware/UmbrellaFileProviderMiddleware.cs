@@ -6,19 +6,31 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Legacy.WebUtilities.Extensions;
-using Umbrella.Utilities;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.FileSystem.Middleware.Options;
 using Umbrella.WebUtilities.Http.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 {
+	/// <summary>
+	/// OWIN Middleware that is used to access files stored in a physical or virtual file system. Underling file access
+	/// is provided using the <see cref="Umbrella.FileSystem"/> infrastructure.
+	/// </summary>
+	/// <seealso cref="Microsoft.Owin.OwinMiddleware" />
 	public class UmbrellaFileProviderMiddleware : OwinMiddleware
 	{
-		protected ILogger Log { get; }
-		protected IHttpHeaderValueUtility HttpHeaderValueUtility { get; }
-		protected UmbrellaFileProviderMiddlewareOptions Options { get; }
+		private readonly ILogger _log;
+		private readonly IHttpHeaderValueUtility _httpHeaderValueUtility;
+		private readonly UmbrellaFileProviderMiddlewareOptions _options;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaFileProviderMiddleware"/> class.
+		/// </summary>
+		/// <param name="next">The next middleware.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="httpHeaderValueUtility">The HTTP header value utility.</param>
+		/// <param name="options">The options.</param>
 		public UmbrellaFileProviderMiddleware(
 			OwinMiddleware next,
 			ILogger<UmbrellaFileProviderMiddleware> logger,
@@ -26,11 +38,15 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			UmbrellaFileProviderMiddlewareOptions options)
 			: base(next)
 		{
-			Log = logger;
-			HttpHeaderValueUtility = httpHeaderValueUtility;
-			Options = options;
+			_log = logger;
+			_httpHeaderValueUtility = httpHeaderValueUtility;
+			_options = options;
 		}
 
+		/// <summary>
+		/// Process an individual request.
+		/// </summary>
+		/// <param name="context">The current <see cref="IOwinContext"/>.</param>
 		public override async Task Invoke(IOwinContext context)
 		{
 			context.Request.CallCancelled.ThrowIfCancellationRequested();
@@ -39,19 +55,20 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			{
 				string path = context.Request.Path.Value;
 
-				IUmbrellaFileProvider fileProvider = Options.GetFileProvider(path);
+				UmbrellaFileProviderMiddlewareMapping mapping = _options.GetMapping(path);
 
-				if (fileProvider != null)
+				if (mapping != null)
 				{
 					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
-					IUmbrellaFileInfo fileInfo = await fileProvider.GetAsync(path, token);
+					IUmbrellaFileInfo fileInfo = await mapping.FileProviderMapping.FileProvider.GetAsync(path, token);
 
 					if (fileInfo == null)
 					{
 						cts.Cancel();
 						context.Response.SendStatusCode(HttpStatusCode.NotFound);
+
 						return;
 					}
 
@@ -60,40 +77,47 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 					{
 						cts.Cancel();
 						context.Response.SendStatusCode(HttpStatusCode.NotModified);
+
 						return;
 					}
 
-					string eTagValue = HttpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified.Value, fileInfo.Length);
+					string eTagValue = _httpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified.Value, fileInfo.Length);
 
 					if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 					{
 						cts.Cancel();
 						context.Response.SendStatusCode(HttpStatusCode.NotModified);
+
 						return;
 					}
 
 					context.Response.ContentType = fileInfo.ContentType;
-					context.Response.Headers["Last-Modified"] = HttpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified.Value);
-					context.Response.Headers["ETag"] = eTagValue;
-					context.Response.Headers["Cache-Control"] = "no-cache";
+
+					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache)
+					{
+						context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified.Value);
+						context.Response.Headers["ETag"] = eTagValue;
+						context.Response.Headers["Cache-Control"] = "no-cache";
+					}
+					else
+					{
+						context.Response.Headers["Cache-Control"] = "no-store";
+					}
 
 					await fileInfo.WriteToStreamAsync(context.Response.Body, token);
 					await context.Response.Body.FlushAsync();
 
 					return;
 				}
-				else
-				{
-					await Next.Invoke(context);
-				}
+
+				await Next.Invoke(context);
 			}
-			catch (UmbrellaFileAccessDeniedException exc) when (Log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			catch (UmbrellaFileAccessDeniedException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
 			{
-				// TODO: Should this be a 401 or 403? Or even a 404 where we don't want necessarily want a bad actor to know that file exists.
-				// Maybe add a new Options property to configure that behaviour.
-				context.Response.SendStatusCode(HttpStatusCode.Forbidden);
+				// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
+				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }, returnValue: true))
 			{
 				throw new UmbrellaWebException("An error has occurred whilst executing the request.", exc);
 			}

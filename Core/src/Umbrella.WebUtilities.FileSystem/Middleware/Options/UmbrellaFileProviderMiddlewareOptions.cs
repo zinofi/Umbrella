@@ -4,53 +4,57 @@ using System.ComponentModel;
 using System.Linq;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Options.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 {
-	public class UmbrellaFileProviderMiddlewareOptions
+	/// <summary>
+	/// Options for implementations of the UmbrellaFileProviderMiddleware in the ASP.NET and ASP.NET Core projects.
+	/// </summary>
+	/// <seealso cref="ISanitizableUmbrellaOptions" />
+	/// <seealso cref="IValidatableUmbrellaOptions" />
+	public class UmbrellaFileProviderMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
-		// TODO: Somewhere in here it would be useful to allow the cache headers to be varied on a per provider basis.
-		// This same approach should be adopted by both the FrontEndCompressionMiddleware and DynamicImageMiddleware
-		// to allow for maximum flexibility.
-		// Room for creating common abstractions too.
-		private class PathMapping
-		{
-			public PathMapping(string path, IUmbrellaFileProvider fileProvider)
-			{
-				Path = path;
-				FileProvider = fileProvider;
-			}
+		private Dictionary<string, UmbrellaFileProviderMiddlewareMapping> _flattenedMappings;
 
-			public string Path { get; }
-			public IUmbrellaFileProvider FileProvider { get; }
-		}
+		/// <summary>
+		/// Gets or sets the mappings.
+		/// </summary>
+		public List<UmbrellaFileProviderMiddlewareMapping> Mappings { get; set; }
 
-		private readonly object _syncRoot = new object();
-		private List<PathMapping> _flattenedMappingList;
-
-		public List<UmbrellaFileProviderMapping> Mappings { get; set; }
-
+		/// <summary>
+		/// Gets the file provider for the specified <paramref name="searchPath"/>.
+		/// </summary>
+		/// <param name="searchPath">The search path.</param>
+		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public IUmbrellaFileProvider GetFileProvider(string searchPath)
+		public UmbrellaFileProviderMiddlewareMapping GetMapping(string searchPath)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(searchPath, nameof(searchPath));
 
-			if (_flattenedMappingList == null)
+			return _flattenedMappings.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
+		}
+
+		/// <summary>
+		/// Sanitizes this instance.
+		/// </summary>
+		public void Sanitize()
+		{
+			if (Mappings != null)
 			{
-				lock (_syncRoot)
-				{
-					if (_flattenedMappingList == null)
-					{
-						// Ensure that across all mappings the paths are unique. Not going overboard here as ultimately it's up to
-						// the consumer of this middleware to not do daft stuff.
-						_flattenedMappingList = Mappings.SelectMany(x => x.AppRelativeFolderPaths.Select(y => new PathMapping(y, x.FileProvider))).ToList();
-					}
-				}
+				Mappings.ForEach(x => x.Sanitize());
+				_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
 			}
+		}
 
-			PathMapping mapping = _flattenedMappingList.Find(x => searchPath.Trim().StartsWith(x.Path, StringComparison.OrdinalIgnoreCase));
-
-			return mapping?.FileProvider;
+		/// <summary>
+		/// Validates this instance.
+		/// </summary>
+		public void Validate()
+		{
+			Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));
+			Guard.ArgumentNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
 		}
 	}
 }

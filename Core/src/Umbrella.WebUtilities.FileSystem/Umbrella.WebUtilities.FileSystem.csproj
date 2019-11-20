@@ -37,6 +37,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
+	  <ProjectReference Include="..\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
 	</ItemGroup>
 
 </Project>

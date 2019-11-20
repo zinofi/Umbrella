@@ -136,21 +136,26 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							}
 
 							// Set the Response headers
-							context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
-							context.Response.ETag = eTagValue;
+							if (_options.Cacheability == MiddlewareHttpCacheability.NoCache)
+							{
+								context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
+								context.Response.ETag = eTagValue;
+							}
+							else if (_options.Cacheability == MiddlewareHttpCacheability.Private)
+							{
+								if (_options.MaxAgeSeconds.HasValue)
+									context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(_options.MaxAgeSeconds.Value);
 
-							if (_options.MaxAgeSeconds.HasValue)
-								context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(_options.MaxAgeSeconds.Value);
+								var sbCacheControl = new StringBuilder("no-cache");
 
-							var sbCacheControl = new StringBuilder(_options.HttpCacheability.ToCacheControlString());
+								if (_options.MaxAgeSeconds.HasValue)
+									sbCacheControl.Append(", max-age=" + _options.MaxAgeSeconds);
 
-							if (_options.MaxAgeSeconds.HasValue)
-								sbCacheControl.Append(", max-age=" + _options.MaxAgeSeconds);
+								if (_options.MustRevalidate)
+									sbCacheControl.Append(", must-revalidate");
 
-							if (_options.MustRevalidate)
-								sbCacheControl.Append(", must-revalidate");
-
-							context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
+								context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
+							}
 						}
 						else
 						{
@@ -159,7 +164,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 					}
 					else
 					{
-						context.Response.Headers["Cache-Control"] = _options.HttpCacheability.ToCacheControlString();
+						context.Response.Headers["Cache-Control"] = _options.Cacheability.ToCacheControlString();
 					}
 
 					byte[] bytes = null;
@@ -308,11 +313,11 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						() => _options.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
 					}
 
-					await context.Response.Body.WriteAsync(bytes, 0, bytes.Length, token);
-
 					// Common headers
 					context.Response.ContentType = _mimeTypeUtility.GetMimeType(fileInfo.Name);
 					context.Response.ContentLength = bytes.LongLength;
+
+					await context.Response.Body.WriteAsync(bytes, 0, bytes.Length, token);
 
 					// Ensure the response stream is flushed async immediately here. If not, there could be content
 					// still buffered which will not be sent out until the stream is disposed at which point
