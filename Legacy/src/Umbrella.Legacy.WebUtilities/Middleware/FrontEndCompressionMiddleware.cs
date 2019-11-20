@@ -140,13 +140,15 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 							{
 								context.Response.Headers["Last-Modified"] = _httpHeaderValueUtility.CreateLastModifiedHeaderValue(fileInfo.LastModified);
 								context.Response.ETag = eTagValue;
+
+								context.Response.Headers["Cache-Control"] = _options.Cacheability.ToCacheControlString();
 							}
 							else if (_options.Cacheability == MiddlewareHttpCacheability.Private)
 							{
 								if (_options.MaxAgeSeconds.HasValue)
 									context.Response.Expires = DateTimeOffset.UtcNow.AddSeconds(_options.MaxAgeSeconds.Value);
 
-								var sbCacheControl = new StringBuilder("no-cache");
+								var sbCacheControl = new StringBuilder(_options.Cacheability.ToCacheControlString());
 
 								if (_options.MaxAgeSeconds.HasValue)
 									sbCacheControl.Append(", max-age=" + _options.MaxAgeSeconds);
@@ -159,12 +161,12 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						}
 						else
 						{
-							context.Response.Headers["Cache-Control"] = "no-store";
+							context.Response.Headers["Cache-Control"] = MiddlewareHttpCacheability.NoStore.ToCacheControlString();
 						}
 					}
 					else
 					{
-						context.Response.Headers["Cache-Control"] = _options.Cacheability.ToCacheControlString();
+						context.Response.Headers["Cache-Control"] = MiddlewareHttpCacheability.NoStore.ToCacheControlString();
 					}
 
 					byte[] bytes = null;
