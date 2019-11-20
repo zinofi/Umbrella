@@ -17,7 +17,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript</PackageId>
-		<Version>3.0.0-preview-0023</Version>
+		<Version>3.0.0-preview-0024</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
