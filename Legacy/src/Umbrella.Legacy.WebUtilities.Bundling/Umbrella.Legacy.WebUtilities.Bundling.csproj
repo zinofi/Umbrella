@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Legacy.WebUtilities.Bundling</PackageId>
-    <Version>3.0.0-preview-0021</Version>
+    <Version>3.0.0-preview-0022</Version>
     <Authors>Zinofi Digital Ltd</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2019</Copyright>
