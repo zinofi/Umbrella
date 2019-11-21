@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.DataAccess.Remote
 {

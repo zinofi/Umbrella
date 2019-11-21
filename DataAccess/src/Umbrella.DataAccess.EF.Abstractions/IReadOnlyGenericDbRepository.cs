@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.DataAccess.EF.Abstractions;
-using Umbrella.Utilities.Sorting;
+using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.DataAccess.Abstractions
 {

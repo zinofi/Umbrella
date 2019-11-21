@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.Utilities.Sorting
+namespace Umbrella.Utilities.Data.Sorting
 {
 	[StructLayout(LayoutKind.Auto)]
 	public readonly struct SortExpression<TItem>

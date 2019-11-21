@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Umbrella.Utilities.Sorting
+namespace Umbrella.Utilities.Data.Sorting
 {
-    public static class IEnumerableExtensions
-    {
+	public static class IEnumerableExtensions
+	{
 		public static IEnumerable<TItem> ApplySortExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
 			IOrderedEnumerable<TItem> orderedItems = null;

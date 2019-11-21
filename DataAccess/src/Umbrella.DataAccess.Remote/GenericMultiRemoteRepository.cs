@@ -12,7 +12,7 @@ using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Data.Abstractions;
-using Umbrella.Utilities.Sorting;
+using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.DataAccess.Remote
 {

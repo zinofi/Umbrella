@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.Utilities.Sorting;
+using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.DataAccess.Remote.Abstractions
 {

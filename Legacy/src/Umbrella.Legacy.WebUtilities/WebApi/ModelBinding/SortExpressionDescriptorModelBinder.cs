@@ -3,7 +3,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.ValueProviders;
 using Newtonsoft.Json;
-using Umbrella.Utilities.Sorting;
+using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 {

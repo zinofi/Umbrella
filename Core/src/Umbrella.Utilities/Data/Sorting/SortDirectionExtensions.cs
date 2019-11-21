@@ -1,4 +1,4 @@
-﻿namespace Umbrella.Utilities.Sorting
+﻿namespace Umbrella.Utilities.Data.Sorting
 {
 	/// <summary>
 	/// Extension methods for the <see cref="SortDirection"/> enum.

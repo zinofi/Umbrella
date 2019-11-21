@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Umbrella.Extensions.Logging.Azure.Configuration;
@@ -16,8 +15,8 @@ using Umbrella.Extensions.Logging.Azure.Management.Options;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Comparers;
+using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.Extensions.Logging.Azure.Management
 {
@@ -65,7 +64,14 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		protected MemoryCacheEntryOptions LogEntryMetaDataCacheEntryOptions { get; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AzureTableStorageLogManager"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="memoryCache">The memory cache.</param>
+		/// <param name="distributedCache">The distributed cache.</param>
 		public AzureTableStorageLogManager(ILogger<AzureTableStorageLogManager> logger,
 			AzureTableStorageLogManagementOptions options,
 			IMemoryCache memoryCache,
@@ -164,7 +170,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 					TableContinuationToken continuationToken = null;
 					TableResultSegment resultSegment = null;
 
-					HashSet<CloudTable> hsResult = new HashSet<CloudTable>(s_CloudTableEqualityComparer);
+					var hsResult = new HashSet<CloudTable>(s_CloudTableEqualityComparer);
 
 					do
 					{
@@ -198,7 +204,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 							int month = int.Parse(strDateParts[1]);
 							int day = int.Parse(strDateParts[2]);
 
-							DateTime dtDate = new DateTime(year, month, day);
+							var dtDate = new DateTime(year, month, day);
 
 							var tableModel = new AzureTableStorageLogTable
 							{
@@ -282,7 +288,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 					cacheEntry.SetSlidingExpiration(TimeSpan.FromMinutes(30));
 
-					List<LogEntryMetaData> lstResult = new List<LogEntryMetaData>();
+					var lstResult = new List<LogEntryMetaData>();
 
 					do
 					{
@@ -290,7 +296,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 						foreach (var entity in querySegment.Results)
 						{
-							LogEntryMetaData result = new LogEntryMetaData
+							var result = new LogEntryMetaData
 							{
 								PartitionKey = entity.PartitionKey,
 								RowKey = entity.RowKey,
@@ -317,7 +323,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 					if (entry != null)
 					{
-						List<LogEntryMetaData> lstNewEntries = new List<LogEntryMetaData>();
+						var lstNewEntries = new List<LogEntryMetaData>();
 
 						cacheQuery = cacheQuery.Where(
 							TableQuery.CombineFilters(
@@ -331,7 +337,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 							foreach (var entity in querySegment.Results)
 							{
-								LogEntryMetaData result = new LogEntryMetaData
+								var result = new LogEntryMetaData
 								{
 									PartitionKey = entity.PartitionKey,
 									RowKey = entity.RowKey,

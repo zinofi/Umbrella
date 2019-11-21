@@ -1,4 +1,4 @@
-﻿namespace Umbrella.Utilities.Sorting
+﻿namespace Umbrella.Utilities.Data.Sorting
 {
 	/// <summary>
 	/// Used to describe a sorting rule. One intended usage of this is for when an API controller
@@ -7,7 +7,7 @@
 	/// JSON deserialization to this type.
 	/// </summary>
 	public class SortExpressionDescriptor
-    {
+	{
 		/// <summary>
 		/// Gets or sets the name of the member.
 		/// </summary>

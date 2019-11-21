@@ -10,8 +10,8 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Sorting;
 
 namespace Umbrella.DataAccess.EF6
 {

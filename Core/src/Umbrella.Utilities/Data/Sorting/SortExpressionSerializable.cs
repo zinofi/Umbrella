@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Umbrella.Utilities.Sorting
+namespace Umbrella.Utilities.Data.Sorting
 {
 	[Serializable]
 	[StructLayout(LayoutKind.Auto)]

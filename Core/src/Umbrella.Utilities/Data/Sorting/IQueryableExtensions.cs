@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Umbrella.Utilities.Sorting
+namespace Umbrella.Utilities.Data.Sorting
 {
-    public static class IQueryableExtensions
-    {
+	public static class IQueryableExtensions
+	{
 		public static IQueryable<TItem> ApplySortExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
 			IOrderedQueryable<TItem> orderedQuery = null;
