@@ -60,6 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddUmbrellaFileSystem();
 
+			// TODO: Are we sticking with this approach??
 			services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider>(x =>
 			{
 				var factory = x.GetService<IUmbrellaFileProviderFactory>();
