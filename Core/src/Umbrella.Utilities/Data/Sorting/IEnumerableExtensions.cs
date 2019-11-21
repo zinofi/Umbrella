@@ -4,13 +4,24 @@ using System.Linq;
 
 namespace Umbrella.Utilities.Data.Sorting
 {
+	/// <summary>
+	/// Extensions for <see cref="IEnumerable{T}"/> collections for sorting.
+	/// </summary>
 	public static class IEnumerableExtensions
 	{
+		/// <summary>
+		/// Applies the sort expressions to the specified collection.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="items">The items.</param>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <param name="defaultSortOrderExpression">The default sort order expression when <paramref name="sortExpressions"/> is null or empty.</param>
+		/// <returns>The collection with the sort expressions applied to it.</returns>
 		public static IEnumerable<TItem> ApplySortExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
 			IOrderedEnumerable<TItem> orderedItems = null;
 
-			if (sortExpressions.Count() > 0)
+			if (sortExpressions?.Count() > 0)
 			{
 				int i = 0;
 
@@ -30,7 +41,7 @@ namespace Umbrella.Utilities.Data.Sorting
 					}
 				}
 			}
-			else if (!defaultSortOrderExpression.Equals(default(SortExpression<TItem>)))
+			else if (defaultSortOrderExpression == default)
 			{
 				orderedItems = defaultSortOrderExpression.Direction == SortDirection.Ascending
 							? items.OrderBy(defaultSortOrderExpression.Func)
@@ -40,17 +51,16 @@ namespace Umbrella.Utilities.Data.Sorting
 			return orderedItems ?? items;
 		}
 
-		public static IEnumerable<TItem> ApplyPagination<TItem>(this IEnumerable<TItem> query, int pageNumber, int pageSize)
-		{
-			if (pageNumber > 0 && pageSize > 0)
-			{
-				int itemsToSkip = (pageNumber - 1) * pageSize;
-				query = query.Skip(itemsToSkip).Take(pageSize);
-			}
-
-			return query;
-		}
-
+		/// <summary>
+		/// Orders the collection by sort direction.
+		/// </summary>
+		/// <typeparam name="TSource">The type of the source.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="source">The source.</param>
+		/// <param name="keySelector">The key selector.</param>
+		/// <param name="direction">The direction.</param>
+		/// <param name="comparer">The comparer.</param>
+		/// <returns>The collection query.</returns>
 		public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
@@ -66,6 +76,12 @@ namespace Umbrella.Utilities.Data.Sorting
 			}
 		}
 
+		/// <summary>
+		/// Converts a collection of <see cref="SortExpression{TItem}"/> to a collection of <see cref="SortExpressionSerializable"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <returns>A <see cref="IEnumerable{SortExpressionSerializable}"/> collection.</returns>
 		public static IEnumerable<SortExpressionSerializable> ToSortExpressionSerializables<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
 			=> sortExpressions.Select(x => (SortExpressionSerializable)x);
 	}

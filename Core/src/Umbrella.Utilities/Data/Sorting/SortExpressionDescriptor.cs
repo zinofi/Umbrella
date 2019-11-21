@@ -11,17 +11,11 @@
 		/// <summary>
 		/// Gets or sets the name of the member.
 		/// </summary>
-		/// <value>
-		/// The name of the member.
-		/// </value>
 		public string MemberName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="SortDirection"/>.
 		/// </summary>
-		/// <value>
-		/// The <see cref="SortDirection"/>.
-		/// </value>
 		public SortDirection Direction { get; set; }
 	}
 }

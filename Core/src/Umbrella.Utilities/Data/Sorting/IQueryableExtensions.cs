@@ -5,13 +5,24 @@ using System.Linq.Expressions;
 
 namespace Umbrella.Utilities.Data.Sorting
 {
+	/// <summary>
+	/// Extensions for <see cref="IQueryable{T}"/> collections for sorting.
+	/// </summary>
 	public static class IQueryableExtensions
 	{
+		/// <summary>
+		/// Applies the sort expressions to the specified query.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="items">The items.</param>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <param name="defaultSortOrderExpression">The default sort order expression when <paramref name="sortExpressions"/> is null or empty.</param>
+		/// <returns>The query with the sort expressions applied to it.</returns>
 		public static IQueryable<TItem> ApplySortExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
 			IOrderedQueryable<TItem> orderedQuery = null;
 
-			if (sortExpressions.Count() > 0)
+			if (sortExpressions?.Count() > 0)
 			{
 				int i = 0;
 
@@ -31,7 +42,7 @@ namespace Umbrella.Utilities.Data.Sorting
 					}
 				}
 			}
-			else if (!defaultSortOrderExpression.Equals(default(SortExpression<TItem>)))
+			else if (defaultSortOrderExpression == default)
 			{
 				orderedQuery = defaultSortOrderExpression.Direction == SortDirection.Ascending
 							? items.OrderBy(defaultSortOrderExpression.Expression)
@@ -41,26 +52,28 @@ namespace Umbrella.Utilities.Data.Sorting
 			return orderedQuery ?? items;
 		}
 
-		public static IQueryable<TItem> ApplyPagination<TItem>(this IQueryable<TItem> query, int pageNumber, int pageSize)
+		/// <summary>
+		/// Orders the query by sort direction.
+		/// </summary>
+		/// <typeparam name="TSource">The type of the source.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="source">The source.</param>
+		/// <param name="keySelector">The key selector.</param>
+		/// <param name="direction">The direction.</param>
+		/// <param name="comparer">The comparer.</param>
+		/// <returns>The ordered query.</returns>
+		public static IOrderedQueryable<TSource> OrderBySortDirection<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
 		{
-			if (pageNumber > 0 && pageSize > 0)
-			{
-				int itemsToSkip = (pageNumber - 1) * pageSize;
-				query = query.Skip(itemsToSkip).Take(pageSize);
-			}
+			Guard.ArgumentNotNull(source, nameof(source));
+			Guard.ArgumentNotNull(keySelector, nameof(keySelector));
 
-			return query;
-		}
-
-		public static IOrderedQueryable<TSource> OrderBySortDirection<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction)
-		{
 			switch (direction)
 			{
 				default:
 				case SortDirection.Ascending:
-					return source.OrderBy(keySelector);
+					return comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer);
 				case SortDirection.Descending:
-					return source.OrderByDescending(keySelector);
+					return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
 			}
 		}
 	}
