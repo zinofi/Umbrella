@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Data.Filtering
 {
@@ -10,18 +8,16 @@ namespace Umbrella.Utilities.Data.Filtering
 	/// Extensions for <see cref="IQueryable{T}"/> collections for filtering.
 	/// </summary>
 	public static class IQueryableExtensions
-    {
+	{
 		/// <summary>
 		/// Applies the filter expressions to the query.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
-		/// <typeparam name="TProperty">The type of the property.</typeparam>
 		/// <param name="items">The items.</param>
 		/// <param name="filterExpressions">The filter expressions.</param>
-		/// <param name="defaultFilterExpression">The default filter expression.</param>
 		/// <param name="useCurrentCulture">if set to <c>true</c>, uses the current culture rules for any culture based comparisons, e.g. strings.</param>
 		/// <returns>The filtered query.</returns>
-		public static IQueryable<TItem> ApplyFilterExpressions<TItem, TProperty>(this IQueryable<TItem> items, IEnumerable<FilterExpression<TItem, TProperty>> filterExpressions, FilterExpression<TItem, TProperty> defaultFilterExpression = default, bool useCurrentCulture = true)
+		public static IQueryable<TItem> ApplyFilterExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<FilterExpression<TItem>> filterExpressions, bool useCurrentCulture = true)
 		{
 			IQueryable<TItem> filteredItems = null;
 
@@ -29,21 +25,18 @@ namespace Umbrella.Utilities.Data.Filtering
 			{
 				foreach (var filterExpression in filterExpressions)
 				{
-					items = items.Where(x => ApplySingleExpression(filterExpression, useCurrentCulture, x));
+					// TODO: Will need to translate this manually somehow!
+					items = items.Where(x => ApplyFilters(useCurrentCulture, x, filterExpression));
 				}
-			}
-			else if (defaultFilterExpression == default)
-			{
-				items = items.Where(x => ApplySingleExpression(defaultFilterExpression, useCurrentCulture, x));
 			}
 
 			return filteredItems ?? items;
 		}
 
-		private static bool ApplySingleExpression<TItem, TProperty>(FilterExpression<TItem, TProperty> filterExpression, bool useCurrentCulture, TItem item)
+		private static bool ApplyFilters<TItem>(bool useCurrentCulture, TItem x, FilterExpression<TItem> filterExpression)
 		{
-			TProperty filterValue = filterExpression.Value;
-			TProperty propertyValue = filterExpression.Func(item);
+			object filterValue = filterExpression.Value;
+			object propertyValue = filterExpression.Func(x);
 
 			if (propertyValue is string strPropertyValue && filterValue is string strFilterValue)
 			{

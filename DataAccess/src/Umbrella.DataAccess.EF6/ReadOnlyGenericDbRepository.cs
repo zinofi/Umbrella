@@ -10,6 +10,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
@@ -56,12 +57,15 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region IReadOnlyGenericRepository Members
-		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, params SortExpression<TEntity>[] sortExpressions)
+		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			try
 			{
+				if (filterExpressions != null)
+					throw new NotSupportedException("Filtering is not currently supported.");
+
 				return await Items
 					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 					.ApplyPagination(pageNumber, pageSize)
@@ -76,13 +80,16 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
-		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, params SortExpression<TEntity>[] sortExpressions)
+		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(ids, nameof(ids));
 
 			try
 			{
+				if (filterExpressions != null)
+					throw new NotSupportedException("Filtering is not currently supported.");
+
 				return await Items
 					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 					.TrackChanges(trackChanges)
