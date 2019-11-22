@@ -57,7 +57,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region IReadOnlyGenericRepository Members
-		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null)
+		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -74,13 +74,13 @@ namespace Umbrella.DataAccess.EF6
 					.ToListAsync(cancellationToken)
 					.ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
 		}
 
-		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null)
+		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(ids, nameof(ids));
@@ -98,7 +98,7 @@ namespace Umbrella.DataAccess.EF6
 					.ToListAsync(cancellationToken)
 					.ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids, trackChanges, map, sortExpressions }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { ids, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items with the specified ids.", exc);
 			}
