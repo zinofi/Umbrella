@@ -115,16 +115,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
 					string cleanedPath = TransformPathForFileProvider(virtualPath);
 
+					// NB: This will be empty for non-virtual applications
 					PathString applicationPath = HttpContextAccessor.HttpContext.Request.PathBase;
 
-					PathString virtualApplicationPath = applicationPath != "/"
-						? applicationPath
-						: PathString.Empty;
-
 					// Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
-					string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
+					string url = applicationPath.HasValue && cleanedPath.StartsWith(applicationPath, StringComparison.OrdinalIgnoreCase)
 						? cleanedPath
-						: virtualApplicationPath.Add(cleanedPath).Value;
+						: applicationPath.Add(cleanedPath).Value;
 
 					if (toAbsoluteUrl)
 						url = $"{scheme}://{ResolveHttpHost()}{url}";

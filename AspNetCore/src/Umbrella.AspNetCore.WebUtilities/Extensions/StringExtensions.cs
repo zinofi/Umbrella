@@ -22,14 +22,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 		{
 			PathString applicationPath = currentRequest.PathBase;
 
-			PathString virtualApplicationPath = applicationPath != "/"
-				? applicationPath
-				: PathString.Empty;
-
 			// Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
-			string absoluteVirtualPath = relativeUrl.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
+			string absoluteVirtualPath = applicationPath.HasValue && relativeUrl.StartsWith(applicationPath, StringComparison.OrdinalIgnoreCase)
 				? relativeUrl
-				: virtualApplicationPath.Add(relativeUrl).Value;
+				: applicationPath.Add(relativeUrl).Value;
 
 			int? currentPort = currentRequest.Host.Port;
 			string port = portOverride > 0 ? portOverride.ToString() : (currentPort.HasValue && currentPort.Value != 80 ? (":" + currentPort) : string.Empty);

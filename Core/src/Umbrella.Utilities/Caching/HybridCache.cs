@@ -23,9 +23,12 @@ namespace Umbrella.Utilities.Caching
 	/// <seealso cref="IHybridCache" />
 	public class HybridCache : IHybridCache, IDisposable
 	{
+		#region Private Members
 		private readonly ReaderWriterLockSlim _nukeReaderWriterLock = new ReaderWriterLockSlim();
 		private CancellationTokenSource _nukeTokenSource = new CancellationTokenSource();
+		#endregion
 
+		#region Protected Properties
 		protected ILogger Log { get; }
 		protected HybridCacheOptions Options { get; }
 		protected ILookupNormalizer LookupNormalizer { get; }
@@ -34,8 +37,11 @@ namespace Umbrella.Utilities.Caching
 		protected IDistributedCache DistributedCache { get; }
 		protected IMemoryCache MemoryCache { get; }
 		protected ConcurrentDictionary<string, HybridCacheMetaEntry> MemoryCacheMetaEntryDictionary { get; } = new ConcurrentDictionary<string, HybridCacheMetaEntry>();
+		#endregion
 
-		public HybridCache(ILogger<HybridCache> logger,
+		#region Constructors
+		public HybridCache(
+			ILogger<HybridCache> logger,
 			HybridCacheOptions options,
 			ILookupNormalizer lookupNormalizer,
 			IDistributedCache distributedCache,
@@ -46,11 +52,12 @@ namespace Umbrella.Utilities.Caching
 			LookupNormalizer = lookupNormalizer;
 			DistributedCache = distributedCache;
 			MemoryCache = memoryCache;
-
 			TrackKeys = (Options.AnalyticsMode & HybridCacheAnalyticsMode.TrackKeys) == HybridCacheAnalyticsMode.TrackKeys;
 			TrackKeysAndHits = (Options.AnalyticsMode & HybridCacheAnalyticsMode.TrackKeysAndHits) == HybridCacheAnalyticsMode.TrackKeysAndHits;
 		}
+		#endregion
 
+		#region IHybridCache Members
 		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -157,7 +164,7 @@ namespace Umbrella.Utilities.Caching
 		}
 
 		public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
-			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheThrowOnFailure, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled,expirationTokensBuilder);
+			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheThrowOnFailure, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
@@ -203,7 +210,7 @@ namespace Umbrella.Utilities.Caching
 
 							if (TrackKeys)
 								MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out cacheMetaEntry);
-							
+
 							// TODO: Investigate using AsyncLazy<T> to ensure that the factory only executes once. Internally, MemoryCache doesn't use locking
 							// so the factory could run multiple times. Only a problem if the factory is expensive though.
 							// Replace the boolean 'useMemoryCache' with an enum: CacheMode: Memory, MemoryMutex, Distributed, DistributedMutex
@@ -234,7 +241,7 @@ namespace Umbrella.Utilities.Caching
 						}
 						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
-							if(throwOnCacheFailure)
+							if (throwOnCacheFailure)
 								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
 						}
 					}
@@ -469,7 +476,7 @@ namespace Umbrella.Utilities.Caching
 			{
 				_nukeTokenSource.Cancel();
 				_nukeTokenSource.Dispose();
-				
+
 				// Reset things so that all future items added to the MemoryCache use a new CancellationToken.
 				_nukeTokenSource = new CancellationTokenSource();
 			}
@@ -482,7 +489,9 @@ namespace Umbrella.Utilities.Caching
 				_nukeReaderWriterLock.ExitWriteLock();
 			}
 		}
+		#endregion
 
+		#region Protected Methods
 		/// <summary>
 		/// Creates the normalized cache key.
 		/// </summary>
@@ -491,7 +500,9 @@ namespace Umbrella.Utilities.Caching
 		/// <returns>The normalized cache key.</returns>
 		protected virtual string CreateCacheKeyNormalized<T>(string key)
 			=> LookupNormalizer.Normalize(Options.CacheKeyBuilder?.Invoke(typeof(T), key) ?? key);
+		#endregion
 
+		#region Private Methods
 		private bool IsCacheEnabled(bool? cacheEnabledOverride)
 			=> Options.CacheEnabled && cacheEnabledOverride.HasValue ? cacheEnabledOverride.Value : Options.CacheEnabled;
 
@@ -558,7 +569,8 @@ namespace Umbrella.Utilities.Caching
 			}
 
 			return options;
-		}
+		} 
+		#endregion
 
 		#region IDisposable Support
 		private bool _isDisposed = false; // To detect redundant calls

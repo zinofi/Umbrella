@@ -18,7 +18,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers
     {
         private const string RequiredAttributeNames = "src," + PixelDensitiesAttributeName;
 
-        protected const string PixelDensitiesAttributeName = "pixel-densities";
+        protected const string PixelDensitiesAttributeName = "um-pixel-densities";
 
         #region Private Static Members
         private static readonly char[] s_SeparatorCharacterArray = new[] { ',' };

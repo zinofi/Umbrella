@@ -74,7 +74,7 @@ namespace Umbrella.DataAccess.EF6
 					.ToListAsync(cancellationToken)
 					.ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
@@ -98,7 +98,7 @@ namespace Umbrella.DataAccess.EF6
 					.ToListAsync(cancellationToken)
 					.ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { ids, trackChanges, map, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items with the specified ids.", exc);
 			}
