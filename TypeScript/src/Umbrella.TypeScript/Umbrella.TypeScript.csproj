@@ -8,6 +8,7 @@
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<DevelopmentDependency>true</DevelopmentDependency>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
@@ -17,7 +18,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript</PackageId>
-		<Version>3.0.0-preview-0030</Version>
+		<Version>3.0.0-preview-0032</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>

@@ -17,7 +17,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.WebUtilities.DynamicImage</PackageId>
-		<Version>3.0.0-preview-0030</Version>
+		<Version>3.0.0-preview-0032</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
