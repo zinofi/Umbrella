@@ -57,7 +57,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region IReadOnlyGenericRepository Members
-		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or)
+		public virtual async Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -66,13 +66,16 @@ namespace Umbrella.DataAccess.EF6
 				if (filterExpressions != null)
 					throw new NotSupportedException("Filtering is not currently supported.");
 
-				return await Items
+				TEntity[] results = await Items
 					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 					.ApplyPagination(pageNumber, pageSize)
 					.TrackChanges(trackChanges)
 					.IncludeMap(map)
-					.ToListAsync(cancellationToken)
+					.ToArrayAsync(cancellationToken)
 					.ConfigureAwait(false);
+
+				// TODO: Need to fix this
+				return (results, -1);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator }, returnValue: true))
 			{
@@ -80,7 +83,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
-		public virtual async Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or)
+		public virtual async Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(ids, nameof(ids));
@@ -90,13 +93,16 @@ namespace Umbrella.DataAccess.EF6
 				if (filterExpressions != null)
 					throw new NotSupportedException("Filtering is not currently supported.");
 
-				return await Items
+				TEntity[] results = await Items
 					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 					.TrackChanges(trackChanges)
 					.IncludeMap(map)
 					.Where(x => ids.Contains(x.Id))
-					.ToListAsync(cancellationToken)
+					.ToArrayAsync(cancellationToken)
 					.ConfigureAwait(false);
+
+				// TODO: Need to fix this
+				return (results, -1);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ids, trackChanges, map, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator }, returnValue: true))
 			{
