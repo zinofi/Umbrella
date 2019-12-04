@@ -8,7 +8,7 @@ namespace Umbrella.Utilities.Data.Filtering
 	/// deserialized to an instance of this type. The web projects contain model binders for performing custom
 	/// JSON deserialization to this type.
 	/// </summary>
-	public class FilterExpressionDescriptor : IExpressionDescriptor
+	public class FilterExpressionDescriptor : IDataExpressionDescriptor
 	{
 		private string _memberName;
 
@@ -30,5 +30,14 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// Gets or sets the filter type.
 		/// </summary>
 		public FilterType Type { get; set; }
+
+		/// <summary>
+		/// Returns true if the descriptor is valid.
+		/// </summary>
+		/// <returns>
+		///   <c>true</c> if this instance is valid; otherwise, <c>false</c>.
+		/// </returns>
+		/// <remarks>This will return true even if the <see cref="Value"/> is only whitespace as we might need to filter on that, e.g. looking for values that contain spaces.</remarks>
+		public bool IsValid() => !string.IsNullOrEmpty(MemberName) && !string.IsNullOrEmpty(Value);
 	}
 }

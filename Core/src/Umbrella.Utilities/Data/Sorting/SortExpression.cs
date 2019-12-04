@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Data.Sorting
@@ -11,7 +12,7 @@ namespace Umbrella.Utilities.Data.Sorting
 	/// </summary>
 	/// <typeparam name="TItem">The type of the item being sorted.</typeparam>
 	[StructLayout(LayoutKind.Auto)]
-	public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>
+	public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>, IDataExpression<TItem>
 	{
 		private readonly Lazy<Func<TItem, object>> _lazyFunc;
 		private readonly Lazy<string> _lazyMemberName;

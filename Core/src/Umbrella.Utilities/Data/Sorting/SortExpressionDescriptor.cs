@@ -8,7 +8,7 @@ namespace Umbrella.Utilities.Data.Sorting
 	/// deserialized to an instance of this type. The web projects contain model binders for performing custom
 	/// JSON deserialization to this type.
 	/// </summary>
-	public class SortExpressionDescriptor : IExpressionDescriptor
+	public class SortExpressionDescriptor : IDataExpressionDescriptor
 	{
 		private string _memberName;
 
@@ -25,5 +25,13 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// Gets or sets the <see cref="SortDirection"/>.
 		/// </summary>
 		public SortDirection Direction { get; set; }
+
+		/// <summary>
+		/// Returns true if the descriptor is valid.
+		/// </summary>
+		/// <returns>
+		///   <c>true</c> if this instance is valid; otherwise, <c>false</c>.
+		/// </returns>
+		public bool IsValid() => !string.IsNullOrEmpty(MemberName);
 	}
 }
