@@ -47,7 +47,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="expression">The expression.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
-		public FilterExpression(Expression<Func<TItem, object>> expression, object value, FilterType type = FilterType.Exact)
+		public FilterExpression(Expression<Func<TItem, object>> expression, object value, FilterType type = FilterType.Contains)
 		{
 			Guard.ArgumentNotNull(expression, nameof(expression));
 

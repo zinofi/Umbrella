@@ -1,4 +1,6 @@
-﻿namespace Umbrella.Utilities.Data.Sorting
+﻿using Umbrella.Utilities.Data.Abstractions;
+
+namespace Umbrella.Utilities.Data.Sorting
 {
 	/// <summary>
 	/// Used to describe a sorting rule. One intended usage of this is for when an API controller
@@ -6,12 +8,18 @@
 	/// deserialized to an instance of this type. The web projects contain model binders for performing custom
 	/// JSON deserialization to this type.
 	/// </summary>
-	public class SortExpressionDescriptor
+	public class SortExpressionDescriptor : IExpressionDescriptor
 	{
+		private string _memberName;
+
 		/// <summary>
 		/// Gets or sets the name of the member.
 		/// </summary>
-		public string MemberName { get; set; }
+		public string MemberName
+		{
+			get => _memberName;
+			set => _memberName = value?.Trim();
+		}
 
 		/// <summary>
 		/// Gets or sets the <see cref="SortDirection"/>.

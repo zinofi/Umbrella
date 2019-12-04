@@ -8,23 +8,23 @@
 	public enum FilterType
 	{
 		/// <summary>
-		/// Performs an exact match.
+		/// Filters based on whether the target contains the source
 		/// </summary>
-		Exact,
+		Contains = 0,
 
 		/// <summary>
 		/// Filters from the start
 		/// </summary>
-		StartsWith,
+		StartsWith = 1,
 
 		/// <summary>
 		/// Filters from the end
 		/// </summary>
-		EndsWith,
+		EndsWith = 2,
 
 		/// <summary>
-		/// Filters based on whether the target contains the source
+		/// Performs an exact match.
 		/// </summary>
-		Contains
+		Exact = 3
 	}
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Filtering
 {
@@ -12,12 +8,18 @@ namespace Umbrella.Utilities.Data.Filtering
 	/// deserialized to an instance of this type. The web projects contain model binders for performing custom
 	/// JSON deserialization to this type.
 	/// </summary>
-	public class FilterExpressionDescriptor
-    {
+	public class FilterExpressionDescriptor : IExpressionDescriptor
+	{
+		private string _memberName;
+
 		/// <summary>
 		/// Gets or sets the name of the member.
 		/// </summary>
-		public string MemberName { get; set; }
+		public string MemberName
+		{
+			get => _memberName;
+			set => _memberName = value?.Trim();
+		}
 
 		/// <summary>
 		/// Gets or sets the value used for filtering.
