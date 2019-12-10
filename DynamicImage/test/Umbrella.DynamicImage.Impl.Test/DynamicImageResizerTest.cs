@@ -34,7 +34,7 @@ namespace Umbrella.DynamicImage.Impl.Test
                 if (string.IsNullOrEmpty(s_BaseDirectory))
                 {
                     string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\net461");
+                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1");
                     s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 
@@ -150,7 +150,7 @@ namespace Umbrella.DynamicImage.Impl.Test
             //Using the System.Drawing APIs from the full framework, i.e. not a library being used for resizing, to check the output image sizes are correct
             using (var ms = new MemoryStream(resizedImageBytes))
             {
-                using (var image = Image.FromStream(ms))
+                using (var image = Bitmap.FromStream(ms))
                 {
                     //Assert.Equal(targetSize, image.Size);
 
