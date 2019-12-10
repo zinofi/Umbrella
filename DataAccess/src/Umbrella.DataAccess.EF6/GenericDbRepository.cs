@@ -23,11 +23,11 @@ namespace Umbrella.DataAccess.EF6
 	{
 		public GenericDbRepository(
 			TDbContext dbContext,
-			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<int> currentUserIdAccessor,
 			IEntityValidator entityValidator)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
 		{
 		}
 	}
@@ -39,11 +39,11 @@ namespace Umbrella.DataAccess.EF6
 	{
 		public GenericDbRepository(
 			TDbContext dbContext,
-			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<int> currentUserIdAccessor,
 			IEntityValidator entityValidator)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
 		{
 		}
 	}
@@ -56,37 +56,35 @@ namespace Umbrella.DataAccess.EF6
 	{
 		public GenericDbRepository(
 			TDbContext dbContext,
-			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<int> currentUserIdAccessor,
 			IEntityValidator entityValidator)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
 		{
 		}
 	}
 
-	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey>, IGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey>, IGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Protected Properties
-		protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
-		protected ICurrentUserIdAccessor<TUserAuditKey> CurrentUserIdAccessor { get; }
 		protected IEntityValidator EntityValidator { get; }
 		#endregion
 
 		#region Constructors
 		public GenericDbRepository(
 			TDbContext dbContext,
-			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 			IEntityValidator entityValidator)
-			: base(dbContext, logger, lookupNormalizer)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
-			CurrentUserIdAccessor = currentUserIdAccessor;
 			EntityValidator = entityValidator;
 		}
 		#endregion

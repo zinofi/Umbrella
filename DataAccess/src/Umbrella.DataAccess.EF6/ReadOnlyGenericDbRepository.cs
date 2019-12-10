@@ -25,8 +25,9 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
-			: base(dbContext, logger, lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<int> currentUserIdAccessor)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
 		}
 		#endregion
@@ -41,18 +42,38 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
-			: base(dbContext, logger, lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<int> currentUserIdAccessor)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
 		}
 		#endregion
 	}
 
-	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+	{
+		#region Constructors
+		public ReadOnlyGenericDbRepository(
+			TDbContext dbContext,
+			ILogger logger,
+			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<int> currentUserIdAccessor)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		{
+		}
+		#endregion
+	}
+
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+		where TEntity : class, IEntity<TEntityKey>
+		where TDbContext : UmbrellaDbContext
+		where TRepoOptions : RepoOptions, new()
+		where TEntityKey : IEquatable<TEntityKey>
+		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Protected Static Properties
 		protected static TRepoOptions DefaultRepoOptions { get; } = new TRepoOptions();
@@ -63,17 +84,21 @@ namespace Umbrella.DataAccess.EF6
 		protected ILogger Log { get; }
 		protected ILookupNormalizer LookupNormalizer { get; }
 		protected IQueryable<TEntity> Items => Context.Set<TEntity>();
+		protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
+		protected ICurrentUserIdAccessor<TUserAuditKey> CurrentUserIdAccessor { get; }
 		#endregion
 
 		#region Constructors
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer)
+			ILookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
 		{
 			Context = dbContext;
 			Log = logger;
 			LookupNormalizer = lookupNormalizer;
+			CurrentUserIdAccessor = currentUserIdAccessor;
 		}
 		#endregion
 

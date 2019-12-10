@@ -81,17 +81,19 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+		where TUserAuditKey : IEquatable<TUserAuditKey>
+		where TAppTenantKey : IEquatable<TAppTenantKey>
 	{
 		protected DbAppTenantSessionContext<TAppTenantKey> AppTenantSessionContext { get; }
 
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
-			ICurrentUserIdAccessor<TUserAuditKey> userAuditDataFactory,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
 			DbAppTenantSessionContext<TAppTenantKey> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
 		{
 			AppTenantSessionContext = dbAppTenantSessionContext;
 		}
