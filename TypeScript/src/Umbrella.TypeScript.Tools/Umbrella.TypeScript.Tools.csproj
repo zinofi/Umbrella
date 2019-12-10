@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AssemblyName>dotnet-umbrella-ts</AssemblyName>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp2.2</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -19,7 +19,7 @@
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript.Tools</PackageId>
 		<PackAsTool>true</PackAsTool>
-		<Version>3.0.0-preview-0041</Version>
+		<Version>3.0.0-preview-0044</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2019</Copyright>
@@ -36,7 +36,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
