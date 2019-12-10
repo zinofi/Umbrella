@@ -23,11 +23,6 @@ namespace Umbrella.Utilities.Data.Sorting
 		public SortDirection Direction { get; }
 
 		/// <summary>
-		/// Gets the compiled <see cref="Expression"/>.
-		/// </summary>
-		public Func<TItem, object> Func => _lazyFunc.Value;
-
-		/// <summary>
 		/// Gets the expression.
 		/// </summary>
 		public Expression<Func<TItem, object>> Expression { get; }
@@ -52,6 +47,19 @@ namespace Umbrella.Utilities.Data.Sorting
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
 			_lazyMemberName = new Lazy<string>(() => expression.GetMemberName());
 		}
+
+		/// <summary>
+		/// Gets the compiled <see cref="P:Umbrella.Utilities.Data.Abstractions.IDataExpression`1.Expression" />.
+		/// </summary>
+		/// <returns>
+		/// The compiled expression as a delegate.
+		/// </returns>
+		/// <remarks>
+		/// This is a method rather than a property because of an issue with MVC model binding in ASP.NET Core.
+		/// When reading the property value, the model validation code was throwing an exception and the only way to workaround
+		/// that was to make this a method.
+		/// </remarks>
+		public Func<TItem, object> GetFunc() => _lazyFunc.Value;
 
 		/// <summary>
 		/// Converts this instance to a string.

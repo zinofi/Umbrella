@@ -65,61 +65,55 @@ namespace Umbrella.DataAccess.EF6
 		}
 	}
 
-	/// <summary>
-	/// A general purpose base class containing core repository functionality.
-	/// </summary>
-	/// <typeparam name="TEntity">The type of the generated entity, e.g. Person, Car</typeparam>
-	/// <typeparam name="TDbContext">The type of the data context</typeparam>
-	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TEntityKey>, IGenericDbRepository<TEntity, TEntityKey, TRepoOptions>
+	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey>, IGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
-		#region Private Static Members
-		private static readonly TRepoOptions s_DefaultRepoOptions = new TRepoOptions();
-		#endregion
-
 		#region Protected Properties
-		protected TUserAuditKey CurrentUserId => UserAuditDataFactory.CurrentUserId;
-		protected ICurrentUserIdAccessor<TUserAuditKey> UserAuditDataFactory { get; }
+		protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
+		protected ICurrentUserIdAccessor<TUserAuditKey> CurrentUserIdAccessor { get; }
 		protected IEntityValidator EntityValidator { get; }
 		#endregion
 
 		#region Constructors
 		public GenericDbRepository(
 			TDbContext dbContext,
-			ICurrentUserIdAccessor<TUserAuditKey> userAuditDataFactory,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator)
 			: base(dbContext, logger, lookupNormalizer)
 		{
-			UserAuditDataFactory = userAuditDataFactory;
+			CurrentUserIdAccessor = currentUserIdAccessor;
 			EntityValidator = entityValidator;
 		}
 		#endregion
 
 		#region Save
-		public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+		public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(entity, nameof(entity));
 
 			try
 			{
-				// Ensure the default options are used when not explicitly provided.
-				options ??= s_DefaultRepoOptions;
+				if (!await CanAccessAsync(entity, cancellationToken))
+					throw new UmbrellaDataAccessForbiddenException();
 
-				if (options.SanitizeEntity)
-					await SanitizeEntityAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+				// Ensure the default options are used when not explicitly provided.
+				repoOptions ??= DefaultRepoOptions;
+
+				if (repoOptions.SanitizeEntity)
+					await SanitizeEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				// Additional processing before changes have been reflected in the database context
-				await BeforeContextSavingAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+				await BeforeContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-				if (options.ValidateEntity)
+				if (repoOptions.ValidateEntity)
 				{
-					ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+					ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 					return new SaveResult<TEntity>(false, entity, lstValidationResult);
 				}
@@ -128,20 +122,20 @@ namespace Umbrella.DataAccess.EF6
 				PreSaveWork(entity, addToContext, out bool isNew);
 
 				// Additional processing after changes have been reflected in the database context but not yet pushed to the database
-				await AfterContextSavingAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+				await AfterContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-				Context.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, options, childOptions));
+				Context.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, repoOptions, childOptions));
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
 				return new SaveResult<TEntity>(true, entity);
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
-			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Data Validation Exception for Id", returnValue: true))
+			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Data Validation Exception for Id", returnValue: true))
 			{
 				try
 				{
@@ -154,13 +148,13 @@ namespace Umbrella.DataAccess.EF6
 					throw new UmbrellaDataAccessAggregateException($"Initally, an exception of type {nameof(DbEntityValidationException)} was encountered. However, whilst trying to evaluate this exception, another exception was encountered.", exc, excInner);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, options, childOptions }, "Failed for Id", returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Failed for Id", returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the entity.", exc);
 			}
 		}
 
-		public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions options = null, params RepoOptions[] childOptions)
+		public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
@@ -170,11 +164,13 @@ namespace Umbrella.DataAccess.EF6
 				// Save all changes - do not push to the database yet
 				if (!bypassSaveLogic)
 				{
+					await FilterByAccessAsync(entities, true, cancellationToken);
+
 					var lstSaveResult = new List<SaveResult<TEntity>>();
 
 					foreach (TEntity entity in entities)
 					{
-						SaveResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, options, childOptions).ConfigureAwait(false);
+						SaveResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
 						lstSaveResult.Add(saveResult);
 					}
 
@@ -186,11 +182,11 @@ namespace Umbrella.DataAccess.EF6
 
 				return entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
-			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, "Data Validation Exception for Ids", returnValue: true))
+			catch (DbEntityValidationException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Data Validation Exception for Ids", returnValue: true))
 			{
 				try
 				{
@@ -203,7 +199,7 @@ namespace Umbrella.DataAccess.EF6
 					throw new UmbrellaDataAccessAggregateException($"Initally, an exception of type {nameof(DbEntityValidationException)} was encountered. However, whilst trying to evaluate this exception, another exception was encountered.", exc, excInner);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, options, childOptions }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem saving the specified entities.", exc);
 			}
@@ -211,58 +207,63 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Delete
-		public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+		public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(entity, nameof(entity));
 
 			try
 			{
-				// Ensure the default options are used when not explicitly provided.
-				options ??= s_DefaultRepoOptions;
+				if (!await CanAccessAsync(entity, cancellationToken))
+					throw new UmbrellaDataAccessForbiddenException();
 
-				await BeforeContextDeletingAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+				// Ensure the default options are used when not explicitly provided.
+				repoOptions ??= DefaultRepoOptions;
+
+				await BeforeContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				Context.Set<TEntity>().Remove(entity);
 				Context.Entry(entity).State = EntityState.Deleted;
 
-				await AfterContextDeletingAsync(entity, cancellationToken, options, childOptions).ConfigureAwait(false);
+				await AfterContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-				Context.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, cancellationToken, options, childOptions));
+				Context.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, cancellationToken, repoOptions, childOptions));
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Concurrency Exception for Id", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, options, childOptions }, "Failed for Id", returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Failed for Id", returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entity.", exc);
 			}
 		}
 
-		public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions options = null, params RepoOptions[] childOptions)
+		public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrEmpty(entities, nameof(entities));
 
 			try
 			{
+				await FilterByAccessAsync(entities, true, cancellationToken).ConfigureAwait(false);
+
 				foreach (TEntity entity in entities)
 				{
-					await DeleteAsync(entity, cancellationToken, false, options, childOptions).ConfigureAwait(false);
+					await DeleteAsync(entity, cancellationToken, false, repoOptions, childOptions).ConfigureAwait(false);
 				}
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, options, childOptions }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entities.", exc);
 			}
@@ -294,7 +295,7 @@ namespace Umbrella.DataAccess.EF6
 					dateAuditEntity.CreatedDate = DateTime.UtcNow;
 
 				if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
-					userAuditEntity.CreatedById = UserAuditDataFactory.CurrentUserId;
+					userAuditEntity.CreatedById = CurrentUserId;
 
 				if (addToContext)
 					Context.Set<TEntity>().Add(entity);
@@ -306,7 +307,7 @@ namespace Umbrella.DataAccess.EF6
 					dateAuditEntity.UpdatedDate = DateTime.UtcNow;
 
 				if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
-					userAuditEntity.UpdatedById = UserAuditDataFactory.CurrentUserId;
+					userAuditEntity.UpdatedById = CurrentUserId;
 			}
 		}
 
@@ -354,10 +355,10 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options.</param>
+		/// <param name="repoOptions">The options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task<ValidationResult[]> ValidateEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task<ValidationResult[]> ValidateEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -369,10 +370,10 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options.</param>
+		/// <param name="repoOptions">The options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -385,10 +386,10 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task AfterContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task AfterContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -401,10 +402,10 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="entity">The entity.</param>
 		/// <param name="isNew">Specifies if the entity is new.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -416,10 +417,10 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task BeforeContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task BeforeContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -431,10 +432,10 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task AfterContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task AfterContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -447,10 +448,10 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="options">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
+		/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task AfterContextDeletedChangesAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task AfterContextDeletedChangesAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 #pragma warning restore CS0419 // Ambiguous reference in cref attribute
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -460,20 +461,12 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region SyncDependencies
-		protected Task SyncDependenciesAsync<TTargetEntity, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
-			where TTargetEntity : class, IEntity
-			where TTargetRepository : IGenericDbRepository<TTargetEntity> => SyncDependenciesAsync<TTargetEntity, int, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
-
-		protected Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
-			where TTargetEntity : class, IEntity<TTargetEntityKey>
-			where TTargetEntityKey : IEquatable<TTargetEntityKey>
-			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityKey> => SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, RepoOptions, TTargetRepository>(alteredColl, repository, func, cancellationToken, options);
-
-		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, RepoOptions[] options)
+		// TODO: Add back generic overloads of this method
+		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, IEnumerable<RepoOptions> options)
 			where TTargetEntity : class, IEntity<TTargetEntityKey>
 			where TTargetEntityKey : IEquatable<TTargetEntityKey>
 			where TTargetEntityRepoOptions : RepoOptions, new()
-			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions>
+			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey>
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -523,14 +516,14 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Sanitize Methods
-		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			return Task.FromResult(false);
 		}
 
-		protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, RepoOptions[] childOptions)
+		protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -541,17 +534,15 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Public Methods
-		public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, RepoOptions[] options)
+		public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-
-			TRepoOptions targetOptions = options.OfType<TRepoOptions>().FirstOrDefault() ?? new TRepoOptions();
 
 			var lstToRemove = new List<TEntity>();
 
 			foreach (TEntity entity in entities)
 			{
-				if (await IsEmptyEntityAsync(entity, cancellationToken, targetOptions, options).ConfigureAwait(false))
+				if (await IsEmptyEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false))
 					lstToRemove.Add(entity);
 			}
 

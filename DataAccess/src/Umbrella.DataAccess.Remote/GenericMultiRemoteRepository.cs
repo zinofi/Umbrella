@@ -102,7 +102,7 @@ namespace Umbrella.DataAccess.Remote
 					return (false, message, null);
 
 				if (!await CheckAccessAsync(result, cancellationToken).ConfigureAwait(false))
-					throw new UmbrellaForbiddenDataAccessException();
+					throw new UmbrellaDataAccessForbiddenException();
 
 				await AfterItemLoadedAsync(result, cancellationToken, options).ConfigureAwait(false);
 
@@ -280,7 +280,7 @@ namespace Umbrella.DataAccess.Remote
 				await BeforeSavingItemAsync(item, cancellationToken, options).ConfigureAwait(false);
 
 				if (!await CheckAccessAsync(item, cancellationToken).ConfigureAwait(false))
-					throw new UmbrellaForbiddenDataAccessException();
+					throw new UmbrellaDataAccessForbiddenException();
 
 				var service = ServiceDictionary[item.Source];
 
@@ -346,7 +346,7 @@ namespace Umbrella.DataAccess.Remote
 					await BeforeSavingItemAsync(item, cancellationToken, options).ConfigureAwait(false);
 
 					if (!await CheckAccessAsync(item, cancellationToken).ConfigureAwait(false))
-						throw new UmbrellaForbiddenDataAccessException();
+						throw new UmbrellaDataAccessForbiddenException();
 				}
 
 				var groups = items.GroupBy(x => x.Source).ToList();
@@ -419,6 +419,8 @@ namespace Umbrella.DataAccess.Remote
 
 			try
 			{
+				// TODO: Perform access check when deleting?
+
 				// When deleting something we always have to ensure children are deleted as well to avoid orphans
 				options.ProcessChildren = true;
 
@@ -445,6 +447,8 @@ namespace Umbrella.DataAccess.Remote
 
 			try
 			{
+				// TODO: Perform access check when deleting?
+
 				// When deleting something we always have to ensure children are deleted as well to avoid orphans
 				options.ProcessChildren = true;
 

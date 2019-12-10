@@ -30,22 +30,22 @@ namespace Umbrella.Utilities.Data.Sorting
 					if (i++ == 0)
 					{
 						orderedItems = sortExpression.Direction == SortDirection.Ascending
-							? items.OrderBy(sortExpression.Func)
-							: items.OrderByDescending(sortExpression.Func);
+							? items.OrderBy(sortExpression.GetFunc())
+							: items.OrderByDescending(sortExpression.GetFunc());
 					}
 					else
 					{
 						orderedItems = sortExpression.Direction == SortDirection.Ascending
-							? orderedItems.ThenBy(sortExpression.Func)
-							: orderedItems.ThenByDescending(sortExpression.Func);
+							? orderedItems.ThenBy(sortExpression.GetFunc())
+							: orderedItems.ThenByDescending(sortExpression.GetFunc());
 					}
 				}
 			}
 			else if (defaultSortOrderExpression == default)
 			{
 				orderedItems = defaultSortOrderExpression.Direction == SortDirection.Ascending
-							? items.OrderBy(defaultSortOrderExpression.Func)
-							: items.OrderByDescending(defaultSortOrderExpression.Func);
+							? items.OrderBy(defaultSortOrderExpression.GetFunc())
+							: items.OrderByDescending(defaultSortOrderExpression.GetFunc());
 			}
 
 			return orderedItems ?? items;

@@ -1,7 +1,7 @@
 ﻿namespace Umbrella.Utilities.Data.Abstractions
 {
 	/// <summary>
-	/// An abstraction representing an expression descriptor.
+	/// An abstraction representing a data expression descriptor.
 	/// </summary>
 	public interface IDataExpressionDescriptor
 	{

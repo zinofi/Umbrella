@@ -18,11 +18,6 @@ namespace Umbrella.Utilities.Data.Filtering
 		private readonly Lazy<string> _lazyMemberName;
 
 		/// <summary>
-		/// Gets the compiled <see cref="Expression"/>.
-		/// </summary>
-		public Func<TItem, object> Func => _lazyFunc.Value;
-
-		/// <summary>
 		/// Gets the expression.
 		/// </summary>
 		public Expression<Func<TItem, object>> Expression { get; }
@@ -61,6 +56,19 @@ namespace Umbrella.Utilities.Data.Filtering
 		}
 
 		/// <summary>
+		/// Gets the compiled <see cref="P:Umbrella.Utilities.Data.Abstractions.IDataExpression`1.Expression" />.
+		/// </summary>
+		/// <returns>
+		/// The compiled expression as a delegate.
+		/// </returns>
+		/// <remarks>
+		/// This is a method rather than a property because of an issue with MVC model binding in ASP.NET Core.
+		/// When reading the property value, the model validation code was throwing an exception and the only way to workaround
+		/// that was to make this a method.
+		/// </remarks>
+		public Func<TItem, object> GetFunc() => _lazyFunc.Value;
+
+		/// <summary>
 		/// Converts this instance to a string.
 		/// </summary>
 		/// <returns>
@@ -91,7 +99,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>
 		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
 		/// </returns>
-		public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>>.Default.Equals(Func, other.Func) &&
+		public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>>.Default.Equals(GetFunc(), other.GetFunc()) &&
 				   EqualityComparer<Expression<Func<TItem, object>>>.Default.Equals(Expression, other.Expression) &&
 				   MemberName == other.MemberName &&
 				   EqualityComparer<object>.Default.Equals(Value, other.Value) &&
@@ -106,7 +114,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		public override int GetHashCode()
 		{
 			int hashCode = -1510804887;
-			hashCode = hashCode * -1521134295 + EqualityComparer<Func<TItem, object>>.Default.GetHashCode(Func);
+			hashCode = hashCode * -1521134295 + EqualityComparer<Func<TItem, object>>.Default.GetHashCode(GetFunc());
 			hashCode = hashCode * -1521134295 + EqualityComparer<Expression<Func<TItem, object>>>.Default.GetHashCode(Expression);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberName);
 			hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
