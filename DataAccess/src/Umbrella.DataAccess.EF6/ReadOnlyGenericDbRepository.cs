@@ -122,7 +122,7 @@ namespace Umbrella.DataAccess.EF6
 					.ToListAsync(cancellationToken)
 					.ConfigureAwait(false);
 
-				entities = await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
+				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
 				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				return (entities, totalCount);
@@ -153,7 +153,7 @@ namespace Umbrella.DataAccess.EF6
 					.ToListAsync(cancellationToken)
 					.ConfigureAwait(false);
 
-				entities = await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
+				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
 				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				return (entities, totalCount);
@@ -212,14 +212,14 @@ namespace Umbrella.DataAccess.EF6
 			return Task.FromResult(true);
 		}
 
-		protected async Task<List<TEntity>> FilterByAccessAsync(IEnumerable<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
+		protected async Task FilterByAccessAsync(List<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			var lstFilteredEntity = new List<TEntity>();
-
-			foreach (TEntity entity in entities)
+			for (int i = 0; i < entities.Count; i++)
 			{
+				var entity = entities[i];
+
 				if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
 				{
 					Log.WriteWarning(state: new { Type = entity.GetType().FullName, entity.Id }, message: "The specified item failed the access check. This should not happen.");
@@ -227,11 +227,10 @@ namespace Umbrella.DataAccess.EF6
 					if (throwAccessException)
 						throw new UmbrellaDataAccessForbiddenException();
 
-					lstFilteredEntity.Add(entity);
+					entities.RemoveAt(i);
+					i--;
 				}
 			}
-
-			return lstFilteredEntity;
 		}
 
 		protected virtual Task AfterItemLoadedAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)

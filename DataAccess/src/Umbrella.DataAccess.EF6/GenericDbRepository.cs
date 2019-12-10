@@ -162,8 +162,6 @@ namespace Umbrella.DataAccess.EF6
 				// Save all changes - do not push to the database yet
 				if (!bypassSaveLogic)
 				{
-					await FilterByAccessAsync(entities, true, cancellationToken);
-
 					var lstSaveResult = new List<SaveResult<TEntity>>();
 
 					foreach (TEntity entity in entities)
@@ -247,8 +245,6 @@ namespace Umbrella.DataAccess.EF6
 
 			try
 			{
-				await FilterByAccessAsync(entities, true, cancellationToken).ConfigureAwait(false);
-
 				foreach (TEntity entity in entities)
 				{
 					await DeleteAsync(entity, cancellationToken, false, repoOptions, childOptions).ConfigureAwait(false);
