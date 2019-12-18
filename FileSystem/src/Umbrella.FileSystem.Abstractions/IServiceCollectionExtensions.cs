@@ -11,12 +11,12 @@ namespace Microsoft.Extensions.DependencyInjection
 	public static class IServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Adds the <see cref="Umbrella.FileSystem.Abstractions"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
+		/// Adds the core <see cref="Umbrella.FileSystem.Abstractions"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaFileSystem(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaFileSystemCore(this IServiceCollection services)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
@@ -34,6 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
 	/// <summary>
 	/// Extension methods used to register services for the <see cref="Umbrella.Utilities"/> package with a specified
 	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// Extension methods are also provided to allow for registrations to be removed and replaced.
 	/// </summary>
 	public static class IServiceCollectionExtensions
 	{
@@ -123,5 +125,36 @@ namespace Microsoft.Extensions.DependencyInjection
 
 		//	return services;
 		//}
+
+		public static IServiceCollection ReplaceTransient<TService, TImplementation>(this IServiceCollection services)
+			where TService : class
+			where TImplementation : class, TService
+			=> services.Remove<TService>().AddTransient<TService, TImplementation>();
+
+		public static IServiceCollection ReplaceScoped<TService, TImplementation>(this IServiceCollection services)
+			where TService : class
+			where TImplementation : class, TService
+			=> services.Remove<TService>().AddScoped<TService, TImplementation>();
+
+		public static IServiceCollection ReplaceSingleton<TService, TImplementation>(this IServiceCollection services)
+			where TService : class
+			where TImplementation : class, TService
+			=> services.Remove<TService>().AddSingleton<TService, TImplementation>();
+
+		public static IServiceCollection ReplaceSingleton<TService>(this IServiceCollection services, Func<IServiceProvider, TService> implementationFactory)
+			where TService : class
+			=> services.Remove<TService>().AddSingleton(implementationFactory);
+
+		public static IServiceCollection Remove<TService>(this IServiceCollection services)
+		{
+			Guard.ArgumentNotNull(services, nameof(services));
+
+			ServiceDescriptor serviceToRemove = services.SingleOrDefault(x => x.ServiceType == typeof(TService));
+
+			if (serviceToRemove != null)
+				services.Remove(serviceToRemove);
+
+			return services;
+		}
 	}
 }

@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaDynamicImage(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaDynamicImageCore(this IServiceCollection services)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		}
 
 		/// <summary>
-		/// Adds the <see cref="Umbrella.DataAccess.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
+		/// Adds the <see cref="Umbrella.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
 		/// with in-memory caching.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
@@ -50,8 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(dynamicImageCacheCoreOptionsBuilder, nameof(dynamicImageCacheCoreOptionsBuilder));
 			Guard.ArgumentNotNull(dynamicImageMemoryCacheOptionsBuilder, nameof(dynamicImageMemoryCacheOptionsBuilder));
 
-			services.AddUmbrellaDynamicImage();
-			services.AddSingleton<IDynamicImageCache, DynamicImageMemoryCache>();
+			services.AddUmbrellaDynamicImageCore();
+			services.ReplaceSingleton<IDynamicImageCache, DynamicImageMemoryCache>();
 			services.ConfigureUmbrellaOptions(dynamicImageCacheCoreOptionsBuilder);
 			services.ConfigureUmbrellaOptions(dynamicImageMemoryCacheOptionsBuilder);
 
@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		}
 
 		/// <summary>
-		/// Adds the <see cref="Umbrella.DataAccess.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
+		/// Adds the <see cref="Umbrella.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
 		/// with disk caching.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
@@ -78,8 +78,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(dynamicImageCacheCoreOptionsBuilder, nameof(dynamicImageCacheCoreOptionsBuilder));
 			Guard.ArgumentNotNull(dynamicImageDiskCacheOptionsBuilder, nameof(dynamicImageDiskCacheOptionsBuilder));
 
-			services.AddUmbrellaDynamicImage();
-			services.AddSingleton<IDynamicImageCache, DynamicImageDiskCache>();
+			services.AddUmbrellaDynamicImageCore();
+			services.ReplaceSingleton<IDynamicImageCache, DynamicImageDiskCache>();
 			services.ConfigureUmbrellaOptions(dynamicImageCacheCoreOptionsBuilder);
 			services.ConfigureUmbrellaOptions(dynamicImageDiskCacheOptionsBuilder);
 

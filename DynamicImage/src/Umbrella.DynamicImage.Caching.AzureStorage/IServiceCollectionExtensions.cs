@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
 	public static class IServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Adds the <see cref="Umbrella.DataAccess.DynamicImage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
+		/// Adds the <see cref="Umbrella.DynamicImage.Caching.AzureStorage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder
 		/// with Azure Blob Storage caching.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
@@ -32,8 +32,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(dynamicImageCacheCoreOptionsBuilder, nameof(dynamicImageCacheCoreOptionsBuilder));
 			Guard.ArgumentNotNull(dynamicImageAzureBlobStorageCacheOptionsBuilder, nameof(dynamicImageAzureBlobStorageCacheOptionsBuilder));
 
-			services.AddUmbrellaDynamicImage();
-			services.AddSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();
+			services.AddUmbrellaDynamicImageCore();
+			services.ReplaceSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();
 			services.ConfigureUmbrellaOptions(dynamicImageCacheCoreOptionsBuilder);
 			services.ConfigureUmbrellaOptions(dynamicImageAzureBlobStorageCacheOptionsBuilder);
 

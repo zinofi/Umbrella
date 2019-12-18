@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.Utilities;
@@ -58,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(services, nameof(services));
 			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
-			services.AddUmbrellaFileSystem();
+			services.AddUmbrellaFileSystemCore();
 
 			// TODO: Are we sticking with this approach??
 			services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider>(x =>
@@ -68,7 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 				return factory.CreateProvider<TFileProvider, TOptions>(options);
 			});
-			services.AddSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaAzureBlobStorageFileProvider>());
+			services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaAzureBlobStorageFileProvider>());
 
 			// Options
 			services.ConfigureUmbrellaOptions(optionsBuilder);

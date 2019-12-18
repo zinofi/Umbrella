@@ -58,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(services, nameof(services));
 			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
 
-			services.AddUmbrellaFileSystem();
+			services.AddUmbrellaFileSystemCore();
 
 			services.AddSingleton<IUmbrellaDiskFileProvider>(x =>
 			{
@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 				return factory.CreateProvider<TFileProvider, TOptions>(options);
 			});
-			services.AddSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaDiskFileProvider>());
+			services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaDiskFileProvider>());
 
 			// Options
 			services.ConfigureUmbrellaOptions(optionsBuilder);

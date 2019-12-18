@@ -21,6 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
+			// Adding this as an additional implementation rather than replacing so the in-built provider will still be used in addition
+			// to our custom one.
 			services.AddSingleton<IValidationAttributeAdapterProvider, UmbrellaValidationAttributeAdapterProvider>();
 
 			return services;
