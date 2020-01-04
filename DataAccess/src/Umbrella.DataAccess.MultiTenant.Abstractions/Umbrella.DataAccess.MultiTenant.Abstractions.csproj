@@ -20,7 +20,7 @@
 		<Version>3.0.0-preview-0043</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
 			This package contains abstractions for building data access code for multi-tenanted applications.
 		</Description>

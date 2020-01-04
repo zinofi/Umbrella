@@ -16,10 +16,10 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DataAccess.EntityFrameworkCore</PackageId>
-		<Version>3.0.0-preview-0045</Version>
+		<Version>3.0.0-preview-0047</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>This package is a placeholder for a future EF Core port of the Umbrella.DataAccess.EF6 package.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>

@@ -19,10 +19,10 @@
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript.Tools</PackageId>
 		<PackAsTool>true</PackAsTool>
-		<Version>3.0.0-preview-0045</Version>
+		<Version>3.0.0-preview-0047</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
 			This package contains .NET Core tooling to allow the Umbrella.TypeScript generators to be used with the dotnet CLI.
 		</Description>

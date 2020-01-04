@@ -17,10 +17,10 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DataAnnotations</PackageId>
-		<Version>3.0.0-preview-0045</Version>
+		<Version>3.0.0-preview-0047</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
 			This package contains a range of data annotation attributes that go beyond the standard ones available in the System.ComponentModel.DataAnnotations namespace.
 			This package was originally cloned from: https://foolproof.codeplex.com/ and contains fixes and enhancements to the original code.

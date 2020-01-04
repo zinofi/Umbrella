@@ -17,10 +17,10 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DynamicImage</PackageId>
-		<Version>3.0.0-preview-0045</Version>
+		<Version>3.0.0-preview-0047</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
 			This package contains come common features shared by other Umbrella.DynamicImage.* packages such as image URL generation and parsing capabilites as well as caching mechanisms for in-memory and physical disk.
 		</Description>

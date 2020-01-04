@@ -17,10 +17,10 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.AspNetCore.MultiTenant</PackageId>
-		<Version>3.0.0-preview-0045</Version>
+		<Version>3.0.0-preview-0047</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2019</Copyright>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
 			This package contains middleware to support creating multi-tenanted applications.
 		</Description>
