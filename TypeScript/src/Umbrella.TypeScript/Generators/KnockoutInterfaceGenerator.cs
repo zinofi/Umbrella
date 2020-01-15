@@ -1,12 +1,19 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 
 namespace Umbrella.TypeScript.Generators
 {
 	public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
 	{
+		private readonly bool _useDecorators;
 		public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutInterface;
 
-		protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
+		public KnockoutInterfaceGenerator(bool useDecorators)
+		{
+			_useDecorators = useDecorators;
+		}
+
+		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
 		{
 			if (!string.IsNullOrEmpty(tsInfo.TypeName))
 			{
@@ -16,12 +23,14 @@ namespace Umbrella.TypeScript.Generators
 
 				if (tsInfo.TypeName.EndsWith("[]"))
 				{
-					formatString += "KnockoutObservableArray<{1}>;";
-					tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
+					formatString += _useDecorators ? "{1}" : "KnockoutObservableArray<{1}>;";
+
+					if (!_useDecorators)
+						tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
 				}
 				else
 				{
-					formatString += "KnockoutObservable<{1}>;";
+					formatString += _useDecorators ? "{1}" : "KnockoutObservable<{1}>;";
 				}
 
 				builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}"));

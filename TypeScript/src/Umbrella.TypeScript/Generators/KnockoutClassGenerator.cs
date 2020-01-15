@@ -17,61 +17,96 @@ namespace Umbrella.TypeScript.Generators
 		private const string c_RegexEmail = "new RegExp(\"^((([a-z]|\\\\d|[!#\\\\$%&'\\\\*\\\\+\\\\-\\\\/=\\\\?\\\\^_`{\\\\|}~]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])+(\\\\.([a-z]|\\\\d|[!#\\\\$%&'\\\\*\\\\+\\\\-\\\\/=\\\\?\\\\^_`{\\\\|}~]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])+)*)|((\\\\x22)((((\\\\x20|\\\\x09)*(\\\\x0d\\\\x0a))?(\\\\x20|\\\\x09)+)?(([\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x7f]|\\\\x21|[\\\\x23-\\\\x5b]|[\\\\x5d-\\\\x7e]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(\\\\\\\\([\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0d-\\\\x7f]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF]))))*(((\\\\x20|\\\\x09)*(\\\\x0d\\\\x0a))?(\\\\x20|\\\\x09)+)?(\\\\x22)))@((([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])([a-z]|\\\\d|-|\\\\.|_|~|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])*([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])))\\\\.)+(([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])([a-z]|\\\\d|-|\\\\.|_|~|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])*([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])))\\\\.?$\", \"i\")";
 		#endregion
 
+		private readonly bool _useDecorators;
+
 		#region Overridden Properties
 		public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutClass;
-		protected override bool SupportsValidationRules => false;
+		protected override bool SupportsValidationRules => true;
 		protected override TypeScriptOutputModelType InterfaceModelType => TypeScriptOutputModelType.KnockoutInterface;
 		#endregion
 
+		public KnockoutClassGenerator(bool useDecorators)
+		{
+			_useDecorators = useDecorators;
+		}
+
 		#region Overridden Methods
-		protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
+		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
 		{
 			if (!string.IsNullOrEmpty(tsInfo.TypeName))
 			{
-				string strInitialOutputValue;
-
-				switch (PropertyMode)
+				string strInitialOutputValue = PropertyMode switch
 				{
-					default:
-					case TypeScriptPropertyMode.None:
-						strInitialOutputValue = "";
-						break;
-					case TypeScriptPropertyMode.Null:
-						strInitialOutputValue = "null";
-						break;
-					case TypeScriptPropertyMode.Model:
-						strInitialOutputValue = tsInfo.InitialOutputValue;
-						break;
-				}
+					TypeScriptPropertyMode.Null => "null",
+					TypeScriptPropertyMode.Model => tsInfo.InitialOutputValue,
+					_ => "",
+				};
 
 				string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
-				string formatString = "\t\t{0}: ";
+				var formatString = new StringBuilder();
 
-				if (tsInfo.TypeName.EndsWith("[]"))
+				if (_useDecorators)
 				{
-					formatString += "KnockoutObservableArray<{1}> = ko.observableArray<{1}>({2});";
-					tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
+					formatString.AppendLineWithTabIndent("@observable({ expose: true })", 2);
+
+					StringBuilder coreValidationBuilder = CreateValidationExtendItems(pi, 3);
+
+					if (coreValidationBuilder?.Length > 0)
+					{
+						formatString.AppendLineWithTabIndent("@extend({", 2);
+						formatString.Append(coreValidationBuilder);
+						formatString.AppendLineWithTabIndent("})", 2);
+					}
+
+					formatString.AppendLineWithTabIndent($"public {tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck} = {strInitialOutputValue};", 2);
 				}
 				else
 				{
-					formatString += "KnockoutObservable<{1}> = ko.observable<{1}>({2});";
+					formatString.Append($"\t\t{tsInfo.Name}: ");
+
+					if (tsInfo.TypeName.EndsWith("[]"))
+					{
+						tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
+						formatString.Append($"KnockoutObservableArray<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observableArray<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
+					}
+					else
+					{
+						formatString.Append($"KnockoutObservable<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observable<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
+					}
 				}
 
-				builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}", strInitialOutputValue));
+				builder.AppendLine(formatString.ToString());
 			}
 		}
 
 		protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
+		{
+			if (_useDecorators)
+				return;
+
+			var coreBuilder = CreateValidationExtendItems(propertyInfo);
+
+			if (coreBuilder == null)
+				return;
+
+			validationBuilder
+				.AppendLineWithTabIndent($"this.{tsInfo.Name.ToCamelCaseInvariant()} = this.{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3)
+				.Append(coreBuilder)
+				.AppendLineWithTabIndent("});", 3)
+				.AppendLine();
+		}
+
+		private StringBuilder CreateValidationExtendItems(PropertyInfo propertyInfo, int indent = 4)
 		{
 			//Get all types that are either of type ValidationAttribute or derive from it
 			//However, specifically exclude instances of type DataTypeAttribute
 			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
 
 			if (lstValidationAttribute.Count == 0)
-				return;
+				return null;
 
-			validationBuilder.AppendLineWithTabIndent($"this.{tsInfo.Name.ToCamelCaseInvariant()} = this.{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
+			var validationBuilder = new StringBuilder();
 
 			for (int i = 0; i < lstValidationAttribute.Count; i++)
 			{
@@ -82,45 +117,45 @@ namespace Umbrella.TypeScript.Generators
 				switch (validationAttribute)
 				{
 					case RequiredAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"required: {{ params: true, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"required: {{ params: true, message: {message} }},", indent);
 						break;
 					case CompareAttribute attr:
 						string otherPropertyName = attr.OtherProperty.ToCamelCaseInvariant();
-						validationBuilder.AppendLineWithTabIndent($"equal: {{ params: this.{otherPropertyName}, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"equal: {{ params: this.{otherPropertyName}, message: {message} }},", indent);
 						break;
 					case EmailAddressAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {c_RegexEmail}, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {c_RegexEmail}, message: {message} }},", indent);
 						break;
 					case MinLengthAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.Length}, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.Length}, message: {message} }},", indent);
 						break;
 					case MaxLengthAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.Length}, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.Length}, message: {message} }},", indent);
 						break;
 					case RangeAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"min: {{ params: {attr.Minimum}, message: {message} }},", 4);
-						validationBuilder.AppendLineWithTabIndent($"max: {{ params: {attr.Maximum}, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"min: {{ params: {attr.Minimum}, message: {message} }},", indent);
+						validationBuilder.AppendLineWithTabIndent($"max: {{ params: {attr.Maximum}, message: {message} }},", indent);
 						break;
 					case RegularExpressionAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: /{attr.Pattern}/, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: /{attr.Pattern}/, message: {message} }},", indent);
 						break;
 					case StringLengthAttribute attr:
 						if (attr.MinimumLength > 0)
-							validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.MinimumLength}, message: {message} }},", 4);
+							validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.MinimumLength}, message: {message} }},", indent);
 
-						validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.MaximumLength}, message: {message} }},", 4);
+						validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.MaximumLength}, message: {message} }},", indent);
 						break;
 				}
 			}
 
-			validationBuilder.AppendLineWithTabIndent("});", 3)
-				.AppendLine();
+			return validationBuilder;
 		}
 
 		protected override void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder)
 		{
-			//Only write the validation rules if some validation rules have been generated
-			if (validationBuilder?.Length > 0)
+			// Only write the validation rules if some validation rules have been generated
+			// and we are not using decorators
+			if (!_useDecorators && validationBuilder?.Length > 0)
 			{
 				typeBuilder.AppendLine();
 

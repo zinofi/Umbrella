@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Umbrella.TypeScript.Generators
@@ -23,7 +24,7 @@ namespace Umbrella.TypeScript.Generators
 			builder.AppendLine("\t{");
 		}
 
-		protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
+		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
 		{
 			if (!string.IsNullOrEmpty(tsInfo.TypeName))
 			{

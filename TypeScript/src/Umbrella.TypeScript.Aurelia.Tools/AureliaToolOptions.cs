@@ -7,6 +7,5 @@ namespace Umbrella.TypeScript.Aurelia.Tools
 {
     public class AureliaToolOptions : ToolOptions
     {
-        public bool ValidationEnabled { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Umbrella.TypeScript.Generators
@@ -29,25 +30,16 @@ namespace Umbrella.TypeScript.Generators
 			builder.AppendLine("\t{");
 		}
 
-		protected override void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder builder)
+		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
 		{
 			if (!string.IsNullOrEmpty(tsInfo.TypeName))
 			{
-				string strInitialOutputValue;
-
-				switch (PropertyMode)
+				string strInitialOutputValue = PropertyMode switch
 				{
-					default:
-					case TypeScriptPropertyMode.None:
-						strInitialOutputValue = "";
-						break;
-					case TypeScriptPropertyMode.Null:
-						strInitialOutputValue = " = null";
-						break;
-					case TypeScriptPropertyMode.Model:
-						strInitialOutputValue = $" = {tsInfo.InitialOutputValue}";
-						break;
-				}
+					TypeScriptPropertyMode.Null => " = null",
+					TypeScriptPropertyMode.Model => $" = {tsInfo.InitialOutputValue}",
+					_ => "",
+				};
 
 				string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 

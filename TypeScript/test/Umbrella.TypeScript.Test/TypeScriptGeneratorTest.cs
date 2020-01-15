@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.Loader;
 using System.Reflection;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Umbrella.TypeScript.Test
 
             TypeScriptGenerator generator = new TypeScriptGenerator(new List<Assembly> { testAssembly })
                 .IncludeStandardGenerators()
-                .IncludeKnockoutGenerators();
+                .IncludeKnockoutGenerators(false);
 
             string output = generator.GenerateAll(true, true, TypeScriptPropertyMode.Model);
 
@@ -26,11 +26,11 @@ namespace Umbrella.TypeScript.Test
 		[Fact]
 		public void GenerateAllUsingOnlyNamedAssembliesTest()
 		{
-			var testAssembly = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
+			AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
 
 			TypeScriptGenerator generator = new TypeScriptGenerator("Umbrella.TypeScript.Test")
 				.IncludeStandardGenerators()
-				.IncludeKnockoutGenerators();
+				.IncludeKnockoutGenerators(false);
 
 			string output = generator.GenerateAll(true, true, TypeScriptPropertyMode.Model);
 

@@ -19,25 +19,14 @@ namespace Umbrella.TypeScript.Aurelia.Tools
         {
             base.SetupCommandOptions();
 
-            OptionDictionary.Add("validation", Option("--validation", "Specify this flag to output the import statement for the aurelia-valiation library.", CommandOptionType.NoValue));
-
             OptionDictionary["generators"].Description += " The Aurelia generator is included by default.";
         }
 
-        protected override AureliaToolOptions GetToolOptions()
-        {
-            var toolOptions = base.GetToolOptions();
-
-            toolOptions.ValidationEnabled = OptionDictionary["validation"].HasValue();
-
-            return toolOptions;
-        }
-
-        protected override void SetupGenerators(List<string> generators, TypeScriptGenerator generator)
+        protected override void SetupGenerators(TypeScriptGenerator generator, AureliaToolOptions options)
         {
             generator.IncludeAureliaGenerators();
 
-            base.SetupGenerators(generators, generator);
+            base.SetupGenerators(generator, options);
         }
 
         protected override StringBuilder CreateOutputBuilder(AureliaToolOptions toolOptions)

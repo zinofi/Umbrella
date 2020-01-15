@@ -82,10 +82,10 @@ namespace Umbrella.TypeScript
 			return this;
 		}
 
-		public TypeScriptGenerator IncludeKnockoutGenerators()
+		public TypeScriptGenerator IncludeKnockoutGenerators(bool useDecorators)
 		{
-			Generators.Add(new KnockoutInterfaceGenerator());
-			Generators.Add(new KnockoutClassGenerator());
+			Generators.Add(new KnockoutInterfaceGenerator(useDecorators));
+			Generators.Add(new KnockoutClassGenerator(useDecorators));
 
 			return this;
 		}
@@ -103,11 +103,11 @@ namespace Umbrella.TypeScript
 			m_StrictNullChecks = strictNullChecks;
 			m_TypeScriptPropertyMode = propertyMode;
 
-			StringBuilder sbNamespaces = new StringBuilder();
+			var sbNamespaces = new StringBuilder();
 
 			//Before processing the models, firstly find all the enums that need to be generated
 			var enumItems = GetEnumItems().ToList();
-			Dictionary<string, List<TypeInfo>> enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
+			var enumGroups = GetEnumItems().GroupBy(x => x.Namespace).ToDictionary(x => x.Key, x => x.ToList());
 
 			//Start of TypeScript namespace or module export
 			string namespaceOrModuleStart = outputAsModuleExport
@@ -138,7 +138,7 @@ namespace Umbrella.TypeScript
 					enumGroups.Remove(nsName);
 				}
 
-				//Generate model interfaces and classes
+				// Generate model interfaces and classes
 				foreach (TypeScriptModelGeneratorItem item in group)
 				{
 					//Generate the models using the registered generators
@@ -184,7 +184,7 @@ namespace Umbrella.TypeScript
 		#region Private Methods
 		private string GenerateEnumDefinition(TypeInfo enumType)
 		{
-			StringBuilder builder = new StringBuilder();
+			var builder = new StringBuilder();
 			builder.AppendLine($"\texport enum {enumType.Name}");
 			builder.AppendLine("\t{");
 

@@ -23,7 +23,7 @@ namespace Umbrella.TypeScript.Generators
             StrictNullChecks = strictNullChecks;
             PropertyMode = propertyMode;
 
-            StringBuilder typeBuilder = new StringBuilder();
+            var typeBuilder = new StringBuilder();
 
             //Only create an instance if validation rules need to be generated
             StringBuilder validationBuilder = generateValidationRules ? new StringBuilder() : null;
@@ -55,7 +55,7 @@ namespace Umbrella.TypeScript.Generators
 
                 TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(ModelType, propertyType, pi, OutputModelType, StrictNullChecks, PropertyMode);
                 
-                WriteProperty(tsInfo, typeBuilder);
+                WriteProperty(pi, tsInfo, typeBuilder);
 
                 //We are generating the validation rules here so that this work can be done in the same step
                 //as the work to generate the property itself.
@@ -64,7 +64,7 @@ namespace Umbrella.TypeScript.Generators
             }
         }
 
-        protected abstract void WriteProperty(TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder);
+        protected abstract void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder);
 
         protected virtual void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
         {

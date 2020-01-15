@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Utilities</PackageId>
-    <Version>3.0.0-preview-0047</Version>
+    <Version>3.0.0-preview-0053</Version>
     <Authors>Zinofi Digital Ltd</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2020</Copyright>
@@ -36,6 +36,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Buffers" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.0" />
   </ItemGroup>
 
