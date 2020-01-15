@@ -17,7 +17,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Extensions
 
 				if (memberNames?.Count > 0)
 				{
-					foreach (string key in item.MemberNames)
+					foreach (string key in memberNames)
 					{
 						dictionary.AddModelError(key, item.ErrorMessage);
 					}
