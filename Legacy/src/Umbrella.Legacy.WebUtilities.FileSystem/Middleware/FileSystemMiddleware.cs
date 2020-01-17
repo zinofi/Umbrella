@@ -55,6 +55,15 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			{
 				string path = context.Request.Path.Value;
 
+				if (!path.StartsWith("/" + _options.FileSystemPathPrefix))
+				{
+					await Next.Invoke(context);
+					return;
+				}
+
+				// Strip the prefix
+				path = path.Substring(_options.FileSystemPathPrefix.Length + 1);
+
 				FileSystemMiddlewareMapping mapping = _options.GetMapping(path);
 
 				if (mapping != null)

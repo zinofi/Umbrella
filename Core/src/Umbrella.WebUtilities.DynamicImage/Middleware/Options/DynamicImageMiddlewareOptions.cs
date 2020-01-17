@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
@@ -56,6 +57,8 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 				Mappings.ForEach(x => x.Sanitize());
 				_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
 			}
+
+			DynamicImagePathPrefix = DynamicImagePathPrefix.TrimNull();
 		}
 
 		/// <summary>
@@ -64,6 +67,7 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 		public void Validate()
 		{
 			Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));
+			Guard.ArgumentNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
 			Guard.ArgumentNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
 		}
 	}

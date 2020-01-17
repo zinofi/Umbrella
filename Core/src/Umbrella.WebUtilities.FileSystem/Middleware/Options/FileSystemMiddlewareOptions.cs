@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
+using Umbrella.WebUtilities.FileSystem.Constants;
 
 namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 {
@@ -20,6 +22,11 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 		/// Gets or sets the mappings.
 		/// </summary>
 		public List<FileSystemMiddlewareMapping> Mappings { get; set; }
+
+		/// <summary>
+		/// Gets or sets the file system path prefix. Defaults to <see cref="FileSystemConstants.DefaultPathPrefix"/>.
+		/// </summary>
+		public string FileSystemPathPrefix { get; set; } = FileSystemConstants.DefaultPathPrefix;
 
 		/// <summary>
 		/// Gets the file provider for the specified <paramref name="searchPath"/>.
@@ -44,6 +51,8 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 				Mappings.ForEach(x => x.Sanitize());
 				_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
 			}
+
+			FileSystemPathPrefix = FileSystemPathPrefix.TrimNull();
 		}
 
 		/// <summary>
@@ -52,6 +61,7 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 		public void Validate()
 		{
 			Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));
+			Guard.ArgumentNotNullOrWhiteSpace(FileSystemPathPrefix, nameof(FileSystemPathPrefix));
 			Guard.ArgumentNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
 		}
 	}
