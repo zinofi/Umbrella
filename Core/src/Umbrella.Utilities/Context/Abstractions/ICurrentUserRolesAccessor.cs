@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Context.Abstractions
 {
-	public interface ICurrentUserRolesAccessor : ICurrentUserRolesAccessor<string>
-	{
-	}
-
 	public interface ICurrentUserRolesAccessor<T>
     {
 		IReadOnlyCollection<string> RoleNames { get; }

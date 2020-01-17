@@ -76,9 +76,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
 			services.AddSingleton<IEmailFactory, EmailFactory>();
 			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
-			services.AddSingleton<ICurrentUserIdAccessor, DefaultUserIdAccessor>();
 			services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
-			services.AddSingleton<ICurrentUserRolesAccessor, DefaultUserRolesAccessor>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);
@@ -122,6 +120,22 @@ namespace Microsoft.Extensions.DependencyInjection
 			return services;
 		}
 
+		public static IServiceCollection ConfigureCurrentUserIdAccessor<T, TKey>(this IServiceCollection services)
+			where T : ICurrentUserIdAccessor<TKey>
+		{
+			services.ReplaceSingleton(typeof(ICurrentUserIdAccessor<TKey>), typeof(T).MakeGenericType(typeof(TKey)));
+
+			return services;
+		}
+
+		public static IServiceCollection ConfigureCurrentUserRolesAccessor<T, TRoleType>(this IServiceCollection services)
+			where T : ICurrentUserRolesAccessor<TRoleType>
+		{
+			services.ReplaceSingleton(typeof(ICurrentUserRolesAccessor<TRoleType>), typeof(T).MakeGenericType(typeof(TRoleType)));
+
+			return services;
+		}
+
 		// TODO: Really need have an encryption utility options class with properties for key and iv and register with DI
 		// It's a breaking change though so leave until v3.
 		//public static IServiceCollection AddUmbrellaEncryptionUtility<T>(this IServiceCollection services, string encryptionKey, string iv)
@@ -137,28 +151,41 @@ namespace Microsoft.Extensions.DependencyInjection
 			where TImplementation : class, TService
 			=> services.Remove<TService>().AddTransient<TService, TImplementation>();
 
+		public static IServiceCollection ReplaceTransient(this IServiceCollection services, Type serviceType, Type implementationType)
+			=> services.Remove(serviceType).AddTransient(serviceType, implementationType);
+
 		public static IServiceCollection ReplaceScoped<TService, TImplementation>(this IServiceCollection services)
 			where TService : class
 			where TImplementation : class, TService
 			=> services.Remove<TService>().AddScoped<TService, TImplementation>();
+
+		public static IServiceCollection ReplaceScoped(this IServiceCollection services, Type serviceType, Type implementationType)
+			=> services.Remove(serviceType).AddScoped(serviceType, implementationType);
 
 		public static IServiceCollection ReplaceSingleton<TService, TImplementation>(this IServiceCollection services)
 			where TService : class
 			where TImplementation : class, TService
 			=> services.Remove<TService>().AddSingleton<TService, TImplementation>();
 
+		public static IServiceCollection ReplaceSingleton(this IServiceCollection services, Type serviceType, Type implementationType)
+			=> services.Remove(serviceType).AddSingleton(serviceType, implementationType);
+
 		public static IServiceCollection ReplaceSingleton<TService>(this IServiceCollection services, Func<IServiceProvider, TService> implementationFactory)
 			where TService : class
 			=> services.Remove<TService>().AddSingleton(implementationFactory);
 
 		public static IServiceCollection Remove<TService>(this IServiceCollection services)
+			=> services.Remove(typeof(TService));
+
+		public static IServiceCollection Remove(this IServiceCollection services, Type serviceType)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
+			Guard.ArgumentNotNull(serviceType, nameof(serviceType));
 
-			ServiceDescriptor serviceToRemove = services.SingleOrDefault(x => x.ServiceType == typeof(TService));
-
-			if (serviceToRemove != null)
-				services.Remove(serviceToRemove);
+			foreach(ServiceDescriptor serviceDescriptor in services.Where(x => x.ServiceType == serviceType))
+			{
+				services.Remove(serviceDescriptor);
+			}
 
 			return services;
 		}

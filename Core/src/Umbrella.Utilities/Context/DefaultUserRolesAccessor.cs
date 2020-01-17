@@ -4,10 +4,6 @@ using Umbrella.Utilities.Context.Abstractions;
 
 namespace Umbrella.Utilities.Context
 {
-	public class DefaultUserRolesAccessor : DefaultUserRolesAccessor<string>, ICurrentUserRolesAccessor
-	{
-	}
-
 	public class DefaultUserRolesAccessor<T> : ICurrentUserRolesAccessor<T>
 	{
 		public IReadOnlyCollection<string> RoleNames { get; } = Array.Empty<string>();
