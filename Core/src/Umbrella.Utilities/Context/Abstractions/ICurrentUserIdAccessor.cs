@@ -1,4 +1,4 @@
-﻿namespace Umbrella.DataAccess.Abstractions
+﻿namespace Umbrella.Utilities.Context.Abstractions
 {
 	/// <summary>
 	/// Used to allow access to the integer id of the current user.

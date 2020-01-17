@@ -5,6 +5,8 @@ using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
+using Umbrella.Utilities.Context;
+using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.DependencyInjection;
@@ -73,6 +75,10 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
 			services.AddSingleton<IEmailFactory, EmailFactory>();
+			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
+			services.AddSingleton<ICurrentUserIdAccessor, DefaultUserIdAccessor>();
+			services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
+			services.AddSingleton<ICurrentUserRolesAccessor, DefaultUserRolesAccessor>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);

@@ -13,6 +13,7 @@ using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.EF6

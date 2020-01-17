@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.EF6;
 using Umbrella.DataAccess.MultiTenant.Abstractions;
+using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.MultiTenant.EF6
