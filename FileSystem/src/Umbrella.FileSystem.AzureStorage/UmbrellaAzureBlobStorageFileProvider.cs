@@ -124,9 +124,6 @@ namespace Umbrella.FileSystem.AzureStorage
 			NameValidator.ValidateContainerName(containerName);
 			NameValidator.ValidateBlobName(blobName);
 
-			if (!await CheckFileAccessAsync(containerName, blobName, cancellationToken))
-				throw new UmbrellaFileAccessDeniedException(subpath);
-
 			CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
 
 			if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
@@ -156,12 +153,17 @@ namespace Umbrella.FileSystem.AzureStorage
 			if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
 				return null;
 
-			return new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
+			var fileInfo = new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
+
+			if (!await CheckFileAccessAsync(fileInfo, blob, cancellationToken))
+				throw new UmbrellaFileAccessDeniedException(subpath);
+
+			return fileInfo;
 		}
 		#endregion
 
 		#region Protected Methods
-		protected virtual Task<bool> CheckFileAccessAsync(string containerName, string blobName, CancellationToken cancellationToken)
+		protected virtual Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, CloudBlockBlob blob, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

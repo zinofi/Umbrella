@@ -60,15 +60,17 @@ namespace Umbrella.FileSystem.Disk
 			if (!isNew && !physicalFileInfo.Exists)
 				return null;
 
-			if (!await CheckFileAccessAsync(physicalFileInfo, cancellationToken))
+			var fileInfo = new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, physicalFileInfo, isNew);
+
+			if (!await CheckFileAccessAsync(fileInfo, physicalFileInfo, cancellationToken))
 				throw new UmbrellaFileAccessDeniedException(subpath);
 
-			return new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, physicalFileInfo, isNew);
+			return fileInfo;
 		}
 		#endregion
 
 		#region Protected Methods
-		protected virtual Task<bool> CheckFileAccessAsync(FileInfo fileInfo, CancellationToken cancellationToken)
+		protected virtual Task<bool> CheckFileAccessAsync(UmbrellaDiskFileInfo fileInfo, FileInfo physicalFileInfo, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

@@ -25,6 +25,7 @@ namespace Umbrella.FileSystem.Abstractions
 		Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null);
 		Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true);
 		Task RemoveMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, bool writeChanges = true);
+		Task ClearMetaDataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true);
 		Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default);
 	}
 }

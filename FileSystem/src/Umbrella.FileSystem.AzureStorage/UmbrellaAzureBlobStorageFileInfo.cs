@@ -331,6 +331,24 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		public async Task ClearMetaDataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+
+			try
+			{
+				Blob.Metadata.Clear();
+
+				if (writeChanges)
+					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { writeChanges }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error clearing the metadata.", exc);
+			}
+		}
+
 		public async Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

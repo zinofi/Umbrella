@@ -329,6 +329,27 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		public async Task ClearMetaDataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			ThrowIfIsNew();
+
+			try
+			{
+				if (_metadataDictionary == null)
+					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
+
+				_metadataDictionary.Clear();
+
+				if (writeChanges)
+					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { writeChanges }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error clearing the metadata.", exc);
+			}
+		}
+
 		public async Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

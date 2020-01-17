@@ -121,17 +121,17 @@ namespace Microsoft.Extensions.DependencyInjection
 		}
 
 		public static IServiceCollection ConfigureCurrentUserIdAccessor<T, TKey>(this IServiceCollection services)
-			where T : ICurrentUserIdAccessor<TKey>
+			where T : class, ICurrentUserIdAccessor<TKey>
 		{
-			services.ReplaceSingleton(typeof(ICurrentUserIdAccessor<TKey>), typeof(T).MakeGenericType(typeof(TKey)));
+			services.ReplaceSingleton<ICurrentUserIdAccessor<TKey>, T>();
 
 			return services;
 		}
 
 		public static IServiceCollection ConfigureCurrentUserRolesAccessor<T, TRoleType>(this IServiceCollection services)
-			where T : ICurrentUserRolesAccessor<TRoleType>
+			where T : class, ICurrentUserRolesAccessor<TRoleType>
 		{
-			services.ReplaceSingleton(typeof(ICurrentUserRolesAccessor<TRoleType>), typeof(T).MakeGenericType(typeof(TRoleType)));
+			services.ReplaceSingleton<ICurrentUserRolesAccessor<TRoleType>, T>();
 
 			return services;
 		}
