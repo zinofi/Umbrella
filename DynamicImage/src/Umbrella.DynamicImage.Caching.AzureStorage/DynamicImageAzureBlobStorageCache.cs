@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
-using Umbrella.Utilities;
+using Umbrella.Utilities.Caching.Abstractions;
 
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Caching.AzureStorage.Test")]
 
@@ -19,15 +19,15 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 		#endregion
 
 		#region Constructors
-		public DynamicImageAzureBlobStorageCache(ILogger<DynamicImageAzureBlobStorageCache> logger,
-			IMemoryCache cache,
+		public DynamicImageAzureBlobStorageCache(
+			ILogger<DynamicImageAzureBlobStorageCache> logger,
+			IHybridCache cache,
+			ICacheKeyUtility cacheKeyUtility,
 			DynamicImageCacheCoreOptions cacheOptions,
 			IUmbrellaAzureBlobStorageFileProvider fileProvider,
 			DynamicImageAzureBlobStorageCacheOptions blobStorageCacheOptions)
-			: base(logger, cache, cacheOptions, fileProvider)
+			: base(logger, cache, cacheKeyUtility, cacheOptions, fileProvider)
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(blobStorageCacheOptions.ContainerName, nameof(blobStorageCacheOptions.ContainerName));
-			
 			BlobStorageCacheOptions = blobStorageCacheOptions;
 		}
 		#endregion

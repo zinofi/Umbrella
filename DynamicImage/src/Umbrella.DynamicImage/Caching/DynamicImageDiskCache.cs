@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.DynamicImage.Caching
 {
@@ -14,11 +15,12 @@ namespace Umbrella.DynamicImage.Caching
 
 		#region Constructors
 		public DynamicImageDiskCache(ILogger<DynamicImageDiskCache> logger,
-			IMemoryCache cache,
+			IHybridCache cache,
+			ICacheKeyUtility cacheKeyUtility,
 			DynamicImageCacheCoreOptions cacheOptions,
 			IUmbrellaDiskFileProvider fileProvider,
 			DynamicImageDiskCacheOptions diskCacheOptions)
-			: base(logger, cache, cacheOptions, fileProvider)
+			: base(logger, cache, cacheKeyUtility, cacheOptions, fileProvider)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(diskCacheOptions.CacheFolderName, nameof(diskCacheOptions.CacheFolderName));
 

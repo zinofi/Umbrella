@@ -14,9 +14,9 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 	public class FileSystemMiddlewareMapping : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
 	{
 		/// <summary>
-		/// Gets or sets the cacheability.
+		/// Gets or sets the cacheability. Defaults to <see cref="MiddlewareHttpCacheability.NoCache" />.
 		/// </summary>
-		public MiddlewareHttpCacheability Cacheability { get; set; }
+		public MiddlewareHttpCacheability Cacheability { get; set; } = MiddlewareHttpCacheability.NoCache;
 
 		/// <summary>
 		/// Gets or sets the file provider mapping.

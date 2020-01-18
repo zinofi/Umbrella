@@ -444,9 +444,10 @@ namespace Umbrella.Utilities.Caching
 		/// <typeparam name="T">The type of the cached item.</typeparam>
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="cacheMode">The cache mode.</param>
 		/// <returns>A task which can be awaited to indicate completion.</returns>
 		/// <exception cref="HybridCacheException">There has been a problem removing the item with the key: " + <paramref name="cacheKey"/></exception>
-		public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default)
+		public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -455,8 +456,10 @@ namespace Umbrella.Utilities.Caching
 			{
 				string cacheKeyInternal = CreateCacheKeyNormalized<T>(cacheKey);
 
-				MemoryCache.Remove(cacheKeyInternal);
-				await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken);
+				if (cacheMode == HybridCacheMode.Memory)
+					MemoryCache.Remove(cacheKeyInternal);
+				else if (cacheMode == HybridCacheMode.Distributed)
+					await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey }, returnValue: true))
 			{
@@ -569,7 +572,7 @@ namespace Umbrella.Utilities.Caching
 			}
 
 			return options;
-		} 
+		}
 		#endregion
 
 		#region IDisposable Support

@@ -1,15 +1,12 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Umbrella.Utilities.Options;
 
 namespace Umbrella.DynamicImage.Caching
 {
 	/// <summary>
-	/// Used to specify the core Dynamic Image options.
+	/// Used to specify the core caching options. These options are only used for specifying caching durations for keys.
 	/// </summary>
-	public class DynamicImageCacheCoreOptions
+	/// <seealso cref="Umbrella.Utilities.Options.CacheableUmbrellaOptions" />
+	public class DynamicImageCacheCoreOptions : CacheableUmbrellaOptions
 	{
-		/// <summary>
-		/// Gets or sets the <see cref="MemoryCacheEntryOptions"/> used for caching the generated cache keys which correspond to cached filenames.
-		/// </summary>
-		public MemoryCacheEntryOptions CacheKeyCacheOptions { get; set; }
 	}
 }

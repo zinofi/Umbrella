@@ -103,7 +103,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
-			services.AddSingleton(serviceProvider =>
+			services.ReplaceSingleton(serviceProvider =>
 			{
 				var options = new TOptions();
 				optionsBuilder?.Invoke(serviceProvider, options);

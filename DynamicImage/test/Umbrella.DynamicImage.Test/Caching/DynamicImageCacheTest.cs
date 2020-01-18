@@ -12,6 +12,9 @@ using Umbrella.DynamicImage.Caching;
 using Umbrella.DynamicImage.Caching.AzureStorage;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
+using Umbrella.Internal.Mocks;
+using Umbrella.Utilities.Caching;
+using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
@@ -173,20 +176,9 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 		private static DynamicImageDiskCache CreateDynamicImageDiskCache()
 		{
-			var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+			var cacheOptions = new DynamicImageCacheCoreOptions();
 
-			var cacheOptions = new DynamicImageCacheCoreOptions
-			{
-				CacheKeyCacheOptions = new MemoryCacheEntryOptions
-				{
-					SlidingExpiration = TimeSpan.FromHours(1)
-				}
-			};
-
-			var diskCacheOptions = new DynamicImageDiskCacheOptions
-			{
-				CacheFolderName = "DynamicImageCache"
-			};
+			var diskCacheOptions = new DynamicImageDiskCacheOptions();
 
 			var cacheLogger = new Mock<ILogger<DynamicImageDiskCache>>();
 			var fileProviderLogger = new Mock<ILogger<UmbrellaDiskFileProvider>>();
@@ -208,46 +200,33 @@ namespace Umbrella.DynamicImage.Test.Caching
 			var fileProvider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
 			fileProvider.InitializeOptions(fileProviderOptions);
 
-			return new DynamicImageDiskCache(cacheLogger.Object, memoryCache, cacheOptions, fileProvider, diskCacheOptions);
+			return new DynamicImageDiskCache(
+				cacheLogger.Object,
+				CoreUtilitiesMocks.CreateHybridCache(),
+				CoreUtilitiesMocks.CreateCacheKeyUtility(),
+				cacheOptions,
+				fileProvider,
+				diskCacheOptions);
 		}
 
 		private static DynamicImageMemoryCache CreateDynamicImageMemoryCache()
 		{
-			var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-
-			var cacheOptions = new DynamicImageCacheCoreOptions
-			{
-				CacheKeyCacheOptions = new MemoryCacheEntryOptions
-				{
-					SlidingExpiration = TimeSpan.FromHours(1)
-				}
-			};
-
-			var memoryCacheOptions = new DynamicImageMemoryCacheOptions
-			{
-				ItemCacheOptions = new MemoryCacheEntryOptions
-				{
-					SlidingExpiration = TimeSpan.FromHours(1)
-				}
-			};
-
+			var cacheOptions = new DynamicImageCacheCoreOptions();
+			var memoryCacheOptions = new DynamicImageMemoryCacheOptions();
 			var cacheLogger = new Mock<ILogger<DynamicImageMemoryCache>>();
 
-			return new DynamicImageMemoryCache(cacheLogger.Object, memoryCache, cacheOptions, memoryCacheOptions);
+			return new DynamicImageMemoryCache(
+				cacheLogger.Object,
+				CoreUtilitiesMocks.CreateHybridCache(),
+				CoreUtilitiesMocks.CreateCacheKeyUtility(),
+				cacheOptions,
+				memoryCacheOptions);
 		}
 
 		private static DynamicImageAzureBlobStorageCache CreateDynamicImageAzureBlobStorageCache()
 		{
 			var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-
-			var cacheOptions = new DynamicImageCacheCoreOptions
-			{
-				CacheKeyCacheOptions = new MemoryCacheEntryOptions
-				{
-					SlidingExpiration = TimeSpan.FromHours(1)
-				}
-			};
-
+			var cacheOptions = new DynamicImageCacheCoreOptions();
 			var cacheLogger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
 			var fileProviderLogger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
 
@@ -270,7 +249,13 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 			var blobStorageCacheOptions = new DynamicImageAzureBlobStorageCacheOptions();
 
-			return new DynamicImageAzureBlobStorageCache(cacheLogger.Object, memoryCache, cacheOptions, fileProvider, blobStorageCacheOptions);
+			return new DynamicImageAzureBlobStorageCache(
+				cacheLogger.Object,
+				CoreUtilitiesMocks.CreateHybridCache(),
+				CoreUtilitiesMocks.CreateCacheKeyUtility(),
+				cacheOptions,
+				fileProvider,
+				blobStorageCacheOptions);
 		}
 	}
 }

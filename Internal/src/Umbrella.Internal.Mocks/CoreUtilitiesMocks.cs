@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Caching.Options;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Internal.Mocks
@@ -23,5 +27,15 @@ namespace Umbrella.Internal.Mocks
 		}
 
 		public static ICacheKeyUtility CreateCacheKeyUtility() => new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, CreateILookupNormalizer());
+
+		public static IHybridCache CreateHybridCache(bool enableCaching = true)
+		{
+			return new HybridCache(
+				new Mock<ILogger<HybridCache>>().Object,
+				new HybridCacheOptions { CacheEnabled = enableCaching },
+				CreateILookupNormalizer(),
+				new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())),
+				new MemoryCache(Options.Create(new MemoryCacheOptions())));
+		}
 	}
 }

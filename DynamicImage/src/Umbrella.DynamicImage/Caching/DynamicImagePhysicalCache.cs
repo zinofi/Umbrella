@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.DynamicImage.Caching
 {
+	/// <summary>
+	/// Serves as the base class for caches that store files on a physical medium, e.g. Disk, Azure storage, etc.
+	/// </summary>
+	/// <typeparam name="TFileProvider">The type of the file provider.</typeparam>
+	/// <seealso cref="Umbrella.DynamicImage.Caching.DynamicImageCache" />
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.IDynamicImageCache" />
 	public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCache, IDynamicImageCache
 		where TFileProvider : IUmbrellaFileProvider
 	{
@@ -21,10 +27,11 @@ namespace Umbrella.DynamicImage.Caching
 
 		#region Constructors
 		public DynamicImagePhysicalCache(ILogger logger,
-			IMemoryCache cache,
+			IHybridCache cache,
+			ICacheKeyUtility cacheKeyUtility,
 			DynamicImageCacheCoreOptions cacheOptions,
 			TFileProvider fileProvider)
-			: base(logger, cache, cacheOptions)
+			: base(logger, cache, cacheKeyUtility, cacheOptions)
 		{
 			FileProvider = fileProvider;
 		}

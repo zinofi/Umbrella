@@ -41,8 +41,9 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// <typeparam name="T">The type of the cached item.</typeparam>
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="cacheMode">The cache mode.</param>
 		/// <returns>A task which can be awaited to indicate completion.</returns>
-		Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default);
+		Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory);
 
 		/// <summary>
 		/// Clears the memory cache.

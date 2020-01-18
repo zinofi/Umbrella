@@ -11,8 +11,8 @@ namespace Umbrella.Utilities.Options
 	public abstract class CacheableUmbrellaOptions
 	{
 		/// <summary>
-		/// Gets or sets a value indicating whether caching is enabled. This will override any caching parameters
-		/// on methods of the consuming class. Defaults to <see langword="true" />.
+		/// Gets or sets a value indicating whether to override the global <see cref="HybridCacheOptions.CacheEnabled"/> property. However, this override is only used when that property is set to <see langword="true"/>.
+		/// If it is set to <see langword="false"/> then this override has no effect. Defaults to <see langword="true" />.
 		/// </summary>
 		public virtual bool CacheEnabled { get; set; } = true;
 
@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Options
 		/// <summary>
 		/// Gets or sets the cache mode. Defaults to <see cref="HybridCacheMode.Memory"/>.
 		/// </summary>
-		public virtual HybridCacheMode CacheMode { get; set; }
+		public virtual HybridCacheMode CacheMode { get; set; } = HybridCacheMode.Memory;
 
 		/// <summary>
 		/// Gets or sets the cache priority when caching items in memory. Defaults to <see cref="CacheItemPriority.Normal"/>.
@@ -37,8 +37,10 @@ namespace Umbrella.Utilities.Options
 		public virtual CacheItemPriority CachePriority { get; set; } = CacheItemPriority.Normal;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether to override the global <see cref="HybridCacheOptions.CacheEnabled"/> property. However, this override is only used when that property is set to <see langword="true"/>.
-		/// If it is set to <see langword="false"/> then this override has no effect.
+		/// Gets or sets a value indicating whether the <see cref="HybridCache" /> will throw an exception when an internal exception is encountered, e.g. if there was a
+		/// connection error when dealing with a distributed cache which may be transient.
+		/// Setting this to <see langword="false" /> will mask any such exceptions from callers although these exceptions will be logged for diagnostic purposes.
+		/// Defaults to <see langword="true" />
 		/// </summary>
 		public virtual bool CacheThrowOnFailure { get; set; } = true;
 	}

@@ -43,14 +43,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
 
             httpContextAccessor.Setup(x => x.HttpContext).Returns(context);
 
-			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
-
 			return new UmbrellaWebHostingEnvironment(logger.Object,
                 hostingEnvironment.Object,
                 httpContextAccessor.Object,
 				new UmbrellaHostingEnvironmentOptions(),
                 CreateMemoryCache(),
-                new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer));
+                CoreUtilitiesMocks.CreateCacheKeyUtility());
         }
 
         public static IMemoryCache CreateMemoryCache() => new MemoryCache(Options.Create(new MemoryCacheOptions()));

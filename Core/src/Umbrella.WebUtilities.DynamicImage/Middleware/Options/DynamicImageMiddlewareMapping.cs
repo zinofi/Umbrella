@@ -18,7 +18,7 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 		/// <summary>
 		/// Gets or sets a value indicating whether validation of the dynamic images being generated is performed.
 		/// This is to ensure that only specific pre-determined options can be provided as part of the incoming URLs for the images
-		/// to prevent overloading the server.
+		/// to prevent overloading the server. Defaults to <see langword="false" />.
 		/// </summary>
 		public bool EnableValidation { get; set; }
 
@@ -28,9 +28,9 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 		public HashSet<DynamicImageMapping> ValidMappings { get; set; } = new HashSet<DynamicImageMapping>();
 
 		/// <summary>
-		/// Gets or sets the cacheability.
+		/// Gets or sets the cacheability. Defaults to <see cref="MiddlewareHttpCacheability.NoCache" />.
 		/// </summary>
-		public MiddlewareHttpCacheability Cacheability { get; set; }
+		public MiddlewareHttpCacheability Cacheability { get; set; } = MiddlewareHttpCacheability.NoCache;
 
 		/// <summary>
 		/// Gets or sets the file provider mapping.

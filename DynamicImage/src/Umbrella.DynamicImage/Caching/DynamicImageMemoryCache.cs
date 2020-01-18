@@ -7,98 +7,97 @@ using Microsoft.Extensions.Caching.Memory;
 using Umbrella.DynamicImage.Abstractions;
 using System.Threading.Tasks;
 using System.Threading;
+using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.DynamicImage.Caching
 {
-    public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
-    {
-        #region Private Static Members
-        private static readonly Task<DynamicImageItem> s_NullResult = Task.FromResult<DynamicImageItem>(null);
-        #endregion
+	public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
+	{
+		#region Private Members
+		private readonly DynamicImageMemoryCacheOptions _memoryCacheOptions;
+		#endregion
 
-        #region Private Members
-        private readonly DynamicImageMemoryCacheOptions m_MemoryCacheOptions;
-        #endregion
+		#region Constructors
+		public DynamicImageMemoryCache(ILogger<DynamicImageMemoryCache> logger,
+			IHybridCache cache,
+			ICacheKeyUtility cacheKeyUtility,
+			DynamicImageCacheCoreOptions cacheOptions,
+			DynamicImageMemoryCacheOptions memoryCacheOptions)
+			: base(logger, cache, cacheKeyUtility, cacheOptions)
+		{
+			_memoryCacheOptions = memoryCacheOptions;
+		}
+		#endregion
 
-        #region Constructors
-        public DynamicImageMemoryCache(ILogger<DynamicImageMemoryCache> logger,
-            IMemoryCache cache,
-            DynamicImageCacheCoreOptions cacheOptions,
-            DynamicImageMemoryCacheOptions memoryCacheOptions)
-            : base(logger, cache, cacheOptions)
-        {
-            if (memoryCacheOptions.ItemCacheOptions == null)
-                throw new DynamicImageException($"The {memoryCacheOptions.ItemCacheOptions} must not be null");
+		#region IDynamicImageCache Members
+		public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				string rawKey = GenerateCacheKey(dynamicImage.ImageOptions);
+				string cacheKey = GenerateMemoryCacheKey(rawKey);
 
-            m_MemoryCacheOptions = memoryCacheOptions;
-        }
-        #endregion
+				Cache.Set(cacheKey, dynamicImage, _memoryCacheOptions);
 
-        #region IDynamicImageCache Members
-        public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                string key = GenerateCacheKey(dynamicImage.ImageOptions);
+				return Task.CompletedTask;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { dynamicImage.ImageOptions }, returnValue: true))
+			{
+				throw new DynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
+			}
+		}
 
-                Cache.GetOrCreate(key, entry =>
-                {
-                    entry.SetOptions(m_MemoryCacheOptions.ItemCacheOptions);
+		public async Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
 
-                    return dynamicImage;
-                });
+			try
+			{
+				string fileKey = GenerateCacheKey(options);
+				string cacheKey = GenerateMemoryCacheKey(fileKey);
 
-                return Task.CompletedTask;
-            }
-            catch(Exception exc) when (Log.WriteError(exc, new { dynamicImage.ImageOptions }, returnValue: true))
-            {
-                throw new DynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
-            }
-        }
+				var (itemFound, cacheItem) = Cache.TryGetValue<DynamicImageItem>(cacheKey);
 
-        public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                string key = GenerateCacheKey(options);
+				if (cacheItem != null)
+				{
+					//If the file does not exist or has been modified since the IDynamicImage was generated,
+					//evict it from the cache
+					if (sourceLastModified > cacheItem.LastModified)
+					{
+						await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken);
 
-                DynamicImageItem item = Cache.Get<DynamicImageItem>(key);
+						return null;
+					}
+				}
 
-                if (item != null)
-                {
-                    //If the file does not exist or has been modified since the IDynamicImage was generated,
-                    //evict it from the cache
-                    if (sourceLastModified > item.LastModified)
-                    {
-                        Cache.Remove(key);
+				return cacheItem;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { options, sourceLastModified, fileExtension }, returnValue: true))
+			{
+				throw new DynamicImageException("There was problem retrieving the image from the cache.", exc);
+			}
+		}
 
-                        return s_NullResult;
-                    }
-                }
+		public async Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
 
-                return Task.FromResult(item);
-            }
-            catch(Exception exc) when (Log.WriteError(exc, new { options, sourceLastModified, fileExtension }, returnValue: true))
-            {
-                throw new DynamicImageException("There was problem retrieving the image from the cache.", exc);
-            }
-        }
+			try
+			{
+				string key = GenerateCacheKey(options);
+				string cacheKey = GenerateMemoryCacheKey(key);
 
-        public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                string key = GenerateCacheKey(options);
+				await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { options, fileExtension }, returnValue: true))
+			{
+				throw new DynamicImageException("There was a problem removing the image from the cache.", exc);
+			}
+		}
+		#endregion
 
-                Cache.Remove(key);
-
-                return Task.CompletedTask;
-            }
-            catch(Exception exc) when (Log.WriteError(exc, new { options, fileExtension }, returnValue: true))
-            {
-                throw new DynamicImageException("There was a problem removing the image from the cache.", exc);
-            }
-        }
-        #endregion
-    }
+		#region Private Methods
+		private string GenerateMemoryCacheKey(string key) => CacheKeyUtility.Create<DynamicImageMemoryCache>(key);
+		#endregion
+	}
 }

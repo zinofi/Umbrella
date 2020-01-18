@@ -1,15 +1,12 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Umbrella.Utilities.Options;
 
 namespace Umbrella.DynamicImage.Caching
 {
-    public class DynamicImageMemoryCacheOptions
-    {
-        /// <summary>
-        /// The cache options that will be applied to image items stored in the MemoryCache.
-        /// </summary>
-        public MemoryCacheEntryOptions ItemCacheOptions { get; set; }
-    }
+	/// <summary>
+	/// Used to specify caching options when storing generated images in memory.
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.Options.CacheableUmbrellaOptions" />
+	public class DynamicImageMemoryCacheOptions : CacheableUmbrellaOptions
+	{
+	}
 }
