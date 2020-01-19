@@ -117,7 +117,6 @@ namespace Umbrella.TypeScript.Generators
 				}
 
 				validationBuilder
-					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()} = {thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3)
 					.Append(coreBuilder)
 					.Append(ctorExtendBuilder)
 					.AppendLineWithTabIndent("});", 3)
