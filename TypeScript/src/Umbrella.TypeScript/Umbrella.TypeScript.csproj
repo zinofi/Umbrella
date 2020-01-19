@@ -18,7 +18,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript</PackageId>
-		<Version>3.0.0-preview-0059</Version>
+		<Version>3.0.0-preview-0060</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
@@ -30,6 +30,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
 		<ProjectReference Include="..\Umbrella.TypeScript.Annotations\Umbrella.TypeScript.Annotations.csproj" />
 		<ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>

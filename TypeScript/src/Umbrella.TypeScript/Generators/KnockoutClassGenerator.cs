@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Umbrella.DataAnnotations;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript.Generators
@@ -82,19 +83,35 @@ namespace Umbrella.TypeScript.Generators
 
 		protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
 		{
+			StringBuilder ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
+
+			string thisVariable = "this";
+			string exposePrefix = "";
+
 			if (_useDecorators)
-				return;
+			{
+				if (ctorExtendBuilder?.Length > 0)
+				{
+					exposePrefix = "_";
+					thisVariable = "(<any>this)";
+				}
+				else
+				{
+					return;
+				}
+			}
 
-			var coreBuilder = CreateValidationExtendItems(propertyInfo);
+			var coreBuilder = !_useDecorators ? CreateValidationExtendItems(propertyInfo) : null;
 
-			if (coreBuilder == null)
-				return;
-
-			validationBuilder
-				.AppendLineWithTabIndent($"this.{tsInfo.Name.ToCamelCaseInvariant()} = this.{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3)
-				.Append(coreBuilder)
-				.AppendLineWithTabIndent("});", 3)
-				.AppendLine();
+			if (coreBuilder?.Length > 0 || ctorExtendBuilder?.Length > 0)
+			{
+				validationBuilder
+					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()} = {thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3)
+					.Append(coreBuilder)
+					.Append(ctorExtendBuilder)
+					.AppendLineWithTabIndent("});", 3)
+					.AppendLine();
+			}
 		}
 
 		private StringBuilder CreateValidationExtendItems(PropertyInfo propertyInfo, int indent = 4)
@@ -151,11 +168,61 @@ namespace Umbrella.TypeScript.Generators
 			return validationBuilder;
 		}
 
+		private StringBuilder CreateConstructorValidationRules(PropertyInfo propertyInfo, int indent = 4)
+		{
+			// Get all types that are either of type ValidationAttribute or derive from it
+			// However, specifically exclude instances of type DataTypeAttribute
+			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
+
+			if (lstValidationAttribute.Count == 0)
+				return null;
+
+			var validationBuilder = new StringBuilder();
+
+			for (int i = 0; i < lstValidationAttribute.Count; i++)
+			{
+				var validationAttribute = lstValidationAttribute[i];
+
+				string message = $"\"{validationAttribute.FormatErrorMessage(propertyInfo.Name)}\"";
+
+				switch (validationAttribute)
+				{
+					case RequiredIfAttribute attr:
+
+						string @operator = attr.Operator switch
+						{
+							Operator.EqualTo => "===",
+							Operator.GreaterThan => ">",
+							Operator.GreaterThanOrEqualTo => ">=",
+							Operator.LessThan => "<",
+							Operator.LessThanOrEqualTo => "<=",
+							Operator.NotEqualTo => "!==",
+							Operator.NotRegExMatch => throw new NotImplementedException(),
+							Operator.RegExMatch => throw new NotImplementedException(),
+							_ => throw new NotSupportedException()
+						};
+
+						string otherValue = attr.DependentValue switch
+						{
+							bool b when b => "true",
+							bool b when !b => "false",
+							string s => $"'{s}'",
+							_ => attr.DependentValue.ToString()
+						};
+
+						validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{attr.DependentProperty.ToCamelCaseInvariant()} {@operator} {otherValue}, message: {message} }},", indent);
+						break;
+				}
+			}
+
+			return validationBuilder;
+		}
+
 		protected override void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder)
 		{
 			// Only write the validation rules if some validation rules have been generated
 			// and we are not using decorators
-			if (!_useDecorators && validationBuilder?.Length > 0)
+			if (!_useDecorators || validationBuilder?.Length > 0)
 			{
 				typeBuilder.AppendLine();
 

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using Xunit;
 using System.ComponentModel.DataAnnotations;
+using Umbrella.DataAnnotations;
 
 namespace Umbrella.TypeScript.Test
 {
@@ -16,7 +17,7 @@ namespace Umbrella.TypeScript.Test
 
             TypeScriptGenerator generator = new TypeScriptGenerator(new List<Assembly> { testAssembly })
                 .IncludeStandardGenerators()
-                .IncludeKnockoutGenerators(false);
+                .IncludeKnockoutGenerators(true);
 
             string output = generator.GenerateAll(true, true, TypeScriptPropertyMode.Model);
 
@@ -80,7 +81,15 @@ namespace Umbrella.TypeScript.Test
 
         [TypeScriptOverride(typeof(string))]
         public List<int> TestIntList { get; set; } = new List<int>();
-    }
+
+		public bool NeedAddress { get; set; }
+
+		[RequiredIfFalse(nameof(NeedAddress))]
+		public string NeededIfFalse { get; set; }
+
+		[RequiredIfTrue(nameof(NeedAddress))]
+		public string NeededIfTrue { get; set; }
+	}
 
     [TypeScriptModel(TypeScriptOutputModelType.Interface | TypeScriptOutputModelType.KnockoutInterface)]
     public interface ITestInterface

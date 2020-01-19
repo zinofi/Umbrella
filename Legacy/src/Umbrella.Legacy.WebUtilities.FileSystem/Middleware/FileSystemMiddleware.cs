@@ -55,7 +55,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 			{
 				string path = context.Request.Path.Value;
 
-				if (!path.StartsWith("/" + _options.FileSystemPathPrefix))
+				if (!path.StartsWith("/" + _options.FileSystemPathPrefix, StringComparison.OrdinalIgnoreCase))
 				{
 					await Next.Invoke(context);
 					return;
