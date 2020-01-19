@@ -105,6 +105,17 @@ namespace Umbrella.TypeScript.Generators
 
 			if (coreBuilder?.Length > 0 || ctorExtendBuilder?.Length > 0)
 			{
+				if (_useDecorators)
+				{
+					validationBuilder
+						.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
+				}
+				else
+				{
+					validationBuilder
+						.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()} = {thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
+				}
+
 				validationBuilder
 					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()} = {thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3)
 					.Append(coreBuilder)
