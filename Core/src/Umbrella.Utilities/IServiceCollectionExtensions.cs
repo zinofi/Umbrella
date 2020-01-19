@@ -182,7 +182,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(services, nameof(services));
 			Guard.ArgumentNotNull(serviceType, nameof(serviceType));
 
-			foreach(ServiceDescriptor serviceDescriptor in services.Where(x => x.ServiceType == serviceType))
+			foreach(ServiceDescriptor serviceDescriptor in services.Where(x => x.ServiceType == serviceType).ToArray())
 			{
 				services.Remove(serviceDescriptor);
 			}
