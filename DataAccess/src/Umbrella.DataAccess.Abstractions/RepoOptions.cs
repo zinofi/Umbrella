@@ -27,17 +27,17 @@
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether to sanitize the entity.
+		/// Gets or sets a value indicating whether to sanitize the entity. Defaults to <see langword="true" />.
 		/// </summary>
 		public virtual bool SanitizeEntity { get; set; } = true;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether to validate the entity.
+		/// Gets or sets a value indicating whether to validate the entity. Defaults to <see langword="true" />.
 		/// </summary>
 		public virtual bool ValidateEntity { get; set; } = true;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether children of the entity will be processed.
+		/// Gets or sets a value indicating whether children of the entity will be processed. Defaults to <see langword="false" />.
 		/// </summary>
 		public virtual bool ProcessChildren { get; set; }
 	}

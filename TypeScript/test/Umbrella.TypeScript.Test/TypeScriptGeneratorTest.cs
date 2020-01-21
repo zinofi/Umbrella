@@ -96,4 +96,22 @@ namespace Umbrella.TypeScript.Test
     {
         DateTime CreatedDate { get; }
     }
+
+	[TypeScriptModel(TypeScriptOutputModelType.Interface | TypeScriptOutputModelType.KnockoutClass)]
+	public class ConcreteTestClass : GenericTestClass<TestEnum>
+	{
+	}
+
+	[TypeScriptModel(TypeScriptOutputModelType.Interface | TypeScriptOutputModelType.KnockoutInterface)]
+	public interface IGenericTestInterface<TEnum>
+		where TEnum : struct, Enum
+	{
+		TEnum GenericEnum { get; set; }
+	}
+
+	public class GenericTestClass<TEnum> : IGenericTestInterface<TEnum>
+		where TEnum : struct, Enum
+	{
+		public TEnum GenericEnum { get; set; }
+	}
 }

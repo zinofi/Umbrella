@@ -39,7 +39,7 @@ namespace Umbrella.TypeScript
         {
             string memberName = propertyInfo.Name.ToCamelCaseInvariant();
 
-            TypeScriptMemberInfo info = new TypeScriptMemberInfo
+            var info = new TypeScriptMemberInfo
             {
                 Name = memberName,
                 CLRType = memberType
@@ -99,7 +99,7 @@ namespace Umbrella.TypeScript
                     //Strip the [] from the name and try and get the type
                     string arrayTypeName = memberType.FullName.Replace("[]", "");
 
-                    Type arrayType = Type.GetType(arrayTypeName);
+                    var arrayType = Type.GetType(arrayTypeName);
 
                     info = GetTypeScriptMemberInfo(modelType, arrayType, propertyInfo, outputType, strictNullChecks, propertyMode);
 
@@ -224,7 +224,7 @@ namespace Umbrella.TypeScript
                     }
                     else if (info.CLRType == typeof(DateTime))
                     {
-                        DateTime dtPropertyValue = ((DateTime)propertyValue);
+                        var dtPropertyValue = ((DateTime)propertyValue);
 
                         if (dtPropertyValue == default)
                         {
@@ -270,7 +270,7 @@ namespace Umbrella.TypeScript
 
         public static List<string> GetInterfaceNames(Type modelType, TypeScriptOutputModelType outputType, bool includeSelf)
         {
-            List<string> lstInterfaceName = new List<string>();
+            var lstInterfaceName = new List<string>();
 
             //This interface is the primary interface which corresponds exactly to the modelType
             //Check the modelType isn't an interface first to avoid making the interface extend itself!
