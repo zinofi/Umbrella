@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -94,6 +95,124 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 		#endregion
 
+		public async Task DeleteDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				string cleanedPath = SanitizeSubPathCore(subpath);
+
+				if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					Log.WriteDebug(new { subpath, cleanedPath }, "Directory");
+
+				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+
+				string containerName = parts[0].ToLowerInvariant();
+
+				CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
+
+				if (!await container.ExistsAsync(null, null, cancellationToken))
+					return;
+
+				if (parts.Length == 1)
+				{
+					// Just delete the container
+					await container.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
+				}
+				else
+				{
+					CloudBlobDirectory directory = container.GetDirectoryReference(string.Join("/", parts.Skip(1)));
+
+					var lstBlob = new List<CloudBlockBlob>();
+
+					BlobContinuationToken continuationToken = default;
+
+					do
+					{
+						BlobResultSegment result = await directory.ListBlobsSegmentedAsync(true, BlobListingDetails.None, null, continuationToken, null, null);
+						continuationToken = result.ContinuationToken;
+
+						lstBlob.AddRange(result.Results.OfType<CloudBlockBlob>());
+					}
+					while (continuationToken != default(BlobContinuationToken));
+
+					foreach (var blob in lstBlob)
+					{
+						await blob.DeleteIfExistsAsync(cancellationToken);
+					}
+				}
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been a problem deleting the specified directory.", exc);
+			}
+		}
+
+		public async Task<IReadOnlyCollection<IUmbrellaFileInfo>> EnumerateDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
+			try
+			{
+				string cleanedPath = SanitizeSubPathCore(subpath);
+
+				if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					Log.WriteDebug(new { subpath, cleanedPath }, "Directory");
+
+				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+
+				string containerName = parts[0].ToLowerInvariant();
+
+				CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
+
+				if (!await container.ExistsAsync(null, null, cancellationToken))
+					return Array.Empty<IUmbrellaFileInfo>();
+
+				var lstBlob = new List<CloudBlockBlob>();
+
+				BlobContinuationToken continuationToken = default;
+
+				if (parts.Length == 1)
+				{
+					do
+					{
+						BlobResultSegment result = await container.ListBlobsSegmentedAsync("", false, BlobListingDetails.None, null, continuationToken, null, null);
+						continuationToken = result.ContinuationToken;
+
+						lstBlob.AddRange(result.Results.OfType<CloudBlockBlob>());
+					}
+					while (continuationToken != default(BlobContinuationToken));
+				}
+				else
+				{
+					CloudBlobDirectory directory = container.GetDirectoryReference(string.Join("/", parts.Skip(1)));
+
+					do
+					{
+						BlobResultSegment result = await directory.ListBlobsSegmentedAsync(false, BlobListingDetails.None, null, continuationToken, null, null);
+						continuationToken = result.ContinuationToken;
+
+						lstBlob.AddRange(result.Results.OfType<CloudBlockBlob>());
+					}
+					while (continuationToken != default(BlobContinuationToken));
+				}
+
+				UmbrellaAzureBlobStorageFileInfo[] results = lstBlob.Select(x => new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
+
+				foreach (var result in results)
+				{
+					if (!await CheckFileAccessAsync(result, result.Blob, cancellationToken))
+						throw new UmbrellaFileAccessDeniedException(result.SubPath);
+				}
+
+				return results;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been a problem enumerating the files in the specified directory.", exc);
+			}
+		}
+
 		#region Overridden Methods
 		public override void InitializeOptions(IUmbrellaFileProviderOptions options)
 		{
@@ -114,7 +233,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			string cleanedPath = SanitizeSubPathCore(subpath);
 
 			if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				Log.WriteDebug(new { subpath, cleanedPath });
+				Log.WriteDebug(new { subpath, cleanedPath }, "File");
 
 			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 

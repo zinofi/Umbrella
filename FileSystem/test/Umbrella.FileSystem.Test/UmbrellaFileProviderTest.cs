@@ -8,7 +8,6 @@ using Moq;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Integration.NewtonsoftJson;
 using Umbrella.Utilities.Mime.Abstractions;
@@ -43,10 +42,10 @@ namespace Umbrella.FileSystem.Test
 			}
 		}
 
-		public static List<IUmbrellaFileProvider> Providers = new List<IUmbrellaFileProvider>
+		public static List<Func<IUmbrellaFileProvider>> Providers = new List<Func<IUmbrellaFileProvider>>
 		{
-			CreateAzureBlobFileProvider(),
-			CreateDiskFileProvider()
+			() => CreateAzureBlobFileProvider(),
+			() => CreateDiskFileProvider()
 		};
 
 		public static List<string> PathsToTest = new List<string>
@@ -82,8 +81,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersAndPathsMemberData))]
-		public async Task CreateAsync_FromPath(IUmbrellaFileProvider provider, string path)
+		public async Task CreateAsync_FromPath(Func<IUmbrellaFileProvider> providerFunc, string path)
 		{
+			var provider = providerFunc();
+
 			IUmbrellaFileInfo file = await provider.CreateAsync(path);
 
 			CheckPOCOFileType(provider, file);
@@ -95,8 +96,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_FromVirtualPath_Write_DeleteFile(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_FromVirtualPath_Write_DeleteFile(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -115,8 +118,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersAndPathsMemberData))]
-		public async Task CreateAsync_Write_ReadBytes_DeleteFile(IUmbrellaFileProvider provider, string path)
+		public async Task CreateAsync_Write_ReadBytes_DeleteFile(Func<IUmbrellaFileProvider> providerFunc, string path)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -140,8 +145,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -170,8 +177,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersAndPathsMemberData))]
-		public async Task CreateAsync_Write_ReadStream_DeleteFile(IUmbrellaFileProvider provider, string path)
+		public async Task CreateAsync_Write_ReadStream_DeleteFile(Func<IUmbrellaFileProvider> providerFunc, string path)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -199,8 +208,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_Write_GetAsync_ReadStream_DeleteFile(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_GetAsync_ReadStream_DeleteFile(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -236,8 +247,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task GetAsync_NotExists(IUmbrellaFileProvider provider)
+		public async Task GetAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/doesnotexist.jpg");
 
 			Assert.Null(retrievedFile);
@@ -245,8 +258,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_GetAsync(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_GetAsync(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string path = "/images/createbutnowrite.jpg";
 			var file = await provider.CreateAsync(path);
 
@@ -260,8 +275,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_ExistsAsync(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_ExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string path = "/images/createbutnowrite.jpg";
 			var file = await provider.CreateAsync(path);
 
@@ -269,14 +286,16 @@ namespace Umbrella.FileSystem.Test
 
 			bool exists = await provider.ExistsAsync(path);
 
-			//Should be false as not calling write shouldn't create the blob
+			// Should be false as not calling write shouldn't create anything
 			Assert.False(exists);
 		}
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_Write_ExistsAsync_DeletePath(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_ExistsAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -295,7 +314,7 @@ namespace Umbrella.FileSystem.Test
 
 			Assert.True(exists);
 
-			//Cleanup
+			// Cleanup
 			bool deleted = await provider.DeleteAsync(subpath);
 
 			Assert.True(deleted);
@@ -303,8 +322,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task SaveAsyncBytes_GetAsync_DeletePath(IUmbrellaFileProvider provider)
+		public async Task SaveAsyncBytes_GetAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -327,8 +348,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task SaveAsyncStream_GetAsync_DeletePath(IUmbrellaFileProvider provider)
+		public async Task SaveAsyncStream_GetAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			Stream stream = File.OpenRead(physicalPath);
@@ -351,8 +374,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task SaveAsyncBytes_ExistsAsync_DeletePath(IUmbrellaFileProvider provider)
+		public async Task SaveAsyncBytes_ExistsAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -375,8 +400,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task SaveAsyncStream_ExistsAsync_DeletePath(IUmbrellaFileProvider provider)
+		public async Task SaveAsyncStream_ExistsAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			Stream stream = File.OpenRead(physicalPath);
@@ -397,19 +424,25 @@ namespace Umbrella.FileSystem.Test
 			Assert.True(deleted);
 		}
 
+		#region Copy
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CopyAsync_FromPath_NotExists(IUmbrellaFileProvider provider) => await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
-																						{
-																							await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png");
-																						});
+		public async Task CopyAsync_FromPath_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+			=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+			{
+				var provider = providerFunc();
+
+				await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png");
+			});
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CopyAsync_FromFileBytes_NotExists(IUmbrellaFileProvider provider) =>
+		public async Task CopyAsync_FromFileBytes_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
 			//Should be a file system exception with a file not found exception inside
 			await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 			{
+				var provider = providerFunc();
+
 				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 				byte[] bytes = File.ReadAllBytes(physicalPath);
@@ -426,10 +459,12 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CopyAsync_FromFileStream_NotExists(IUmbrellaFileProvider provider) =>
+		public async Task CopyAsync_FromFileStream_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
 			//Should be a file system exception with a file not found exception inside
 			await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 			{
+				var provider = providerFunc();
+
 				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 				Stream stream = File.OpenRead(physicalPath);
@@ -446,7 +481,7 @@ namespace Umbrella.FileSystem.Test
 
 		//[Theory]
 		//[MemberData(nameof(ProvidersMemberData))]
-		//public async Task CopyAsync_InvalidSourceType(IUmbrellaFileProvider provider)
+		//public async Task CopyAsync_InvalidSourceType(Func<IUmbrellaFileProvider> providerFunc)
 		//{
 		//    //TODO: Test that files coming from one provider cannot be used with a different one.
 		//    //Maybe look at building this in somehow?
@@ -454,8 +489,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			//Arrange
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
@@ -472,7 +509,7 @@ namespace Umbrella.FileSystem.Test
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 			//Act
-			var copy = await provider.CopyAsync(subpath, "/images/copy.png");
+			var copy = await provider.CopyAsync(subpath, "/images/xx/copy.png");
 
 			//Assert
 			Assert.Equal(bytes.Length, copy.Length);
@@ -489,8 +526,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_Write_CopyAsync_FromFile_ToPath(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_CopyAsync_FromFile_ToPath(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			//Arrange
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
@@ -507,7 +546,7 @@ namespace Umbrella.FileSystem.Test
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 			//Act
-			var copy = await provider.CopyAsync(file, "/images/copy.png");
+			var copy = await provider.CopyAsync(file, "/images/xx/copy.png");
 
 			//Assert
 			Assert.Equal(bytes.Length, copy.Length);
@@ -524,8 +563,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_Write_CopyAsync_FromFile_ToFile(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_CopyAsync_FromFile_ToFile(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			//Arrange
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
@@ -542,7 +583,7 @@ namespace Umbrella.FileSystem.Test
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 			//Create the copy file
-			var copy = await provider.CreateAsync("/images/copy.png");
+			var copy = await provider.CreateAsync("/images/xx/copy.png");
 
 			//Act
 			await provider.CopyAsync(file, copy);
@@ -562,18 +603,485 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task CreateAsync_CopyAsync(IUmbrellaFileProvider provider) => await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
-																				 {
-																					 // Should fail because you can't copy a new file
-																					 var fileInfo = await provider.CreateAsync("~/images/testimage.jpg");
+		public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
 
-																					 var copy = await provider.CopyAsync(fileInfo, "~/images/copy.jpg");
-																				 });
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Act
+			var copy = await provider.CopyAsync(subpath, "/images/xx/copy.png");
+
+			//Assert
+			Assert.Equal(bytes.Length, copy.Length);
+			Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name"));
+			Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description"));
+
+			//Read the file into memory and cache for our comparison
+			await copy.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(copy);
+		}
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task DeleteAsync_NotExists(IUmbrellaFileProvider provider)
+		public async Task CreateAsync_Write_CopyAsync_FromFile_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Act
+			var copy = await provider.CopyAsync(file, "/images/xx/copy.png");
+
+			//Assert
+			Assert.Equal(bytes.Length, copy.Length);
+			Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name"));
+			Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description"));
+
+			//Read the file into memory and cache for our comparison
+			await copy.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(copy);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_CopyAsync_FromFile_ToFile_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+			
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			//Create the copy file
+			var copy = await provider.CreateAsync("/images/xx/copy.png");
+
+			//Act
+			await provider.CopyAsync(file, copy);
+
+			//Assert
+			Assert.Equal(bytes.Length, copy.Length);
+			Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name"));
+			Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description"));
+
+			//Read the file into memory and cache for our comparison
+			await copy.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(copy);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_CopyAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+			=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+			{
+				var provider = providerFunc();
+
+				// Should fail because you can't copy a new file
+				var fileInfo = await provider.CreateAsync("~/images/testimage.jpg");
+
+				var copy = await provider.CopyAsync(fileInfo, "~/images/copy.jpg");
+			});
+		#endregion
+
+		#region Move
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task MoveAsync_FromPath_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+			=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+			{
+				var provider = providerFunc();
+
+				await provider.MoveAsync("~/images/notexists.jpg", "~/images/willfail.png");
+			});
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task MoveAsync_FromFileBytes_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
+			//Should be a file system exception with a file not found exception inside
+			await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+			{
+				var provider = providerFunc();
+
+				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+				byte[] bytes = File.ReadAllBytes(physicalPath);
+
+				string subpath = $"/images/{TestFileName}";
+
+				var fileInfo = await provider.SaveAsync(subpath, bytes);
+
+				await provider.DeleteAsync(fileInfo);
+
+				//At this point the file will not exist
+				await provider.MoveAsync(fileInfo, "~/images/willfail.jpg");
+			});
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task MoveAsync_FromFileStream_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
+			//Should be a file system exception with a file not found exception inside
+			await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+			{
+				var provider = providerFunc();
+
+				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+				Stream stream = File.OpenRead(physicalPath);
+
+				string subpath = $"/images/{TestFileName}";
+
+				var fileInfo = await provider.SaveAsync(subpath, stream);
+
+				await provider.DeleteAsync(fileInfo);
+
+				//At this point the file will not exist
+				await provider.MoveAsync(fileInfo, "~/images/willfail.jpg");
+			});
+
+		//[Theory]
+		//[MemberData(nameof(ProvidersMemberData))]
+		//public async Task MoveAsync_InvalidSourceType(Func<IUmbrellaFileProvider> providerFunc)
+		//{
+		//    //TODO: Test that files coming from one provider cannot be used with a different one.
+		//    //Maybe look at building this in somehow?
+		//}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_MoveAsync_FromPath_ToPath(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Act
+			var move = await provider.MoveAsync(subpath, "/images/xx/move.png");
+
+			//Assert
+			Assert.Equal(bytes.Length, move.Length);
+
+			//Read the file into memory and cache for our comparison
+			await move.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(move);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_MoveAsync_FromFile_ToPath(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Act
+			var move = await provider.MoveAsync(file, "/images/xx/move.png");
+
+			//Assert
+			Assert.Equal(bytes.Length, move.Length);
+
+			//Read the file into memory and cache for our comparison
+			await move.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(move);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_MoveAsync_FromFile_ToFile(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Create the move file
+			var move = await provider.CreateAsync("/images/xx/move.png");
+
+			//Act
+			await provider.MoveAsync(file, move);
+
+			//Assert
+			Assert.Equal(bytes.Length, move.Length);
+
+			//Read the file into memory and cache for our comparison
+			await move.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(move);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_MoveAsync_FromPath_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Act
+			var move = await provider.MoveAsync(subpath, "/images/xx/move.png");
+
+			//Assert
+			Assert.Equal(bytes.Length, move.Length);
+			Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name"));
+			Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description"));
+
+			//Read the file into memory and cache for our comparison
+			await move.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(move);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_MoveAsync_FromFile_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			//Act
+			var move = await provider.MoveAsync(file, "/images/xx/move.png");
+
+			//Assert
+			Assert.Equal(bytes.Length, move.Length);
+			Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name"));
+			Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description"));
+
+			//Read the file into memory and cache for our comparison
+			await move.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(move);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_MoveAsync_FromFile_ToFile_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			//Create the move file
+			var move = await provider.CreateAsync("/images/xx/move.png");
+
+			//Act
+			await provider.MoveAsync(file, move);
+
+			//Assert
+			Assert.Equal(bytes.Length, move.Length);
+			Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name"));
+			Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description"));
+
+			//Read the file into memory and cache for our comparison
+			await move.ReadAsByteArrayAsync(cacheContents: true);
+
+			CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(move);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_MoveAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+			=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+			{
+				var provider = providerFunc();
+
+				// Should fail because you can't move a new file
+				var fileInfo = await provider.CreateAsync("~/images/testimage.jpg");
+
+				var move = await provider.MoveAsync(fileInfo, "~/images/move.jpg");
+			});
+		#endregion
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task DeleteAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
 			//Should fail silently
 			bool deleted = await provider.DeleteAsync("/images/notexists.jpg");
 
@@ -582,8 +1090,10 @@ namespace Umbrella.FileSystem.Test
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
-		public async Task Set_Get_MetadataValueAsync(IUmbrellaFileProvider provider)
+		public async Task Set_Get_MetadataValueAsync(Func<IUmbrellaFileProvider> providerFunc)
 		{
+			var provider = providerFunc();
+
 			// Arrange
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
@@ -612,6 +1122,99 @@ namespace Umbrella.FileSystem.Test
 
 			// Cleanup
 			await provider.DeleteAsync(file);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			// Create a top level file at the root of the directory.
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+			await provider.SaveAsync(subpath, bytes, false);
+
+			await provider.DeleteDirectoryAsync("/images");
+
+			// Assert
+			Assert.False(await provider.ExistsAsync(subpath));
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task Create_DeleteDirectory_DownLevel(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			// Create a top level file at the root of the directory.
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+			await provider.SaveAsync(subpath, bytes, false);
+
+			// Now create another 2 file in a nested subdirectories
+			string downLevelSubPath1 = $"/images/sub-images/{TestFileName}";
+			await provider.SaveAsync(downLevelSubPath1, bytes, false);
+
+			string downLevelSubPath2 = $"/images/sub-images/nested/{TestFileName}";
+			await provider.SaveAsync(downLevelSubPath2, bytes, false);
+
+			// Now delete only the down level file directory, i.e. /images/sub-images
+			// which should also delete the nested directory
+			await provider.DeleteDirectoryAsync("/images/sub-images");
+
+			// Assert
+			Assert.True(await provider.ExistsAsync(subpath));
+			Assert.False(await provider.ExistsAsync(downLevelSubPath1));
+			Assert.False(await provider.ExistsAsync(downLevelSubPath2));
+
+			// Cleanup
+			await provider.DeleteAsync(subpath);
+		}
+
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task Create_EnumerateDirectory(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			// Create a top level file at the root of the directory.
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+			await provider.SaveAsync(subpath, bytes, false);
+
+			// Now create another 2 files in a subdirectory
+			string downLevelSubPath1 = $"/images/sub-images/{TestFileName}";
+			await provider.SaveAsync(downLevelSubPath1, bytes, false);
+
+			string downLevelSubPath2 = $"/images/sub-images/the-other-file.png";
+			await provider.SaveAsync(downLevelSubPath2, bytes, false);
+
+			// Now enumerate the files
+			var topLevelResults = await provider.EnumerateDirectoryAsync("/images");
+			var downLevelResults = await provider.EnumerateDirectoryAsync("/images/sub-images");
+
+			// Assert
+			Assert.Equal(1, topLevelResults.Count);
+			Assert.Equal(2, downLevelResults.Count);
+
+			Assert.Equal(subpath, topLevelResults.ElementAt(0).SubPath);
+			Assert.Equal(downLevelSubPath1, downLevelResults.ElementAt(0).SubPath);
+			Assert.Equal(downLevelSubPath2, downLevelResults.ElementAt(1).SubPath);
+
+			// Cleanup
+			await provider.DeleteAsync(subpath);
+			await provider.DeleteAsync(downLevelSubPath1);
+			await provider.DeleteAsync(downLevelSubPath2);
 		}
 
 		private static IUmbrellaFileProvider CreateAzureBlobFileProvider()

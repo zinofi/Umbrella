@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,23 +38,81 @@ namespace Umbrella.FileSystem.Disk
 		}
 		#endregion
 
+		public Task DeleteDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
+			try
+			{
+				string physicalPath = CleanPath(subpath);
+
+				if (Log.IsEnabled(LogLevel.Debug))
+					Log.WriteDebug(new { subpath, physicalPath }, "Directory");
+
+				if (Directory.Exists(physicalPath))
+				{
+					try
+					{
+						Directory.Delete(physicalPath, true);
+					}
+					catch
+					{
+						Log.WriteWarning(state: new { subpath, physicalPath }, message: "The specified directory to be deleted no longer exists, most likely because of a race condition.");
+					}
+				}
+
+				return Task.CompletedTask;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been a problem deleting the specified directory.", exc);
+			}
+		}
+
+		public async Task<IReadOnlyCollection<IUmbrellaFileInfo>> EnumerateDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
+			try
+			{
+				string physicalPath = CleanPath(subpath);
+
+				if (Log.IsEnabled(LogLevel.Debug))
+					Log.WriteDebug(new { subpath, physicalPath }, "Directory");
+
+				var directoryInfo = new DirectoryInfo(physicalPath);
+
+				if (!directoryInfo.Exists)
+					return Array.Empty<UmbrellaDiskFileInfo>();
+
+				UmbrellaDiskFileInfo[] results = directoryInfo.GetFiles().Select(x => new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"{subpath}/{x.Name}", this, x, false)).ToArray();
+
+				foreach (var result in results)
+				{
+					if (!await CheckFileAccessAsync(result, result.PhysicalFileInfo, cancellationToken))
+						throw new UmbrellaFileAccessDeniedException(result.SubPath);
+				}
+
+				return results;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been a problem enumerating the files in the specified directory.", exc);
+			}
+		}
+
 		#region Overridden Methods
 		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
-			// Sanitize subpath
-			string coreSubpath = SanitizeSubPathCore(subpath);
-
-			var cleanedPathBuilder = new StringBuilder(coreSubpath)
-				.Replace('/', '\\')
-				.Insert(0, Options.RootPhysicalPath + @"\");
-
-			string physicalPath = cleanedPathBuilder.ToString();
+			string physicalPath = CleanPath(subpath);
 
 			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { subpath, physicalPath });
+				Log.WriteDebug(new { subpath, physicalPath }, "File");
 
 			var physicalFileInfo = new FileInfo(physicalPath);
 
@@ -75,6 +134,20 @@ namespace Umbrella.FileSystem.Disk
 			cancellationToken.ThrowIfCancellationRequested();
 
 			return Task.FromResult(true);
+		}
+		#endregion
+
+		#region Private Methods
+		private string CleanPath(string subpath)
+		{
+			// Sanitize subpath
+			string coreSubpath = SanitizeSubPathCore(subpath);
+
+			var cleanedPathBuilder = new StringBuilder(coreSubpath)
+				.Replace('/', '\\')
+				.Insert(0, Options.RootPhysicalPath + @"\");
+
+			return cleanedPathBuilder.ToString();
 		}
 		#endregion
 	}

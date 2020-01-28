@@ -32,7 +32,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		#region Public Properties
 		public bool IsNew { get; private set; }
-		public string Name => Path.GetFileName(SubPath);
+		public string Name { get; }
 		public string SubPath { get; }
 		public long Length
 		{
@@ -63,6 +63,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			Blob = blob;
 			IsNew = isNew;
 			SubPath = subpath;
+			Name = Path.GetFileName(subpath);
 
 			ContentType = mimeTypeUtility.GetMimeType(Name);
 		}
@@ -207,6 +208,8 @@ namespace Umbrella.FileSystem.AzureStorage
 				var destinationFile = (UmbrellaAzureBlobStorageFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 
 				await destinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
+				
+				// TODO: Does copying also copy the metadata?
 
 				//In order to ensure we know the size of the destination file we can set it here
 				//and then use the real value from the Blob once it becomes available after the copy operation
@@ -250,6 +253,42 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		public virtual async Task<IUmbrellaFileInfo> MoveAsync(string destinationSubpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+			try
+			{
+				IUmbrellaFileInfo destinationFile = await CopyAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+				await DeleteAsync(cancellationToken).ConfigureAwait(false);
+
+				return destinationFile;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException(exc.Message, exc);
+			}
+		}
+
+		public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<UmbrellaAzureBlobStorageFileInfo>(destinationFile, nameof(destinationFile), "Moving files between providers of different types is not supported.");
+
+			try
+			{
+				await CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
+				await DeleteAsync(cancellationToken).ConfigureAwait(false);
+
+				return destinationFile;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException(exc.Message, exc);
+			}
+		}
+
 		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -259,7 +298,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			try
 			{
 				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
-
+				
 				return await Blob.OpenReadAsync(cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
@@ -331,7 +370,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
-		public async Task ClearMetaDataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
+		public async Task ClearMetadataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();

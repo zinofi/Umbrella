@@ -19,9 +19,20 @@ namespace Umbrella.FileSystem.Disk
 		private Dictionary<string, string> _metadataDictionary;
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the <see cref="ILogger" />.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the provider used to load this file instance.
+		/// </summary>
 		protected IUmbrellaDiskFileProvider Provider { get; }
+
+		/// <summary>
+		/// Gets the generic type converter.
+		/// </summary>
 		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion
 
@@ -73,7 +84,14 @@ namespace Umbrella.FileSystem.Disk
 					throw new UmbrellaFileNotFoundException(SubPath);
 
 				var destinationFile = (UmbrellaDiskFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+
+				if (!destinationFile.PhysicalFileInfo.Directory.Exists)
+					destinationFile.PhysicalFileInfo.Directory.Create();
+
 				File.Copy(PhysicalFileInfo.FullName, destinationFile.PhysicalFileInfo.FullName, true);
+
+				if (File.Exists(_metadataFullFileName))
+					File.Copy(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + ".meta", true);
 
 				destinationFile.IsNew = false;
 
@@ -96,7 +114,14 @@ namespace Umbrella.FileSystem.Disk
 					throw new UmbrellaFileNotFoundException(SubPath);
 
 				var target = (UmbrellaDiskFileInfo)destinationFile;
+
+				if (!target.PhysicalFileInfo.Directory.Exists)
+					target.PhysicalFileInfo.Directory.Create();
+
 				File.Copy(PhysicalFileInfo.FullName, target.PhysicalFileInfo.FullName, true);
+
+				if (File.Exists(_metadataFullFileName))
+					File.Copy(_metadataFullFileName, target.PhysicalFileInfo.FullName + ".meta", true);
 
 				target.IsNew = false;
 
@@ -105,6 +130,66 @@ namespace Umbrella.FileSystem.Disk
 			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There was a problem copying the current file to the specified destination.", exc);
+			}
+		}
+
+		public async Task<IUmbrellaFileInfo> MoveAsync(string destinationSubpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+			try
+			{
+				if (!await ExistsAsync(cancellationToken))
+					throw new UmbrellaFileNotFoundException(SubPath);
+
+				var destinationFile = (UmbrellaDiskFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+
+				if (!destinationFile.PhysicalFileInfo.Directory.Exists)
+					destinationFile.PhysicalFileInfo.Directory.Create();
+
+				File.Move(PhysicalFileInfo.FullName, destinationFile.PhysicalFileInfo.FullName);
+
+				if (File.Exists(_metadataFullFileName))
+					File.Move(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + ".meta");
+
+				destinationFile.IsNew = false;
+
+				return destinationFile;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There was a problem moving the current file to the specified destination.", exc);
+			}
+		}
+
+		public async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<UmbrellaDiskFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
+
+			try
+			{
+				if (!await ExistsAsync(cancellationToken))
+					throw new UmbrellaFileNotFoundException(SubPath);
+
+				var target = (UmbrellaDiskFileInfo)destinationFile;
+
+				if (!target.PhysicalFileInfo.Directory.Exists)
+					target.PhysicalFileInfo.Directory.Create();
+
+				File.Move(PhysicalFileInfo.FullName, target.PhysicalFileInfo.FullName);
+
+				if (File.Exists(_metadataFullFileName))
+					File.Move(_metadataFullFileName, target.PhysicalFileInfo.FullName + ".meta");
+
+				target.IsNew = false;
+
+				return destinationFile;
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There was a problem moving the current file to the specified destination.", exc);
 			}
 		}
 
@@ -329,7 +414,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
-		public async Task ClearMetaDataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
+		public async Task ClearMetadataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
@@ -361,13 +446,10 @@ namespace Umbrella.FileSystem.Disk
 				{
 					string json = UmbrellaStatics.SerializeJson(_metadataDictionary);
 
-					using (var fs = new FileStream(_metadataFullFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true))
-					{
-						using (var sr = new StreamWriter(fs))
-						{
-							await sr.WriteAsync(json).ConfigureAwait(false);
-						}
-					}
+					using var fs = new FileStream(_metadataFullFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite, 4096, true);
+					using var sr = new StreamWriter(fs);
+
+					await sr.WriteAsync(json).ConfigureAwait(false);
 				}
 				else
 				{
@@ -381,7 +463,14 @@ namespace Umbrella.FileSystem.Disk
 		}
 		#endregion
 
-		#region IEquatable Members
+		#region IEquatable Members		
+		/// <summary>
+		/// Indicates whether the current object is equal to another object of the same type.
+		/// </summary>
+		/// <param name="other">An object to compare with this object.</param>
+		/// <returns>
+		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
+		/// </returns>
 		public bool Equals(UmbrellaDiskFileInfo other)
 			=> other != null &&
 				IsNew == other.IsNew &&
@@ -392,9 +481,22 @@ namespace Umbrella.FileSystem.Disk
 				ContentType == other.ContentType;
 		#endregion
 
-		#region Overridden Methods
+		#region Overridden Methods		
+		/// <summary>
+		/// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+		/// </summary>
+		/// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+		/// <returns>
+		///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+		/// </returns>
 		public override bool Equals(object obj) => Equals(obj as UmbrellaDiskFileInfo);
 
+		/// <summary>
+		/// Returns a hash code for this instance.
+		/// </summary>
+		/// <returns>
+		/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+		/// </returns>
 		public override int GetHashCode()
 		{
 			int hashCode = 260482354;
@@ -409,9 +511,25 @@ namespace Umbrella.FileSystem.Disk
 		}
 		#endregion
 
-		#region Operators
+		#region Operators		
+		/// <summary>
+		/// Implements the operator ==.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>
+		/// The result of the operator.
+		/// </returns>
 		public static bool operator ==(UmbrellaDiskFileInfo left, UmbrellaDiskFileInfo right) => EqualityComparer<UmbrellaDiskFileInfo>.Default.Equals(left, right);
 
+		/// <summary>
+		/// Implements the operator !=.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>
+		/// The result of the operator.
+		/// </returns>
 		public static bool operator !=(UmbrellaDiskFileInfo left, UmbrellaDiskFileInfo right) => !(left == right);
 		#endregion
 
@@ -447,7 +565,7 @@ namespace Umbrella.FileSystem.Disk
 				{
 					_metadataDictionary = UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json);
 				}
-				catch (Exception exc) when (Log.WriteError(exc, new { json }, "The JSON value stored in the Comment metadata property could not be deserialized to a Dictionary. This error has been handled silently.", returnValue: true))
+				catch (Exception exc) when (Log.WriteError(exc, new { json }, "The JSON value stored in the metadata file could not be deserialized to a Dictionary. This error has been handled silently.", returnValue: true))
 				{
 					_metadataDictionary = new Dictionary<string, string>();
 				}

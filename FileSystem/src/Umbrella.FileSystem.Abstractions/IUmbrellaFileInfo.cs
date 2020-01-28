@@ -22,10 +22,12 @@ namespace Umbrella.FileSystem.Abstractions
 		Task<bool> DeleteAsync(CancellationToken cancellationToken = default);
 		Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default);
 		Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default);
+		Task<IUmbrellaFileInfo> MoveAsync(string destinationSubpath, CancellationToken cancellationToken = default);
+		Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default);
 		Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null);
 		Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true);
 		Task RemoveMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, bool writeChanges = true);
-		Task ClearMetaDataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true);
+		Task ClearMetadataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true);
 		Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default);
 	}
 }

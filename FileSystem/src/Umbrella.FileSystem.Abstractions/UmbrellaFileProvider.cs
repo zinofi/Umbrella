@@ -56,11 +56,11 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
-
 				return await GetFileAsync(subpath, true, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
@@ -71,11 +71,11 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
-
 				return await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
@@ -86,11 +86,11 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
-
 				IUmbrellaFileInfo fileInfo = await GetAsync(subpath, cancellationToken).ConfigureAwait(false);
 
 				if (fileInfo != null)
@@ -106,11 +106,11 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(fileInfo, nameof(fileInfo));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNull(fileInfo, nameof(fileInfo));
-
 				return await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { fileInfo }, returnValue: true))
@@ -121,12 +121,12 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
-				Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
-
 				IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
 
 				if (sourceFile == null)
@@ -142,12 +142,12 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<TFileInfo>(sourceFile, nameof(sourceFile));
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentOfType<TFileInfo>(sourceFile, nameof(sourceFile));
-				Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
-
 				IUmbrellaFileInfo destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 
 				return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
@@ -160,13 +160,68 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<TFileInfo>(sourceFile, nameof(sourceFile));
+			Guard.ArgumentOfType<TFileInfo>(destinationFile, nameof(destinationFile));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentOfType<TFileInfo>(sourceFile, nameof(sourceFile));
-				Guard.ArgumentOfType<TFileInfo>(destinationFile, nameof(destinationFile));
-
 				return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			{
+				throw new UmbrellaFileSystemException(exc.Message, exc);
+			}
+		}
+
+		public virtual async Task<IUmbrellaFileInfo> MoveAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+			try
+			{
+				IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
+
+				if (sourceFile == null)
+					throw new UmbrellaFileNotFoundException(sourceSubpath);
+
+				return await sourceFile.MoveAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			{
+				throw new UmbrellaFileSystemException(exc.Message, exc);
+			}
+		}
+
+		public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<TFileInfo>(sourceFile, nameof(sourceFile));
+			Guard.ArgumentNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+
+			try
+			{
+				IUmbrellaFileInfo destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+
+				return await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			{
+				throw new UmbrellaFileSystemException(exc.Message, exc);
+			}
+		}
+
+		public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentOfType<TFileInfo>(sourceFile, nameof(sourceFile));
+			Guard.ArgumentOfType<TFileInfo>(destinationFile, nameof(destinationFile));
+
+			try
+			{
+				return await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
@@ -176,12 +231,12 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+			Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
-				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
-
 				IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
 				await file.WriteFromByteArrayAsync(bytes, cacheContents, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
@@ -195,12 +250,12 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+			Guard.ArgumentNotNull(stream, nameof(stream));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
-				Guard.ArgumentNotNull(stream, nameof(stream));
-
 				IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
 				await file.WriteFromStreamAsync(stream, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
@@ -214,13 +269,13 @@ namespace Umbrella.FileSystem.Abstractions
 
 		public virtual async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
+
 			try
 			{
-				cancellationToken.ThrowIfCancellationRequested();
-				Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
-
 				IUmbrellaFileInfo file = await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
-
+				
 				return file != null;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
