@@ -59,6 +59,9 @@ namespace Umbrella.FileSystem.Disk
 			FileInfo physicalFileInfo,
 			bool isNew)
 		{
+			if (subpath.EndsWith(UmbrellaDiskFileConstants.MetadataFileExtension, StringComparison.OrdinalIgnoreCase))
+				throw new UmbrellaFileSystemException($"Files with the extension '{UmbrellaDiskFileConstants.MetadataFileExtension}' are not permitted.");
+
 			Log = logger;
 			Provider = provider;
 			GenericTypeConverter = genericTypeConverter;
@@ -68,7 +71,7 @@ namespace Umbrella.FileSystem.Disk
 
 			ContentType = mimeTypeUtility.GetMimeType(Name);
 
-			_metadataFullFileName = PhysicalFileInfo.FullName + ".meta";
+			_metadataFullFileName = PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension;
 		} 
 		#endregion
 
@@ -91,7 +94,7 @@ namespace Umbrella.FileSystem.Disk
 				File.Copy(PhysicalFileInfo.FullName, destinationFile.PhysicalFileInfo.FullName, true);
 
 				if (File.Exists(_metadataFullFileName))
-					File.Copy(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + ".meta", true);
+					File.Copy(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension, true);
 
 				destinationFile.IsNew = false;
 
@@ -121,7 +124,7 @@ namespace Umbrella.FileSystem.Disk
 				File.Copy(PhysicalFileInfo.FullName, target.PhysicalFileInfo.FullName, true);
 
 				if (File.Exists(_metadataFullFileName))
-					File.Copy(_metadataFullFileName, target.PhysicalFileInfo.FullName + ".meta", true);
+					File.Copy(_metadataFullFileName, target.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension, true);
 
 				target.IsNew = false;
 
@@ -151,7 +154,7 @@ namespace Umbrella.FileSystem.Disk
 				File.Move(PhysicalFileInfo.FullName, destinationFile.PhysicalFileInfo.FullName);
 
 				if (File.Exists(_metadataFullFileName))
-					File.Move(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + ".meta");
+					File.Move(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension);
 
 				destinationFile.IsNew = false;
 
@@ -181,7 +184,7 @@ namespace Umbrella.FileSystem.Disk
 				File.Move(PhysicalFileInfo.FullName, target.PhysicalFileInfo.FullName);
 
 				if (File.Exists(_metadataFullFileName))
-					File.Move(_metadataFullFileName, target.PhysicalFileInfo.FullName + ".meta");
+					File.Move(_metadataFullFileName, target.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension);
 
 				target.IsNew = false;
 

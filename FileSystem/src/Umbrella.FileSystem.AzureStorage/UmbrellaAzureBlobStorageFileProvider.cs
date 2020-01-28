@@ -197,15 +197,19 @@ namespace Umbrella.FileSystem.AzureStorage
 					while (continuationToken != default(BlobContinuationToken));
 				}
 
-				UmbrellaAzureBlobStorageFileInfo[] results = lstBlob.Select(x => new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
+				UmbrellaAzureBlobStorageFileInfo[] files = lstBlob.Select(x => new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
 
-				foreach (var result in results)
+				var lstResult = new List<UmbrellaAzureBlobStorageFileInfo>();
+
+				foreach (var file in files)
 				{
-					if (!await CheckFileAccessAsync(result, result.Blob, cancellationToken))
-						throw new UmbrellaFileAccessDeniedException(result.SubPath);
+					if (await CheckFileAccessAsync(file, file.Blob, cancellationToken))
+						lstResult.Add(file);
+					else
+						Log.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
 				}
 
-				return results;
+				return lstResult;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
 			{

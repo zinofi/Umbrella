@@ -87,15 +87,23 @@ namespace Umbrella.FileSystem.Disk
 				if (!directoryInfo.Exists)
 					return Array.Empty<UmbrellaDiskFileInfo>();
 
-				UmbrellaDiskFileInfo[] results = directoryInfo.GetFiles().Select(x => new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"{subpath}/{x.Name}", this, x, false)).ToArray();
+				UmbrellaDiskFileInfo[] files = directoryInfo
+					.GetFiles()
+					.Where(x => !x.Extension.Equals(UmbrellaDiskFileConstants.MetadataFileExtension, StringComparison.OrdinalIgnoreCase))
+					.Select(x => new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"{subpath}/{x.Name}", this, x, false))
+					.ToArray();
 
-				foreach (var result in results)
+				var lstResult = new List<UmbrellaDiskFileInfo>();
+
+				foreach(var file in files)
 				{
-					if (!await CheckFileAccessAsync(result, result.PhysicalFileInfo, cancellationToken))
-						throw new UmbrellaFileAccessDeniedException(result.SubPath);
+					if (await CheckFileAccessAsync(file, file.PhysicalFileInfo, cancellationToken))
+						lstResult.Add(file);
+					else
+						Log.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
 				}
 
-				return results;
+				return lstResult;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
 			{
