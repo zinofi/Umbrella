@@ -18,6 +18,7 @@ namespace Umbrella.Utilities.Test.Extensions
             Assert.Equal("croatia", "Croatia".ToCamelCase());
             Assert.Equal("lowercasealready", "lowercasealready".ToCamelCase());
             Assert.Equal("alreadyCamelCase", "alreadyCamelCase".ToCamelCase());
+            Assert.Equal("annualBOPAId", "AnnualBOPAId".ToCamelCase());
         }
 
         [Fact]
@@ -28,7 +29,8 @@ namespace Umbrella.Utilities.Test.Extensions
             Assert.Equal("croatia", "Croatia".ToCamelCaseInvariant());
             Assert.Equal("lowercasealready", "lowercasealready".ToCamelCaseInvariant());
             Assert.Equal("alreadyCamelCase", "alreadyCamelCase".ToCamelCaseInvariant());
-        }
+			Assert.Equal("annualBOPAId", "AnnualBOPAId".ToCamelCaseInvariant());
+		}
 
         [Fact]
         public void ToSnakeCase()

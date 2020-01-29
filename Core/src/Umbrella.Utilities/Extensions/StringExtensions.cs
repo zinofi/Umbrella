@@ -60,9 +60,6 @@ namespace Umbrella.Utilities.Extensions
 			return s_HtmlTagPatternRegex.Replace(value, string.Empty);
 		}
 
-		// TODO: V3 - Add an additional parameter to allow the caller to specify whether the method
-		// should transform something like this: MOVChecked to either this movChecked (which is the current behaviour)
-		// or this mOVChecked. Not sure why I did it like this. Must have been required on a project somewhere.
 		public static string ToCamelCase(this string value) => ToCamelCaseInternal(value, false);
 		public static string ToCamelCaseInvariant(this string value) => ToCamelCaseInternal(value, true);
 
@@ -72,8 +69,8 @@ namespace Umbrella.Utilities.Extensions
 			if (string.IsNullOrWhiteSpace(value))
 				return value;
 
-			Func<string, string> stringLower = null;
-			Func<char, char> charLower = null;
+			Func<string, string> stringLower;
+			Func<char, char> charLower;
 
 			if (useInvariantCulture)
 			{
@@ -89,7 +86,7 @@ namespace Umbrella.Utilities.Extensions
 			if (value.Length == 1)
 				return stringLower(value);
 
-			//If 1st char is already in lowercase, return the value untouched
+			// If 1st char is already in lowercase, return the value untouched
 			if (char.IsLower(value[0]))
 				return value;
 
@@ -103,13 +100,20 @@ namespace Umbrella.Utilities.Extensions
 				{
 					if (char.IsUpper(value[i]))
 					{
-						buffer[i] = charLower(value[i]);
-						continue;
+						if (i > 1 && char.IsLower(value[i - 1]))
+						{
+							stop = true;
+						}
+						else
+						{
+							buffer[i] = charLower(value[i]);
+							continue;
+						}
 					}
 					else if (i > 1)
 					{
-						//Encountered first lowercase char
-						//Check previous char and see if that was uppercase before we made it lowercase
+						// Encountered first lowercase char
+						// Check previous char and see if that was uppercase before we made it lowercase
 						char previous = value[i - 1];
 						if (char.IsUpper(previous))
 						{
