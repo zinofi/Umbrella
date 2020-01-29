@@ -217,6 +217,7 @@ namespace Umbrella.TypeScript.Generators
 							bool b when b => "true",
 							bool b when !b => "false",
 							string s => $"'{s}'",
+							Enum e => $"{e.GetType().FullName}.{e.ToString()}",
 							_ => attr.DependentValue.ToString()
 						};
 
