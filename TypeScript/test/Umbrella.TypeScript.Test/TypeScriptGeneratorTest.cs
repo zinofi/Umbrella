@@ -89,6 +89,9 @@ namespace Umbrella.TypeScript.Test
 
 		[RequiredIfTrue(nameof(NeedAddress))]
 		public string NeededIfTrue { get; set; }
+
+		[RequiredIf(nameof(TestChildEnum), TestEnum.Value1, ErrorMessage = "Please enter the value")]
+		public string NeededIfEqualToEnum { get; set; }
 	}
 
     [TypeScriptModel(TypeScriptOutputModelType.Interface | TypeScriptOutputModelType.KnockoutInterface)]
