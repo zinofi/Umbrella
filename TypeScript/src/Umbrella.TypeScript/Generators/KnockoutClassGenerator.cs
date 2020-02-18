@@ -221,7 +221,20 @@ namespace Umbrella.TypeScript.Generators
 							_ => attr.DependentValue.ToString()
 						};
 
-						validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{attr.DependentProperty.ToCamelCaseInvariant()} {@operator} {otherValue}, message: {message} }},", indent);
+						string dependentPropertyName = null;
+
+						if (attr.DependentProperty.Contains("."))
+						{
+							string[] parts = attr.DependentProperty.Split('.');
+
+							dependentPropertyName = string.Join("?.", parts.Select(x => x.ToCamelCaseInvariant()));
+						}
+						else
+						{
+							dependentPropertyName = attr.DependentProperty.ToCamelCaseInvariant();
+						}
+
+						validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
 						break;
 				}
 			}
