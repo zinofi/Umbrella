@@ -42,6 +42,7 @@ namespace Umbrella.DynamicImage
 
 			try
 			{
+				// TODO: Use span here
 				return (format?.TrimStart('.').Trim()?.ToLowerInvariant()) switch
 				{
 					"png" => DynamicImageFormat.Png,

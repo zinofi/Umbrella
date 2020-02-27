@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DataAnnotations
 {
+	/// <summary>
+	/// A stricter version of the <see cref="MinLengthAttribute" /> which also fails validation
+	/// when the collection is null. That isn't the case with the <see cref="MinLengthAttribute" />.
+	/// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class RequiredNonEmptyCollectionAttribute : RequiredAttribute
     {

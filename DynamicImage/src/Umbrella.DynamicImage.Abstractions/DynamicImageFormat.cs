@@ -1,5 +1,6 @@
 ﻿namespace Umbrella.DynamicImage.Abstractions
 {
+	// TODO: Change 0 to be Unsupported! Maybe also switch the code that references this enum to throw exceptions / return false if 0 is encountered??
 	/// <summary>
 	/// The formats supported by the Dynamic Image infrastructure.
 	/// </summary>

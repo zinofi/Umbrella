@@ -5,12 +5,12 @@
 	/// support for storing the date it was created and last updated.
 	/// To specifiy a different id type, use the generic version of this interface.
 	/// </summary>
-	public interface IAuditEntity : IAuditEntity<int>
+	public interface IAuditEntity : IAuditEntity<int>, IEntity
 	{
 	}
 
 	/// <summary>
-	/// Adds support to an entity type for storing it's unique Id, the id of the user it was both created by and last updated by, toegther with
+	/// Adds support to an entity type for storing it's unique Id, the id of the user it was both created by and last updated by, together with
 	/// support for storing the date it was created and last updated.
 	/// This is a convenience interface that implements <see cref="IEntity{T}"/>, <see cref="ICreatedDateAuditEntity"/>, <see cref="ICreatedUserAuditEntity{T}"/>, <see cref="IUpdatedDateAuditEntity"/> and <see cref="IUpdatedUserAuditEntity{T}"/>.
 	/// </summary>
