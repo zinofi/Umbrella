@@ -17,7 +17,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.Legacy.WebUtilities.FileSystem</PackageId>
-		<Version>3.0.0-preview-0071</Version>
+		<Version>3.0.0-preview-0072</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
