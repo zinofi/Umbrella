@@ -7,13 +7,13 @@ namespace Umbrella.DataAnnotations
 	/// Extends the <see cref="RangeAttribute" /> using either <see cref="double.MinValue" /> or <see cref="int.MinValue" /> as the default for convenience.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property)]
-	public class MaxRangeAttribute : RangeAttribute
+	public class RangeMaxAttribute : RangeAttribute
 	{
 		/// <summary>
 		/// Create a new instance.
 		/// </summary>
 		/// <param name="maximum">The maximum.</param>
-		public MaxRangeAttribute(double maximum)
+		public RangeMaxAttribute(double maximum)
 			: base(double.MinValue, maximum)
 		{
 		}
@@ -22,7 +22,7 @@ namespace Umbrella.DataAnnotations
 		/// Create a new instance.
 		/// </summary>
 		/// <param name="maximum">The maximum.</param>
-		public MaxRangeAttribute(int maximum)
+		public RangeMaxAttribute(int maximum)
 			: base(int.MinValue, maximum)
 		{
 		}
