@@ -1,90 +1,100 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Umbrella.AspNetCore.WebUtilities.Middleware.Options;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Compilation;
-using Umbrella.Utilities.Extensions;
+using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Middleware
 {
-    //TODO: Revisit this - needs only apply to requests that contain the "X-Requested-With" header with a value of "XMLHttpRequest" - see Marshalls projects
-    //TODO: Implement a corresponding version for the legacy stack
-    public class InternetExplorerCacheHeaderMiddleware
-    {
-        #region Private Members
-        private readonly RequestDelegate m_Next;
-        private readonly ILogger m_Logger;
-        private readonly InternetExplorerCacheHeaderOptions m_Options = new InternetExplorerCacheHeaderOptions();
-        #endregion
+	/// <summary>
+	/// Middleware that examines the User-Agent string to detect the use of Internet Explorer
+	/// and applies caching headers to prevent certain reponses from being incorrectly cached.
+	/// </summary>
+	public class InternetExplorerCacheHeaderMiddleware
+	{
+		#region Private Members
+		private readonly RequestDelegate _next;
+		private readonly ILogger _logger;
+		private readonly InternetExplorerCacheHeaderMiddlewareOptions _options = new InternetExplorerCacheHeaderMiddlewareOptions();
+		#endregion
 
-        #region Constructors
-        public InternetExplorerCacheHeaderMiddleware(RequestDelegate next,
-            ILogger<InternetExplorerCacheHeaderMiddleware> logger,
-            Action<InternetExplorerCacheHeaderOptions> optionsBuilder)
-        {
-            m_Next = next;
-            m_Logger = logger;
+		#region Constructors
+		/// <summary>
+		/// Create a new instance.
+		/// </summary>
+		/// <param name="next">The next middleware to be executed.</param>
+		/// <param name="logger">The <see cref="ILogger" />.</param>
+		/// <param name="optionsBuilder">The options builder.</param>
+		public InternetExplorerCacheHeaderMiddleware(RequestDelegate next,
+			ILogger<InternetExplorerCacheHeaderMiddleware> logger,
+			Action<InternetExplorerCacheHeaderMiddlewareOptions> optionsBuilder)
+		{
+			_next = next;
+			_logger = logger;
 
-            optionsBuilder?.Invoke(m_Options);
+			optionsBuilder?.Invoke(_options);
 
-            Guard.ArgumentNotNull(m_Options.ContentTypes, $"{nameof(InternetExplorerCacheHeaderOptions)}.{nameof(m_Options.ContentTypes)}");
-            Guard.ArgumentNotNull(m_Options.Methods, $"{nameof(InternetExplorerCacheHeaderOptions)}.{nameof(m_Options.Methods)}");
-            Guard.ArgumentNotNull(m_Options.UserAgentKeywords, $"{nameof(InternetExplorerCacheHeaderOptions)}.{nameof(m_Options.UserAgentKeywords)}");
-        }
-        #endregion
+			Guard.ArgumentNotNull(_options.ContentTypes, $"{nameof(InternetExplorerCacheHeaderMiddlewareOptions)}.{nameof(_options.ContentTypes)}");
+			Guard.ArgumentNotNull(_options.Methods, $"{nameof(InternetExplorerCacheHeaderMiddlewareOptions)}.{nameof(_options.Methods)}");
+			Guard.ArgumentNotNull(_options.UserAgentKeywords, $"{nameof(InternetExplorerCacheHeaderMiddlewareOptions)}.{nameof(_options.UserAgentKeywords)}");
+		}
+		#endregion
 
-        #region Public Methods
-        public async Task Invoke(HttpContext context)
-        {
-            try
-            {
-                string method = context.Request.Method;
-                string userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
+		#region Public Methods
+		/// <summary>
+		/// Invokes the middleware for the specified <see cref="HttpContext" />.
+		/// </summary>
+		/// <param name="context">The <see cref="HttpContext" />.</param>
+		/// <returns>An awaitable <see cref="Task" />.</returns>
+		public async Task Invoke(HttpContext context)
+		{
+			try
+			{
+				string method = context.Request.Method;
+				string userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
 
-                bool addHeaders = !string.IsNullOrWhiteSpace(userAgent)
-                    && (m_Options.UserAgentKeywords.Count == 0 || m_Options.UserAgentKeywords.Any(x => userAgent.Contains(x)))
-                    && (m_Options.Methods.Count == 0 || m_Options.Methods.Any(x => method.Contains(x)));
+				bool addHeaders = !string.IsNullOrWhiteSpace(userAgent)
+					&& (_options.UserAgentKeywords.Count == 0 || _options.UserAgentKeywords.Any(x => userAgent.Contains(x)))
+					&& (_options.Methods.Count == 0 || _options.Methods.Any(x => method.Contains(x)));
 
-                if (addHeaders)
-                {
-                    context.Response.OnStarting(state =>
-                    {
-                        HttpResponse response = (HttpResponse)state;
+				if (addHeaders)
+				{
+					context.Response.OnStarting(state =>
+					{
+						var response = (HttpResponse)state;
 
-                        string contentType = response.ContentType;
-                        
-                        //Apply the headers when no response content type - this may be the case when a 204 code is sent for a GET request that issues no content
-                        //If no content types have been specified in the options apply the headers to all response for the configured HTTP methods
-                        //If content types have been specified to filter on then only apply the headers for those responses
-                        if (string.IsNullOrWhiteSpace(contentType) || m_Options.ContentTypes.Count == 0 || m_Options.ContentTypes.Any(x => contentType.Contains(x)))
-                        {
-                            //Set standard HTTP/1.0 no-cache header (no-store, no-cache, must-revalidate)
-                            //Set IE extended HTTP/1.1 no-cache headers (post-check, pre-check)
-                            response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+						string contentType = response.ContentType;
 
-                            //Set standard HTTP/1.0 no-cache header.
-                            response.Headers.Add("Pragma", "no-cache");
+						// Apply the headers when no response content type - this may be the case when a 204 code is sent for a GET request that issues no content
+						// If no content types have been specified in the options apply the headers to all response for the configured HTTP methods
+						// If content types have been specified to filter on then only apply the headers for those responses
+						if (string.IsNullOrWhiteSpace(contentType) || _options.ContentTypes.Count == 0 || _options.ContentTypes.Any(x => contentType.Contains(x)))
+						{
+							// Set standard HTTP/1.0 no-cache header (no-store, no-cache, must-revalidate)
+							// Set IE extended HTTP/1.1 no-cache headers (post-check, pre-check)
+							response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
 
-                            //Set the Expires header.
-                            response.Headers.Add("Expires", "0");
-                        }
+							// Set standard HTTP/1.0 no-cache header.
+							response.Headers.Add("Pragma", "no-cache");
 
-                        return Task.CompletedTask;
+							// Set the Expires header.
+							response.Headers.Add("Expires", "0");
+						}
 
-                    }, context.Response);
-                }
+						return Task.CompletedTask;
 
-                await m_Next.Invoke(context);
-            }
-            catch (Exception exc) when (m_Logger.WriteError(exc))
-            {
-                throw;
-            }
-        }
-        #endregion
-    }
+					}, context.Response);
+				}
+
+				await _next.Invoke(context);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc))
+			{
+				throw;
+			}
+		}
+		#endregion
+	}
 }

@@ -1,24 +1,23 @@
 ﻿using System;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
-using Umbrella.AspNetCore.WebUtilities.Middleware.Options;
+using Umbrella.Utilities;
 
 namespace Microsoft.AspNetCore.Builder
 {
 	public static class IApplicationBuilderExtensions
 	{
+		// TODO: Create an Options class, DI it
 		public static IApplicationBuilder UseUmbrellaQueryStringParameterToHttpHeader(
 			this IApplicationBuilder builder,
 			string queryStringParameterName,
 			string headerName,
-			Func<string, string> valueTransformer = null)
-		{
-			return builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParameterName, headerName, valueTransformer);
-		}
+			Func<string, string> valueTransformer = null) => builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParameterName, headerName, valueTransformer);
 
-		// TODO: DI the Options class
-		public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder, Action<InternetExplorerCacheHeaderOptions> optionsBuilder)
+		public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder)
 		{
-			return builder.UseMiddleware<InternetExplorerCacheHeaderMiddleware>(optionsBuilder);
+			Guard.ArgumentNotNull(builder, nameof(builder));
+
+			return builder.UseMiddleware<InternetExplorerCacheHeaderMiddleware>();
 		}
 	}
 }
