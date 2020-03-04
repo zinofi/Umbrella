@@ -1217,6 +1217,43 @@ namespace Umbrella.FileSystem.Test
 			await provider.DeleteAsync(downLevelSubPath2);
 		}
 
+		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task Create_WriteMetaDataValue_Reload_WriteMetaDataWithoutLoading(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			//Arrange
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			string subpath = $"/images/{TestFileName}";
+
+			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			// Write some metadata
+			await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false);
+			await file.SetMetadataValueAsync("Description", "Man", writeChanges: false);
+			await file.WriteMetadataChangesAsync();
+
+			// Reload the file
+			var reloadedFile = await provider.GetAsync(subpath);
+
+			// Write without loading first
+			await reloadedFile.WriteMetadataChangesAsync();
+
+			string metaName = await reloadedFile.GetMetadataValueAsync<string>("Name");
+			string metaDescription = await reloadedFile.GetMetadataValueAsync<string>("Description");
+
+			Assert.Equal("Magic", metaName);
+			Assert.Equal("Man", metaDescription);
+		}
+
 		private static IUmbrellaFileProvider CreateAzureBlobFileProvider()
 		{
 			var logger = new Mock<ILogger<UmbrellaAzureBlobStorageFileProvider>>();

@@ -169,7 +169,7 @@ namespace Umbrella.FileSystem.Disk
 		public async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentOfType<UmbrellaDiskFileInfo>(destinationFile, nameof(destinationFile), "Copying files between providers of different types is not supported.");
+			Guard.ArgumentOfType<UmbrellaDiskFileInfo>(destinationFile, nameof(destinationFile), "Moving files between providers of different types is not supported.");
 
 			try
 			{
@@ -266,10 +266,8 @@ namespace Umbrella.FileSystem.Disk
 			{
 				int bufferSize = bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize;
 
-				using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true))
-				{
-					await fs.CopyToAsync(target, bufferSize, cancellationToken).ConfigureAwait(false);
-				}
+				using var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true);
+				await fs.CopyToAsync(target, bufferSize, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
@@ -456,7 +454,11 @@ namespace Umbrella.FileSystem.Disk
 				}
 				else
 				{
-					File.Delete(_metadataFullFileName);
+					// Before deleting the file, reload the metadata just in case we have some on disk that hasn't be loaded into memory.
+					await ReloadMetadataAsync(cancellationToken);
+
+					if(_metadataDictionary == null || _metadataDictionary.Count == 0)
+						File.Delete(_metadataFullFileName);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
@@ -486,11 +488,11 @@ namespace Umbrella.FileSystem.Disk
 
 		#region Overridden Methods		
 		/// <summary>
-		/// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+		/// Determines whether the specified <see cref="object" />, is equal to this instance.
 		/// </summary>
-		/// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+		/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
 		/// <returns>
-		///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+		///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
 		/// </returns>
 		public override bool Equals(object obj) => Equals(obj as UmbrellaDiskFileInfo);
 
