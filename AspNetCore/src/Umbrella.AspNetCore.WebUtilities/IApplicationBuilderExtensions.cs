@@ -13,7 +13,7 @@ namespace Microsoft.AspNetCore.Builder
 			string headerName,
 			Func<string, string> valueTransformer = null) => builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>(queryStringParameterName, headerName, valueTransformer);
 
-		public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder)
+		public static IApplicationBuilder InternetExplorerCacheHeaderMiddleware(this IApplicationBuilder builder)
 		{
 			Guard.ArgumentNotNull(builder, nameof(builder));
 

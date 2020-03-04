@@ -17,7 +17,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 		#region Private Members
 		private readonly RequestDelegate _next;
 		private readonly ILogger _logger;
-		private readonly InternetExplorerCacheHeaderMiddlewareOptions _options = new InternetExplorerCacheHeaderMiddlewareOptions();
+		private readonly InternetExplorerCacheHeaderMiddlewareOptions _options;
 		#endregion
 
 		#region Constructors
@@ -26,19 +26,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 		/// </summary>
 		/// <param name="next">The next middleware to be executed.</param>
 		/// <param name="logger">The <see cref="ILogger" />.</param>
-		/// <param name="optionsBuilder">The options builder.</param>
+		/// <param name="options">The options.</param>
 		public InternetExplorerCacheHeaderMiddleware(RequestDelegate next,
 			ILogger<InternetExplorerCacheHeaderMiddleware> logger,
-			Action<InternetExplorerCacheHeaderMiddlewareOptions> optionsBuilder)
+			InternetExplorerCacheHeaderMiddlewareOptions options)
 		{
 			_next = next;
 			_logger = logger;
-
-			optionsBuilder?.Invoke(_options);
-
-			Guard.ArgumentNotNull(_options.ContentTypes, $"{nameof(InternetExplorerCacheHeaderMiddlewareOptions)}.{nameof(_options.ContentTypes)}");
-			Guard.ArgumentNotNull(_options.Methods, $"{nameof(InternetExplorerCacheHeaderMiddlewareOptions)}.{nameof(_options.Methods)}");
-			Guard.ArgumentNotNull(_options.UserAgentKeywords, $"{nameof(InternetExplorerCacheHeaderMiddlewareOptions)}.{nameof(_options.UserAgentKeywords)}");
+			_options = options;
 		}
 		#endregion
 
