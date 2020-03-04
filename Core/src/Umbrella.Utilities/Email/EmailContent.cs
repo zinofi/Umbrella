@@ -116,7 +116,6 @@ namespace Umbrella.Utilities.Email
 		public EmailContent ReplaceToken(string tokenName, string value)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(tokenName, nameof(tokenName));
-			Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
 
 			try
 			{
