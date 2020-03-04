@@ -2,8 +2,8 @@
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
 # Manually alter the build number before pushing to NuGet feeds
-$previousBuild = "3.0.0-preview-0075"
-$currentBuild =  "3.0.0-preview-0076"
+$previousBuild = "3.0.0-preview-0076"
+$currentBuild =  "3.0.0-preview-0077"
 
 foreach ($file in $configFiles)
 {
