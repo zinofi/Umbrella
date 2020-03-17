@@ -6,7 +6,9 @@ using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
 using Umbrella.Utilities.DependencyInjection;
 using Umbrella.Utilities.Email;
+using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Email.Interfaces;
+using Umbrella.Utilities.Email.Options;
 using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.FriendlyUrl;
@@ -33,7 +35,9 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaUtilities(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaUtilities(
+			this IServiceCollection services,
+			Action<IServiceProvider, EmailSenderOptions> emailSenderOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -61,6 +65,10 @@ namespace Microsoft.Extensions.DependencyInjection
 					CacheKeyBuilder = (type, key) => cacheKeyUtility.Create(type, key)
 				};
 			});
+
+			// Email Sender
+			services.ConfigureUmbrellaOptions(emailSenderOptionsBuilder);
+			services.AddSingleton<IEmailSender, EmailSender>();
 
 			return services;
 		}

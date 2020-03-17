@@ -10,7 +10,8 @@ using Umbrella.Utilities.Email.Interfaces;
 
 namespace Umbrella.Utilities.Email
 {
-    // TODO: The folder path containing the email templates should be configurable.
+	// TODO: The folder path containing the email templates should be configurable.
+	[Obsolete("This will be removed in the next v3 major release.")]
 	public class EmailBuilder : IEmailBuilder
 	{
 		#region Constants

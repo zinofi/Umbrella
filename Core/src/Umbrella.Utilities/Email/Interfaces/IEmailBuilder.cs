@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 // TODO: V3 - Move to abstractions namespace - check everywhere else too to make this consistent.
 namespace Umbrella.Utilities.Email.Interfaces
 {
+	[Obsolete("This will be removed in the next v3 major release.")]
     public interface IEmailBuilder
     {
         EmailBuilder UsingTemplate(string source = "GenericTemplate", bool isRawHtml = false);
