@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Email.Options;
 using Umbrella.Utilities.Exceptions;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Email
 {
@@ -34,7 +35,7 @@ namespace Umbrella.Utilities.Email
 		}
 
 		/// <inheritdoc />
-		public async Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default)
+		public async Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default, string fromAddress = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(email, nameof(email));
@@ -73,7 +74,7 @@ namespace Umbrella.Utilities.Email
 						throw new NotSupportedException($"Only {nameof(SmtpDeliveryMethod.Network)} and {nameof(SmtpDeliveryMethod.SpecifiedPickupDirectory)} are supported as delivery methods.");
 				}
 
-				using var message = new MailMessage(_options.FromAddress, email)
+				using var message = new MailMessage(fromAddress?.TrimToLowerInvariant() ?? _options.DefaultFromAddress, email)
 				{
 					Subject = subject,
 					Body = body,

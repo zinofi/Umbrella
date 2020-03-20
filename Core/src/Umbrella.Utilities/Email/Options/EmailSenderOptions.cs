@@ -14,9 +14,9 @@ namespace Umbrella.Utilities.Email.Options
 		public SmtpDeliveryMethod DeliveryMethod { get; set; } = SmtpDeliveryMethod.Network;
 
 		/// <summary>
-		/// The sender address.
+		/// The default sender address.
 		/// </summary>
-		public string FromAddress { get; set; }
+		public string DefaultFromAddress { get; set; }
 
 		/// <summary>
 		/// The path to the folder on disk where emails will be saved when <see cref="DeliveryMethod"/> is set
