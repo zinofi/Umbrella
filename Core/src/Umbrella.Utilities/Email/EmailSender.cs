@@ -83,7 +83,7 @@ namespace Umbrella.Utilities.Email
 
 				await client.SendMailAsync(message);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress }, returnValue: true))
 			{
 				throw new UmbrellaException("There has been a problem sending the email.", exc);
 			}

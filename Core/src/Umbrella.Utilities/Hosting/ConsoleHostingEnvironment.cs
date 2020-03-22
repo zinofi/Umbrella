@@ -11,7 +11,8 @@ using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Hosting
 {
-    public class ConsoleHostingEnvironment : UmbrellaHostingEnvironment
+	// TODO: Write unit tests for this and fix issues with paths with slashes, etc.
+    internal class ConsoleHostingEnvironment : UmbrellaHostingEnvironment
 	{
 		public ConsoleHostingEnvironment(
 			ILogger<ConsoleHostingEnvironment> logger,
