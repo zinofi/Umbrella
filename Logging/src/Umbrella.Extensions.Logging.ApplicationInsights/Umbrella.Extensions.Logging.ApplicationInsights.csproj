@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Extensions.Logging.ApplicationInsights</PackageId>
-    <Version>2.9.8-preview-001</Version>
+    <Version>2.9.8</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2020</Copyright>
