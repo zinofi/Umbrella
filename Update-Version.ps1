@@ -2,8 +2,8 @@
 $affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
 
 # Manually alter the build number before pushing to NuGet feeds
-$previousBuild = "2.9.7"
-$currentBuild =  "2.9.8-preview-001"
+$previousBuild = "2.9.8-preview-001"
+$currentBuild =  "2.9.8"
 
 foreach ($file in $configFiles)
 {
@@ -16,10 +16,10 @@ foreach ($file in $configFiles)
 	}
 
 	# Ensure Copyright year is correct
-	if($content -like "*<Copyright>Zinofi Digital Ltd 2018</Copyright>*")
+	if($content -like "*<Copyright>Zinofi Digital Ltd 2019</Copyright>*")
 	{
 		$affectedFiles.Add($file.Name)
-		$content -replace ("<Copyright>Zinofi Digital Ltd 2018</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2019</Copyright>") | Set-Content $file.PSPath
+		$content -replace ("<Copyright>Zinofi Digital Ltd 2019</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2020</Copyright>") | Set-Content $file.PSPath
 	}
 }
 

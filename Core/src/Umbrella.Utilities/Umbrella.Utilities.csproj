@@ -20,7 +20,7 @@
     <Version>2.9.8-preview-001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2019</Copyright>
+    <Copyright>Zinofi Digital Ltd 2020</Copyright>
     <Description>This package contains a range of utility classes to aid application development.</Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>

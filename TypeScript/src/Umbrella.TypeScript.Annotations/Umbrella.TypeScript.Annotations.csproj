@@ -18,7 +18,7 @@
     <Version>2.9.8-preview-001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2019</Copyright>
+    <Copyright>Zinofi Digital Ltd 2020</Copyright>
     <Description>
       This package contains attributes that can be applied to POCO classes to detail how the code generators located in the Umbrella.TypeScript.* packages will generate TypeScript representations of those classes.
     </Description>

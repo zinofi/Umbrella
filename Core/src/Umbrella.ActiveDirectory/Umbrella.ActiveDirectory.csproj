@@ -18,7 +18,7 @@
     <Version>2.9.8-preview-001</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2019</Copyright>
+    <Copyright>Zinofi Digital Ltd 2020</Copyright>
     <Description>
       This package is used to retrieve authentication tokens from Azure Active Directory using either client credentials or a client certificate. The tokens can then be used to access certain Azure services.
     </Description>
