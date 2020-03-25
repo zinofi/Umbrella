@@ -6,7 +6,7 @@ namespace Umbrella.Utilities.Email.Options
 	/// <summary>
 	/// Options for the <see cref="EmailFactory"/>.
 	/// </summary>
-	public class EmailFactoryOptions : IValidatableUmbrellaOptions
+	public class EmailFactoryOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
 		/// <summary>
 		/// Gets or sets the virtual path of the folder containing the email templates. This defaults to "~/Content/EmailTemplates/".
@@ -17,6 +17,13 @@ namespace Umbrella.Utilities.Email.Options
 		/// Gets or sets the HTML string template used for data rows. This defaults to using tr and td table elements.
 		/// </summary>
 		public string DataRowFormat { get; set; } = "<tr><td>{0}:</td><td>{1}</td></tr>";
+
+		/// <inheritdoc />
+		public void Sanitize()
+		{
+			TemplatesVirtualPath = TemplatesVirtualPath?.Trim();
+			DataRowFormat = DataRowFormat?.Trim();
+		}
 
 		/// <summary>
 		/// Validates this instance.

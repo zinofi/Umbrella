@@ -27,6 +27,7 @@ using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.Numerics;
 using Umbrella.Utilities.Numerics.Abstractions;
 using Umbrella.Utilities.Options.Abstractions;
+using Umbrella.Utilities.Options.Exceptions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -45,7 +46,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.Utilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-		/// <param name="emailBuilderOptionsBuilder">The optional <see cref="EmailFactoryOptions"/> builder.</param>
+		/// <param name="emailFactoryOptionsBuilder">The optional <see cref="EmailFactoryOptions"/> builder.</param>
+		/// <param name="emailSenderOptionsBuilder">The optional <see cref="EmailSenderOptions"/> builder.</param>
 		/// <param name="hybridCacheOptionsBuilder">The optional <see cref="HybridCacheOptions"/> builder.</param>
 		/// <param name="httpResourceInfoUtilityOptionsBuilder">The optional <see cref="HttpResourceInfoUtilityOptions"/> builder.</param>
 		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
@@ -54,7 +56,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
 			this IServiceCollection services,
-			Action<IServiceProvider, EmailFactoryOptions> emailBuilderOptionsBuilder = null,
+			Action<IServiceProvider, EmailFactoryOptions> emailFactoryOptionsBuilder = null,
+			Action<IServiceProvider, EmailSenderOptions> emailSenderOptionsBuilder = null,
 			Action<IServiceProvider, HybridCacheOptions> hybridCacheOptionsBuilder = null,
 			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
 			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
@@ -62,24 +65,26 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
+			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
+			services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
 			services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
 			services.AddSingleton<ICertificateUtility, CertificateUtility>();
 			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
-			services.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+			services.AddSingleton<IEmailFactory, EmailFactory>();
+			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
 			services.AddSingleton<IHybridCache, HybridCache>();
+			services.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
 			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
 			services.AddSingleton<INonceGenerator, NonceGenerator>();
 			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
-			services.AddSingleton<IEmailFactory, EmailFactory>();
-			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
-			services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
 
 			// Options
-			services.ConfigureUmbrellaOptions(emailBuilderOptionsBuilder);
+			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
+			services.ConfigureUmbrellaOptions(emailSenderOptionsBuilder);
 			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
 			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
@@ -105,16 +110,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.ReplaceSingleton(serviceProvider =>
 			{
-				var options = new TOptions();
-				optionsBuilder?.Invoke(serviceProvider, options);
+				try
+				{
+					var options = new TOptions();
+					optionsBuilder?.Invoke(serviceProvider, options);
 
-				if (options is ISanitizableUmbrellaOptions sanitizableOptions)
-					sanitizableOptions.Sanitize();
+					if (options is ISanitizableUmbrellaOptions sanitizableOptions)
+						sanitizableOptions.Sanitize();
 
-				if (options is IValidatableUmbrellaOptions validatableOptions)
-					validatableOptions.Validate();
+					if (options is IValidatableUmbrellaOptions validatableOptions)
+						validatableOptions.Validate();
 
-				return options;
+					return options;
+				}
+				catch(Exception exc)
+				{
+					throw new UmbrellaOptionsException("An error has occurred during options configuration.", exc);
+				}
 			});
 
 			return services;

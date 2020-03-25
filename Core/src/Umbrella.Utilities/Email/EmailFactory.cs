@@ -82,15 +82,7 @@ namespace Umbrella.Utilities.Email
 
 		#region IEmailBuilder Members
 
-		/// <summary>
-		/// Used to create a new email. Specify either an email template filename, or supply a raw html string to use instead in conjunction with the <paramref name="isRawHtml"/> parameter.
-		/// </summary>
-		/// <param name="source">The source template file or raw html to use.</param>
-		/// <param name="isRawHtml">Indicates whether the source is a file or raw html.</param>
-		/// <returns>The <see cref="EmailContent"/>.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
-		/// <exception cref="ArgumentException">Thrown if <paramref name="source"/> is empty or whitespace.</exception>
-		/// <exception cref="UmbrellaException">There was a problem initializing the content using the specified options.</exception>
+		/// <inheritdoc />
 		public EmailContent CreateEmail(string source = "GenericTemplate", bool isRawHtml = false)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(source, nameof(source));

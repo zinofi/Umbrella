@@ -40,7 +40,7 @@ namespace Umbrella.Utilities.Email
 		/// <param name="value">The value of the data item, e.g. Rich</param>
 		/// <returns>The <see cref="EmailFactory"/>.</returns>
 		/// <exception cref="UmbrellaException">There was a problem appending the data row with the specified name and value.</exception>
-		public EmailContent AppendRow(string name, string value)
+		public virtual EmailContent AppendRow(string name, string value)
 		{
 			try
 			{
@@ -75,7 +75,7 @@ namespace Umbrella.Utilities.Email
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="keySelector"/> is null.</exception>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="valueSelector"/> is null.</exception>
 		/// <exception cref="UmbrellaException">There was a problem appending the specified data rows.</exception>
-		public EmailContent AppendDataRows<T>(IEnumerable<T> source, string rowsTokenName, string rowFormat, Func<T, string> keySelector, Func<T, string> valueSelector)
+		public virtual EmailContent AppendDataRows<T>(IEnumerable<T> source, string rowsTokenName, string rowFormat, Func<T, string> keySelector, Func<T, string> valueSelector)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
 			Guard.ArgumentNotNullOrWhiteSpace(rowsTokenName, nameof(rowsTokenName));
@@ -113,7 +113,7 @@ namespace Umbrella.Utilities.Email
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
 		/// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is empty or whitespace.</exception>
 		/// <exception cref="UmbrellaException">There has been a problem replacing the specified token with the specified value.</exception>
-		public EmailContent ReplaceToken(string tokenName, string value)
+		public virtual EmailContent ReplaceToken(string tokenName, string value)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(tokenName, nameof(tokenName));
 
