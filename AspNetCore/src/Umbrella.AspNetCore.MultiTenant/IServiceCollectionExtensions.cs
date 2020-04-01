@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilitiesMultiTenant(
 			this IServiceCollection services,
-			Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions> multiTenantSessionContextMiddlewareOptionsBuilder = null)
+			Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions>? multiTenantSessionContextMiddlewareOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

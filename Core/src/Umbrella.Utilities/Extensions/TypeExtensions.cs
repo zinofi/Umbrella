@@ -61,6 +61,27 @@ namespace Umbrella.Utilities.Extensions
 
             return IsAssignableToGenericType(baseType, genericType);
         }
-        #endregion
-    }
+
+		public static (bool isEnumerable, Type elementType) GetIEnumerableTypeData(this Type givenType)
+		{
+			if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+				return (true, givenType.GetGenericArguments()[0]);
+
+			var interfaceTypes = givenType.GetInterfaces();
+
+			foreach (var it in interfaceTypes)
+			{
+				if (it.IsGenericType && it.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+					return (true, it.GetGenericArguments()[0]);
+			}
+
+			Type baseType = givenType.BaseType;
+
+			if (baseType == null)
+				return (false, null);
+
+			return baseType.GetIEnumerableTypeData();
+		}
+		#endregion
+	}
 }

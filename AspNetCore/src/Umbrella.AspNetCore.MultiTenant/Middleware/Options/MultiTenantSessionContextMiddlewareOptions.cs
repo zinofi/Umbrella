@@ -25,14 +25,10 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware.Options
 		/// </summary>
 		public string TenantClaimType { get; set; } = ClaimTypes.GroupSid;
 
-		/// <summary>
-		/// Sanitizes this instance.
-		/// </summary>
-		public void Sanitize() => TenantClaimType = TenantClaimType?.Trim();
+		/// <inheritdoc />
+		public void Sanitize() => TenantClaimType = TenantClaimType.Trim();
 
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(TenantClaimType, nameof(TenantClaimType));
 	}
 }

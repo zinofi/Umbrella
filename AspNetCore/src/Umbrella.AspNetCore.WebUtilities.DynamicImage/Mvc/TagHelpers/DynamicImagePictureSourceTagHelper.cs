@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -22,14 +23,16 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DynamicImagePictureSourceTagHelper"/> class.
 		/// </summary>
-		/// <param name="memoryCache">The <see cref="IMemoryCache"/>.</param>
-		/// <param name="dynamicImageUtility">The <see cref="IDynamicImageUtility"/>.</param>
-		/// <param name="umbrellaHostingEnvironment">The <see cref="IUmbrellaWebHostingEnvironment"/>.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="memoryCache">The memory cache.</param>
+		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
+		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
 		public DynamicImagePictureSourceTagHelper(
+			ILogger<DynamicImagePictureSourceTagHelper> logger,
 			IMemoryCache memoryCache,
 			IDynamicImageUtility dynamicImageUtility,
 			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
-			: base(memoryCache, dynamicImageUtility, umbrellaHostingEnvironment)
+			: base(logger, memoryCache, dynamicImageUtility, umbrellaHostingEnvironment)
 		{
 		}
 

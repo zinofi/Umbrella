@@ -4,6 +4,7 @@ using Umbrella.Utilities;
 using Umbrella.WebUtilities.Bundling;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Bundling.Options;
+using Umbrella.WebUtilities.Hosting.Options;
 using Umbrella.WebUtilities.Http;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
@@ -26,7 +27,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="bundleUtilityOptionsBuilder">The optional <see cref="BundleUtilityOptions"/> builder.</param>
 		/// <param name="frontEndCompressionMiddlewareOptionsBuilder">The optional <see cref="FrontEndCompressionMiddlewareOptions"/> builder.</param>
 		/// <param name="webpackBundleUtilityOptionsBuilder">The optional <see cref="WebpackBundleUtilityOptions"/> builder.</param>
-		/// <param name="internetExplorerCacheHeaderMiddlewareOptionsBuilder">The optional <see cref="InternetExplorerCacheHeaderMiddlewareOptions"/> builder.</param>
+		/// <param name="internetExplorerCacheHeaderMiddlewareOptionsBuilder">The optional <see cref="InternetExplorerCacheHeadersMiddlewareOptions"/> builder.</param>
+		/// <param name="umbrellaWebHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaWebHostingEnvironmentOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilities(
@@ -34,7 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, BundleUtilityOptions> bundleUtilityOptionsBuilder = null,
 			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null,
 			Action<IServiceProvider, WebpackBundleUtilityOptions> webpackBundleUtilityOptionsBuilder = null,
-			Action<IServiceProvider, InternetExplorerCacheHeaderMiddlewareOptions> internetExplorerCacheHeaderMiddlewareOptionsBuilder = null)
+			Action<IServiceProvider, InternetExplorerCacheHeadersMiddlewareOptions> internetExplorerCacheHeaderMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions> umbrellaWebHostingEnvironmentOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -49,6 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ConfigureUmbrellaOptions(frontEndCompressionMiddlewareOptionsBuilder);
 			services.ConfigureUmbrellaOptions(webpackBundleUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(internetExplorerCacheHeaderMiddlewareOptionsBuilder);
+			services.ConfigureUmbrellaOptions(umbrellaWebHostingEnvironmentOptionsBuilder);
 
 			return services;
 		}

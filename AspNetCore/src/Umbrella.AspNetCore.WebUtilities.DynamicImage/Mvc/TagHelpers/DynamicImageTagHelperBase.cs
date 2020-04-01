@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
-using Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers;
+using Microsoft.Extensions.Logging;
+using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.WebUtilities.Hosting;
@@ -88,14 +89,16 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DynamicImageTagHelperBase"/> class.
 		/// </summary>
-		/// <param name="memoryCache">The <see cref="IMemoryCache"/>.</param>
-		/// <param name="dynamicImageUtility">The <see cref="IDynamicImageUtility"/>.</param>
-		/// <param name="umbrellaHostingEnvironment">The <see cref="IUmbrellaWebHostingEnvironment"/>.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="memoryCache">The memory cache.</param>
+		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
+		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
 		public DynamicImageTagHelperBase(
+			ILogger<DynamicImageTagHelperBase> logger,
 			IMemoryCache memoryCache,
 			IDynamicImageUtility dynamicImageUtility,
 			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
-			: base(umbrellaHostingEnvironment, memoryCache)
+			: base(logger, umbrellaHostingEnvironment, memoryCache)
 		{
 			DynamicImageUtility = dynamicImageUtility;
 		}
@@ -124,9 +127,10 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 			Guard.ArgumentNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
 
 			TagHelperAttribute attrSrc = output.Attributes["src"];
-			string src = attrSrc?.Value?.ToString();
+			string? src = attrSrc?.Value?.ToString()?.Trim();
 
-			Guard.ArgumentNotNullOrWhiteSpace(src, nameof(src));
+			if (string.IsNullOrEmpty(src))
+				throw new Exception("src cannot be null or empty.");
 
 			var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
 

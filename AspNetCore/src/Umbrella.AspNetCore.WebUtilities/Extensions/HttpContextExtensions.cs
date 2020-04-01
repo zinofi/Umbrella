@@ -14,6 +14,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 		/// </summary>
 		/// <param name="httpContext">The current HTTP context.</param>
 		/// <returns>The value of <see cref="NonceContext.Current"/> stored on the current HTTP context.</returns>
-		public static string GetCurrentRequestNonce(this HttpContext httpContext) => httpContext.Features.Get<NonceContext>()?.Current;
+		public static string? GetCurrentRequestNonce(this HttpContext httpContext) => httpContext.Features.Get<NonceContext>()?.Current;
 	}
 }

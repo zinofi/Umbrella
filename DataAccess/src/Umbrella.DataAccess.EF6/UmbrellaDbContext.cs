@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.DataAccess.EF6
 {
+	// TODO: Migrate the code to use the IUmbrellaDbContextHelper internally.
 	public abstract class UmbrellaDbContext : DbContext
 	{
 		#region Protected Properties

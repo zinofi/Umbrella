@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
+	// TODO: See if we can shift away from using these internally. Could even deprecate them.
     public static class TypeInfoExtensions
     {
         #region Public Static Methods

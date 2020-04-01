@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -20,7 +21,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// <summary>
 		/// Gets or sets the size widths.
 		/// </summary>
-		public string SizeWidths { get; set; }
+		public string? SizeWidths { get; set; }
 
 		/// <summary>
 		/// Gets the name of the output tag.
@@ -30,14 +31,16 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DynamicImageTagHelper"/> class.
 		/// </summary>
-		/// <param name="memoryCache">The <see cref="IMemoryCache"/>.</param>
-		/// <param name="dynamicImageUtility">The <see cref="IDynamicImageUtility"/>.</param>
-		/// <param name="umbrellaHostingEnvironment">The <see cref="IUmbrellaWebHostingEnvironment"/>.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="memoryCache">The memory cache.</param>
+		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
+		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
 		public DynamicImageTagHelper(
+			ILogger<DynamicImageTagHelper> logger,
 			IMemoryCache memoryCache,
 			IDynamicImageUtility dynamicImageUtility,
 			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
-			: base(memoryCache, dynamicImageUtility, umbrellaHostingEnvironment)
+			: base(logger, memoryCache, dynamicImageUtility, umbrellaHostingEnvironment)
 		{
 		}
 
@@ -59,7 +62,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 			{
 				string src = BuildCoreTag(output);
 
-				string srcsetValue = Cache.GetOrCreate(GetCacheKey(src, PixelDensities, SizeWidths), entry =>
+				string srcsetValue = Cache.GetOrCreate(GetCacheKey(src, PixelDensities, SizeWidths ?? ""), entry =>
 				{
 					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
 

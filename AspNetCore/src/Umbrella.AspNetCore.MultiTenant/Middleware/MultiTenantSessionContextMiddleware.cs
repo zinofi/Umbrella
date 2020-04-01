@@ -48,7 +48,7 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 			{
 				if (context.User.Identity.IsAuthenticated)
 				{
-					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
+					string? strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
 
 					if (!string.IsNullOrWhiteSpace(strAppTenantId))
 					{
@@ -110,7 +110,7 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 			{
 				if (context.User.Identity.IsAuthenticated)
 				{
-					string strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
+					string? strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
 
 					if (!string.IsNullOrWhiteSpace(strAppTenantId))
 					{

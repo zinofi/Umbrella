@@ -8,6 +8,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 	/// <summary>
 	/// Serves as the base class for API controllers and encapsulates API specific functionality.
 	/// </summary>
+	[ApiController]
 	public abstract class UmbrellaApiController : ControllerBase
 	{
 		#region Protected Properties		

@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers;
+using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Xunit;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers
 {
-    public class ResponsiveImageTagHelperTest
+	public class ResponsiveImageTagHelperTest
     {
         [Theory]
         [InlineData(null, null, null)]
@@ -68,6 +70,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers
         }
 
         private ResponsiveImageTagHelper CreateTagHelper()
-            => new ResponsiveImageTagHelper(Mocks.CreateUmbrellaWebHostingEnvironment(), Mocks.CreateMemoryCache());
+            => new ResponsiveImageTagHelper(new Mock<ILogger<ResponsiveImageTagHelper>>().Object, Mocks.CreateUmbrellaWebHostingEnvironment(), Mocks.CreateMemoryCache());
     }
 }

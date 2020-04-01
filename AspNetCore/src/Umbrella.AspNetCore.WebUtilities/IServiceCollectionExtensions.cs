@@ -1,5 +1,7 @@
 ﻿using System;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
+using Umbrella.AspNetCore.WebUtilities.Security;
+using Umbrella.AspNetCore.WebUtilities.Security.Options;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.WebUtilities.Hosting;
@@ -16,9 +18,12 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.AspNetCore.WebUtilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="apiIntegrationCookieAuthenticationEventsOptionsBuilder">The optional <see cref="ApiIntegrationCookieAuthenticationEventsOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities(
+			this IServiceCollection services,
+			Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null)
 			=> services.AddUmbrellaAspNetCoreWebUtilities<UmbrellaWebHostingEnvironment>();
 
 		/// <summary>
@@ -29,17 +34,24 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// resolved from the container correctly for both the <see cref="IUmbrellaHostingEnvironment"/> and <see cref="IUmbrellaWebHostingEnvironment"/> interfaces.
 		/// </typeparam>
 		/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
+		/// <param name="apiIntegrationCookieAuthenticationEventsOptionsBuilder">The optional <see cref="ApiIntegrationCookieAuthenticationEventsOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities<TUmbrellaWebHostingEnvironment>(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities<TUmbrellaWebHostingEnvironment>(
+			this IServiceCollection services,
+			Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null)
 			where TUmbrellaWebHostingEnvironment : class, IUmbrellaWebHostingEnvironment
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
 			// Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
 			services.AddSingleton<TUmbrellaWebHostingEnvironment>();
-			services.AddSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
-			services.AddSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+			services.ReplaceSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+			services.ReplaceSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+
+			services.AddSingleton<ApiIntegrationCookieAuthenticationEvents>();
+
+			services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 
 			return services;
 		}

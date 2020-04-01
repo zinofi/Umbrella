@@ -15,25 +15,47 @@ using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Hosting.Options;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
+using Umbrella.WebUtilities.Hosting.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Hosting
 {
+	/// <summary>
+	/// An implementation of the <see cref="UmbrellaHostingEnvironment" /> for use with ASP.NET Core applications.
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.Hosting.UmbrellaHostingEnvironment" />
+	/// <seealso cref="Umbrella.WebUtilities.Hosting.IUmbrellaWebHostingEnvironment" />
 	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
 	{
 		#region Private Static Members
 		private static readonly Regex _multipleForwardSlashRegex = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the hosting environment.
+		/// </summary>
 		protected IWebHostEnvironment HostingEnvironment { get; }
+
+		/// <summary>
+		/// Gets the HTTP context accessor.
+		/// </summary>
 		protected IHttpContextAccessor HttpContextAccessor { get; }
 		#endregion
 
 		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaWebHostingEnvironment"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="hostingEnvironment">The hosting environment.</param>
+		/// <param name="httpContextAccessor">The HTTP context accessor.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
 		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
 			IWebHostEnvironment hostingEnvironment,
 			IHttpContextAccessor httpContextAccessor,
-			UmbrellaHostingEnvironmentOptions options,
+			UmbrellaWebHostingEnvironmentOptions options,
 			IMemoryCache cache,
 			ICacheKeyUtility cacheKeyUtility)
 			: base(logger, options, cache, cacheKeyUtility)
@@ -46,11 +68,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		#endregion
 
 		#region IUmbrellaHostingEnvironment Members
+		/// <inheritdoc />
 		public override string MapPath(string virtualPath, bool fromContentRoot = true)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-			string[] cacheKeyParts = null;
+			string[]? cacheKeyParts = null;
 
 			try
 			{
@@ -88,13 +111,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		#endregion
 
 		#region IUmbrellaWebHostingEnvironment Members
+		/// <inheritdoc />
 		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 			Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
 			Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
-			string[] cacheKeyParts = null;
+			string[]? cacheKeyParts = null;
 
 			try
 			{
@@ -158,8 +182,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		}
 		#endregion
 
-		#region Protected Methods
+		#region Protected Methods		
+		/// <summary>
+		/// Resolves the HTTP host for current request.
+		/// </summary>
+		/// <returns>The HTTP host.</returns>
 		protected virtual string ResolveHttpHost() => HttpContextAccessor.HttpContext.Request.Host.Value;
+
+		/// <inheritdoc />
 		protected override string TransformPathForFileProvider(string virtualPath) => TransformPath(virtualPath, false, true, false);
 		#endregion
 

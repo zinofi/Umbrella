@@ -12,12 +12,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 	/// Middleware that examines the User-Agent string to detect the use of Internet Explorer
 	/// and applies caching headers to prevent certain reponses from being incorrectly cached.
 	/// </summary>
-	public class InternetExplorerCacheHeaderMiddleware
+	public class InternetExplorerCacheHeadersMiddleware
 	{
 		#region Private Members
 		private readonly RequestDelegate _next;
 		private readonly ILogger _logger;
-		private readonly InternetExplorerCacheHeaderMiddlewareOptions _options;
+		private readonly InternetExplorerCacheHeadersMiddlewareOptions _options;
 		#endregion
 
 		#region Constructors
@@ -27,9 +27,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 		/// <param name="next">The next middleware to be executed.</param>
 		/// <param name="logger">The <see cref="ILogger" />.</param>
 		/// <param name="options">The options.</param>
-		public InternetExplorerCacheHeaderMiddleware(RequestDelegate next,
-			ILogger<InternetExplorerCacheHeaderMiddleware> logger,
-			InternetExplorerCacheHeaderMiddlewareOptions options)
+		public InternetExplorerCacheHeadersMiddleware(
+			RequestDelegate next,
+			ILogger<InternetExplorerCacheHeadersMiddleware> logger,
+			InternetExplorerCacheHeadersMiddlewareOptions options)
 		{
 			_next = next;
 			_logger = logger;

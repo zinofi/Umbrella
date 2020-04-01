@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Guard.ArgumentNotNull(services, nameof(services));
 
 			services.AddSingleton<IEntityValidator, EntityValidator>();
+			services.AddScoped<IUmbrellaDbContextHelper, UmbrellaDbContextHelper>();
 
 			return services;
 		}

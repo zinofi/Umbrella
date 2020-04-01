@@ -25,13 +25,14 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
 	{
 		#region Constructors
-		public UmbrellaWebHostingEnvironment(ILogger<UmbrellaWebHostingEnvironment> logger,
+		public UmbrellaWebHostingEnvironment(
+			ILogger<UmbrellaWebHostingEnvironment> logger,
 			UmbrellaHostingEnvironmentOptions options,
 			IMemoryCache cache,
 			ICacheKeyUtility cacheKeyUtility)
 			: base(logger, options, cache, cacheKeyUtility)
 		{
-			var fileProviderLazy = new Lazy<IFileProvider>(() => new PhysicalFileProvider(MapPath("~/")));
+			var fileProviderLazy = new Lazy<IFileProvider>(() => new PhysicalFileProvider(System.Web.Hosting.HostingEnvironment.MapPath("~/")));
 
 			ContentRootFileProvider = fileProviderLazy;
 			WebRootFileProvider = fileProviderLazy;

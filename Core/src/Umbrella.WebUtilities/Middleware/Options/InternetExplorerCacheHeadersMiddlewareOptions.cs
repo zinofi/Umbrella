@@ -10,7 +10,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 	/// </summary>
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
-	public class InternetExplorerCacheHeaderMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public class InternetExplorerCacheHeadersMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
 		/// <summary>
 		/// Keywords to search the User-Agent header value for.
