@@ -21,6 +21,11 @@ namespace Umbrella.DataAccess.Mapping
 		#endregion
 
 		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MappingUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="mapper">The mapper.</param>
 		public MappingUtility(
 			ILogger<MappingUtility> logger,
 			IMapper mapper)
@@ -31,10 +36,7 @@ namespace Umbrella.DataAccess.Mapping
 		#endregion
 
 		#region IMappingUtility Members
-		public IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
-			where TEntity : class, IEntity
-			=> UpdateItemsList<TModel, TEntity, int>(modelItems, existingItems, matchSelector, newEntityAction, autoInclusionSelector, innerActions);
-
+		/// <inheritdoc />
 		public IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 		{

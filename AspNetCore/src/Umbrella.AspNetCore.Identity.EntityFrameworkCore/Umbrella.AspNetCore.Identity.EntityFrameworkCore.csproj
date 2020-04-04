@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net461;netstandard2.1</TargetFrameworks>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\net461\Umbrella.DataAccess.EF6.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netcoreapp3.1\Umbrella.AspNetCore.Identity.EntityFrameworkCore.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -16,34 +17,31 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.DataAccess.EF6</PackageId>
+		<PackageId>Umbrella.AspNetCore.Identity.EntityFrameworkCore</PackageId>
 		<Version>3.0.0-preview-0078</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
-		<Description>
-			This package contains data access infrastructure to allow for the simple creation of Entity Framework 6 repositories.
-		</Description>
+		<Description>This package contains code to allow integration of the Umbrella.DataAccess packages with ASP.NET Core Identity.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="EntityFramework" Version="6.4.0" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.0" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<Reference Include="System.Data" />
-		<Reference Include="System" />
-		<Reference Include="Microsoft.CSharp" />
-	</ItemGroup>
-
 	<ItemGroup>
-	  <ProjectReference Include="..\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
 	</ItemGroup>
-
+	
 </Project>

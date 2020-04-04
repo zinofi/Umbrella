@@ -183,8 +183,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Legacy.WebUtilitie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Remote", "DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj", "{04E66834-571E-4717-8904-654D38D265FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EF.Abstractions", "DataAccess\src\Umbrella.DataAccess.EF.Abstractions\Umbrella.DataAccess.EF.Abstractions.csproj", "{C8326ABD-539C-463D-8502-E6EDDB6F07E5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EntityFrameworkCore", "DataAccess\src\Umbrella.DataAccess.EntityFrameworkCore\Umbrella.DataAccess.EntityFrameworkCore.csproj", "{F16BB3B3-CCD8-4FC7-98FB-290175C30098}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.MultiTenant.Abstractions", "DataAccess\src\Umbrella.DataAccess.MultiTenant.Abstractions\Umbrella.DataAccess.MultiTenant.Abstractions.csproj", "{49EFE21B-B52C-491C-AB4E-8915A94B6276}"
@@ -197,7 +195,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtil
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{0C59D50A-7EAC-44EE-9652-8A4E4157CFE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Internal.Mocks", "Internal\src\Umbrella.Internal.Mocks\Umbrella.Internal.Mocks.csproj", "{A9513EE8-19C4-449D-ADE5-EAA5E828B996}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Internal.Mocks", "Internal\src\Umbrella.Internal.Mocks\Umbrella.Internal.Mocks.csproj", "{A9513EE8-19C4-449D-ADE5-EAA5E828B996}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DataAccess.EntityFrameworkCore.SqlServer", "DataAccess\src\Umbrella.DataAccess.EntityFrameworkCore.SqlServer\Umbrella.DataAccess.EntityFrameworkCore.SqlServer.csproj", "{95ADB532-107B-4103-A9F6-3F6165B8762A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNetCore.Identity.EntityFrameworkCore", "AspNetCore\src\Umbrella.AspNetCore.Identity.EntityFrameworkCore\Umbrella.AspNetCore.Identity.EntityFrameworkCore.csproj", "{3124FFEA-EB2C-4053-AED7-42473646A6FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -524,12 +526,6 @@ Global
 		{04E66834-571E-4717-8904-654D38D265FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04E66834-571E-4717-8904-654D38D265FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04E66834-571E-4717-8904-654D38D265FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F16BB3B3-CCD8-4FC7-98FB-290175C30098}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
 		{F16BB3B3-CCD8-4FC7-98FB-290175C30098}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
 		{F16BB3B3-CCD8-4FC7-98FB-290175C30098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -566,6 +562,18 @@ Global
 		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9513EE8-19C4-449D-ADE5-EAA5E828B996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95ADB532-107B-4103-A9F6-3F6165B8762A}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{95ADB532-107B-4103-A9F6-3F6165B8762A}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{95ADB532-107B-4103-A9F6-3F6165B8762A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95ADB532-107B-4103-A9F6-3F6165B8762A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95ADB532-107B-4103-A9F6-3F6165B8762A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95ADB532-107B-4103-A9F6-3F6165B8762A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD}.AzureDevOps|Any CPU.ActiveCfg = Debug|Any CPU
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD}.AzureDevOps|Any CPU.Build.0 = Debug|Any CPU
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -648,13 +656,14 @@ Global
 		{BABCE2CE-43CC-4BAF-BFAA-B17A11033ACE} = {2606B945-AF74-4E4B-A665-BF5DBA99C332}
 		{2E033F87-5595-4F68-889A-348B6F5B2482} = {B1144C83-C2B3-40FB-8F68-22A3228E7725}
 		{04E66834-571E-4717-8904-654D38D265FD} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
-		{C8326ABD-539C-463D-8502-E6EDDB6F07E5} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
 		{F16BB3B3-CCD8-4FC7-98FB-290175C30098} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
 		{49EFE21B-B52C-491C-AB4E-8915A94B6276} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
 		{9719FC0C-7517-4450-A0DC-2A64A41B84F3} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{A17DC258-AADB-45B0-B0E3-364A2D21B19B} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{46416A5E-DE1A-4500-AF89-FD43C320F2FD} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 		{A9513EE8-19C4-449D-ADE5-EAA5E828B996} = {0C59D50A-7EAC-44EE-9652-8A4E4157CFE2}
+		{95ADB532-107B-4103-A9F6-3F6165B8762A} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
+		{3124FFEA-EB2C-4053-AED7-42473646A6FD} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

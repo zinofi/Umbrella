@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.DataAccess.EF.Abstractions
+namespace Umbrella.DataAccess.Abstractions
 {
 	public class IncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
 	{

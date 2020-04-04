@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
-using Umbrella.DataAccess.EF.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;

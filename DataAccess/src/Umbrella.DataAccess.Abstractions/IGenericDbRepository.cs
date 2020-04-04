@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using Umbrella.DataAccess.Abstractions;
 
-namespace Umbrella.DataAccess.EF.Abstractions
+namespace Umbrella.DataAccess.Abstractions
 {
 	public interface IGenericDbRepository<TEntity> : IGenericDbRepository<TEntity, RepoOptions>
 		where TEntity : class, IEntity<int>

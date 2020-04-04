@@ -1,11 +1,12 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Umbrella.DataAccess.Abstractions;
+using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.DataAccess.EF6
+namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 {
 	/// <summary>
-	/// Extensions for the <see cref="IQueryable{T}"/> interface.
+	/// Contains Entity Framework Core specific extension methods for types that implement <see cref="IQueryable{T}" />.
 	/// </summary>
 	public static class IQueryableExtensions
 	{
@@ -16,7 +17,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="items">The items.</param>
 		/// <param name="map">The include map.</param>
 		/// <returns>The query.</returns>
-		public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity> map)
+		public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity>? map)
 			where TEntity : class
 		{
 			if (map == null)
@@ -26,7 +27,7 @@ namespace Umbrella.DataAccess.EF6
 
 			foreach (var item in map.Includes)
 			{
-				query = query.Include(item);
+				query = query.Include(item.AsPath());
 			}
 
 			return query;
