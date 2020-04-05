@@ -27,7 +27,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 
 			foreach (var item in map.Includes)
 			{
-				query = query.Include(item.AsPath());
+				string path = item.AsPath();
+
+				if (!string.IsNullOrEmpty(path))
+					query = query.Include(path);
 			}
 
 			return query;

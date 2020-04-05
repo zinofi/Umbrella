@@ -19,7 +19,7 @@ namespace Umbrella.Utilities
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ArgumentNotNull<T>(T argumentValue, string argumentName)
 		{
-			if (argumentValue == null)
+			if (argumentValue is null)
 				throw new ArgumentNullException(argumentName);
 		}
 
@@ -33,7 +33,7 @@ namespace Umbrella.Utilities
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ArgumentNotNullOrEmpty(string argumentValue, string argumentName)
 		{
-			if (argumentValue == null)
+			if (argumentValue is null)
 				throw new ArgumentNullException($"{argumentName} cannot be null.");
 
 			if (string.IsNullOrEmpty(argumentValue))
@@ -50,7 +50,7 @@ namespace Umbrella.Utilities
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ArgumentNotNullOrWhiteSpace(string argumentValue, string argumentName)
 		{
-			if (argumentValue == null)
+			if (argumentValue is null)
 				throw new ArgumentNullException($"{argumentName} cannot be null.");
 
 			if (string.IsNullOrWhiteSpace(argumentValue))
@@ -67,7 +67,7 @@ namespace Umbrella.Utilities
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ArgumentNotNullOrEmpty<T>(IEnumerable<T> argumentValue, string argumentName)
 		{
-			if (argumentValue == null)
+			if (argumentValue is null)
 				throw new ArgumentNullException($"{argumentName} cannot be null.");
 
 			if (argumentValue.Count() == 0)

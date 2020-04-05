@@ -31,16 +31,12 @@ namespace Umbrella.Utilities.Extensions
 		{
 			path = null;
 
-			Expression withoutConvert = null;
+			Expression withoutConvert = expression;
 
-			// Removes boxing
 			while (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
 			{
-				withoutConvert = ((UnaryExpression)expression).Operand;
+				expression = ((UnaryExpression)expression).Operand;
 			}
-
-			if (withoutConvert == null)
-				return false;
 
 			if (withoutConvert is MemberExpression memberExpression)
 			{
@@ -48,7 +44,7 @@ namespace Umbrella.Utilities.Extensions
 
 				if (!TryParsePath(memberExpression.Expression, out string parentPart))
 					return false;
-				
+
 				path = parentPart == null ? thisPart : (parentPart + "." + thisPart);
 			}
 			else if (withoutConvert is MethodCallExpression callExpression)

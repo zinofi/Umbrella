@@ -2,7 +2,7 @@
 using System.Linq;
 using Umbrella.DataAccess.Abstractions;
 
-namespace Umbrella.DataAccess.EF6
+namespace Umbrella.DataAccess.EF6.Extensions
 {
 	/// <summary>
 	/// Extensions for the <see cref="IQueryable{T}"/> interface.
