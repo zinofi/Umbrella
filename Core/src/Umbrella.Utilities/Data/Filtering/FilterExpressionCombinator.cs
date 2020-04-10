@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Data.Filtering
+﻿namespace Umbrella.Utilities.Data.Filtering
 {
 	/// <summary>
 	/// The combinator applied to multiple <see cref="FilterExpression{TItem}"/>.

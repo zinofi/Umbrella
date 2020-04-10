@@ -31,8 +31,19 @@ namespace Umbrella.Utilities.Data.Filtering
 
 				foreach (FilterExpression<TItem> filterExpression in filterExpressions)
 				{
-					Expression<Func<TItem, bool>> predicate = filterExpression.Type == FilterType.Exact
-						? DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberName, DynamicCompare.Equal, filterExpression.Value.ToString() ?? "")
+					DynamicCompare? dynamicCompare = filterExpression.Type switch
+					{
+						FilterType.Equal => DynamicCompare.Equal,
+						FilterType.GreaterThan => DynamicCompare.GreaterThan,
+						FilterType.GreaterThanOrEqual => DynamicCompare.GreaterThanOrEqual,
+						FilterType.LessThan => DynamicCompare.LessThan,
+						FilterType.LessThanOrEqual => DynamicCompare.LessThanOrEqual,
+						FilterType.NotEqual => DynamicCompare.NotEqual,
+						_ => null
+					};
+
+					Expression<Func<TItem, bool>> predicate = dynamicCompare != null
+						? DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberName, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
 						: DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberName, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
 
 					if (i++ == 0)

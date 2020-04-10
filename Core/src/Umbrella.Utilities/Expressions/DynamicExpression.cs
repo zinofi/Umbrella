@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
+using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.Utilities.Expressions
 {
@@ -66,7 +67,7 @@ namespace Umbrella.Utilities.Expressions
 
 			var memberAccess = CreateMemberAccess(target, selector);
 			var actualValue = CreateConstant(target, memberAccess, value, provider);
-
+			
 			return Expression.Call(memberAccess, comparer, null, actualValue);
 		}
 
@@ -93,7 +94,7 @@ namespace Umbrella.Utilities.Expressions
 			if (string.IsNullOrEmpty(value))
 				return Expression.Default(type);
 
-			if (!type.IsEnum || !TryParseEnum(type, value, true, out object convertedValue))
+			if (!type.IsEnum || !EnumHelper.TryParseEnum(type, value, true, out object convertedValue))
 			{
 				var converter = _cache.GetOrAdd(type, CreateConverter);
 				convertedValue = converter(value, provider);
@@ -123,22 +124,6 @@ namespace Umbrella.Utilities.Expressions
 
 			return Expression.Lambda<Func<string, IFormatProvider, object>>(
 				Expression.Convert(expression, typeof(object)), target, format).Compile();
-		}
-
-		private static bool TryParseEnum(Type enumType, string value, bool ignoreCase, out object result)
-		{
-			result = null;
-
-			try
-			{
-				result = Enum.Parse(enumType, value, ignoreCase);
-
-				return true;
-			}
-			catch
-			{
-				return false;
-			}
 		}
 	}
 }

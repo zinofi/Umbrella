@@ -39,7 +39,8 @@ namespace Umbrella.Utilities.Data.Filtering
 
 							return filterExpression.Type switch
 							{
-								FilterType.Exact => strPropertyValue.Equals(strFilterValue, comparison),
+								FilterType.Equal => strPropertyValue.Equals(strFilterValue, comparison),
+								FilterType.NotEqual => !strPropertyValue.Equals(strFilterValue, comparison),
 								FilterType.StartsWith => strPropertyValue.StartsWith(strFilterValue, comparison),
 								FilterType.EndsWith => strPropertyValue.EndsWith(strFilterValue, comparison),
 								FilterType.Contains => strPropertyValue.IndexOf(strFilterValue, comparison) > -1,

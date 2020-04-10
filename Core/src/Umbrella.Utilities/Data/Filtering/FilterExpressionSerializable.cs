@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Umbrella.Utilities.Data.Filtering
 {
 	/// <summary>
-	/// A serializable version of the <see cref="FilterExpression{TItem, TProperty}"/> type.
+	/// A serializable version of the <see cref="FilterExpression{TItem}"/> type.
 	/// </summary>
 	[Serializable]
 	[StructLayout(LayoutKind.Auto)]
@@ -34,16 +34,13 @@ namespace Umbrella.Utilities.Data.Filtering
 		public string Type { get; }
 
 		/// <summary>
-		/// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+		/// Determines whether the specified <see cref="object" />, is equal to this instance.
 		/// </summary>
-		/// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+		/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
 		/// <returns>
-		///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+		///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
 		/// </returns>
-		public override bool Equals(object obj)
-		{
-			return obj is FilterExpressionSerializable serializable && Equals(serializable);
-		}
+		public override bool Equals(object obj) => obj is FilterExpressionSerializable serializable && Equals(serializable);
 
 		/// <summary>
 		/// Indicates whether the current object is equal to another object of the same type.
@@ -52,12 +49,9 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>
 		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
 		/// </returns>
-		public bool Equals(FilterExpressionSerializable other)
-		{
-			return MemberName == other.MemberName &&
+		public bool Equals(FilterExpressionSerializable other) => MemberName == other.MemberName &&
 				   Value == other.Value &&
 				   Type == other.Type;
-		}
 
 		/// <summary>
 		/// Returns a hash code for this instance.
@@ -67,7 +61,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// </returns>
 		public override int GetHashCode()
 		{
-			var hashCode = -478253073;
+			int hashCode = -478253073;
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberName);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Type);
@@ -82,10 +76,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>
 		/// The result of the operator.
 		/// </returns>
-		public static bool operator ==(FilterExpressionSerializable left, FilterExpressionSerializable right)
-		{
-			return left.Equals(right);
-		}
+		public static bool operator ==(FilterExpressionSerializable left, FilterExpressionSerializable right) => left.Equals(right);
 
 		/// <summary>
 		/// Implements the operator !=.
@@ -95,9 +86,6 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>
 		/// The result of the operator.
 		/// </returns>
-		public static bool operator !=(FilterExpressionSerializable left, FilterExpressionSerializable right)
-		{
-			return !(left == right);
-		}
+		public static bool operator !=(FilterExpressionSerializable left, FilterExpressionSerializable right) => !(left == right);
 	}
 }
