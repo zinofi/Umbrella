@@ -17,7 +17,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		/// <summary>
 		/// Gets or sets a value indicating whether to cache the result of calls which check if a Blob container exists.
 		/// This is to improve efficiency by preventing repeated redundant calls out to the Azure Storage service when in reality
-		/// we only need to make this call once per container.
+		/// we only need to make this call once per container. Defaults to <see langword="true" />.
 		/// </summary>
 		public bool CacheContainerResolutions { get; set; } = true;
 

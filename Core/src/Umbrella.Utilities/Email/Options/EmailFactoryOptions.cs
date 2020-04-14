@@ -18,11 +18,18 @@ namespace Umbrella.Utilities.Email.Options
 		/// </summary>
 		public string DataRowFormat { get; set; } = "<tr><td>{0}:</td><td>{1}</td></tr>";
 
+		/// <summary>
+		/// Gets or sets the token used for a new line, e.g. \r\n, which is used to replace all instances with HTML br tags.
+		/// Defaults to <see cref="Environment.NewLine"/>.
+		/// </summary>
+		public string NewLineToken { get; set; } = Environment.NewLine;
+
 		/// <inheritdoc />
 		public void Sanitize()
 		{
 			TemplatesVirtualPath = TemplatesVirtualPath?.Trim();
 			DataRowFormat = DataRowFormat?.Trim();
+			NewLineToken = NewLineToken?.Trim();
 		}
 
 		/// <summary>
@@ -36,6 +43,7 @@ namespace Umbrella.Utilities.Email.Options
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(DataRowFormat, nameof(DataRowFormat));
 			Guard.ArgumentNotNullOrWhiteSpace(TemplatesVirtualPath, nameof(TemplatesVirtualPath));
+			Guard.ArgumentNotNullOrWhiteSpace(NewLineToken, nameof(NewLineToken));
 		}
 	}
 }

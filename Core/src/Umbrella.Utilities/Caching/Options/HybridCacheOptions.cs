@@ -30,6 +30,7 @@ namespace Umbrella.Utilities.Caching.Options
 
 		/// <summary>
 		/// Gets or sets the default cache timeout in the event that callers of methods on the <see cref="HybridCache"/> do not provide a cache timeout value.
+		/// Defaults to 3650 days (10 years) to have the result of the cache never clearing in practice.
 		/// </summary>
 		public TimeSpan DefaultCacheTimeout { get; set; } = TimeSpan.FromDays(3650); // Arbitrary default of ~10 years.
 

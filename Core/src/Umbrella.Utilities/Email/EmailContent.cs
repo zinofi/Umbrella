@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Exceptions;
@@ -18,17 +19,23 @@ namespace Umbrella.Utilities.Email
 		private readonly StringBuilder _builder;
 		private StringBuilder _rowsBuilder;
 		private readonly string _dataRowFormat;
+		private readonly string _newLineToken;
+		private readonly string _encodedNewLineToken;
 		#endregion
 
 		#region Constructors
 		internal EmailContent(
 			ILogger<EmailContent> logger,
 			StringBuilder builder,
-			string dataRowFormat)
+			string dataRowFormat,
+			string newLineToken,
+			string encodedNewLineToken)
 		{
 			_log = logger;
 			_builder = builder;
 			_dataRowFormat = dataRowFormat;
+			_newLineToken = newLineToken;
+			_encodedNewLineToken = encodedNewLineToken;
 		}
 		#endregion
 
@@ -38,16 +45,18 @@ namespace Umbrella.Utilities.Email
 		/// </summary>
 		/// <param name="name">The name of the data item, e.g. First Name</param>
 		/// <param name="value">The value of the data item, e.g. Rich</param>
+		/// <param name="htmlEncode">Specifies whether the <paramref name="value"/> will be HTML encoded.</param>
+		/// <param name="replaceNewLines">Determine if new lines are converted to br tags.</param>
 		/// <returns>The <see cref="EmailFactory"/>.</returns>
 		/// <exception cref="UmbrellaException">There was a problem appending the data row with the specified name and value.</exception>
-		public virtual EmailContent AppendRow(string name, string value)
+		public virtual EmailContent AppendRow(string name, string value, bool htmlEncode = true, bool replaceNewLines = true)
 		{
 			try
 			{
 				if (_rowsBuilder == null)
 					_rowsBuilder = new StringBuilder();
 
-				_rowsBuilder.AppendFormat(_dataRowFormat, name, !string.IsNullOrEmpty(value) ? value.Replace(Environment.NewLine, "<br />") : string.Empty);
+				_rowsBuilder.AppendFormat(_dataRowFormat, name, SanitizeValue(value, htmlEncode, replaceNewLines));
 
 				return this;
 			}
@@ -107,19 +116,21 @@ namespace Umbrella.Utilities.Email
 		/// </summary>
 		/// <param name="tokenName">Name of the token.</param>
 		/// <param name="value">The value to replace the token.</param>
+		/// <param name="htmlEncode">Specifies whether the <paramref name="value"/> will be HTML encoded.</param>
+		/// <param name="replaceNewLines">Determine if new lines are converted to br tags.</param>
 		/// <returns>The <see cref="EmailContent"/>.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="tokenName"/> is null.</exception>
 		/// <exception cref="ArgumentException">Thrown if <paramref name="tokenName"/> is empty or whitespace.</exception>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
 		/// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is empty or whitespace.</exception>
 		/// <exception cref="UmbrellaException">There has been a problem replacing the specified token with the specified value.</exception>
-		public virtual EmailContent ReplaceToken(string tokenName, string value)
+		public virtual EmailContent ReplaceToken(string tokenName, string value, bool htmlEncode = true, bool replaceNewLines = true)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(tokenName, nameof(tokenName));
 
 			try
 			{
-				_builder.Replace("{{" + tokenName + "}}", value);
+				_builder.Replace("{{" + tokenName + "}}", SanitizeValue(value, htmlEncode, replaceNewLines));
 
 				return this;
 			}
@@ -130,7 +141,7 @@ namespace Umbrella.Utilities.Email
 		}
 		#endregion
 
-		#region Overridden Methods		
+		#region Overridden Methods
 		/// <summary>
 		/// Converts the email content to a string.
 		/// </summary>
@@ -148,6 +159,34 @@ namespace Umbrella.Utilities.Email
 			{
 				throw new UmbrellaException("There was a problem outputting this instance to a string.", exc);
 			}
+		}
+		#endregion
+
+		#region Protected Methods		
+		/// <summary>
+		/// Sanitizes the value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="htmlEncode">Determines whether or not the value is HTML encoded.</param>
+		/// <param name="replaceNewLines">Determine if new lines are converted to br tags.</param>
+		/// <returns></returns>
+		protected string SanitizeValue(string value, bool htmlEncode, bool replaceNewLines)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+				return "";
+
+			string newLineToken = _newLineToken;
+
+			if (htmlEncode)
+			{
+				value = HtmlEncoder.Default.Encode(value);
+				newLineToken = _encodedNewLineToken;
+			}
+
+			if (replaceNewLines)
+				value = value.Replace(newLineToken, "<br />");
+
+			return value;
 		}
 		#endregion
 	}

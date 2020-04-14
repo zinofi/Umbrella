@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.Encodings.Web;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Email.Abstractions;
@@ -29,6 +30,7 @@ namespace Umbrella.Utilities.Email
 		private readonly ILookupNormalizer _lookupNormalizer;
 		private readonly EmailFactoryOptions _options;
 		private readonly IUmbrellaHostingEnvironment _hostingEnvironment;
+		private readonly string _encodedNewLineToken;
 		#endregion
 
 		#region Constructors				
@@ -53,6 +55,7 @@ namespace Umbrella.Utilities.Email
 			_lookupNormalizer = lookupNormalizer;
 			_options = options;
 			_hostingEnvironment = hostingEnvironment;
+			_encodedNewLineToken = HtmlEncoder.Default.Encode(_options.NewLineToken);
 
 			try
 			{
@@ -96,7 +99,7 @@ namespace Umbrella.Utilities.Email
 				// Make sure the date is shown in the correct format for the current user
 				builder.Replace("{datetime}", DateTime.Now.ToString(_cultureInfo));
 
-				return new EmailContent(_emailContentLog, builder, _options.DataRowFormat);
+				return new EmailContent(_emailContentLog, builder, _options.DataRowFormat, _options.NewLineToken, _encodedNewLineToken);
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { source, isRawHtml }, returnValue: true))
 			{
