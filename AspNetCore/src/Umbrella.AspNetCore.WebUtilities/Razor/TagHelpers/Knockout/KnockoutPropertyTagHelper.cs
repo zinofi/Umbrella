@@ -48,7 +48,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 			/// <summary>
 			/// Uses the 'checked' binding.
 			/// </summary>
-			Checked
+			Checked,
+
+			/// <summary>
+			/// Used the 'textInput' binding.
+			/// </summary>
+			TextInput
 		}
 
 		private readonly ILogger _logger;
@@ -149,6 +154,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 						KnockoutPropertyType.Floating => $"floatingValue: {_exposedPropertyName.Value}",
 						KnockoutPropertyType.DateTimePicker => $"dateTimePicker: {PropertyName}",
 						KnockoutPropertyType.Checked => $"checked: {PropertyName}",
+						KnockoutPropertyType.TextInput => $"textInput: {PropertyName}",
 						_ => $"value: {PropertyName}"
 					};
 
