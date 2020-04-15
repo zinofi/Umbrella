@@ -26,7 +26,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 		public enum KnockoutPropertyType
 		{
 			/// <summary>
-			/// Used the 'value' binding.
+			/// Uses the 'value' binding.
 			/// </summary>
 			Default,
 
@@ -51,7 +51,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 			Checked,
 
 			/// <summary>
-			/// Used the 'textInput' binding.
+			/// Uses the 'textInput' binding.
 			/// </summary>
 			TextInput
 		}
