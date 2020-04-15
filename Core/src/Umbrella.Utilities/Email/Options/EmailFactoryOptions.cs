@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Email.Options
 		{
 			TemplatesVirtualPath = TemplatesVirtualPath?.Trim();
 			DataRowFormat = DataRowFormat?.Trim();
-			NewLineToken = NewLineToken?.Trim();
+			NewLineToken = NewLineToken?.Trim(' ');
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Umbrella.Utilities.Email.Options
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(DataRowFormat, nameof(DataRowFormat));
 			Guard.ArgumentNotNullOrWhiteSpace(TemplatesVirtualPath, nameof(TemplatesVirtualPath));
-			Guard.ArgumentNotNullOrWhiteSpace(NewLineToken, nameof(NewLineToken));
+			Guard.ArgumentNotNullOrEmpty(NewLineToken, nameof(NewLineToken));
 		}
 	}
 }
