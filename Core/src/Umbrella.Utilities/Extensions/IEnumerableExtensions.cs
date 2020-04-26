@@ -49,9 +49,10 @@ namespace Umbrella.Utilities.Extensions
 		/// <typeparam name="T"></typeparam>
 		/// <param name="source">A sequence of values to invoke the <paramref name="source"/> function on.</param>
 		/// <param name="action">The action to perform on each element of <paramref name="source"/>.</param>
+		/// <returns>An <see cref="IEnumerable{T}" /> whose elements are the result of invoking the transform function on each element of source.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
-		public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
 			Guard.ArgumentNotNull(action, nameof(action));
@@ -60,6 +61,8 @@ namespace Umbrella.Utilities.Extensions
 			{
 				action(item);
 			}
+
+			return source;
 		}
 
 		/// <summary>

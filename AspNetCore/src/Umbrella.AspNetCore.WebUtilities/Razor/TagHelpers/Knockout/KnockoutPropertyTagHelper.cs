@@ -41,6 +41,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 			Floating,
 
 			/// <summary>
+			/// Uses the 'currencyValue' binding.
+			/// </summary>
+			Currency,
+
+			/// <summary>
 			/// Uses the 'dateTimePicker' binding.
 			/// </summary>
 			DateTimePicker,
@@ -152,6 +157,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 					{
 						KnockoutPropertyType.Numeric => $"numericValue: {_exposedPropertyName.Value}",
 						KnockoutPropertyType.Floating => $"floatingValue: {_exposedPropertyName.Value}",
+						KnockoutPropertyType.Currency => $"currencyValue: {_exposedPropertyName.Value}",
 						KnockoutPropertyType.DateTimePicker => $"dateTimePicker: {PropertyName}",
 						KnockoutPropertyType.Checked => $"checked: {PropertyName}",
 						KnockoutPropertyType.TextInput => $"textInput: {PropertyName}",
