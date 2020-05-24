@@ -7,10 +7,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DynamicImage
 {
+	/// <summary>
+	/// Contains utility methods for common operations performed by the Dynamic Image infrastructure.
+	/// </summary>
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.IDynamicImageUtility" />
 	public class DynamicImageUtility : IDynamicImageUtility
 	{
 		#region Private Constants
@@ -24,32 +29,42 @@ namespace Umbrella.DynamicImage
 		private static readonly char[] s_SegmentSeparatorArray = new[] { '/' };
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
 		public DynamicImageUtility(ILogger<DynamicImageUtility> logger)
 		{
 			Log = logger;
 		}
 		#endregion
 
-		#region Public Methods
+		#region Public Methods		
+		/// <inheritdoc />
 		public virtual DynamicImageFormat ParseImageFormat(string format)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(format, nameof(format));
 
 			try
 			{
-				// TODO: Use span here
-				return (format?.TrimStart('.')?.TrimToLowerInvariant()) switch
+				ReadOnlySpan<char> formatSpan = format.AsSpan().TrimStart('.').Trim();
+				Span<char> target = formatSpan.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[formatSpan.Length] : new char[formatSpan.Length];
+
+				return target switch
 				{
-					"png" => DynamicImageFormat.Png,
-					"bmp" => DynamicImageFormat.Bmp,
-					"jpg" => DynamicImageFormat.Jpeg,
-					"gif" => DynamicImageFormat.Gif,
-					"webp" => DynamicImageFormat.WebP,
+					var _ when target.SequenceEqual("png".AsSpan()) => DynamicImageFormat.Png,
+					var _ when target.SequenceEqual("bmp".AsSpan()) => DynamicImageFormat.Bmp,
+					var _ when target.SequenceEqual("jpg".AsSpan()) => DynamicImageFormat.Jpeg,
+					var _ when target.SequenceEqual("gif".AsSpan()) => DynamicImageFormat.Gif,
+					var _ when target.SequenceEqual("webp".AsSpan()) => DynamicImageFormat.WebP,
 					_ => default,
 				};
 			}
@@ -59,6 +74,7 @@ namespace Umbrella.DynamicImage
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual (DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl, DynamicImageFormat? overrideFormat = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));
@@ -134,6 +150,7 @@ namespace Umbrella.DynamicImage
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual bool ImageOptionsValid(DynamicImageOptions imageOptions, IEnumerable<DynamicImageMapping> validMappings)
 		{
 			try
@@ -151,6 +168,7 @@ namespace Umbrella.DynamicImage
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(dynamicImagePathPrefix, nameof(dynamicImagePathPrefix));

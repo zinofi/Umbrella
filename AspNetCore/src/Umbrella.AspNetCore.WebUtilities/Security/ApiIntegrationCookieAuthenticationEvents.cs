@@ -11,15 +11,22 @@ using Umbrella.WebUtilities.Exceptions;
 namespace Umbrella.AspNetCore.WebUtilities.Security
 {
 	/// <summary>
-	/// An customized version of the default <see cref="CookieAuthenticationEvents" /> type with customizations that intercept redirects
+	/// A customized version of the default <see cref="CookieAuthenticationEvents" /> type with customizations that intercept redirects
 	/// that occur as a result of 401 and 403 status codes to ensure that API responses return the status codes instead of redirects to login or error pages which is the
 	/// default behaviour. Non-API requests will fallback to the default redirect behaviour.
 	/// </summary>
 	/// <seealso cref="Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents" />
 	public class ApiIntegrationCookieAuthenticationEvents : CookieAuthenticationEvents
 	{
-		private readonly ILogger _logger;
-		private readonly ApiIntegrationCookieAuthenticationEventsOptions _options;
+		/// <summary>
+		/// Gets the logger.
+		/// </summary>
+		protected ILogger Logger { get; }
+
+		/// <summary>
+		/// Gets the options.
+		/// </summary>
+		protected ApiIntegrationCookieAuthenticationEventsOptions Options { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ApiIntegrationCookieAuthenticationEvents"/> class.
@@ -30,8 +37,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 			ILogger<ApiIntegrationCookieAuthenticationEvents> logger,
 			ApiIntegrationCookieAuthenticationEventsOptions options)
 		{
-			_logger = logger;
-			_options = options;
+			Logger = logger;
+			Options = options;
 		}
 
 		/// <inheritdoc />
@@ -39,7 +46,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 		{
 			try
 			{
-				if (_options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x)) && context.Response.StatusCode == StatusCodes.Status200OK)
+				if (Options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x)) && context.Response.StatusCode == StatusCodes.Status200OK)
 				{
 					context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 				}
@@ -50,7 +57,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 
 				return Task.CompletedTask;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem handing the login redirect.", exc);
 			}
@@ -61,7 +68,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 		{
 			try
 			{
-				if (_options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x)) && context.Response.StatusCode == StatusCodes.Status200OK)
+				if (Options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x)) && context.Response.StatusCode == StatusCodes.Status200OK)
 				{
 					context.Response.StatusCode = StatusCodes.Status403Forbidden;
 				}
@@ -72,7 +79,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 
 				return Task.CompletedTask;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem handing the access denied redirect.", exc);
 			}
