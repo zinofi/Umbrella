@@ -125,9 +125,9 @@ namespace Umbrella.TypeScript
 				//Generate enum definitions for this namespace if any exist
 				if (enumGroups.ContainsKey(nsName))
 				{
-					List<TypeInfo> lstEnumToGenerate = enumGroups[nsName];
+					List<Type> lstEnumToGenerate = enumGroups[nsName];
 
-					foreach (TypeInfo enumType in lstEnumToGenerate)
+					foreach (Type enumType in lstEnumToGenerate)
 					{
 						string enumOutput = GenerateEnumDefinition(enumType);
 
@@ -166,7 +166,7 @@ namespace Umbrella.TypeScript
 				sbNamespaces.AppendLine($"{namespaceOrModuleStart} {group.Key}")
 					.AppendLine("{");
 
-				foreach (TypeInfo enumType in group.Value)
+				foreach (Type enumType in group.Value)
 				{
 					string enumOutput = GenerateEnumDefinition(enumType);
 
@@ -182,7 +182,7 @@ namespace Umbrella.TypeScript
 		#endregion
 
 		#region Private Methods
-		private string GenerateEnumDefinition(TypeInfo enumType)
+		private string GenerateEnumDefinition(Type enumType)
 		{
 			var builder = new StringBuilder();
 			builder.AppendLine($"\texport enum {enumType.Name}");
@@ -201,7 +201,7 @@ namespace Umbrella.TypeScript
 		{
 			foreach (Type type in m_Types)
 			{
-				TypeScriptModelAttribute modelAttribute = type.GetTypeInfo().GetCustomAttribute<TypeScriptModelAttribute>();
+				TypeScriptModelAttribute modelAttribute = type.GetCustomAttribute<TypeScriptModelAttribute>();
 
 				if (modelAttribute == null)
 					continue;
@@ -210,9 +210,9 @@ namespace Umbrella.TypeScript
 			}
 		}
 
-		private IEnumerable<TypeInfo> GetEnumItems()
+		private IEnumerable<Type> GetEnumItems()
 		{
-			foreach (var type in m_Types.Select(x => x.GetTypeInfo()))
+			foreach (var type in m_Types)
 			{
 				if (!type.IsEnum)
 					continue;

@@ -7,6 +7,26 @@ namespace Umbrella.DynamicImage.Test
 {
 	public class DynamicImageUtilityTest
 	{
+		[Theory]
+		[InlineData(".png", DynamicImageFormat.Png)]
+		[InlineData(".bmp", DynamicImageFormat.Bmp)]
+		[InlineData(".jpg", DynamicImageFormat.Jpeg)]
+		[InlineData(".gif", DynamicImageFormat.Gif)]
+		[InlineData(".webp", DynamicImageFormat.WebP)]
+		[InlineData(" png", DynamicImageFormat.Png)]
+		[InlineData(" bmp", DynamicImageFormat.Bmp)]
+		[InlineData(" jpg", DynamicImageFormat.Jpeg)]
+		[InlineData(" gif", DynamicImageFormat.Gif)]
+		[InlineData(" webp", DynamicImageFormat.WebP)]
+		public void ParseImageFormat(string format, DynamicImageFormat output)
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
+
+			DynamicImageFormat result = utility.ParseImageFormat(format);
+
+			Assert.Equal(output, result);
+		}
+
 		[Fact]
 		public void TryParseUrl()
 		{

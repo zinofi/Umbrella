@@ -26,13 +26,12 @@ namespace Umbrella.Utilities.Extensions
             string attributeValue = attribute?.Value;
 
             var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-            var typeInfo = type.GetTypeInfo();
 
             if (!string.IsNullOrWhiteSpace(attributeValue))
             {
-                if (typeInfo.IsPrimitive || type == typeof(decimal) || type == typeof(string))
+                if (type.IsPrimitive || type == typeof(decimal) || type == typeof(string))
                 {
-                    string cleanedAttributeValue = typeInfo.IsPrimitive || type == typeof(decimal)
+                    string cleanedAttributeValue = type.IsPrimitive || type == typeof(decimal)
                         ? attributeValue.Replace(" ", "")
                         : attributeValue;
 

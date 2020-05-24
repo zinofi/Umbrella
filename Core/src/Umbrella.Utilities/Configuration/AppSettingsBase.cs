@@ -32,9 +32,8 @@ namespace Umbrella.Utilities.Configuration
 				if (value != null)
 				{
 					Type type = typeof(T);
-					TypeInfo typeInfo = type.GetTypeInfo();
 
-					if (typeInfo.IsPrimitive || typeInfo.IsEnum || type == typeof(string))
+					if (type.IsPrimitive || type.IsEnum || type == typeof(string))
 					{
 						valueToStore = value.ToString().Trim();
 

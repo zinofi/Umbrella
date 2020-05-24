@@ -76,6 +76,6 @@ namespace Umbrella.TypeScript.Generators
 
         protected virtual void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder) => typeBuilder.AppendLine("\t}");
 
-        protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetTypeInfo().GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
+        protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
     }
 }

@@ -31,14 +31,14 @@ namespace Umbrella.DataAnnotations.BaseClasses
 
         private object GetDependentPropertyValue(object container)
         {
-            var currentType = container.GetType().GetTypeInfo();
-            var value = container;
+            var currentType = container.GetType();
+			object value = container;
 
             foreach (string propertyName in DependentProperty.Split('.'))
             {
                 var property = currentType.GetProperty(propertyName);
                 value = property.GetValue(value, null);
-                currentType = property.PropertyType.GetTypeInfo();
+                currentType = property.PropertyType;
             }
 
             return value;

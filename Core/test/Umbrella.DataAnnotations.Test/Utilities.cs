@@ -12,13 +12,13 @@ namespace Umbrella.DataAnnotations.Test
     {
         public T GetAttribute(string property) 
         {
-            return (T)GetType().GetTypeInfo().GetProperty(property).GetCustomAttributes(typeof(T), false).First();
+            return (T)GetType().GetProperty(property).GetCustomAttributes(typeof(T), false).First();
         }
 
         public bool IsValid(string property) 
         {
             var attribute = GetAttribute(property);
-            return attribute.IsValid(GetType().GetTypeInfo().GetProperty(property).GetValue(this, null), this);
+            return attribute.IsValid(GetType().GetProperty(property).GetValue(this, null), this);
         }
     }
 }

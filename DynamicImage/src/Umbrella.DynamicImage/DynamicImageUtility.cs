@@ -57,6 +57,7 @@ namespace Umbrella.DynamicImage
 			{
 				ReadOnlySpan<char> formatSpan = format.AsSpan().TrimStart('.').Trim();
 				Span<char> target = formatSpan.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[formatSpan.Length] : new char[formatSpan.Length];
+				formatSpan.ToLowerInvariantSlim(target);
 
 				return target switch
 				{
