@@ -209,11 +209,9 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				await destinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 				
-				// TODO: Does copying also copy the metadata?
-
-				//In order to ensure we know the size of the destination file we can set it here
-				//and then use the real value from the Blob once it becomes available after the copy operation
-				//has completed.
+				// In order to ensure we know the size of the destination file we can set it here
+				// and then use the real value from the Blob once it becomes available after the copy operation
+				// has completed.
 				destinationFile.Length = Length;
 				destinationFile.IsNew = false;
 
@@ -239,9 +237,9 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				await blobDestinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
 
-				//In order to ensure we know the size of the destination file we can set it here
-				//and then use the real value from the Blob once it becomes available after the copy operation
-				//has completed.
+				// In order to ensure we know the size of the destination file we can set it here
+				// and then use the real value from the Blob once it becomes available after the copy operation
+				// has completed.
 				blobDestinationFile.Length = Length;
 				blobDestinationFile.IsNew = false;
 

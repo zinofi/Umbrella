@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
-	// TODO: Review the legacy controller
 	/// <summary>
 	/// Serves as the base class for all MVC controllers.
 	/// </summary>

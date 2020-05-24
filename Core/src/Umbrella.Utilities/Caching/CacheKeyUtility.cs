@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,11 +12,20 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Caching
 {
+	/// <summary>
+	/// A utility used to create cache keys.
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.Caching.Abstractions.ICacheKeyUtility" />
 	public class CacheKeyUtility : ICacheKeyUtility
 	{
 		private readonly ILogger _log;
 		private readonly ILookupNormalizer _lookupNormalizer;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CacheKeyUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		public CacheKeyUtility(
 			ILogger<CacheKeyUtility> logger,
 			ILookupNormalizer lookupNormalizer)
@@ -24,8 +34,10 @@ namespace Umbrella.Utilities.Caching
 			_lookupNormalizer = lookupNormalizer;
 		}
 
+		/// <inheritdoc />
 		public string Create<T>(string key) => Create(typeof(T), key);
 
+		/// <inheritdoc />
 		public string Create(Type type, string key)
 		{
 			Guard.ArgumentNotNull(type, nameof(type));
@@ -35,8 +47,11 @@ namespace Umbrella.Utilities.Caching
 			{
 				string typeName = type.FullName;
 				int length = typeName.Length + key.Length + 1;
-
-				// TODO: vFuture - look at using pooled arrays to reduce allocations. Will need considerable API changes to work though.
+				
+				// TODO: vFuture - look at using pooled arrays to reduce allocations.
+				// Should be easy enough as we know what the length is. Just make sure that the final array is trimmed down to size first
+				// by slicing the Span. Really need Unit Tests first to ensure we don't mess things up here!
+				// Also benchmark with/without pooling.
 				Span<char> span = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
 				span.Append(0, typeName);
 				span.Append(typeName.Length, ":");
@@ -50,8 +65,10 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public string Create<T>(in ReadOnlySpan<string> keyParts, int? keyPartsLength = null) => Create(typeof(T), keyParts, keyPartsLength);
 
+		/// <inheritdoc />
 		public string Create(Type type, in ReadOnlySpan<string> keyParts, int? keyPartsLength = null)
 		{
 			Guard.ArgumentNotNull(type, nameof(type));

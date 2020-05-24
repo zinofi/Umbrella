@@ -74,7 +74,6 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		[HtmlAttributeName(ResizeModeAttributeName)]
 		public DynamicResizeMode ResizeMode { get; set; }
 
-		// TODO: Does this not need an attribute??
 		/// <summary>
 		/// Gets or sets the <see cref="DynamicImageFormat"/>.
 		/// </summary>

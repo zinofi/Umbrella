@@ -31,7 +31,7 @@ namespace Umbrella.Legacy.WebUtilities.Controls
 
 			string content = string.Empty;
 
-			//TODO: Need to implement some kind of caching for this stuff - we cant be doing this everytime for the same bloody controls
+			//TODO - NEVER: Need to implement some kind of caching for this stuff - we cant be doing this everytime for the same bloody controls
 			Type type = GetType();
 
 			Stream stream = Assembly.GetAssembly(type).GetManifestResourceStream(GetType(), GetType().Name + ".ascx");

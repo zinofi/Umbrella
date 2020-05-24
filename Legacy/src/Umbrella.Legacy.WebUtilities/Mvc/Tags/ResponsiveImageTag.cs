@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
 {
-    //TODO: Add parameters to enable absolute path generation
+    //TODO - NEVER: Add parameters to enable absolute path generation
     public class ResponsiveImageTag : IHtmlString
     {
         #region Protected Members
@@ -44,7 +44,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
 
             imgTag.MergeAttributes(HtmlAttributes);
 
-            //TODO: Need to add a caching layer
+            //TODO - NEVER: Need to add a caching layer
             return imgTag.ToString(TagRenderMode.SelfClosing);
         }
         #endregion

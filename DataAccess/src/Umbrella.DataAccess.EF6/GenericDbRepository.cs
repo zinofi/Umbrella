@@ -455,7 +455,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region SyncDependencies
-		// TODO: Add back generic overloads of this method
+		// TODO - NEVER: Add back generic overloads of this method
 		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, IEnumerable<RepoOptions> options)
 			where TTargetEntity : class, IEntity<TTargetEntityKey>
 			where TTargetEntityKey : IEquatable<TTargetEntityKey>
@@ -528,6 +528,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Public Methods
+		/// <inheritdoc />
 		public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

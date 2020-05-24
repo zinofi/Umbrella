@@ -29,7 +29,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 
             tag.MergeAttributes(HtmlAttributes);
 
-            //TODO: Need to add a caching layer
+            //TODO - NEVER: Need to add a caching layer
             return tag.ToString(TagRenderMode.SelfClosing);
         } 
         #endregion
