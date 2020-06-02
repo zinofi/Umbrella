@@ -1,25 +1,29 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Umbrella.DataAnnotations
 {
 	/// <summary>
-	/// A stricter version of the <see cref="MinLengthAttribute" /> which also fails validation
-	/// when the collection is null. That isn't the case with the <see cref="MinLengthAttribute" />.
+	/// A stricter version of the <see cref="MinLengthAttribute" /> which passes validation
+	/// when the collection is null. This effectively incorporates the behaviour of <see cref="RequiredAttribute"/>
+	/// and <see cref="MinLengthAttribute"/> in a single attritbute.
 	/// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class RequiredNonEmptyCollectionAttribute : RequiredAttribute
-    {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            if (value is ICollection collection && collection.Count > 0)
-                return ValidationResult.Success;
+	[AttributeUsage(AttributeTargets.Property)]
+	public class RequiredNonEmptyCollectionAttribute : RequiredAttribute
+	{
+		private static readonly MinLengthAttribute _minLengthAttribute = new MinLengthAttribute(1);
 
-            return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
-        }
-    }
+		/// <inheritdoc />
+		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+		{
+			if (value is null)
+				return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+
+			var result = _minLengthAttribute.GetValidationResult(value, validationContext);
+
+			return result != ValidationResult.Success
+				? new ValidationResult(FormatErrorMessage(validationContext.DisplayName))
+				: result;
+		}
+	}
 }

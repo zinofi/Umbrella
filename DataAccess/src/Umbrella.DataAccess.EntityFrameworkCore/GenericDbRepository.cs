@@ -364,7 +364,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			ICollection<ValidationResult> lstValidationResult = new List<ValidationResult>();
 
 			var ctx = new ValidationContext(entity);
-			Validator.TryValidateObject(entity, ctx, lstValidationResult);
+
+			// NB: validateAllProperties defaults to false
+			// TODO: This doesn't recursively walk object graphs!
+			Validator.TryValidateObject(entity, ctx, lstValidationResult, true);
 
 			return Task.FromResult(lstValidationResult);
 		}

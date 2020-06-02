@@ -148,3 +148,5 @@ csharp_preserve_single_line_blocks = true
 
 trim_trailing_whitespace = true:error
 insert_final_newline = false:error
+
+file_header_template = Copyright (c) Zinofi Digital Ltd. All Rights Reserved.\nLicensed under the MIT License.

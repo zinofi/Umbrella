@@ -539,7 +539,10 @@ namespace Umbrella.DataAccess.Remote
 			var lstResult = new List<ValidationResult>();
 
 			var ctx = new ValidationContext(item);
-			bool isValid = Validator.TryValidateObject(item, ctx, lstResult);
+
+			// NB: validateAllProperties defaults to false
+			// TODO: This doesn't recursively walk object graphs!
+			bool isValid = Validator.TryValidateObject(item, ctx, lstResult, true);
 
 			return Task.FromResult((isValid, lstResult));
 		}
