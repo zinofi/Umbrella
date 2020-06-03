@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using Umbrella.DataAnnotations.BaseClasses;
+﻿using Umbrella.DataAnnotations.BaseClasses;
 
 namespace Umbrella.DataAnnotations
 {
-    public class RequiredIfNotEmptyAttribute : ContingentValidationAttribute
-    {
-        public RequiredIfNotEmptyAttribute(string dependentProperty)
-            : base(dependentProperty) { }
+	public class RequiredIfNotEmptyAttribute : ContingentValidationAttribute
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RequiredIfNotEmptyAttribute"/> class.
+		/// </summary>
+		/// <param name="dependentProperty">The dependent property.</param>
+		public RequiredIfNotEmptyAttribute(string dependentProperty)
+			: base(dependentProperty)
+		{
+		}
 
-        public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
-        {
-            if (!string.IsNullOrEmpty((dependentValue ?? string.Empty).ToString().Trim()))
-                return value != null && !string.IsNullOrEmpty(value.ToString().Trim());
+		/// <inheritdoc />
+		public override bool IsValid(object value, object dependentValue, object container)
+		{
+			if (!string.IsNullOrEmpty((dependentValue ?? string.Empty).ToString().Trim()))
+				return value != null && !string.IsNullOrEmpty(value.ToString().Trim());
 
-            return true;
-        }
+			return true;
+		}
 
-        public override string DefaultErrorMessage
-        {
-            get { return "{0} is required due to {1} not being empty."; }
-        }
-    }
+		/// <inheritdoc />
+		public override string DefaultErrorMessageFormat => "{0} is required due to {1} not being empty.";
+	}
 }

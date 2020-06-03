@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class LessThanOrEqualToAttributeTest
     {
-        private class DateModel : ModelBase<LessThanOrEqualToAttribute>
+        private class DateModel : ContingentValidationModelBase<LessThanOrEqualToAttribute>
         {
             public DateTime? Value1 { get; set; }
 
@@ -13,7 +13,7 @@ namespace Umbrella.DataAnnotations.Test
             public DateTime? Value2 { get; set; }
         }
 
-        private class Int16Model : ModelBase<LessThanOrEqualToAttribute>
+        private class Int16Model : ContingentValidationModelBase<LessThanOrEqualToAttribute>
         {
             public Int16 Value1 { get; set; }
 

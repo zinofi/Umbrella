@@ -10,19 +10,19 @@ namespace Umbrella.DataAnnotations
 	/// and <see cref="MinLengthAttribute"/> in a single attritbute.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property)]
-	public class RequiredNonEmptyCollectionAttribute : RequiredAttribute
+	public class RequiredNonEmptyCollectionAttribute : ValidationAttribute
 	{
 		/// <inheritdoc />
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
 			if (value is null)
-				return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+				return new ValidationResult(FormatErrorMessage(validationContext?.DisplayName));
 
-			bool isValid = ValidationHelper.IsNonEmptyCollection(value, validationContext);
+			bool isValid = ValidationHelper.IsNonEmptyCollection(value);
 
 			return isValid
 				? ValidationResult.Success
-				: new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+				: new ValidationResult(FormatErrorMessage(validationContext?.DisplayName));
 		}
 	}
 }

@@ -10,6 +10,12 @@
   <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
     <Optimize>true</Optimize>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestResults\**" />
+    <EmbeddedResource Remove="TestResults\**" />
+    <None Remove="TestResults\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />

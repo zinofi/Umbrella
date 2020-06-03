@@ -3,9 +3,9 @@ using Xunit;
 
 namespace Umbrella.DataAnnotations.Test
 {
-    public class RequiredIfAttributeTest
+	public class RequiredIfAttributeTest
     {
-        private class Model : ModelBase<RequiredIfAttribute>
+        private class Model : ContingentValidationModelBase<RequiredIfAttribute>
         {
             public string Value1 { get; set; }
 
@@ -13,7 +13,7 @@ namespace Umbrella.DataAnnotations.Test
             public string Value2 { get; set; }
         }
 
-        private class ComplexModel : ModelBase<RequiredIfAttribute>
+        private class ComplexModel : ContingentValidationModelBase<RequiredIfAttribute>
         {
             public class SubModel
             {

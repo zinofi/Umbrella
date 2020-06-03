@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Umbrella.DataAnnotations
+﻿namespace Umbrella.DataAnnotations
 {
-    public class EqualToAttribute : IsAttribute
-    {
-        public EqualToAttribute(string dependentProperty) : base(Operator.EqualTo, dependentProperty) { }
-    }
+	public class EqualToAttribute : IsAttribute
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="EqualToAttribute"/> class.
+		/// </summary>
+		/// <param name="dependentProperty">The dependent property.</param>
+		public EqualToAttribute(string dependentProperty)
+			: base(Operator.EqualTo, dependentProperty)
+		{
+		}
+	}
 }

@@ -4,9 +4,9 @@ using Xunit;
 
 namespace Umbrella.DataAnnotations.Test
 {
-    public class RequiredIfTrueAttributeTest
+	public class RequiredIfTrueAttributeTest
     {
-        private class Model : ModelBase<RequiredIfTrueAttribute>
+        private class Model : ContingentValidationModelBase<RequiredIfTrueAttribute>
         {
             public bool? Value1 { get; set; }
 

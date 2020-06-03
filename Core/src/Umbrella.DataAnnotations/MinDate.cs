@@ -59,7 +59,7 @@ namespace Umbrella.DataAnnotations
 		/// <returns>
 		///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 		/// </returns>
-		public override bool IsValid(object value, object container, ValidationContext validationContext)
+		public override bool IsValid(object value, object container)
 		{
 			DateTime minDate = GetMinDate();
 

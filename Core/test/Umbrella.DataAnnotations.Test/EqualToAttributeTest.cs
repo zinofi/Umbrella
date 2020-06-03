@@ -7,7 +7,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class EqualToAttributeTest
     {
-        private class Model : ModelBase<EqualToAttribute>
+        private class Model : ContingentValidationModelBase<EqualToAttribute>
         {
             public string Value1 { get; set; }
 
@@ -15,7 +15,7 @@ namespace Umbrella.DataAnnotations.Test
             public string Value2 { get; set; }
         }
 
-        private class ModelWithPassOnNull : ModelBase<EqualToAttribute>
+        private class ModelWithPassOnNull : ContingentValidationModelBase<EqualToAttribute>
         {
             public string Value1 { get; set; }
 

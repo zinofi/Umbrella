@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class NotEqualToAttributeTest
     {
-        private class Model : ModelBase<NotEqualToAttribute>
+        private class Model : ContingentValidationModelBase<NotEqualToAttribute>
         {
             public string Value1 { get; set; }
 

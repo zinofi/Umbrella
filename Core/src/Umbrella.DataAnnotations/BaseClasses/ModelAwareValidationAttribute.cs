@@ -1,56 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Umbrella.DataAnnotations.BaseClasses
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public abstract class ModelAwareValidationAttribute : ValidationAttribute
-    {
-        public override bool IsValid(object value)
-        {
-            throw new NotImplementedException();
-        }
+	/// <summary>
+	/// Serves as the base class for all model aware validation attributes.
+	/// </summary>
+	/// <seealso cref="System.ComponentModel.DataAnnotations.ValidationAttribute" />
+	[AttributeUsage(AttributeTargets.Property)]
+	public abstract class ModelAwareValidationAttribute : ValidationAttribute
+	{
+		/// <inheritdoc />
+		public override bool IsValid(object value) => throw new NotImplementedException();
 
-        public override string FormatErrorMessage(string name)
-        {
-            if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
-                ErrorMessage = DefaultErrorMessage;
-            
-            return base.FormatErrorMessage(name);
-        }
+		/// <inheritdoc />
+		public override string FormatErrorMessage(string name)
+		{
+			if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
+				ErrorMessage = DefaultErrorMessageFormat;
 
-        public virtual string DefaultErrorMessage
-        {
-            get { return "{0} is invalid."; }
-        }
+			return base.FormatErrorMessage(name);
+		}
 
-        public abstract bool IsValid(object value, object container, ValidationContext validationContext);
+		/// <summary>
+		/// Gets the default error message format.
+		/// </summary>
+		public virtual string DefaultErrorMessageFormat => "{0} is invalid.";
 
-        public virtual string ClientTypeName
-        {
-            get { return GetType().Name.Replace("Attribute", ""); }
-        }
+		/// <summary>
+		/// Returns true if the value is valid.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="container">The container.</param>
+		/// <returns>
+		///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
+		/// </returns>
+		public abstract bool IsValid(object value, object container);
 
-        protected virtual IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
-        {
-            return new KeyValuePair<string, object>[0];
-        }
-        
-        public Dictionary<string, object> ClientValidationParameters
-        {
-            get { return GetClientValidationParameters().ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value); }
-        }
+		/// <summary>
+		/// Gets the name of the type for use in client scenarios, e.g. jQuery Validation, when used with web projects.
+		/// </summary>
+		public virtual string ClientTypeName => GetType().Name.Replace("Attribute", "");
 
-        protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
+		/// <summary>
+		/// Gets the client validation parameters. Useful for web projects, e.g. jQuery Unobtrusive Validation, where these parameters
+		/// are output by HTML Helpers (MVC 5) or Tag Helpers (ASP.NET Core) as data-* attributes.
+		/// </summary>
+		/// <returns>An enumerable key/value pair of the parameters.</returns>
+		protected virtual IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters() => new KeyValuePair<string, object>[0];
+
+		/// <summary>
+		/// Gets the client validation parameters. Useful for web projects, e.g. jQuery Unobtrusive Validation, where these parameters
+		/// are output by HTML Helpers (MVC 5) or Tag Helpers (ASP.NET Core) as data-* attributes.
+		/// </summary>
+		/// <returns>A Dictionary containing the parameters.</returns>
+		public Dictionary<string, object> ClientValidationParameters => GetClientValidationParameters().ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value);
+
+		/// <inheritdoc />
+		protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)
+		{
 			object container = validationContext.ObjectInstance;
 
-            if (!IsValid(value, container, validationContext))
-                return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), validationContext.MemberName == null ? null : new [] { validationContext.MemberName });
+			if (!IsValid(value, container))
+				return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), validationContext.MemberName == null ? null : new[] { validationContext.MemberName });
 
-            return ValidationResult.Success;
-        }
-    }
+			return ValidationResult.Success;
+		}
+	}
 }

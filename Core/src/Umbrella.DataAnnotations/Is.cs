@@ -8,10 +8,23 @@ namespace Umbrella.DataAnnotations
 {
 	public class IsAttribute : ContingentValidationAttribute
 	{
-		public Operator Operator { get; private set; }
-		public bool PassOnNull { get; set; }
 		private readonly OperatorMetadata _metadata;
 
+		/// <summary>
+		/// Gets the operator.
+		/// </summary>
+		public Operator Operator { get; private set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether to pass on null.
+		/// </summary>
+		public bool PassOnNull { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="IsAttribute"/> class.
+		/// </summary>
+		/// <param name="operator">The operator.</param>
+		/// <param name="dependentProperty">The dependent property.</param>
 		public IsAttribute(Operator @operator, string dependentProperty)
 			: base(dependentProperty)
 		{
@@ -20,8 +33,10 @@ namespace Umbrella.DataAnnotations
 			_metadata = OperatorMetadata.Get(Operator);
 		}
 
+		/// <inheritdoc />
 		public override string ClientTypeName => "Is";
 
+		/// <inheritdoc />
 		protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters() => base.GetClientValidationParameters()
 				.Union(new[]
 					   {
@@ -29,7 +44,8 @@ namespace Umbrella.DataAnnotations
 						   new KeyValuePair<string, object>("PassOnNull", PassOnNull)
 					   });
 
-		public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
+		/// <inheritdoc />
+		public override bool IsValid(object value, object dependentValue, object container)
 		{
 			if (PassOnNull && (value == null || dependentValue == null))
 				return true;
@@ -37,6 +53,7 @@ namespace Umbrella.DataAnnotations
 			return _metadata.IsValid(value, dependentValue);
 		}
 
-		public override string DefaultErrorMessage => "{0} must be " + _metadata.ErrorMessage + " {1}.";
+		/// <inheritdoc />
+		public override string DefaultErrorMessageFormat => "{0} must be " + _metadata.ErrorMessage + " {1}.";
 	}
 }

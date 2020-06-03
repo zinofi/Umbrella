@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class LessThanAttributeTest
     {
-        private class DateModel : ModelBase<LessThanAttribute>
+        private class DateModel : ContingentValidationModelBase<LessThanAttribute>
         {
             public DateTime? Value1 { get; set; }
 
@@ -13,7 +13,7 @@ namespace Umbrella.DataAnnotations.Test
             public DateTime? Value2 { get; set; }
         }
 
-        private class DateModelWithPassOnNull : ModelBase<LessThanAttribute>
+        private class DateModelWithPassOnNull : ContingentValidationModelBase<LessThanAttribute>
         {
             public DateTime? Value1 { get; set; }
 
@@ -21,7 +21,7 @@ namespace Umbrella.DataAnnotations.Test
             public DateTime? Value2 { get; set; }
         }
 
-        private class Int16Model : ModelBase<LessThanAttribute>
+        private class Int16Model : ContingentValidationModelBase<LessThanAttribute>
         {
             public Int16 Value1 { get; set; }
 

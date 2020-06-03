@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Umbrella.DataAnnotations
+﻿namespace Umbrella.DataAnnotations
 {
-    public enum Operator
-    {
-        EqualTo,
-        NotEqualTo,
-        GreaterThan,
-        LessThan,
-        GreaterThanOrEqualTo,
-        LessThanOrEqualTo,
-        RegExMatch,
-        NotRegExMatch
-    }
+	/// <summary>
+	/// Specifies the type of comparision operation to perform during contingent validation operations.
+	/// </summary>
+	public enum Operator
+	{
+		EqualTo,
+		NotEqualTo,
+		GreaterThan,
+		LessThan,
+		GreaterThanOrEqualTo,
+		LessThanOrEqualTo,
+		RegExMatch,
+		NotRegExMatch
+	}
 }

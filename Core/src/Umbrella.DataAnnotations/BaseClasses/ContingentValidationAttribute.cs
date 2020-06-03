@@ -1,59 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace Umbrella.DataAnnotations.BaseClasses
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public abstract class ContingentValidationAttribute : ModelAwareValidationAttribute
-    {
-        public string DependentProperty { get; private set; }
+	/// <summary>
+	/// Serves as the base class for contingent validation attributes.
+	/// </summary>
+	/// <seealso cref="Umbrella.DataAnnotations.BaseClasses.ModelAwareValidationAttribute" />
+	[AttributeUsage(AttributeTargets.Property)]
+	public abstract class ContingentValidationAttribute : ModelAwareValidationAttribute
+	{
+		/// <summary>
+		/// Gets the name of the dependent property.
+		/// </summary>
+		public string DependentProperty { get; private set; }
 
-        public ContingentValidationAttribute(string dependentProperty)
-        {
-            DependentProperty = dependentProperty;
-        }
-        
-        public override string FormatErrorMessage(string name)
-        {
-            if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
-                ErrorMessage = DefaultErrorMessage;
-            
-            return string.Format(ErrorMessageString, name, DependentProperty);
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ContingentValidationAttribute"/> class.
+		/// </summary>
+		/// <param name="dependentProperty">The dependent property.</param>
+		public ContingentValidationAttribute(string dependentProperty)
+		{
+			DependentProperty = dependentProperty;
+		}
 
-        public override string DefaultErrorMessage
-        {
-            get { return "{0} is invalide due to {1}."; }
-        }
+		/// <inheritdoc />
+		public override string FormatErrorMessage(string name)
+		{
+			if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
+				ErrorMessage = DefaultErrorMessageFormat;
 
-        private object GetDependentPropertyValue(object container)
-        {
-            var currentType = container.GetType();
+			return string.Format(ErrorMessageString, name, DependentProperty);
+		}
+
+		/// <inheritdoc />
+		public override string DefaultErrorMessageFormat { get; } = "{0} is invalid due to {1}.";
+
+		/// <summary>
+		/// Gets the dependent property value.
+		/// </summary>
+		/// <param name="container">The container.</param>
+		/// <returns>The value of the dependent property from the container.</returns>
+		private object GetDependentPropertyValue(object container)
+		{
+			var currentType = container.GetType();
 			object value = container;
 
-            foreach (string propertyName in DependentProperty.Split('.'))
-            {
-                var property = currentType.GetProperty(propertyName);
-                value = property.GetValue(value, null);
-                currentType = property.PropertyType;
-            }
+			foreach (string propertyName in DependentProperty.Split('.'))
+			{
+				var property = currentType.GetProperty(propertyName);
+				value = property.GetValue(value, null);
+				currentType = property.PropertyType;
+			}
 
-            return value;
-        }
-        
-        protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
-        {
-            return base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
-        }
+			return value;
+		}
 
-        public override bool IsValid(object value, object container, ValidationContext validationContext)
-        {
-            return IsValid(value, GetDependentPropertyValue(container), container, validationContext);
-        }
+		/// <inheritdoc />
+		protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
+			=> base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
 
-        public abstract bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext);
-    }
+		/// <inheritdoc />
+		public override bool IsValid(object value, object container) => IsValid(value, GetDependentPropertyValue(container), container);
+
+		/// <summary>
+		/// If the value of <paramref name="dependentValue" /> is such that it matches the value of the <see cref="DependentProperty"/> value on
+		/// the <paramref name="container"/>, validation will take place on the supplied <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="dependentValue">The dependent value.</param>
+		/// <param name="container">The container.</param>
+		/// <returns>
+		///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
+		/// </returns>
+		public abstract bool IsValid(object value, object dependentValue, object container);
+	}
 }

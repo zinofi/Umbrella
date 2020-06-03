@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {    
     public class RegularExpressionIfAttributeTest
     {
-        private class Model : ModelBase<RegularExpressionIfAttribute>
+        private class Model : ContingentValidationModelBase<RegularExpressionIfAttribute>
         {
             public bool Value1 { get; set; }
 

@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class RequiredIfNotEmptyAttributeTest
     {
-        private class Model : ModelBase<RequiredIfNotEmptyAttribute>
+        private class Model : ContingentValidationModelBase<RequiredIfNotEmptyAttribute>
         {
             public string Value1 { get; set; }
 

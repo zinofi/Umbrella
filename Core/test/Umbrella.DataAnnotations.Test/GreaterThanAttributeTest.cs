@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class GreaterThanAttributeTest
     {
-        private class DateModel : ModelBase<GreaterThanAttribute>
+        private class DateModel : ContingentValidationModelBase<GreaterThanAttribute>
         {
             public DateTime? Value1 { get; set; }
 
@@ -13,7 +13,7 @@ namespace Umbrella.DataAnnotations.Test
             public DateTime? Value2 { get; set; }
         }
 
-        private class DateModelWithPassOnNull : ModelBase<GreaterThanAttribute>
+        private class DateModelWithPassOnNull : ContingentValidationModelBase<GreaterThanAttribute>
         {
             public DateTime? Value1 { get; set; }
 
@@ -21,7 +21,7 @@ namespace Umbrella.DataAnnotations.Test
             public DateTime? Value2 { get; set; }
         }
 
-        private class Int16Model : ModelBase<GreaterThanAttribute>
+        private class Int16Model : ContingentValidationModelBase<GreaterThanAttribute>
         {
             public Int16 Value1 { get; set; }
 

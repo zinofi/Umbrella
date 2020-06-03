@@ -5,7 +5,7 @@ namespace Umbrella.DataAnnotations.Test
 {
     public class RequiredIfRegExMatchAttributeTest
     {
-        private class Model : ModelBase<RequiredIfRegExMatchAttribute>
+        private class Model : ContingentValidationModelBase<RequiredIfRegExMatchAttribute>
         {
             public string Value1 { get; set; }
 

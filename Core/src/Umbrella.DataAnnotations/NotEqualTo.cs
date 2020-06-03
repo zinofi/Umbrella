@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Umbrella.DataAnnotations
+﻿namespace Umbrella.DataAnnotations
 {
-    public class NotEqualToAttribute : IsAttribute
-    {
-        public NotEqualToAttribute(string dependentProperty) : base(Operator.NotEqualTo, dependentProperty) { }
-    }
+	public class NotEqualToAttribute : IsAttribute
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="NotEqualToAttribute"/> class.
+		/// </summary>
+		/// <param name="dependentProperty">The dependent property.</param>
+		public NotEqualToAttribute(string dependentProperty)
+			: base(Operator.NotEqualTo, dependentProperty)
+		{
+		}
+	}
 }

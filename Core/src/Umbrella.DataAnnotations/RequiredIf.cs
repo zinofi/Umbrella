@@ -1,64 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Umbrella.DataAnnotations.BaseClasses;
 using Umbrella.DataAnnotations.Utilities;
 
 namespace Umbrella.DataAnnotations
 {
-    public class RequiredIfAttribute : ContingentValidationAttribute
-    {
-        public Operator Operator { get; private set; }
-        public object DependentValue { get; private set; }
-        protected OperatorMetadata Metadata { get; private set; }
-        
-        public RequiredIfAttribute(string dependentProperty, Operator @operator, object dependentValue)
-            : base(dependentProperty)
-        {
-            Operator = @operator;
-            DependentValue = dependentValue;
-            Metadata = OperatorMetadata.Get(Operator);
-        }
+	/// <summary>
+	/// Specifies that a data field is required contingent on whether another property
+	/// on the same object as the property this attribute is being used on matches conditions specified
+	/// using the constructor.
+	/// </summary>
+	/// <seealso cref="Umbrella.DataAnnotations.BaseClasses.ContingentValidationAttribute" />
+	public class RequiredIfAttribute : ContingentValidationAttribute
+	{
+		/// <summary>
+		/// Gets the operator.
+		/// </summary>
+		public Operator Operator { get; }
 
-        public RequiredIfAttribute(string dependentProperty, object dependentValue)
-            : this(dependentProperty, Operator.EqualTo, dependentValue) { }
+		/// <summary>
+		/// Gets the dependent value.
+		/// </summary>
+		public object DependentValue { get; }
 
-        public override string FormatErrorMessage(string name)
-        {
-            if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
-                ErrorMessage = DefaultErrorMessage;
+		/// <summary>
+		/// Gets the metadata.
+		/// </summary>
+		protected OperatorMetadata Metadata { get; }
 
-            return string.Format(ErrorMessageString, name, DependentProperty, DependentValue);
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RequiredIfAttribute"/> class.
+		/// </summary>
+		/// <param name="dependentProperty">The dependent property.</param>
+		/// <param name="operator">The operator.</param>
+		/// <param name="dependentValue">The dependent value.</param>
+		public RequiredIfAttribute(string dependentProperty, Operator @operator, object dependentValue)
+			: base(dependentProperty)
+		{
+			Operator = @operator;
+			DependentValue = dependentValue;
+			Metadata = OperatorMetadata.Get(Operator);
+		}
 
-        public override string ClientTypeName
-        {
-            get { return "RequiredIf"; }
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RequiredIfAttribute"/> class with the <see cref="Operator"/> set to <see cref="Operator.EqualTo"/>.
+		/// </summary>
+		/// <param name="dependentProperty">The dependent property.</param>
+		/// <param name="dependentValue">The dependent value.</param>
+		public RequiredIfAttribute(string dependentProperty, object dependentValue)
+			: this(dependentProperty, Operator.EqualTo, dependentValue)
+		{
+		}
 
-        protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
-        {
-            return base.GetClientValidationParameters()
-                .Union(new[] {
-                    new KeyValuePair<string, object>("Operator", Operator.ToString()),
-                    new KeyValuePair<string, object>("DependentValue", DependentValue)
-                });
-        }
+		/// <inheritdoc />
+		public override string FormatErrorMessage(string name)
+		{
+			if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
+				ErrorMessage = DefaultErrorMessageFormat;
 
-        public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
-        {
-            if (Metadata.IsValid(dependentValue, DependentValue))
-                return value != null && !string.IsNullOrEmpty(value.ToString().Trim());
+			return string.Format(ErrorMessageString, name, DependentProperty, DependentValue);
+		}
 
-            return true;
-        }
+		/// <inheritdoc />
+		public override string ClientTypeName => "RequiredIf";
 
-        public override string DefaultErrorMessage
-        {
-            get { return "{0} is required due to {1} being " + Metadata.ErrorMessage + " {2}"; }
-        }
-    }
+		/// <inheritdoc />
+		protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
+			=> base.GetClientValidationParameters()
+				.Union(new[]
+				{
+					new KeyValuePair<string, object>("Operator", Operator.ToString()),
+					new KeyValuePair<string, object>("DependentValue", DependentValue)
+				});
+
+		/// <inheritdoc />
+		public override bool IsValid(object value, object dependentValue, object container)
+			=> !Metadata.IsValid(dependentValue, DependentValue) || value != null && !string.IsNullOrEmpty(value.ToString().Trim());
+
+		/// <inheritdoc />
+		public override string DefaultErrorMessageFormat => "{0} is required due to {1} being " + Metadata.ErrorMessage + " {2}";
+	}
 }
