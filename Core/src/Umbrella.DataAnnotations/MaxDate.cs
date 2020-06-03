@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Umbrella.DataAnnotations.BaseClasses;
 
@@ -60,7 +61,7 @@ namespace Umbrella.DataAnnotations
 		/// <returns>
 		///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 		/// </returns>
-		public override bool IsValid(object value, object container)
+		public override bool IsValid(object value, object container, ValidationContext validationContext)
 		{
 			DateTime maxDate = GetMaxDate();
 

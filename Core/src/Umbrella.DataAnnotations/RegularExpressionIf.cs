@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using Umbrella.DataAnnotations.Utilities;
@@ -19,7 +20,7 @@ namespace Umbrella.DataAnnotations
         public RegularExpressionIfAttribute(string pattern, string dependentProperty, object dependentValue)
             : this(pattern, dependentProperty, Operator.EqualTo, dependentValue) { }
 
-        public override bool IsValid(object value, object dependentValue, object container)
+        public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
         {
             if (Metadata.IsValid(dependentValue, DependentValue))
                 return OperatorMetadata.Get(Operator.RegExMatch).IsValid(value, Pattern);

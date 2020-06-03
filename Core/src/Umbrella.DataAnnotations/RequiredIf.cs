@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -47,7 +48,7 @@ namespace Umbrella.DataAnnotations
                 });
         }
 
-        public override bool IsValid(object value, object dependentValue, object container)
+        public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
         {
             if (Metadata.IsValid(dependentValue, DependentValue))
                 return value != null && !string.IsNullOrEmpty(value.ToString().Trim());

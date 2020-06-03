@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
-    public static class NameValueCollectionExtensions
+	/// <summary>
+	/// Extensions for use with the <see cref="NameValueCollection"/> type.
+	/// </summary>
+	public static class NameValueCollectionExtensions
     {
         public static string SerializeToString(this NameValueCollection nvc, string keyValueSeparator = "=", string pairSeparator = "&")
             => SerializeToString(nvc, WebUtility.UrlEncode, keyValueSeparator, pairSeparator);

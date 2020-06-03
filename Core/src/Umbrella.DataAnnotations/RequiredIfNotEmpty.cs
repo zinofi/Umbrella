@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using Umbrella.DataAnnotations.BaseClasses;
@@ -11,7 +12,7 @@ namespace Umbrella.DataAnnotations
         public RequiredIfNotEmptyAttribute(string dependentProperty)
             : base(dependentProperty) { }
 
-        public override bool IsValid(object value, object dependentValue, object container)
+        public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
         {
             if (!string.IsNullOrEmpty((dependentValue ?? string.Empty).ToString().Trim()))
                 return value != null && !string.IsNullOrEmpty(value.ToString().Trim());

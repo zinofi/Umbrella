@@ -46,15 +46,14 @@ namespace Umbrella.DataAnnotations.BaseClasses
         
         protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
         {
-            return base.GetClientValidationParameters()
-                .Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
+            return base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
         }
 
-        public override bool IsValid(object value, object container)
+        public override bool IsValid(object value, object container, ValidationContext validationContext)
         {
-            return IsValid(value, GetDependentPropertyValue(container), container);
+            return IsValid(value, GetDependentPropertyValue(container), container, validationContext);
         }
 
-        public abstract bool IsValid(object value, object dependentValue, object container);
+        public abstract bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext);
     }
 }

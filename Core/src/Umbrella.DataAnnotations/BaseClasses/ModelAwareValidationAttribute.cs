@@ -26,7 +26,7 @@ namespace Umbrella.DataAnnotations.BaseClasses
             get { return "{0} is invalid."; }
         }
 
-        public abstract bool IsValid(object value, object container);
+        public abstract bool IsValid(object value, object container, ValidationContext validationContext);
 
         public virtual string ClientTypeName
         {
@@ -43,11 +43,11 @@ namespace Umbrella.DataAnnotations.BaseClasses
             get { return GetClientValidationParameters().ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value); }
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var container = validationContext.ObjectInstance;
+			object container = validationContext.ObjectInstance;
 
-            if (!IsValid(value, container))
+            if (!IsValid(value, container, validationContext))
                 return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), validationContext.MemberName == null ? null : new [] { validationContext.MemberName });
 
             return ValidationResult.Success;

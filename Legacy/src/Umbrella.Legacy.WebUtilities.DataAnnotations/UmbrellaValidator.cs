@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Umbrella.DataAnnotations.BaseClasses;
 
-namespace Umbrella.WebUtilities.Mvc.DataAnnotations
+namespace Umbrella.Legacy.WebUtilities.DataAnnotations
 {
     public class UmbrellaValidator : DataAnnotationsModelValidator<ModelAwareValidationAttribute>
     {
@@ -14,7 +15,7 @@ namespace Umbrella.WebUtilities.Mvc.DataAnnotations
 
         public override IEnumerable<ModelValidationResult> Validate(object container)
         {
-            if (!Attribute.IsValid(Metadata.Model, container))
+            if (!Attribute.IsValid(Metadata.Model, container, new ValidationContext(container)))
                 yield return new ModelValidationResult { Message = ErrorMessage };                    
         }
 

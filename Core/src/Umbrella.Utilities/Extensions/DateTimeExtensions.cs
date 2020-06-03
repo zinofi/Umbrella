@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
@@ -23,42 +18,26 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="date">The date being dealt with.</param>
 		/// <param name="format">The format for a DateTime value to be returned in. Defaults to a short date string.</param>
 		/// <param name="dtComparison">Allows a reference value to be passed. By default this method use DateTime.Now for comparison.</param>
-		/// <returns></returns>
+		/// <returns>A string representing the time that has passed.</returns>
 		public static string ToTimeSinceString(this DateTime date, string format = "d", DateTime? dtComparison = null)
 		{
-			//Get the current date
-			TimeSpan ts = DateTime.Now - date;
+			DateTime utcDate = date.ToUniversalTime();
 
-			//See if a value has been passed for dtComparison - if so, use that
-			if (dtComparison.HasValue)
-				ts = dtComparison.Value - date;
+			TimeSpan ts = dtComparison.HasValue
+				? dtComparison.Value.ToUniversalTime() - utcDate
+				: DateTime.UtcNow - utcDate;
 
-			//Depending on how far the date is from the current date alter what is return
-			if(ts.Days >= 7)
-				return date.ToString(format);
-			else if (ts.Days > 0)
+			return ts switch
 			{
-				if (ts.Days > 1)
-					return ts.Days + " days ago";
-				else
-					return "1 day ago";
-			}
-			else if(ts.Hours > 0)
-			{
-				if (ts.Hours > 1)
-					return ts.Hours + " hours ago";
-				else
-					return "1 hour ago";
-			}
-			else if (ts.Minutes > 0)
-			{
-				if (ts.Minutes > 1)
-					return ts.Minutes + " minutes ago";
-				else
-					return "1 minute ago";
-			}
-			else
-				return "Just now";
+				var _ when ts.Days >= 7 => date.ToString(format),
+				var _ when ts.Days > 1 => ts.Days + " days ago",
+				var _ when ts.Days == 1 => "1 day ago",
+				var _ when ts.Hours > 1 => ts.Hours + " hours ago",
+				var _ when ts.Hours == 1 => "1 hour ago",
+				var _ when ts.Minutes > 1 => ts.Minutes + " minutes ago",
+				var _ when ts.Minutes == 1 => "1 minute ago",
+				_ => "Just now"
+			};
 		}
 	}
 }

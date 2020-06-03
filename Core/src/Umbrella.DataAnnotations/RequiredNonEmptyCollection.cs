@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Umbrella.DataAnnotations.Utilities;
 
 namespace Umbrella.DataAnnotations
 {
@@ -11,19 +12,17 @@ namespace Umbrella.DataAnnotations
 	[AttributeUsage(AttributeTargets.Property)]
 	public class RequiredNonEmptyCollectionAttribute : RequiredAttribute
 	{
-		private static readonly MinLengthAttribute _minLengthAttribute = new MinLengthAttribute(1);
-
 		/// <inheritdoc />
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
 			if (value is null)
 				return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
 
-			var result = _minLengthAttribute.GetValidationResult(value, validationContext);
+			bool isValid = ValidationHelper.IsNonEmptyCollection(value, validationContext);
 
-			return result != ValidationResult.Success
-				? new ValidationResult(FormatErrorMessage(validationContext.DisplayName))
-				: result;
+			return isValid
+				? ValidationResult.Success
+				: new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
 		}
 	}
 }

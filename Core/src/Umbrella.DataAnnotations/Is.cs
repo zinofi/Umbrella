@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Umbrella.DataAnnotations.BaseClasses;
 using Umbrella.DataAnnotations.Utilities;
@@ -28,7 +29,7 @@ namespace Umbrella.DataAnnotations
 						   new KeyValuePair<string, object>("PassOnNull", PassOnNull)
 					   });
 
-		public override bool IsValid(object value, object dependentValue, object container)
+		public override bool IsValid(object value, object dependentValue, object container, ValidationContext validationContext)
 		{
 			if (PassOnNull && (value == null || dependentValue == null))
 				return true;

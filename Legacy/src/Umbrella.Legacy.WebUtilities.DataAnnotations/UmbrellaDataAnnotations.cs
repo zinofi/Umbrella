@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using Umbrella.DataAnnotations;
 
-namespace Umbrella.WebUtilities.Mvc.DataAnnotations
+namespace Umbrella.Legacy.WebUtilities.DataAnnotations
 {
     public sealed class UmbrellaDataAnnotations : UmbrellaDataAnnotations<UmbrellaValidator>
     {
