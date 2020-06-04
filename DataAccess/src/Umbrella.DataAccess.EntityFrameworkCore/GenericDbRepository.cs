@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +13,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore
 {
@@ -351,6 +351,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		#region Events		
 		/// <summary>
 		/// Overriding this method allows you to perform custom validation on the entity before its state on the database context is affected.
+		/// By default, this calls into the <see cref="Validator.TryValidateObject(object, ValidationContext, ICollection{ValidationResult}, bool)"/> method.
+		/// By design, this doesn't recursively perform validation on the entity. If this is required, override this method and use the <see cref="IObjectGraphValidator"/>
+		/// by injecting it as a service or perform more extensive validation elsewhere.
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
@@ -365,8 +368,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			var ctx = new ValidationContext(entity);
 
-			// NB: validateAllProperties defaults to false
-			// TODO: This doesn't recursively walk object graphs!
 			Validator.TryValidateObject(entity, ctx, lstValidationResult, true);
 
 			return Task.FromResult(lstValidationResult);
@@ -404,7 +405,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		}
 
 		/// <summary>
-		/// Overriding this method allows you to perform any work after the call to <see cref="UmbrellaDbContext.SaveChangesAsync()"/> has taken place.
+		/// Overriding this method allows you to perform any work after the call to <see cref="T:UmbrellaDbContext.SaveChangesAsync()"/> has taken place.
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		/// <param name="isNew">Specifies if the entity is new.</param>

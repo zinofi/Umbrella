@@ -9,6 +9,9 @@ using Umbrella.Utilities.Context;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.DataAnnotations;
+using Umbrella.Utilities.DataAnnotations.Abstractions;
+using Umbrella.Utilities.DataAnnotations.Options;
 using Umbrella.Utilities.DependencyInjection;
 using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Abstractions;
@@ -54,6 +57,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="httpResourceInfoUtilityOptionsBuilder">The optional <see cref="HttpResourceInfoUtilityOptions"/> builder.</param>
 		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
 		/// <param name="umbrellaConsoleHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaHostingEnvironmentOptions"/> builder.</param>
+		/// <param name="objectGraphValidatorOptionsBuilder">The optional <see cref="ObjectGraphValidatorOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
@@ -63,7 +67,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, HybridCacheOptions> hybridCacheOptionsBuilder = null,
 			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
 			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
-			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions> umbrellaConsoleHostingEnvironmentOptionsBuilder = null)
+			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions> umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
+			Action<IServiceProvider, ObjectGraphValidatorOptions> objectGraphValidatorOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -84,6 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
 			services.AddSingleton<IUmbrellaHostingEnvironment, UmbrellaConsoleHostingEnvironment>();
+			services.AddSingleton<IObjectGraphValidator, ObjectGraphValidator>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
@@ -92,6 +98,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
 			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaConsoleHostingEnvironmentOptionsBuilder);
+			services.ConfigureUmbrellaOptions(objectGraphValidatorOptionsBuilder);
 
 			return services;
 		}

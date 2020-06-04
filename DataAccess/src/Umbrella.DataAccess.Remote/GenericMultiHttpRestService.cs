@@ -15,6 +15,8 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Remote
 {
+	// TODO: Abstract away the multi aspect of this to create a GenericHttpService.
+	// We already have the base class. Move stuff into there.
 	public abstract class GenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource> : GenericHttpService, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>
 		where TRemoteSource : Enum

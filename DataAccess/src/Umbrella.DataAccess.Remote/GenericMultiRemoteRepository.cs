@@ -13,9 +13,11 @@ using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
 {
+	// TODO: Same here - create a GenericRemoteRepository.
 	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
 		where TRemoteSource : Enum
@@ -60,8 +62,15 @@ namespace Umbrella.DataAccess.Remote
 		private readonly IReadOnlyDictionary<Type, TService> _typedServiceDictionary;
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the lookup normalizer.
+		/// </summary>
 		protected ILookupNormalizer LookupNormalizer { get; }
 		protected IReadOnlyList<TService> ServiceList { get; }
 		protected IReadOnlyDictionary<TRemoteSource, TService> ServiceDictionary { get; }
@@ -84,6 +93,7 @@ namespace Umbrella.DataAccess.Remote
 		#endregion
 
 		#region IGenericRemoteRepository Members
+		/// <inheritdoc />
 		public virtual async Task<(bool success, string message, TItem result)> FindByIdAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default, TRepoOptions options = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -114,6 +124,7 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, IReadOnlyCollection<TItem> results)> FindAllAsync(int pageNumber = 0, int pageSizeRequest = 20, CancellationToken cancellationToken = default, TRepoOptions options = null, params SortExpression<TItem>[] sortExpressions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -256,6 +267,7 @@ namespace Umbrella.DataAccess.Remote
 		//	}
 		//}
 
+		/// <inheritdoc />
 		public virtual async Task<SaveResult<TItem>> SaveAsync(TItem item, CancellationToken cancellationToken = default, TRepoOptions options = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -306,6 +318,7 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, IReadOnlyCollection<SaveResult<TItem>> saveResults)> SaveAllAsync(IEnumerable<TItem> items, CancellationToken cancellationToken = default, TRepoOptions options = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -411,6 +424,7 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<(bool success, string message)> DeleteAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default, TRepoOptions options = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -440,6 +454,7 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures)> DeleteAllAsync(CancellationToken cancellationToken = default, TRepoOptions options = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -532,6 +547,16 @@ namespace Umbrella.DataAccess.Remote
 			return Task.FromResult(true);
 		}
 
+		/// <summary>
+		/// Overriding this method allows you to perform custom validation on the item.
+		/// By default, this calls into the <see cref="Validator.TryValidateObject(object, ValidationContext, ICollection{ValidationResult}, bool)"/> method.
+		/// By design, this doesn't recursively perform validation on the entity. If this is required, override this method and use the <see cref="IObjectGraphValidator"/>
+		/// by injecting it as a service or perform more extensive validation elsewhere.
+		/// </summary>
+		/// <param name="item">The item.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="options">The options.</param>
+		/// <returns></returns>
 		protected virtual Task<(bool isValid, List<ValidationResult> results)> ValidateItemAsync(TItem item, CancellationToken cancellationToken, TRepoOptions options)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -540,8 +565,6 @@ namespace Umbrella.DataAccess.Remote
 
 			var ctx = new ValidationContext(item);
 
-			// NB: validateAllProperties defaults to false
-			// TODO: This doesn't recursively walk object graphs!
 			bool isValid = Validator.TryValidateObject(item, ctx, lstResult, true);
 
 			return Task.FromResult((isValid, lstResult));
