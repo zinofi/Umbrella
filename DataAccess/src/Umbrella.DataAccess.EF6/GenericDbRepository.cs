@@ -17,10 +17,23 @@ using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.EF6
 {
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbRepository<TEntity, TDbContext, RepoOptions>
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -32,11 +45,25 @@ namespace Umbrella.DataAccess.EF6
 		}
 	}
 
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : GenericDbRepository<TEntity, TDbContext, TRepoOptions, int>
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -48,12 +75,27 @@ namespace Umbrella.DataAccess.EF6
 		}
 	}
 
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -65,6 +107,14 @@ namespace Umbrella.DataAccess.EF6
 		}
 	}
 
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey>, IGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
@@ -73,10 +123,21 @@ namespace Umbrella.DataAccess.EF6
 		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Protected Properties
+		/// <summary>
+		/// Gets the entity validator.
+		/// </summary>
 		protected IEntityValidator EntityValidator { get; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -90,6 +151,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Save
+		/// <inheritdoc />
 		public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -152,6 +214,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -203,6 +266,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Delete
+		/// <inheritdoc />
 		public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -238,6 +302,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -262,12 +327,22 @@ namespace Umbrella.DataAccess.EF6
 				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entities.", exc);
 			}
 		}
-
-		protected virtual string FormatEntityIds(IEnumerable<TEntity> entities) => string.Join(",", entities.Select(x => x.Id));
 		#endregion
 
 		#region Protected Methods
+		/// <summary>
+		/// Formats the entity ids as comma-delimited string. This is only used for logging purposes to record the ids.
+		/// </summary>
+		/// <param name="entities">The entities.</param>
+		/// <returns>A comma-delimited string of entity ids.</returns>
+		protected virtual string FormatEntityIds(IEnumerable<TEntity> entities) => string.Join(",", entities.Select(x => x.Id));
 
+		/// <summary>
+		/// Performs save operations common to all Save methods. 
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="addToContext">if set to <c>true</c>, adds the entity to the context.</param>
+		/// <param name="isNew">if set to <c>true</c>, specifies that the entity is new.</param>
 		protected virtual void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
 		{
 			// Assume the entity is not new initially
@@ -305,6 +380,10 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <summary>
+		/// Logs the database entity validation exception details.
+		/// </summary>
+		/// <param name="exc">The exception.</param>
 		protected virtual void LogDbEntityValidationExceptionDetails(DbEntityValidationException exc)
 		{
 			foreach (var item in exc.EntityValidationErrors)
@@ -322,9 +401,19 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <summary>
+		/// Creates a save result from the database entity validation exception.
+		/// </summary>
+		/// <param name="exc">The exception.</param>
+		/// <returns>The SaveResult.</returns>
 		protected virtual SaveResult<TEntity> CreateSaveResultFromDbEntityValidationException(DbEntityValidationException exc)
-			=> CreateSaveResultsFromDbEntityValidationException(exc).Single();
+					=> CreateSaveResultsFromDbEntityValidationException(exc).Single();
 
+		/// <summary>
+		/// Creates the save results from the database entity validation exception.
+		/// </summary>
+		/// <param name="exc">The exception.</param>
+		/// <returns>The SaveResult collection.</returns>
 		protected virtual List<SaveResult<TEntity>> CreateSaveResultsFromDbEntityValidationException(DbEntityValidationException exc)
 		{
 			var lstSaveResult = new List<SaveResult<TEntity>>();
@@ -455,7 +544,6 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region SyncDependencies
-		// TODO - NEVER: Add back generic overloads of this method
 		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, IEnumerable<RepoOptions> options)
 			where TTargetEntity : class, IEntity<TTargetEntityKey>
 			where TTargetEntityKey : IEquatable<TTargetEntityKey>
@@ -510,6 +598,14 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Sanitize Methods
+		/// <summary>
+		/// Determines whether the specified entity is empty.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="repoOptions">The options.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns><see langword="true" /> if it is empty, otherwise <see langword="false" /></returns>
 		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -517,6 +613,14 @@ namespace Umbrella.DataAccess.EF6
 			return Task.FromResult(false);
 		}
 
+		/// <summary>
+		/// Sanitizes the entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="repoOptions">The options.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A task to await sanitization of the entity.</returns>
 		protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions> childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

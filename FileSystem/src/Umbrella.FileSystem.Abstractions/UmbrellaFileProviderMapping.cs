@@ -41,9 +41,12 @@ namespace Umbrella.FileSystem.Abstractions
 		{
 			if (AppRelativeFolderPaths != null)
 			{
+				// When sanitizing the paths, ensure they all have a trailing '/'.
+				// This is to avoid an issue encountered when matching paths that start with the same name,
+				// e.g. /folder-cool and /folder-coolio would both be matched. Adding a trailing '/' resolves this.
 				AppRelativeFolderPaths = AppRelativeFolderPaths
 					.Where(x => !string.IsNullOrWhiteSpace(x) && x[0] == '/')
-					.Select(x => x.TrimToLowerInvariant())
+					.Select(x => x.TrimToLowerInvariant().TrimEnd('/') + "/")
 					.Distinct()
 					.ToList()
 					.AsReadOnly();

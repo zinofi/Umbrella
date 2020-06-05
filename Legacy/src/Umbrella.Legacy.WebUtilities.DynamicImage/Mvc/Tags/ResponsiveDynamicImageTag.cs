@@ -75,7 +75,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 
 			imgTag.MergeAttributes(HtmlAttributes);
 
-			//TODO - NEVER: Need to add a caching layer
+			//TODO: Need to add a caching layer
 			return imgTag.ToString(TagRenderMode.SelfClosing);
 		}
 

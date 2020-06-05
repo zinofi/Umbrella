@@ -17,6 +17,11 @@ using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore
 {
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbRepository<TEntity, TDbContext, RepoOptions>
 		where TEntity : class, IEntity<int>
 		where TDbContext : DbContext
@@ -42,6 +47,12 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		}
 	}
 
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : GenericDbRepository<TEntity, TDbContext, TRepoOptions, int>
 		where TEntity : class, IEntity<int>
 		where TDbContext : DbContext
@@ -68,6 +79,13 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		}
 	}
 
+	/// <summary>
+	/// A general purpose base class containing core repository functionality.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : DbContext
@@ -197,15 +215,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			}
 		}
 
-		protected bool IsConcurrencyTokenMismatch(TEntity entity)
-			=> !entity.Id.Equals(default) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
-
-		protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
-		{
-			if (IsConcurrencyTokenMismatch(entity))
-				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
-		}
-
 		/// <inheritdoc />
 		public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 		{
@@ -306,11 +315,32 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			}
 		}
 
-		protected virtual string FormatEntityIds(IEnumerable<TEntity> entities) => string.Join(",", entities.Select(x => x.Id));
+		
 		#endregion
 
 		#region Protected Methods
+		protected bool IsConcurrencyTokenMismatch(TEntity entity)
+			=> !entity.Id.Equals(default) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
 
+		protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
+		{
+			if (IsConcurrencyTokenMismatch(entity))
+				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
+		}
+
+		/// <summary>
+		/// Formats the entity ids as comma-delimited string. This is only used for logging purposes to record the ids.
+		/// </summary>
+		/// <param name="entities">The entities.</param>
+		/// <returns>A comma-delimited string of entity ids.</returns>
+		protected virtual string FormatEntityIds(IEnumerable<TEntity> entities) => string.Join(",", entities.Select(x => x.Id));
+
+		/// <summary>
+		/// Performs save operations common to all Save methods. 
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="addToContext">if set to <c>true</c>, adds the entity to the context.</param>
+		/// <param name="isNew">if set to <c>true</c>, specifies that the entity is new.</param>
 		protected virtual void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
 		{
 			// Assume the entity is not new initially
@@ -520,7 +550,15 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		}
 		#endregion
 
-		#region Sanitize Methods
+		#region Sanitize Methods		
+		/// <summary>
+		/// Determines whether the specified entity is empty.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns><see langword="true" /> if it is empty, otherwise <see langword="false" /></returns>
 		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, IEnumerable<RepoOptions>? childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -528,6 +566,14 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			return Task.FromResult(false);
 		}
 
+		/// <summary>
+		/// Sanitizes the entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="childOptions">The child options.</param>
+		/// <returns>A task to await sanitization of the entity.</returns>
 		protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, IEnumerable<RepoOptions>? childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -539,8 +585,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		#endregion
 
 		#region Public Methods
-
-		// TODO - UM: Why is this public? Check the EF6 code.
 		/// <inheritdoc />
 		public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
 		{

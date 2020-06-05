@@ -14,7 +14,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 		/// </summary>
 		/// <param name="response">The response.</param>
 		/// <param name="statusCode">The status code.</param>
-		/// <param name="sendNullBody">if set to <see langword="true"/>, sets <see cref="HttpResponse.Body" /> to <see cref="Stream.Null"/>.</param>
+		/// <param name="sendNullBody">If set to <see langword="true"/>, sets <see cref="HttpResponse.Body" /> to <see cref="Stream.Null"/>.</param>
 		public static void SendStatusCode(this HttpResponse response, HttpStatusCode statusCode, bool sendNullBody = true)
 		{
 			response.StatusCode = (int)statusCode;
