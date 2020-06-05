@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Umbrella.Utilities;
 using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Middleware

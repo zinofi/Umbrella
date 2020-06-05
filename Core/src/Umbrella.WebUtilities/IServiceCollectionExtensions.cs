@@ -29,6 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="webpackBundleUtilityOptionsBuilder">The optional <see cref="WebpackBundleUtilityOptions"/> builder.</param>
 		/// <param name="internetExplorerCacheHeaderMiddlewareOptionsBuilder">The optional <see cref="InternetExplorerCacheHeadersMiddlewareOptions"/> builder.</param>
 		/// <param name="umbrellaWebHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaWebHostingEnvironmentOptions"/> builder.</param>
+		/// <param name="queryStringParameterToHttpHeaderMiddlewareOptionsBuilder">The optional <see cref="QueryStringParameterToHttpHeaderMiddlewareOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilities(
@@ -37,7 +38,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null,
 			Action<IServiceProvider, WebpackBundleUtilityOptions> webpackBundleUtilityOptionsBuilder = null,
 			Action<IServiceProvider, InternetExplorerCacheHeadersMiddlewareOptions> internetExplorerCacheHeaderMiddlewareOptionsBuilder = null,
-			Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions> umbrellaWebHostingEnvironmentOptionsBuilder = null)
+			Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions> umbrellaWebHostingEnvironmentOptionsBuilder = null,
+			Action<IServiceProvider, QueryStringParameterToHttpHeaderMiddlewareOptions> queryStringParameterToHttpHeaderMiddlewareOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -53,6 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ConfigureUmbrellaOptions(webpackBundleUtilityOptionsBuilder);
 			services.ConfigureUmbrellaOptions(internetExplorerCacheHeaderMiddlewareOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaWebHostingEnvironmentOptionsBuilder);
+			services.ConfigureUmbrellaOptions(queryStringParameterToHttpHeaderMiddlewareOptionsBuilder);
 
 			return services;
 		}
