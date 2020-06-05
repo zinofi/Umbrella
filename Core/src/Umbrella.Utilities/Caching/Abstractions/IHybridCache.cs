@@ -10,7 +10,7 @@ using Umbrella.Utilities.Options;
 namespace Umbrella.Utilities.Caching.Abstractions
 {
 	/// <summary>
-	/// A multi cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
+	/// A hybrid cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
 	/// The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked so that transient errors with the cache, e.g. a Redis error where
 	/// the service is being restarted, does not cause a hard application failure.
 	/// </summary>

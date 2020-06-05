@@ -3,7 +3,10 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -22,25 +25,42 @@ using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.Legacy.WebUtilities.Hosting
 {
+	/// <summary>
+	/// An implementation of the <see cref="IUmbrellaWebHostingEnvironment" /> for use with ASP.NET applications.
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.Hosting.UmbrellaHostingEnvironment" />
+	/// <seealso cref="Umbrella.WebUtilities.Hosting.IUmbrellaWebHostingEnvironment" />
 	public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaWebHostingEnvironment"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
 		public UmbrellaWebHostingEnvironment(
 			ILogger<UmbrellaWebHostingEnvironment> logger,
 			UmbrellaHostingEnvironmentOptions options,
-			IMemoryCache cache,
+			IHybridCache cache,
 			ICacheKeyUtility cacheKeyUtility)
 			: base(logger, options, cache, cacheKeyUtility)
 		{
 			var fileProviderLazy = new Lazy<IFileProvider>(() => new PhysicalFileProvider(System.Web.Hosting.HostingEnvironment.MapPath("~/")));
 
-			ContentRootFileProvider = fileProviderLazy;
-			WebRootFileProvider = fileProviderLazy;
+			FileProvider = fileProviderLazy;
 		}
 		#endregion
 
 		#region IUmbrellaHostingEnvironment Members
-		public override string MapPath(string virtualPath, bool fromContentRoot = true)
+		/// <inheritdoc />
+		public override string MapPath(string virtualPath) => MapPath(virtualPath, true);
+		#endregion
+
+		#region IUmbrellaWebHostingEnvironment Members
+		/// <inheritdoc />
+		public virtual string MapPath(string virtualPath, bool fromContentRoot)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
@@ -54,19 +74,16 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
 				string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 2);
 
-				return Cache.GetOrCreate(key, entry =>
+				return Cache.GetOrCreate(key, () =>
 				{
-					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
-
 					if (virtualPath == "~/")
 						return System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
 
 					string cleanedPath = TransformPathForFileProvider(virtualPath);
 
-					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider.Value : WebRootFileProvider.Value;
-
-					return fileProvider.GetFileInfo(cleanedPath)?.PhysicalPath;
-				});
+					return FileProvider.Value.GetFileInfo(cleanedPath)?.PhysicalPath;
+				},
+				Options);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
 			{
@@ -78,9 +95,8 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 					ArrayPool<string>.Shared.Return(cacheKeyParts);
 			}
 		}
-		#endregion
 
-		#region IUmbrellaWebHostingEnvironment Members
+		/// <inheritdoc />
 		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
@@ -101,13 +117,10 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 				cacheKeyParts[6] = watchWhenAppendVersion.ToString();
 
 				string key = CacheKeyUtility.Create<UmbrellaWebHostingEnvironment>(cacheKeyParts, 7);
+				string cleanedPath = TransformPathForFileProvider(virtualPath);
 
-				return Cache.GetOrCreate(key, entry =>
+				return Cache.GetOrCreate(key, () =>
 				{
-					entry.SetSlidingExpiration(Options.CacheTimeout).SetPriority(Options.CachePriority);
-
-					string cleanedPath = TransformPath(virtualPath, false, true, true);
-
 					string virtualApplicationPath = HttpRuntime.AppDomainAppVirtualPath != "/"
 						? HttpRuntime.AppDomainAppVirtualPath
 						: "";
@@ -122,20 +135,12 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
 					if (appendVersion)
 					{
-						string physicalPath = MapPath(cleanedPath, mapFromContentRoot);
-
-						if(string.IsNullOrWhiteSpace(physicalPath))
-							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
-
-						var fileInfo = new FileInfo(physicalPath);
+						IFileInfo fileInfo = FileProvider.Value.GetFileInfo(cleanedPath);
 
 						if (!fileInfo.Exists)
-							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {physicalPath}.");
+							throw new FileNotFoundException($"The specified virtual path {virtualPath} does not exist on disk at {fileInfo.PhysicalPath}.");
 
-						if (watchWhenAppendVersion)
-							entry.AddExpirationToken(new PhysicalFileChangeToken(fileInfo));
-
-						long versionHash = fileInfo.LastWriteTimeUtc.ToFileTimeUtc() ^ fileInfo.Length;
+						long versionHash = fileInfo.LastModified.UtcDateTime.ToFileTimeUtc() ^ fileInfo.Length;
 						string version = Convert.ToString(versionHash, 16);
 
 						string qsStart = url.Contains("?") ? "&" : "?";
@@ -144,7 +149,9 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 					}
 
 					return url;
-				});
+				},
+				Options,
+				() => appendVersion && watchWhenAppendVersion ? new[] { FileProvider.Value.Watch(cleanedPath) } : null);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot, watchWhenAppendVersion }, returnValue: true))
 			{
@@ -154,6 +161,24 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 			{
 				if (cacheKeyParts != null)
 					ArrayPool<string>.Shared.Return(cacheKeyParts);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<string> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
+
+			try
+			{
+				return fromContentRoot
+					? await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken)
+					: await GetFileContentAsync("Web", FileProvider.Value, virtualPath, cache, watch, cancellationToken);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, cache, watch }, returnValue: true))
+			{
+				throw new UmbrellaWebException("There has been a problem reading the contents of the specified file.", exc);
 			}
 		}
 		#endregion

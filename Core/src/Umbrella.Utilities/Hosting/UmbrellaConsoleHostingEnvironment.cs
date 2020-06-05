@@ -11,7 +11,7 @@ using Umbrella.Utilities.Hosting.Options;
 
 namespace Umbrella.Utilities.Hosting
 {
-	// TODO: Write unit tests for this and fix issues with paths with slashes, etc.	
+	// TODO: Write unit tests for this and fix issues with paths with slashes, etc.
 	/// <summary>
 	/// An implementation of the <see cref="UmbrellaHostingEnvironment" /> type for use with console applications.
 	/// </summary>
@@ -28,40 +28,33 @@ namespace Umbrella.Utilities.Hosting
 		public UmbrellaConsoleHostingEnvironment(
 			ILogger<UmbrellaConsoleHostingEnvironment> logger,
 			UmbrellaConsoleHostingEnvironmentOptions options,
-			IMemoryCache cache,
+			IHybridCache cache,
 			ICacheKeyUtility cacheKeyUtility)
 			: base(logger, options, cache, cacheKeyUtility)
 		{
 			var fileProviderLazy = new Lazy<IFileProvider>(() => new PhysicalFileProvider(options.BaseDirectory));
 
-			ContentRootFileProvider = fileProviderLazy;
-			WebRootFileProvider = fileProviderLazy;
+			FileProvider = fileProviderLazy;
 		}
 
 		/// <inheritdoc />
-		public override string MapPath(string virtualPath, bool fromContentRoot = true)
+		public override string MapPath(string virtualPath)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-			if (!fromContentRoot)
-				throw new ArgumentException("This value must always be true in a console application.", nameof(fromContentRoot));
-
 			try
 			{
-				string key = CacheKeyUtility.Create<UmbrellaConsoleHostingEnvironment>(new string[] { virtualPath, fromContentRoot.ToString() });
+				string key = CacheKeyUtility.Create<UmbrellaConsoleHostingEnvironment>(new string[] { virtualPath });
 
-				return Cache.GetOrCreate(key, entry =>
+				return Cache.GetOrCreate(key, () =>
 				{
-					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
-
 					string cleanedPath = TransformPathForFileProvider(virtualPath);
 
-					IFileProvider fileProvider = fromContentRoot ? ContentRootFileProvider.Value : WebRootFileProvider.Value;
-
-					return fileProvider.GetFileInfo(cleanedPath)?.PhysicalPath;
-				});
+					return FileProvider.Value.GetFileInfo(cleanedPath)?.PhysicalPath;
+				},
+				Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }))
+			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath }))
 			{
 				throw new UmbrellaException("There was a problem mapping the path.", exc);
 			}

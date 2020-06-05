@@ -12,6 +12,7 @@ using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
+using Umbrella.WebUtilities.Hosting;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 
@@ -68,7 +69,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 			var cache = new Mock<IHybridCache>();
 			cache.SetReturnsDefault<Task<(string, byte[])>>(Task.FromResult(("br", _testContent)));
 
-			var hostingEnvironment = new Mock<IUmbrellaHostingEnvironment>();
+			var hostingEnvironment = new Mock<IUmbrellaWebHostingEnvironment>();
 			hostingEnvironment.Setup(x => x.MapPath("~/", true)).Returns(@"C:\Temp");
 
 			var httpHeaderValueUtility = new Mock<IHttpHeaderValueUtility>();

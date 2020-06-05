@@ -1,15 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Caching
+﻿namespace Umbrella.Utilities.Caching
 {
-    public enum HybridCacheAnalyticsMode
-    {
-        None = 0,
-        TrackKeys = 1,
-        TrackKeysAndHits = 3
-    }
+	/// <summary>
+	/// The analytics mode for the <see cref="HybridCache"/>.
+	/// </summary>
+	public enum HybridCacheAnalyticsMode
+	{
+		/// <summary>
+		/// Disables analytics.
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Enables tracking of cache keys only.
+		/// </summary>
+		TrackKeys = 1,
+
+		/// <summary>
+		/// Enables tracking of both cache keys and a count of cache hits for each key.
+		/// </summary>
+		TrackKeysAndHits = 3
+	}
 }

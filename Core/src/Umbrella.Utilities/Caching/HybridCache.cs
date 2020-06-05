@@ -17,7 +17,7 @@ using Umbrella.Utilities.Options;
 namespace Umbrella.Utilities.Caching
 {
 	/// <summary>
-	/// A multi cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
+	/// A hybrid cache that allows cache items to be stored in an <see cref="IMemoryCache"/> or a <see cref="IDistributedCache"/> implementation.
 	/// The cache includes the option to allow internal errors that occur when adding or retrieving items from the caches to be masked in the event of transient errors.
 	/// </summary>
 	/// <seealso cref="IHybridCache" />
@@ -28,18 +28,57 @@ namespace Umbrella.Utilities.Caching
 		private CancellationTokenSource _nukeTokenSource = new CancellationTokenSource();
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the options.
+		/// </summary>
 		protected HybridCacheOptions Options { get; }
+
+		/// <summary>
+		/// Gets the lookup normalizer.
+		/// </summary>
 		protected ILookupNormalizer LookupNormalizer { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether to track cache keys.
+		/// </summary>
 		protected bool TrackKeys { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether to track cache keys and hits.
+		/// </summary>
 		protected bool TrackKeysAndHits { get; }
+
+		/// <summary>
+		/// Gets the distributed cache.
+		/// </summary>
 		protected IDistributedCache DistributedCache { get; }
+
+		/// <summary>
+		/// Gets the memory cache.
+		/// </summary>
 		protected IMemoryCache MemoryCache { get; }
+
+		/// <summary>
+		/// Gets the memory cache meta entry dictionary.
+		/// </summary>
 		protected ConcurrentDictionary<string, HybridCacheMetaEntry> MemoryCacheMetaEntryDictionary { get; } = new ConcurrentDictionary<string, HybridCacheMetaEntry>();
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="HybridCache"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="distributedCache">The distributed cache.</param>
+		/// <param name="memoryCache">The memory cache.</param>
 		public HybridCache(
 			ILogger<HybridCache> logger,
 			HybridCacheOptions options,
@@ -58,6 +97,7 @@ namespace Umbrella.Utilities.Caching
 		#endregion
 
 		#region IHybridCache Members
+		/// <inheritdoc />
 		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -144,9 +184,11 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 			=> GetOrCreate(cacheKey, actionFunction, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
+		/// <inheritdoc />
 		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -163,9 +205,11 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheThrowOnFailure, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
+		/// <inheritdoc />
 		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan> expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -256,9 +300,11 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
+		/// <inheritdoc />
 		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -292,6 +338,7 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -326,6 +373,7 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public T Set<T>(string cacheKey, T value, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -367,9 +415,11 @@ namespace Umbrella.Utilities.Caching
 			return value;
 		}
 
+		/// <inheritdoc />
 		public T Set<T>(string cacheKey, T value, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 			=> Set(cacheKey, value, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
+		/// <inheritdoc />
 		public async Task<T> SetAsync<T>(string cacheKey, T value, CancellationToken cancellationToken = default, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -411,18 +461,11 @@ namespace Umbrella.Utilities.Caching
 			return value;
 		}
 
+		/// <inheritdoc />
 		public Task<T> SetAsync<T>(string cacheKey, T value, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>> expirationTokensBuilder = null)
 			=> SetAsync(cacheKey, value, cancellationToken, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
-		/// <summary>
-		/// Gets all memory cache meta entries.
-		/// </summary>
-		/// <returns>A collection of <see cref="HybridCacheMetaEntry"/> instances.</returns>
-		/// <exception cref="HybridCacheException">
-		/// Meta entries cannot be retrieved when analytics is disabled.
-		/// or
-		/// There has been a problem reading the memory cache keys.
-		/// </exception>
+		/// <inheritdoc />
 		public IReadOnlyCollection<HybridCacheMetaEntry> GetAllMemoryCacheMetaEntries()
 		{
 			if (!TrackKeys)
@@ -438,15 +481,7 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
-		/// <summary>
-		/// Removes the item with the specified <paramref name="cacheKey"/> from the cache.
-		/// </summary>
-		/// <typeparam name="T">The type of the cached item.</typeparam>
-		/// <param name="cacheKey">The cache key.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="cacheMode">The cache mode.</param>
-		/// <returns>A task which can be awaited to indicate completion.</returns>
-		/// <exception cref="HybridCacheException">There has been a problem removing the item with the key: " + <paramref name="cacheKey"/></exception>
+		/// <inheritdoc />
 		public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -467,10 +502,7 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
-		/// <summary>
-		/// Clears the memory cache.
-		/// </summary>
-		/// <exception cref="HybridCacheException">There was a problem clearing all items from the memory cache.</exception>
+		/// <inheritdoc />
 		public void ClearMemoryCache()
 		{
 			_nukeReaderWriterLock.EnterWriteLock();

@@ -20,7 +20,7 @@ namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting
 		public UmbrellaWebHostingEnvironmentBenchmark()
 		{
 			var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
-			var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+			var memoryCache = CoreUtilitiesMocks.CreateHybridCache();
 			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
 
 			var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);

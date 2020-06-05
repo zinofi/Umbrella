@@ -43,7 +43,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
 				hostingEnvironment.Object,
 				httpContextAccessor.Object,
 				new UmbrellaWebHostingEnvironmentOptions(),
-				CreateMemoryCache(),
+				CoreUtilitiesMocks.CreateHybridCache(),
 				CoreUtilitiesMocks.CreateCacheKeyUtility());
 		}
 
