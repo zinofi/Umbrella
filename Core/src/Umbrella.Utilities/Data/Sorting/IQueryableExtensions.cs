@@ -67,14 +67,11 @@ namespace Umbrella.Utilities.Data.Sorting
 			Guard.ArgumentNotNull(source, nameof(source));
 			Guard.ArgumentNotNull(keySelector, nameof(keySelector));
 
-			switch (direction)
+			return direction switch
 			{
-				default:
-				case SortDirection.Ascending:
-					return comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer);
-				case SortDirection.Descending:
-					return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
-			}
+				SortDirection.Descending => comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer),
+				_ => comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer),
+			};
 		}
 	}
 }

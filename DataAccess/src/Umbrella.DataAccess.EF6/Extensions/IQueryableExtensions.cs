@@ -26,6 +26,7 @@ namespace Umbrella.DataAccess.EF6.Extensions
 
 			foreach (var item in map.Includes)
 			{
+				// TODO: Consume the map.PropertyPaths
 				query = query.Include(item);
 			}
 

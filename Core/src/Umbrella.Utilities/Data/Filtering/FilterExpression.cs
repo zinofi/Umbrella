@@ -51,8 +51,15 @@ namespace Umbrella.Utilities.Data.Filtering
 			Value = value;
 			Type = type;
 
+			// TODO: We can cache here internally which should help a bit. NO IT WON'T!
+			// However, the incoming expression won't be the same object. That's the real problem.
+			// What about creating an overloaded constructor where we can provide the descriptor and use that to perform
+			// lookups.
+			// Or instead of allowing new instances of this class to be created directly, go via a factory which can
+			// do the caching for us. Hmmmm...
+
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
-			_lazyMemberName = new Lazy<string>(() => expression.GetMemberName());
+			_lazyMemberName = new Lazy<string>(() => expression.AsPath());
 		}
 
 		/// <summary>
@@ -74,7 +81,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>
 		/// A <see cref="string" /> that represents this instance.
 		/// </returns>
-		public override string ToString() => $"{MemberName} - {Value.ToString()} - {Type}";
+		public override string ToString() => $"{MemberName} - {Value} - {Type}";
 
 		/// <summary>
 		/// Converts to this instance to a <see cref="FilterExpressionSerializable"/>.

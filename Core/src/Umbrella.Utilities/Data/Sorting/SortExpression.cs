@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Data.Sorting
 			Expression = expression;
 
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
-			_lazyMemberName = new Lazy<string>(() => expression.GetMemberName());
+			_lazyMemberName = new Lazy<string>(() => expression.AsPath());
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <returns>
 		/// A <see cref="string" /> that represents this instance.
 		/// </returns>
-		public override string ToString() => $"{MemberName} - {Direction.ToString()}";
+		public override string ToString() => $"{MemberName} - {Direction}";
 
 		/// <summary>
 		/// Converts to this instance to a <see cref="SortExpressionSerializable"/> instance.

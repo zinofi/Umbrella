@@ -20,7 +20,9 @@ namespace Umbrella.DataAccess.Abstractions
 			{
 				Includes.Add(path);
 
-				string propertyName = path.GetMemberName(false);
+				// TODO: Consider changing PropertyNames to PropertyPaths here so the paths are effectively generated once
+				// as IncludeMap is static most of the time.
+				string propertyName = path.AsPath();
 
 				if (!string.IsNullOrEmpty(propertyName))
 					PropertyNames.Add(propertyName);
