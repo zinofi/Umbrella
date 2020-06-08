@@ -1127,26 +1127,26 @@ namespace Umbrella.FileSystem.Test
 			await provider.DeleteAsync(file);
 		}
 
-		[Theory]
-		[Order(100)]
-		[MemberData(nameof(ProvidersMemberData))]
-		public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
-		{
-			var provider = providerFunc();
+		//[Theory]
+		//[Order(100)]
+		//[MemberData(nameof(ProvidersMemberData))]
+		//public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
+		//{
+		//	var provider = providerFunc();
 
-			// Create a top level file at the root of the directory.
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+		//	// Create a top level file at the root of the directory.
+		//	string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
-			byte[] bytes = File.ReadAllBytes(physicalPath);
+		//	byte[] bytes = File.ReadAllBytes(physicalPath);
 
-			string subpath = $"/images/{TestFileName}";
-			await provider.SaveAsync(subpath, bytes, false);
+		//	string subpath = $"/images/{TestFileName}";
+		//	await provider.SaveAsync(subpath, bytes, false);
 
-			await provider.DeleteDirectoryAsync("/images");
+		//	await provider.DeleteDirectoryAsync("/images");
 
-			// Assert
-			Assert.False(await provider.ExistsAsync(subpath));
-		}
+		//	// Assert
+		//	Assert.False(await provider.ExistsAsync(subpath));
+		//}
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
