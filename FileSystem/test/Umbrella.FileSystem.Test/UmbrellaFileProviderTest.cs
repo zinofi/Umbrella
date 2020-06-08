@@ -15,6 +15,8 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
 using Xunit.Extensions.Ordering;
 
+[assembly: TestFramework("Xunit.Extensions.Ordering.TestFramework", "Xunit.Extensions.Ordering")]
+
 namespace Umbrella.FileSystem.Test
 {
 	public class UmbrellaFileProviderTest
