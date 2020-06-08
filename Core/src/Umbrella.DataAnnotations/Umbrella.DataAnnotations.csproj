@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ClientScripts\*.js" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="ClientScripts\jquery.validate.umbrella.unobtrusive.js" />
   </ItemGroup>
 
   <ItemGroup>
