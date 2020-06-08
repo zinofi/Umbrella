@@ -9,12 +9,14 @@ using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Utilities.Compilation;
-using Umbrella.Utilities.Integration.NewtonsoftJson;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
 using Xunit.Extensions.Ordering;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+[assembly: TestCaseOrderer("Xunit.Extensions.Ordering.TestCaseOrderer", "Xunit.Extensions.Ordering")]
+[assembly: TestCollectionOrderer("Xunit.Extensions.Ordering.CollectionOrderer", "Xunit.Extensions.Ordering")]
 [assembly: TestFramework("Xunit.Extensions.Ordering.TestFramework", "Xunit.Extensions.Ordering")]
 
 namespace Umbrella.FileSystem.Test
@@ -78,8 +80,6 @@ namespace Umbrella.FileSystem.Test
 					ProvidersAndPathsMemberData.Add(new object[] { provider, path });
 				}
 			}
-
-			UmbrellaJsonIntegration.Initialize();
 		}
 
 		[Theory]
@@ -1127,26 +1127,26 @@ namespace Umbrella.FileSystem.Test
 			await provider.DeleteAsync(file);
 		}
 
-		//[Theory]
-		//[Order(100)]
-		//[MemberData(nameof(ProvidersMemberData))]
-		//public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
-		//{
-		//	var provider = providerFunc();
+		[Theory]
+		[Order(100)]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
 
-		//	// Create a top level file at the root of the directory.
-		//	string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			// Create a top level file at the root of the directory.
+			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
-		//	byte[] bytes = File.ReadAllBytes(physicalPath);
+			byte[] bytes = File.ReadAllBytes(physicalPath);
 
-		//	string subpath = $"/images/{TestFileName}";
-		//	await provider.SaveAsync(subpath, bytes, false);
+			string subpath = $"/images/{TestFileName}";
+			await provider.SaveAsync(subpath, bytes, false);
 
-		//	await provider.DeleteDirectoryAsync("/images");
+			await provider.DeleteDirectoryAsync("/images");
 
-		//	// Assert
-		//	Assert.False(await provider.ExistsAsync(subpath));
-		//}
+			// Assert
+			Assert.False(await provider.ExistsAsync(subpath));
+		}
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
