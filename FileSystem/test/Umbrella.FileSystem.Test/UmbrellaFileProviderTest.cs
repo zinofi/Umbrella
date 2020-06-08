@@ -13,6 +13,7 @@ using Umbrella.Utilities.Integration.NewtonsoftJson;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
+using Xunit.Extensions.Ordering;
 
 namespace Umbrella.FileSystem.Test
 {
@@ -1125,6 +1126,7 @@ namespace Umbrella.FileSystem.Test
 		}
 
 		[Theory]
+		[Order(100)]
 		[MemberData(nameof(ProvidersMemberData))]
 		public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
 		{
