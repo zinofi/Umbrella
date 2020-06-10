@@ -1,6 +1,6 @@
 [
   {
-    "outputFileName": "ClientScripts/jquery.validate.umbrella.unobtrusive.js",
+    "outputFileName": "ClientScripts/jquery.validate.umbrella.unobtrusive.min.js",
     "inputFiles": [
       "ClientScripts/jquery.validate.umbrella.unobtrusive.js"
     ]

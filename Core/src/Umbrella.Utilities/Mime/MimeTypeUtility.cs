@@ -787,7 +787,8 @@ namespace Umbrella.Utilities.Mime
 			["movie"] = "video/x-sgi-movie",
 			["smv"] = "video/x-smv",
 			["ice"] = "x-conference/x-cooltalk",
-			["cr2"] = "image/x-canon-cr2"
+			["cr2"] = "image/x-canon-cr2",
+			["mov"] = "video/quicktime"
 		};
 		#endregion
 

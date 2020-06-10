@@ -59,9 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\EmbeddedUserControl.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    <Compile Update="Controls\EmbeddedUserControl.cs" />
   </ItemGroup>
 
 </Project>
