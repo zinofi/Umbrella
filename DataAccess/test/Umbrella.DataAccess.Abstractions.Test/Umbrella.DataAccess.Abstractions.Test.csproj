@@ -1,11 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
+    <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;AzureDevOps</Configurations>
   </PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	
   <ItemGroup>
     <Compile Remove="CodeCoverage\**" />
     <Compile Remove="TestResults\**" />
