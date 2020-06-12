@@ -1139,10 +1139,10 @@ namespace Umbrella.FileSystem.Test
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
-			string subpath = $"/images/{TestFileName}";
+			string subpath = $"/tempfolder/{TestFileName}";
 			await provider.SaveAsync(subpath, bytes, false);
 
-			await provider.DeleteDirectoryAsync("/images");
+			await provider.DeleteDirectoryAsync("/tempfolder");
 
 			// Assert
 			Assert.False(await provider.ExistsAsync(subpath));
