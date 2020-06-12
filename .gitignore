@@ -4,7 +4,6 @@
 
 /.vs
 *.user
-/TestResults
 bin
 obj
 /Samples/Umbrella.AspNetCore.Samples/wwwroot/lib
@@ -18,3 +17,6 @@ BenchmarkDotNet.Artifacts
 /DynamicImage/test/Umbrella.DynamicImage.Impl.Test/Output
 *.coverage
 /packages
+CodeCoverage
+TestResults
+coverage.json

@@ -4,64 +4,96 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Umbrella.DataAccess.Abstractions.Exceptions;
 
 namespace Umbrella.DataAccess.Abstractions
 {
+	/// <summary>
+	/// A utility used by derived DbContext types to coordinate code execution with repositorites.
+	/// The lifetime of this utility is registered with the DI container as Scoped to tie it to the lifetime of the DbContext.
+	/// </summary>
+	/// <seealso cref="Umbrella.DataAccess.Abstractions.IUmbrellaDbContextHelper" />
 	public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 	{
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the dictionary containing the pending actions to be executed after <see cref="SaveChanges(Func{int})"/> or <see cref="SaveChangesAsync(Func{CancellationToken, Task{int}}, CancellationToken)"/> is called.
+		/// </summary>
 		protected Dictionary<object, Func<CancellationToken, Task>> PostSaveChangesSaveActionDictionary { get; } = new Dictionary<object, Func<CancellationToken, Task>>();
 
-		#region Constructors
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaDbContextHelper"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
 		public UmbrellaDbContextHelper(ILogger<UmbrellaDbContextHelper> logger)
 		{
 			Log = logger;
 		}
-		#endregion
 
+		/// <inheritdoc />
 		public virtual void RegisterPostSaveChangesAction(object entity, Func<CancellationToken, Task> wrappedAction)
 		{
-			PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
+			try
+			{
+				PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
 
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(message: "Post save callback registered");
+				if (Log.IsEnabled(LogLevel.Debug))
+					Log.WriteDebug(message: "Post save callback registered");
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaDataAccessException("There was a problem registering the action.", exc);
+			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task ExecutePostSaveChangesActionsAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
-
-			// Firstly, create a copy of the callback dictionary and iterate over this
-			var dicItem = PostSaveChangesSaveActionDictionary.ToDictionary(x => x.Key, x => x.Value);
-
-			// Now clear the original dictionary so that if any of the callbacks makes a call to SaveChanges we don't end up
-			// with infinite recursion.
-			PostSaveChangesSaveActionDictionary.Clear();
-
-			// There is the potential that if this code is being executed whilst
-			// delegates are still being registered that this will throw up an error.
-			// Realistically though I can't see this happening. Not worth building in locking
-			// because of the overheads unless we encounter problems.
-			foreach (var func in dicItem.Values)
+			try
 			{
-				Task? task = func?.Invoke(cancellationToken);
+				if (Log.IsEnabled(LogLevel.Debug))
+					Log.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
 
-				if (task != null)
+				// Firstly, create a copy of the callback dictionary and iterate over this
+				var dicItem = PostSaveChangesSaveActionDictionary.ToDictionary(x => x.Key, x => x.Value);
+
+				// Now clear the original dictionary so that if any of the callbacks makes a call to SaveChanges we don't end up
+				// with infinite recursion.
+				PostSaveChangesSaveActionDictionary.Clear();
+
+				// There is the potential that if this code is being executed whilst
+				// delegates are still being registered that this will throw up an error.
+				// Realistically though I can't see this happening. Not worth building in locking
+				// because of the overheads unless we encounter problems.
+				foreach (var func in dicItem.Values)
 				{
-					if (Log.IsEnabled(LogLevel.Debug))
-						Log.WriteDebug(message: "Post save callback found to execute");
+					Task task = func?.Invoke(cancellationToken);
 
-					await task.ConfigureAwait(false);
+					if (task != null)
+					{
+						if (Log.IsEnabled(LogLevel.Debug))
+							Log.WriteDebug(message: "Post save callback found to execute");
+
+						await task.ConfigureAwait(false);
+					}
 				}
-			}
 
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
+				if (Log.IsEnabled(LogLevel.Debug))
+					Log.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaDataAccessException("There was a problem executing the pending post-save actions.", exc);
+			}
 		}
 
+		/// <inheritdoc />
 		public int SaveChanges(Func<int> baseSaveChanges)
 		{
 			try
@@ -83,10 +115,11 @@ namespace Umbrella.DataAccess.Abstractions
 			}
 			catch (Exception exc) when (Log.WriteError(exc))
 			{
-				throw;
+				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<int> SaveChangesAsync(Func<CancellationToken, Task<int>> baseSaveChangesAsync, CancellationToken cancellationToken = default)
 		{
 			try
@@ -105,7 +138,7 @@ namespace Umbrella.DataAccess.Abstractions
 			}
 			catch (Exception exc) when (Log.WriteError(exc))
 			{
-				throw;
+				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}
 		}
 	}
