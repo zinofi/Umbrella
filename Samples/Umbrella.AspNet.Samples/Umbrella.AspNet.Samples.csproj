@@ -275,10 +275,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\src\Umbrella.Utilities.Integration.NewtonsoftJson\Umbrella.Utilities.Integration.NewtonsoftJson.csproj">
-      <Project>{f4596afb-6e84-430c-9d38-90bd11c264de}</Project>
-      <Name>Umbrella.Utilities.Integration.NewtonsoftJson</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj">
       <Project>{8e28e28c-be21-4707-b32b-02246d62ee79}</Project>
       <Name>Umbrella.Utilities</Name>
