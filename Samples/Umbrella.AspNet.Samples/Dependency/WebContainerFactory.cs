@@ -52,7 +52,6 @@ namespace Umbrella.AspNet.Samples.Dependency
 				options.CacheEnabled = true;
 			});
 
-			services.AddUmbrellaUtilitiesNewtonsoftJson();
 			services.AddUmbrellaWebUtilities(
 				frontEndCompressionMiddlewareOptionsBuilder: (serviceProvider, options) =>
 				{
