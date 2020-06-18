@@ -151,6 +151,11 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				return await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
 			}
+			catch(RequestFailedException exc) when (exc.ErrorCode == BlobErrorCode.ContainerBeingDeleted)
+			{
+				// The container is in the process of being deleted which is fine and means the Blob is on its way to Blob heaven.
+				return false;
+			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem determining if the file exists.", exc);
