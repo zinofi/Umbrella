@@ -14,8 +14,18 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
+	/// <summary>
+	/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses the physical disk as the underlying storage mechanism.
+	/// </summary>
+	/// <seealso cref="T:Umbrella.FileSystem.Disk.UmbrellaDiskFileProvider{Umbrella.FileSystem.Disk.UmbrellaDiskFileProviderOptions}" />
 	public class UmbrellaDiskFileProvider : UmbrellaDiskFileProvider<UmbrellaDiskFileProviderOptions>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaDiskFileProvider"/> class.
+		/// </summary>
+		/// <param name="loggerFactory">The logger factory.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public UmbrellaDiskFileProvider(
 			ILoggerFactory loggerFactory,
 			IMimeTypeUtility mimeTypeUtility,
@@ -25,10 +35,21 @@ namespace Umbrella.FileSystem.Disk
 		}
 	}
 
+	/// <summary>
+	/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses the physical disk as the underlying storage mechanism.
+	/// </summary>
+	/// <typeparam name="TOptions">The type of the options.</typeparam>
+	/// <seealso cref="T:Umbrella.FileSystem.Disk.UmbrellaDiskFileProvider{Umbrella.FileSystem.Disk.UmbrellaDiskFileProviderOptions}" />
 	public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
 		where TOptions : UmbrellaDiskFileProviderOptions
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaDiskFileProvider{TOptions}"/> class.
+		/// </summary>
+		/// <param name="loggerFactory">The logger factory.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public UmbrellaDiskFileProvider(
 			ILoggerFactory loggerFactory,
 			IMimeTypeUtility mimeTypeUtility,
@@ -38,6 +59,7 @@ namespace Umbrella.FileSystem.Disk
 		}
 		#endregion
 
+		/// <inheritdoc />
 		public Task DeleteDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -70,6 +92,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<IReadOnlyCollection<IUmbrellaFileInfo>> EnumerateDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -112,6 +135,7 @@ namespace Umbrella.FileSystem.Disk
 		}
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -136,7 +160,14 @@ namespace Umbrella.FileSystem.Disk
 		}
 		#endregion
 
-		#region Protected Methods
+		#region Protected Methods		
+		/// <summary>
+		/// Performs an access check on the file to ensure it can be accessed in the current context.
+		/// </summary>
+		/// <param name="fileInfo">The file information.</param>
+		/// <param name="physicalFileInfo">The physical file information.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/> that returns <see langword="true" /> if the file passes the check; otherwise <see langword="false" />.</returns>
 		protected virtual Task<bool> CheckFileAccessAsync(UmbrellaDiskFileInfo fileInfo, FileInfo physicalFileInfo, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

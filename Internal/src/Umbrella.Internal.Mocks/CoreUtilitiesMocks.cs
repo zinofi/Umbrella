@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,9 @@ using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Mime.Abstractions;
+using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.Internal.Mocks
 {
@@ -36,6 +40,32 @@ namespace Umbrella.Internal.Mocks
 				CreateILookupNormalizer(),
 				new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())),
 				new MemoryCache(Options.Create(new MemoryCacheOptions())));
+		}
+
+		public static IGenericTypeConverter CreateGenericTypeConverter()
+		{
+			var genericTypeConverter = new Mock<IGenericTypeConverter>();
+			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
+
+			return genericTypeConverter.Object;
+		}
+
+		public static ILogger<T> CreateLogger<T>() => new Mock<ILogger<T>>().Object;
+
+		public static ILoggerFactory CreateLoggerFactory<T>()
+		{
+			var loggerFactory = new Mock<ILoggerFactory>();
+			loggerFactory.Setup(x => x.CreateLogger(typeof(T).FullName)).Returns(CreateLogger<T>());
+
+			return loggerFactory.Object;
+		}
+
+		public static IMimeTypeUtility CreateMimeTypeUtility(params (string extension, string mimeType)[] mappings)
+		{
+			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
+			mappings.ForEach(mapping => mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith(mapping.extension)))).Returns(mapping.mimeType));
+
+			return mimeTypeUtility.Object;
 		}
 	}
 }

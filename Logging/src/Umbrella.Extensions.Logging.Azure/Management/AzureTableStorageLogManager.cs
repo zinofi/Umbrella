@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 using Umbrella.Extensions.Logging.Azure.Configuration;
 using Umbrella.Extensions.Logging.Azure.Management.Configuration;
 using Umbrella.Extensions.Logging.Azure.Management.Options;
@@ -20,6 +19,10 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Extensions.Logging.Azure.Management
 {
+	/// <summary>
+	/// A utility for managing logs stored using Azure Table Storage.
+	/// </summary>
+	/// <seealso cref="Umbrella.Extensions.Logging.Azure.Management.IAzureTableStorageLogManager" />
 	public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	{
 		#region Private Inner Classes
@@ -54,13 +57,40 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		private static readonly string s_CacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the log management options.
+		/// </summary>
 		protected AzureTableStorageLogManagementOptions LogManagementOptions { get; }
+
+		/// <summary>
+		/// Gets the storage account.
+		/// </summary>
 		protected CloudStorageAccount StorageAccount { get; }
+
+		/// <summary>
+		/// Gets the memory cache.
+		/// </summary>
 		protected IMemoryCache MemoryCache { get; }
+
+		/// <summary>
+		/// Gets the distributed cache.
+		/// </summary>
 		protected IDistributedCache DistributedCache { get; }
+
+		/// <summary>
+		/// Gets the table list cache entry options.
+		/// </summary>
 		protected DistributedCacheEntryOptions TableListCacheEntryOptions { get; }
+
+		/// <summary>
+		/// Gets the log entry meta data cache entry options.
+		/// </summary>
 		protected MemoryCacheEntryOptions LogEntryMetaDataCacheEntryOptions { get; }
 		#endregion
 
@@ -89,6 +119,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		#endregion
 
 		#region IAzureTableStorageLogManager Members
+		/// <inheritdoc />
 		public Task<(List<AzureTableStorageLogDataSource> Items, int TotalCount)> FindAllDataSourceByOptionsAsync(AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -152,6 +183,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<(List<AzureTableStorageLogTable> Items, int TotalCount)> FindAllLogTableByTablePrefixAndOptionsAsync(string tablePrefix, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -254,6 +286,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<(AzureTableStorageLogAppenderType? AppenderType, List<TableEntity> Items, int TotalCount)> FindAllTableEntityByOptionsAsync(string tablePrefix, string tableName, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -402,6 +435,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<AzureTableStorageLogDeleteOperationResult> DeleteTableByNameAsync(string tableName, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -449,6 +483,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ClearTableNameCacheAsync(string tablePrefix, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

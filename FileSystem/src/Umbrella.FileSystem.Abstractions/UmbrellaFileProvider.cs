@@ -12,6 +12,11 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions
 {
+	/// <summary>
+	/// The abstract base class upon which file provider implementations are built.
+	/// </summary>
+	/// <typeparam name="TFileInfo">The type of the file information.</typeparam>
+	/// <typeparam name="TOptions">The type of the options.</typeparam>
 	public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		where TFileInfo : IUmbrellaFileInfo
 		where TOptions : IUmbrellaFileProviderOptions
@@ -21,16 +26,46 @@ namespace Umbrella.FileSystem.Abstractions
 		private static readonly Regex _multipleSlashSelector = new Regex("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the logger factory.
+		/// </summary>
 		protected ILoggerFactory LoggerFactory { get; }
+
+		/// <summary>
+		/// Gets the MIME type utility.
+		/// </summary>
 		protected IMimeTypeUtility MimeTypeUtility { get; }
+
+		/// <summary>
+		/// Gets the generic type converter.
+		/// </summary>
 		protected IGenericTypeConverter GenericTypeConverter { get; }
+
+		/// <summary>
+		/// Gets the file information logger instance.
+		/// </summary>
 		protected ILogger<TFileInfo> FileInfoLoggerInstance { get; }
+
+		/// <summary>
+		/// Gets the options.
+		/// </summary>
 		protected TOptions Options { get; private set; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="loggerFactory">The logger factory.</param>
+		/// <param name="mimeTypeUtility">The MIME type utility.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public UmbrellaFileProvider(
 			ILogger logger,
 			ILoggerFactory loggerFactory,
@@ -46,6 +81,8 @@ namespace Umbrella.FileSystem.Abstractions
 		#endregion
 
 		#region Public Methods
+
+		/// <inheritdoc />
 		public virtual void InitializeOptions(IUmbrellaFileProviderOptions options)
 		{
 			if (Options != null)
@@ -54,6 +91,7 @@ namespace Umbrella.FileSystem.Abstractions
 			Options = (TOptions)options;
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> CreateAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -69,6 +107,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -84,6 +123,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -104,6 +144,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -119,6 +160,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -140,6 +182,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -158,6 +201,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -174,6 +218,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> MoveAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -195,6 +240,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -213,6 +259,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -229,6 +276,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -248,6 +296,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -267,6 +316,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -301,7 +351,14 @@ namespace Umbrella.FileSystem.Abstractions
 		}
 		#endregion
 
-		#region Abstract Methods
+		#region Abstract Methods		
+		/// <summary>
+		/// Gets the file at the specified <paramref name="subpath"/>.
+		/// </summary>
+		/// <param name="subpath">The subpath.</param>
+		/// <param name="isNew">Specifies if the file is new.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable Task that returns the file.</returns>
 		protected abstract Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken);
 		#endregion
 	}

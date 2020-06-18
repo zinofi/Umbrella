@@ -18,11 +18,23 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EF6
 {
+	/// <summary>
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
 	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext> : ReadOnlyGenericDbRepository<TEntity, TDbContext, RepoOptions>
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -34,12 +46,25 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 	}
 
+	/// <summary>
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, int>
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -51,13 +76,27 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 	}
 
+	/// <summary>
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -69,6 +108,14 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 	}
 
+	/// <summary>
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
 	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
@@ -76,20 +123,53 @@ namespace Umbrella.DataAccess.EF6
 		where TEntityKey : IEquatable<TEntityKey>
 		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
-		#region Protected Static Properties
+		#region Protected Static Properties		
+		/// <summary>
+		/// Gets the default repo options.
+		/// </summary>
 		protected static TRepoOptions DefaultRepoOptions { get; } = new TRepoOptions();
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the database context.
+		/// </summary>
 		protected TDbContext Context { get; }
+
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the lookup normalizer.
+		/// </summary>
 		protected ILookupNormalizer LookupNormalizer { get; }
+
+		/// <summary>
+		/// Gets the <see cref="IQueryable{TEntity}"/> from the database context for the current <typeparamref name="TEntity"/> type.
+		/// </summary>
 		protected IQueryable<TEntity> Items => Context.Set<TEntity>();
+
+		/// <summary>
+		/// Gets the current user identifier.
+		/// </summary>
 		protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
+
+		/// <summary>
+		/// Gets the current user identifier accessor.
+		/// </summary>
 		protected ICurrentUserIdAccessor<TUserAuditKey> CurrentUserIdAccessor { get; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
@@ -104,6 +184,7 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region IReadOnlyGenericRepository Members
+		/// <inheritdoc />
 		public virtual async Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -134,6 +215,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -165,6 +247,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -190,6 +273,7 @@ namespace Umbrella.DataAccess.EF6
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

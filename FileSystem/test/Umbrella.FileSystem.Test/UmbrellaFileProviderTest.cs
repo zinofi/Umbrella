@@ -8,6 +8,7 @@ using Moq;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
+using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
@@ -708,7 +709,7 @@ namespace Umbrella.FileSystem.Test
 			IUmbrellaFileInfo file = await provider.CreateAsync(subpath);
 
 			Assert.True(file.IsNew);
-			
+
 			await file.WriteFromByteArrayAsync(bytes);
 
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
@@ -1260,24 +1261,16 @@ namespace Umbrella.FileSystem.Test
 
 		private static IUmbrellaFileProvider CreateAzureBlobFileProvider()
 		{
-			var logger = new Mock<ILogger<UmbrellaAzureBlobStorageFileProvider>>();
-
-			var loggerFactory = new Mock<ILoggerFactory>();
-			loggerFactory.Setup(x => x.CreateLogger(typeof(UmbrellaAzureBlobStorageFileProvider).FullName)).Returns(logger.Object);
-
-			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
-
-			var genericTypeConverter = new Mock<IGenericTypeConverter>();
-			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
-
 			var options = new UmbrellaAzureBlobStorageFileProviderOptions
 			{
 				StorageConnectionString = StorageConnectionString
 			};
 
-			var provider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
+			var provider = new UmbrellaAzureBlobStorageFileProvider(
+				CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaAzureBlobStorageFileProvider>(),
+				CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
+				CoreUtilitiesMocks.CreateGenericTypeConverter());
+
 			provider.InitializeOptions(options);
 
 			return provider;
@@ -1285,24 +1278,16 @@ namespace Umbrella.FileSystem.Test
 
 		private static IUmbrellaFileProvider CreateDiskFileProvider()
 		{
-			var logger = new Mock<ILogger<UmbrellaDiskFileProvider>>();
-
-			var loggerFactory = new Mock<ILoggerFactory>();
-			loggerFactory.Setup(x => x.CreateLogger(typeof(UmbrellaDiskFileProvider).FullName)).Returns(logger.Object);
-
-			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
-
-			var genericTypeConverter = new Mock<IGenericTypeConverter>();
-			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
-
 			var options = new UmbrellaDiskFileProviderOptions
 			{
 				RootPhysicalPath = BaseDirectory
 			};
 
-			var provider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
+			var provider = new UmbrellaDiskFileProvider(
+				CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileProvider>(),
+				CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
+				CoreUtilitiesMocks.CreateGenericTypeConverter());
+
 			provider.InitializeOptions(options);
 
 			return provider;

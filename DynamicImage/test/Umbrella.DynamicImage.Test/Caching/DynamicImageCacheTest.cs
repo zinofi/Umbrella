@@ -176,85 +176,59 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 		private static DynamicImageDiskCache CreateDynamicImageDiskCache()
 		{
-			var cacheOptions = new DynamicImageCacheCoreOptions();
-
-			var diskCacheOptions = new DynamicImageDiskCacheOptions();
-
-			var cacheLogger = new Mock<ILogger<DynamicImageDiskCache>>();
-			var fileProviderLogger = new Mock<ILogger<UmbrellaDiskFileProvider>>();
-
-			var loggerFactory = new Mock<ILoggerFactory>();
-			loggerFactory.Setup(x => x.CreateLogger(typeof(UmbrellaDiskFileProvider).FullName)).Returns(fileProviderLogger.Object);
-
-			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.TrimToLowerInvariant().EndsWith("png")))).Returns("image/png");
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.TrimToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
-
-			var genericTypeConverter = new Mock<IGenericTypeConverter>();
-
-			var fileProviderOptions = new UmbrellaDiskFileProviderOptions
+			var options = new UmbrellaDiskFileProviderOptions
 			{
 				RootPhysicalPath = BaseDirectory
 			};
 
-			var fileProvider = new UmbrellaDiskFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
-			fileProvider.InitializeOptions(fileProviderOptions);
+			var provider = new UmbrellaDiskFileProvider(
+				CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileProvider>(),
+				CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
+				CoreUtilitiesMocks.CreateGenericTypeConverter());
+
+			provider.InitializeOptions(options);
 
 			return new DynamicImageDiskCache(
-				cacheLogger.Object,
+				CoreUtilitiesMocks.CreateLogger<DynamicImageDiskCache>(),
 				CoreUtilitiesMocks.CreateHybridCache(),
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),
-				cacheOptions,
-				fileProvider,
-				diskCacheOptions);
+				new DynamicImageCacheCoreOptions(),
+				provider,
+				new DynamicImageDiskCacheOptions());
 		}
 
 		private static DynamicImageMemoryCache CreateDynamicImageMemoryCache()
 		{
-			var cacheOptions = new DynamicImageCacheCoreOptions();
-			var memoryCacheOptions = new DynamicImageMemoryCacheOptions();
-			var cacheLogger = new Mock<ILogger<DynamicImageMemoryCache>>();
-
 			return new DynamicImageMemoryCache(
-				cacheLogger.Object,
+				CoreUtilitiesMocks.CreateLogger<DynamicImageMemoryCache>(),
 				CoreUtilitiesMocks.CreateHybridCache(),
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),
-				cacheOptions,
-				memoryCacheOptions);
+				new DynamicImageCacheCoreOptions(),
+				new DynamicImageMemoryCacheOptions());
 		}
 
 		private static DynamicImageAzureBlobStorageCache CreateDynamicImageAzureBlobStorageCache()
 		{
-			var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
-			var cacheOptions = new DynamicImageCacheCoreOptions();
-			var cacheLogger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
-			var fileProviderLogger = new Mock<ILogger<DynamicImageAzureBlobStorageCache>>();
-
-			var loggerFactory = new Mock<ILoggerFactory>();
-			loggerFactory.Setup(x => x.CreateLogger(typeof(UmbrellaAzureBlobStorageFileProvider).FullName)).Returns(fileProviderLogger.Object);
-
-			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("png")))).Returns("image/png");
-			mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith("jpg")))).Returns("image/jpg");
-
-			var genericTypeConverter = new Mock<IGenericTypeConverter>();
-
 			var options = new UmbrellaAzureBlobStorageFileProviderOptions
 			{
 				StorageConnectionString = StorageConnectionString
 			};
 
-			var fileProvider = new UmbrellaAzureBlobStorageFileProvider(loggerFactory.Object, mimeTypeUtility.Object, genericTypeConverter.Object);
-			fileProvider.InitializeOptions(options);
+			var provider = new UmbrellaAzureBlobStorageFileProvider(
+				CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaAzureBlobStorageFileProvider>(),
+				CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
+				CoreUtilitiesMocks.CreateGenericTypeConverter());
+
+			provider.InitializeOptions(options);
 
 			var blobStorageCacheOptions = new DynamicImageAzureBlobStorageCacheOptions();
 
 			return new DynamicImageAzureBlobStorageCache(
-				cacheLogger.Object,
+				CoreUtilitiesMocks.CreateLogger<DynamicImageAzureBlobStorageCache>(),
 				CoreUtilitiesMocks.CreateHybridCache(),
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),
-				cacheOptions,
-				fileProvider,
+				new DynamicImageCacheCoreOptions(),
+				provider,
 				blobStorageCacheOptions);
 		}
 	}

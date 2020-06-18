@@ -2,21 +2,23 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage.Extensions;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
+	/// <summary>
+	/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
+	/// </summary>
+	/// <seealso cref="T:Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProvider{Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProviderOptions}" />
 	public class UmbrellaAzureBlobStorageFileProvider : UmbrellaAzureBlobStorageFileProvider<UmbrellaAzureBlobStorageFileProviderOptions>
 	{
 		/// <summary>
@@ -34,9 +36,18 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 	}
 
+	/// <summary>
+	/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
+	/// </summary>
+	/// <typeparam name="TOptions">The type of the provider options.</typeparam>
+	/// <seealso cref="T:Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProvider{Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProviderOptions}" />
 	public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider, IDisposable
 		where TOptions : UmbrellaAzureBlobStorageFileProviderOptions
 	{
+		#region Constants
+		private const string DirectorySeparator = "/";
+		#endregion
+
 		#region Private Static Members
 		private static readonly char[] _directorySeparatorArray = new[] { '/' };
 		#endregion
@@ -45,16 +56,11 @@ namespace Umbrella.FileSystem.AzureStorage
 		private readonly SemaphoreSlim _containerCacheLock = new SemaphoreSlim(1, 1);
 		#endregion
 
-		#region Protected Properties		
+		#region Protected Properties
 		/// <summary>
-		/// Gets the storage account.
+		/// Gets the service client.
 		/// </summary>
-		protected CloudStorageAccount StorageAccount { get; set; }
-
-		/// <summary>
-		/// Gets the BLOB client.
-		/// </summary>
-		protected CloudBlobClient BlobClient { get; set; }
+		protected BlobServiceClient ServiceClient { get; set; }
 
 		/// <summary>
 		/// Gets the container resolution cache.
@@ -62,14 +68,15 @@ namespace Umbrella.FileSystem.AzureStorage
 		protected ConcurrentDictionary<string, bool> ContainerResolutionCache { get; set; }
 		#endregion
 
-		#region Constructors		
+		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UmbrellaAzureBlobStorageFileProvider{TOptions}"/> class.
 		/// </summary>
 		/// <param name="loggerFactory">The logger factory.</param>
 		/// <param name="mimeTypeUtility">The MIME type utility.</param>
 		/// <param name="genericTypeConverter">The generic type converter.</param>
-		public UmbrellaAzureBlobStorageFileProvider(ILoggerFactory loggerFactory,
+		public UmbrellaAzureBlobStorageFileProvider(
+			ILoggerFactory loggerFactory,
 			IMimeTypeUtility mimeTypeUtility,
 			IGenericTypeConverter genericTypeConverter)
 			: base(loggerFactory.CreateLogger<UmbrellaAzureBlobStorageFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter)
@@ -77,10 +84,8 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 		#endregion
 
-		#region IUmbrellaAzureBlobStorageFileProvider Members		
-		/// <summary>
-		/// Clears the storage container resolution cache.
-		/// </summary>
+		#region IUmbrellaAzureBlobStorageFileProvider Members
+		/// <inheritdoc />
 		/// <exception cref="UmbrellaFileSystemException">There has been a problem clearing the container resolution cache.</exception>
 		public void ClearContainerResolutionCache()
 		{
@@ -95,49 +100,40 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 		#endregion
 
+		/// <inheritdoc />
 		public async Task DeleteDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			try
 			{
 				string cleanedPath = SanitizeSubPathCore(subpath);
 
-				if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (Log.IsEnabled(LogLevel.Debug))
 					Log.WriteDebug(new { subpath, cleanedPath }, "Directory");
 
 				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-				string containerName = parts[0].ToLowerInvariant();
+				string containerName = NormalizeContainerName(parts[0]);
 
-				CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
+				BlobContainerClient container = ServiceClient.GetBlobContainerClient(containerName);
 
-				if (!await container.ExistsAsync(null, null, cancellationToken))
+				if (!await container.ExistsAsync(cancellationToken).ConfigureAwait(false))
 					return;
 
 				if (parts.Length == 1)
 				{
 					// Just delete the container
-					await container.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
+					await container.DeleteIfExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+					// Remove from the resolution cache.
+					ContainerResolutionCache.TryRemove(containerName, out bool success);
 				}
 				else
 				{
-					CloudBlobDirectory directory = container.GetDirectoryReference(string.Join("/", parts.Skip(1)));
+					List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), cancellationToken, false).ConfigureAwait(false);
 
-					var lstBlob = new List<CloudBlockBlob>();
-
-					BlobContinuationToken continuationToken = default;
-
-					do
+					foreach (BlobClient blob in lstBlob)
 					{
-						BlobResultSegment result = await directory.ListBlobsSegmentedAsync(true, BlobListingDetails.None, null, continuationToken, null, null);
-						continuationToken = result.ContinuationToken;
-
-						lstBlob.AddRange(result.Results.OfType<CloudBlockBlob>());
-					}
-					while (continuationToken != default(BlobContinuationToken));
-
-					foreach (var blob in lstBlob)
-					{
-						await blob.DeleteIfExistsAsync(cancellationToken);
+						await blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: cancellationToken).ConfigureAwait(false);
 					}
 				}
 			}
@@ -147,6 +143,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<IReadOnlyCollection<IUmbrellaFileInfo>> EnumerateDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -161,41 +158,14 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-				string containerName = parts[0].ToLowerInvariant();
+				string containerName = NormalizeContainerName(parts[0]);
 
-				CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
+				BlobContainerClient container = ServiceClient.GetBlobContainerClient(containerName);
 
-				if (!await container.ExistsAsync(null, null, cancellationToken))
+				if (!await container.ExistsAsync(cancellationToken).ConfigureAwait(false))
 					return Array.Empty<IUmbrellaFileInfo>();
 
-				var lstBlob = new List<CloudBlockBlob>();
-
-				BlobContinuationToken continuationToken = default;
-
-				if (parts.Length == 1)
-				{
-					do
-					{
-						BlobResultSegment result = await container.ListBlobsSegmentedAsync("", false, BlobListingDetails.None, null, continuationToken, null, null);
-						continuationToken = result.ContinuationToken;
-
-						lstBlob.AddRange(result.Results.OfType<CloudBlockBlob>());
-					}
-					while (continuationToken != default(BlobContinuationToken));
-				}
-				else
-				{
-					CloudBlobDirectory directory = container.GetDirectoryReference(string.Join("/", parts.Skip(1)));
-
-					do
-					{
-						BlobResultSegment result = await directory.ListBlobsSegmentedAsync(false, BlobListingDetails.None, null, continuationToken, null, null);
-						continuationToken = result.ContinuationToken;
-
-						lstBlob.AddRange(result.Results.OfType<CloudBlockBlob>());
-					}
-					while (continuationToken != default(BlobContinuationToken));
-				}
+				List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), cancellationToken).ConfigureAwait(false);
 
 				UmbrellaAzureBlobStorageFileInfo[] files = lstBlob.Select(x => new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
 
@@ -203,7 +173,9 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				foreach (var file in files)
 				{
-					if (await CheckFileAccessAsync(file, file.Blob, cancellationToken))
+					await file.InitializeAsync(cancellationToken).ConfigureAwait(false);
+
+					if (await CheckFileAccessAsync(file, file.Blob, cancellationToken).ConfigureAwait(false))
 						lstResult.Add(file);
 					else
 						Log.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
@@ -218,17 +190,18 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		public override void InitializeOptions(IUmbrellaFileProviderOptions options)
 		{
 			base.InitializeOptions(options);
 
-			StorageAccount = CloudStorageAccount.Parse(Options.StorageConnectionString);
-			BlobClient = StorageAccount.CreateCloudBlobClient();
+			ServiceClient = new BlobServiceClient(Options.StorageConnectionString);
 
 			if (Options.CacheContainerResolutions)
 				ContainerResolutionCache = new ConcurrentDictionary<string, bool>();
 		}
 
+		/// <inheritdoc />
 		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -236,18 +209,19 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			string cleanedPath = SanitizeSubPathCore(subpath);
 
-			if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (Log.IsEnabled(LogLevel.Debug))
 				Log.WriteDebug(new { subpath, cleanedPath }, "File");
 
 			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-			string containerName = parts[0].ToLowerInvariant();
+			string containerName = NormalizeContainerName(parts[0]);
 			string blobName = string.Join("/", parts.Skip(1));
 
-			NameValidator.ValidateContainerName(containerName);
-			NameValidator.ValidateBlobName(blobName);
+			// TODO: Need to create a regex to replace what this code does. Try and find the original regexes in the github repo.
+			// NameValidator.ValidateContainerName(containerName);
+			// NameValidator.ValidateBlobName(blobName);
 
-			CloudBlobContainer container = BlobClient.GetContainerReference(containerName);
+			BlobContainerClient container = ServiceClient.GetBlobContainerClient(containerName);
 
 			if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
 			{
@@ -257,7 +231,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				{
 					if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
 					{
-						await container.CreateIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
+						await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 						// The value can be anything here but we need to use ConcurrentDictioary because there isn't a ConcurrentHashSet type.
 						// Could implement our own locking mechanism around a HashSet but not worth it. Maybe consider in the future or see TODO above.
@@ -270,23 +244,35 @@ namespace Umbrella.FileSystem.AzureStorage
 				}
 			}
 
-			CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+			BlobClient blob = container.GetBlobClient(blobName);
 
 			// The call to ExistsAsync should force the properties of the blob to be populated
 			if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
 				return null;
 
 			var fileInfo = new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
+			await fileInfo.InitializeAsync(cancellationToken).ConfigureAwait(false);
 
-			if (!await CheckFileAccessAsync(fileInfo, blob, cancellationToken))
+			if (!await CheckFileAccessAsync(fileInfo, blob, cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileAccessDeniedException(subpath);
 
 			return fileInfo;
 		}
 		#endregion
 
+		#region Private Methods
+		private string NormalizeContainerName(string containerName) => containerName.Trim().ToLowerInvariant();
+		#endregion
+
 		#region Protected Methods
-		protected virtual Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, CloudBlockBlob blob, CancellationToken cancellationToken)
+		/// <summary>
+		/// Performs an access check on the file to ensure it can be accessed in the current context.
+		/// </summary>
+		/// <param name="fileInfo">The file information.</param>
+		/// <param name="blob">The BLOB.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/> that returns <see langword="true" /> if the file passes the check; otherwise <see langword="false" />.</returns>
+		protected virtual Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -306,20 +292,14 @@ namespace Umbrella.FileSystem.AzureStorage
 			if (!_isDisposed)
 			{
 				if (disposing)
-				{
 					_containerCacheLock.Dispose();
-				}
 
 				_isDisposed = true;
 			}
 		}
 
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose() =>
-			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-			Dispose(true);
+		/// <inheritdoc />
+		public void Dispose() => Dispose(true); //Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 		#endregion
 	}
 }

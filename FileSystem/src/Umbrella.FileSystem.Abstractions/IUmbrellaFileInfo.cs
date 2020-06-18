@@ -7,12 +7,41 @@ namespace Umbrella.FileSystem.Abstractions
 {
 	public interface IUmbrellaFileInfo
 	{
+		/// <summary>
+		/// Gets a value indicating whether this file is new.
+		/// </summary>
 		bool IsNew { get; }
+
+		/// <summary>
+		/// Gets the name.
+		/// </summary>
 		string Name { get; }
+
+		/// <summary>
+		/// Gets the sub path relative to the file provider root, e.g. /images/my-house.png
+		/// </summary>
 		string SubPath { get; }
+
+		/// <summary>
+		/// Gets the length.
+		/// </summary>
 		long Length { get; }
+
+		/// <summary>
+		/// Gets the last modified date.
+		/// </summary>
 		DateTimeOffset? LastModified { get; }
+
+		/// <summary>
+		/// Gets the MIME type of the file content.
+		/// </summary>
 		string ContentType { get; }
+
+		/// <summary>
+		/// Checks if the current file exists using the file provider from which it was loaded.
+		/// </summary>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/> which will return <see langword="true" /> if it exists; otherwise <see langword="false"/>.</returns>
 		Task<bool> ExistsAsync(CancellationToken cancellationToken = default);
 		Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null);
 		Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);

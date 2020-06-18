@@ -11,6 +11,11 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
 {
+	/// <summary>
+	/// An implementation of <see cref="IUmbrellaFileInfo"/> that uses the physical disk as the underlying storage mechanism.
+	/// </summary>
+	/// <seealso cref="Umbrella.FileSystem.Abstractions.IUmbrellaFileInfo" />
+	/// <seealso cref="T:System.IEquatable{Umbrella.FileSystem.Disk.UmbrellaDiskFileInfo}" />
 	public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFileInfo>
 	{
 		#region Private Members
@@ -41,11 +46,22 @@ namespace Umbrella.FileSystem.Disk
 		#endregion
 
 		#region Public Properties
+		/// <inheritdoc />
 		public bool IsNew { get; private set; }
+		
+		/// <inheritdoc />
 		public string Name => PhysicalFileInfo.Name;
+
+		/// <inheritdoc />
 		public string SubPath { get; }
+
+		/// <inheritdoc />
 		public long Length => PhysicalFileInfo.Exists && !IsNew ? PhysicalFileInfo.Length : -1;
+
+		/// <inheritdoc />
 		public DateTimeOffset? LastModified => PhysicalFileInfo.Exists && !IsNew ? PhysicalFileInfo.LastWriteTimeUtc : (DateTimeOffset?)null;
+
+		/// <inheritdoc />
 		public string ContentType { get; }
 		#endregion
 
@@ -72,10 +88,11 @@ namespace Umbrella.FileSystem.Disk
 			ContentType = mimeTypeUtility.GetMimeType(Name);
 
 			_metadataFullFileName = PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension;
-		} 
+		}
 		#endregion
 
 		#region IUmbrellaFileInfo Members
+		/// <inheritdoc />
 		public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -106,6 +123,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -136,6 +154,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<IUmbrellaFileInfo> MoveAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -166,6 +185,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -196,6 +216,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -213,6 +234,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -227,6 +249,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -255,6 +278,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -275,6 +299,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -300,6 +325,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -327,6 +353,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -343,6 +370,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -364,6 +392,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -393,6 +422,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task RemoveMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -415,6 +445,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ClearMetadataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -436,6 +467,7 @@ namespace Umbrella.FileSystem.Disk
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

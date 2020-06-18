@@ -3,47 +3,79 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure;
+using Azure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Umbrella.FileSystem.Abstractions;
-using Umbrella.FileSystem.AzureStorage.Extensions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.AzureStorage
 {
+	/// <summary>
+	/// An implementation of <see cref="IUmbrellaFileInfo"/> that uses Azure Blob Storage as the underlying storage mechanism.
+	/// </summary>
+	/// <seealso cref="Umbrella.FileSystem.Abstractions.IUmbrellaFileInfo" />
+	/// <seealso cref="T:System.IEquatable{Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileInfo}" />
 	public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaAzureBlobStorageFileInfo>
 	{
 		#region Private Members
-		private byte[] m_Contents;
-		private long m_Length = -1;
+		private byte[] _content;
+		private long _length = -1;
+		private string _contentType;
+		private BlobProperties _blobProperties;
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the file provider used to create this file.
+		/// </summary>
 		protected IUmbrellaAzureBlobStorageFileProvider Provider { get; }
+
+		/// <summary>
+		/// Gets the generic type converter.
+		/// </summary>
 		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion
 
 		#region Internal Properties
-		internal CloudBlockBlob Blob { get; }
+		internal BlobClient Blob { get; }
 		#endregion
 
 		#region Public Properties
+		/// <inheritdoc />
 		public bool IsNew { get; private set; }
+
+		/// <inheritdoc />
 		public string Name { get; }
+
+		/// <inheritdoc />
 		public string SubPath { get; }
+
+		/// <inheritdoc />
 		public long Length
 		{
-			get => Blob.Properties.Length > -1 ? Blob.Properties.Length : m_Length;
-			private set => m_Length = value;
+			get => IsNew ? _length : _blobProperties.ContentLength;
+			private set => _length = value;
 		}
-		public DateTimeOffset? LastModified => Blob.Properties.LastModified;
+
+		/// <inheritdoc />
+		public DateTimeOffset? LastModified => IsNew ? (DateTimeOffset?)null : _blobProperties.LastModified;
+
+		/// <inheritdoc />
 		public string ContentType
 		{
-			get => Blob.Properties.ContentType;
-			private set => Blob.Properties.ContentType = value;
+			get => IsNew ? _contentType : _blobProperties.ContentType;
+			set => _contentType = value;
 		}
 		#endregion
 
@@ -53,7 +85,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			IGenericTypeConverter genericTypeConverter,
 			string subpath,
 			IUmbrellaAzureBlobStorageFileProvider provider,
-			CloudBlockBlob blob,
+			BlobClient blob,
 			bool isNew)
 		{
 			Log = logger;
@@ -69,21 +101,48 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 		#endregion
 
+		#region Internal Methods
+		internal async Task InitializeAsync(CancellationToken cancellationToken)
+		{
+			// We can only get the properties for a Blob if it exists. The method call will throw
+			// an exception otherwise.
+			if (IsNew)
+			{
+				_blobProperties = new BlobProperties();
+				return;
+			}
+
+			try
+			{
+				var result = await Blob.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+				if (result != null)
+					_blobProperties = result.Value;
+			}
+			catch (RequestFailedException exc) when (Log.WriteWarning(exc))
+			{
+				throw;
+			}
+		}
+		#endregion
+
 		#region IUmbrellaFileInfo Members
+		/// <inheritdoc />
 		public virtual async Task<bool> DeleteAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			try
 			{
-				return await Blob.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
+				return await Blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem deleting the file.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<bool> ExistsAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -94,10 +153,11 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem determining if the file exists.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -106,28 +166,33 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (cacheContents && m_Contents != null)
-					return m_Contents;
+				if (cacheContents && _content != null)
+					return _content;
 
-				if (!await ExistsAsync(cancellationToken))
+				if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
-				byte[] bytes = new byte[Blob.Properties.Length];
+				using Stream stream = await ReadAsStreamAsync(cancellationToken, bufferSizeOverride).ConfigureAwait(false);
+				using var ms = new MemoryStream();
 
-				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
+				// TODO: Need to write some more tests to load the same blob twice, alter one, and then download the other one
+				// to see how caching the properties affects things.
 
-				await Blob.DownloadToByteArrayAsync(bytes, 0, cancellationToken).ConfigureAwait(false);
+				await stream.CopyToAsync(ms, bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize).ConfigureAwait(false);
 
-				m_Contents = cacheContents ? bytes : null;
+				byte[] bytes = ms.ToArray();
+
+				_content = cacheContents ? bytes : null;
 
 				return bytes;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem reading the file to a byte array.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -137,16 +202,15 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
-
-				await Blob.DownloadToStreamAsync(target, cancellationToken).ConfigureAwait(false);
+				await Blob.DownloadToAsync(target, transferOptions: CreateStorageTransferOptions(bufferSizeOverride), cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem writing the file to the specified stream.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -155,22 +219,18 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
+				using var ms = new MemoryStream(bytes);
+				await WriteFromStreamAsync(ms, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
-				await Blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
-
-				//Trigger a call to this to ensure property population
-				await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
-
-				m_Contents = cacheContents ? bytes : null;
-				IsNew = false;
+				_content = cacheContents ? bytes : null;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified bytes.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -179,22 +239,25 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				stream.Position = 0;
-				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
-
-				await Blob.UploadFromStreamAsync(stream, cancellationToken).ConfigureAwait(false);
-
-				//Trigger a call to this to ensure property population
-				await Blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
+				await Blob.UploadAsync(
+					stream,
+					new BlobHttpHeaders { ContentType = ContentType },
+					_blobProperties.Metadata,
+					transferOptions: CreateStorageTransferOptions(bufferSizeOverride),
+					cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				IsNew = false;
+
+				// Trigger a call to this to ensure property population
+				await InitializeAsync(cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified stream.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -202,27 +265,21 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (!await ExistsAsync(cancellationToken))
+				if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
 				var destinationFile = (UmbrellaAzureBlobStorageFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
-
-				await destinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
-				
-				// In order to ensure we know the size of the destination file we can set it here
-				// and then use the real value from the Blob once it becomes available after the copy operation
-				// has completed.
-				destinationFile.Length = Length;
-				destinationFile.IsNew = false;
+				await CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 
 				return destinationFile;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem copying the file to the specified destination path.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -230,12 +287,12 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (!await ExistsAsync(cancellationToken))
+				if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 					throw new UmbrellaFileNotFoundException(SubPath);
 
 				var blobDestinationFile = (UmbrellaAzureBlobStorageFileInfo)destinationFile;
 
-				await blobDestinationFile.Blob.StartCopyAsync(Blob, cancellationToken).ConfigureAwait(false);
+				await blobDestinationFile.Blob.StartCopyFromUriAsync(Blob.Uri, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				// In order to ensure we know the size of the destination file we can set it here
 				// and then use the real value from the Blob once it becomes available after the copy operation
@@ -243,14 +300,17 @@ namespace Umbrella.FileSystem.AzureStorage
 				blobDestinationFile.Length = Length;
 				blobDestinationFile.IsNew = false;
 
+				await blobDestinationFile.InitializeAsync(cancellationToken).ConfigureAwait(false);
+
 				return destinationFile;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem copying the file to the specified destination file.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> MoveAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -265,10 +325,11 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem moving the file to the specified destination path.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -283,10 +344,11 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been a problem moving the specified file to the specified destination file.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -295,16 +357,18 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
-				
-				return await Blob.OpenReadAsync(cancellationToken).ConfigureAwait(false);
+				// TODO: Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
+				BlobDownloadInfo response = await Blob.DownloadAsync(cancellationToken).ConfigureAwait(false);
+
+				return response.Content;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
-				throw new UmbrellaFileSystemException(exc.Message, exc);
+				throw new UmbrellaFileSystemException("There has been an error reading the Blob as a Stream.", exc);
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -313,7 +377,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				Blob.Metadata.TryGetValue(key, out string rawValue);
+				_blobProperties.Metadata.TryGetValue(key, out string rawValue);
 
 				return await Task.FromResult(GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)).ConfigureAwait(false);
 			}
@@ -323,6 +387,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -333,11 +398,11 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				if (value == null)
 				{
-					Blob.Metadata.Remove(key);
+					_blobProperties.Metadata.Remove(key);
 				}
 				else
 				{
-					Blob.Metadata[key] = value.ToString();
+					_blobProperties.Metadata[key] = value.ToString();
 				}
 
 				if (writeChanges)
@@ -349,6 +414,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task RemoveMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -357,7 +423,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				Blob.Metadata.Remove(key);
+				_blobProperties.Metadata.Remove(key);
 
 				if (writeChanges)
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -368,6 +434,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ClearMetadataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -375,7 +442,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				Blob.Metadata.Clear();
+				_blobProperties.Metadata.Clear();
 
 				if (writeChanges)
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -386,6 +453,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -393,7 +461,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				await Blob.SetMetadataAsync(cancellationToken).ConfigureAwait(false);
+				await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
@@ -403,14 +471,18 @@ namespace Umbrella.FileSystem.AzureStorage
 		#endregion
 
 		#region Private Methods
+		private StorageTransferOptions CreateStorageTransferOptions(int? bufferSizeOverride = null)
+			=> new StorageTransferOptions { MaximumTransferLength = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize };
+
 		private void ThrowIfIsNew()
 		{
 			if (IsNew)
-				throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
+				throw new InvalidOperationException("Cannot perform this operation on a newly created file. The file must first be written to.");
 		}
 		#endregion
 
 		#region IEquatable Members
+		/// <inheritdoc />
 		public bool Equals(UmbrellaAzureBlobStorageFileInfo other)
 			=> other != null &&
 				IsNew == other.IsNew &&
@@ -422,8 +494,10 @@ namespace Umbrella.FileSystem.AzureStorage
 		#endregion
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		public override bool Equals(object obj) => Equals(obj as UmbrellaAzureBlobStorageFileInfo);
 
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			int hashCode = 260482354;
@@ -438,8 +512,10 @@ namespace Umbrella.FileSystem.AzureStorage
 		#endregion
 
 		#region Operators
+		/// <inheritdoc />
 		public static bool operator ==(UmbrellaAzureBlobStorageFileInfo left, UmbrellaAzureBlobStorageFileInfo right) => EqualityComparer<UmbrellaAzureBlobStorageFileInfo>.Default.Equals(left, right);
 
+		/// <inheritdoc />
 		public static bool operator !=(UmbrellaAzureBlobStorageFileInfo left, UmbrellaAzureBlobStorageFileInfo right) => !(left == right);
 		#endregion
 	}

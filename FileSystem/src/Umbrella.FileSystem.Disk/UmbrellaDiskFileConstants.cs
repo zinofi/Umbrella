@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Umbrella.FileSystem.Disk
 {
-    public static class UmbrellaDiskFileConstants
+	/// <summary>
+	/// Constants used with the Disk based Umbrella File System.
+	/// </summary>
+	public static class UmbrellaDiskFileConstants
     {
+		/// <summary>
+		/// The metadata file extension
+		/// </summary>
 		public const string MetadataFileExtension = ".umfsmeta";
     }
 }
