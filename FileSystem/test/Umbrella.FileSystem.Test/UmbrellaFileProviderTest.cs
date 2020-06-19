@@ -359,6 +359,7 @@ namespace Umbrella.FileSystem.Test
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			Stream stream = File.OpenRead(physicalPath);
+			stream.Position = 20;
 
 			string subpath = $"/images/{TestFileName}";
 
@@ -411,6 +412,7 @@ namespace Umbrella.FileSystem.Test
 			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 			Stream stream = File.OpenRead(physicalPath);
+			stream.Position = 20;
 
 			string subpath = $"/images/{TestFileName}";
 
@@ -472,6 +474,7 @@ namespace Umbrella.FileSystem.Test
 				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 				Stream stream = File.OpenRead(physicalPath);
+				stream.Position = 20;
 
 				string subpath = $"/images/{TestFileName}";
 
@@ -798,6 +801,7 @@ namespace Umbrella.FileSystem.Test
 				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
 
 				Stream stream = File.OpenRead(physicalPath);
+				stream.Position = 20;
 
 				string subpath = $"/images/{TestFileName}";
 
@@ -1170,6 +1174,12 @@ namespace Umbrella.FileSystem.Test
 			string downLevelSubPath2 = $"/images/sub-images/nested/{TestFileName}";
 			await provider.SaveAsync(downLevelSubPath2, bytes, false);
 
+			string downLevelSubPath3 = $"/images/sub-images/nested2/{TestFileName}";
+			await provider.SaveAsync(downLevelSubPath3, bytes, false);
+
+			string downLevelSubPath4 = $"/images/sub-images/nested2/nestedmore/{TestFileName}";
+			await provider.SaveAsync(downLevelSubPath4, bytes, false);
+
 			// Now delete only the down level file directory, i.e. /images/sub-images
 			// which should also delete the nested directory
 			await provider.DeleteDirectoryAsync("/images/sub-images");
@@ -1178,6 +1188,8 @@ namespace Umbrella.FileSystem.Test
 			Assert.True(await provider.ExistsAsync(subpath));
 			Assert.False(await provider.ExistsAsync(downLevelSubPath1));
 			Assert.False(await provider.ExistsAsync(downLevelSubPath2));
+			Assert.False(await provider.ExistsAsync(downLevelSubPath3));
+			Assert.False(await provider.ExistsAsync(downLevelSubPath4));
 
 			// Cleanup
 			await provider.DeleteAsync(subpath);

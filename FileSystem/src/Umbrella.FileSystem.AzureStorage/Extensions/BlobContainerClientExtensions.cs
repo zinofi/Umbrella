@@ -37,7 +37,7 @@ namespace Umbrella.FileSystem.AzureStorage.Extensions
 				if (!item.IsBlob)
 				{
 					if (!topLevelOnly)
-						lstBlob.AddRange(await container.GetBlobsByDirectoryAsync(item.Prefix, cancellationToken));
+						lstBlob.AddRange(await container.GetBlobsByDirectoryAsync(item.Prefix, cancellationToken, topLevelOnly, directorySeparator));
 
 					continue;
 				}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
@@ -257,6 +258,20 @@ namespace Umbrella.FileSystem.AzureStorage
 				throw new UmbrellaFileAccessDeniedException(subpath);
 
 			return fileInfo;
+		}
+
+		/// <inheritdoc />
+		public override async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				return await base.ExistsAsync(subpath, cancellationToken);
+			}
+			catch (UmbrellaFileSystemException exc) when (exc.InnerException is RequestFailedException rfe && rfe.ErrorCode == BlobErrorCode.ContainerBeingDeleted)
+			{
+				// The container is in the process of being deleted which is fine and means the Blob is on its way to Blob heaven.
+				return false;
+			}
 		}
 		#endregion
 

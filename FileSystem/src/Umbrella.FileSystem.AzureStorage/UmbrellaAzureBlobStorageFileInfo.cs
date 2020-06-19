@@ -244,6 +244,8 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
+				stream.Position = 0;
+				
 				await Blob.UploadAsync(
 					stream,
 					new BlobHttpHeaders { ContentType = ContentType },
