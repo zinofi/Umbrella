@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -233,7 +234,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 
 			string path = _multipleForwardSlashRegex.Replace(sb.ToString(), "/");
 
-			if (convertForwardSlashesToBackSlashes)
+			// Only do this on Windows. Not required for Linux and macOS.
+			if (convertForwardSlashesToBackSlashes && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 				path = path.Replace("/", @"\");
 
 			return path;

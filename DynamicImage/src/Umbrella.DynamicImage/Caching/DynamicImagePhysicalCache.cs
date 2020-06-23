@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace Umbrella.DynamicImage.Caching
 		where TFileProvider : IUmbrellaFileProvider
 	{
 		#region Public Properties
-		public virtual string CachePathFormat => @"\{0}.{1}";
+		public virtual string CachePathFormat => $"{Path.DirectorySeparatorChar}{{0}}.{{1}}";
 		#endregion
 
 		#region Protected Properties
@@ -121,7 +122,7 @@ namespace Umbrella.DynamicImage.Caching
 
 		#region Overridden Methods
 		protected override string GetSubPath(string cacheKey, string fileExtension)
-			=> $@"\{cacheKey}.{fileExtension}";
+			=> $@"{Path.DirectorySeparatorChar}{cacheKey}.{fileExtension}";
 		#endregion
 	}
 }

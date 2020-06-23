@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
 using Umbrella.Internal.Mocks;
+using Umbrella.Utilities.Helpers;
 using Umbrella.WebUtilities.Hosting.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test
@@ -29,8 +30,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
 			var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 
 			var hostingEnvironment = new Mock<IWebHostEnvironment>();
-			hostingEnvironment.Setup(x => x.ContentRootPath).Returns(@"C:\MockedWebApp\src\");
-			hostingEnvironment.Setup(x => x.WebRootPath).Returns(@"C:\MockedWebApp\src\wwwroot\");
+			hostingEnvironment.Setup(x => x.ContentRootPath).Returns(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\"));
+			hostingEnvironment.Setup(x => x.WebRootPath).Returns(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\wwwroot\"));
 
 			var httpContextAccessor = new Mock<IHttpContextAccessor>();
 

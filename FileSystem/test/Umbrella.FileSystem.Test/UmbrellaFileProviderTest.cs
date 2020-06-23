@@ -40,7 +40,6 @@ namespace Umbrella.FileSystem.Test
 			{
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
-					// TODO: Create a PathHelper or something that will replace \ to an OS specific version, i.e. replace '\' with Path.DirectorySeparatorChar
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
 					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);

@@ -1,4 +1,5 @@
 ﻿using System;
+using Umbrella.Utilities.Helpers;
 using Xunit;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
@@ -10,7 +11,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 		{
 			var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
+#nullable disable
 			Assert.Throws<ArgumentNullException>(() => env.MapPath(null));
+#nullable enable
 			Assert.Throws<ArgumentException>(() => env.MapPath(""));
 			Assert.Throws<ArgumentException>(() => env.MapPath("      "));
 		}
@@ -24,7 +27,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
 			string mappedPath = env.MapPath(path);
 
-			Assert.Equal(@"C:\MockedWebApp\src\images\test.jpg", mappedPath);
+			Assert.Equal(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\images\test.jpg"), mappedPath);
 		}
 
 		[Fact]
@@ -36,7 +39,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
 			string mappedPath = env.MapPath(path, false);
 
-			Assert.Equal(@"C:\MockedWebApp\src\wwwroot\images\test.jpg", mappedPath);
+			Assert.Equal(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\wwwroot\images\test.jpg"), mappedPath);
 		}
 
 		[Fact]
@@ -48,7 +51,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
 			string mappedPath = env.MapPath(path);
 
-			Assert.Equal(@"C:\MockedWebApp\src\images\test.jpg", mappedPath);
+			Assert.Equal(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\images\test.jpg"), mappedPath);
 		}
 
 		[Fact]
@@ -60,7 +63,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
 			string mappedPath = env.MapPath(path, false);
 
-			Assert.Equal(@"C:\MockedWebApp\src\wwwroot\images\test.jpg", mappedPath);
+			Assert.Equal(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\wwwroot\images\test.jpg"), mappedPath);
 		}
 
 		[Fact]

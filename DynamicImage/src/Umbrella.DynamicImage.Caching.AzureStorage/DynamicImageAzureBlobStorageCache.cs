@@ -34,7 +34,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 
 		#region Overridden Methods
 		protected override string GetSubPath(string cacheKey, string fileExtension)
-			=> $@"\{BlobStorageCacheOptions.ContainerName}{base.GetSubPath(cacheKey, fileExtension)}";
+			=> $"/{BlobStorageCacheOptions.ContainerName}{base.GetSubPath(cacheKey, fileExtension)}";
 		#endregion
 	}
 }

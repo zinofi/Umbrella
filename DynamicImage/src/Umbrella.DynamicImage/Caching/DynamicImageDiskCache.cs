@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.IO;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.FileSystem.Disk;
@@ -30,7 +31,7 @@ namespace Umbrella.DynamicImage.Caching
 
 		#region Overridden Methods
 		protected override string GetSubPath(string cacheKey, string fileExtension)
-			=> $@"\{DiskCacheOptions.CacheFolderName}\{cacheKey.Substring(0, 2)}{base.GetSubPath(cacheKey, fileExtension)}";
+			=> $@"{Path.DirectorySeparatorChar}{DiskCacheOptions.CacheFolderName}{Path.DirectorySeparatorChar}{cacheKey.Substring(0, 2)}{base.GetSubPath(cacheKey, fileExtension)}";
 		#endregion
 	}
 }
