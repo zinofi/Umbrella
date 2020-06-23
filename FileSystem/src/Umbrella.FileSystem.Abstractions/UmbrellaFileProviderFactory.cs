@@ -29,17 +29,12 @@ namespace Umbrella.FileSystem.Abstractions
 			Services = services;
 		}
 
-		// TODO: What's the best way to register a file provider really.
-		// 1. Could create an interface and register with DI as a singleton. We wouldn't need this then really. Hmmmm...
-		// Why did I even write this??
 		public TProvider CreateProvider<TProvider, TOptions>(TOptions options)
 			where TProvider : IUmbrellaFileProvider
 			where TOptions : IUmbrellaFileProviderOptions
 		{
 			var provider = ActivatorUtilities.CreateInstance<TProvider>(Services);
 			provider.InitializeOptions(options);
-
-			// We can cache these by creating a key based on the type names of the generic arguments.
 
 			return provider;
 		}

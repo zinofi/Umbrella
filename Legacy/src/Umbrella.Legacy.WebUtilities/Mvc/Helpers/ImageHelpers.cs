@@ -5,7 +5,7 @@ using Umbrella.Legacy.WebUtilities.Mvc.Tags;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 {
-	//TODO: Add 4 additional arguments like the ResponsiveDynamicImage helpers to allow for absolute path conversion with overrides.
+	// TODO - vUnlikely: Add 4 additional arguments like the ResponsiveDynamicImage helpers to allow for absolute path conversion with overrides.
 	public static class ImageHelpers
 	{
 		public static ResponsiveImageTag ResponsiveImage(this HtmlHelper helper, string path, string altText, object htmlAttributes = null)

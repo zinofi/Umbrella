@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
@@ -45,16 +46,15 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		protected IDynamicImageUtility DynamicImageUtility { get; }
 
 		/// <summary>
+		/// Gets the dynamic image tag helper options.
+		/// </summary>
+		protected DynamicImageTagHelperOptions DynamicImageTagHelperOptions { get; }
+
+		/// <summary>
 		/// Gets the name of the output tag. This is abstract and always overridden.
 		/// </summary>
 		protected abstract string OutputTagName { get; }
 		#endregion
-
-		// TODO: Can we not register an options class and use that??
-		/// <summary>
-		/// This is the path prefix used for all generated image urls unless overridden using the "path-prefix" attribute on the tag.
-		/// </summary>
-		public static string GlobalDynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
 
 		/// <summary>
 		/// Gets or sets the width request in pixels.
@@ -80,26 +80,23 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
 
 		/// <summary>
-		/// Gets or sets the dynamic image path prefix. This defaults to "dynamicimage".
-		/// </summary>
-		[HtmlAttributeName("path-prefix")]
-		public string DynamicImagePathPrefix { get; set; } = GlobalDynamicImagePathPrefix;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="DynamicImageTagHelperBase"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="memoryCache">The memory cache.</param>
 		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
 		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
+		/// <param name="dynamicImageTagHelperOptions">The dynamic image tag helper options.</param>
 		public DynamicImageTagHelperBase(
 			ILogger<DynamicImageTagHelperBase> logger,
 			IMemoryCache memoryCache,
 			IDynamicImageUtility dynamicImageUtility,
-			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
+			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
+			DynamicImageTagHelperOptions dynamicImageTagHelperOptions)
 			: base(logger, umbrellaHostingEnvironment, memoryCache)
 		{
 			DynamicImageUtility = dynamicImageUtility;
+			DynamicImageTagHelperOptions = dynamicImageTagHelperOptions;
 		}
 
 		/// <summary>
@@ -123,7 +120,6 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		{
 			Guard.ArgumentInRange(WidthRequest, nameof(WidthRequestAttributeName), 1);
 			Guard.ArgumentInRange(HeightRequest, nameof(HeightRequestAttributeName), 1);
-			Guard.ArgumentNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
 
 			TagHelperAttribute attrSrc = output.Attributes["src"];
 			string? src = attrSrc?.Value?.ToString()?.Trim();
@@ -133,7 +129,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 
 			var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
 
-			string x1Url = DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options);
+			string x1Url = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
 
 			output.Attributes.Remove(attrSrc);
 			output.Attributes.Add("src", ResolveImageUrl(x1Url));

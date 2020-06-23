@@ -487,14 +487,6 @@ namespace Umbrella.FileSystem.Test
 				await provider.CopyAsync(fileInfo, "~/images/willfail.jpg");
 			});
 
-		//[Theory]
-		//[MemberData(nameof(ProvidersMemberData))]
-		//public async Task CopyAsync_InvalidSourceType(Func<IUmbrellaFileProvider> providerFunc)
-		//{
-		//    //TODO: Test that files coming from one provider cannot be used with a different one.
-		//    //Maybe look at building this in somehow?
-		//}
-
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]
 		public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath(Func<IUmbrellaFileProvider> providerFunc)
@@ -813,14 +805,6 @@ namespace Umbrella.FileSystem.Test
 				//At this point the file will not exist
 				await provider.MoveAsync(fileInfo, "~/images/willfail.jpg");
 			});
-
-		//[Theory]
-		//[MemberData(nameof(ProvidersMemberData))]
-		//public async Task MoveAsync_InvalidSourceType(Func<IUmbrellaFileProvider> providerFunc)
-		//{
-		//    //TODO: Test that files coming from one provider cannot be used with a different one.
-		//    //Maybe look at building this in somehow?
-		//}
 
 		[Theory]
 		[MemberData(nameof(ProvidersMemberData))]

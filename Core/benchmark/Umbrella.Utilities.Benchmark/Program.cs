@@ -10,10 +10,10 @@ namespace Umbrella.Utilities.Benchmark
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<SecureStringGeneratorBenchmark>();
+            //BenchmarkRunner.Run<SecureStringGeneratorBenchmark>();
             BenchmarkRunner.Run<CacheKeyUtilityBenchmark>();
-            BenchmarkRunner.Run<ReadOnlySpanExtensionsBenchmark>();
-            BenchmarkRunner.Run<SpanExtensionsBenchmark>();
+            //BenchmarkRunner.Run<ReadOnlySpanExtensionsBenchmark>();
+            //BenchmarkRunner.Run<SpanExtensionsBenchmark>();
 
             Console.WriteLine("Press any key to exit...");
             Console.Read();

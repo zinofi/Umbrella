@@ -44,6 +44,7 @@ namespace Umbrella.Legacy.WebUtilities.Controls
 			Control userControl = Page.ParseControl(content, true);
 
 			EmbeddedUserControlOptionsAttribute options = type.GetCustomAttributes(typeof(EmbeddedUserControlOptionsAttribute), false).OfType<EmbeddedUserControlOptionsAttribute>().FirstOrDefault();
+			
 			if (options != null)
 			{
 				EnableViewState = options.EnableViewState;

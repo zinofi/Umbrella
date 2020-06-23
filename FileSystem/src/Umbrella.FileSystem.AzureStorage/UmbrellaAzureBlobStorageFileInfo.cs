@@ -180,9 +180,6 @@ namespace Umbrella.FileSystem.AzureStorage
 				using Stream stream = await ReadAsStreamAsync(cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 				using var ms = new MemoryStream();
 
-				// TODO: Need to write some more tests to load the same blob twice, alter one, and then download the other one
-				// to see how caching the properties affects things.
-
 				await stream.CopyToAsync(ms, bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize).ConfigureAwait(false);
 
 				byte[] bytes = ms.ToArray();
@@ -364,7 +361,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				// TODO: Blob.StreamMinimumReadSizeInBytes = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize;
+				// The buffer size can't be controlled here. For chunking we should use the WriteToStreamAsync method.
 				BlobDownloadInfo response = await Blob.DownloadAsync(cancellationToken).ConfigureAwait(false);
 
 				return response.Content;

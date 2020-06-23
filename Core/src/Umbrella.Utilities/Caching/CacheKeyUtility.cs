@@ -93,6 +93,7 @@ namespace Umbrella.Utilities.Caching
 
 				int length = typeName.Length + partsLengthTotal + 1;
 
+				// TODO: Pool
 				Span<char> span = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
 
 				int currentIndex = span.Append(0, typeName);

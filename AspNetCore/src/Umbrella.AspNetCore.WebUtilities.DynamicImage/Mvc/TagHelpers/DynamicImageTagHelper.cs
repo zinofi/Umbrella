@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -35,12 +36,14 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// <param name="memoryCache">The memory cache.</param>
 		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
 		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
+		/// <param name="dynamicImageTagHelperOptions">The dynamic image tag helper options.</param>
 		public DynamicImageTagHelper(
 			ILogger<DynamicImageTagHelper> logger,
 			IMemoryCache memoryCache,
 			IDynamicImageUtility dynamicImageUtility,
-			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment)
-			: base(logger, memoryCache, dynamicImageUtility, umbrellaHostingEnvironment)
+			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
+			DynamicImageTagHelperOptions dynamicImageTagHelperOptions)
+			: base(logger, memoryCache, dynamicImageUtility, umbrellaHostingEnvironment, dynamicImageTagHelperOptions)
 		{
 		}
 
@@ -90,7 +93,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 
 					var options = new DynamicImageOptions(path, imgWidth, imgHeight, ResizeMode, ImageFormat);
 
-					string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options);
+					string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
 
 					string resolvedUrl = ResolveImageUrl(virtualPath);
 

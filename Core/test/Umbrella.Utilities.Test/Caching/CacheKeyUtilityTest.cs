@@ -10,20 +10,45 @@ namespace Umbrella.Utilities.Test.Caching
 	public class CacheKeyUtilityTest
 	{
 		[Fact]
-		public void CreateCacheKey_Valid()
+		public void CreateCacheKey()
 		{
 			CacheKeyUtility utility = CreateCacheKeyUtility();
 
-			string key = utility.Create<CacheKeyUtilityTest>("test:key");
+			string partialKey = "test:key";
 
-			Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:test:key".ToUpperInvariant(), key);
+			string key = utility.Create<CacheKeyUtilityTest>(partialKey);
+
+			Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:{partialKey}".ToUpperInvariant(), key);
 		}
 
 		[Fact]
-		public void CreateCacheKey_Parts_Valid()
+		public void CreateCacheKey_Parts()
 		{
 			CacheKeyUtility utility = CreateCacheKeyUtility();
 			string[] keyParts = new[] { "part1", "part2", "part3", "part4", "part5" };
+
+			string key = utility.Create<CacheKeyUtilityTest>(keyParts);
+
+			Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:{string.Join(":", keyParts)}".ToUpperInvariant(), key);
+		}
+
+		[Fact]
+		public void CreateCacheKey_NonStack()
+		{
+			CacheKeyUtility utility = CreateCacheKeyUtility();
+
+			string partialKey = "Diam eume rat sed gubergren diam lorem consequat ut accusam ad clita consetetur no vel erat no diam cum nibh no vel erat no diam cum nibh";
+
+			string key = utility.Create<CacheKeyUtilityTest>(partialKey);
+
+			Assert.Equal($"{typeof(CacheKeyUtilityTest).FullName}:{partialKey}".ToUpperInvariant(), key);
+		}
+
+		[Fact]
+		public void CreateCacheKey_Parts_NonStack()
+		{
+			CacheKeyUtility utility = CreateCacheKeyUtility();
+			string[] keyParts = new[] { "part1", "part2", "part3", "part4", "part5", "part6", "part7", "part8", "part9", "part10", "part11", "part12", "part13", "part14" };
 
 			string key = utility.Create<CacheKeyUtilityTest>(keyParts);
 

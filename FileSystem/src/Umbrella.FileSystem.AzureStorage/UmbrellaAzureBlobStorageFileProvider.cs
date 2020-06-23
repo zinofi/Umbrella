@@ -218,7 +218,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			string containerName = NormalizeContainerName(parts[0]);
 			string blobName = string.Join("/", parts.Skip(1));
 
-			// TODO: Need to create a regex to replace what this code does. Try and find the original regexes in the github repo.
+			// TODO - vFuture: This validator is being migrated by Microsoft and will be available in a future version. Uncomment when available.
 			// NameValidator.ValidateContainerName(containerName);
 			// NameValidator.ValidateBlobName(blobName);
 
