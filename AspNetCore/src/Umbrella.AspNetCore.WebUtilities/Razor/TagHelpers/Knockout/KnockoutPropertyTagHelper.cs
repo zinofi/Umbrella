@@ -150,7 +150,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 		{
 			try
 			{
-				// TODO - PR: Caching
 				if (!string.IsNullOrWhiteSpace(PropertyName))
 				{
 					string dataBindValue = PropertyType switch

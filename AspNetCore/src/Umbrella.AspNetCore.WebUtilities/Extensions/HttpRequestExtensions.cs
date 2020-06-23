@@ -27,7 +27,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 			{
 				DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
 
-				// TODO - Universal Time?
 				return lastModified == valueToMatch;
 			}
 
