@@ -1,5 +1,6 @@
 ﻿using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Helpers;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.FileSystem.Disk
@@ -20,7 +21,7 @@ namespace Umbrella.FileSystem.Disk
 		/// <summary>
 		/// Sanitizes this instance.
 		/// </summary>
-		public void Sanitize() => RootPhysicalPath = RootPhysicalPath?.Trim()?.TrimEnd('\\');
+		public void Sanitize() => RootPhysicalPath = PathHelper.PlatformNormalize(RootPhysicalPath?.Trim()?.TrimEnd('\\'));
 
 		/// <summary>
 		/// Validates this instance.

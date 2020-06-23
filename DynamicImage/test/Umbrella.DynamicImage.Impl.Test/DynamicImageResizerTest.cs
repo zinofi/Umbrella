@@ -12,6 +12,7 @@ using Umbrella.FileSystem.Abstractions;
 using System.Threading;
 using System.IO;
 using Umbrella.Utilities.Compilation;
+using Umbrella.Utilities.Helpers;
 using FreeImageResizer = Umbrella.DynamicImage.FreeImage.DynamicImageResizer;
 using SkiaSharpResizer = Umbrella.DynamicImage.SkiaSharp.DynamicImageResizer;
 using System.Drawing;
@@ -34,7 +35,7 @@ namespace Umbrella.DynamicImage.Impl.Test
                 if (string.IsNullOrEmpty(s_BaseDirectory))
                 {
                     string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-                    int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1");
+                    int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
                     s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
                 }
 
@@ -180,9 +181,9 @@ namespace Umbrella.DynamicImage.Impl.Test
             //unneccessary build resources.
             if (DebugUtility.IsDebug)
             {
-                string outputDirectory = $@"{BaseDirectory}\Output\{resizer.GetType().Namespace}";
+				string outputDirectory = PathHelper.PlatformNormalize($@"{BaseDirectory}\Output\{resizer.GetType().Namespace}");
 
-                string outputPath = $@"{outputDirectory}\{options.Width}w-{options.Height}h-{options.ResizeMode.ToString()}.{options.Format.ToFileExtensionString()}";
+				string outputPath = PathHelper.PlatformNormalize($@"{outputDirectory}\{options.Width}w-{options.Height}h-{options.ResizeMode.ToString()}.{options.Format.ToFileExtensionString()}");
                 Directory.CreateDirectory(outputDirectory);
 
                 using (var fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
@@ -196,7 +197,7 @@ namespace Umbrella.DynamicImage.Impl.Test
         [MemberData(nameof(ResizersList))]
         public void ResizeImage_InvalidImage(IDynamicImageResizer imageResizer)
         {
-            byte[] pdfBytes = File.ReadAllBytes($@"{BaseDirectory}\IkeaManual.pdf");
+            byte[] pdfBytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\IkeaManual.pdf"));
 
             Assert.Throws<DynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
         }
@@ -205,7 +206,7 @@ namespace Umbrella.DynamicImage.Impl.Test
         [MemberData(nameof(ResizersList))]
         public void IsImage_InvalidImage(IDynamicImageResizer imageResizer)
         {
-            byte[] bytes = File.ReadAllBytes($@"{BaseDirectory}\IkeaManual.pdf");
+            byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\IkeaManual.pdf"));
 
             bool isValid = imageResizer.IsImage(bytes);
 

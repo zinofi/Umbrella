@@ -17,6 +17,7 @@ using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Helpers;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
@@ -50,7 +51,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1");
+					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
@@ -62,7 +63,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task AddAsync_RemoveAsync_Bytes(IDynamicImageCache cache)
 		{
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			var item = new DynamicImageItem
 			{
@@ -97,7 +98,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task AddAsync_RemoveAsync_Stream(IDynamicImageCache cache)
 		{
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			var item = new DynamicImageItem
 			{
@@ -138,7 +139,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task GetAsync_NotExists(IDynamicImageCache cache)
 		{
-			string path = $@"{BaseDirectory}\doesnotexist.png";
+			string path = PathHelper.PlatformNormalize($@"{BaseDirectory}\doesnotexist.png");
 
 			var item = new DynamicImageItem
 			{
@@ -155,7 +156,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 		[MemberData(nameof(CacheListMemberData))]
 		public async Task AddAsync_GetAsync_Expired(IDynamicImageCache cache)
 		{
-			string path = $@"{BaseDirectory}\{TestFileName}";
+			string path = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			var item = new DynamicImageItem
 			{

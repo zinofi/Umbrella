@@ -20,3 +20,4 @@ BenchmarkDotNet.Artifacts
 CodeCoverage
 TestResults
 coverage.json
+/FileSystem/test/Umbrella.FileSystem.Test/images

@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Helpers;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -118,7 +120,7 @@ namespace Umbrella.FileSystem.Disk
 
 				var lstResult = new List<UmbrellaDiskFileInfo>();
 
-				foreach(var file in files)
+				foreach (var file in files)
 				{
 					if (await CheckFileAccessAsync(file, file.PhysicalFileInfo, cancellationToken))
 						lstResult.Add(file);
@@ -142,16 +144,17 @@ namespace Umbrella.FileSystem.Disk
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
 
 			string physicalPath = CleanPath(subpath);
+			string cleanedSubPath = PathHelper.PlatformNormalize(subpath);
 
 			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { subpath, physicalPath }, "File");
+				Log.WriteDebug(new { subpath, cleanedSubPath, physicalPath }, "File");
 
 			var physicalFileInfo = new FileInfo(physicalPath);
 
 			if (!isNew && !physicalFileInfo.Exists)
 				return null;
 
-			var fileInfo = new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, physicalFileInfo, isNew);
+			var fileInfo = new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, cleanedSubPath, this, physicalFileInfo, isNew);
 
 			if (!await CheckFileAccessAsync(fileInfo, physicalFileInfo, cancellationToken))
 				throw new UmbrellaFileAccessDeniedException(subpath);
@@ -182,9 +185,18 @@ namespace Umbrella.FileSystem.Disk
 			// Sanitize subpath
 			string coreSubpath = SanitizeSubPathCore(subpath);
 
-			var cleanedPathBuilder = new StringBuilder(coreSubpath)
-				.Replace('/', '\\')
-				.Insert(0, Options.RootPhysicalPath + @"\");
+			var cleanedPathBuilder = new StringBuilder(coreSubpath);
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				cleanedPathBuilder
+					.Replace('/', '\\')
+					.Insert(0, Options.RootPhysicalPath + @"\");
+			}
+			else
+			{
+				cleanedPathBuilder.Insert(0, Options.RootPhysicalPath + "/");
+			}
 
 			return cleanedPathBuilder.ToString();
 		}

@@ -10,6 +10,7 @@ using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
+using Umbrella.Utilities.Helpers;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
@@ -39,8 +40,9 @@ namespace Umbrella.FileSystem.Test
 			{
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
+					// TODO: Create a PathHelper or something that will replace \ to an OS specific version, i.e. replace '\' with Path.DirectorySeparatorChar
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1");
+					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
@@ -104,7 +106,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -126,7 +128,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -153,7 +155,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -185,7 +187,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -216,7 +218,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -300,7 +302,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -330,7 +332,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -356,7 +358,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			Stream stream = File.OpenRead(physicalPath);
 			stream.Position = 20;
@@ -383,7 +385,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -409,7 +411,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			Stream stream = File.OpenRead(physicalPath);
 			stream.Position = 20;
@@ -449,7 +451,7 @@ namespace Umbrella.FileSystem.Test
 			{
 				var provider = providerFunc();
 
-				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+				string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 				byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -471,7 +473,7 @@ namespace Umbrella.FileSystem.Test
 			{
 				var provider = providerFunc();
 
-				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+				string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 				Stream stream = File.OpenRead(physicalPath);
 				stream.Position = 20;
@@ -501,7 +503,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -538,7 +540,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -575,7 +577,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -615,7 +617,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -659,7 +661,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -703,7 +705,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -776,7 +778,7 @@ namespace Umbrella.FileSystem.Test
 			{
 				var provider = providerFunc();
 
-				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+				string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 				byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -798,7 +800,7 @@ namespace Umbrella.FileSystem.Test
 			{
 				var provider = providerFunc();
 
-				string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+				string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 				Stream stream = File.OpenRead(physicalPath);
 				stream.Position = 20;
@@ -828,7 +830,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -865,7 +867,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -902,7 +904,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -942,7 +944,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -986,7 +988,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -1030,7 +1032,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -1103,7 +1105,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			// Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -1140,7 +1142,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			// Create a top level file at the root of the directory.
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -1160,7 +1162,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			// Create a top level file at the root of the directory.
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -1202,7 +1204,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			// Create a top level file at the root of the directory.
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 
@@ -1241,7 +1243,7 @@ namespace Umbrella.FileSystem.Test
 			var provider = providerFunc();
 
 			//Arrange
-			string physicalPath = $@"{BaseDirectory}\{TestFileName}";
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 			byte[] bytes = File.ReadAllBytes(physicalPath);
 

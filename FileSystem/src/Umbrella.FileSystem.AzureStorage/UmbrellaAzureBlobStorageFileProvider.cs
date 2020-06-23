@@ -251,7 +251,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
 				return null;
 
-			var fileInfo = new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, subpath, this, blob, isNew);
+			var fileInfo = new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, cleanedPath, this, blob, isNew);
 			await fileInfo.InitializeAsync(cancellationToken).ConfigureAwait(false);
 
 			if (!await CheckFileAccessAsync(fileInfo, blob, cancellationToken).ConfigureAwait(false))
