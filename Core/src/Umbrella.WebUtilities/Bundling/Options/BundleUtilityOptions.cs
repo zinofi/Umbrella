@@ -5,16 +5,40 @@ using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.WebUtilities.Bundling.Options
 {
+	/// <summary>
+	/// Options for the <see cref="BundleUtility"/>
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.Options.CacheableUmbrellaOptions" />
+	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
+	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
 	public class BundleUtilityOptions : CacheableUmbrellaOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
-		public string DefaultBundleFolderAppRelativePath { get; set; }
-		public bool WatchFiles { get; set; }
-		public bool? AppendVersion { get; set; }
-		public override CacheItemPriority CachePriority { get; set; } = CacheItemPriority.NeverRemove;
+		/// <summary>
+		/// Gets or sets the default bundle folder path relative to the web root of the application.
+		/// Defaults to '/dist'.
+		/// </summary>
+		public string DefaultBundleFolderAppRelativePath { get; set; } = "/dist";
 
 		/// <summary>
-		/// Sanitizes this instance.
+		/// Gets or sets a value indicating whether source files will be watched for changes.
+		/// This is useful during development when files are constantly changing and should be disabled in production.
+		/// Defaults to <see langword="false"/>.
 		/// </summary>
+		public bool WatchFiles { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether a version should be appended to generated bundle URLs.
+		/// This defaults to <see langword="null"/> because version appending behaviour is delegated to <see cref="BundleUtility"/> implementations.
+		/// However, this can be used as a global override to explicitly enable or disable this behaviour.
+		/// </summary>
+		public bool? AppendVersion { get; set; }
+
+		/// <summary>
+		/// Gets or sets the cache priority when caching items in memory. Defaults to <see cref="F:Microsoft.Extensions.Caching.Memory.CacheItemPriority.NeverRemove" />.
+		/// </summary>
+		public override CacheItemPriority CachePriority { get; set; } = CacheItemPriority.NeverRemove;
+
+		/// <inheritdoc />
 		public virtual void Sanitize()
 		{
 			// Ensure the path ends with a slash
@@ -22,9 +46,7 @@ namespace Umbrella.WebUtilities.Bundling.Options
 				DefaultBundleFolderAppRelativePath += "/";
 		}
 
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public virtual void Validate() => Guard.ArgumentNotNullOrWhiteSpace(DefaultBundleFolderAppRelativePath, nameof(DefaultBundleFolderAppRelativePath));
 	}
 }

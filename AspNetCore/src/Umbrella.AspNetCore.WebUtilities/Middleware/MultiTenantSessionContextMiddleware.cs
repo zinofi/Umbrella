@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Umbrella.AspNetCore.MultiTenant.Middleware.Options;
-using Umbrella.DataAccess.MultiTenant.Abstractions;
+using Umbrella.DataAccess.Abstractions;
+using Umbrella.WebUtilities.Middleware.Options;
 
-namespace Umbrella.AspNetCore.MultiTenant.Middleware
+namespace Umbrella.AspNetCore.WebUtilities.Middleware
 {
 	/// <summary>
 	/// This Middleware is used to populate the values of the scoped instance of <see cref="DbAppTenantSessionContext{TAppTenantKey}"/> on the application's dependency
@@ -135,5 +135,3 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 		}
 	}
 }
-
-// TODO: Move this into the WebUtilities projects

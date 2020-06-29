@@ -41,9 +41,7 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 			return _flattenedMappings.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
 		}
 
-		/// <summary>
-		/// Sanitizes this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Sanitize()
 		{
 			if (Mappings != null)
@@ -55,9 +53,7 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 			FileSystemPathPrefix = FileSystemPathPrefix.TrimNull();
 		}
 
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Validate()
 		{
 			Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));

@@ -1,4 +1,4 @@
-﻿namespace Umbrella.DataAccess.MultiTenant.Abstractions
+﻿namespace Umbrella.DataAccess.Abstractions
 {
 	/// <summary>
 	/// This type is used to track the context of an application tenant. This should be registered with DI containers
@@ -27,5 +27,3 @@
 		public bool IsAuthenticated { get; set; }
 	}
 }
-
-// TODO: Move these into the normal abstractions class.

@@ -1,13 +1,16 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.DataAccess.EF6;
-using Umbrella.DataAccess.MultiTenant.Abstractions;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 
-namespace Umbrella.DataAccess.MultiTenant.EF6
+namespace Umbrella.DataAccess.EF6
 {
+	/// <summary>
+	/// Serves as the base class for multi-tenant repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
 	public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext> : MultiTenantGenericDbRepository<TEntity, TDbContext, RepoOptions>
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
@@ -33,6 +36,12 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		}
 	}
 
+	/// <summary>
+	/// Serves as the base class for multi-tenant repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions> : MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions, int>
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
@@ -59,6 +68,13 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		}
 	}
 
+	/// <summary>
+	/// Serves as the base class for multi-tenant repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey> : MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
@@ -86,6 +102,14 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		}
 	}
 
+	/// <summary>
+	/// Serves as the base class for multi-tenant repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
 	public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, int, int>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
@@ -113,6 +137,15 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		}
 	}
 
+	/// <summary>
+	/// Serves as the base class for multi-tenant repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
+	/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
 	public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TAppTenantKey> : GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext

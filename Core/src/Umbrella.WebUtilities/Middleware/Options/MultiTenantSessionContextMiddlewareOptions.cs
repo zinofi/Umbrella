@@ -1,16 +1,12 @@
 ﻿using System.Security.Claims;
-using Umbrella.DataAccess.MultiTenant.Abstractions;
 using Umbrella.Utilities;
-using Umbrella.Utilities.Options.Abstractions;
 
-namespace Umbrella.AspNetCore.MultiTenant.Middleware.Options
+namespace Umbrella.WebUtilities.Middleware.Options
 {
 	/// <summary>
-	/// Options for the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey}"/> and <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey, TNullableAppTenantKey}"/> middleware.
+	/// Options for the MultiTenantSessionContextMiddleware in the ASP.NET and ASP.NET Core projects.
 	/// </summary>
-	/// <seealso cref="ISanitizableUmbrellaOptions" />
-	/// <seealso cref="IValidatableUmbrellaOptions" />
-	public class MultiTenantSessionContextMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public class MultiTenantSessionContextMiddlewareOptions
 	{
 		/// <summary>
 		/// <para>
@@ -18,7 +14,7 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware.Options
 		/// Defaults to <see cref="ClaimTypes.GroupSid"/>.
 		/// </para>
 		/// <para>
-		/// The value of this claim will be read from the current user's claims and assigned to the scoped instance of <see cref="DbAppTenantSessionContext{TAppTenantKey}"/> registered
+		/// The value of this claim will be read from the current user's claims and assigned to the scoped instance of DbAppTenantSessionContext registered
 		/// with the application's dependency injection container. The primary use of this would then be to perform a row filtering operation when accessing data to ensure
 		/// that data cannot bleed across different tenants.
 		/// </para>

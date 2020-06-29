@@ -37,17 +37,13 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 		/// </summary>
 		public UmbrellaFileProviderMapping FileProviderMapping { get; set; }
 
-		/// <summary>
-		/// Sanitizes this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Sanitize()
 		{
 			FileProviderMapping?.Sanitize();
 		}
 
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Validate()
 		{
 			Guard.ArgumentNotNull(FileProviderMapping, nameof(FileProviderMapping));

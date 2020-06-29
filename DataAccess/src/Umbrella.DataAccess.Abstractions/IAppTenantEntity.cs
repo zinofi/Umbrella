@@ -1,4 +1,4 @@
-﻿namespace Umbrella.DataAccess.MultiTenant.Abstractions
+﻿namespace Umbrella.DataAccess.Abstractions
 {
 	/// <summary>
 	/// This interface is used to mark a type as belonging to a specific tenant where the identifier of the tenant is an <see cref="int"/>.

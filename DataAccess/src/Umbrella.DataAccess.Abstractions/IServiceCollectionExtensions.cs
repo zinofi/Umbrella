@@ -22,6 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IEntityValidator, EntityValidator>();
 			services.AddScoped<IUmbrellaDbContextHelper, UmbrellaDbContextHelper>();
+			services.AddScoped(typeof(DbAppTenantSessionContext<>));
 
 			return services;
 		}

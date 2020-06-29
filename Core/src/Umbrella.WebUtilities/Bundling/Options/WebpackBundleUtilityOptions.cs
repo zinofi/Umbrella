@@ -21,9 +21,7 @@ namespace Umbrella.WebUtilities.Bundling.Options
 		/// </summary>
 		public string ManifestJsonFileSubPath { get; private set; }
 
-		/// <summary>
-		/// Sanitizes this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public override void Sanitize()
 		{
 			base.Sanitize();
@@ -41,9 +39,7 @@ namespace Umbrella.WebUtilities.Bundling.Options
 			}
 		}
 
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
+		/// <inheritdoc />
 		/// <exception cref="ArgumentException">The manifest file name must only have an extenion of .json.</exception>
 		public override void Validate()
 		{
