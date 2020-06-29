@@ -14,22 +14,14 @@ namespace Umbrella.AspNetCore.DataAnnotations
 	internal class UmbrellaValidationAttributeAdapterProvider : IValidationAttributeAdapterProvider
 	{
 		#region Private Members
-		private readonly IValidationAttributeAdapterProvider m_MvcFrameworkImplementation = new ValidationAttributeAdapterProvider();
+		private readonly IValidationAttributeAdapterProvider _mvcFrameworkImplementation = new ValidationAttributeAdapterProvider();
 		#endregion
 
 		#region IValidationAttributeAdapterProvider Members
-		/// <summary>
-		/// Returns the <see cref="T:Microsoft.AspNetCore.Mvc.DataAnnotations.IAttributeAdapter" /> for the given <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />.
-		/// </summary>
-		/// <param name="attribute">The <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" /> to create an <see cref="T:Microsoft.AspNetCore.Mvc.DataAnnotations.IAttributeAdapter" />
-		/// for.</param>
-		/// <param name="stringLocalizer">The <see cref="T:Microsoft.Extensions.Localization.IStringLocalizer" /> which will be used to create messages.</param>
-		/// <returns>
-		/// An <see cref="T:Microsoft.AspNetCore.Mvc.DataAnnotations.IAttributeAdapter" /> for the given <paramref name="attribute" />.
-		/// </returns>
+		/// <inheritdoc />
 		public IAttributeAdapter GetAttributeAdapter(ValidationAttribute attribute, IStringLocalizer stringLocalizer)
 		{
-			IAttributeAdapter adapter = m_MvcFrameworkImplementation.GetAttributeAdapter(attribute, stringLocalizer);
+			IAttributeAdapter adapter = _mvcFrameworkImplementation.GetAttributeAdapter(attribute, stringLocalizer);
 
 			if (adapter == null)
 			{
@@ -47,7 +39,9 @@ namespace Umbrella.AspNetCore.DataAnnotations
 				}
 			}
 
+#pragma warning disable CS8603 // Possible null reference return.
 			return adapter;
+#pragma warning restore CS8603 // Possible null reference return.
 		}
 		#endregion
 	}
