@@ -11,7 +11,7 @@ namespace Umbrella.AspNetCore.DataAnnotations
 	/// is to enable client-side validation using the default validation mechanism built into ASP.NET Core.
 	/// </summary>
 	/// <seealso cref="IValidationAttributeAdapterProvider" />
-	public class UmbrellaValidationAttributeAdapterProvider : IValidationAttributeAdapterProvider
+	internal class UmbrellaValidationAttributeAdapterProvider : IValidationAttributeAdapterProvider
 	{
 		#region Private Members
 		private readonly IValidationAttributeAdapterProvider m_MvcFrameworkImplementation = new ValidationAttributeAdapterProvider();
@@ -37,11 +37,12 @@ namespace Umbrella.AspNetCore.DataAnnotations
 
 				if (type == typeof(UmbrellaPostcodeAttribute) || type == typeof(UmbrellaPhoneAttribute))
 				{
-					// TODO: adapter = new RegularExpressionAttributeAdapter((RegularExpressionAttribute)attribute, stringLocalizer);
+					// TODO: Is this still needed? Or will it just work?
+					// adapter = new RegularExpressionAttributeAdapter((RegularExpressionAttribute)attribute, stringLocalizer);
 				}
 				else
 				{
-					// TODO: Need to create adapter implementations of all the other attributes in the Umbrella.DataAnnotations library in order
+					// Need to create adapter implementations of all the other attributes in the Umbrella.DataAnnotations library in order
 					// for them to work properly with jQuery unobtrusive validation as they do currently in MVC 5 using the Umbrella.Legacy.WebUtilities.DataAnnotations library.
 				}
 			}

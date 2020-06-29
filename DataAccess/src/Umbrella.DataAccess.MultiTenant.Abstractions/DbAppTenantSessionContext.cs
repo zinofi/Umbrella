@@ -27,3 +27,5 @@
 		public bool IsAuthenticated { get; set; }
 	}
 }
+
+// TODO: Move these into the normal abstractions class.

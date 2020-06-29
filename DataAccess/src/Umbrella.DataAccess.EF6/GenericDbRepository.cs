@@ -18,7 +18,7 @@ using Umbrella.Utilities.Data.Abstractions;
 namespace Umbrella.DataAccess.EF6
 {
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -46,7 +46,7 @@ namespace Umbrella.DataAccess.EF6
 	}
 
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -76,7 +76,7 @@ namespace Umbrella.DataAccess.EF6
 	}
 
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -108,7 +108,7 @@ namespace Umbrella.DataAccess.EF6
 	}
 
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -159,8 +159,8 @@ namespace Umbrella.DataAccess.EF6
 
 			try
 			{
-				if (!await CanAccessAsync(entity, cancellationToken))
-					throw new UmbrellaDataAccessForbiddenException();
+				await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
+				ThrowIfConcurrencyTokenMismatch(entity);
 
 				// Ensure the default options are used when not explicitly provided.
 				repoOptions ??= DefaultRepoOptions;
@@ -274,8 +274,8 @@ namespace Umbrella.DataAccess.EF6
 
 			try
 			{
-				if (!await CanAccessAsync(entity, cancellationToken))
-					throw new UmbrellaDataAccessForbiddenException();
+				await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
+				ThrowIfConcurrencyTokenMismatch(entity);
 
 				// Ensure the default options are used when not explicitly provided.
 				repoOptions ??= DefaultRepoOptions;
@@ -330,6 +330,26 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Protected Methods
+		/// <summary>
+		/// Determines whether the concurrency token assigned on the entity matches the one stored on the tracking entry in the database context.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		///   <see langword="true"/> if it matches; otherwise, <see langword="false"/>.
+		/// </returns>
+		protected bool IsConcurrencyTokenMismatch(TEntity entity)
+			=> !entity.Id.Equals(default) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
+
+		/// <summary>
+		/// Throws an exception if there is a concurrency token mismatch.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
+		{
+			if (IsConcurrencyTokenMismatch(entity))
+				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
+		}
+
 		/// <summary>
 		/// Formats the entity ids as comma-delimited string. This is only used for logging purposes to record the ids.
 		/// </summary>
@@ -543,12 +563,28 @@ namespace Umbrella.DataAccess.EF6
 		}
 		#endregion
 
-		#region SyncDependencies
-		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, IEnumerable<RepoOptions> options)
-			where TTargetEntity : class, IEntity<TTargetEntityKey>
-			where TTargetEntityKey : IEquatable<TTargetEntityKey>
-			where TTargetEntityRepoOptions : RepoOptions, new()
-			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey>
+		#region SyncDependencies		
+		/// <summary>
+		/// Synchronizes the dependencies of the current entity.
+		/// For example, the entity may have a collection property, e.g. Person has a list of Pets and Pet has a foreign key of PersonId so
+		/// there is a 1-N relationship between Person and Pet. This method would be called as: SyncDependenciesAsync(person.Pets, petRepo, x => x.PersonId == person.Id, cancellationToken, options).
+		/// <para>This method should be used with caution as it has the overhead of loading all of the child entities that match the predicate, e.g. all Pets for the person.Id. For large collections this is not practical so use with care as alternative solutions will likely be more performant.</para>
+		/// </summary>
+		/// <typeparam name="TTargetEntity">The type of the target entity.</typeparam>
+		/// <typeparam name="TTargetEntityRepoOptions">The type of the target entity repo options.</typeparam>
+		/// <typeparam name="TTargetEntityKey">The type of the target entity key.</typeparam>
+		/// <typeparam name="TTargetRepository">The type of the target repository.</typeparam>
+		/// <param name="alteredColl">The altered collection.</param>
+		/// <param name="repository">The target repository.</param>
+		/// <param name="predicate">The predicate used to filter .</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="options">The collection of repo options. This can be used by this method to determine if the synchronization logic should be executed.</param>
+		/// <returns>An awaitable <see cref="Task" /> which will complete once all work has been completed.</returns>
+		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions> options)
+					where TTargetEntity : class, IEntity<TTargetEntityKey>
+					where TTargetEntityKey : IEquatable<TTargetEntityKey>
+					where TTargetEntityRepoOptions : RepoOptions, new()
+					where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey>
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -559,38 +595,38 @@ namespace Umbrella.DataAccess.EF6
 			if (!targetOptions.ProcessChildren)
 				return;
 
-			//Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
-			//but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
-			//any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
-			//to a new List first to stop this from happening.
+			// Copy the incoming list here - this is because the code in the foreach declaration below finds all the entities matching the where clause
+			// but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
+			// any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
+			// to a new List first to stop this from happening.
 			alteredColl = new List<TTargetEntity>(alteredColl);
 
-			//Ensure we have deleted the dependencies (children) we no longer need
-			foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))
+			// Ensure we have deleted the dependencies (children) we no longer need
+			foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(predicate))
 			{
 				if (!alteredColl.Contains(entity))
 				{
-					//Delete the dependency, but do not push changes to the database
+					// Delete the dependency, but do not push changes to the database
 					await repository.DeleteAsync(entity, cancellationToken, false, targetOptions, options).ConfigureAwait(false);
 				}
 			}
 
 			foreach (TTargetEntity entity in alteredColl)
 			{
-				//Look for the entity in the context - this action will allow us to determine it's state
+				// Look for the entity in the context - this action will allow us to determine it's state
 				DbEntityEntry<TTargetEntity> dbEntity = Context.Entry(entity);
 
-				//Determine entities that have been added or modified - in these cases we need to call Save so that any custom
-				//repository logic is executed
+				// Determine entities that have been added or modified - in these cases we need to call Save so that any custom
+				// repository logic is executed
 				if (dbEntity.State.HasFlag(EntityState.Detached)
 					|| dbEntity.State.HasFlag(EntityState.Added)
 					|| dbEntity.State.HasFlag(EntityState.Modified)
 					|| dbEntity.State.HasFlag(EntityState.Unchanged))
 				{
-					//Do not add children to the context at this point. This still allows us to perform our save
-					//logic on the entity, but it also means that should something go wrong that means
-					//persisting the parent entity is not valid, we don't end up in a situation where we have
-					//child objects as part of the context that shouldn't be saved.
+					// Do not add children to the context at this point. This still allows us to perform our save
+					// logic on the entity, but it also means that should something go wrong that means
+					// persisting the parent entity is not valid, we don't end up in a situation where we have
+					// child objects as part of the context that shouldn't be saved.
 					await repository.SaveAsync(entity, cancellationToken, false, false, targetOptions, options).ConfigureAwait(false);
 				}
 			}

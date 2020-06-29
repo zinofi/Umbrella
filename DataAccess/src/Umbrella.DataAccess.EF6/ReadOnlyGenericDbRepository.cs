@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF6.Extensions;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EF6
 {
@@ -128,6 +127,12 @@ namespace Umbrella.DataAccess.EF6
 		/// Gets the default repo options.
 		/// </summary>
 		protected static TRepoOptions DefaultRepoOptions { get; } = new TRepoOptions();
+
+		/// <summary>
+		/// Gets or sets the valid filter expressions that can be applied to queries. This should be initialized inside the static constructor
+		/// of the derived class.
+		/// </summary>
+		protected static IReadOnlyCollection<Expression<Func<TEntity, object>>> ValidFilters { get; set; }
 		#endregion
 
 		#region Protected Properties		
@@ -149,7 +154,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <summary>
 		/// Gets the <see cref="IQueryable{TEntity}"/> from the database context for the current <typeparamref name="TEntity"/> type.
 		/// </summary>
-		protected IQueryable<TEntity> Items => Context.Set<TEntity>();
+		protected IQueryable<TEntity> Items => ApplyQueryFilter(Context.Set<TEntity>());
 
 		/// <summary>
 		/// Gets the current user identifier.
@@ -192,6 +197,8 @@ namespace Umbrella.DataAccess.EF6
 
 			try
 			{
+				// TODO: ValidateFilters(filterExpressions);
+
 				if (filterExpressions != null)
 					throw new NotSupportedException("Filtering is not currently supported.");
 
@@ -216,38 +223,6 @@ namespace Umbrella.DataAccess.EF6
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllByIdListAsync(IEnumerable<TEntityKey> ids, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(ids, nameof(ids));
-			repoOptions ??= DefaultRepoOptions;
-
-			try
-			{
-				if (filterExpressions != null)
-					throw new NotSupportedException("Filtering is not currently supported.");
-
-				int totalCount = await Items.CountAsync();
-				List<TEntity> entities = await Items
-					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
-					.TrackChanges(trackChanges)
-					.IncludeMap(map)
-					.Where(x => ids.Contains(x.Id))
-					.ToListAsync(cancellationToken)
-					.ConfigureAwait(false);
-
-				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
-				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
-
-				return (entities, totalCount);
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids, trackChanges, map, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There has been a problem retrieving all items with the specified ids.", exc);
-			}
-		}
-
-		/// <inheritdoc />
 		public virtual async Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -260,8 +235,7 @@ namespace Umbrella.DataAccess.EF6
 				if (entity == null)
 					return null;
 
-				if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
-					throw new UmbrellaDataAccessForbiddenException();
+				await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
 
 				await AfterItemLoadedAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
@@ -290,12 +264,63 @@ namespace Umbrella.DataAccess.EF6
 		#endregion
 
 		#region Protected Methods
+		/// <summary>
+		/// Validates that the specified filters are permitted by the <see cref="ValidFilters"/>.
+		/// </summary>
+		/// <param name="filters">The filters.</param>
+		/// <returns><see langword="true"/> if they are all contained in the <see cref="ValidFilters"/>; otherwise <see langword="false"/>.</returns>
+		protected virtual bool ValidateFilters(IEnumerable<FilterExpression<TEntity>> filters)
+		{
+			if (filters is null || ValidFilters is null)
+				return true;
+
+			// TODO - UM: We need to create an Expression cache.
+			// Create it as a Utility or Helper (or something like that). Just get the type names of the parameters (fullname)
+			// and then get the membername of each expression to form the key. If we use the cache in the model binders properly
+			// we will be sharing instances meaning we can massively cut down on memory usage and CPU usage.
+			// We could also do something similar for the Func properties on the Expressions.
+			// Call it a DataExpressionCache! Not sure how to resolve Func though on the Filter and Sort instances, hmmm...
+			// return filters.All(x => ValidFilters.Contains(x.Expression));
+
+			// This should be a fallback if object reference equality is false.
+			return filters.All(x => ValidFilters.Select(x => x.ToString()).Contains(x.Expression.ToString()));
+		}
+
+		/// <summary>
+		/// Applies the query filter. By default, this does nothing unless overridden by derived types.
+		/// </summary>
+		/// <param name="query">The query.</param>
+		/// <returns>An updated query with the filter applied.</returns>
+		protected virtual IQueryable<TEntity> ApplyQueryFilter(IQueryable<TEntity> query) => query;
+
+		/// <summary>
+		/// Determines whether this entity can be accessed in the current context. By default this returns <see langword="true"/>
+		/// unless overridden by derived types.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns><see langword="true"/> if it can be accessed; otherwise <see langword="false"/>.</returns>
 		protected virtual Task<bool> CanAccessAsync(TEntity entity, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			return Task.FromResult(true);
 		}
+
+		/// <summary>
+		/// Throws an exception if the specified entity cannot be accessed in the current context.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <exception cref="UmbrellaDataAccessForbiddenException"></exception>
+		protected async Task ThrowIfCannotAcesssAsync(TEntity entity, CancellationToken cancellationToken)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
+				throw new UmbrellaDataAccessForbiddenException("The specified entity cannot be accessed in the current context.");
+		}
+
 
 		protected async Task FilterByAccessAsync(List<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
 		{

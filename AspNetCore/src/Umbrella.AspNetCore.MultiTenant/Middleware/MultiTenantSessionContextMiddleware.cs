@@ -135,3 +135,5 @@ namespace Umbrella.AspNetCore.MultiTenant.Middleware
 		}
 	}
 }
+
+// TODO: Move this into the WebUtilities projects

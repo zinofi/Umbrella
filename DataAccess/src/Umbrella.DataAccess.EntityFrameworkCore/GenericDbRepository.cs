@@ -18,7 +18,7 @@ using Umbrella.Utilities.DataAnnotations.Abstractions;
 namespace Umbrella.DataAccess.EntityFrameworkCore
 {
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -48,7 +48,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 	}
 
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -80,7 +80,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 	}
 
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -114,7 +114,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 	}
 
 	/// <summary>
-	/// A general purpose base class containing core repository functionality.
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -315,13 +315,26 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			}
 		}
 
-		
+
 		#endregion
 
-		#region Protected Methods
+		#region Protected Methods		
+		/// <summary>
+		/// Determines whether the concurrency token assigned on the entity matches the one stored on the tracking entry in the database context.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		///   <see langword="true"/> if it matches; otherwise, <see langword="false"/>.
+		/// </returns>
 		protected bool IsConcurrencyTokenMismatch(TEntity entity)
+#pragma warning disable CS8604 // Possible null reference argument.
 			=> !entity.Id.Equals(default) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
+#pragma warning restore CS8604 // Possible null reference argument.
 
+		/// <summary>
+		/// Throws an exception if there is a concurrency token mismatch.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
 		protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
 		{
 			if (IsConcurrencyTokenMismatch(entity))
@@ -354,7 +367,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
 
 			// Check if this entity is in the context, i.e. is it new
+#pragma warning disable CS8604 // Possible null reference argument.
 			if (entity.Id.Equals(default) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)))
+#pragma warning restore CS8604 // Possible null reference argument.
 			{
 				isNew = true;
 
@@ -497,7 +512,23 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		#endregion
 
 		#region SyncDependencies
-		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> func, CancellationToken cancellationToken, IEnumerable<RepoOptions>? repoOptions)
+		/// <summary>
+		/// Synchronizes the dependencies of the current entity.
+		/// For example, the entity may have a collection property, e.g. Person has a list of Pets and Pet has a foreign key of PersonId so
+		/// there is a 1-N relationship between Person and Pet. This method would be called as: SyncDependenciesAsync(person.Pets, petRepo, x => x.PersonId == person.Id, cancellationToken, options).
+		/// <para>This method should be used with caution as it has the overhead of loading all of the child entities that match the predicate, e.g. all Pets for the person.Id. For large collections this is not practical so use with care as alternative solutions will likely be more performant.</para>
+		/// </summary>
+		/// <typeparam name="TTargetEntity">The type of the target entity.</typeparam>
+		/// <typeparam name="TTargetEntityRepoOptions">The type of the target entity repo options.</typeparam>
+		/// <typeparam name="TTargetEntityKey">The type of the target entity key.</typeparam>
+		/// <typeparam name="TTargetRepository">The type of the target repository.</typeparam>
+		/// <param name="alteredColl">The altered collection.</param>
+		/// <param name="repository">The target repository.</param>
+		/// <param name="predicate">The predicate used to filter .</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="repoOptions">The collection of repo options. This can be used by this method to determine if the synchronization logic should be executed.</param>
+		/// <returns>An awaitable <see cref="Task" /> which will complete once all work has been completed.</returns>
+		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityKey, TTargetEntityRepoOptions, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions>? repoOptions)
 			where TTargetEntity : class, IEntity<TTargetEntityKey>
 			where TTargetEntityKey : IEquatable<TTargetEntityKey>
 			where TTargetEntityRepoOptions : RepoOptions, new()
@@ -519,7 +550,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			alteredColl = new List<TTargetEntity>(alteredColl);
 
 			//Ensure we have deleted the dependencies (children) we no longer need
-			foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(func))
+			foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(predicate))
 			{
 				if (!alteredColl.Contains(entity))
 				{

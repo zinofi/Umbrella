@@ -12,6 +12,15 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		where TEntity : class, IEntity<int>
 		where TDbContext : UmbrellaDbContext
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="userAuditDataFactory">The user audit data factory.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
@@ -29,6 +38,15 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="userAuditDataFactory">The user audit data factory.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
@@ -47,6 +65,15 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="userAuditDataFactory">The user audit data factory.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
@@ -65,6 +92,15 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="userAuditDataFactory">The user audit data factory.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
@@ -85,8 +121,20 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 		where TUserAuditKey : IEquatable<TUserAuditKey>
 		where TAppTenantKey : IEquatable<TAppTenantKey>
 	{
+		/// <summary>
+		/// Gets the application tenant session context.
+		/// </summary>
 		protected DbAppTenantSessionContext<TAppTenantKey> AppTenantSessionContext { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TAppTenantKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
@@ -99,6 +147,7 @@ namespace Umbrella.DataAccess.MultiTenant.EF6
 			AppTenantSessionContext = dbAppTenantSessionContext;
 		}
 
+		/// <inheritdoc />
 		protected override void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
 		{
 			if (entity is IAppTenantEntity<TAppTenantKey> tenantEntity && AppTenantSessionContext.IsAuthenticated)
