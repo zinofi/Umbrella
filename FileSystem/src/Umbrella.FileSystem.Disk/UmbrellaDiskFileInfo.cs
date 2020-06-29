@@ -423,7 +423,7 @@ namespace Umbrella.FileSystem.Disk
 		}
 
 		/// <inheritdoc />
-		public async Task RemoveMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, bool writeChanges = true)
+		public async Task RemoveMetadataValueAsync(string key, CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
@@ -446,7 +446,7 @@ namespace Umbrella.FileSystem.Disk
 		}
 
 		/// <inheritdoc />
-		public async Task ClearMetadataAsync<T>(CancellationToken cancellationToken = default, bool writeChanges = true)
+		public async Task ClearMetadataAsync(CancellationToken cancellationToken = default, bool writeChanges = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
