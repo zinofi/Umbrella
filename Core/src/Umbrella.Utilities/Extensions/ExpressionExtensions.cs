@@ -63,13 +63,13 @@ namespace Umbrella.Utilities.Extensions
 		//	return string.Join(".", parts);
 		//}
 
-		/// <summary>
-		/// Gets the member expression from the supplied expression if possible.
-		/// </summary>
-		/// <typeparam name="T">The type of the object on which the member exists.</typeparam>
-		/// <typeparam name="U">The type of the member on the object.</typeparam>
-		/// <param name="expression">The expression.</param>
-		/// <returns>The <see cref="MemberExpression"/>.</returns>
+		///// <summary>
+		///// Gets the member expression from the supplied expression if possible.
+		///// </summary>
+		///// <typeparam name="T">The type of the object on which the member exists.</typeparam>
+		///// <typeparam name="U">The type of the member on the object.</typeparam>
+		///// <param name="expression">The expression.</param>
+		///// <returns>The <see cref="MemberExpression"/>.</returns>
 		//public static MemberExpression GetMemberExpression<T, U>(this Expression<Func<T, U>> expression) => expression.Body switch
 		//{
 		//	UnaryExpression x => x.Operand as MemberExpression,

@@ -8,7 +8,10 @@ using System.Xml.Linq;
 
 namespace Umbrella.Utilities.Extensions
 {
-    public static class XElementExtensions
+	/// <summary>
+	/// Extension methods for the <see cref="XElement"/> class.
+	/// </summary>
+	public static class XElementExtensions
     {
         public static string GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
             => GetAttributeValue<string>(element, name, required, fallback);

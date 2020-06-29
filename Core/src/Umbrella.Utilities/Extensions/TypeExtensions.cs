@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
-    public static class TypeExtensions
+	/// <summary>
+	/// Extension methods for the <see cref="Type"/> class.
+	/// </summary>
+	public static class TypeExtensions
     {
         #region Public Static Methods
         public static PropertyInfo[] GetPublicOrPrivateProperties(this Type type) => type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -23,7 +26,12 @@ namespace Umbrella.Utilities.Extensions
                 return false;
         }
 
-        public static bool CanBeNull(this Type type)
+		/// <summary>
+		/// Determines whether the type is permitted to have a null value.
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <returns><see langword="true"/> if it is; otherwise <see langword="false"/>.</returns>
+		public static bool CanBeNull(this Type type)
         {
             if (type.IsValueType)
                 return IsNullableType(type);

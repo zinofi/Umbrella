@@ -57,7 +57,7 @@ namespace Microsoft.Extensions.Logging
             if (!log.IsEnabled(level))
                 return;
 
-            StringBuilder messageBuilder = new StringBuilder();
+            var messageBuilder = new StringBuilder();
 
             var stateDictionary = new List<KeyValuePair<string, string>>
             {

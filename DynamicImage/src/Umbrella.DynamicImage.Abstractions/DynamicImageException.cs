@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
-    public class DynamicImageException : Exception
+    public class DynamicImageException : UmbrellaException
     {
         public DynamicImageOptions Options { get; }
 

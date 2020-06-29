@@ -1,25 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbrella.FileSystem.Abstractions
 {
-    public class UmbrellaFileAccessDeniedException : Exception
-    {
-        public string Subpath { get; }
+	/// <summary>
+	/// An exception thrown when there is a permissions based error that occurs when accessing a file.
+	/// </summary>
+	/// <seealso cref="Umbrella.FileSystem.Abstractions.UmbrellaFileSystemException" />
+	public class UmbrellaFileAccessDeniedException : UmbrellaFileSystemException
+	{
+		/// <summary>
+		/// Gets the subpath.
+		/// </summary>
+		public string Subpath { get; }
 
-        public UmbrellaFileAccessDeniedException(string subpath)
-            : base($"Access to the file located at {subpath} has been denied.")
-        {
-            Subpath = subpath;
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaFileAccessDeniedException"/> class.
+		/// </summary>
+		/// <param name="subpath">The subpath.</param>
+		public UmbrellaFileAccessDeniedException(string subpath)
+			: base($"Access to the file located at {subpath} has been denied.")
+		{
+			Subpath = subpath;
+		}
 
-        public UmbrellaFileAccessDeniedException(string subpath, Exception innerException)
-            : base($"Access to the file located at {subpath} has been denied.", innerException)
-        {
-            Subpath = subpath;
-        }
-    }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaFileAccessDeniedException"/> class.
+		/// </summary>
+		/// <param name="subpath">The subpath.</param>
+		/// <param name="innerException">The inner exception.</param>
+		public UmbrellaFileAccessDeniedException(string subpath, Exception innerException)
+			: base($"Access to the file located at {subpath} has been denied.", innerException)
+		{
+			Subpath = subpath;
+		}
+	}
 }
