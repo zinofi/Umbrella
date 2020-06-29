@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Umbrella.TypeScript
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class TypeScriptEmptyAttribute : Attribute
-    {
-    }
+	/// <summary>
+	/// Used to specify that if the type of the property has been translated into a TypeScript array, e.g. <see cref="List{T}"/> has been transleted to T[],
+	/// and the property value on the .NET instance is initialized to null, that the value assigned to the TypeScript model should be '[]' instead of <see langword="null"/>.
+	/// This attribute is only respected if the TypeScriptPropertyMode is set to 'Model'.
+	/// </summary>
+	/// <seealso cref="System.Attribute" />
+	[AttributeUsage(AttributeTargets.Property)]
+	public class TypeScriptEmptyAttribute : Attribute
+	{
+	}
 }

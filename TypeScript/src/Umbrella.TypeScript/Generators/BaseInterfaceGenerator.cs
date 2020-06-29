@@ -5,10 +5,16 @@ using System.Text;
 
 namespace Umbrella.TypeScript.Generators
 {
+	/// <summary>
+	/// Serves as the base for all interface generators.
+	/// </summary>
+	/// <seealso cref="Umbrella.TypeScript.Generators.BaseGenerator" />
 	public abstract class BaseInterfaceGenerator : BaseGenerator
 	{
+		/// <inheritdoc />
 		protected override bool SupportsValidationRules => false;
 
+		/// <inheritdoc />
 		protected override void WriteStart(Type modelType, StringBuilder builder)
 		{
 			string generatedName = TypeScriptUtility.GenerateTypeName(modelType.Name, modelType, OutputModelType);
@@ -24,6 +30,7 @@ namespace Umbrella.TypeScript.Generators
 			builder.AppendLine("\t{");
 		}
 
+		/// <inheritdoc />
 		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
 		{
 			if (!string.IsNullOrEmpty(tsInfo.TypeName))

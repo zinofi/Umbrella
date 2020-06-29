@@ -11,8 +11,13 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript
 {
-	//This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
-	//i.e. a type that is part of the .NET framework other than a primitive, DateTime or string, array or IEnumerable
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <remarks>
+	/// This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
+	/// i.e. a type that is part of the .NET framework other than a primitive, DateTime or string, array or IEnumerable
+	/// </remarks>
 	public class TypeScriptGenerator
 	{
 		#region Private Members
@@ -21,7 +26,10 @@ namespace Umbrella.TypeScript
 		private TypeScriptPropertyMode m_TypeScriptPropertyMode;
 		#endregion
 
-		#region Public Properties
+		#region Public Properties		
+		/// <summary>
+		/// Gets the generators collection. Each .NET type marked for generation will be passed through each generator.
+		/// </summary>
 		public HashSet<IGenerator> Generators { get; } = new HashSet<IGenerator>(new GenericEqualityComparer<IGenerator, Type>(x => x.GetType()));
 		#endregion
 
@@ -69,11 +77,19 @@ namespace Umbrella.TypeScript
 			}
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TypeScriptGenerator"/> class.
+		/// </summary>
+		/// <param name="assemblies">The assemblies to scan for types to generate.</param>
 		public TypeScriptGenerator(List<Assembly> assemblies)
 		{
 			m_Types = assemblies.SelectMany(a => a.GetTypes()).ToList();
 		}
 
+		/// <summary>
+		/// Includes the standard generators.
+		/// </summary>
+		/// <returns>The current <see cref="TypeScriptGenerator" /> instance.</returns>
 		public TypeScriptGenerator IncludeStandardGenerators()
 		{
 			Generators.Add(new StandardInterfaceGenerator());
@@ -82,6 +98,11 @@ namespace Umbrella.TypeScript
 			return this;
 		}
 
+		/// <summary>
+		/// Includes the Knockout generators.
+		/// </summary>
+		/// <param name="useDecorators">Specifies whether Knockout specific EcmaScript decorators will be used when generating the properties on models or done using the standard ko.observable method calls.</param>
+		/// <returns>The current <see cref="TypeScriptGenerator" /> instance.</returns>
 		public TypeScriptGenerator IncludeKnockoutGenerators(bool useDecorators)
 		{
 			Generators.Add(new KnockoutInterfaceGenerator(useDecorators));
@@ -90,6 +111,11 @@ namespace Umbrella.TypeScript
 			return this;
 		}
 
+		/// <summary>
+		/// Includes the specified generator type.
+		/// </summary>
+		/// <typeparam name="T">The generator type.</typeparam>
+		/// <returns>The current <see cref="TypeScriptGenerator" /> instance.</returns>
 		public TypeScriptGenerator IncludeGenerator<T>()
 			where T : IGenerator, new()
 		{
@@ -98,6 +124,13 @@ namespace Umbrella.TypeScript
 			return this;
 		}
 
+		/// <summary>
+		/// Generates all models.
+		/// </summary>
+		/// <param name="outputAsModuleExport">if set to <c>true</c> outputs the generated module using 'export module' instead of 'namespace'.</param>
+		/// <param name="strictNullChecks">if set to <c>true</c>, enables strict null checks, e.g. '| null'</param>
+		/// <param name="propertyMode">The property mode.</param>
+		/// <returns>The generated TypeScript module containing all generated TypeScript interfaces and classes.</returns>
 		public string GenerateAll(bool outputAsModuleExport = true, bool strictNullChecks = true, TypeScriptPropertyMode propertyMode = TypeScriptPropertyMode.Model)
 		{
 			m_StrictNullChecks = strictNullChecks;

@@ -8,6 +8,10 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript.Generators
 {
+	/// <summary>
+	/// A TypeScript generator implementation for generating Knockout classes.
+	/// </summary>
+	/// <seealso cref="Umbrella.TypeScript.Generators.BaseClassGenerator" />
 	public class KnockoutClassGenerator : BaseClassGenerator
 	{
 		#region Private Constants
@@ -21,17 +25,27 @@ namespace Umbrella.TypeScript.Generators
 		private readonly bool _useDecorators;
 
 		#region Overridden Properties
+		/// <inheritdoc />
 		public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutClass;
+
+		/// <inheritdoc />
 		protected override bool SupportsValidationRules => true;
+
+		/// <inheritdoc />
 		protected override TypeScriptOutputModelType InterfaceModelType => TypeScriptOutputModelType.KnockoutInterface;
 		#endregion
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KnockoutClassGenerator"/> class.
+		/// </summary>
+		/// <param name="useDecorators">if set to <c>true</c>, uses TypeScript decorators.</param>
 		public KnockoutClassGenerator(bool useDecorators)
 		{
 			_useDecorators = useDecorators;
 		}
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
 		{
 			if (!string.IsNullOrEmpty(tsInfo.TypeName))
@@ -81,6 +95,7 @@ namespace Umbrella.TypeScript.Generators
 			}
 		}
 
+		/// <inheritdoc />
 		protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
 		{
 			StringBuilder ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
@@ -217,7 +232,7 @@ namespace Umbrella.TypeScript.Generators
 							bool b when b => "true",
 							bool b when !b => "false",
 							string s => $"'{s}'",
-							Enum e => $"{e.GetType().FullName}.{e.ToString()}",
+							Enum e => $"{e.GetType().FullName}.{e}",
 							_ => attr.DependentValue.ToString()
 						};
 
@@ -242,6 +257,7 @@ namespace Umbrella.TypeScript.Generators
 			return validationBuilder;
 		}
 
+		/// <inheritdoc />
 		protected override void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder)
 		{
 			// Only write the validation rules if some validation rules have been generated

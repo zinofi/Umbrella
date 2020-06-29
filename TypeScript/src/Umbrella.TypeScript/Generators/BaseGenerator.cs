@@ -3,79 +3,93 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Extensions;
 using Umbrella.TypeScript.Generators.Abstractions;
 
 namespace Umbrella.TypeScript.Generators
 {
+	/// <summary>
+	/// Serves as the base class for the <see cref="BaseInterfaceGenerator"/> and the <see cref="BaseClassGenerator" />.
+	/// </summary>
+	/// <seealso cref="Umbrella.TypeScript.Generators.Abstractions.IGenerator" />
 	public abstract class BaseGenerator : IGenerator
-    {
-        public abstract TypeScriptOutputModelType OutputModelType { get; }
-        protected abstract bool SupportsValidationRules { get; }
-        protected bool StrictNullChecks { get; set; }
-        protected TypeScriptPropertyMode PropertyMode { get; set; }
-        protected Type ModelType { get; set; }
+	{
+		/// <inheritdoc />
+		public abstract TypeScriptOutputModelType OutputModelType { get; }
 
-        public virtual string Generate(Type modelType, bool generateValidationRules, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
-        {
-            ModelType = modelType;
-            StrictNullChecks = strictNullChecks;
-            PropertyMode = propertyMode;
+		/// <summary>
+		/// Gets a value indicating whether this generator supports outputting validation rules.
+		/// </summary>
+		protected abstract bool SupportsValidationRules { get; }
 
-            var typeBuilder = new StringBuilder();
+		/// <summary>
+		/// Gets or sets a value indicating whether strict null checks are being used.
+		/// </summary>
+		protected bool StrictNullChecks { get; set; }
 
-            //Only create an instance if validation rules need to be generated
-            StringBuilder validationBuilder = generateValidationRules ? new StringBuilder() : null;
-            
-            //Write the start of the type
-            WriteStart(modelType, typeBuilder);
+		/// <summary>
+		/// Gets or sets the property mode.
+		/// </summary>
+		protected TypeScriptPropertyMode PropertyMode { get; set; }
 
-            //Write all properties. This may or may not generate validation rules.
-            WriteAllProperties(GetModelProperties(modelType), typeBuilder, validationBuilder);
+		/// <inheritdoc />
+		public virtual string Generate(Type modelType, bool generateValidationRules, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
+		{
+			StrictNullChecks = strictNullChecks;
+			PropertyMode = propertyMode;
 
-            //Write the end of the type. We pass in the validationBuilder here so that the content
-            //of the validationBuilder can be written to the type in a way that is specific to the generator.
-            WriteEnd(modelType, typeBuilder, validationBuilder);
+			var typeBuilder = new StringBuilder();
 
-            return typeBuilder.ToString();
-        }
+			//Only create an instance if validation rules need to be generated
+			StringBuilder validationBuilder = generateValidationRules ? new StringBuilder() : null;
 
-        protected abstract void WriteStart(Type modelType, StringBuilder builder);
+			//Write the start of the type
+			WriteStart(modelType, typeBuilder);
 
-        protected virtual void WriteAllProperties(IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
-        {
-            foreach (PropertyInfo pi in properties)
-            {
-                var typeOverrideAttribute = pi.GetCustomAttribute<TypeScriptOverrideAttribute>();
+			//Write all properties. This may or may not generate validation rules.
+			WriteAllProperties(modelType, GetModelProperties(modelType), typeBuilder, validationBuilder);
 
-                Type propertyType = typeOverrideAttribute != null
-                    ? typeOverrideAttribute.TypeOverride
-                    : pi.PropertyType;
+			//Write the end of the type. We pass in the validationBuilder here so that the content
+			//of the validationBuilder can be written to the type in a way that is specific to the generator.
+			WriteEnd(modelType, typeBuilder, validationBuilder);
 
-                TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(ModelType, propertyType, pi, OutputModelType, StrictNullChecks, PropertyMode);
-                
-                WriteProperty(pi, tsInfo, typeBuilder);
+			return typeBuilder.ToString();
+		}
 
-                //We are generating the validation rules here so that this work can be done in the same step
-                //as the work to generate the property itself.
-                if (validationBuilder != null)
-                    WriteValidationRules(pi, tsInfo, validationBuilder);
-            }
-        }
+		protected abstract void WriteStart(Type modelType, StringBuilder builder);
 
-        protected abstract void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder);
+		protected virtual void WriteAllProperties(Type modelType, IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder validationBuilder)
+		{
+			foreach (PropertyInfo pi in properties)
+			{
+				var typeOverrideAttribute = pi.GetCustomAttribute<TypeScriptOverrideAttribute>();
 
-        protected virtual void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
-        {
-            //If the generator implementation supports validation rules but they haven't been implmented
-            //throw an exception to indicate this.
-            if(SupportsValidationRules)
-                throw new NotImplementedException("This generator has been marked as supporting validation rules but doesn't implement this method.");
-        }
+				Type propertyType = typeOverrideAttribute != null
+					? typeOverrideAttribute.TypeOverride
+					: pi.PropertyType;
 
-        protected virtual void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder) => typeBuilder.AppendLine("\t}");
+				TypeScriptMemberInfo tsInfo = TypeScriptUtility.GetTypeScriptMemberInfo(modelType, propertyType, pi, OutputModelType, StrictNullChecks, PropertyMode);
 
-        protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
-    }
+				WriteProperty(pi, tsInfo, typeBuilder);
+
+				//We are generating the validation rules here so that this work can be done in the same step
+				//as the work to generate the property itself.
+				if (validationBuilder != null)
+					WriteValidationRules(pi, tsInfo, validationBuilder);
+			}
+		}
+
+		protected abstract void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder);
+
+		protected virtual void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
+		{
+			//If the generator implementation supports validation rules but they haven't been implmented
+			//throw an exception to indicate this.
+			if (SupportsValidationRules)
+				throw new NotImplementedException("This generator has been marked as supporting validation rules but doesn't implement this method.");
+		}
+
+		protected virtual void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder) => typeBuilder.AppendLine("\t}");
+
+		protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
+	}
 }
