@@ -33,14 +33,16 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor,
+			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
-			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
 		{
 		}
 	}
@@ -63,14 +65,16 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor,
+			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
-			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
 		{
 		}
 	}
@@ -95,14 +99,16 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor,
+			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
-			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
 		{
 		}
 	}
@@ -124,6 +130,11 @@ namespace Umbrella.DataAccess.EF6
 	{
 		#region Protected Properties
 		/// <summary>
+		/// Gets the database context helper.
+		/// </summary>
+		protected IUmbrellaDbContextHelper DbContextHelper { get; }
+
+		/// <summary>
 		/// Gets the entity validator.
 		/// </summary>
 		protected IEntityValidator EntityValidator { get; }
@@ -137,15 +148,18 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="entityValidator">The entity validator.</param>
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
+			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
+			DbContextHelper = dbContextHelper;
 			EntityValidator = entityValidator;
 		}
 		#endregion
@@ -184,7 +198,7 @@ namespace Umbrella.DataAccess.EF6
 				// Additional processing after changes have been reflected in the database context but not yet pushed to the database
 				await AfterContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-				Context.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, repoOptions, childOptions));
+				DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, repoOptions, childOptions));
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -287,7 +301,7 @@ namespace Umbrella.DataAccess.EF6
 
 				await AfterContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-				Context.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, cancellationToken, repoOptions, childOptions));
+				DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, cancellationToken, repoOptions, childOptions));
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

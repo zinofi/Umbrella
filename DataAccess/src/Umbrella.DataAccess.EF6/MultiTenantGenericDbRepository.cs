@@ -23,6 +23,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
@@ -30,8 +31,9 @@ namespace Umbrella.DataAccess.EF6
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
+			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -55,6 +57,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
@@ -62,8 +65,9 @@ namespace Umbrella.DataAccess.EF6
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
+			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -89,6 +93,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
@@ -96,8 +101,9 @@ namespace Umbrella.DataAccess.EF6
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
+			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -124,6 +130,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
@@ -131,8 +138,9 @@ namespace Umbrella.DataAccess.EF6
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
+			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
-			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbAppTenantSessionContext)
+			: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext)
 		{
 		}
 	}
@@ -167,6 +175,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="logger">The logger.</param>
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		/// <param name="entityValidator">The entity validator.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
 		/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 		public MultiTenantGenericDbRepository(
 			TDbContext dbContext,
@@ -174,8 +183,9 @@ namespace Umbrella.DataAccess.EF6
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
+			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<TAppTenantKey> dbAppTenantSessionContext)
-			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
 		{
 			AppTenantSessionContext = dbAppTenantSessionContext;
 		}
