@@ -6,7 +6,7 @@ namespace Umbrella.Utilities.Expressions
 	/// <summary>
 	/// Helps building dynamic queries.
 	/// </summary>
-	public static class DynamicQuery
+	public static class UmbrellaDynamicQuery
 	{
 		/// <summary>
 		/// Create a dynamic predicate for a given property selector, comparison method and reference value.
@@ -17,16 +17,16 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="value">The reference value to compare with.</param>
 		/// <param name="provider">The culture-specific formatting information.</param>
 		/// <returns>The dynamic predicate.</returns>
-		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, DynamicCompare comparer, string value, IFormatProvider provider = null)
+		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider provider = null)
 		{
 			if (string.IsNullOrEmpty(selector))
 				throw new ArgumentNullException(nameof(selector));
-			if (!Enum.IsDefined(typeof(DynamicCompare), comparer))
+			if (!Enum.IsDefined(typeof(UmbrellaDynamicCompare), comparer))
 				throw new ArgumentOutOfRangeException(nameof(comparer));
 
 			var target = Expression.Parameter(typeof(T));
 
-			return Expression.Lambda<Func<T, bool>>(DynamicExpression.CreateComparison(target, selector, comparer, value, provider), target);
+			return Expression.Lambda<Func<T, bool>>(UmbrellaDynamicExpression.CreateComparison(target, selector, comparer, value, provider), target);
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace Umbrella.Utilities.Expressions
 
 			var target = Expression.Parameter(typeof(T));
 
-			return Expression.Lambda<Func<T, bool>>(DynamicExpression.CreateComparison(target, selector, comparer, value, provider), target);
+			return Expression.Lambda<Func<T, bool>>(UmbrellaDynamicExpression.CreateComparison(target, selector, comparer, value, provider), target);
 		}
 	}
 }

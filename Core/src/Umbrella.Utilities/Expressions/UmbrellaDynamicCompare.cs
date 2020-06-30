@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Define a comparison method.
 	/// </summary>
-	public enum DynamicCompare
+	public enum UmbrellaDynamicCompare
 	{
 		/// <summary>
 		/// An equal comparison.

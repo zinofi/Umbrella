@@ -9,7 +9,7 @@ namespace Umbrella.Utilities.Expressions
 	/// <summary>
 	/// Helps building dynamic expressions.
 	/// </summary>
-	public static class DynamicExpression
+	public static class UmbrellaDynamicExpression
 	{
 		private static readonly ConcurrentDictionary<Type, Func<string, IFormatProvider, object>> _cache = new ConcurrentDictionary<Type, Func<string, IFormatProvider, object>>();
 
@@ -22,13 +22,13 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="value">The reference value to compare with.</param>
 		/// <param name="provider">The culture-specific formatting information.</param>
 		/// <returns>The dynamic comparison expression.</returns>
-		public static Expression CreateComparison(ParameterExpression target, string selector, DynamicCompare comparer, string value, IFormatProvider provider = null)
+		public static Expression CreateComparison(ParameterExpression target, string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider provider = null)
 		{
 			if (target == null)
 				throw new ArgumentNullException(nameof(target));
 			if (string.IsNullOrEmpty(selector))
 				throw new ArgumentNullException(nameof(selector));
-			if (!Enum.IsDefined(typeof(DynamicCompare), comparer))
+			if (!Enum.IsDefined(typeof(UmbrellaDynamicCompare), comparer))
 				throw new ArgumentOutOfRangeException(nameof(comparer));
 
 			var memberAccess = CreateMemberAccess(target, selector);
@@ -36,12 +36,12 @@ namespace Umbrella.Utilities.Expressions
 
 			return comparer switch
 			{
-				DynamicCompare.Equal => Expression.Equal(memberAccess, actualValue),
-				DynamicCompare.NotEqual => Expression.NotEqual(memberAccess, actualValue),
-				DynamicCompare.GreaterThan => Expression.GreaterThan(memberAccess, actualValue),
-				DynamicCompare.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, actualValue),
-				DynamicCompare.LessThan => Expression.LessThan(memberAccess, actualValue),
-				DynamicCompare.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, actualValue),
+				UmbrellaDynamicCompare.Equal => Expression.Equal(memberAccess, actualValue),
+				UmbrellaDynamicCompare.NotEqual => Expression.NotEqual(memberAccess, actualValue),
+				UmbrellaDynamicCompare.GreaterThan => Expression.GreaterThan(memberAccess, actualValue),
+				UmbrellaDynamicCompare.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, actualValue),
+				UmbrellaDynamicCompare.LessThan => Expression.LessThan(memberAccess, actualValue),
+				UmbrellaDynamicCompare.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, actualValue),
 				_ => Expression.Constant(false),
 			};
 		}

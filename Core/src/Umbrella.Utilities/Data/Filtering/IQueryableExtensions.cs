@@ -31,20 +31,20 @@ namespace Umbrella.Utilities.Data.Filtering
 
 				foreach (FilterExpression<TItem> filterExpression in filterExpressions)
 				{
-					DynamicCompare? dynamicCompare = filterExpression.Type switch
+					UmbrellaDynamicCompare? dynamicCompare = filterExpression.Type switch
 					{
-						FilterType.Equal => DynamicCompare.Equal,
-						FilterType.GreaterThan => DynamicCompare.GreaterThan,
-						FilterType.GreaterThanOrEqual => DynamicCompare.GreaterThanOrEqual,
-						FilterType.LessThan => DynamicCompare.LessThan,
-						FilterType.LessThanOrEqual => DynamicCompare.LessThanOrEqual,
-						FilterType.NotEqual => DynamicCompare.NotEqual,
+						FilterType.Equal => UmbrellaDynamicCompare.Equal,
+						FilterType.GreaterThan => UmbrellaDynamicCompare.GreaterThan,
+						FilterType.GreaterThanOrEqual => UmbrellaDynamicCompare.GreaterThanOrEqual,
+						FilterType.LessThan => UmbrellaDynamicCompare.LessThan,
+						FilterType.LessThanOrEqual => UmbrellaDynamicCompare.LessThanOrEqual,
+						FilterType.NotEqual => UmbrellaDynamicCompare.NotEqual,
 						_ => null
 					};
 
 					Expression<Func<TItem, bool>> predicate = dynamicCompare != null
-						? DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
-						: DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
+						? UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
+						: UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
 
 					if (i++ == 0)
 					{
