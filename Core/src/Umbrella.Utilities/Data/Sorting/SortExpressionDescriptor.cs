@@ -12,10 +12,8 @@ namespace Umbrella.Utilities.Data.Sorting
 	{
 		private string _memberName;
 
-		/// <summary>
-		/// Gets or sets the name of the member.
-		/// </summary>
-		public string MemberName
+		/// <inheritdoc />
+		public string MemberPath
 		{
 			get => _memberName;
 			set => _memberName = value?.Trim();
@@ -26,12 +24,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// </summary>
 		public SortDirection Direction { get; set; }
 
-		/// <summary>
-		/// Returns true if the descriptor is valid.
-		/// </summary>
-		/// <returns>
-		///   <c>true</c> if this instance is valid; otherwise, <c>false</c>.
-		/// </returns>
-		public bool IsValid() => !string.IsNullOrEmpty(MemberName);
+		/// <inheritdoc />
+		public bool IsValid() => !string.IsNullOrEmpty(MemberPath);
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Umbrella.Utilities.Expressions;
 
@@ -23,12 +22,8 @@ namespace Umbrella.Utilities.Extensions
 		public static string GetMemberName<T, U>(this Expression<Func<T, U>> expression, bool throwException = true)
 		{
 			Guard.ArgumentNotNull(expression, nameof(expression));
-			
-			MemberExpression memberExpression = expression.Body switch
-			{
-				UnaryExpression x => x.Operand as MemberExpression,
-				_ => expression.Body as MemberExpression
-			};
+
+			MemberExpression memberExpression = expression.GetMemberExpression();
 
 			if (memberExpression == null && throwException)
 				throw new Exception($"The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.");
@@ -36,45 +31,44 @@ namespace Umbrella.Utilities.Extensions
 			return memberExpression?.Member?.Name;
 		}
 
-		///// <summary>
-		///// Gets the full path of the member specified in the supplied expression.
-		///// </summary>
-		///// <typeparam name="T">The type of the object on which the member exists.</typeparam>
-		///// <typeparam name="U">The type of the member on the object.</typeparam>
-		///// <param name="expression">The expression.</param>
-		///// <param name="throwException">if set to <see langword="true"/>, an exception will be thrown when the member name cannot be determined instead of returning null.</param>
-		///// <returns>The member path.</returns>
-		///// <exception cref="Exception">The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.</exception>
-		//public static string GetMemberPath<T, U>(this Expression<Func<T, U>> expression, bool throwException = true)
-		//{
-		//	Guard.ArgumentNotNull(expression, nameof(expression));
+		/// <summary>
+		/// Gets the full path of the member specified in the supplied expression, e.g. it will transform Parent -> Child -> Name into Parent.Child.Name.
+		/// </summary>
+		/// <typeparam name="T">The type of the object on which the member exists.</typeparam>
+		/// <typeparam name="U">The type of the member on the object.</typeparam>
+		/// <param name="expression">The expression.</param>
+		/// <returns>The member path.</returns>
+		/// <exception cref="Exception">The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.</exception>
+		public static string GetMemberPath<T, U>(this Expression<Func<T, U>> expression)
+		{
+			Guard.ArgumentNotNull(expression, nameof(expression));
 
-		//	MemberExpression memberExpression = expression.GetMemberExpression();
-		//	var parts = new List<string>();
+			MemberExpression memberExpression = expression.GetMemberExpression();
+			var parts = new List<string>();
 
-		//	while (memberExpression != null)
-		//	{
-		//		parts.Add(memberExpression.Member.Name);
-		//		memberExpression = memberExpression.Expression as MemberExpression;
-		//	}
+			while (memberExpression != null)
+			{
+				parts.Add(memberExpression.Member.Name);
+				memberExpression = memberExpression.Expression as MemberExpression;
+			}
 
-		//	parts.Reverse();
+			parts.Reverse();
 
-		//	return string.Join(".", parts);
-		//}
+			return string.Join(".", parts);
+		}
 
-		///// <summary>
-		///// Gets the member expression from the supplied expression if possible.
-		///// </summary>
-		///// <typeparam name="T">The type of the object on which the member exists.</typeparam>
-		///// <typeparam name="U">The type of the member on the object.</typeparam>
-		///// <param name="expression">The expression.</param>
-		///// <returns>The <see cref="MemberExpression"/>.</returns>
-		//public static MemberExpression GetMemberExpression<T, U>(this Expression<Func<T, U>> expression) => expression.Body switch
-		//{
-		//	UnaryExpression x => x.Operand as MemberExpression,
-		//	_ => expression.Body as MemberExpression
-		//};
+		/// <summary>
+		/// Gets the member expression from the supplied expression if possible.
+		/// </summary>
+		/// <typeparam name="T">The type of the object on which the member exists.</typeparam>
+		/// <typeparam name="U">The type of the member on the object.</typeparam>
+		/// <param name="expression">The expression.</param>
+		/// <returns>The <see cref="MemberExpression"/>.</returns>
+		public static MemberExpression GetMemberExpression<T, U>(this Expression<Func<T, U>> expression) => expression.Body switch
+		{
+			UnaryExpression x => x.Operand as MemberExpression,
+			_ => expression.Body as MemberExpression
+		};
 
 		/// <summary>
 		/// Combines two given predicates using a conditional AND operation.

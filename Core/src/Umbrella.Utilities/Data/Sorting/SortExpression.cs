@@ -15,22 +15,18 @@ namespace Umbrella.Utilities.Data.Sorting
 	public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>, IDataExpression<TItem>
 	{
 		private readonly Lazy<Func<TItem, object>> _lazyFunc;
-		private readonly Lazy<string> _lazyMemberName;
+		private readonly Lazy<string> _lazyMemberPath;
 
 		/// <summary>
 		/// Gets the sort direction.
 		/// </summary>
 		public SortDirection Direction { get; }
 
-		/// <summary>
-		/// Gets the expression.
-		/// </summary>
+		/// <inheritdoc />
 		public Expression<Func<TItem, object>> Expression { get; }
 
-		/// <summary>
-		/// Gets the name of the member.
-		/// </summary>
-		public string MemberName => _lazyMemberName.Value;
+		/// <inheritdoc />
+		public string MemberPath => _lazyMemberPath.Value;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SortExpression{TItem}"/> struct.
@@ -45,29 +41,14 @@ namespace Umbrella.Utilities.Data.Sorting
 			Expression = expression;
 
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
-			_lazyMemberName = new Lazy<string>(() => expression.AsPath());
+			_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
 		}
 
-		/// <summary>
-		/// Gets the compiled <see cref="P:Umbrella.Utilities.Data.Abstractions.IDataExpression`1.Expression" />.
-		/// </summary>
-		/// <returns>
-		/// The compiled expression as a delegate.
-		/// </returns>
-		/// <remarks>
-		/// This is a method rather than a property because of an issue with MVC model binding in ASP.NET Core.
-		/// When reading the property value, the model validation code was throwing an exception and the only way to workaround
-		/// that was to make this a method.
-		/// </remarks>
-		public Func<TItem, object> GetFunc() => _lazyFunc.Value;
+		/// <inheritdoc />
+		public Func<TItem, object> GetDelegate() => _lazyFunc.Value;
 
-		/// <summary>
-		/// Converts this instance to a string.
-		/// </summary>
-		/// <returns>
-		/// A <see cref="string" /> that represents this instance.
-		/// </returns>
-		public override string ToString() => $"{MemberName} - {Direction}";
+		/// <inheritdoc />
+		public override string ToString() => $"{MemberPath} - {Direction}";
 
 		/// <summary>
 		/// Converts to this instance to a <see cref="SortExpressionSerializable"/> instance.
@@ -76,38 +57,21 @@ namespace Umbrella.Utilities.Data.Sorting
 		public SortExpressionSerializable ToSortExpressionSerializable()
 			=> (SortExpressionSerializable)this;
 
-		/// <summary>
-		/// Determines whether the specified <see cref="object" />, is equal to this instance.
-		/// </summary>
-		/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
-		/// <returns>
-		///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
-		/// </returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj) => obj is SortExpression<TItem> expression && Equals(expression);
 
-		/// <summary>
-		/// Indicates whether the current object is equal to another object of the same type.
-		/// </summary>
-		/// <param name="other">An object to compare with this object.</param>
-		/// <returns>
-		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
-		/// </returns>
+		/// <inheritdoc />
 		public bool Equals(SortExpression<TItem> other) => Direction == other.Direction &&
 				   EqualityComparer<Expression<Func<TItem, object>>>.Default.Equals(Expression, other.Expression) &&
-				   MemberName == other.MemberName;
+				   MemberPath == other.MemberPath;
 
-		/// <summary>
-		/// Returns a hash code for this instance.
-		/// </summary>
-		/// <returns>
-		/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
-		/// </returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			int hashCode = -155208075;
 			hashCode = hashCode * -1521134295 + Direction.GetHashCode();
 			hashCode = hashCode * -1521134295 + EqualityComparer<Expression<Func<TItem, object>>>.Default.GetHashCode(Expression);
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberName);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberPath);
 			return hashCode;
 		}
 
@@ -119,7 +83,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// The result of the conversion.
 		/// </returns>
 		public static explicit operator SortExpressionSerializable(SortExpression<TItem> sortExpression)
-			=> new SortExpressionSerializable(sortExpression.MemberName, sortExpression.Direction.ToString());
+			=> new SortExpressionSerializable(sortExpression.MemberPath, sortExpression.Direction.ToString());
 
 		/// <summary>
 		/// Implements the operator ==.

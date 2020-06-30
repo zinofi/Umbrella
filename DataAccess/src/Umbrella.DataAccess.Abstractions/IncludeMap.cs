@@ -1,43 +1,50 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Abstractions
 {
-	public class IncludeMap<TEntity> : IEnumerable<Expression<Func<TEntity, object>>>
+	/// <summary>
+	/// A map of property expressions used to load related data of an entity, e.g. load the orders for a customer, as part of the same database query.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	public class IncludeMap<TEntity>
 	{
 		#region Public Properties
+		/// <summary>
+		/// Gets the includes as expressions.
+		/// </summary>
 		public HashSet<Expression<Func<TEntity, object>>> Includes { get; } = new HashSet<Expression<Func<TEntity, object>>>();
-		public HashSet<string> PropertyNames { get; } = new HashSet<string>();
+
+		/// <summary>
+		/// Gets the includes as string paths, e.g. Parent -> Child -> Name will be Parent.Child.Name.
+		/// </summary>
+		public HashSet<string> PropertyPaths { get; } = new HashSet<string>();
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="IncludeMap{TEntity}"/> class.
+		/// </summary>
+		/// <param name="paths">The property paths.</param>
 		public IncludeMap(params Expression<Func<TEntity, object>>[] paths)
 		{
 			foreach (var path in paths)
 			{
 				Includes.Add(path);
 
-				// TODO: Consider changing PropertyNames to PropertyPaths here so the paths are effectively generated once
-				// as IncludeMap is static most of the time.
-				string propertyName = path.AsPath();
+				string propertyPath = path.GetMemberPath();
 
-				if (!string.IsNullOrEmpty(propertyName))
-					PropertyNames.Add(propertyName);
+				if (!string.IsNullOrEmpty(propertyPath))
+					PropertyPaths.Add(propertyPath);
 			}
 		}
 		#endregion
 
 		#region Overridden Methods
-		public override string ToString() => string.Join(", ", PropertyNames);
-		#endregion
-
-		#region IEnumerable Members
-		public IEnumerator<Expression<Func<TEntity, object>>> GetEnumerator() => Includes.GetEnumerator();
-
-		IEnumerator IEnumerable.GetEnumerator() => Includes.GetEnumerator();
+		/// <inheritdoc />
+		public override string ToString() => string.Join(", ", PropertyPaths);
 		#endregion
 	}
 }

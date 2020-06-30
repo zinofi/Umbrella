@@ -43,8 +43,8 @@ namespace Umbrella.Utilities.Data.Filtering
 					};
 
 					Expression<Func<TItem, bool>> predicate = dynamicCompare != null
-						? DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberName, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
-						: DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberName, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
+						? DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
+						: DynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
 
 					if (i++ == 0)
 					{

@@ -24,7 +24,7 @@ namespace Umbrella.Utilities.Data.Abstractions
 		/// When reading the property value, the model validation code was throwing an exception and the only way to workaround
 		/// that was to make this a method.
 		/// </remarks>
-		Func<TItem, object> GetFunc();
+		Func<TItem, object> GetDelegate();
 	}
 
 	/// <summary>
@@ -33,8 +33,8 @@ namespace Umbrella.Utilities.Data.Abstractions
 	public interface IDataExpression
 	{
 		/// <summary>
-		/// Gets the name of the member.
+		/// Gets the path of the member.
 		/// </summary>
-		string MemberName { get; }
+		string MemberPath { get; }
 	}
 }

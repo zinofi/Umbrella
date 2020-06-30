@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 {
@@ -25,12 +24,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 
 			var query = items;
 
-			foreach (var item in map.Includes)
+			foreach (string path in map.PropertyPaths)
 			{
-				string path = item.AsPath();
-
-				if (!string.IsNullOrEmpty(path))
-					query = query.Include(path);
+				// We are using the string path here because in practice the map instances are usually declared once and cached meaning EF Core can
+				// just use our string path without doing extra work to convert the expression tree again... at least in theory!
+				query = query.Include(path);
 			}
 
 			return query;

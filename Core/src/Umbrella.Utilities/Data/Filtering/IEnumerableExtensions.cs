@@ -31,7 +31,7 @@ namespace Umbrella.Utilities.Data.Filtering
 					bool predicate(TItem x)
 					{
 						object filterValue = filterExpression.Value;
-						object propertyValue = filterExpression.GetFunc()(x);
+						object propertyValue = filterExpression.GetDelegate()(x);
 
 						if (propertyValue is string strPropertyValue && filterValue is string strFilterValue)
 						{

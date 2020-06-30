@@ -15,17 +15,13 @@ namespace Umbrella.Utilities.Data.Filtering
 	public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TItem>>, IDataExpression<TItem>
 	{
 		private readonly Lazy<Func<TItem, object>> _lazyFunc;
-		private readonly Lazy<string> _lazyMemberName;
+		private readonly Lazy<string> _lazyMemberPath;
 
-		/// <summary>
-		/// Gets the expression.
-		/// </summary>
+		/// <inheritdoc />
 		public Expression<Func<TItem, object>> Expression { get; }
 
-		/// <summary>
-		/// Gets the name of the member.
-		/// </summary>
-		public string MemberName => _lazyMemberName.Value;
+		/// <inheritdoc />
+		public string MemberPath => _lazyMemberPath.Value;
 
 		/// <summary>
 		/// Gets the value used for filtering.
@@ -51,37 +47,15 @@ namespace Umbrella.Utilities.Data.Filtering
 			Value = value;
 			Type = type;
 
-			// TODO: We can cache here internally which should help a bit. NO IT WON'T!
-			// However, the incoming expression won't be the same object. That's the real problem.
-			// What about creating an overloaded constructor where we can provide the descriptor and use that to perform
-			// lookups.
-			// Or instead of allowing new instances of this class to be created directly, go via a factory which can
-			// do the caching for us. Hmmmm...
-
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
-			_lazyMemberName = new Lazy<string>(() => expression.AsPath());
+			_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
 		}
 
-		/// <summary>
-		/// Gets the compiled <see cref="P:Umbrella.Utilities.Data.Abstractions.IDataExpression`1.Expression" />.
-		/// </summary>
-		/// <returns>
-		/// The compiled expression as a delegate.
-		/// </returns>
-		/// <remarks>
-		/// This is a method rather than a property because of an issue with MVC model binding in ASP.NET Core.
-		/// When reading the property value, the model validation code was throwing an exception and the only way to workaround
-		/// that was to make this a method.
-		/// </remarks>
-		public Func<TItem, object> GetFunc() => _lazyFunc.Value;
+		/// <inheritdoc />
+		public Func<TItem, object> GetDelegate() => _lazyFunc.Value;
 
-		/// <summary>
-		/// Converts this instance to a string.
-		/// </summary>
-		/// <returns>
-		/// A <see cref="string" /> that represents this instance.
-		/// </returns>
-		public override string ToString() => $"{MemberName} - {Value} - {Type}";
+		/// <inheritdoc />
+		public override string ToString() => $"{MemberPath} - {Value} - {Type}";
 
 		/// <summary>
 		/// Converts to this instance to a <see cref="FilterExpressionSerializable"/>.
@@ -90,40 +64,23 @@ namespace Umbrella.Utilities.Data.Filtering
 		public FilterExpressionSerializable ToFilterExpressionSerializable()
 			=> (FilterExpressionSerializable)this;
 
-		/// <summary>
-		/// Determines whether the specified <see cref="object" />, is equal to this instance.
-		/// </summary>
-		/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
-		/// <returns>
-		///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
-		/// </returns>
+		/// <inheritdoc />
 		public override bool Equals(object obj) => obj is FilterExpression<TItem> expression && Equals(expression);
 
-		/// <summary>
-		/// Indicates whether the current object is equal to another object of the same type.
-		/// </summary>
-		/// <param name="other">An object to compare with this object.</param>
-		/// <returns>
-		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
-		/// </returns>
-		public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>>.Default.Equals(GetFunc(), other.GetFunc()) &&
+		/// <inheritdoc />
+		public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>>.Default.Equals(GetDelegate(), other.GetDelegate()) &&
 				   EqualityComparer<Expression<Func<TItem, object>>>.Default.Equals(Expression, other.Expression) &&
-				   MemberName == other.MemberName &&
+				   MemberPath == other.MemberPath &&
 				   EqualityComparer<object>.Default.Equals(Value, other.Value) &&
 				   Type == other.Type;
 
-		/// <summary>
-		/// Returns a hash code for this instance.
-		/// </summary>
-		/// <returns>
-		/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
-		/// </returns>
+		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			int hashCode = -1510804887;
-			hashCode = hashCode * -1521134295 + EqualityComparer<Func<TItem, object>>.Default.GetHashCode(GetFunc());
+			hashCode = hashCode * -1521134295 + EqualityComparer<Func<TItem, object>>.Default.GetHashCode(GetDelegate());
 			hashCode = hashCode * -1521134295 + EqualityComparer<Expression<Func<TItem, object>>>.Default.GetHashCode(Expression);
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberName);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberPath);
 			hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
 			hashCode = hashCode * -1521134295 + Type.GetHashCode();
 			return hashCode;
@@ -137,7 +94,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// The result of the conversion.
 		/// </returns>
 		public static explicit operator FilterExpressionSerializable(FilterExpression<TItem> filterExpression)
-			=> new FilterExpressionSerializable(filterExpression.MemberName, filterExpression.Value.ToString(), filterExpression.Type.ToString());
+			=> new FilterExpressionSerializable(filterExpression.MemberPath, filterExpression.Value.ToString(), filterExpression.Type.ToString());
 
 		/// <summary>
 		/// Implements the operator ==.

@@ -10,15 +10,15 @@ namespace Umbrella.Utilities.Data.Filtering
 	/// </summary>
 	public class FilterExpressionDescriptor : IDataExpressionDescriptor
 	{
-		private string _memberName;
+		private string _memberPath;
 
 		/// <summary>
-		/// Gets or sets the name of the member.
+		/// Gets or sets the path of the member.
 		/// </summary>
-		public string MemberName
+		public string MemberPath
 		{
-			get => _memberName;
-			set => _memberName = value?.Trim();
+			get => _memberPath;
+			set => _memberPath = value?.Trim();
 		}
 
 		/// <summary>
@@ -31,13 +31,8 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// </summary>
 		public FilterType Type { get; set; }
 
-		/// <summary>
-		/// Returns true if the descriptor is valid.
-		/// </summary>
-		/// <returns>
-		///   <c>true</c> if this instance is valid; otherwise, <c>false</c>.
-		/// </returns>
+		/// <inheritdoc />
 		/// <remarks>This will return true even if the <see cref="Value"/> is only whitespace as we might need to filter on that, e.g. looking for values that contain spaces.</remarks>
-		public bool IsValid() => !string.IsNullOrEmpty(MemberName) && !string.IsNullOrEmpty(Value);
+		public bool IsValid() => !string.IsNullOrEmpty(MemberPath) && !string.IsNullOrEmpty(Value);
 	}
 }
