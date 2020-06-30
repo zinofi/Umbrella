@@ -159,6 +159,7 @@ namespace Umbrella.TypeScript.Generators
 				switch (validationAttribute)
 				{
 					case RequiredAttribute attr:
+					case RequiredNonEmptyCollectionAttribute attrCol: // TODO: Knockout should be fine with this.
 						validationBuilder.AppendLineWithTabIndent($"required: {{ params: true, message: {message} }},", indent);
 						break;
 					case CompareAttribute attr:
@@ -186,6 +187,9 @@ namespace Umbrella.TypeScript.Generators
 							validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.MinimumLength}, message: {message} }},", indent);
 
 						validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.MaximumLength}, message: {message} }},", indent);
+						break;
+					case RequiredTrueAttribute attr:
+						validationBuilder.AppendLineWithTabIndent($"validation: {{ params: true, validator: (val, otherVal) => val === otherVal, message: {message} }},", indent);
 						break;
 				}
 			}
@@ -249,6 +253,7 @@ namespace Umbrella.TypeScript.Generators
 							dependentPropertyName = attr.DependentProperty.ToCamelCaseInvariant();
 						}
 
+						// TODO: Knockout should be ok with the RequiredNonEmptyCollectionIf attribute I think.
 						validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
 						break;
 				}
