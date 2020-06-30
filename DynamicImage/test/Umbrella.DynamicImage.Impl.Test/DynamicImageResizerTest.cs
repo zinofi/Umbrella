@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using Microsoft.Extensions.Logging;
-using Umbrella.DynamicImage.Caching;
 using Umbrella.DynamicImage.Abstractions;
 using Xunit;
 using Umbrella.FileSystem.Abstractions;
@@ -21,6 +20,7 @@ using Umbrella.Utilities;
 using System.Runtime.InteropServices;
 using Umbrella.Utilities.Runtime;
 using System.Reflection;
+using Umbrella.DynamicImage.Abstractions.Caching;
 
 namespace Umbrella.DynamicImage.Impl.Test
 {

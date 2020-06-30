@@ -1,24 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
-using Umbrella.DynamicImage.Abstractions;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 
-namespace Umbrella.DynamicImage.Caching
+namespace Umbrella.DynamicImage.Abstractions.Caching
 {
+	/// <summary>
+	/// A Dynamic Image cache implementation that is backed by In-Memory storage.
+	/// </summary>
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.Caching.DynamicImageCache" />
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.Caching.IDynamicImageCache" />
 	public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 	{
 		#region Private Members
 		private readonly DynamicImageMemoryCacheOptions _memoryCacheOptions;
 		#endregion
 
-		#region Constructors
-		public DynamicImageMemoryCache(ILogger<DynamicImageMemoryCache> logger,
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageMemoryCache"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="cacheOptions">The cache options.</param>
+		/// <param name="memoryCacheOptions">The memory cache options.</param>
+		public DynamicImageMemoryCache(
+			ILogger<DynamicImageMemoryCache> logger,
 			IHybridCache cache,
 			ICacheKeyUtility cacheKeyUtility,
 			DynamicImageCacheCoreOptions cacheOptions,
@@ -30,6 +39,7 @@ namespace Umbrella.DynamicImage.Caching
 		#endregion
 
 		#region IDynamicImageCache Members
+		/// <inheritdoc />
 		public Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)
 		{
 			try
@@ -47,6 +57,7 @@ namespace Umbrella.DynamicImage.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -78,6 +89,7 @@ namespace Umbrella.DynamicImage.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

@@ -3,23 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
 using Umbrella.DynamicImage.Abstractions;
-using Umbrella.DynamicImage.Caching;
+using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.DynamicImage.Caching.AzureStorage;
+using Umbrella.DynamicImage.Caching.Disk;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Internal.Mocks;
-using Umbrella.Utilities.Caching;
-using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Compilation;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Helpers;
-using Umbrella.Utilities.Mime.Abstractions;
-using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
 
 namespace Umbrella.DynamicImage.Test.Caching
@@ -198,15 +190,12 @@ namespace Umbrella.DynamicImage.Test.Caching
 				new DynamicImageDiskCacheOptions());
 		}
 
-		private static DynamicImageMemoryCache CreateDynamicImageMemoryCache()
-		{
-			return new DynamicImageMemoryCache(
+		private static DynamicImageMemoryCache CreateDynamicImageMemoryCache() => new DynamicImageMemoryCache(
 				CoreUtilitiesMocks.CreateLogger<DynamicImageMemoryCache>(),
 				CoreUtilitiesMocks.CreateHybridCache(),
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),
 				new DynamicImageCacheCoreOptions(),
 				new DynamicImageMemoryCacheOptions());
-		}
 
 		private static DynamicImageAzureBlobStorageCache CreateDynamicImageAzureBlobStorageCache()
 		{

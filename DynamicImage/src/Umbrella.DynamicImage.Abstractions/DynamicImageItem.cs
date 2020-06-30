@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.FileSystem.Abstractions;
@@ -11,43 +7,73 @@ using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
-    public class DynamicImageItem
-    {
-        private DateTimeOffset m_LastModified;
-        private byte[] m_Content;
+	/// <summary>
+	/// Represents a DynamicImage.
+	/// </summary>
+	public class DynamicImageItem
+	{
+		private DateTimeOffset _lastModified;
 
-        public DateTimeOffset LastModified
-        {
-            get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified.Value : m_LastModified;
-            set => m_LastModified = value;
-        }
-        public long Length => UmbrellaFileInfo?.Length ?? m_Content?.Length ?? -1;
-        public DynamicImageOptions ImageOptions { get; set; }
-        public byte[] Content
-        {
-            set => m_Content = value;
-        }
-        public IUmbrellaFileInfo UmbrellaFileInfo { get; set; }
+		/// <summary>
+		/// Gets or sets the last modified date
+		/// </summary>
+		public DateTimeOffset LastModified
+		{
+			get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified.Value : _lastModified;
+			set => _lastModified = value;
+		}
 
-        public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+		/// <summary>
+		/// Gets the length of the image.
+		/// </summary>
+		public long Length => UmbrellaFileInfo?.Length ?? Content?.Length ?? -1;
 
-            if (m_Content == null && UmbrellaFileInfo != null)
-                m_Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
+		/// <summary>
+		/// Gets or sets the image options.
+		/// </summary>
+		public DynamicImageOptions ImageOptions { get; set; }
 
-            return m_Content;
-        }
+		/// <summary>
+		/// Gets or sets the content.
+		/// </summary>
+		public byte[] Content { private get; set; }
 
-        public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            Guard.ArgumentNotNull(target, nameof(target));
+		/// <summary>
+		/// Gets or sets the <see cref="IUmbrellaFileInfo"/> instance.
+		/// </summary>
+		public IUmbrellaFileInfo UmbrellaFileInfo { get; set; }
 
-            if (m_Content == null && UmbrellaFileInfo != null)
-                return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
+		/// <summary>
+		/// Gets the content of the image file.
+		/// </summary>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The image file content.</returns>
+		public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
 
-            return target.WriteAsync(m_Content, 0, m_Content.Length);
-        }
-    }
+			if (Content == null && UmbrellaFileInfo != null)
+				Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
+
+			return Content;
+		}
+
+		/// <summary>
+		/// Writes the content of the image file to the target stream.
+		/// </summary>
+		/// <param name="target">The target.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/>.</returns>
+		/// <remarks>This is just a convenience wrapper around the <see cref="IUmbrellaFileInfo.WriteToStreamAsync(Stream, CancellationToken, int?)"/> method.</remarks>
+		public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(target, nameof(target));
+
+			if (Content == null && UmbrellaFileInfo != null)
+				return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
+
+			return target.WriteAsync(Content, 0, Content.Length);
+		}
+	}
 }

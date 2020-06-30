@@ -2,13 +2,13 @@
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
-namespace Umbrella.DynamicImage.Caching
+namespace Umbrella.DynamicImage.Caching.Disk
 {
 	/// <summary>
 	/// Specifies caching options when storing generated images on disk.
 	/// </summary>
-	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
-	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
+	/// <seealso cref="IValidatableUmbrellaOptions" />
+	/// <seealso cref="ISanitizableUmbrellaOptions" />
 	public class DynamicImageDiskCacheOptions : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
 	{
 		/// <summary>
@@ -16,14 +16,10 @@ namespace Umbrella.DynamicImage.Caching
 		/// </summary>
 		public string CacheFolderName { get; set; } = "DynamicImageCache";
 
-		/// <summary>
-		/// Sanitizes this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Sanitize() => CacheFolderName = CacheFolderName.TrimNull();
 
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
+		/// <inheritdoc />
 		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(CacheFolderName, nameof(CacheFolderName));
 	}
 }

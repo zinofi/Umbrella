@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
@@ -15,8 +16,8 @@ using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware
 {
-	[ClrJob]
 	[MemoryDiagnoser]
+	[SimpleJob(RuntimeMoniker.Net461)]
 	public class FrontEndCompressionMiddlewareBenchmark
 	{
 		private readonly FrontEndCompressionMiddleware _frontEndCompressionMiddleware;

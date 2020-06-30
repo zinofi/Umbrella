@@ -2,34 +2,54 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
-    public abstract class DynamicImageResizerBase : IDynamicImageResizer
+	/// <summary>
+	/// Serves as the base class for all Dynamic Image resizers.
+	/// </summary>
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.IDynamicImageResizer" />
+	public abstract class DynamicImageResizerBase : IDynamicImageResizer
     {
-        #region Protected Properties
-        protected ILogger Log { get; }
-        protected IDynamicImageCache Cache { get; }
-        #endregion
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
+		protected ILogger Log { get; }
 
-        #region Constructors
-        public DynamicImageResizerBase(ILogger logger,
+		/// <summary>
+		/// Gets the cache.
+		/// </summary>
+		protected IDynamicImageCache Cache { get; }
+		#endregion
+
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageResizerBase"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dynamicImageCache">The dynamic image cache.</param>
+		public DynamicImageResizerBase(
+			ILogger logger,
             IDynamicImageCache dynamicImageCache)
         {
             Log = logger;
             Cache = dynamicImageCache;
         }
-        #endregion
+		#endregion
 
-        #region IDynamicImageResizer Members
-        public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
+		#region IDynamicImageResizer Members
+		/// <inheritdoc />
+		public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                Guard.ArgumentNotNull(sourceFileProvider, nameof(sourceFileProvider));
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(sourceFileProvider, nameof(sourceFileProvider));
 
+			try
+            {
                 var fileInfo = await sourceFileProvider.GetAsync(options.SourcePath, cancellationToken).ConfigureAwait(false);
 
                 if (fileInfo == null)
@@ -52,12 +72,14 @@ namespace Umbrella.DynamicImage.Abstractions
             }
         }
 
-        public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		public async Task<DynamicImageItem> GenerateImageAsync(Func<Task<byte[]>> sourceBytesProvider, DateTimeOffset sourceLastModified, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                Guard.ArgumentNotNull(sourceBytesProvider, nameof(sourceBytesProvider));
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(sourceBytesProvider, nameof(sourceBytesProvider));
 
+			try
+            {
                 if (Log.IsEnabled(LogLevel.Debug))
                     Log.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
 
@@ -98,22 +120,32 @@ namespace Umbrella.DynamicImage.Abstractions
             }
         }
 
-        public abstract bool IsImage(byte[] bytes);
+		/// <inheritdoc />
+		public abstract bool IsImage(byte[] bytes);
 
-        public byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
+		/// <inheritdoc />
+		public byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
             => ResizeImage(originalImage, options.Width, options.Height, options.ResizeMode, options.Format);
 
-        public abstract byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format);
-        #endregion
+		/// <inheritdoc />
+		public abstract byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format);
+		#endregion
 
-        #region Protected Methods
-        protected (int width, int height, int offsetX, int offsetY, int cropWidth, int cropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
+		#region Protected Methods		
+		/// <summary>
+		/// Gets the destination dimensions.
+		/// </summary>
+		/// <param name="originalWidth">Width of the original.</param>
+		/// <param name="originalHeight">Height of the original.</param>
+		/// <param name="targetWidth">Width of the target.</param>
+		/// <param name="targetHeight">Height of the target.</param>
+		/// <param name="mode">The mode.</param>
+		/// <returns>A tuple containing the destination dimensions.</returns>
+		protected (int width, int height, int offsetX, int offsetY, int cropWidth, int cropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
         {
             int? requestedWidth = null;
             int? requestedHeight = null;
 
-            int width = 0;
-            int height = 0;
             int offsetX = 0;
             int offsetY = 0;
             int cropWidth = originalWidth;
@@ -135,10 +167,10 @@ namespace Umbrella.DynamicImage.Abstractions
                     // If both requested dimensions are greater than source image, we don't need to do any resizing.
                     if (targetWidth < originalWidth || targetHeight < originalHeight)
                     {
-                        // Calculate requested width and height so as not to squash image.
+						// Calculate requested width and height so as not to squash image.
 
-                        // First, resize based on max width and check whether resized height will be more than max height.
-                        var (tempWidth, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, targetWidth, null);
+						// First, resize based on max width and check whether resized height will be more than max height.
+						var (_, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, targetWidth, null);
 
                         if (tempHeight > targetHeight)
                         {
@@ -161,21 +193,21 @@ namespace Umbrella.DynamicImage.Abstractions
                     // Resize based on width first. If this means that height is less than target height, we resize based on height.
                     if (targetWidth < originalWidth || targetHeight < originalHeight)
                     {
-                        // Calculate requested width and height so as not to squash image.
+						// Calculate requested width and height so as not to squash image.
 
-                        // First, resize based on width and check whether resized height will be more than max height.
-                        var (tempWidth, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, targetWidth, null);
+						// First, resize based on width and check whether resized height will be more than max height.
+						var (_, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, targetWidth, null);
 
-                        if (tempHeight < targetHeight)
+						if (tempHeight < targetHeight)
                         {
                             // If so, we need to resize based on max height instead.
                             requestedHeight = targetHeight;
+							int tempWidth;
+							(tempWidth, _) = CalculateOutputDimensions(originalWidth, originalHeight, null, targetHeight);
 
-                            (tempWidth, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, null, targetHeight);
-
-                            // Then crop width and calculate offset.
-                            requestedWidth = targetWidth;
-                            cropWidth = (int)((targetWidth / (float)tempWidth) * originalWidth);
+							// Then crop width and calculate offset.
+							requestedWidth = targetWidth;
+                            cropWidth = (int)(targetWidth / (float)tempWidth * originalWidth);
                             offsetX = (originalWidth - cropWidth) / 2;
                         }
                         else
@@ -197,14 +229,14 @@ namespace Umbrella.DynamicImage.Abstractions
                     break;
             }
 
-            (width, height) = CalculateOutputDimensions(originalWidth, originalHeight, requestedWidth, requestedHeight);
+            var (width, height) = CalculateOutputDimensions(originalWidth, originalHeight, requestedWidth, requestedHeight);
 
             return (width, height, offsetX, offsetY, cropWidth, cropHeight);
         }
         #endregion
 
         #region Private Methods
-        private (int Width, int Height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
+        private (int width, int height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
         {
             // both width and height are specified - squash image
             if (nRequestedWidth != null && nRequestedHeight != null)

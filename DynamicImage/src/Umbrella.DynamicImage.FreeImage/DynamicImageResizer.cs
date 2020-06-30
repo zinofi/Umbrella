@@ -4,6 +4,7 @@ using System.IO;
 using FreeImageAPI;
 using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.FreeImage

@@ -1,9 +1,23 @@
 ﻿namespace Umbrella.DynamicImage.Abstractions
 {
-    public enum DynamicImageParseUrlResult
+	/// <summary>
+	/// The result of an attempt to parse a DynamicImage URL.
+	/// </summary>
+	public enum DynamicImageParseUrlResult
     {
-        Skip,
-        Success,
-        Invalid
-    }
+		/// <summary>
+		/// Indicates that the URL should be skipped.
+		/// </summary>
+		Skip,
+
+		/// <summary>
+		/// Indicates the URL was successfully parsed.
+		/// </summary>
+		Success,
+
+		/// <summary>
+		/// Indicates that the URL could not be parsed and is therefore invalid.
+		/// </summary>
+		Invalid
+	}
 }

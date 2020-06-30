@@ -1,21 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using Umbrella.DynamicImage.Abstractions;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.DynamicImage
+namespace Umbrella.DynamicImage.Abstractions
 {
 	/// <summary>
 	/// Contains utility methods for common operations performed by the Dynamic Image infrastructure.
 	/// </summary>
-	/// <seealso cref="Umbrella.DynamicImage.Abstractions.IDynamicImageUtility" />
+	/// <seealso cref="IDynamicImageUtility" />
 	public class DynamicImageUtility : IDynamicImageUtility
 	{
 		#region Private Constants

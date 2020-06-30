@@ -1,71 +1,68 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Benchmark.Extensions
 {
-    [CoreJob, ClrJob]
-    [MemoryDiagnoser]
-    public class ReadOnlySpanExtensionsBenchmark
-    {
-        [Benchmark]
-        public int Char_ToLowerBenchmark()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('A');
+	[MemoryDiagnoser]
+	[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.NetCoreApp31)]
+	public class ReadOnlySpanExtensionsBenchmark
+	{
+		[Benchmark]
+		public int Char_ToLowerBenchmark()
+		{
+			Span<char> span = stackalloc char[10];
+			span.Fill('A');
 
-            ReadOnlySpan<char> readOnlySpan = span;
-            Span<char> destination = stackalloc char[readOnlySpan.Length];
+			ReadOnlySpan<char> readOnlySpan = span;
+			Span<char> destination = stackalloc char[readOnlySpan.Length];
 
-            readOnlySpan.ToLowerSlim(destination);
+			readOnlySpan.ToLowerSlim(destination);
 
-            return destination.Length;
-        }
+			return destination.Length;
+		}
 
-        [Benchmark]
-        public int Char_ToLowerInvariantBenchmark()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('A');
+		[Benchmark]
+		public int Char_ToLowerInvariantBenchmark()
+		{
+			Span<char> span = stackalloc char[10];
+			span.Fill('A');
 
-            ReadOnlySpan<char> readOnlySpan = span;
-            Span<char> destination = stackalloc char[readOnlySpan.Length];
+			ReadOnlySpan<char> readOnlySpan = span;
+			Span<char> destination = stackalloc char[readOnlySpan.Length];
 
-            readOnlySpan.ToLowerInvariantSlim(destination);
+			readOnlySpan.ToLowerInvariantSlim(destination);
 
-            return destination.Length;
-        }
+			return destination.Length;
+		}
 
-        [Benchmark]
-        public int Char_ToUpperBenchmark()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('A');
+		[Benchmark]
+		public int Char_ToUpperBenchmark()
+		{
+			Span<char> span = stackalloc char[10];
+			span.Fill('A');
 
-            ReadOnlySpan<char> readOnlySpan = span;
-            Span<char> destination = stackalloc char[readOnlySpan.Length];
+			ReadOnlySpan<char> readOnlySpan = span;
+			Span<char> destination = stackalloc char[readOnlySpan.Length];
 
-            readOnlySpan.ToUpperSlim(destination);
+			readOnlySpan.ToUpperSlim(destination);
 
-            return destination.Length;
-        }
+			return destination.Length;
+		}
 
-        [Benchmark]
-        public int Char_ToUpperInvariantBenchmark()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('A');
+		[Benchmark]
+		public int Char_ToUpperInvariantBenchmark()
+		{
+			Span<char> span = stackalloc char[10];
+			span.Fill('A');
 
-            ReadOnlySpan<char> readOnlySpan = span;
-            Span<char> destination = stackalloc char[readOnlySpan.Length];
+			ReadOnlySpan<char> readOnlySpan = span;
+			Span<char> destination = stackalloc char[readOnlySpan.Length];
 
-            readOnlySpan.ToUpperInvariantSlim(destination);
+			readOnlySpan.ToUpperInvariantSlim(destination);
 
-            return destination.Length;
-        }
-    }
+			return destination.Length;
+		}
+	}
 }

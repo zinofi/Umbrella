@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.SkiaSharp

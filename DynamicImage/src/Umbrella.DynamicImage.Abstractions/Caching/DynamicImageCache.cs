@@ -2,10 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Caching.Abstractions;
 
-namespace Umbrella.DynamicImage.Caching
+namespace Umbrella.DynamicImage.Abstractions.Caching
 {
 	/// <summary>
 	/// Serves as the base class for all Dynamic Image caches and provides the core functionality for all derived types.

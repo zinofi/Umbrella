@@ -1,7 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Caching.Memory;
+using BenchmarkDotNet.Jobs;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 using Umbrella.Internal.Mocks;
 using Umbrella.Legacy.WebUtilities.Hosting;
@@ -11,8 +10,8 @@ using Umbrella.Utilities.Hosting.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting
 {
-	[ClrJob]
 	[MemoryDiagnoser]
+	[SimpleJob(RuntimeMoniker.Net461)]
 	public class UmbrellaWebHostingEnvironmentBenchmark
 	{
 		private readonly UmbrellaWebHostingEnvironment _umbrellaWebHostingEnvironment;

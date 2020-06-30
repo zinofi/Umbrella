@@ -3,31 +3,45 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Umbrella.DynamicImage.Abstractions;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Caching.Abstractions;
 
-namespace Umbrella.DynamicImage.Caching
+namespace Umbrella.DynamicImage.Abstractions.Caching
 {
 	/// <summary>
 	/// Serves as the base class for caches that store files on a physical medium, e.g. Disk, Azure storage, etc.
 	/// </summary>
 	/// <typeparam name="TFileProvider">The type of the file provider.</typeparam>
-	/// <seealso cref="Umbrella.DynamicImage.Caching.DynamicImageCache" />
-	/// <seealso cref="Umbrella.DynamicImage.Abstractions.IDynamicImageCache" />
+	/// <seealso cref="DynamicImageCache" />
+	/// <seealso cref="IDynamicImageCache" />
 	public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCache, IDynamicImageCache
 		where TFileProvider : IUmbrellaFileProvider
 	{
-		#region Public Properties
+		#region Public Properties		
+		/// <summary>
+		/// Gets the cache path format.
+		/// </summary>
 		public virtual string CachePathFormat => $"{Path.DirectorySeparatorChar}{{0}}.{{1}}";
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the file provider.
+		/// </summary>
 		protected TFileProvider FileProvider { get; }
 		#endregion
 
-		#region Constructors
-		public DynamicImagePhysicalCache(ILogger logger,
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImagePhysicalCache{TFileProvider}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="cacheOptions">The cache options.</param>
+		/// <param name="fileProvider">The file provider.</param>
+		public DynamicImagePhysicalCache(
+			ILogger logger,
 			IHybridCache cache,
 			ICacheKeyUtility cacheKeyUtility,
 			DynamicImageCacheCoreOptions cacheOptions,
@@ -39,6 +53,7 @@ namespace Umbrella.DynamicImage.Caching
 		#endregion
 
 		#region IDynamicImageCache Members
+		/// <inheritdoc />
 		public virtual async Task AddAsync(DynamicImageItem dynamicImage, CancellationToken cancellationToken = default)
 		{
 			try
@@ -61,6 +76,7 @@ namespace Umbrella.DynamicImage.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
 		{
 			try
@@ -102,6 +118,7 @@ namespace Umbrella.DynamicImage.Caching
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual async Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
 		{
 			try
@@ -121,6 +138,7 @@ namespace Umbrella.DynamicImage.Caching
 		#endregion
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		protected override string GetSubPath(string cacheKey, string fileExtension)
 			=> $@"{Path.DirectorySeparatorChar}{cacheKey}.{fileExtension}";
 		#endregion
