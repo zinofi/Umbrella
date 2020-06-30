@@ -43,25 +43,33 @@ namespace Umbrella.Utilities.Caching
 			Guard.ArgumentNotNull(type, nameof(type));
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
+			char[] rentedArray = null;
+
 			try
 			{
 				string typeName = type.FullName;
 				int length = typeName.Length + key.Length + 1;
-				
-				// TODO: vFuture - look at using pooled arrays to reduce allocations.
-				// Should be easy enough as we know what the length is. Just make sure that the final array is trimmed down to size first
-				// by slicing the Span. Really need Unit Tests first to ensure we don't mess things up here!
-				// Also benchmark with/without pooling.
-				Span<char> span = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
+
+				bool isStack = length <= StackAllocConstants.MaxCharSize;
+
+				Span<char> span = isStack ? stackalloc char[length] : rentedArray = ArrayPool<char>.Shared.Rent(length);
 				span.Append(0, typeName);
 				span.Append(typeName.Length, ":");
 				span.Append(typeName.Length + 1, key);
+
+				if (!isStack)
+					span = span.Slice(0, length);
 
 				return _lookupNormalizer.Normalize(span.ToString());
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { type, key }, returnValue: true))
 			{
 				throw new UmbrellaException("There was a problem creating the cache key.", exc);
+			}
+			finally
+			{
+				if (rentedArray != null)
+					ArrayPool<char>.Shared.Return(rentedArray);
 			}
 		}
 
@@ -74,6 +82,8 @@ namespace Umbrella.Utilities.Caching
 			Guard.ArgumentNotNull(type, nameof(type));
 			Guard.ArgumentNotEmpty(keyParts, nameof(keyParts));
 			Guard.ArgumentInRange(keyPartsLength, nameof(keyPartsLength), 1, keyParts.Length, allowNull: true);
+
+			char[] rentedArray = null;
 
 			try
 			{
@@ -93,8 +103,9 @@ namespace Umbrella.Utilities.Caching
 
 				int length = typeName.Length + partsLengthTotal + 1;
 
-				// TODO: Pool
-				Span<char> span = length <= StackAllocConstants.MaxCharSize ? stackalloc char[length] : new char[length];
+				bool isStack = length <= StackAllocConstants.MaxCharSize;
+
+				Span<char> span = isStack ? stackalloc char[length] : rentedArray = ArrayPool<char>.Shared.Rent(length);
 
 				int currentIndex = span.Append(0, typeName);
 				span[currentIndex++] = ':';
@@ -112,12 +123,20 @@ namespace Umbrella.Utilities.Caching
 					}
 				}
 
+				if (!isStack)
+					span = span.Slice(0, length);
+
 				// This is the only part that allocates
 				return _lookupNormalizer.Normalize(span.ToString());
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { type, keyParts = keyParts.ToArray(), keyPartsLength }, returnValue: true))
 			{
 				throw new UmbrellaException("There was a problem creating the cache key.", exc);
+			}
+			finally
+			{
+				if (rentedArray != null)
+					ArrayPool<char>.Shared.Return(rentedArray);
 			}
 		}
 
