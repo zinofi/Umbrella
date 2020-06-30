@@ -26,14 +26,7 @@
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='AzureDevOps|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.Caching.AzureStorage.xml</DocumentationFile>
+		<PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,10 +35,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.AzureStorage\Umbrella.FileSystem.AzureStorage.csproj" />
     <ProjectReference Include="..\Umbrella.DynamicImage\Umbrella.DynamicImage.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 </Project>
