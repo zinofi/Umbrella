@@ -19,8 +19,8 @@ namespace Umbrella.Utilities.Expressions
 		/// <returns>The dynamic predicate.</returns>
 		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider provider = null)
 		{
-			if (string.IsNullOrEmpty(selector))
-				throw new ArgumentNullException(nameof(selector));
+			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
+
 			if (!Enum.IsDefined(typeof(UmbrellaDynamicCompare), comparer))
 				throw new ArgumentOutOfRangeException(nameof(comparer));
 
@@ -40,10 +40,8 @@ namespace Umbrella.Utilities.Expressions
 		/// <returns>The dynamic predicate.</returns>
 		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, string comparer, string value, IFormatProvider provider = null)
 		{
-			if (string.IsNullOrEmpty(selector))
-				throw new ArgumentNullException(nameof(selector));
-			if (string.IsNullOrEmpty(comparer))
-				throw new ArgumentNullException(nameof(comparer));
+			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
+			Guard.ArgumentNotNullOrWhiteSpace(comparer, nameof(comparer));
 
 			var target = Expression.Parameter(typeof(T));
 

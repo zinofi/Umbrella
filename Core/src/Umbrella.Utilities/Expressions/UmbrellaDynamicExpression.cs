@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.Utilities.Expressions
@@ -24,10 +25,9 @@ namespace Umbrella.Utilities.Expressions
 		/// <returns>The dynamic comparison expression.</returns>
 		public static Expression CreateComparison(ParameterExpression target, string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider provider = null)
 		{
-			if (target == null)
-				throw new ArgumentNullException(nameof(target));
-			if (string.IsNullOrEmpty(selector))
-				throw new ArgumentNullException(nameof(selector));
+			Guard.ArgumentNotNull(target, nameof(target));
+			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
+
 			if (!Enum.IsDefined(typeof(UmbrellaDynamicCompare), comparer))
 				throw new ArgumentOutOfRangeException(nameof(comparer));
 
@@ -46,7 +46,6 @@ namespace Umbrella.Utilities.Expressions
 			};
 		}
 
-
 		/// <summary>
 		/// Create a dynamic comparison expression for a given property selector, comparison method and reference value.
 		/// </summary>
@@ -58,16 +57,13 @@ namespace Umbrella.Utilities.Expressions
 		/// <returns>The dynamic comparison expression.</returns>
 		public static Expression CreateComparison(ParameterExpression target, string selector, string comparer, string value, IFormatProvider provider = null)
 		{
-			if (target == null)
-				throw new ArgumentNullException(nameof(target));
-			if (string.IsNullOrEmpty(selector))
-				throw new ArgumentNullException(nameof(selector));
-			if (string.IsNullOrEmpty(comparer))
-				throw new ArgumentNullException(nameof(comparer));
+			Guard.ArgumentNotNull(target, nameof(target));
+			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
+			Guard.ArgumentNotNullOrWhiteSpace(comparer, nameof(comparer));
 
 			var memberAccess = CreateMemberAccess(target, selector);
 			var actualValue = CreateConstant(target, memberAccess, value, provider);
-			
+
 			return Expression.Call(memberAccess, comparer, null, actualValue);
 		}
 
@@ -76,15 +72,24 @@ namespace Umbrella.Utilities.Expressions
 		/// </summary>
 		/// <param name="target">The parameter of the query data.</param>
 		/// <param name="selector">The property selector to parse.</param>
+		/// <param name="throwOnError">Specifies if an exception is thrown if an error is encountered. If not, this will just return <see langword="null"/>.</param>
 		/// <returns>The dynamic member access expression.</returns>
-		public static Expression CreateMemberAccess(Expression target, string selector)
+		public static MemberExpression CreateMemberAccess(ParameterExpression target, string selector, bool throwOnError = true)
 		{
-			if (target == null)
-				throw new ArgumentNullException(nameof(target));
-			if (string.IsNullOrEmpty(selector))
-				throw new ArgumentNullException(nameof(selector));
+			Guard.ArgumentNotNull(target, nameof(target));
+			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
 
-			return selector.Split('.').Aggregate(target, Expression.PropertyOrField);
+			try
+			{
+				return selector.Split('.').Aggregate((Expression)target, Expression.PropertyOrField) as MemberExpression;
+			}
+			catch (Exception exc)
+			{
+				if (throwOnError)
+					throw new UmbrellaException($"An error occurred whilst trying to create the member access for '{target.Name}' using selector '{selector}'.", exc);
+
+				return null;
+			}
 		}
 
 		private static Expression CreateConstant(ParameterExpression target, Expression selector, string value, IFormatProvider provider)
