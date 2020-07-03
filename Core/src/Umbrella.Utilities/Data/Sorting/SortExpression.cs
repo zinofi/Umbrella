@@ -52,12 +52,12 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <param name="memberPath">The member path.</param>
 		/// <param name="direction">The direction.</param>
 		/// <remarks>This is dynamically invoked by the <see cref="DataExpressionFactory"/>.</remarks>
-		internal SortExpression(Expression<Func<TItem, object>> expression, Lazy<Func<TItem, object>> @delegate, Lazy<string> memberPath, SortDirection direction)
+		public SortExpression(LambdaExpression expression, Lazy<Delegate> @delegate, Lazy<string> memberPath, SortDirection direction)
 		{
 			Direction = direction;
-			Expression = expression;
+			Expression = (Expression<Func<TItem, object>>)expression;
 
-			_lazyFunc = @delegate;
+			_lazyFunc = new Lazy<Func<TItem, object>>(() => (Func<TItem, object>)@delegate.Value);
 			_lazyMemberPath = memberPath;
 		}
 

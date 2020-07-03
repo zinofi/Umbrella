@@ -13,6 +13,26 @@ namespace Umbrella.Utilities.Data.Filtering
 		private string _memberPath;
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterExpressionDescriptor"/> class.
+		/// </summary>
+		public FilterExpressionDescriptor()
+		{
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterExpressionDescriptor"/> class.
+		/// </summary>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="type">The type.</param>
+		public FilterExpressionDescriptor(string memberPath, string value, FilterType type)
+		{
+			MemberPath = memberPath;
+			Value = value;
+			Type = type;
+		}
+
+		/// <summary>
 		/// Gets or sets the path of the member.
 		/// </summary>
 		public string MemberPath

@@ -60,13 +60,13 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
 		/// <remarks>This is dynamically invoked by the <see cref="DataExpressionFactory"/>.</remarks>
-		internal FilterExpression(Expression<Func<TItem, object>> expression, Lazy<Func<TItem, object>> @delegate, Lazy<string> memberPath, object value, FilterType type)
+		public FilterExpression(LambdaExpression expression, Lazy<Delegate> @delegate, Lazy<string> memberPath, object value, FilterType type)
 		{
-			Expression = expression;
+			Expression = (Expression<Func<TItem, object>>)expression;
 			Value = value;
 			Type = type;
 
-			_lazyFunc = @delegate;
+			_lazyFunc = new Lazy<Func<TItem, object>>(() => (Func<TItem, object>)@delegate.Value);
 			_lazyMemberPath = memberPath;
 		}
 
