@@ -15,7 +15,14 @@ namespace Umbrella.DataAccess.Abstractions.Test
 				x => x.Name,
 				x => x.Assembly,
 				x => x.Assembly.Location,
-				x => x.Assembly.ImageRuntimeVersion.Length
+				x => x.Assembly.ImageRuntimeVersion.Length,
+				x => x.Assembly.ExportedTypes.Select(x => x.FullName),
+				x => x.Assembly.ExportedTypes.Select(x => x.FullName.Length),
+				x => x.GenericTypeArguments.Select(x => x.FullName),
+				x => x.GenericTypeArguments.Select(x => x.Assembly.FullName.Length),
+				// TODO: Extends to allow nested Select/SelectMany calls. Needed though??
+				//x => x.GenericTypeArguments.Select(x => x.GenericTypeArguments.Select(x => x.FullName.Length)),
+				//x => x.GenericTypeArguments.SelectMany(x => x.GenericTypeArguments.Select(x => x.FullName.Length))
 			};
 
 			var map = new IncludeMap<Type>(expressions);
@@ -30,7 +37,13 @@ namespace Umbrella.DataAccess.Abstractions.Test
 				"Name",
 				"Assembly",
 				"Assembly.Location",
-				"Assembly.ImageRuntimeVersion.Length"
+				"Assembly.ImageRuntimeVersion.Length",
+				"Assembly.ExportedTypes.FullName",
+				"Assembly.ExportedTypes.FullName.Length",
+				"GenericTypeArguments.FullName",
+				"GenericTypeArguments.Assembly.FullName.Length",
+				//"GenericTypeArguments.GenericTypeArguments.FullName.Length",
+				//"GenericTypeArguments.GenericTypeArguments.FullName.Length"
 			};
 
 			Assert.Equal(propertyPaths.Length, map.PropertyPaths.Count);

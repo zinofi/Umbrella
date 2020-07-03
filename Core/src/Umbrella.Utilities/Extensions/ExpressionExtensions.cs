@@ -21,7 +21,11 @@ namespace Umbrella.Utilities.Extensions
 		{
 			Guard.ArgumentNotNull(expression, nameof(expression));
 
-			MemberExpression memberExpression = expression.GetMemberExpression();
+			MemberExpression memberExpression = expression.Body switch
+			{
+				UnaryExpression x => x.Operand as MemberExpression,
+				_ => expression.Body as MemberExpression
+			};
 
 			if (memberExpression == null && throwException)
 				throw new Exception($"The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.");
@@ -32,37 +36,50 @@ namespace Umbrella.Utilities.Extensions
 		/// <summary>
 		/// Gets the full path of the member specified in the supplied expression, e.g. it will transform Parent -> Child -> Name into Parent.Child.Name.
 		/// </summary>
-		/// <param name="expression">The expression.</param>
+		/// <param name="lambdaExpression">The expression.</param>
 		/// <returns>The member path.</returns>
 		/// <exception cref="Exception">The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.</exception>
-		public static string GetMemberPath(this LambdaExpression expression)
+		public static string GetMemberPath(this LambdaExpression lambdaExpression)
 		{
-			Guard.ArgumentNotNull(expression, nameof(expression));
-
-			MemberExpression memberExpression = expression.GetMemberExpression();
+			Guard.ArgumentNotNull(lambdaExpression, nameof(lambdaExpression));
+			
 			var parts = new List<string>();
 
-			while (memberExpression != null)
+			// Inner Method
+			void ParsePath(Expression expression)
 			{
-				parts.Add(memberExpression.Member.Name);
-				memberExpression = memberExpression.Expression as MemberExpression;
+				while (expression.NodeType == ExpressionType.Convert || expression.NodeType == ExpressionType.ConvertChecked)
+				{
+					expression = ((UnaryExpression)expression).Operand;
+				}
+
+				if (expression is MemberExpression memberExpression)
+				{
+					parts.Add(memberExpression.Member.Name);
+					ParsePath(memberExpression.Expression);
+				}
+				else if (expression is MethodCallExpression methodCallExpression && methodCallExpression.Method.Name == "Select" && methodCallExpression.Arguments.Count == 2)
+				{
+					if (methodCallExpression.Arguments[1] is LambdaExpression subExpression && subExpression.Body is MemberExpression subMemberExpression)
+					{
+						parts.Add(subMemberExpression.Member.Name);
+						ParsePath(subMemberExpression.Expression);
+					}
+
+					if (methodCallExpression.Arguments[0] is MemberExpression innerMemberExpression)
+					{
+						parts.Add(innerMemberExpression.Member.Name);
+						ParsePath(innerMemberExpression.Expression);
+					}
+				}
 			}
+
+			ParsePath(lambdaExpression.Body);
 
 			parts.Reverse();
 
 			return string.Join(".", parts);
 		}
-
-		/// <summary>
-		/// Gets the member expression from the supplied expression if possible.
-		/// </summary>
-		/// <param name="expression">The expression.</param>
-		/// <returns>The <see cref="MemberExpression"/>.</returns>
-		public static MemberExpression GetMemberExpression(this LambdaExpression expression) => expression.Body switch
-		{
-			UnaryExpression x => x.Operand as MemberExpression,
-			_ => expression.Body as MemberExpression
-		};
 
 		/// <summary>
 		/// Combines two given predicates using a conditional AND operation.

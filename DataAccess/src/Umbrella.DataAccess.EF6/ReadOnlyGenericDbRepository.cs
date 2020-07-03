@@ -125,7 +125,7 @@ namespace Umbrella.DataAccess.EF6
 		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Private Static Members
-		private static HashSet<string> _validFilterPaths;
+		private static IReadOnlyCollection<string> _validFilterPaths;
 		#endregion
 
 		#region Protected Static Properties
@@ -269,15 +269,17 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="filters">The filters.</param>
 		protected static void InitializeValidFilters(params Expression<Func<TEntity, object>>[] filters)
 		{
-			_validFilterPaths = new HashSet<string>();
+			var lstValidFilter = new HashSet<string>();
 
 			foreach (var filter in filters)
 			{
 				if (filter is null)
 					continue;
 
-				_validFilterPaths.AddNotNull(filter.GetMemberPath());
+				lstValidFilter.AddNotNull(filter.GetMemberPath());
 			}
+
+			_validFilterPaths = lstValidFilter;
 		}
 
 		/// <summary>
@@ -290,7 +292,7 @@ namespace Umbrella.DataAccess.EF6
 			if (filters is null || _validFilterPaths is null)
 				return true;
 
-			return _validFilterPaths.SetEquals(filters.Select(x => x.MemberPath));
+			return filters.All(x => _validFilterPaths.Contains(x.MemberPath));
 		}
 
 		/// <summary>
