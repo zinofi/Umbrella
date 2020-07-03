@@ -44,6 +44,23 @@ namespace Umbrella.Utilities.Data.Sorting
 			_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SortExpression{TItem}"/> struct.
+		/// </summary>
+		/// <param name="expression">The expression.</param>
+		/// <param name="delegate">The delegate.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="direction">The direction.</param>
+		/// <remarks>This is dynamically invoked by the <see cref="DataExpressionFactory"/>.</remarks>
+		internal SortExpression(Expression<Func<TItem, object>> expression, Lazy<Func<TItem, object>> @delegate, Lazy<string> memberPath, SortDirection direction)
+		{
+			Direction = direction;
+			Expression = expression;
+
+			_lazyFunc = @delegate;
+			_lazyMemberPath = memberPath;
+		}
+
 		/// <inheritdoc />
 		public Func<TItem, object> GetDelegate() => _lazyFunc.Value;
 
@@ -51,7 +68,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		public override string ToString() => $"{MemberPath} - {Direction}";
 
 		/// <summary>
-		/// Converts to this instance to a <see cref="SortExpressionSerializable"/> instance.
+		/// Converts to this instance to a <see cref="SortExpressionSerializable"/> instance. This is primarily for logging purposes.
 		/// </summary>
 		/// <returns>The <see cref="SortExpressionSerializable"/> instance.</returns>
 		public SortExpressionSerializable ToSortExpressionSerializable()

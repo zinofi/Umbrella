@@ -51,6 +51,25 @@ namespace Umbrella.Utilities.Data.Filtering
 			_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterExpression{TItem}"/> struct.
+		/// </summary>
+		/// <param name="expression">The expression.</param>
+		/// <param name="delegate">The delegate.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="type">The type.</param>
+		/// <remarks>This is dynamically invoked by the <see cref="DataExpressionFactory"/>.</remarks>
+		internal FilterExpression(Expression<Func<TItem, object>> expression, Lazy<Func<TItem, object>> @delegate, Lazy<string> memberPath, object value, FilterType type)
+		{
+			Expression = expression;
+			Value = value;
+			Type = type;
+
+			_lazyFunc = @delegate;
+			_lazyMemberPath = memberPath;
+		}
+
 		/// <inheritdoc />
 		public Func<TItem, object> GetDelegate() => _lazyFunc.Value;
 
@@ -58,7 +77,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		public override string ToString() => $"{MemberPath} - {Value} - {Type}";
 
 		/// <summary>
-		/// Converts to this instance to a <see cref="FilterExpressionSerializable"/>.
+		/// Converts to this instance to a <see cref="FilterExpressionSerializable"/>. This is primarily for logging purposes.
 		/// </summary>
 		/// <returns>The <see cref="FilterExpressionSerializable"/> instance.</returns>
 		public FilterExpressionSerializable ToFilterExpressionSerializable()

@@ -26,5 +26,8 @@ namespace Umbrella.Utilities.Data.Sorting
 
 		/// <inheritdoc />
 		public bool IsValid() => !string.IsNullOrEmpty(MemberPath);
+
+		/// <inheritdoc />
+		public override string ToString() => $"{MemberPath}:{Direction}";
 	}
 }

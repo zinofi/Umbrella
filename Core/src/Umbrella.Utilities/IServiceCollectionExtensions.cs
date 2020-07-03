@@ -90,6 +90,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
 			services.AddSingleton<IUmbrellaHostingEnvironment, UmbrellaConsoleHostingEnvironment>();
 			services.AddSingleton<IObjectGraphValidator, ObjectGraphValidator>();
+			services.AddSingleton<IDataExpressionFactory, DataExpressionFactory>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);

@@ -34,5 +34,8 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <inheritdoc />
 		/// <remarks>This will return true even if the <see cref="Value"/> is only whitespace as we might need to filter on that, e.g. looking for values that contain spaces.</remarks>
 		public bool IsValid() => !string.IsNullOrEmpty(MemberPath) && !string.IsNullOrEmpty(Value);
+
+		/// <inheritdoc />
+		public override string ToString() => $"{MemberPath}:{Value}:{Type}";
 	}
 }
