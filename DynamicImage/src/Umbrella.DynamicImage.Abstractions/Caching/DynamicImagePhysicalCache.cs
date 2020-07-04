@@ -21,7 +21,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 		/// <summary>
 		/// Gets the cache path format.
 		/// </summary>
-		public virtual string CachePathFormat => $"{Path.DirectorySeparatorChar}{{0}}.{{1}}";
+		public virtual string CachePathFormat => $"/{{0}}.{{1}}";
 		#endregion
 
 		#region Protected Properties		
@@ -140,7 +140,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 		#region Overridden Methods
 		/// <inheritdoc />
 		protected override string GetSubPath(string cacheKey, string fileExtension)
-			=> $@"{Path.DirectorySeparatorChar}{cacheKey}.{fileExtension}";
+			=> $@"/{cacheKey}.{fileExtension}";
 		#endregion
 	}
 }

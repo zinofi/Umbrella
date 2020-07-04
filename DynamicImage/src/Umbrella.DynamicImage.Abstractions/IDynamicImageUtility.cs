@@ -26,7 +26,21 @@ namespace Umbrella.DynamicImage.Abstractions
 		/// </param>
 		/// <returns>A tuple containing the status of the parsing operation together with the parsed options.</returns>
 		(DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) TryParseUrl(string dynamicImagePathPrefix, string relativeUrl, DynamicImageFormat? overrideFormat = null);
+
+		/// <summary>
+		/// Checks if the specified <paramref name="imageOptions"/> are valid based on the specified <paramref name="validMappings"/>.
+		/// </summary>
+		/// <param name="imageOptions">The image options.</param>
+		/// <param name="validMappings">The valid mappings.</param>
+		/// <returns><see langword="true"/> if the <paramref name="imageOptions"/> are valid; otherwise <see langword="false"/>.</returns>
 		bool ImageOptionsValid(DynamicImageOptions imageOptions, IEnumerable<DynamicImageMapping> validMappings);
+
+		/// <summary>
+		/// Generates an application relative virtual path for the specified <paramref name="dynamicImagePathPrefix"/> and <paramref name="options"/>.
+		/// </summary>
+		/// <param name="dynamicImagePathPrefix">The dynamic image path prefix.</param>
+		/// <param name="options">The options.</param>
+		/// <returns></returns>
 		string GenerateVirtualPath(string dynamicImagePathPrefix, DynamicImageOptions options);
 	}
 }

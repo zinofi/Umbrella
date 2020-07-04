@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Umbrella.DynamicImage.Abstractions
 {
-    public enum DynamicResizeMode
+	/// <summary>
+	/// The mode to use when resizing images.
+	/// </summary>
+	public enum DynamicResizeMode
     {
         UseWidth = 0,
         UseHeight = 1,
