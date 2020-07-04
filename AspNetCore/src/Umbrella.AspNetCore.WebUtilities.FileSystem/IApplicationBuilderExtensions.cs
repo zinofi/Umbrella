@@ -1,22 +1,23 @@
-﻿using System;
+﻿using Umbrella.AspNetCore.WebUtilities.FileSystem.Middleware;
 using Umbrella.Utilities;
 
 namespace Microsoft.AspNetCore.Builder
 {
 	/// <summary>
-	/// Extension methods used to register Middleware for the <see cref="Umbrella.AspNetCore.WebUtilities"/> package with a specified <see cref="IApplicationBuilder"/>.
+	/// Extension methods used to register Middleware for the <see cref="Umbrella.AspNetCore.WebUtilities.FileSystem"/> package with a specified <see cref="IApplicationBuilder"/>.
 	/// </summary>
 	public static class IApplicationBuilderExtensions
 	{
 		/// <summary>
-		/// Adds the <see cref="Umbrella.AspNetCore.WebUtilities"/> Middleware to the specified <see cref="IApplicationBuilder"/>.
+		/// Add the <see cref="FileSystemMiddleware"/> to the pipeline.
 		/// </summary>
-		/// <param name="builder">The application builder to which the Middleware will be added.</param>
-		/// <returns>The <see cref="IApplicationBuilder"/>.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="builder"/> is null.</exception>
+		/// <param name="builder">The builder.</param>
+		/// <returns>The application builder.</returns>
 		public static IApplicationBuilder UseUmbrellaFileSystem(this IApplicationBuilder builder)
 		{
 			Guard.ArgumentNotNull(builder, nameof(builder));
+
+			builder.UseMiddleware<FileSystemMiddleware>();
 
 			return builder;
 		}
