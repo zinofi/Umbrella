@@ -46,7 +46,7 @@ namespace Umbrella.DynamicImage.Caching.Disk
 		#region Overridden Methods
 		/// <inheritdoc />
 		protected override string GetSubPath(string cacheKey, string fileExtension)
-			=> $@"{Path.DirectorySeparatorChar}{DiskCacheOptions.CacheFolderName}{Path.DirectorySeparatorChar}{cacheKey.Substring(0, 2)}{base.GetSubPath(cacheKey, fileExtension)}";
+			=> $@"/{DiskCacheOptions.CacheFolderName}/{cacheKey.Substring(0, 2)}{base.GetSubPath(cacheKey, fileExtension)}";
 		#endregion
 	}
 }
