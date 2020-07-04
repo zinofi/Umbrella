@@ -66,5 +66,19 @@ namespace Microsoft.AspNetCore.Builder
 
 			return builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>>();
 		}
+
+		/// <summary>
+		/// Add the <see cref="FrontEndCompressionMiddleware"/> to the pipeline.
+		/// </summary>
+		/// <param name="builder">The builder.</param>
+		/// <returns>The application builder.</returns>
+		public static IApplicationBuilder UseUmbrellaFrontEndCompression(this IApplicationBuilder builder)
+		{
+			Guard.ArgumentNotNull(builder, nameof(builder));
+
+			builder.UseMiddleware<FrontEndCompressionMiddleware>();
+
+			return builder;
+		}
 	}
 }
