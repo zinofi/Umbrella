@@ -17,7 +17,7 @@ namespace Umbrella.DynamicImage.Abstractions
 	public class DynamicImageUtility : IDynamicImageUtility
 	{
 		#region Private Constants
-		private const string c_VirtualPathFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
+		private const string VirtualPathFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
 		#endregion
 
 		#region Private Static Members
@@ -178,7 +178,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
 				string path = options.SourcePath.Replace("~/", "");
 
-				string virtualPath = string.Format(c_VirtualPathFormat,
+				string virtualPath = string.Format(VirtualPathFormat,
 					dynamicImagePathPrefix,
 					options.Width,
 					options.Height,
