@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 		icon.png = icon.png
 		NuGet.Config = NuGet.Config
+		PackLocal.cmd = PackLocal.cmd
 		Update-Version.ps1 = Update-Version.ps1
 	EndProjectSection
 EndProject
@@ -183,7 +184,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Identit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Abstractions.Test", "DataAccess\test\Umbrella.DataAccess.Abstractions.Test\Umbrella.DataAccess.Abstractions.Test.csproj", "{E478C037-D11B-4C89-BB3E-C779A95AC2B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.DynamicImage.Caching.Disk", "DynamicImage\src\Umbrella.DynamicImage.Caching.Disk\Umbrella.DynamicImage.Caching.Disk.csproj", "{1BCA5780-F8B6-448A-874D-D977EC6DDF45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Caching.Disk", "DynamicImage\src\Umbrella.DynamicImage.Caching.Disk\Umbrella.DynamicImage.Caching.Disk.csproj", "{1BCA5780-F8B6-448A-874D-D977EC6DDF45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
