@@ -5,15 +5,24 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.Utilities.TypeConverters
 {
+	/// <summary>
+	/// A custom type converter which converts strings to objects.
+	/// </summary>
+	/// <seealso cref="Umbrella.Utilities.TypeConverters.Abstractions.IGenericTypeConverter" />
 	public class GenericTypeConverter : IGenericTypeConverter
 	{
 		private readonly ILogger _log;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericTypeConverter"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
 		public GenericTypeConverter(ILogger<GenericTypeConverter> logger)
 		{
 			_log = logger;
 		}
 
+		/// <inheritdoc />
 		public T Convert<T>(string value, Func<T> fallbackCreator, Func<string, T> customValueConverter = null)
 		{
 			try
@@ -35,6 +44,7 @@ namespace Umbrella.Utilities.TypeConverters
 			}
 		}
 
+		/// <inheritdoc />
 		public T Convert<T>(string value, T fallback = default, Func<string, T> customValueConverter = null)
 		{
 			try
@@ -47,12 +57,13 @@ namespace Umbrella.Utilities.TypeConverters
 			}
 		}
 
+		/// <inheritdoc />
 		public T ConvertToEnum<T>(string value, T fallback = default)
 			where T : struct, Enum
 		{
 			try
 			{
-				if (!string.IsNullOrWhiteSpace(value) && typeof(Enum).IsAssignableFrom(typeof(T)) && Enum.TryParse(value, true, out T output))
+				if (!string.IsNullOrWhiteSpace(value) && Enum.TryParse(value, true, out T output))
 					return output;
 
 				return fallback;
