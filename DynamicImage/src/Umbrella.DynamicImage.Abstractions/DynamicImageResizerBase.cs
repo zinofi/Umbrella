@@ -198,7 +198,7 @@ namespace Umbrella.DynamicImage.Abstractions
 						// First, resize based on width and check whether resized height will be more than max height.
 						var (_, tempHeight) = CalculateOutputDimensions(originalWidth, originalHeight, targetWidth, null);
 
-						if (tempHeight > targetHeight)
+						if (tempHeight < targetHeight)
                         {
                             // If so, we need to resize based on max height instead.
                             requestedHeight = targetHeight;

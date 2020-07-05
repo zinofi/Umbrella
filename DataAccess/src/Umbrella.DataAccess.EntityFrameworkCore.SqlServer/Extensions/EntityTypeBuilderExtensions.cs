@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Umbrella.DataAccess.Abstractions;
 
@@ -28,6 +29,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions
 		/// <returns>The key builder.</returns>
 		public static KeyBuilder SetupNonClusteredPrimaryKey<TEntity, TEntityKey>(this EntityTypeBuilder<TEntity> builder)
 			where TEntity : class, IEntity<TEntityKey>
+			where TEntityKey : IEquatable<TEntityKey>
 			=> builder.HasKey(x => x.Id).IsClustered(false);
 	}
 }

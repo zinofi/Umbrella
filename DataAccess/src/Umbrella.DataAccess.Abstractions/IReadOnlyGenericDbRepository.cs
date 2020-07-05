@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Data.Filtering;
@@ -35,6 +36,7 @@ namespace Umbrella.DataAccess.Abstractions
 	public interface IReadOnlyGenericDbRepository<TEntity, in TRepoOptions, TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TRepoOptions : RepoOptions, new()
+		where TEntityKey : IEquatable<TEntityKey>
 	{
 		/// <summary>
 		/// Finds all entities using the specified parameters.

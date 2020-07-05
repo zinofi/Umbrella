@@ -1,4 +1,6 @@
-﻿namespace Umbrella.DataAccess.Abstractions
+﻿using System;
+
+namespace Umbrella.DataAccess.Abstractions
 {
 	/// <summary>
 	/// Adds support to an entity type for storing it's unique Id, the id of the user it was both created by and last updated by, together with
@@ -7,6 +9,7 @@
 	/// </summary>
 	/// <typeparam name="TEntityKey">The type of the user id.</typeparam>
 	public interface IAuditEntity<TEntityKey> : IEntity<TEntityKey>, ICreatedDateAuditEntity, ICreatedUserAuditEntity<TEntityKey>, IUpdatedDateAuditEntity, IUpdatedUserAuditEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
 	{
 	}
 }

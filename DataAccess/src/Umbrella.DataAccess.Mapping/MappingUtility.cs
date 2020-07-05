@@ -39,6 +39,7 @@ namespace Umbrella.DataAccess.Mapping
 		/// <inheritdoc />
 		public IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
+			where TEntityKey : IEquatable<TEntityKey>
 		{
 			try
 			{

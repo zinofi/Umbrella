@@ -17,29 +17,59 @@ using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
 {
-	// TODO: Same here - create a GenericRemoteRepository.
+	public abstract class GenericRemoteRepository<TItem, TIdentifier>
+		where TItem : class, IRemoteItem<TIdentifier>, new()
+		where TIdentifier : IEquatable<TIdentifier>
+	{
+
+	}
+
+	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRepoOptions>
+	{
+
+	}
+
+	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRepoOptions, TService>
+	{
+
+	}
+
 	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
-		where TRemoteSource : Enum
+		where TIdentifier : IEquatable<TIdentifier>
+		where TRemoteSource : struct, Enum
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericMultiRemoteRepository{TItem, TIdentifier, TRemoteSource}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dataAccessLookupNormalizer">The data access lookup normalizer.</param>
+		/// <param name="services">The services.</param>
 		public GenericMultiRemoteRepository(
 			ILogger logger,
 			ILookupNormalizer dataAccessLookupNormalizer,
-			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
+			params IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, services)
 		{
 		}
 	}
 
-	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>>
+	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
-		where TRemoteSource : Enum
+		where TIdentifier : IEquatable<TIdentifier>
+		where TRemoteSource : struct, Enum
 		where TRepoOptions : RepoOptions, new()
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericMultiRemoteRepository{TItem, TIdentifier, TRemoteSource, TRepoOptions}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dataAccessLookupNormalizer">The data access lookup normalizer.</param>
+		/// <param name="services">The services.</param>
 		public GenericMultiRemoteRepository(
 			ILogger logger,
 			ILookupNormalizer dataAccessLookupNormalizer,
-			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
+			params IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, services)
 		{
 		}
@@ -48,9 +78,10 @@ namespace Umbrella.DataAccess.Remote
 	//TODO: Pass through more detailed error messages / codes to callers
 	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService> : IGenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
-		where TRemoteSource : Enum
+		where TIdentifier : IEquatable<TIdentifier>
+		where TRemoteSource : struct, Enum
 		where TRepoOptions : RepoOptions, new()
-		where TService : IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>
+		where TService : IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>
 	{
 		#region Private Static Members
 		private static readonly IReadOnlyCollection<TItem> _emptyItemList = Array.Empty<TItem>();
@@ -72,11 +103,25 @@ namespace Umbrella.DataAccess.Remote
 		/// Gets the lookup normalizer.
 		/// </summary>
 		protected ILookupNormalizer LookupNormalizer { get; }
+
+		/// <summary>
+		/// Gets the service list.
+		/// </summary>
 		protected IReadOnlyList<TService> ServiceList { get; }
+
+		/// <summary>
+		/// Gets the service dictionary.
+		/// </summary>
 		protected IReadOnlyDictionary<TRemoteSource, TService> ServiceDictionary { get; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericMultiRemoteRepository{TItem, TIdentifier, TRemoteSource, TRepoOptions, TService}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="services">The services.</param>
 		public GenericMultiRemoteRepository(
 			ILogger logger,
 			ILookupNormalizer lookupNormalizer,
@@ -161,7 +206,7 @@ namespace Umbrella.DataAccess.Remote
 					else
 					{
 						allSuccess = false;
-						lstSourceFailure = lstSourceFailure ?? new List<RemoteSourceFailure<TRemoteSource>>();
+						lstSourceFailure ??= new List<RemoteSourceFailure<TRemoteSource>>();
 						lstSourceFailure.Add(new RemoteSourceFailure<TRemoteSource>(item.Key, message));
 					}
 				}
@@ -200,72 +245,74 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
-		//public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
-		//{
-		//	cancellationToken.ThrowIfCancellationRequested();
+		/// <inheritdoc />
+		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
 
-		//	try
-		//	{
-		//		var lstTask = new Task[ServiceList.Count];
-		//		var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode status, string message, int totalCount)>>(ServiceList.Count);
+			try
+			{
+				var lstTask = new Task[ServiceList.Count];
+				var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode status, string message, int totalCount)>>(ServiceList.Count);
 
-		//		for (int i = 0; i < ServiceList.Count; i++)
-		//		{
-		//			var task = ServiceList[i].FindTotalCountAsync(cancellationToken);
+				for (int i = 0; i < ServiceList.Count; i++)
+				{
+					var task = ServiceList[i].FindTotalCountAsync(cancellationToken);
 
-		//			lstTask[i] = task;
-		//			dicTask.Add(ServiceList[i].RemoteSourceType, task);
-		//		}
+					lstTask[i] = task;
+					dicTask.Add(ServiceList[i].RemoteSourceType, task);
+				}
 
-		//		await Task.WhenAll(lstTask).ConfigureAwait(false);
+				await Task.WhenAll(lstTask).ConfigureAwait(false);
 
-		//		bool success = true;
-		//		List<RemoteSourceFailure<TRemoteSource>> lstSourceFailure = null;
-		//		int count = 0;
+				bool success = true;
+				List<RemoteSourceFailure<TRemoteSource>> lstSourceFailure = null;
+				int count = 0;
 
-		//		foreach (var item in dicTask)
-		//		{
-		//			var (status, message, totalCount) = item.Value.Result;
+				foreach (var item in dicTask)
+				{
+					var (status, message, totalCount) = item.Value.Result;
 
-		//			switch (status)
-		//			{
-		//				case HttpStatusCode.OK:
-		//					count += totalCount;
-		//					break;
-		//				default:
-		//					success = false;
-		//					lstSourceFailure = lstSourceFailure ?? new List<RemoteSourceFailure<TRemoteSource>>();
-		//					lstSourceFailure.Add(new RemoteSourceFailure<TRemoteSource>(item.Key, message));
-		//					break;
-		//			}
-		//		}
+					switch (status)
+					{
+						case HttpStatusCode.OK:
+							count += totalCount;
+							break;
+						default:
+							success = false;
+							lstSourceFailure ??= new List<RemoteSourceFailure<TRemoteSource>>();
+							lstSourceFailure.Add(new RemoteSourceFailure<TRemoteSource>(item.Key, message));
+							break;
+					}
+				}
 
-		//		return (success, lstSourceFailure ?? _emptyRemoteSourceFailuresList, count);
-		//	}
-		//	catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
-		//	{
-		//		throw new UmbrellaDataAccessException("There has been a problem finding the total count of all items.", exc);
-		//	}
-		//}
+				return (success, lstSourceFailure ?? _emptyRemoteSourceFailuresList, count);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaDataAccessException("There has been a problem finding the total count of all items.", exc);
+			}
+		}
 
-		//public virtual async Task<(bool success, string message, bool exists)> ExistsByIdAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default)
-		//{
-		//	cancellationToken.ThrowIfCancellationRequested();
-		//	Guard.ArgumentNotNull(id, nameof(id));
+		/// <inheritdoc />
+		public virtual async Task<(bool success, string message, bool? exists)> ExistsByIdAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNull(id, nameof(id));
 
-		//	try
-		//	{
-		//		var service = ServiceDictionary[remoteSourceType];
+			try
+			{
+				var service = ServiceDictionary[remoteSourceType];
 
-		//		var (statusCode, message, exists) = await service.ExistsByIdAsync(id, cancellationToken);
+				var (statusCode, message, exists) = await service.ExistsByIdAsync(id, cancellationToken);
 
-		//		return (IsSuccessStatusCode(statusCode), message, exists);
-		//	}
-		//	catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
-		//	{
-		//		throw new UmbrellaDataAccessException("There has been a problem determining if the item with the specified id exists.", exc);
-		//	}
-		//}
+				return (IsSuccessStatusCode(statusCode), message, exists);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaDataAccessException("There has been a problem determining if the item with the specified id exists.", exc);
+			}
+		}
 
 		/// <inheritdoc />
 		public virtual async Task<SaveResult<TItem>> SaveAsync(TItem item, CancellationToken cancellationToken = default, TRepoOptions options = null)
@@ -279,7 +326,7 @@ namespace Umbrella.DataAccess.Remote
 				if (options.SanitizeEntity)
 					await SanitizeItemAsync(item, cancellationToken, options).ConfigureAwait(false);
 
-				bool isNew = item.Id.Equals(default(TIdentifier));
+				bool isNew = item.Id.Equals(default);
 
 				if (options.ValidateEntity)
 				{
@@ -402,9 +449,9 @@ namespace Umbrella.DataAccess.Remote
 							break;
 						case var status when statusCode != HttpStatusCode.OK && statusCode != HttpStatusCode.Created && statusCode != HttpStatusCode.NoContent:
 							success = false;
-							lstSourceFailure = lstSourceFailure ?? new List<RemoteSourceFailure<TRemoteSource>>();
+							lstSourceFailure ??= new List<RemoteSourceFailure<TRemoteSource>>();
 							lstSourceFailure.Add(new RemoteSourceFailure<TRemoteSource>(item.Key, message));
-							lstValidationResult = lstValidationResult ?? new List<ValidationResult>();
+							lstValidationResult ??= new List<ValidationResult>();
 							lstValidationResult.Add(new ValidationResult(message));
 							break;
 					}
@@ -433,8 +480,6 @@ namespace Umbrella.DataAccess.Remote
 
 			try
 			{
-				// TODO: Perform access check when deleting?
-
 				// When deleting something we always have to ensure children are deleted as well to avoid orphans
 				options.ProcessChildren = true;
 
@@ -462,8 +507,6 @@ namespace Umbrella.DataAccess.Remote
 
 			try
 			{
-				// TODO: Perform access check when deleting?
-
 				// When deleting something we always have to ensure children are deleted as well to avoid orphans
 				options.ProcessChildren = true;
 
@@ -514,17 +557,30 @@ namespace Umbrella.DataAccess.Remote
 		}
 		#endregion
 
-		#region Protected Methods
+		#region Protected Methods		
+		/// <summary>
+		/// Validates the service count.
+		/// </summary>
+		/// <param name="requiredCount">The required count.</param>
 		protected void ValidateServiceCount(int requiredCount)
 		{
 			if (ServiceList.Count != requiredCount)
 				throw new UmbrellaHttpServiceAccessException($"The number of registered services is {ServiceList.Count} which does not match the required count of {requiredCount}.");
 		}
 
+		/// <summary>
+		/// Gets the HTTP service of the specified <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The service type.</typeparam>
+		/// <returns>The service.</returns>
 		protected T GetHttpService<T>()
-			where T : TService
-			=> (T)_typedServiceDictionary[typeof(T)];
+					where T : TService
+					=> (T)_typedServiceDictionary[typeof(T)];
 
+		/// <summary>
+		/// Ensures the options has been initialized to non-null.
+		/// </summary>
+		/// <param name="options">The options.</param>
 		protected void EnsureOptions(ref TRepoOptions options)
 		{
 			if (options == null)
@@ -633,8 +689,13 @@ namespace Umbrella.DataAccess.Remote
 			return Task.CompletedTask;
 		}
 
+		/// <summary>
+		/// Determines whether specified <paramref name="statusCode"/> is one of <see cref="HttpStatusCode.OK"/>, <see cref="HttpStatusCode.Created"/> or <see cref="HttpStatusCode.NoContent"/>.
+		/// </summary>
+		/// <param name="statusCode">The status code.</param>
+		/// <returns><see langword="true"/> if it is one of the specified codes; otherwise <see langword="false"/>.</returns>
 		protected virtual bool IsSuccessStatusCode(HttpStatusCode statusCode)
-			=> statusCode == HttpStatusCode.OK || statusCode == HttpStatusCode.Created || statusCode == HttpStatusCode.NoContent;
+					=> statusCode == HttpStatusCode.OK || statusCode == HttpStatusCode.Created || statusCode == HttpStatusCode.NoContent;
 		#endregion
 	}
 }

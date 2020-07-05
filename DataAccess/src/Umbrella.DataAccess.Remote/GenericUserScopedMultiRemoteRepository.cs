@@ -9,30 +9,50 @@ using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
 {
+	// TODO: Create a GenericScopedMultiRemoteRepository.
+
 	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TUserId> : GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions, TUserId>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, IUserScopedRemoteItem<TUserId>, new()
-		where TRemoteSource : Enum
+		where TIdentifier : IEquatable<TIdentifier>
+		where TRemoteSource : struct, Enum
+		where TUserId : IEquatable<TUserId>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericUserScopedMultiRemoteRepository{TItem, TIdentifier, TRemoteSource, TUserId}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dataAccessLookupNormalizer">The data access lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="services">The services.</param>
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			ILookupNormalizer dataAccessLookupNormalizer,
 			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
-			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
+			params IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, currentUserIdAccessor, services)
 		{
 		}
 	}
 
-	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TUserId> : GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>, TUserId>
+	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TUserId> : GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>, TUserId>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, IUserScopedRemoteItem<TUserId>, new()
-		where TRemoteSource : Enum
+		where TIdentifier : IEquatable<TIdentifier>
+		where TRemoteSource : struct, Enum
 		where TRepoOptions : RepoOptions, new()
+		where TUserId : IEquatable<TUserId>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericUserScopedMultiRemoteRepository{TItem, TIdentifier, TRemoteSource, TRepoOptions, TUserId}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dataAccessLookupNormalizer">The data access lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="services">The services.</param>
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			ILookupNormalizer dataAccessLookupNormalizer,
 			ICurrentUserIdAccessor<TUserId> currentUserIdAccessor,
-			params IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>[] services)
+			params IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>[] services)
 			: base(logger, dataAccessLookupNormalizer, currentUserIdAccessor, services)
 		{
 		}
@@ -40,13 +60,29 @@ namespace Umbrella.DataAccess.Remote
 
 	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService, TUserId> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TRepoOptions, TService>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, IUserScopedRemoteItem<TUserId>, new()
-		where TRemoteSource : Enum
+		where TIdentifier : IEquatable<TIdentifier>
+		where TRemoteSource : struct, Enum
 		where TRepoOptions : RepoOptions, new()
-		where TService : IGenericMultiHttpRestService<TItem, TIdentifier, TRemoteSource>
+		where TService : IGenericMultiHttpService<TItem, TIdentifier, TRemoteSource>
+		where TUserId : IEquatable<TUserId>
 	{
+		/// <summary>
+		/// Gets the current user identifier accessor.
+		/// </summary>
 		protected ICurrentUserIdAccessor<TUserId> CurrentUserIdAccessor { get; }
+
+		/// <summary>
+		/// Gets the current user identifier.
+		/// </summary>
 		protected TUserId CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericUserScopedMultiRemoteRepository{TItem, TIdentifier, TRemoteSource, TRepoOptions, TService, TUserId}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dataAccessLookupNormalizer">The data access lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="services">The services.</param>
 		public GenericUserScopedMultiRemoteRepository(
 			ILogger logger,
 			ILookupNormalizer dataAccessLookupNormalizer,
@@ -57,6 +93,7 @@ namespace Umbrella.DataAccess.Remote
 			CurrentUserIdAccessor = currentUserIdAccessor;
 		}
 
+		/// <inheritdoc />
 		protected override async Task<bool> CheckAccessAsync(TItem item, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -71,6 +108,7 @@ namespace Umbrella.DataAccess.Remote
 			return isValid;
 		}
 
+		/// <inheritdoc />
 		protected override async Task BeforeSavingItemAsync(TItem item, CancellationToken cancellationToken, TRepoOptions options)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
