@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding
+namespace Umbrella.AspNetCore.WebUtilities.Mvc.Extensions
 {
 	/// <summary>
 	/// Extension methods that operate on <see cref="IEnumerable{ValidationResult}" /> whose elements are <see cref="ValidationResult"/> instances.
