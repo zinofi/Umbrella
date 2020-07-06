@@ -42,14 +42,14 @@ foreach ($file in $configFiles)
 	}
 
 	# Ensure PackageId is converted to AssemblyName and all Umbrella references are changed to Zinofi
-	if($content -like "*<PackageId>Umbrella*")
-	{
-		$hasChanged = $true
-		$affectedFiles.Add($file.Name)
-		$content = $content -replace ("<PackageId>Umbrella"), ("<PackageId>Zinofi")
-		$content = $content -replace ("<PackageId>"), ("<AssemblyName>")
-		$content = $content	-replace ("</PackageId>"), ("</AssemblyName>")
-	}
+	#if($content -like "*<PackageId>Umbrella*")
+	#{
+	#	$hasChanged = $true
+	#	$affectedFiles.Add($file.Name)
+	#	$content = $content -replace ("<PackageId>Umbrella"), ("<PackageId>Zinofi")
+	#	$content = $content -replace ("<PackageId>"), ("<AssemblyName>")
+	#	$content = $content	-replace ("</PackageId>"), ("</AssemblyName>")
+	#}
 	
 	if($hasChanged)
 	{
