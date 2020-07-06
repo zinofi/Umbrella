@@ -17,23 +17,6 @@ using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
 {
-	public abstract class GenericRemoteRepository<TItem, TIdentifier>
-		where TItem : class, IRemoteItem<TIdentifier>, new()
-		where TIdentifier : IEquatable<TIdentifier>
-	{
-
-	}
-
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRepoOptions>
-	{
-
-	}
-
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TRepoOptions, TService>
-	{
-
-	}
-
 	public abstract class GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource> : GenericMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, new()
 		where TIdentifier : IEquatable<TIdentifier>

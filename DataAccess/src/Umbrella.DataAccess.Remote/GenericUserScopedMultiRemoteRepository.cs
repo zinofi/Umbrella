@@ -9,7 +9,7 @@ using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.DataAccess.Remote
 {
-	// TODO: Create a GenericScopedMultiRemoteRepository.
+	// TODO: Create a GenericUserScopedRemoteRepository.
 
 	public abstract class GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, TUserId> : GenericUserScopedMultiRemoteRepository<TItem, TIdentifier, TRemoteSource, RepoOptions, TUserId>
 		where TItem : class, IMultiRemoteItem<TIdentifier, TRemoteSource>, IUserScopedRemoteItem<TUserId>, new()
