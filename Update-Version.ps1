@@ -1,39 +1,59 @@
 ﻿$configFiles = Get-ChildItem . *.csproj -rec
-$affectedFiles = New-Object "System.Collections.Generic.List``1[string]"
+$affectedFiles = New-Object "System.Collections.Generic.HashSet``1[string]"
 
 # Manually alter the build number before pushing to NuGet feeds
-$previousBuild = "3.0.0-preview-0099"
-$currentBuild =  "3.0.0-preview-0100"
+$previousBuild = "3.0.0-preview-0100"
+$currentBuild =  "3.0.0-preview-0101"
 
 foreach ($file in $configFiles)
 {
+	$hasChanged = $false
 	$content = Get-Content $file.PSPath
 
 	if($content -like "*<Version>" + $previousBuild + "</Version>*")
 	{
+		$hasChanged = $true
 		$affectedFiles.Add($file.Name)
-		$content -replace ("<Version>" + $previousBuild + "</Version>"), ("<Version>" + $currentBuild + "</Version>") | Set-Content $file.PSPath
+		$content = $content -replace ("<Version>" + $previousBuild + "</Version>"), ("<Version>" + $currentBuild + "</Version>")
 	}
 
 	# Ensure Copyright year is correct
 	if($content -like "*<Copyright>Zinofi Digital Ltd 2019</Copyright>*")
 	{
+		$hasChanged = $true
 		$affectedFiles.Add($file.Name)
-		$content -replace ("<Copyright>Zinofi Digital Ltd 2019</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2020</Copyright>") | Set-Content $file.PSPath
+		$content = $content -replace ("<Copyright>Zinofi Digital Ltd 2019</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2020</Copyright>")
 	}
 
 	# Ensure Authors is correct
 	if($content -like "*<Authors>Richard Edwards</Authors>*")
 	{
+		$hasChanged = $true
 		$affectedFiles.Add($file.Name)
-		$content -replace ("<Authors>Richard Edwards</Authors>"), ("<Authors>Zinofi Digital Ltd</Authors>") | Set-Content $file.PSPath
+		$content = $content -replace ("<Authors>Richard Edwards</Authors>"), ("<Authors>Zinofi Digital Ltd</Authors>")
 	}
 
 	# Ensure License is correct
 	if($content -like "*<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>*")
 	{
+		$hasChanged = $true
 		$affectedFiles.Add($file.Name)
-		$content -replace ("<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>"), ("<PackageLicenseExpression>MIT</PackageLicenseExpression>") | Set-Content $file.PSPath
+		$content = $content -replace ("<PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>"), ("<PackageLicenseExpression>MIT</PackageLicenseExpression>")
+	}
+
+	# Ensure PackageId is converted to AssemblyName and all Umbrella references are changed to Zinofi
+	if($content -like "*<PackageId>Umbrella*")
+	{
+		$hasChanged = $true
+		$affectedFiles.Add($file.Name)
+		$content = $content -replace ("<PackageId>Umbrella"), ("<PackageId>Zinofi")
+		$content = $content -replace ("<PackageId>"), ("<AssemblyName>")
+		$content = $content	-replace ("</PackageId>"), ("</AssemblyName>")
+	}
+	
+	if($hasChanged)
+	{
+		$content | Set-Content $file.PSPath
 	}
 }
 

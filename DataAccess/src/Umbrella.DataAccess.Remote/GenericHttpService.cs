@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -24,7 +24,7 @@ namespace Umbrella.DataAccess.Remote
 	/// </summary>
 	/// <typeparam name="TItem">The type of the item.</typeparam>
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
-	/// <seealso cref="Umbrella.DataAccess.Remote.Abstractions.IGenericHttpService{TItem, TIdentifier}" />
+	/// <seealso cref="IGenericHttpService{TItem, TIdentifier}" />
 	public abstract class GenericHttpService<TItem, TIdentifier> : IGenericHttpService<TItem, TIdentifier>
 		where TItem : class, IRemoteItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
@@ -56,11 +56,6 @@ namespace Umbrella.DataAccess.Remote
 		/// Gets the patch HTTP method.
 		/// </summary>
 		protected static HttpMethod PatchHttpMethod { get; } = new HttpMethod("PATCH");
-
-		/// <summary>
-		/// Gets the JSON formatter.
-		/// </summary>
-		protected static JsonMediaTypeFormatter JsonFormatter { get; } = new JsonMediaTypeFormatter();
 		#endregion
 
 		#region Protected Properties		
@@ -111,7 +106,7 @@ namespace Umbrella.DataAccess.Remote
 				switch (response.StatusCode)
 				{
 					case HttpStatusCode.OK:
-						TItem item = await response.Content.ReadAsAsync<TItem>().ConfigureAwait(false);
+						TItem item = await response.Content.ReadFromJsonAsync<TItem>().ConfigureAwait(false);
 						await AfterItemLoadedAsync(item, cancellationToken).ConfigureAwait(false);
 						return (HttpStatusCode.OK, null, item);
 					case HttpStatusCode.Unauthorized:
@@ -179,7 +174,7 @@ namespace Umbrella.DataAccess.Remote
 				switch (response.StatusCode)
 				{
 					case HttpStatusCode.OK:
-						List<TItem> items = await response.Content.ReadAsAsync<List<TItem>>().ConfigureAwait(false);
+						List<TItem> items = await response.Content.ReadFromJsonAsync<List<TItem>>().ConfigureAwait(false);
 						await AfterAllItemsLoadedAsync(items, cancellationToken).ConfigureAwait(false);
 						return (HttpStatusCode.OK, null, items);
 					case HttpStatusCode.Unauthorized:
@@ -251,7 +246,7 @@ namespace Umbrella.DataAccess.Remote
 				switch (response.StatusCode)
 				{
 					case HttpStatusCode.OK:
-						int count = await response.Content.ReadAsAsync<int>().ConfigureAwait(false);
+						int count = await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
 						return (HttpStatusCode.OK, null, count);
 					case HttpStatusCode.Unauthorized:
 						return (HttpStatusCode.Unauthorized, UnauthorizedErrorMessage, -1);
@@ -289,7 +284,7 @@ namespace Umbrella.DataAccess.Remote
 				{
 					case HttpStatusCode.OK when isNew:
 					case HttpStatusCode.Created when isNew:
-						TItem savedItem = await response.Content.ReadAsAsync<TItem>().ConfigureAwait(false);
+						TItem savedItem = await response.Content.ReadFromJsonAsync<TItem>().ConfigureAwait(false);
 						await AfterItemSavedAsync(item, cancellationToken).ConfigureAwait(false);
 						return (HttpStatusCode.Created, null, savedItem);
 					case HttpStatusCode.OK when !isNew:
@@ -340,12 +335,12 @@ namespace Umbrella.DataAccess.Remote
 						List<TItem> results = null;
 						if (itemsCount == 1)
 						{
-							TItem result = await response.Content.ReadAsAsync<TItem>().ConfigureAwait(false);
+							TItem result = await response.Content.ReadFromJsonAsync<TItem>().ConfigureAwait(false);
 							results = new List<TItem> { result };
 						}
 						else
 						{
-							results = await response.Content.ReadAsAsync<List<TItem>>().ConfigureAwait(false);
+							results = await response.Content.ReadFromJsonAsync<List<TItem>>().ConfigureAwait(false);
 						}
 						await AfterAllItemsSavedAsync(items, cancellationToken).ConfigureAwait(false);
 						return (HttpStatusCode.Created, null, results);
@@ -530,13 +525,6 @@ namespace Umbrella.DataAccess.Remote
 
 			return Task.CompletedTask;
 		}
-
-		/// <summary>
-		/// Creates a new <see cref="ObjectContent"/> instance from the specified <paramref name="value"/>, formatted as JSON.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <returns>The <see cref="ObjectContent"/> instance.</returns>
-		protected ObjectContent CreateJsonContent(object value) => new ObjectContent<object>(value, JsonFormatter);
 
 		/// <summary>
 		/// Creates a service access exception.
