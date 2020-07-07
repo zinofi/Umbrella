@@ -17,7 +17,7 @@
 
   <PropertyGroup>
     <PackageId>Umbrella.Utilities</PackageId>
-    <Version>3.0.0-preview-0102</Version>
+    <Version>3.0.0-preview-0103</Version>
     <Authors>Zinofi Digital Ltd</Authors>
     <Company>Zinofi Digital Ltd</Company>
     <Copyright>Zinofi Digital Ltd 2020</Copyright>
