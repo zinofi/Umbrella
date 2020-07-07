@@ -42,6 +42,7 @@ foreach ($file in $configFiles)
 	}
 
 	# Ensure PackageId is converted to AssemblyName and all Umbrella references are changed to Zinofi
+	# Leaving as Umbrella for now - TBD
 	#if($content -like "*<PackageId>Umbrella*")
 	#{
 	#	$hasChanged = $true
