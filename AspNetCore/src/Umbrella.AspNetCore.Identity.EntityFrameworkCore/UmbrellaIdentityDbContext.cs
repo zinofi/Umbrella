@@ -11,7 +11,7 @@ namespace Umbrella.AspNetCore.Identity.EntityFrameworkCore
 	/// <summary>
 	/// A customized <see cref="IdentityDbContext" /> class for use with the Umbrella database repositories.
 	/// </summary>
-	public abstract class UmbrellaIdentityDbContext : UmbrellaIdentityDbContext<IdentityUser, IdentityRole, string>
+	public abstract class UmbrellaIdentityDbContext : UmbrellaIdentityDbContext<IdentityUser>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UmbrellaIdentityDbContext"/> class.
@@ -134,7 +134,7 @@ namespace Umbrella.AspNetCore.Identity.EntityFrameworkCore
 		public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default) => ContextHelper.SaveChangesAsync(token => base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken), cancellationToken);
 
 		/// <inheritdoc />
-		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken) => ContextHelper.SaveChangesAsync(base.SaveChangesAsync, cancellationToken);
+		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => ContextHelper.SaveChangesAsync(base.SaveChangesAsync, cancellationToken);
 		#endregion
 	}
 }
