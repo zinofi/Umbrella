@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Extensions
 {
@@ -24,7 +25,7 @@ namespace Umbrella.Utilities.Extensions
             XAttribute attribute = element.Attribute(name);
 
             if (attribute == null && required)
-                throw new Exception($"The {name} attribute of a {element.Name} element could not be found.");
+				throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
             string attributeValue = attribute?.Value;
 
@@ -44,7 +45,7 @@ namespace Umbrella.Utilities.Extensions
                     }
                     catch (Exception exc)
                     {
-                        throw new Exception($"The {name} attribute of a {element.Name} element with value {attributeValue} could not be converted to type {type.FullName}.", exc);
+                        throw new UmbrellaException($"The {name} attribute of a {element.Name} element with value {attributeValue} could not be converted to type {type.FullName}.", exc);
                     }
                 }
             }
@@ -63,7 +64,7 @@ namespace Umbrella.Utilities.Extensions
             XAttribute attribute = element.Attribute(name);
 
             if (attribute == null && required)
-                throw new Exception($"The {name} attribute of a {element.Name} element could not be found.");
+                throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
             string attributeValue = attribute?.Value?.Replace(" ", "");
 

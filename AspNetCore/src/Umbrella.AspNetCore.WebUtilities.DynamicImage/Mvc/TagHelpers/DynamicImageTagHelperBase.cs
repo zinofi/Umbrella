@@ -7,6 +7,7 @@ using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
@@ -125,7 +126,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 			string? src = attrSrc?.Value?.ToString()?.Trim();
 
 			if (string.IsNullOrEmpty(src))
-				throw new Exception("src cannot be null or empty.");
+				throw new UmbrellaWebException("src cannot be null or empty.");
 
 			var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
 

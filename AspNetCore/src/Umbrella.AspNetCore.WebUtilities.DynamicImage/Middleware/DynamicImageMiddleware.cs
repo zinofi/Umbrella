@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
+using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 
@@ -172,11 +174,27 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 					return;
 				}
 			}
-			catch (Exception exc) when (_log.WriteError(exc, message: "Error in DynamicImageModule for path: " + context.Request.Path, returnValue: true))
+			catch (UmbrellaFileSystemException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
 			{
+				// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
 				cts.Cancel();
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
-				return;
+			}
+			catch (UmbrellaFileAccessDeniedException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			{
+				// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
+				cts.Cancel();
+				context.Response.SendStatusCode(HttpStatusCode.NotFound);
+			}
+			catch (DynamicImageException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			{
+				// Just return a 404 NotFound.
+				cts.Cancel();
+				context.Response.SendStatusCode(HttpStatusCode.NotFound);
+			}
+			catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			{
+				throw new UmbrellaWebException("An error has occurred whilst executing the request.", exc);
 			}
 			finally
 			{

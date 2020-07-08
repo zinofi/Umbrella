@@ -3,6 +3,7 @@ using System.Linq;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
+using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Security.Options
 {
@@ -28,7 +29,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security.Options
 			Guard.ArgumentNotNullOrEmpty(ApiPathPrefixes, nameof(ApiPathPrefixes));
 
 			if (!ApiPathPrefixes.All(x => x.StartsWith('/')))
-				throw new Exception("All paths must start with a leading forward slash, '/'.");
+				throw new UmbrellaWebException("All paths must start with a leading forward slash, '/'.");
 		}
 	}
 }

@@ -176,7 +176,7 @@ namespace Umbrella.WebUtilities.Bundling
 			}
 			catch (Exception exc)
 			{
-				throw new Exception("There has been a problem reading the Webpack Manifest JSON.", exc);
+				throw new UmbrellaWebException("There has been a problem reading the Webpack Manifest JSON.", exc);
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Expressions;
 
 namespace Umbrella.Utilities.Extensions
@@ -28,7 +29,7 @@ namespace Umbrella.Utilities.Extensions
 			};
 
 			if (memberExpression == null && throwException)
-				throw new Exception($"The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.");
+				throw new UmbrellaException($"The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.");
 
 			return memberExpression?.Member?.Name;
 		}
