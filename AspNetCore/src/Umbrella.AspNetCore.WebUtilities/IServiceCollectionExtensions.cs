@@ -23,7 +23,6 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="umbrellaClaimsUserAccessorOptionsOptionsBuilder">The optional <see cref="UmbrellaClaimsUserAccessorOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		/// <remarks>This must be called after registering the core utilities services otherwise the <see cref="UmbrellaClaimsUserAccessor{TUserId, TRole}"/> registration will be overwritten.</remarks>
 		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities(
 			this IServiceCollection services,
 			Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null,
@@ -44,7 +43,6 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="umbrellaClaimsUserAccessorOptionsOptionsBuilder">The optional <see cref="UmbrellaClaimsUserAccessorOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-		/// <remarks>This must be called after registering the core utilities services otherwise the <see cref="UmbrellaClaimsUserAccessor{TUserId, TRole}"/> registration will be overwritten.</remarks>
 		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities<TUmbrellaWebHostingEnvironment>(
 			this IServiceCollection services,
 			Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null,
@@ -59,9 +57,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ReplaceSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
 			services.AddSingleton<ApiIntegrationCookieAuthenticationEvents>();
-
-			services.ReplaceSingleton(typeof(ICurrentUserIdAccessor<>), typeof(UmbrellaClaimsUserAccessor<,>));
-			services.ReplaceSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(UmbrellaClaimsUserAccessor<,>));
 
 			services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaClaimsUserAccessorOptionsOptionsBuilder);
