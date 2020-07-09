@@ -33,6 +33,8 @@ using Umbrella.Utilities.Numerics;
 using Umbrella.Utilities.Numerics.Abstractions;
 using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.Utilities.Options.Exceptions;
+using Umbrella.Utilities.Security;
+using Umbrella.Utilities.Security.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -91,6 +93,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IUmbrellaHostingEnvironment, UmbrellaConsoleHostingEnvironment>();
 			services.AddSingleton<IObjectGraphValidator, ObjectGraphValidator>();
 			services.AddSingleton<IDataExpressionFactory, DataExpressionFactory>();
+			services.AddSingleton<IJwtUtility, JwtUtility>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
