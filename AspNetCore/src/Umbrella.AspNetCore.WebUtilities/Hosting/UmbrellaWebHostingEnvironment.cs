@@ -121,7 +121,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		}
 
 		/// <inheritdoc />
-		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
+		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "https", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 			Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));

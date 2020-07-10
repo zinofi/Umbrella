@@ -29,7 +29,7 @@ namespace Umbrella.WebUtilities.Hosting
 		/// <param name="mapFromContentRoot">if set to <c>true</c> maps the path from the content root..</param>
 		/// <param name="watchWhenAppendVersion">if set to <c>true</c> watches the path for changes.</param>
 		/// <returns></returns>
-		string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "http", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true);
+		string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "https", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true);
 
 		/// <summary>
 		/// Gets the string content of the file at the specified virtual path.
