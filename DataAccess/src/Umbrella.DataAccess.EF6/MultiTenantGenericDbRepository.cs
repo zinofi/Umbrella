@@ -191,12 +191,12 @@ namespace Umbrella.DataAccess.EF6
 		}
 
 		/// <inheritdoc />
-		protected override void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
+		protected override void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew)
 		{
 			if (entity is IAppTenantEntity<TAppTenantKey> tenantEntity && AppTenantSessionContext.IsAuthenticated)
 				tenantEntity.AppTenantId = AppTenantSessionContext.AppTenantId;
 
-			base.PreSaveWork(entity, addToContext, out isNew);
+			base.PreSaveWork(entity, addToContext, forceAdd, out isNew);
 		}
 	}
 }

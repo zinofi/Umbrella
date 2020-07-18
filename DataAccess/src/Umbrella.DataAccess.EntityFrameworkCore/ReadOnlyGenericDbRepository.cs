@@ -157,7 +157,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		protected ILookupNormalizer LookupNormalizer { get; }
 
 		/// <summary>
-		/// Gets the <see cref="IQueryable{TEntity}"/> from the database context for the current <typeparamref name="TEntity"/> type.
+		/// Gets the <see cref="IQueryable{TEntity}"/> from the database context for the current <typeparamref name="TEntity"/> type
+		/// with any query filter logic applied by the <see cref="ApplyQueryFilter(IQueryable{TEntity})"/> method which by default does
+		/// nothing unless overridden in a derived type.
 		/// </summary>
 		protected IQueryable<TEntity> Items => ApplyQueryFilter(Context.Set<TEntity>());
 

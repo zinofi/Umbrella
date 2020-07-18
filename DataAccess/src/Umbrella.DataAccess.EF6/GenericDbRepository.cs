@@ -166,7 +166,7 @@ namespace Umbrella.DataAccess.EF6
 
 		#region Save
 		/// <inheritdoc />
-		public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null)
+		public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null, bool forceAdd = false)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(entity, nameof(entity));
@@ -193,7 +193,7 @@ namespace Umbrella.DataAccess.EF6
 				}
 
 				// Common work
-				PreSaveWork(entity, addToContext, out bool isNew);
+				PreSaveWork(entity, addToContext, forceAdd, out bool isNew);
 
 				// Additional processing after changes have been reflected in the database context but not yet pushed to the database
 				await AfterContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
@@ -376,8 +376,9 @@ namespace Umbrella.DataAccess.EF6
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		/// <param name="addToContext">if set to <c>true</c>, adds the entity to the context.</param>
+		/// <param name="forceAdd">Forces the entity to be added to the context in the <see cref="EntityState.Added"/> state.</param>
 		/// <param name="isNew">if set to <c>true</c>, specifies that the entity is new.</param>
-		protected virtual void PreSaveWork(TEntity entity, bool addToContext, out bool isNew)
+		protected virtual void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew)
 		{
 			// Assume the entity is not new initially
 			isNew = false;
@@ -390,7 +391,7 @@ namespace Umbrella.DataAccess.EF6
 				concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
 
 			// Check if this entity is in the context, i.e. is it new
-			if (entity.Id.Equals(default) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)))
+			if (forceAdd || (entity.Id.Equals(default) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached))))
 			{
 				isNew = true;
 
