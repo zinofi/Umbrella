@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Umbrella.AspNetCore.WebUtilities.RazorPages
+namespace Umbrella.AspNetCore.WebUtilities.Mvc.RazorPages
 {
 	/// <summary>
 	/// Serves as the base class for all Razor Page models.
