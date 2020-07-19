@@ -16,7 +16,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DataAccess.EntityFrameworkCore.SqlServer</PackageId>
-		<Version>3.0.0-preview-0107</Version>
+		<Version>3.0.0-preview-0108</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
