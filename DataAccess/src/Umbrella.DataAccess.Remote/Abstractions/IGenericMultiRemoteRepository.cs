@@ -50,6 +50,6 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		Task<(bool success, string message, bool? exists)> ExistsByIdAsync(TIdentifier id, TRemoteSource remoteSourceType, CancellationToken cancellationToken = default);
 		
 		
-		Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default);
+		Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int? totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default);
 	}
 }

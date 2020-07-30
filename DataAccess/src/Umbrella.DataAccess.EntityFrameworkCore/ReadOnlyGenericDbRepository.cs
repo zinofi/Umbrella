@@ -268,6 +268,21 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the count of all items.", exc);
 			}
 		}
+
+		/// <inheritdoc />
+		public virtual async Task<bool> ExistsByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				return await Items.AnyAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaDataAccessException("There has been a problem determining if the item exists.", exc);
+			}
+		}
 		#endregion
 
 		#region Protected Methods

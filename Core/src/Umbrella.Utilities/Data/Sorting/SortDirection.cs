@@ -17,3 +17,5 @@
 		Descending = 1
 	}
 }
+// TODO: Remove this in favour of using the System.ComponentModel.ListSortDirection. Pointless to have duplication when the type is
+// already there.

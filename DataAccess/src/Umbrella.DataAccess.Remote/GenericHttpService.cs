@@ -19,6 +19,14 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Remote
 {
+	// TODO: Move the ValidateAsync and SanitizeAsync methods into here?
+	// Could be advantageous to double check the validation before sending to the server.
+	// Sanitization is usually needed for this to work. Although the front-end stuff should already be doing this.
+	// Unless we construct models manually that aren't bound to forms. Then this could prove useful to do. Hmmmm...
+	// Think having an additional repo layer is overkill though. Needed for the multi-stuff but not here.
+	// TODO: Remove all of the multi stuff to simplify for the time being. Can always add back if needed on a future project.
+	// Or just keep?? Not doing any harm. Nah, get rid of it for simplicity.
+
 	/// <summary>
 	/// Serves as the base class for HTTP Services.
 	/// </summary>
@@ -119,7 +127,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.InternalServerError, ServerErrorMessage, null);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
+						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, id }, returnValue: true))
@@ -187,7 +195,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.InternalServerError, ServerErrorMessage, null);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
+						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, pageNumber, pageSize, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator }, returnValue: true))
@@ -223,7 +231,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.InternalServerError, ServerErrorMessage, null);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
+						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, id }, returnValue: true))
@@ -233,7 +241,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public async Task<(HttpStatusCode statusCode, string message, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
+		public async Task<(HttpStatusCode statusCode, string message, int? totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -249,14 +257,14 @@ namespace Umbrella.DataAccess.Remote
 						int count = await response.Content.ReadFromJsonAsync<int>().ConfigureAwait(false);
 						return (HttpStatusCode.OK, null, count);
 					case HttpStatusCode.Unauthorized:
-						return (HttpStatusCode.Unauthorized, UnauthorizedErrorMessage, -1);
+						return (HttpStatusCode.Unauthorized, UnauthorizedErrorMessage, null);
 					case HttpStatusCode.Forbidden:
-						return (HttpStatusCode.Forbidden, ForbiddenErrorMessage, -1);
+						return (HttpStatusCode.Forbidden, ForbiddenErrorMessage, null);
 					case HttpStatusCode.InternalServerError:
-						return (HttpStatusCode.InternalServerError, ServerErrorMessage, -1);
+						return (HttpStatusCode.InternalServerError, ServerErrorMessage, null);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage, -1);
+						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
@@ -304,7 +312,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.BadRequest, await response.Content.ReadAsStringAsync().ConfigureAwait(false), null);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
+						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { item.Id, url, isNew }, returnValue: true))
@@ -313,12 +321,39 @@ namespace Umbrella.DataAccess.Remote
 			}
 		}
 
+		// TODO: Maybe don't go with this approach for errors and use the problem details response instead?
+		// We can assume therefore that this result model will only ever be returned for a 200 or a 201. Yes???
+		public class GenericHttpServiceResultModel<TItem, TResultType>
+		{
+			public string Message { get; set; }
+			public TResultType ResultType { get; set; } // Could be useful with this though.
+			// Have a result type for Succeeded, Failed, ConcurrencyFailure.
+			// Have a new SubResultType that we can optionally use to provide additional information instead of just using
+			// HttpStatus codes. We then don't have to return the status codes to method callers.
+			// Couldn't hurt to have the code though surely??
+			public string ConcurrencyStamp { get; set; } // Deffo need this. As we have the object references when saving, we can update this value.
+			// Will require an IConcurrencyStamp interface though.
+			// IEntity as well here?? Might as well as it means we can do stuff with the Id.
+			// I suppose it's not really a risk saving the same model shape we get back to the server. And if we need other shapes, we can
+			// jump in and customize stuff where needed. Hmmmm...
+			// Need to think about the contract between client and server using status codes. Need to get it spot on
+			// otherwise we'll have problems.
+			// Could then make a base controller - call it ServiceController or something like that. That way
+			// we can minimize the code we write.
+			// We can have virtual methods to allow for customization and also use the Auth Handlers to plugin to stuff.
+			// And then do other stuff in the generic repos?
+		}
+
+		// TODO: Need a wrapper like the above so we can easily see the result type. Have a default result type which does nothing where we don't need it.
+		// The Find methods should be fine as they are.
+
+		// TODO: Maybe remove the SaveAll and DeleteAll methods initially.
 		/// <inheritdoc />
 		public virtual async Task<(HttpStatusCode statusCode, string message, IReadOnlyCollection<TItem> results)> SaveAllAsync(IEnumerable<TItem> items, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(items, nameof(items));
-
+			
 			try
 			{
 				string url = ApiUrl;
@@ -330,6 +365,7 @@ namespace Umbrella.DataAccess.Remote
 
 				switch (response.StatusCode)
 				{
+					// TODO: Sort this.
 					case HttpStatusCode.OK when atLeastOneNewItem:
 					case HttpStatusCode.Created when atLeastOneNewItem:
 						List<TItem> results = null;
@@ -361,7 +397,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.BadRequest, await response.Content.ReadAsStringAsync().ConfigureAwait(false), null);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage, null);
+						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, items = items.Where(x => x != null).Select(x => x.Id) }, returnValue: true))
@@ -399,7 +435,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.InternalServerError, ServerErrorMessage);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage);
+						return (response.StatusCode, UnknownErrorMessage);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, id }, returnValue: true))
@@ -436,7 +472,7 @@ namespace Umbrella.DataAccess.Remote
 						return (HttpStatusCode.InternalServerError, ServerErrorMessage);
 					default:
 						LogUnknownError(url, response.ReasonPhrase);
-						return (HttpStatusCode.BadRequest, UnknownErrorMessage);
+						return (response.StatusCode, UnknownErrorMessage);
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl }, returnValue: true))
@@ -510,7 +546,7 @@ namespace Umbrella.DataAccess.Remote
 		protected virtual Task AfterItemDeletedAsync(TIdentifier id, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-
+			
 			return Task.CompletedTask;
 		}
 

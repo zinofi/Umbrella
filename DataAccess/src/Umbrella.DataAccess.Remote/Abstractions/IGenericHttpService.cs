@@ -81,6 +81,6 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A tuple containing the HTTP status code, any message and the total count of all items.</returns>
-		Task<(HttpStatusCode statusCode, string message, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default);
+		Task<(HttpStatusCode statusCode, string message, int? totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default);
 	}
 }

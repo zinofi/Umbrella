@@ -180,7 +180,7 @@ namespace Umbrella.DataAccess.Remote
 
 				foreach (var item in dicTask)
 				{
-					var (statusCode, message, results) = item.Value.Result;
+					var (statusCode, message, results) = await item.Value.ConfigureAwait(false);
 
 					if (IsSuccessStatusCode(statusCode))
 					{
@@ -229,14 +229,14 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
+		public virtual async Task<(bool success, IReadOnlyCollection<RemoteSourceFailure<TRemoteSource>> sourceFailures, int? totalCount)> FindTotalCountAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			try
 			{
 				var lstTask = new Task[ServiceList.Count];
-				var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode status, string message, int totalCount)>>(ServiceList.Count);
+				var dicTask = new Dictionary<TRemoteSource, Task<(HttpStatusCode status, string message, int? totalCount)>>(ServiceList.Count);
 
 				for (int i = 0; i < ServiceList.Count; i++)
 				{
@@ -254,12 +254,12 @@ namespace Umbrella.DataAccess.Remote
 
 				foreach (var item in dicTask)
 				{
-					var (status, message, totalCount) = item.Value.Result;
+					var (status, message, totalCount) = await item.Value.ConfigureAwait(false);
 
 					switch (status)
 					{
 						case HttpStatusCode.OK:
-							count += totalCount;
+							count += totalCount ?? 0;
 							break;
 						default:
 							success = false;
@@ -418,7 +418,7 @@ namespace Umbrella.DataAccess.Remote
 				{
 					List<ValidationResult> lstValidationResult = null;
 
-					var (statusCode, message, results) = item.Value.Result;
+					var (statusCode, message, results) = await item.Value.ConfigureAwait(false);
 
 					// TODO: Could probably handle 409 more explicitly. Would also be good to get the remote services to return more specifics about why any particular item failed.
 					// Too many breaking changes to consider at this stage though.
@@ -513,7 +513,7 @@ namespace Umbrella.DataAccess.Remote
 
 				foreach (var item in dicTask)
 				{
-					var (statusCode, message) = item.Value.Result;
+					var (statusCode, message) = await item.Value.ConfigureAwait(false);
 
 					if (!IsSuccessStatusCode(statusCode))
 					{

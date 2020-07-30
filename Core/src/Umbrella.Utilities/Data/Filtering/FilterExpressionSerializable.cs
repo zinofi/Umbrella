@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Umbrella.Utilities.Data.Filtering
 {
+	// TOOD: Scrap these in favour of just having the descriptor and mark as [Serializable]??
+
 	/// <summary>
 	/// A serializable version of the <see cref="FilterExpression{TItem}"/> type.
 	/// </summary>

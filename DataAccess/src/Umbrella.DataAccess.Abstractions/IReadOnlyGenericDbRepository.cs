@@ -67,7 +67,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="map">The include map to specify related entities to load at the same time</param>
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child repo options.</param>
-		/// <returns></returns>
+		/// <returns>The entity.</returns>
 		Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null);
 
 		/// <summary>
@@ -76,5 +76,13 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The total count.</returns>
 		Task<int> FindTotalCountAsync(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// Determines if an entity exists in the database using its id.
+		/// </summary>
+		/// <param name="id">The identifier.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns><see langword="true"/> if it exists; otherwise <see langword="false"/>.</returns>
+		Task<bool> ExistsByIdAsync(TEntityKey id, CancellationToken cancellationToken = default);
 	}
 }
