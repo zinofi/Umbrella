@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Umbrella.Utilities.Http.Constants;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
@@ -106,6 +107,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 409.</returns>
 		protected virtual ObjectResult Conflict(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 409, title: "Conflict", code: code);
+
+		/// <summary>
+		/// Creates a 409 Conflict <see cref="ObjectResult"/> with the specified reason with the code set to <see cref="HttpProblemCodes.ConcurrencyStampMismatch"/>.
+		/// </summary>
+		/// <param name="reason">The reason.</param>
+		/// <returns>A <see cref="ObjectResult"/> of 409.</returns>
+		protected virtual ObjectResult ConcurrencyConflict(string reason) => UmbrellaProblem(reason, statusCode: 409, title: "Concurrency Conflict", code: HttpProblemCodes.ConcurrencyStampMismatch);
 
 		/// <summary>
 		/// Creates a 429 TooManyRequests <see cref="ObjectResult"/> with the specified reason.

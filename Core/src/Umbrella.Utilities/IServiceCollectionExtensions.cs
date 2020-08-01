@@ -94,6 +94,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IObjectGraphValidator, ObjectGraphValidator>();
 			services.AddSingleton<IDataExpressionFactory, DataExpressionFactory>();
 			services.AddSingleton<IJwtUtility, JwtUtility>();
+			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
+			services.AddScoped<IGenericHttpService, GenericHttpService>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
