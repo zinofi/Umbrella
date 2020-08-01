@@ -157,7 +157,7 @@ namespace Umbrella.DataAccess.Remote
 					{
 						string delimiter = urlBuilder.Contains("?") ? "&" : "?";
 
-						string sortExpressionsJson = JsonSerializer.Serialize(sortExpressions.ToSortExpressionSerializables());
+						string sortExpressionsJson = JsonSerializer.Serialize(sortExpressions.ToSortExpressionDescriptors());
 						string sortExpressionsJsonEncoded = UrlEncoder.Default.Encode(sortExpressionsJson);
 						urlBuilder.Append($"{delimiter}sorters={sortExpressionsJsonEncoded}");
 					}
@@ -166,7 +166,7 @@ namespace Umbrella.DataAccess.Remote
 					{
 						string delimiter = urlBuilder.Contains("?") ? "&" : "?";
 
-						string filterExpressionsJson = JsonSerializer.Serialize(filterExpressions.ToFilterExpressionSerializables());
+						string filterExpressionsJson = JsonSerializer.Serialize(filterExpressions.ToFilterExpressionDescriptors());
 						string filterExpressionsJsonEncoded = UrlEncoder.Default.Encode(filterExpressionsJson);
 						urlBuilder.Append($"{delimiter}filters={filterExpressionsJsonEncoded}");
 						urlBuilder.Append($"{delimiter}filterCombinator={filterExpressionCombinator}");
@@ -196,7 +196,7 @@ namespace Umbrella.DataAccess.Remote
 						return (response.StatusCode, UnknownErrorMessage, null);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, pageNumber, pageSize, sortExpressions = sortExpressions.ToSortExpressionSerializables(), filterExpressions = filterExpressions.ToFilterExpressionSerializables(), filterExpressionCombinator }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, pageNumber, pageSize, sortExpressions = sortExpressions.ToSortExpressionDescriptors(), filterExpressions = filterExpressions.ToFilterExpressionDescriptors(), filterExpressionCombinator }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}

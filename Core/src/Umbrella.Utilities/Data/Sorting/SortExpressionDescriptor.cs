@@ -1,4 +1,5 @@
-﻿using System.Data.SqlTypes;
+﻿using System;
+using System.Data.SqlTypes;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Sorting
@@ -9,6 +10,7 @@ namespace Umbrella.Utilities.Data.Sorting
 	/// deserialized to an instance of this type. The web projects contain model binders for performing custom
 	/// JSON deserialization to this type.
 	/// </summary>
+	[Serializable]
 	public class SortExpressionDescriptor : IDataExpressionDescriptor
 	{
 		private string _memberName;

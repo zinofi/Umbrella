@@ -77,11 +77,11 @@ namespace Umbrella.Utilities.Data.Filtering
 		public override string ToString() => $"{MemberPath} - {Value} - {Type}";
 
 		/// <summary>
-		/// Converts to this instance to a <see cref="FilterExpressionSerializable"/>. This is primarily for logging purposes.
+		/// Converts to this instance to a <see cref="FilterExpressionDescriptor"/>.
 		/// </summary>
-		/// <returns>The <see cref="FilterExpressionSerializable"/> instance.</returns>
-		public FilterExpressionSerializable ToFilterExpressionSerializable()
-			=> (FilterExpressionSerializable)this;
+		/// <returns>The <see cref="FilterExpressionDescriptor"/> instance.</returns>
+		public FilterExpressionDescriptor ToFilterExpressionDescriptor()
+			=> (FilterExpressionDescriptor)this;
 
 		/// <inheritdoc />
 		public override bool Equals(object obj) => obj is FilterExpression<TItem> expression && Equals(expression);
@@ -106,14 +106,14 @@ namespace Umbrella.Utilities.Data.Filtering
 		}
 
 		/// <summary>
-		/// Performs an explicit conversion from <see cref="FilterExpression{TItem}"/> to <see cref="FilterExpressionSerializable"/>.
+		/// Performs an explicit conversion from <see cref="FilterExpression{TItem}"/> to <see cref="FilterExpressionDescriptor"/>.
 		/// </summary>
 		/// <param name="filterExpression">The filter expression.</param>
 		/// <returns>
 		/// The result of the conversion.
 		/// </returns>
-		public static explicit operator FilterExpressionSerializable(FilterExpression<TItem> filterExpression)
-			=> new FilterExpressionSerializable(filterExpression.MemberPath, filterExpression.Value.ToString(), filterExpression.Type.ToString());
+		public static explicit operator FilterExpressionDescriptor(FilterExpression<TItem> filterExpression)
+			=> new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value.ToString(), filterExpression.Type);
 
 		/// <summary>
 		/// Implements the operator ==.

@@ -1,4 +1,5 @@
-﻿using Umbrella.Utilities.Data.Abstractions;
+﻿using System;
+using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Filtering
 {
@@ -8,6 +9,7 @@ namespace Umbrella.Utilities.Data.Filtering
 	/// deserialized to an instance of this type. The web projects contain model binders for performing custom
 	/// JSON deserialization to this type.
 	/// </summary>
+	[Serializable]
 	public class FilterExpressionDescriptor : IDataExpressionDescriptor
 	{
 		private string _memberPath;

@@ -68,11 +68,11 @@ namespace Umbrella.Utilities.Data.Sorting
 		public override string ToString() => $"{MemberPath} - {Direction}";
 
 		/// <summary>
-		/// Converts to this instance to a <see cref="SortExpressionSerializable"/> instance. This is primarily for logging purposes.
+		/// Converts to this instance to a <see cref="SortExpressionDescriptor"/> instance.
 		/// </summary>
-		/// <returns>The <see cref="SortExpressionSerializable"/> instance.</returns>
-		public SortExpressionSerializable ToSortExpressionSerializable()
-			=> (SortExpressionSerializable)this;
+		/// <returns>The <see cref="SortExpressionDescriptor"/> instance.</returns>
+		public SortExpressionDescriptor ToSortExpressionDescriptor()
+			=> (SortExpressionDescriptor)this;
 
 		/// <inheritdoc />
 		public override bool Equals(object obj) => obj is SortExpression<TItem> expression && Equals(expression);
@@ -93,14 +93,14 @@ namespace Umbrella.Utilities.Data.Sorting
 		}
 
 		/// <summary>
-		/// Performs an explicit conversion from <see cref="SortExpression{TItem}"/> to <see cref="SortExpressionSerializable"/>.
+		/// Performs an explicit conversion from <see cref="SortExpression{TItem}"/> to <see cref="SortExpressionDescriptor"/>.
 		/// </summary>
 		/// <param name="sortExpression">The sort expression.</param>
 		/// <returns>
 		/// The result of the conversion.
 		/// </returns>
-		public static explicit operator SortExpressionSerializable(SortExpression<TItem> sortExpression)
-			=> new SortExpressionSerializable(sortExpression.MemberPath, sortExpression.Direction.ToString());
+		public static explicit operator SortExpressionDescriptor(SortExpression<TItem> sortExpression)
+			=> new SortExpressionDescriptor(sortExpression.MemberPath, sortExpression.Direction);
 
 		/// <summary>
 		/// Implements the operator ==.

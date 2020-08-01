@@ -66,23 +66,20 @@ namespace Umbrella.Utilities.Data.Sorting
 			Guard.ArgumentNotNull(source, nameof(source));
 			Guard.ArgumentNotNull(keySelector, nameof(keySelector));
 
-			switch (direction)
+			return direction switch
 			{
-				default:
-				case SortDirection.Ascending:
-					return comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer);
-				case SortDirection.Descending:
-					return comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer);
-			}
+				SortDirection.Descending => comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer),
+				_ => comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer),
+			};
 		}
 
 		/// <summary>
-		/// Converts a collection of <see cref="SortExpression{TItem}"/> to a collection of <see cref="SortExpressionSerializable"/>.
+		/// Converts a collection of <see cref="SortExpression{TItem}"/> to a collection of <see cref="SortExpressionDescriptor"/>.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
 		/// <param name="sortExpressions">The sort expressions.</param>
-		/// <returns>A <see cref="IEnumerable{SortExpressionSerializable}"/> collection.</returns>
-		public static IEnumerable<SortExpressionSerializable> ToSortExpressionSerializables<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
-			=> sortExpressions.Select(x => (SortExpressionSerializable)x);
+		/// <returns>A <see cref="IEnumerable{SortExpressionDescriptor}"/> collection.</returns>
+		public static IEnumerable<SortExpressionDescriptor> ToSortExpressionDescriptors<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
+			=> sortExpressions.Select(x => (SortExpressionDescriptor)x);
 	}
 }

@@ -72,12 +72,12 @@ namespace Umbrella.Utilities.Data.Filtering
 		}
 
 		/// <summary>
-		/// Converts a collection of <see cref="FilterExpression{TItem}"/> to a collection of <see cref="FilterExpressionSerializable"/>.
+		/// Converts a collection of <see cref="FilterExpression{TItem}"/> to a collection of <see cref="FilterExpressionDescriptor"/>.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
 		/// <param name="filterExpressions">The filter expressions.</param>
-		/// <returns>A <see cref="IEnumerable{FilterExpressionSerializable}"/> collection.</returns>
-		public static IEnumerable<FilterExpressionSerializable> ToFilterExpressionSerializables<TItem>(this IEnumerable<FilterExpression<TItem>> filterExpressions)
-			=> filterExpressions.Select(x => (FilterExpressionSerializable)x);
+		/// <returns>A <see cref="IEnumerable{FilterExpressionDescriptor}"/> collection.</returns>
+		public static IEnumerable<FilterExpressionDescriptor> ToFilterExpressionDescriptors<TItem>(this IEnumerable<FilterExpression<TItem>> filterExpressions)
+			=> filterExpressions.Select(x => (FilterExpressionDescriptor)x);
 	}
 }
