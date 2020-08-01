@@ -56,8 +56,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// Creates a 201 Created <see cref="CreatedResult"/> with the specified content.
 		/// </summary>
 		/// <param name="content">The content.</param>
-		/// <returns>A <see cref="IActionResult"/> of 201.</returns>
-		protected virtual IActionResult Created(object content) => Created("", content);
+		/// <returns>A <see cref="CreatedResult"/> of 201.</returns>
+		protected virtual CreatedResult Created(object content) => Created("", content);
 
 		/// <summary>
 		/// Creates a 400 BadRequest <see cref="ObjectResult"/> with the specified reason.
@@ -65,7 +65,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="reason">The reason.</param>
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 400.</returns>
-		protected virtual IActionResult BadRequest(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 400, title: "BadRequest", code: code);
+		protected virtual ObjectResult BadRequest(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 400, title: "BadRequest", code: code);
 
 		/// <summary>
 		/// Creates a 401 Unauthorized <see cref="ObjectResult"/> with the specified reason.
@@ -73,7 +73,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="reason">The reason.</param>
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 401.</returns>
-		protected virtual IActionResult Unauthorized(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 401, title: "Unauthorized", code: code);
+		protected virtual ObjectResult Unauthorized(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 401, title: "Unauthorized", code: code);
 
 		/// <summary>
 		/// Creates a 403 Forbidden <see cref="ObjectResult"/> with the specified reason.
@@ -81,7 +81,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="reason">The reason.</param>
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 403.</returns>
-		protected virtual IActionResult Forbidden(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 403, title: "Forbidden", code: code);
+		protected virtual ObjectResult Forbidden(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 403, title: "Forbidden", code: code);
 
 		/// <summary>
 		/// Creates a 404 NotFound <see cref="ObjectResult"/> with the specified reason.
@@ -89,7 +89,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="reason">The reason.</param>
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 404.</returns>
-		protected virtual IActionResult NotFound(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 404, title: "Not Found", code: code);
+		protected virtual ObjectResult NotFound(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 404, title: "Not Found", code: code);
 
 		/// <summary>
 		/// Creates a 405 MethodNotAllowed <see cref="ObjectResult"/> with the specified reason.
@@ -105,7 +105,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="reason">The reason.</param>
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 409.</returns>
-		protected virtual IActionResult Conflict(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 409, title: "Conflict", code: code);
+		protected virtual ObjectResult Conflict(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 409, title: "Conflict", code: code);
 
 		/// <summary>
 		/// Creates a 429 TooManyRequests <see cref="ObjectResult"/> with the specified reason.
@@ -121,7 +121,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="reason">The reason.</param>
 		/// <param name="code">The error code.</param>
 		/// <returns>A <see cref="ObjectResult"/> of 500.</returns>
-		protected virtual IActionResult InternalServerError(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 500, title: "Error", code: code);
+		protected virtual ObjectResult InternalServerError(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 500, title: "Error", code: code);
 
 		/// <summary>
 		/// Creates an <see cref="ObjectResult"/> containing an <see cref="UmbrellaProblemDetails"/> instance.
