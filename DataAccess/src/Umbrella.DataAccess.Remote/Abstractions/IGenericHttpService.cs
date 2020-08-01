@@ -18,13 +18,6 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		where TIdentifier : IEquatable<TIdentifier>
 	{
 		/// <summary>
-		/// Deletes all items from the service.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>A tuple containing the HTTP status code and any message.</returns>
-		Task<(HttpStatusCode statusCode, string message)> DeleteAllAsync(CancellationToken cancellationToken = default);
-
-		/// <summary>
 		/// Deletes the item with the specified <paramref name="id"/> from the service.
 		/// </summary>
 		/// <param name="id">The identifier of the item to delete.</param>
@@ -59,14 +52,6 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A tuple containing the HTTP status code, any message and the saved item.</returns>
 		Task<(HttpStatusCode statusCode, string message, TItem result)> SaveAsync(TItem item, CancellationToken cancellationToken = default);
-
-		/// <summary>
-		/// Saves all <paramref name="items"/> to the service.
-		/// </summary>
-		/// <param name="items">The items.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>A tuple containing the HTTP status code, any message and the saved items.</returns>
-		Task<(HttpStatusCode statusCode, string message, IReadOnlyCollection<TItem> results)> SaveAllAsync(IEnumerable<TItem> items, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Determines if the item with the specified <paramref name="id"/> exists on the service.

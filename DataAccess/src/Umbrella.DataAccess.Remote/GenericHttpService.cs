@@ -24,8 +24,6 @@ namespace Umbrella.DataAccess.Remote
 	// Sanitization is usually needed for this to work. Although the front-end stuff should already be doing this.
 	// Unless we construct models manually that aren't bound to forms. Then this could prove useful to do. Hmmmm...
 	// Think having an additional repo layer is overkill though. Needed for the multi-stuff but not here.
-	// TODO: Remove all of the multi stuff to simplify for the time being. Can always add back if needed on a future project.
-	// Or just keep?? Not doing any harm. Nah, get rid of it for simplicity.
 
 	/// <summary>
 	/// Serves as the base class for HTTP Services.
@@ -347,65 +345,6 @@ namespace Umbrella.DataAccess.Remote
 		// TODO: Need a wrapper like the above so we can easily see the result type. Have a default result type which does nothing where we don't need it.
 		// The Find methods should be fine as they are.
 
-		// TODO: Maybe remove the SaveAll and DeleteAll methods initially.
-		/// <inheritdoc />
-		public virtual async Task<(HttpStatusCode statusCode, string message, IReadOnlyCollection<TItem> results)> SaveAllAsync(IEnumerable<TItem> items, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(items, nameof(items));
-			
-			try
-			{
-				string url = ApiUrl;
-
-				int itemsCount = items.Count();
-				bool atLeastOneNewItem = items.Any(x => x.Id.Equals(default));
-
-				HttpResponseMessage response = await Client.PostAsJsonAsync(url, items, cancellationToken).ConfigureAwait(false);
-
-				switch (response.StatusCode)
-				{
-					// TODO: Sort this.
-					case HttpStatusCode.OK when atLeastOneNewItem:
-					case HttpStatusCode.Created when atLeastOneNewItem:
-						List<TItem> results = null;
-						if (itemsCount == 1)
-						{
-							TItem result = await response.Content.ReadFromJsonAsync<TItem>().ConfigureAwait(false);
-							results = new List<TItem> { result };
-						}
-						else
-						{
-							results = await response.Content.ReadFromJsonAsync<List<TItem>>().ConfigureAwait(false);
-						}
-						await AfterAllItemsSavedAsync(items, cancellationToken).ConfigureAwait(false);
-						return (HttpStatusCode.Created, null, results);
-					case HttpStatusCode.OK when !atLeastOneNewItem:
-					case HttpStatusCode.NoContent when !atLeastOneNewItem:
-						return (HttpStatusCode.NoContent, null, null);
-					case HttpStatusCode.Unauthorized:
-						return (HttpStatusCode.Unauthorized, UnauthorizedErrorMessage, null);
-					case HttpStatusCode.Forbidden:
-						return (HttpStatusCode.Forbidden, ForbiddenErrorMessage, null);
-					case HttpStatusCode.NotFound:
-						return (HttpStatusCode.NotFound, null, null);
-					case HttpStatusCode.Conflict:
-						return (HttpStatusCode.Conflict, null, null);
-					case HttpStatusCode.InternalServerError:
-						return (HttpStatusCode.InternalServerError, ServerErrorMessage, null);
-					case HttpStatusCode.BadRequest:
-						return (HttpStatusCode.BadRequest, await response.Content.ReadAsStringAsync().ConfigureAwait(false), null);
-					default:
-						LogUnknownError(url, response.ReasonPhrase);
-						return (response.StatusCode, UnknownErrorMessage, null);
-				}
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, items = items.Where(x => x != null).Select(x => x.Id) }, returnValue: true))
-			{
-				throw CreateServiceAccessException(exc);
-			}
-		}
-
 		/// <inheritdoc />
 		public virtual async Task<(HttpStatusCode statusCode, string message)> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
 		{
@@ -439,43 +378,6 @@ namespace Umbrella.DataAccess.Remote
 				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl, id }, returnValue: true))
-			{
-				throw CreateServiceAccessException(exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public virtual async Task<(HttpStatusCode statusCode, string message)> DeleteAllAsync(CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			string url = ApiUrl;
-
-			try
-			{
-				HttpResponseMessage response = await Client.DeleteAsync(url, cancellationToken).ConfigureAwait(false);
-
-				switch (response.StatusCode)
-				{
-					// Ideally we prefer a 204 from the server to indicate success but 200 will suffice.
-					case HttpStatusCode.OK:
-					case HttpStatusCode.NoContent:
-						await AfterAllItemsDeletedAsync(cancellationToken).ConfigureAwait(false);
-						return (HttpStatusCode.NoContent, null);
-					case HttpStatusCode.Unauthorized:
-						return (HttpStatusCode.Unauthorized, UnauthorizedErrorMessage);
-					case HttpStatusCode.Forbidden:
-						return (HttpStatusCode.Forbidden, ForbiddenErrorMessage);
-					case HttpStatusCode.NotFound:
-						return (HttpStatusCode.NotFound, null);
-					case HttpStatusCode.InternalServerError:
-						return (HttpStatusCode.InternalServerError, ServerErrorMessage);
-					default:
-						LogUnknownError(url, response.ReasonPhrase);
-						return (response.StatusCode, UnknownErrorMessage);
-				}
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ApiUrl }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
