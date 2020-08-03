@@ -19,7 +19,7 @@
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript.Tools</PackageId>
 		<PackAsTool>true</PackAsTool>
-		<Version>3.0.0-preview-0112</Version>
+		<Version>3.0.0-preview-0113</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
