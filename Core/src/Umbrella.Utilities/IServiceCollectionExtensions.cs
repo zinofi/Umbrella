@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using Polly;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
@@ -26,6 +28,7 @@ using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Http.Extensions;
 using Umbrella.Utilities.Http.Options;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
@@ -83,7 +86,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IEmailSender, EmailSender>();
 			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
-			services.AddSingleton<IHttpResourceInfoUtility, HttpResourceInfoUtility>();
 			services.AddSingleton<IHybridCache, HybridCache>();
 			services.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
 			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
@@ -95,7 +97,10 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IDataExpressionFactory, DataExpressionFactory>();
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
-			services.AddScoped<IGenericHttpService, GenericHttpService>();
+
+			// Http Services
+			services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers();
+			services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers();
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
