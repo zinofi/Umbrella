@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -63,6 +64,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="secureRandomStringGeneratorOptionsBuilder">The optional <see cref="SecureRandomStringGeneratorOptions"/> builder.</param>
 		/// <param name="umbrellaConsoleHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaHostingEnvironmentOptions"/> builder.</param>
 		/// <param name="objectGraphValidatorOptionsBuilder">The optional <see cref="ObjectGraphValidatorOptions"/> builder.</param>
+		/// <param name="httpServicesBuilder">The optional builder for all Http Services.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
@@ -73,7 +75,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
 			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
 			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions> umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
-			Action<IServiceProvider, ObjectGraphValidatorOptions> objectGraphValidatorOptionsBuilder = null)
+			Action<IServiceProvider, ObjectGraphValidatorOptions> objectGraphValidatorOptionsBuilder = null,
+			Action<Dictionary<Type, IHttpClientBuilder>> httpServicesBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -98,9 +101,21 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
 
-			// Http Services
-			services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers();
-			services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers();
+			if (httpServicesBuilder != null)
+			{
+				var dict = new Dictionary<Type, IHttpClientBuilder>
+				{
+					[typeof(IGenericHttpService)] = services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers(),
+					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers()
+				};
+
+				httpServicesBuilder(dict);
+			}
+			else
+			{
+				services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers();
+				services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers();
+			}
 
 			// Options
 			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
