@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -195,7 +197,9 @@ namespace Umbrella.Utilities.Http
 				_ => DefaultUnknownErrorMessage
 			};
 
-			if (!response.Content.Headers.ContentType.MediaType.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase))
+			HttpContentHeaders headers = response.Content.Headers;
+
+			if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 
 			return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken);

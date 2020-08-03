@@ -36,26 +36,26 @@ namespace Umbrella.Utilities.Data.Pagination
 		/// <summary>
 		/// Gets the items.
 		/// </summary>
-		public IReadOnlyCollection<TItem> Items { get; }
+		public IReadOnlyCollection<TItem> Items { get; set; }
 
 		/// <summary>
 		/// Gets the page number.
 		/// </summary>
-		public int PageNumber { get; }
+		public int PageNumber { get; set; }
 
 		/// <summary>
 		/// Gets the size of the page.
 		/// </summary>
-		public int PageSize { get; }
+		public int PageSize { get; set; }
 
 		/// <summary>
 		/// Gets the total count.
 		/// </summary>
-		public int TotalCount { get; }
+		public int TotalCount { get; set; }
 
 		/// <summary>
 		/// Gets a value indicating whether there are more items that can be retrieved on subsequent pages.
 		/// </summary>
-		public bool MoreItems { get; }
+		public bool MoreItems { get; set; }
 	}
 }
