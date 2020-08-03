@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -85,6 +86,8 @@ namespace Umbrella.DataAccess.Remote
 					["id"] = id.ToString()
 				};
 
+				await AfterParametersCreatedAsync(parameters, cancellationToken).ConfigureAwait(false);
+
 				HttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success)
@@ -106,6 +109,7 @@ namespace Umbrella.DataAccess.Remote
 			try
 			{
 				var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
+				await AfterParametersCreatedAsync(parameters, cancellationToken).ConfigureAwait(false);
 
 				HttpCallResult<PaginatedResultModel<TSlimItem>> result = await RemoteService.GetAsync<PaginatedResultModel<TSlimItem>>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
 
@@ -148,6 +152,8 @@ namespace Umbrella.DataAccess.Remote
 					["id"] = id.ToString()
 				};
 
+				await AfterParametersCreatedAsync(parameters, cancellationToken).ConfigureAwait(false);
+
 				return await RemoteService.GetAsync<bool>(ApiUrl + "/Exists", parameters, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: true))
@@ -164,7 +170,10 @@ namespace Umbrella.DataAccess.Remote
 
 			try
 			{
-				return await SaveCoreAsync<TCreateItem, TCreateResult>(HttpMethod.Post, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
+				var parameters = new Dictionary<string, string>();
+				await AfterParametersCreatedAsync(parameters, cancellationToken).ConfigureAwait(false);
+
+				return await SaveCoreAsync<TCreateItem, TCreateResult>(HttpMethod.Post, item, parameters, cancellationToken, sanitize, validate).ConfigureAwait(false);
 			}
 			catch (UmbrellaDataAccessConcurrencyException)
 			{
@@ -188,7 +197,10 @@ namespace Umbrella.DataAccess.Remote
 				if (item.Id.Equals(default))
 					throw new Exception("The item being updated must have an Id");
 
-				return await SaveCoreAsync<TUpdateItem, TUpdateResult>(HttpMethod.Put, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
+				var parameters = new Dictionary<string, string>();
+				await AfterParametersCreatedAsync(parameters, cancellationToken).ConfigureAwait(false);
+
+				return await SaveCoreAsync<TUpdateItem, TUpdateResult>(HttpMethod.Put, item, parameters, cancellationToken, sanitize, validate).ConfigureAwait(false);
 			}
 			catch (UmbrellaDataAccessConcurrencyException)
 			{
@@ -235,11 +247,12 @@ namespace Umbrella.DataAccess.Remote
 		/// <typeparam name="TResult">The type of the result.</typeparam>
 		/// <param name="method">The method.</param>
 		/// <param name="item">The item.</param>
+		/// <param name="parameters">The parameters.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the save operation.</returns>
-		protected virtual async Task<(HttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, CancellationToken cancellationToken, bool sanitize, bool validate)
+		protected virtual async Task<(HttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, Dictionary<string, string> parameters, CancellationToken cancellationToken, bool sanitize, bool validate)
 		{
 			if (sanitize)
 				await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
@@ -298,6 +311,20 @@ namespace Umbrella.DataAccess.Remote
 			bool isValid = Validator.TryValidateObject(item, ctx, lstResult, true);
 
 			return Task.FromResult((isValid, lstResult));
+		}
+
+		/// <summary>
+		/// Override this in a derived type to amend the parameters before they are appended to the URL as querystring parameters.
+		/// </summary>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="methodName">Name of the method from which this method was called.</param>
+		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
+		protected virtual Task AfterParametersCreatedAsync(IDictionary<string, string> parameters, CancellationToken cancellationToken, [CallerMemberName]string methodName = "")
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
