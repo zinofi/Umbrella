@@ -105,8 +105,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			{
 				var dict = new Dictionary<Type, IHttpClientBuilder>
 				{
-					[typeof(IGenericHttpService)] = services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers(),
-					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers()
+					[typeof(IGenericHttpService)] = services.AddHttpClient<IGenericHttpService, GenericHttpService>(),
+					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>()
 				};
 
 				httpServicesBuilder(dict);

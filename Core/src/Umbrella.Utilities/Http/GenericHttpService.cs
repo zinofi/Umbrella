@@ -132,7 +132,7 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = GetUrlWithParmeters(url, parameters);
 
-				HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
+				HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
 				if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
 				{
