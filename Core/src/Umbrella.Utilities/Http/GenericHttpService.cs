@@ -85,7 +85,7 @@ namespace Umbrella.Utilities.Http
 					return new HttpCallResult<TResult>(true, result: result);
 				}
 
-				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken));
+				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
@@ -106,14 +106,20 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
-				if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
+				if (response.IsSuccessStatusCode)
 				{
-					TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+					if (response.StatusCode == HttpStatusCode.NoContent)
+						return new HttpCallResult<TResult>(true, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 
-					return new HttpCallResult<TResult>(true, result: result);
+					if (response.Content.Headers.ContentLength > 0)
+					{
+						TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+						return new HttpCallResult<TResult>(true, result: result);
+					}
 				}
 
-				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken));
+				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
@@ -134,14 +140,20 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
-				if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
+				if (response.IsSuccessStatusCode)
 				{
-					TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+					if (response.StatusCode == HttpStatusCode.NoContent)
+						return new HttpCallResult<TResult>(true, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 
-					return new HttpCallResult<TResult>(true, result: result);
+					if (response.Content.Headers.ContentLength > 0)
+					{
+						TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+						return new HttpCallResult<TResult>(true, result: result);
+					}
 				}
 
-				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken));
+				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
@@ -167,14 +179,20 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-				if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
+				if (response.IsSuccessStatusCode)
 				{
-					TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+					if (response.StatusCode == HttpStatusCode.NoContent)
+						return new HttpCallResult<TResult>(true, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 
-					return new HttpCallResult<TResult>(true, result: result);
+					if (response.Content.Headers.ContentLength > 0)
+					{
+						TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+						return new HttpCallResult<TResult>(true, result: result);
+					}
 				}
 
-				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken));
+				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
@@ -197,7 +215,7 @@ namespace Umbrella.Utilities.Http
 				if (response.IsSuccessStatusCode)
 					return new HttpCallResult(true);
 
-				return new HttpCallResult(false, await GetProblemDetails(response, cancellationToken));
+				return new HttpCallResult(false, await GetProblemDetails(response, cancellationToken).ConfigureAwait(false));
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
@@ -235,7 +253,7 @@ namespace Umbrella.Utilities.Http
 			if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 
-			return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken);
+			return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
