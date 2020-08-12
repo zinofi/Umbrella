@@ -265,7 +265,7 @@ namespace Umbrella.DataAccess.Remote
 			else if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
 				throw new UmbrellaDataAccessConcurrencyException("The server has reported a concurrency stamp mismatch.");
 
-			return (result, ConvertProblemDetailErrors(result.ProblemDetails));
+			return (result, result.ProblemDetails?.ToValidationResults() ?? Array.Empty<ValidationResult>());
 		}
 
 		/// <summary>
@@ -352,9 +352,5 @@ namespace Umbrella.DataAccess.Remote
 			return Task.CompletedTask;
 		}
 		#endregion
-
-		private IReadOnlyCollection<ValidationResult> ConvertProblemDetailErrors(HttpProblemDetails details) => details?.Errors?.Count > 0
-				? details.Errors.SelectMany(x => x.Value.Select(y => new ValidationResult(y, new[] { x.Key }))).ToArray()
-				: Array.Empty<ValidationResult>();
 	}
 }

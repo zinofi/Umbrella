@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Umbrella.Utilities.Http
 {
@@ -41,5 +44,13 @@ namespace Umbrella.Utilities.Http
 		/// Gets or sets the code.
 		/// </summary>
 		public string Code { get; set; }
+
+		/// <summary>
+		/// Converts the <see cref="Errors"/> to a collection of <see cref="ValidationResult"/> instances.
+		/// </summary>
+		/// <returns>The <see cref="ValidationResult"/> collection.</returns>
+		public IReadOnlyCollection<ValidationResult> ToValidationResults() => Errors?.Count > 0
+				? Errors.SelectMany(x => x.Value.Select(y => new ValidationResult(y, new[] { x.Key }))).ToArray()
+				: Array.Empty<ValidationResult>();
 	}
 }
