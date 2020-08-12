@@ -10,7 +10,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 	public interface IGenericHttpService
 	{
 		/// <summary>
-		/// Deletes a resource from the server.
+		/// DELETE a resource from the server.
 		/// </summary>
 		/// <param name="url">The URL.</param>
 		/// <param name="parameters">The parameters.</param>
@@ -19,7 +19,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		Task<HttpCallResult> DeleteAsync(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default);
 
 		/// <summary>
-		/// Gets a resource from the server.
+		/// GET a resource from the server.
 		/// </summary>
 		/// <typeparam name="TResult">The type of the result.</typeparam>
 		/// <param name="url">The URL.</param>
@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		Task<HttpCallResult<TResult>> GetAsync<TResult>(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default);
 
 		/// <summary>
-		/// POSTS the resource to the server.
+		/// POST the resource to the server.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
 		/// <typeparam name="TResult">The type of the result.</typeparam>
@@ -41,7 +41,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		Task<HttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default);
 
 		/// <summary>
-		/// PUTS the resource to the server.
+		/// PUT the resource to the server.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
 		/// <typeparam name="TResult">The type of the result.</typeparam>
@@ -51,5 +51,17 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the operation.</returns>
 		Task<HttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// PATCH the resource to the server.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <typeparam name="TResult">The type of the result.</typeparam>
+		/// <param name="url">The URL.</param>
+		/// <param name="item">The item.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The result of the operation.</returns>
+		Task<HttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default);
 	}
 }

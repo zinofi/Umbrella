@@ -150,6 +150,39 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
+		public virtual async Task<HttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
+			Guard.ArgumentNotNull(item, nameof(item));
+
+			try
+			{
+				string targetUrl = GetUrlWithParmeters(url, parameters);
+
+				var request = new HttpRequestMessage(PatchHttpMethod, targetUrl)
+				{
+					Content = JsonContent.Create(item)
+				};
+
+				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+				if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
+				{
+					TResult result = await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+					return new HttpCallResult<TResult>(true, result: result);
+				}
+
+				return new HttpCallResult<TResult>(false, await GetProblemDetails(response, cancellationToken));
+			}
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			{
+				throw CreateServiceAccessException(exc);
+			}
+		}
+
+		/// <inheritdoc />
 		public virtual async Task<HttpCallResult> DeleteAsync(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
