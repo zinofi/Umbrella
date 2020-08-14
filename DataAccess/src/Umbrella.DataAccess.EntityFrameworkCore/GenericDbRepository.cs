@@ -126,7 +126,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		where TDbContext : DbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
-		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Protected Properties		
 		/// <summary>
@@ -327,9 +326,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		///   <see langword="true"/> if it matches; otherwise, <see langword="false"/>.
 		/// </returns>
 		protected bool IsConcurrencyTokenMismatch(TEntity entity)
-#pragma warning disable CS8604 // Possible null reference argument.
-			=> !entity.Id.Equals(default) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
-#pragma warning restore CS8604 // Possible null reference argument.
+			=> !entity.Id.Equals(default!) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
 
 		/// <summary>
 		/// Throws an exception if there is a concurrency token mismatch.
@@ -368,9 +365,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
 
 			// Check if this entity is in the context, i.e. is it new
-#pragma warning disable CS8604 // Possible null reference argument.
-			if (forceAdd || (entity.Id.Equals(default) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached))))
-#pragma warning restore CS8604 // Possible null reference argument.
+			if (forceAdd || (entity.Id.Equals(default!) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached))))
 			{
 				isNew = true;
 

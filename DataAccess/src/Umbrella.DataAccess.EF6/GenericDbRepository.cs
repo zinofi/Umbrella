@@ -126,7 +126,6 @@ namespace Umbrella.DataAccess.EF6
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
-		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Protected Properties
 		/// <summary>

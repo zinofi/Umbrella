@@ -122,7 +122,6 @@ namespace Umbrella.DataAccess.EF6
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
-		where TUserAuditKey : IEquatable<TUserAuditKey>
 	{
 		#region Private Static Members
 		private static IReadOnlyCollection<string> _validFilterPaths;
