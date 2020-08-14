@@ -74,7 +74,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<TItem>> FindByAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		public virtual async Task<HttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(id, nameof(id));

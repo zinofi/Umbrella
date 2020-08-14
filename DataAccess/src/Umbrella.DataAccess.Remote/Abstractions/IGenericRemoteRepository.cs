@@ -63,7 +63,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="id">The identifier.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<HttpCallResult<TItem>> FindByAsync(TIdentifier id, CancellationToken cancellationToken = default);
+		Task<HttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Finds the total count of <typeparamref name="TItem"/> that exist on the remote server.
