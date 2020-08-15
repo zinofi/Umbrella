@@ -88,6 +88,20 @@ namespace Umbrella.Utilities.Extensions
 			return await Task.WhenAll(source.Select(x => selector(x, cancellationToken)));
 		}
 
+		/// <summary>
+		/// Parses the string in the <paramref name="items"/> to integers. Any items that cannot be parsed are discarded.
+		/// </summary>
+		/// <param name="items">The items.</param>
+		/// <returns>The parsed integers.</returns>
+		public static IEnumerable<int> ParseIntegers(this IEnumerable<string> items)
+		{
+			foreach (string item in items)
+			{
+				if (int.TryParse(item, out int value))
+					yield return value;
+			}
+		}
+
 		// TODO: Add documentation and unit tests.
 		// These methods return collections of the same length with each item set to the sum of the current item, plus the previous item,
 		// e.g. 1, 2, 3,  4,  5,  6,  7,  8,  9, 10

@@ -7,6 +7,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Imaging;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
@@ -33,17 +35,21 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// Initializes a new instance of the <see cref="DynamicImageTagHelper"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
-		/// <param name="memoryCache">The memory cache.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="responsiveImageHelper">The responsive image helper.</param>
 		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
 		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
 		/// <param name="dynamicImageTagHelperOptions">The dynamic image tag helper options.</param>
 		public DynamicImageTagHelper(
 			ILogger<DynamicImageTagHelper> logger,
-			IMemoryCache memoryCache,
-			IDynamicImageUtility dynamicImageUtility,
 			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
+			IHybridCache cache,
+			ICacheKeyUtility cacheKeyUtility,
+			IResponsiveImageHelper responsiveImageHelper,
+			IDynamicImageUtility dynamicImageUtility,
 			DynamicImageTagHelperOptions dynamicImageTagHelperOptions)
-			: base(logger, memoryCache, dynamicImageUtility, umbrellaHostingEnvironment, dynamicImageTagHelperOptions)
+			: base(logger, umbrellaHostingEnvironment, cache, cacheKeyUtility, responsiveImageHelper, dynamicImageUtility, dynamicImageTagHelperOptions)
 		{
 		}
 
@@ -55,7 +61,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 			//If we don't have any size information just call into the base method
-			IReadOnlyCollection<int> lstSizeWidth = GetParsedItems(SizeWidths);
+			IReadOnlyCollection<int> lstSizeWidth = ResponsiveImageHelper.GetParsedIntegerItems(SizeWidths);
 
 			if (lstSizeWidth.Count == 0)
 			{
@@ -65,42 +71,23 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 			{
 				string src = BuildCoreTag(output);
 
-				string srcsetValue = Cache.GetOrCreate(GetCacheKey(src, PixelDensities, SizeWidths ?? ""), entry =>
-				{
-					entry.SetSlidingExpiration(TimeSpan.FromHours(1)).SetPriority(CacheItemPriority.Low);
+				string cacheKey = CacheKeyUtility.Create<DynamicImageTagHelper>($"{src}:{PixelDensities}:{SizeWidths}");
+				string srcsetValue = Cache.GetOrCreate(
+					cacheKey,
+					() => ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, PixelDensities, WidthRequest, HeightRequest, x =>
+					{
+						var options = new DynamicImageOptions(src, x.imageWidth, x.imageHeight, ResizeMode, ImageFormat);
 
-					return string.Join(", ", GetSizeStrings(src).Distinct().OrderBy(x => x));
-				});
+						string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
+
+						return ResolveImageUrl(virtualPath);
+					}),
+					() => TimeSpan.FromHours(1),
+					priority: CacheItemPriority.Low);
 
 				if (!string.IsNullOrWhiteSpace(srcsetValue))
 					output.Attributes.Add("srcset", srcsetValue);
 			}
 		}
-
-		#region Private Methods
-		private IReadOnlyCollection<int> GetSizeWidths() => GetParsedItems(SizeWidths);
-
-		private IEnumerable<string> GetSizeStrings(string path)
-		{
-			float aspectRatio = WidthRequest / (float)HeightRequest;
-
-			foreach (int sizeWidth in GetSizeWidths())
-			{
-				foreach (int density in GetPixelDensities())
-				{
-					int imgWidth = sizeWidth * density;
-					int imgHeight = (int)Math.Ceiling(imgWidth / aspectRatio);
-
-					var options = new DynamicImageOptions(path, imgWidth, imgHeight, ResizeMode, ImageFormat);
-
-					string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
-
-					string resolvedUrl = ResolveImageUrl(virtualPath);
-
-					yield return $"{resolvedUrl} {imgWidth}w";
-				}
-			}
-		}
-		#endregion
 	}
 }

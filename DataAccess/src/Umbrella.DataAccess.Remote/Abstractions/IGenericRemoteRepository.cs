@@ -10,6 +10,9 @@ using Umbrella.Utilities.Http;
 
 namespace Umbrella.DataAccess.Remote.Abstractions
 {
+	// TODO: Create a read-only remote repo?
+	// TODO: More generic overloads to avoid this issues.
+
 	/// <summary>
 	/// A generic repository used to query and update a remote resource.
 	/// </summary>

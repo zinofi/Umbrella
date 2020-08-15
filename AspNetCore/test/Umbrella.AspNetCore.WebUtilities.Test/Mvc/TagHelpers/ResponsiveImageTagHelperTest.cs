@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
+using Umbrella.Internal.Mocks;
 using Xunit;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers
@@ -14,20 +15,17 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers
 	public class ResponsiveImageTagHelperTest
     {
         [Theory]
-        [InlineData(null, null, null)]
-        [InlineData(null, "", null)]
-        [InlineData("", null, null)]
+        [InlineData("", "1", null)]
         [InlineData(null, "1", null)]
-        [InlineData(null, "2", null)]
-        [InlineData(null, "2,3", null)]
-        [InlineData("/path/to/image.png", "", null)]
+        [InlineData(null, "1,2", null)]
+        [InlineData(null, "1,2,3", null)]
         [InlineData("/path/to/image.png", "1", null)]
-        [InlineData("/path/to/image.png", "2", "/path/to/image.png 1x, /path/to/image@2x.png 2x")]
-        [InlineData("/path/to/image.png", "2,3", "/path/to/image.png 1x, /path/to/image@2x.png 2x, /path/to/image@3x.png 3x")]
-        [InlineData("/path/to/image.png", "3", "/path/to/image.png 1x, /path/to/image@3x.png 3x")]
-        [InlineData("/path/to/imagepng", "2", "Invalid image path")]
-        [InlineData("http://www.google.com/path/to/image.png", "2", "http://www.google.com/path/to/image.png 1x, http://www.google.com/path/to/image@2x.png 2x")]
-        [InlineData("https://www.google.com/path/to/image.png", "2", "https://www.google.com/path/to/image.png 1x, https://www.google.com/path/to/image@2x.png 2x")]
+        [InlineData("/path/to/image.png", "1,2", "/path/to/image.png 1x, /path/to/image@2x.png 2x")]
+        [InlineData("/path/to/image.png", "1,2,3", "/path/to/image.png 1x, /path/to/image@2x.png 2x, /path/to/image@3x.png 3x")]
+        [InlineData("/path/to/image.png", "1,3", "/path/to/image.png 1x, /path/to/image@3x.png 3x")]
+        [InlineData("/path/to/imagepng", "1,2", "Invalid image path")]
+        [InlineData("http://www.google.com/path/to/image.png", "1,2", "http://www.google.com/path/to/image.png 1x, http://www.google.com/path/to/image@2x.png 2x")]
+        [InlineData("https://www.google.com/path/to/image.png", "1,2", "https://www.google.com/path/to/image.png 1x, https://www.google.com/path/to/image@2x.png 2x")]
         public async Task Generate_Success(string path, string pixelDensities, string expectedOutput)
         {
             var tagHelper = CreateTagHelper();
@@ -69,7 +67,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers
                 Assert.Null(srcSetAttribute);
         }
 
-        private ResponsiveImageTagHelper CreateTagHelper()
-            => new ResponsiveImageTagHelper(new Mock<ILogger<ResponsiveImageTagHelper>>().Object, Mocks.CreateUmbrellaWebHostingEnvironment(), Mocks.CreateMemoryCache());
+		private ResponsiveImageTagHelper CreateTagHelper()
+			=> new ResponsiveImageTagHelper(
+				CoreUtilitiesMocks.CreateLogger<ResponsiveImageTagHelper>(),
+				Mocks.CreateUmbrellaWebHostingEnvironment(),
+				CoreUtilitiesMocks.CreateHybridCache(),
+				CoreUtilitiesMocks.CreateCacheKeyUtility(),
+				CoreUtilitiesMocks.CreateResponsiveImageHelper());
     }
 }

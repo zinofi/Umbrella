@@ -75,7 +75,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
 			string mappedPath = env.MapWebPath(path, true);
 
-			Assert.Equal("http://www.test.com/images/test.jpg", mappedPath);
+			Assert.Equal("https://www.test.com/images/test.jpg", mappedPath);
 		}
 
 		[Fact]
@@ -87,7 +87,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting
 
 			string mappedPath = env.MapWebPath(path, true);
 
-			Assert.Equal("http://www.test.com/images/test.jpg", mappedPath);
+			Assert.Equal("https://www.test.com/images/test.jpg", mappedPath);
 		}
 	}
 }

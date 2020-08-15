@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
-using Polly;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
@@ -31,6 +29,7 @@ using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Extensions;
 using Umbrella.Utilities.Http.Options;
+using Umbrella.Utilities.Imaging;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.Numerics;
@@ -100,6 +99,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IDataExpressionFactory, DataExpressionFactory>();
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
+			services.AddSingleton<IResponsiveImageHelper, ResponsiveImageHelper>();
 
 			if (httpServicesBuilder != null)
 			{

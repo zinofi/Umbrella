@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Imaging;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -84,17 +84,21 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		/// Initializes a new instance of the <see cref="DynamicImageTagHelperBase"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
-		/// <param name="memoryCache">The memory cache.</param>
 		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
 		/// <param name="umbrellaHostingEnvironment">The umbrella hosting environment.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="responsiveImageHelper">The responsive image helper.</param>
 		/// <param name="dynamicImageTagHelperOptions">The dynamic image tag helper options.</param>
 		public DynamicImageTagHelperBase(
 			ILogger<DynamicImageTagHelperBase> logger,
-			IMemoryCache memoryCache,
-			IDynamicImageUtility dynamicImageUtility,
 			IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
+			IHybridCache cache,
+			ICacheKeyUtility cacheKeyUtility,
+			IResponsiveImageHelper responsiveImageHelper,
+			IDynamicImageUtility dynamicImageUtility,
 			DynamicImageTagHelperOptions dynamicImageTagHelperOptions)
-			: base(logger, umbrellaHostingEnvironment, memoryCache)
+			: base(logger, umbrellaHostingEnvironment, cache, cacheKeyUtility, responsiveImageHelper)
 		{
 			DynamicImageUtility = dynamicImageUtility;
 			DynamicImageTagHelperOptions = dynamicImageTagHelperOptions;
