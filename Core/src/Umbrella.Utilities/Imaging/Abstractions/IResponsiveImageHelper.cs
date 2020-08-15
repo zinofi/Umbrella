@@ -22,7 +22,7 @@ namespace Umbrella.Utilities.Imaging
 		/// <param name="pixelDensities">The pixel densities.</param>
 		/// <param name="pathResolver">The path resolver.</param>
 		/// <returns>The srcset string.</returns>
-		string GetPixelDensitySrcSetValue(string imageUrl, string pixelDensities, Func<string, string> pathResolver);
+		string GetPixelDensitySrcSetValue(string imageUrl, string pixelDensities, Func<string, string> pathResolver = null);
 
 		/// <summary>
 		/// Gets a string containing size data which can be used in the srcset attribute of an HTML img tag.
