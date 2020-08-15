@@ -44,11 +44,10 @@ namespace Umbrella.Utilities.Imaging
 		}
 
 		/// <inheritdoc />
-		public string GetPixelDensitySrcSetValue(string imageUrl, string pixelDensities, Func<string, string> pathResolver)
+		public string GetPixelDensitySrcSetValue(string imageUrl, string pixelDensities, Func<string, string> pathResolver = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
 			Guard.ArgumentNotNullOrWhiteSpace(pixelDensities, nameof(pixelDensities));
-			Guard.ArgumentNotNull(pathResolver, nameof(pathResolver));
 
 			try
 			{
@@ -67,7 +66,7 @@ namespace Umbrella.Utilities.Imaging
 					orderby density
 					let densityX = $"{density}x"
 					let highResImagePath = density > 1 ? imageUrl.Insert(densityIndex, $"@{densityX}") : imageUrl
-					select pathResolver(highResImagePath) + " " + densityX;
+					select pathResolver?.Invoke(highResImagePath) ?? highResImagePath + " " + densityX;
 
 				return string.Join(", ", srcsetImagePaths);
 			}
@@ -80,24 +79,38 @@ namespace Umbrella.Utilities.Imaging
 		/// <inheritdoc />
 		public string GetSizeSrcSetValue(string imageUrl, string sizeWidths, string pixelDensities, int widthRequest, int heightRequest, Func<(string path, int imageWidth, int imageHeight), string> pathResolver)
 		{
-			var lstSize = new HashSet<string>();
+			Guard.ArgumentNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
+			Guard.ArgumentNotNullOrWhiteSpace(sizeWidths, nameof(sizeWidths));
+			Guard.ArgumentNotNullOrWhiteSpace(pixelDensities, nameof(pixelDensities));
+			Guard.ArgumentInRange(widthRequest, nameof(widthRequest), 1);
+			Guard.ArgumentInRange(heightRequest, nameof(heightRequest), 1);
+			Guard.ArgumentNotNull(pathResolver, nameof(pathResolver));
 
-			float aspectRatio = widthRequest / (float)heightRequest;
-
-			foreach (int sizeWidth in GetParsedIntegerItems(sizeWidths))
+			try
 			{
-				foreach (int density in GetParsedIntegerItems(pixelDensities))
+				var lstSize = new HashSet<string>();
+
+				float aspectRatio = widthRequest / (float)heightRequest;
+
+				foreach (int sizeWidth in GetParsedIntegerItems(sizeWidths))
 				{
-					int imgWidth = sizeWidth * density;
-					int imgHeight = (int)Math.Ceiling(imgWidth / aspectRatio);
+					foreach (int density in GetParsedIntegerItems(pixelDensities))
+					{
+						int imgWidth = sizeWidth * density;
+						int imgHeight = (int)Math.Ceiling(imgWidth / aspectRatio);
 
-					string resolvedUrl = pathResolver((imageUrl, imgWidth, imgHeight));
+						string resolvedUrl = pathResolver((imageUrl, imgWidth, imgHeight));
 
-					lstSize.Add($"{resolvedUrl} {imgWidth}w");
+						lstSize.Add($"{resolvedUrl} {imgWidth}w");
+					}
 				}
-			}
 
-			return string.Join(", ", lstSize.OrderBy(x => x));
+				return string.Join(", ", lstSize.OrderBy(x => x));
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, sizeWidths, pixelDensities, widthRequest, heightRequest }, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem creating the srcset value.", exc);
+			}
 		}
 	}
 }
