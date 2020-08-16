@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Linq.Expressions;
-using System.Globalization;
 using Umbrella.Utilities.Constants;
 
 namespace Umbrella.Utilities.Extensions
 {
 	// TODO: Rework some of this internally to take advantage of the new Span stuff.
+
+	/// <summary>
+	/// Extension methods that operation on <see langword="string"/> instances.
+	/// </summary>
 	public static class StringExtensions
 	{
-		private static readonly Regex s_HtmlTagPatternRegex = new Regex(c_HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-		private static readonly Regex s_EllipsisPatternRegex = new Regex(c_EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+		private const string HtmlTagPattern = @"<.*?>";
+		private const string EllipsisPattern = @"[\.]+$";
 
-		private const string c_HtmlTagPattern = @"<.*?>";
-		private const string c_EllipsisPattern = @"[\.]+$";
+		private static readonly Regex s_HtmlTagPatternRegex = new Regex(HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+		private static readonly Regex s_EllipsisPatternRegex = new Regex(EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
 		public static string Truncate(this string text, int maxLength)
 		{
-			//Ensure we strip out HTML tags
+			// Ensure we strip out HTML tags
 			if (!string.IsNullOrEmpty(text))
 				text = text.StripHtml();
 
@@ -129,7 +131,12 @@ namespace Umbrella.Utilities.Extensions
 			return new string(buffer);
 		}
 
-		private static string AppendEllipsis(string value)
+		/// <summary>
+		/// Appends an ellipsis to the specified <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The value with an ellipsis appended.</returns>
+		public static string AppendEllipsis(string value)
 		{
 			if (string.IsNullOrEmpty(value))
 				return value;
@@ -148,61 +155,6 @@ namespace Umbrella.Utilities.Extensions
 			sb.ConvertHtmlBrTagsToReplacement("\n");
 
 			return sb.ToString();
-		}
-
-		[Obsolete("This will be removed in the next major version. It's become a bit of a mess over time and has defeated it's original purpose!")]
-		public static string Clean(this string value, bool convertBrTagsToNl = false, bool trim = true, bool trimNewLines = true, bool stripHtml = true, bool stripNbsp = true, bool decodeHtmlEncodedLineBreaks = true)
-		{
-			if (string.IsNullOrWhiteSpace(value))
-				return null;
-
-			var sb = new StringBuilder(value);
-
-			if (convertBrTagsToNl)
-				sb.ConvertHtmlBrTagsToReplacement("\n");
-			else
-				sb.ConvertHtmlBrTagsToReplacement("");
-
-			if (trim)
-				sb.Trim();
-
-			bool trimAgain = false;
-
-			if (decodeHtmlEncodedLineBreaks)
-			{
-				sb.Replace("&#10;", "\n")
-					.Replace("&#13;", "\r");
-			}
-
-			// Replace the following in strings
-			sb.Replace("&amp;", "&");
-			sb.Replace("&#39;", "'");
-			sb.Replace("&quot;", "\"");
-			sb.Replace("&#8216;", "'"); // Left quote
-			sb.Replace("&#8217;", "'"); // Right quote
-			sb.Replace("&#163;", "£");
-
-			if (trimNewLines)
-			{
-				sb.Trim('\r').Trim('\n');
-				trimAgain = true;
-			}
-
-			if (stripNbsp)
-			{
-				sb.Replace("&nbsp;", "");
-				trimAgain = true;
-			}
-
-			string cleanedValue = sb.ToString();
-
-			if (stripHtml)
-				cleanedValue = cleanedValue.StripHtml();
-
-			if (trim && trimAgain)
-				cleanedValue = cleanedValue.Trim();
-
-			return cleanedValue;
 		}
 
 		public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true, CultureInfo cultureInfo = null)
@@ -297,7 +249,8 @@ namespace Umbrella.Utilities.Extensions
 			return upperSpan.ToString();
 		}
 
-		public static string TrimToUpperInvariant(this string value) => TrimToUpper(value, CultureInfo.InvariantCulture);
+		public static string TrimToUpperInvariant(this string value)
+			=> TrimToUpper(value, CultureInfo.InvariantCulture);
 
 		/// <summary>
 		/// Trims the specified value in a null-safe manner.
@@ -347,53 +300,23 @@ namespace Umbrella.Utilities.Extensions
 			return span.ToString();
 		}
 
-		#region Future Stuff
-		private static string ToTitleCase(this string value, bool trim = true)
-		{
-			if (string.IsNullOrEmpty(value))
-				return value;
+		/// <summary>
+		/// Converts to the specified <paramref name="value"/> to title case using the rules of the specified
+		/// <paramref name="cultureInfo"/>. If <paramref name="cultureInfo"/> is <see langword="null"/>, it defaults
+		/// to <see cref="CultureInfo.CurrentCulture"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="cultureInfo">The optional culture information. Defaults to <see cref="CultureInfo.CurrentCulture"/>.</param>
+		/// <returns>The <paramref name="value"/> converted to title case.</returns>
+		public static string ToTitleCase(this string value, CultureInfo cultureInfo = null)
+			=> string.IsNullOrWhiteSpace(value) ? value : (cultureInfo ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(value);
 
-			throw new NotImplementedException();
-		}
-
-		private static string UppercaseFirst(this string value, bool trim = true)
-		{
-			throw new NotImplementedException();
-		}
-
-		// TODO: What would this be used for again?? Can't remember :(
-		private static IReadOnlyCollection<int> AllIndexOf(this string target, char value)
-		{
-			if (string.IsNullOrEmpty(target))
-				return Array.Empty<int>();
-
-			var lstIndex = new List<int>();
-
-			for (int i = 0; i < target.Length; i++)
-			{
-				if (target[i] == value)
-					lstIndex.Add(i);
-			}
-
-			return lstIndex;
-		}
-
-		// TODO vNext: Need to flesh this out when I have time.
-		//private static Span<int> SplitValueAt(this string value, int index, char splitter)
-		//{
-		//	if (string.IsNullOrEmpty(value))
-		//		return default;
-
-		//	int startIndex = 0;
-		//	int length = 0;
-		//	char previous = default;
-
-		//	for (int i = 0; i < value.Length; i++)
-		//	{
-		//		if(previous == splitter)
-
-		//	}
-		//} 
-		#endregion
+		/// <summary>
+		/// Converts to the specified <paramref name="value"/> to title case using the rules of the invariant culture.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The <paramref name="value"/> converted to title case.</returns>
+		public static string ToTitleCaseInvariant(this string value)
+			=> ToTitleCase(value, CultureInfo.InvariantCulture);
 	}
 }
