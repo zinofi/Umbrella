@@ -36,6 +36,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="source">The source.</param>
 		/// <param name="comparer">The comparer used by the hashset to determine item uniqueness.</param>
 		/// <returns>The new <see cref="HashSet{T}"/>.</returns>
+		[Obsolete("This will be removed in a future version as this method has been added to netstandard2.1")]
 		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));

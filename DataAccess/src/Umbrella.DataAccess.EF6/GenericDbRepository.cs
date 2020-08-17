@@ -236,21 +236,24 @@ namespace Umbrella.DataAccess.EF6
 			try
 			{
 				// Save all changes - do not push to the database yet
+				List<SaveResult<TEntity>> lstSaveResult = null;
+
 				if (!bypassSaveLogic)
 				{
-					var lstSaveResult = new List<SaveResult<TEntity>>();
+					lstSaveResult = new List<SaveResult<TEntity>>();
 
 					foreach (TEntity entity in entities)
 					{
 						SaveResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
 						lstSaveResult.Add(saveResult);
 					}
-
-					return lstSaveResult;
 				}
 
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+				if (lstSaveResult != null)
+					return lstSaveResult;
 
 				return entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 			}
