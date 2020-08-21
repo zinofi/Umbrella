@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Http.Constants;
 
 namespace Umbrella.Utilities.Http
 {
@@ -63,6 +70,29 @@ namespace Umbrella.Utilities.Http
 			{
 				throw new UmbrellaException("There has been a problem creating the query parameters from the search parameters.", exc);
 			}
+		}
+
+		/// <inheritdoc />
+		public string GetUrlWithParmeters(string url, IDictionary<string, string> parameters)
+			=> parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
+
+		/// <inheritdoc />
+		public async Task<HttpProblemDetails> GetProblemDetails(HttpResponseMessage response, CancellationToken cancellationToken = default)
+		{
+			string defaultMessage = response.StatusCode switch
+			{
+				HttpStatusCode.Unauthorized => HttpServiceMessages.DefaultUnauthorizedErrorMessage,
+				HttpStatusCode.Forbidden => HttpServiceMessages.DefaultForbiddenErrorMessage,
+				HttpStatusCode.InternalServerError => HttpServiceMessages.DefaultServerErrorMessage,
+				_ => HttpServiceMessages.DefaultUnknownErrorMessage
+			};
+
+			HttpContentHeaders headers = response.Content.Headers;
+
+			if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
+				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
+
+			return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 	}
 }
