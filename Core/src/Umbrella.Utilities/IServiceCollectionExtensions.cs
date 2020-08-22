@@ -81,6 +81,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
 			services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
+			services.AddSingleton<ICurrentUserClaimsAccessor, DefaultUserClaimsAccessor>();
+			services.AddSingleton<ICurrentUserClaimsPrincipalAccessor, DefaultUserClaimsPrincipalAccessor>();
 			services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
 			services.AddSingleton<ICertificateUtility, CertificateUtility>();
 			services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
@@ -179,6 +181,34 @@ namespace Microsoft.Extensions.DependencyInjection
 			where TCurrentUserIdAccessor : class, ICurrentUserIdAccessor<TKey>
 		{
 			services.ReplaceSingleton<ICurrentUserIdAccessor<TKey>, TCurrentUserIdAccessor>();
+
+			return services;
+		}
+
+		/// <summary>
+		/// Configures the current user claims accessor.
+		/// </summary>
+		/// <typeparam name="TCurrentUserClaimsAccessor">The type of the current user claims accessor.</typeparam>
+		/// <param name="services">The services.</param>
+		/// <returns>The services.</returns>
+		public static IServiceCollection ConfigureCurrentUserClaimsAccessor<TCurrentUserClaimsAccessor>(this IServiceCollection services)
+			where TCurrentUserClaimsAccessor : class, ICurrentUserClaimsAccessor
+		{
+			services.ReplaceSingleton<ICurrentUserClaimsAccessor, TCurrentUserClaimsAccessor>();
+
+			return services;
+		}
+
+		/// <summary>
+		/// Configures the current user claims principal accessor.
+		/// </summary>
+		/// <typeparam name="TCurrentUserClaimsPrincipalAccessor">The type of the current user claims principal accessor.</typeparam>
+		/// <param name="services">The services.</param>
+		/// <returns>The services.</returns>
+		public static IServiceCollection ConfigureCurrentUserClaimsPrincipalAccessor<TCurrentUserClaimsPrincipalAccessor>(this IServiceCollection services)
+			where TCurrentUserClaimsPrincipalAccessor : class, ICurrentUserClaimsPrincipalAccessor
+		{
+			services.ReplaceSingleton<ICurrentUserClaimsPrincipalAccessor, TCurrentUserClaimsPrincipalAccessor>();
 
 			return services;
 		}

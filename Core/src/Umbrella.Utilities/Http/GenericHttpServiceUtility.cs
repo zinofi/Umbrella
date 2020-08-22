@@ -77,7 +77,7 @@ namespace Umbrella.Utilities.Http
 			=> parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
 
 		/// <inheritdoc />
-		public async Task<HttpProblemDetails> GetProblemDetails(HttpResponseMessage response, CancellationToken cancellationToken = default)
+		public async Task<HttpProblemDetails> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
 		{
 			string defaultMessage = response.StatusCode switch
 			{

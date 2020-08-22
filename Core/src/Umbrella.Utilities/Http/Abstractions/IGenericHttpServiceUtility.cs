@@ -41,7 +41,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="response">The response.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The <see cref="HttpProblemDetails"/>.</returns>
-		Task<HttpProblemDetails> GetProblemDetails(HttpResponseMessage response, CancellationToken cancellationToken = default);
+		Task<HttpProblemDetails> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the URL with parmeters appended as querystring values.

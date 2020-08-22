@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Security.Options;
@@ -16,7 +18,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 	/// <typeparam name="TRole">The type of the role.</typeparam>
 	/// <seealso cref="Umbrella.Utilities.Context.Abstractions.ICurrentUserIdAccessor{TUserId}" />
 	/// <seealso cref="Umbrella.Utilities.Context.Abstractions.ICurrentUserRolesAccessor{TRole}" />
-	public class UmbrellaClaimsUserAccessor<TUserId, TRole> : ICurrentUserIdAccessor<TUserId>, ICurrentUserRolesAccessor<TRole>
+	public class UmbrellaClaimsUserAccessor<TUserId, TRole> : ICurrentUserIdAccessor<TUserId>, ICurrentUserRolesAccessor<TRole>, ICurrentUserClaimsAccessor, ICurrentUserClaimsPrincipalAccessor
 		where TRole : struct, Enum
 	{
 		/// <summary>
@@ -71,5 +73,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 
 		/// <inheritdoc />
 		public virtual IReadOnlyCollection<TRole> Roles => HttpContextAccessor.HttpContext.User.GetRoles<TRole>();
+
+		/// <inheritdoc />
+		public IReadOnlyCollection<Claim> Claims => HttpContextAccessor.HttpContext.User.Claims.ToArray();
+
+		/// <inheritdoc />
+		public ClaimsPrincipal CurrentPrincipal => HttpContextAccessor.HttpContext.User;
 	}
 }
