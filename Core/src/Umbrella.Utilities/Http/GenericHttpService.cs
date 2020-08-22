@@ -65,7 +65,7 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.GetAsync(targetUrl, cancellationToken).ConfigureAwait(false);
 
-				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken, false).ConfigureAwait(false);
+				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
 				return processed
 					? result
@@ -90,7 +90,7 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
-				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken, true).ConfigureAwait(false);
+				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
 				return processed
 					? result
@@ -115,7 +115,7 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
-				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken, true).ConfigureAwait(false);
+				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
 				return processed
 					? result
@@ -145,7 +145,7 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken, true).ConfigureAwait(false);
+				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
 				return processed
 					? result
@@ -208,13 +208,12 @@ namespace Umbrella.Utilities.Http
 		/// <typeparam name="TResult">The type of the result.</typeparam>
 		/// <param name="response">The response.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="handleNoContentStatus">if set to <c>true</c> checks for and handles a 204 status code.</param>
 		/// <returns>A tuple containg a the result.</returns>
-		protected async Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken, bool handleNoContentStatus)
+		protected async Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
 		{
 			if (response.IsSuccessStatusCode)
 			{
-				if (handleNoContentStatus && response.StatusCode == HttpStatusCode.NoContent)
+				if (response.StatusCode == HttpStatusCode.NoContent)
 					return (true, new HttpCallResult<TResult>(true, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 
 				if (response.Content.Headers.ContentLength > 0)
