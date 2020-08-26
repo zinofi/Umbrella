@@ -66,7 +66,7 @@ namespace Umbrella.Utilities.Imaging
 					orderby density
 					let densityX = $"{density}x"
 					let highResImagePath = density > 1 ? imageUrl.Insert(densityIndex, $"@{densityX}") : imageUrl
-					select pathResolver?.Invoke(highResImagePath) ?? highResImagePath + " " + densityX;
+					select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + " " + densityX;
 
 				return string.Join(", ", srcsetImagePaths);
 			}
