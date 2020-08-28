@@ -62,9 +62,10 @@ namespace Umbrella.DynamicImage.Abstractions
 					var _ when target.SequenceEqual("png".AsSpan()) => DynamicImageFormat.Png,
 					var _ when target.SequenceEqual("bmp".AsSpan()) => DynamicImageFormat.Bmp,
 					var _ when target.SequenceEqual("jpg".AsSpan()) => DynamicImageFormat.Jpeg,
+					var _ when target.SequenceEqual("jpeg".AsSpan()) => DynamicImageFormat.Jpeg,
 					var _ when target.SequenceEqual("gif".AsSpan()) => DynamicImageFormat.Gif,
 					var _ when target.SequenceEqual("webp".AsSpan()) => DynamicImageFormat.WebP,
-					_ => default,
+					_ => DynamicImageFormat.Jpeg
 				};
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { format }, returnValue: true))
