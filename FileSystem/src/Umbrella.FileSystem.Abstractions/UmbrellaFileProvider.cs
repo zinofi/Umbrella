@@ -347,7 +347,9 @@ namespace Umbrella.FileSystem.Abstractions
 				.Trim(_subpathTrimCharacters)
 				.Replace('\\', '/');
 
-			return _multipleSlashSelector.Replace(pathBuilder.ToString(), "/");
+			// Force all files to be stored and read in lowercase to avoid issues with Blob Storage
+			// and Linux which both use case-sensitive file systems.
+			return _multipleSlashSelector.Replace(pathBuilder.ToString(), "/").ToLowerInvariant();
 		}
 		#endregion
 

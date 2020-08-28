@@ -181,6 +181,38 @@ namespace Umbrella.FileSystem.Test
 		}
 
 		[Theory]
+		[MemberData(nameof(ProvidersMemberData))]
+		public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile_CasingMismatch(Func<IUmbrellaFileProvider> providerFunc)
+		{
+			var provider = providerFunc();
+
+			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
+
+			byte[] bytes = File.ReadAllBytes(physicalPath);
+
+			IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}");
+
+			Assert.True(file.IsNew);
+
+			await file.WriteFromByteArrayAsync(bytes);
+
+			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
+
+			// Get the file but with a different casing
+			IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{TestFileName.ToUpperInvariant()}");
+
+			Assert.NotNull(retrievedFile);
+
+			CheckWrittenFileAssertions(provider, retrievedFile, bytes.Length, TestFileName);
+
+			await file.ReadAsByteArrayAsync();
+			Assert.Equal(bytes.Length, retrievedFile.Length);
+
+			//Cleanup
+			await provider.DeleteAsync(file);
+		}
+
+		[Theory]
 		[MemberData(nameof(ProvidersAndPathsMemberData))]
 		public async Task CreateAsync_Write_ReadStream_DeleteFile(Func<IUmbrellaFileProvider> providerFunc, string path)
 		{
