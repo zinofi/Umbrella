@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.Json;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Security.Abstractions;
@@ -33,7 +33,8 @@ namespace Umbrella.Utilities.Security
 				var claims = new List<Claim>();
 				string payload = jwt.Split('.')[1];
 				byte[] jsonBytes = ParseBase64WithoutPadding(payload);
-				var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+				string json = Encoding.UTF8.GetString(jsonBytes);
+				var keyValuePairs = UmbrellaStatics.DeserializeJson<Dictionary<string, object>>(json);
 
 				keyValuePairs.TryGetValue(roleClaimType, out object roles);
 
@@ -41,7 +42,7 @@ namespace Umbrella.Utilities.Security
 				{
 					if (roles.ToString().Trim().StartsWith("["))
 					{
-						string[] parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString());
+						string[] parsedRoles = UmbrellaStatics.DeserializeJson<string[]>(roles.ToString());
 
 						foreach (string parsedRole in parsedRoles)
 						{

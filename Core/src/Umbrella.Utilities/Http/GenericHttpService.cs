@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
+using System.Text;
+// TODO v4: using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -88,7 +89,15 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
-				HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
+				// TODO v4: HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
+
+				string json = UmbrellaStatics.SerializeJson(item);
+				var request = new HttpRequestMessage(HttpMethod.Post, targetUrl)
+				{
+					Content = new StringContent(json, Encoding.UTF8, "application/json")
+				};
+
+				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
 				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
@@ -113,7 +122,15 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
-				HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
+				// TODO v4: HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
+
+				string json = UmbrellaStatics.SerializeJson(item);
+				var request = new HttpRequestMessage(HttpMethod.Put, targetUrl)
+				{
+					Content = new StringContent(json, Encoding.UTF8, "application/json")
+				};
+
+				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
 				var (processed, result) = await ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
@@ -138,10 +155,17 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
+				string json = UmbrellaStatics.SerializeJson(item);
 				var request = new HttpRequestMessage(PatchHttpMethod, targetUrl)
 				{
-					Content = JsonContent.Create(item)
+					Content = new StringContent(json, Encoding.UTF8, "application/json")
 				};
+
+				// TODO v4
+				//var request = new HttpRequestMessage(PatchHttpMethod, targetUrl)
+				//{
+				//	Content = JsonContent.Create(item)
+				//};
 
 				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -221,7 +245,8 @@ namespace Umbrella.Utilities.Http
 					TResult result = response.Content.Headers.ContentType.MediaType switch
 					{
 						"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
-						"application/json" => await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false),
+						// TODO v4: "application/json" => await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false),
+						"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync()),
 						_ => throw new NotImplementedException()
 					};
 

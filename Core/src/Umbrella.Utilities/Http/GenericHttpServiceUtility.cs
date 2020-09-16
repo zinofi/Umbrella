@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
+// TODO v4: using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -92,7 +92,11 @@ namespace Umbrella.Utilities.Http
 			if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 
-			return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken).ConfigureAwait(false);
+			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+			return UmbrellaStatics.DeserializeJson<HttpProblemDetails>(json);
+
+			// TODO v4: return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 	}
 }
