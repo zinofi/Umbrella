@@ -538,10 +538,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			// Find the RepoOptions for this repository if provided in the options collection
 			TTargetEntityRepoOptions targetOptions = repoOptions.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
-			// If the options specify that children should not be processed here, abort.
-			if (!targetOptions.ProcessChildren)
-				return;
-
 			//Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
 			//but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
 			//any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
