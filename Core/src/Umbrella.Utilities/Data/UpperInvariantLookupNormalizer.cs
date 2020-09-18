@@ -9,8 +9,8 @@ namespace Umbrella.Utilities.Data
 	/// <summary>
 	/// A utility used to normalize string values and then converting them to uppercase using the rules of the invariant culture.
 	/// </summary>
-	/// <seealso cref="ILookupNormalizer" />
-	public class UpperInvariantLookupNormalizer : ILookupNormalizer
+	/// <seealso cref="IDataLookupNormalizer" />
+	public class UpperInvariantLookupNormalizer : IDataLookupNormalizer
 	{
 		#region Private Members
 		private readonly ILogger _log;

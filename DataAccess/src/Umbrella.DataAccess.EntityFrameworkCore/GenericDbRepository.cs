@@ -38,7 +38,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor,
 			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
@@ -70,7 +70,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor,
 			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
@@ -104,7 +104,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor,
 			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)
@@ -152,7 +152,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		public GenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 			IUmbrellaDbContextHelper dbContextHelper,
 			IEntityValidator entityValidator)

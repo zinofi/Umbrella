@@ -19,7 +19,7 @@ namespace Umbrella.Utilities.Caching
 	public class CacheKeyUtility : ICacheKeyUtility
 	{
 		private readonly ILogger _log;
-		private readonly ILookupNormalizer _lookupNormalizer;
+		private readonly IDataLookupNormalizer _lookupNormalizer;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CacheKeyUtility"/> class.
@@ -28,7 +28,7 @@ namespace Umbrella.Utilities.Caching
 		/// <param name="lookupNormalizer">The lookup normalizer.</param>
 		public CacheKeyUtility(
 			ILogger<CacheKeyUtility> logger,
-			ILookupNormalizer lookupNormalizer)
+			IDataLookupNormalizer lookupNormalizer)
 		{
 			_log = logger;
 			_lookupNormalizer = lookupNormalizer;

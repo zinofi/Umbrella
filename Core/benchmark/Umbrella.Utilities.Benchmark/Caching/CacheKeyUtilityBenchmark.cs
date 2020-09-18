@@ -18,7 +18,7 @@ namespace Umbrella.Utilities.Benchmark.Caching
 
 		public CacheKeyUtilityBenchmark()
 		{
-			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+			IDataLookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
 			_cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
 		}
 

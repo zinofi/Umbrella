@@ -46,7 +46,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Hosting
 		{
 			var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 			var memoryCache = CoreUtilitiesMocks.CreateHybridCache();
-			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+			IDataLookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
 			var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
 
 			return new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);

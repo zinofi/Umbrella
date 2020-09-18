@@ -29,7 +29,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
 			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
@@ -63,7 +63,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
 			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
@@ -99,7 +99,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
 			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
@@ -136,7 +136,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<int> userAuditDataFactory,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
 			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<int> dbAppTenantSessionContext)
@@ -180,7 +180,7 @@ namespace Umbrella.DataAccess.EF6
 			TDbContext dbContext,
 			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			IEntityValidator entityValidator,
 			IUmbrellaDbContextHelper dbContextHelper,
 			DbAppTenantSessionContext<TAppTenantKey> dbAppTenantSessionContext)

@@ -57,7 +57,7 @@ namespace Umbrella.Utilities.Test.Caching
 
 		private static CacheKeyUtility CreateCacheKeyUtility()
 		{
-			ILookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+			IDataLookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
 			return new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
 		}
 	}

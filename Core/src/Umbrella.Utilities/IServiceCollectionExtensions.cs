@@ -91,7 +91,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IFriendlyUrlGenerator, FriendlyUrlGenerator>();
 			services.AddSingleton<IGenericTypeConverter, GenericTypeConverter>();
 			services.AddSingleton<IHybridCache, HybridCache>();
-			services.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+			services.AddSingleton<IDataLookupNormalizer, UpperInvariantLookupNormalizer>();
 			services.AddSingleton<IMimeTypeUtility, MimeTypeUtility>();
 			services.AddSingleton<INonceGenerator, NonceGenerator>();
 			services.AddSingleton<ISecureRandomStringGenerator, SecureRandomStringGenerator>();

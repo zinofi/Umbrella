@@ -39,7 +39,7 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor)
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
@@ -69,7 +69,7 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor)
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
@@ -101,7 +101,7 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<int> currentUserIdAccessor)
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
@@ -148,7 +148,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <summary>
 		/// Gets the lookup normalizer.
 		/// </summary>
-		protected ILookupNormalizer LookupNormalizer { get; }
+		protected IDataLookupNormalizer LookupNormalizer { get; }
 
 		/// <summary>
 		/// Gets the <see cref="IQueryable{TEntity}"/> from the database context for the current <typeparamref name="TEntity"/> type.
@@ -177,7 +177,7 @@ namespace Umbrella.DataAccess.EF6
 		public ReadOnlyGenericDbRepository(
 			TDbContext dbContext,
 			ILogger logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
 		{
 			Context = dbContext;

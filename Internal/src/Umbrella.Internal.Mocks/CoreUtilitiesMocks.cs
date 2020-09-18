@@ -17,9 +17,9 @@ namespace Umbrella.Internal.Mocks
 {
 	public static class CoreUtilitiesMocks
 	{
-		public static ILookupNormalizer CreateILookupNormalizer()
+		public static IDataLookupNormalizer CreateILookupNormalizer()
 		{
-			var lookupNormalizer = new Mock<ILookupNormalizer>();
+			var lookupNormalizer = new Mock<IDataLookupNormalizer>();
 			lookupNormalizer.Setup(x => x.Normalize(It.IsAny<string>(), It.IsAny<bool>())).Returns<string, bool>((value, trim) =>
 			{
 				if (value is null)

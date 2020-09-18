@@ -27,7 +27,7 @@ namespace Umbrella.Utilities.Email
 		#region Private Members
 		private readonly ILogger _log;
 		private readonly ILogger<EmailContent> _emailContentLog;
-		private readonly ILookupNormalizer _lookupNormalizer;
+		private readonly IDataLookupNormalizer _lookupNormalizer;
 		private readonly EmailFactoryOptions _options;
 		private readonly IUmbrellaHostingEnvironment _hostingEnvironment;
 		private readonly string _encodedNewLineToken;
@@ -46,7 +46,7 @@ namespace Umbrella.Utilities.Email
 		public EmailFactory(
 			ILoggerFactory loggerFactory,
 			ILogger<EmailFactory> logger,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			EmailFactoryOptions options,
 			IUmbrellaHostingEnvironment hostingEnvironment)
 		{

@@ -3,7 +3,7 @@
 	/// <summary>
 	/// A utility used to normalize string values.
 	/// </summary>
-	public interface ILookupNormalizer
+	public interface IDataLookupNormalizer
 	{
 		/// <summary>
 		/// Normalizes the specified value.

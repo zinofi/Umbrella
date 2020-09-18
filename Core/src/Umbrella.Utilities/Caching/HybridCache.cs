@@ -42,7 +42,7 @@ namespace Umbrella.Utilities.Caching
 		/// <summary>
 		/// Gets the lookup normalizer.
 		/// </summary>
-		protected ILookupNormalizer LookupNormalizer { get; }
+		protected IDataLookupNormalizer LookupNormalizer { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether to track cache keys.
@@ -82,7 +82,7 @@ namespace Umbrella.Utilities.Caching
 		public HybridCache(
 			ILogger<HybridCache> logger,
 			HybridCacheOptions options,
-			ILookupNormalizer lookupNormalizer,
+			IDataLookupNormalizer lookupNormalizer,
 			IDistributedCache distributedCache,
 			IMemoryCache memoryCache)
 		{
