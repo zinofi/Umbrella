@@ -208,7 +208,21 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 				var filteredQuery = Items.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator);
 
-				int totalCount = await filteredQuery.CountAsync();
+				// TODO: It would seem the need for 2 db calls has been rectified by the EF Core team. Investigate!
+				// SO: https://stackoverflow.com/questions/7767409/better-way-to-query-a-page-of-data-and-get-total-count-in-entity-framework-4-1
+				//var results = query.OrderBy(p => p.Name)
+				//   .Select(p => new
+				//   {
+				//	   Person = new PersonResult { Name = p.Name },
+				//	   TotalCount = query.Count()
+				//   })
+				//   .Skip(skipRows).Take(pageSize)
+				//   .ToArray(); // query is executed once, here
+
+				//var totalCount = results.First().TotalCount;
+				//var people = results.Select(r => r.Person).ToArray();
+
+				int totalCount = await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 				List<TEntity> entities = await filteredQuery
 					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 					.ApplyPagination(pageNumber, pageSize)

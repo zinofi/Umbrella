@@ -200,7 +200,7 @@ namespace Umbrella.DataAccess.EF6
 
 				var filteredQuery = Items.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator);
 
-				int totalCount = await filteredQuery.CountAsync();
+				int totalCount = await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 				List<TEntity> entities = await Items
 					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 					.ApplyPagination(pageNumber, pageSize)
