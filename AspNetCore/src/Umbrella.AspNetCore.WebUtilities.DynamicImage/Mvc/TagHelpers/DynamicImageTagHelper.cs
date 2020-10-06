@@ -71,10 +71,10 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 			{
 				string src = BuildCoreTag(output);
 
-				string cacheKey = CacheKeyUtility.Create<DynamicImageTagHelper>($"{src}:{PixelDensities}:{SizeWidths}");
+				string cacheKey = CacheKeyUtility.Create<DynamicImageTagHelper>($"{src}:{MaxPixelDensity}:{SizeWidths}");
 				string srcsetValue = Cache.GetOrCreate(
 					cacheKey,
-					() => ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, PixelDensities, WidthRequest, HeightRequest, x =>
+					() => ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, MaxPixelDensity, WidthRequest, HeightRequest, x =>
 					{
 						var options = new DynamicImageOptions(src, x.imageWidth, x.imageHeight, ResizeMode, ImageFormat);
 

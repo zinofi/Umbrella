@@ -17,19 +17,20 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers
 	[HtmlTargetElement("img", Attributes = RequiredAttributeNames)]
 	public class ResponsiveImageTagHelper : TagHelper
 	{
-		private const string RequiredAttributeNames = "src," + PixelDensitiesAttributeName;
+		private const string RequiredAttributeNames = "src," + MaxPixelDensityAttributeName;
 
 		/// <summary>
 		/// The pixel densities attribute name.
 		/// </summary>
-		protected const string PixelDensitiesAttributeName = "um-pixel-densities";
+		protected const string MaxPixelDensityAttributeName = "max-pixel-density";
 
-		#region Public Properties		
+		#region Public Properties
 		/// <summary>
-		/// Gets or sets the pixel densities as a comma delimited list of integers.
+		/// Gets or sets the maximum pixel density. All values below the maximum inclusive will have corresponding image URLs
+		/// generated for them.
 		/// </summary>
-		[HtmlAttributeName(PixelDensitiesAttributeName)]
-		public string PixelDensities { get; set; } = "1";
+		[HtmlAttributeName(MaxPixelDensityAttributeName)]
+		public int MaxPixelDensity { get; set; } = 1;
 		#endregion
 
 		#region Protected Properties		
@@ -94,11 +95,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers
 			if (!string.IsNullOrWhiteSpace(path))
 			{
 				// Cache this using the image src attribute value and PixelDensities
-				string key = CacheKeyUtility.Create<ResponsiveImageTagHelper>($"{path}:{PixelDensities}");
+				string key = CacheKeyUtility.Create<ResponsiveImageTagHelper>($"{path}:{MaxPixelDensity}");
 
 				string srcsetValue = Cache.GetOrCreate(
 					key,
-					() => ResponsiveImageHelper.GetPixelDensitySrcSetValue(path, PixelDensities, ResolveImageUrl),
+					() => ResponsiveImageHelper.GetPixelDensitySrcSetValue(path, MaxPixelDensity, ResolveImageUrl),
 					() => TimeSpan.FromHours(1),
 					priority: CacheItemPriority.Low);
 

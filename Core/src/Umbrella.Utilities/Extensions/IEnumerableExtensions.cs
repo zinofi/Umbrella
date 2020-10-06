@@ -103,6 +103,8 @@ namespace Umbrella.Utilities.Extensions
 			}
 		}
 
+		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(x => Guid.NewGuid());
+
 		// TODO: Add documentation and unit tests.
 		// These methods return collections of the same length with each item set to the sum of the current item, plus the previous item,
 		// e.g. 1, 2, 3,  4,  5,  6,  7,  8,  9, 10
