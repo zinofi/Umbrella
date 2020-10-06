@@ -146,7 +146,7 @@ namespace Umbrella.Utilities.Imaging
 				if (densityIndex is -1)
 					throw new Exception("The image URL must contain a '.'");
 
-				string highResImagePath = pixelDensity > 1 ? imageUrl.Insert(densityIndex, $"@{pixelDensity}") : imageUrl;
+				string highResImagePath = pixelDensity > 1 ? imageUrl.Insert(densityIndex, $"@{pixelDensity}x") : imageUrl;
 
 				return pathResolver?.Invoke(highResImagePath) ?? highResImagePath;
 			}
