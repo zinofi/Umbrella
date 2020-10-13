@@ -31,7 +31,7 @@
 	/// Represents the result of a Http call.
 	/// </summary>
 	/// <typeparam name="TResult">The type of the result.</typeparam>
-	public class HttpCallResult<TResult> : HttpCallResult
+	public class HttpCallResult<TResult> : HttpCallResult // TODO: Create a covariant interface for this to simply shared result assignment.
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HttpCallResult{TResult}"/> class.
