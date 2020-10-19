@@ -8,10 +8,18 @@ using Umbrella.Utilities;
 
 namespace Umbrella.DynamicImage.SkiaSharp
 {
-	// TODO: Handle issues with transparency information being lost on resize
+	/// <summary>
+	/// An implementation of the <see cref="DynamicImageResizerBase"/> which uses SkiaSharp.
+	/// </summary>
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.DynamicImageResizerBase" />
 	public class DynamicImageResizer : DynamicImageResizerBase
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageResizer"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dynamicImageCache">The dynamic image cache.</param>
 		public DynamicImageResizer(
 			ILogger<DynamicImageResizer> logger,
 			IDynamicImageCache dynamicImageCache)
@@ -21,6 +29,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
 		#endregion
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		public override bool IsImage(byte[] bytes)
 		{
 			Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
@@ -37,6 +46,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
 			}
 		}
 
+		/// <inheritdoc />
 		public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
 		{
 			Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
@@ -85,18 +95,16 @@ namespace Umbrella.DynamicImage.SkiaSharp
 			using var codec = SKCodec.Create(s);
 
 			var info = codec.Info;
-			var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height, SKImageInfo.PlatformColorType, info.IsOpaque ? SKAlphaType.Opaque : SKAlphaType.Premul));
+			var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height, info.ColorType, info.AlphaType, info.ColorSpace));
 
 			var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels(out IntPtr length));
 
-			if (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput)
+			return result switch
 			{
-				return bitmap;
-			}
-			else
-			{
-				throw new ArgumentException("Unable to load bitmap from provided data");
-			}
+				SKCodecResult.Success => bitmap,
+				SKCodecResult.IncompleteInput => bitmap,
+				_ => throw new ArgumentException("Unable to load bitmap from provided data")
+			};
 		}
 
 		private SKEncodedImageFormat GetImageFormat(DynamicImageFormat format) => format switch

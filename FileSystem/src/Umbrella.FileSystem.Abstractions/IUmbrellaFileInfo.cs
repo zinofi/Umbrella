@@ -48,9 +48,6 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <returns>An awaitable <see cref="Task"/> which will return <see langword="true" /> if it exists; otherwise <see langword="false"/>.</returns>
 		Task<bool> ExistsAsync(CancellationToken cancellationToken = default);
 
-		// TODO: Do we still need the cacheContents functionality? Really a good idea?? If we want to cache content, it's probably better
-		// to have that as an additional layer. SRP and all that...
-
 		/// <summary>
 		/// Reads the file content as a byte array.
 		/// </summary>

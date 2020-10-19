@@ -10,9 +10,19 @@ using Umbrella.Utilities;
 namespace Umbrella.DynamicImage.FreeImage
 {
 	// TODO: Handle issues with transparency information being lost on resize
+
+	/// <summary>
+	/// An implementation of the <see cref="DynamicImageResizerBase"/> which uses FreeImage.
+	/// </summary>
+	/// <seealso cref="Umbrella.DynamicImage.Abstractions.DynamicImageResizerBase" />
 	public class DynamicImageResizer : DynamicImageResizerBase
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DynamicImageResizer"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dynamicImageCache">The dynamic image cache.</param>
 		public DynamicImageResizer(
 			ILogger<DynamicImageResizer> logger,
 			IDynamicImageCache dynamicImageCache)
@@ -22,6 +32,7 @@ namespace Umbrella.DynamicImage.FreeImage
 		#endregion
 
 		#region Overridden Methods
+		/// <inheritdoc />
 		public override bool IsImage(byte[] bytes)
 		{
 			try
@@ -39,6 +50,7 @@ namespace Umbrella.DynamicImage.FreeImage
 			}
 		}
 
+		/// <inheritdoc />
 		public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
 		{
 			try
