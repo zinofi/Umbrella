@@ -120,6 +120,17 @@ namespace Umbrella.AspNetCore.WebUtilities.FileSystem.Middleware
 						context.Response.Headers["Cache-Control"] = "no-store";
 					}
 
+					// TODO: Build in support for Range request header and Content-Range response header using a 206 response code.
+					// Need to alter the following:
+
+					// fileInfo.WriteToStreamAsync
+					// fileInfo.ReadAsStreamAsync
+					// fileInfo.ReadAsByteArrayAsync
+
+					// Before altering the above, use read as stream or byte array to test the Range stuff works.
+					// Probably best to copy this middleware into the target project first to do the initial work
+					// before altering the file system.
+
 					await fileInfo.WriteToStreamAsync(context.Response.Body, token);
 					await context.Response.Body.FlushAsync();
 
