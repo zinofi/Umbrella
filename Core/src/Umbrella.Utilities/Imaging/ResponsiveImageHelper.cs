@@ -83,6 +83,9 @@ namespace Umbrella.Utilities.Imaging
 				if (lstPixelDensity.Count < 2)
 					return string.Empty;
 
+				// TODO: Alter all code in here to safely allow querystrings
+				// Probably best to strip any QS, do the work we need and then add it back.
+				// Look at IDynamicImageUtility as well
 				int densityIndex = imageUrl.LastIndexOf('.');
 
 				if (densityIndex is -1)

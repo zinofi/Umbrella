@@ -61,10 +61,13 @@ namespace Umbrella.DynamicImage.SkiaSharp
 
 				try
 				{
+					// TODO: Look at how we can alter the resizing code to allow the cropped area position to be varied.
+					// Could have a crop hotspot, i.e. an X and Y coordinate that we use to specify the center of the cropped area and then
+					// calculate the edges accordingly.
 					if (result.offsetX > 0 || result.offsetY > 0)
 					{
 						var cropRect = SKRectI.Create(result.offsetX, result.offsetY, result.cropWidth, result.cropHeight);
-
+						
 						imageToResize = new SKBitmap(cropRect.Width, cropRect.Height);
 						image.ExtractSubset(imageToResize, cropRect);
 					}
@@ -72,6 +75,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
 					using var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKFilterQuality.High);
 					using var outputImage = SKImage.FromBitmap(resizedImage);
 
+					// TODO: Allow the quality to be passed in as a parameter.
 					return outputImage.Encode(GetImageFormat(format), 75).ToArray();
 				}
 				finally
