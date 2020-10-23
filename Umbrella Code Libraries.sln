@@ -185,6 +185,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Abstrac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Caching.Disk", "DynamicImage\src\Umbrella.DynamicImage.Caching.Disk\Umbrella.DynamicImage.Caching.Disk.csproj", "{1BCA5780-F8B6-448A-874D-D977EC6DDF45}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xamarin", "Xamarin", "{0869B0D3-75F3-4FB5-839F-2C471909E9F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
