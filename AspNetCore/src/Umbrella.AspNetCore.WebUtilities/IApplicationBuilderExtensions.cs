@@ -68,7 +68,7 @@ namespace Microsoft.AspNetCore.Builder
 		}
 
 		/// <summary>
-		/// Add the <see cref="FrontEndCompressionMiddleware"/> to the pipeline.
+		/// Adds the <see cref="FrontEndCompressionMiddleware"/> to the pipeline.
 		/// </summary>
 		/// <param name="builder">The builder.</param>
 		/// <returns>The application builder.</returns>
@@ -77,6 +77,20 @@ namespace Microsoft.AspNetCore.Builder
 			Guard.ArgumentNotNull(builder, nameof(builder));
 
 			builder.UseMiddleware<FrontEndCompressionMiddleware>();
+
+			return builder;
+		}
+
+		/// <summary>
+		/// Adds the <see cref="ApiExceptionMiddleware"/> to the pipeline.
+		/// </summary>
+		/// <param name="builder">The builder.</param>
+		/// <returns>The application builder.</returns>
+		public static IApplicationBuilder UseUmbrellaApiException(this IApplicationBuilder builder)
+		{
+			Guard.ArgumentNotNull(builder, nameof(builder));
+
+			builder.UseMiddleware<ApiExceptionMiddleware>();
 
 			return builder;
 		}
