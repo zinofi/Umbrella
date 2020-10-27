@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Extensions.Logging.Log4Net.Azure.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Xamarin.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<DevelopmentDependency>true</DevelopmentDependency>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
@@ -16,13 +17,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.Extensions.Logging.Log4Net.Azure</PackageId>
+		<PackageId>Umbrella.Xamarin</PackageId>
 		<Version>3.0.0-preview-0136</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
-			This package builds on the Umbrella.Extensions.Logging.Azure package by writing log messages to Azure Table Storage.
+			This package contains various utilities and controls for use with Xamarin Forms projects.
 		</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
@@ -30,7 +31,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="log4net" Version="2.0.12" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -38,11 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Umbrella.Extensions.Logging.Azure\Umbrella.Extensions.Logging.Azure.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
-	
+
 </Project>
