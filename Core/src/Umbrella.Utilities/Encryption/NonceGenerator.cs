@@ -12,10 +12,9 @@ namespace Umbrella.Utilities.Encryption
 	/// </summary>
 	/// <seealso cref="INonceGenerator" />
 	/// <seealso cref="IDisposable" />
-	public class NonceGenerator : INonceGenerator, IDisposable
+	public class NonceGenerator : INonceGenerator
 	{
 		private readonly ILogger _log;
-		private readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NonceGenerator"/> class.
@@ -42,7 +41,8 @@ namespace Umbrella.Utilities.Encryption
 			{
 				buffer = ArrayPool<byte>.Shared.Rent(lengthInBytes);
 
-				_random.GetBytes(buffer, 0, lengthInBytes);
+				using var rng = RandomNumberGenerator.Create();
+				rng.GetBytes(buffer, 0, lengthInBytes);
 
 				return Convert.ToBase64String(buffer, 0, lengthInBytes);
 			}
@@ -56,42 +56,5 @@ namespace Umbrella.Utilities.Encryption
 					ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}
-
-		#region IDisposable Support
-		private bool _isDisposed = false;
-
-		/// <summary>
-		/// Releases unmanaged and - optionally - managed resources.
-		/// </summary>
-		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!_isDisposed)
-			{
-				if (disposing)
-				{
-					_random.Dispose();
-				}
-
-				_isDisposed = true;
-			}
-		}
-
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose()
-		{
-			try
-			{
-				// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-				Dispose(true);
-			}
-			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
-			{
-				throw new UmbrellaException("There has been a problem disposing this instance.", exc);
-			}
-		}
-		#endregion
 	}
 }

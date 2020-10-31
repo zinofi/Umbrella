@@ -19,7 +19,6 @@ namespace Umbrella.Utilities.Numerics
 	{
 		#region Private Members
 		private readonly ILogger _log;
-		private readonly RandomNumberGenerator _randomNumberGenerator = RandomNumberGenerator.Create();
 		private readonly ThreadLocal<Random> _threadLocalRandom;
 		#endregion
 
@@ -184,7 +183,8 @@ namespace Umbrella.Utilities.Numerics
 			{
 				buffer = ArrayPool<byte>.Shared.Rent(4);
 
-				_randomNumberGenerator.GetBytes(buffer, 0, 4);
+				using var rng = RandomNumberGenerator.Create();
+				rng.GetBytes(buffer, 0, 4);
 
 				int seed = BitConverter.ToInt32(buffer, 0);
 
@@ -211,7 +211,6 @@ namespace Umbrella.Utilities.Numerics
 			{
 				if (disposing)
 				{
-					_randomNumberGenerator.Dispose();
 					_threadLocalRandom.Dispose();
 				}
 

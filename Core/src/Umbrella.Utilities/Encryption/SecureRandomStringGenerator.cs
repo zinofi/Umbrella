@@ -16,7 +16,7 @@ namespace Umbrella.Utilities.Encryption
 	/// </summary>
 	/// <seealso cref="Umbrella.Utilities.Encryption.Abstractions.ISecureRandomStringGenerator" />
 	/// <seealso cref="System.IDisposable" />
-	public class SecureRandomStringGenerator : ISecureRandomStringGenerator, IDisposable
+	public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 	{
 		#region Private Static Members
 		private static readonly char[] _lowerCaseLettersArray = new char[26]
@@ -29,7 +29,6 @@ namespace Umbrella.Utilities.Encryption
 		#region Private Members
 		private readonly ILogger _log;
 		private readonly SecureRandomStringGeneratorOptions _options;
-		private readonly RandomNumberGenerator _random = RandomNumberGenerator.Create();
 		#endregion
 
 		#region Constructors		
@@ -235,7 +234,8 @@ namespace Umbrella.Utilities.Encryption
 				{
 					buffer = ArrayPool<byte>.Shared.Rent(4);
 
-					_random.GetBytes(buffer, 0, 4);
+					using var rng = RandomNumberGenerator.Create();
+					rng.GetBytes(buffer, 0, 4);
 
 					// Convert that into an uint.
 					scale = BitConverter.ToUInt32(buffer, 0);
@@ -250,43 +250,6 @@ namespace Umbrella.Utilities.Encryption
 			// Add min to the scaled difference between max and min.
 			return (int)(min + (max - min) *
 				(scale / (double)uint.MaxValue));
-		}
-		#endregion
-
-		#region IDisposable Support
-		private bool _isDisposed = false;
-
-		/// <summary>
-		/// Releases unmanaged and - optionally - managed resources.
-		/// </summary>
-		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!_isDisposed)
-			{
-				if (disposing)
-				{
-					_random.Dispose();
-				}
-
-				_isDisposed = true;
-			}
-		}
-
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose()
-		{
-			try
-			{
-				// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-				Dispose(true);
-			}
-			catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
-			{
-				throw new UmbrellaException("There has been a problem disposing this instance.", exc);
-			}
 		}
 		#endregion
 	}
