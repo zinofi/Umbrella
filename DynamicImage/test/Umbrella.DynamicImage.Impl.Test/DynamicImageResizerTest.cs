@@ -1,26 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
-using Microsoft.Extensions.Logging;
-using Umbrella.DynamicImage.Abstractions;
-using Xunit;
-using Umbrella.FileSystem.Abstractions;
-using System.Threading;
-using System.IO;
-using Umbrella.Utilities.Compilation;
-using Umbrella.Utilities.Helpers;
-using FreeImageResizer = Umbrella.DynamicImage.FreeImage.DynamicImageResizer;
-using SkiaSharpResizer = Umbrella.DynamicImage.SkiaSharp.DynamicImageResizer;
 using System.Drawing;
 using System.Drawing.Imaging;
-using Umbrella.Utilities;
+using System.IO;
 using System.Runtime.InteropServices;
-using Umbrella.Utilities.Runtime;
-using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
+using Umbrella.FileSystem.Abstractions;
+using Umbrella.Utilities.Compilation;
+using Umbrella.Utilities.Helpers;
+using Umbrella.Utilities.Runtime;
+using Xunit;
+using FreeImageResizer = Umbrella.DynamicImage.FreeImage.DynamicImageResizer;
+using SkiaSharpResizer = Umbrella.DynamicImage.SkiaSharp.DynamicImageResizer;
 
 namespace Umbrella.DynamicImage.Impl.Test
 {
