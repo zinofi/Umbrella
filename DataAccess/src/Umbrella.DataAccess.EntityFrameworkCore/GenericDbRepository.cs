@@ -427,6 +427,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
 		protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, IEnumerable<RepoOptions>? childOptions)
 		{
+			// TODO v4: Alter this method signature to allow this to be passed in by the caller for convenience.
+			// bool isNew = entityEntry.State is EntityState.Detached || entityEntry.State is EntityState.Added;
+
 			cancellationToken.ThrowIfCancellationRequested();
 
 			return Task.CompletedTask;
