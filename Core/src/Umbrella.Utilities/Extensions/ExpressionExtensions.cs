@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Reflection;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Expressions;
 
@@ -122,6 +124,27 @@ namespace Umbrella.Utilities.Extensions
 
 			return Expression.Lambda<Func<TSource, bool>>(
 				Expression.OrElse(binder.Visit(left.Body), right.Body), r);
+		}
+
+		/// <summary>
+		/// Gets the display text for the given expression by attempting to find a <see cref="DisplayAttribute"/> annotation.
+		/// </summary>
+		/// <param name="expression">The expression.</param>
+		/// <returns>The text specified using the <see cref="DisplayAttribute"/> if it exists.</returns>
+		public static string GetDisplayText(this LambdaExpression expression)
+		{
+			MemberExpression memberExpression = expression.Body switch
+			{
+				UnaryExpression x => x.Operand as MemberExpression,
+				_ => expression.Body as MemberExpression
+			};
+
+			if (memberExpression is null)
+				return null;
+
+			var displayProperty = memberExpression.Member.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
+
+			return displayProperty?.Name ?? memberExpression.Member.Name;
 		}
 	}
 }

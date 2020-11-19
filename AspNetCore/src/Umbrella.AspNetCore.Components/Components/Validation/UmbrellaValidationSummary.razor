@@ -1,0 +1,9 @@
+﻿@if (ValidationResults?.Count > 0)
+{
+	<ul class="u-validation-summary validation-errors">
+		@foreach (var error in ValidationResults)
+		{
+			<li class="validation-message">@error.ErrorMessage</li>
+		}
+	</ul>
+}

@@ -1,0 +1,12 @@
+﻿@inherits UmbrellaDynamicImageBase
+
+<div class="u-dynamic-image @CssClass">
+	@if (!string.IsNullOrWhiteSpace(SrcSetValue))
+	{
+		<img src="@SrcValue" srcset="@SrcSetValue" @attributes="AdditionalAttributes" />
+	}
+	else
+	{
+		<img src="@SrcValue" @attributes="AdditionalAttributes" />
+	}
+</div>

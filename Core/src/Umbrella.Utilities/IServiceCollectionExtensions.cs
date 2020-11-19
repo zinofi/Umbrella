@@ -38,6 +38,8 @@ using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.Utilities.Options.Exceptions;
 using Umbrella.Utilities.Security;
 using Umbrella.Utilities.Security.Abstractions;
+using Umbrella.Utilities.Spatial;
+using Umbrella.Utilities.Spatial.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -108,7 +110,8 @@ namespace Microsoft.Extensions.DependencyInjection
 				var dict = new Dictionary<Type, IHttpClientBuilder>
 				{
 					[typeof(IGenericHttpService)] = services.AddHttpClient<IGenericHttpService, GenericHttpService>(),
-					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>()
+					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>(),
+					[typeof(IGeocodingService)] = services.AddHttpClient<IGeocodingService, PostcodesIOGeocodingService>()
 				};
 
 				httpServicesBuilder(dict);
@@ -117,6 +120,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			{
 				services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers();
 				services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers();
+				services.AddHttpClient<IGeocodingService, PostcodesIOGeocodingService>().AddUmbrellaPolicyHandlers();
 			}
 
 			// Options

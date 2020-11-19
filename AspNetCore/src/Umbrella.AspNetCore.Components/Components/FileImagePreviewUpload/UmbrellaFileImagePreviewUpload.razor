@@ -1,0 +1,34 @@
+﻿<div class="u-file-image-preview-upload">
+	@if (FileUploadMode == UmbrellaFileImagePreviewUploadMode.Upload)
+	{
+		<UmbrellaFileUpload OnRequestUpload="OnRequestUploadInner"
+							Accept="@Accept"
+							MaxFileSizeBytes="@MaxFileSizeBytes"
+							ShowCancelWarning="@ShowCancelWarning"
+							ShowClearWarning="@ShowClearWarning" />
+	}
+	else
+	{
+		<div class="form-group">
+			<UmbrellaDynamicImage WidthRequest="@WidthRequest"
+								  HeightRequest="@HeightRequest"
+								  MaxPixelDensity="@MaxPixelDensity"
+								  DynamicImagePathPrefix="@DynamicImagePathPrefix"
+								  ImageFormat="@ImageFormat"
+								  ResizeMode="@ResizeMode"
+								  SizeWidths="@SizeWidths"
+								  StripPrefix="@StripPrefix"
+								  Url="@UpdatedImageUrl"
+								  @key="@UpdatedImageUrl" />
+		</div>
+
+		@if (FileUploadMode == UmbrellaFileImagePreviewUploadMode.New)
+		{
+			<small class="form-text">@ChangesMadeMessage</small>
+		}
+
+		<div class="form-group">
+			<button class="btn btn-danger" type="button" @onclick="DeleteImageClick">Delete</button>
+		</div>
+	}
+</div>

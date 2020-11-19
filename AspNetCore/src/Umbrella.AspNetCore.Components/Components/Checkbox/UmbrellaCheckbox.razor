@@ -1,0 +1,15 @@
+﻿@inherits UmbrellaCheckboxBase
+
+<div class="u-checkbox @CssClass">
+	<input type="checkbox" @bind="CurrentValue" id="@Id" class="u-checkbox__input" />
+	<label for="@Id" class="u-checkbox__label">
+		@if(ChildContent is null)
+		{
+			@Text
+		}
+		else
+		{
+			<span class="u-checkbox__label-content">@ChildContent</span>
+		}
+	</label>
+</div>

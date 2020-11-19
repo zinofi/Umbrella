@@ -1,15 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
-		<RazorLangVersion>3.0</RazorLangVersion>
-		<Nullable>enable</Nullable>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\netstandard2.1\Umbrella.AspNetCore.Components.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Extensions.Logging.AppCenter.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
@@ -18,43 +17,31 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.AspNetCore.Components</PackageId>
+		<PackageId>Umbrella.Extensions.Logging.AppCenter</PackageId>
 		<Version>3.0.0-preview-0136</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
 		<Description>
-			This package contains code to be used with Razor Components projects, e.g. Blazor.
+			This package contains implementations of the ILogger and ILoggerProvider to allow Microsoft AppCenter to be used as a logging sink.
 		</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
-		<PackageReference Include="Blazored.Modal" Version="5.1.0" />
-		<PackageReference Include="Blazored.SessionStorage" Version="1.0.12" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="3.4.3" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="3.4.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.9" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Tewr.Blazor.FileReader" Version="2.1.0.20274" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
-	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Utilities\" />
 	</ItemGroup>
 
 </Project>

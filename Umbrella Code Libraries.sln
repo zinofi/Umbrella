@@ -187,13 +187,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.Cachi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xamarin", "Xamarin", "{0869B0D3-75F3-4FB5-839F-2C471909E9F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Xamarin", "Xamarin\src\Umbrella.Xamarin\Umbrella.Xamarin.csproj", "{E89656E4-C490-4497-A7C5-187BEE6FC23B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Xamarin", "Xamarin\src\Umbrella.Xamarin\Umbrella.Xamarin.csproj", "{E89656E4-C490-4497-A7C5-187BEE6FC23B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{59E1AFF5-3834-49B7-A46F-DE5DAE2E8E47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNetCore.Components", "AspNetCore\src\Umbrella.AspNetCore.Components\Umbrella.AspNetCore.Components.csproj", "{C354C210-B453-4D30-9FA0-08A04EFD5403}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Components", "AspNetCore\src\Umbrella.AspNetCore.Components\Umbrella.AspNetCore.Components.csproj", "{C354C210-B453-4D30-9FA0-08A04EFD5403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AppFramework", "Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj", "{0E352693-F77E-49F8-926C-2961BB1A194F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AppFramework", "Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj", "{0E352693-F77E-49F8-926C-2961BB1A194F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.AppCenter", "Logging\src\Umbrella.Extensions.Logging.AppCenter\Umbrella.Extensions.Logging.AppCenter.csproj", "{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -538,6 +540,12 @@ Global
 		{0E352693-F77E-49F8-926C-2961BB1A194F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E352693-F77E-49F8-926C-2961BB1A194F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E352693-F77E-49F8-926C-2961BB1A194F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -624,6 +632,7 @@ Global
 		{59E1AFF5-3834-49B7-A46F-DE5DAE2E8E47} = {0869B0D3-75F3-4FB5-839F-2C471909E9F3}
 		{C354C210-B453-4D30-9FA0-08A04EFD5403} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 		{0E352693-F77E-49F8-926C-2961BB1A194F} = {84D45264-D944-4A17-A230-AAEECE889301}
+		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
