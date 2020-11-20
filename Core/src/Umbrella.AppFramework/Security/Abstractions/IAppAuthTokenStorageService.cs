@@ -4,8 +4,8 @@ namespace Umbrella.AppFramework.Security.Abstractions
 {
 	public interface IAppAuthTokenStorageService
 	{
-		Task<string?> GetTokenAsync();
-		Task SetTokenAsync(string? token);
-		Task<string> GetClientIdAsync();
+		ValueTask<string?> GetTokenAsync();
+		ValueTask SetTokenAsync(string? token);
+		ValueTask<string> GetClientIdAsync();
 	}
 }

@@ -53,8 +53,4 @@
 	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Utilities\" />
-	</ItemGroup>
-
 </Project>

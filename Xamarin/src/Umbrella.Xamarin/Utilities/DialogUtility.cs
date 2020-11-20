@@ -13,6 +13,11 @@ namespace Umbrella.Xamarin.Utilities
 		private readonly ILogger _logger;
 		private readonly IDialogTracker _dialogTracker;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DialogUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dialogTracker">The dialog tracker.</param>
 		public DialogUtility(
 			ILogger<DialogUtility> logger,
 			IDialogTracker dialogTracker)
@@ -21,6 +26,7 @@ namespace Umbrella.Xamarin.Utilities
 			_dialogTracker = dialogTracker;
 		}
 
+		/// <inheritdoc />
 		public async Task<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = "Confirm", string cancelButtonText = "Cancel")
 		{
 			try
@@ -33,6 +39,7 @@ namespace Umbrella.Xamarin.Utilities
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ShowDangerMessageAsync(string message = DialogDefaults.UnknownErrorMessage, string title = "Error", string closeButtonText = "Close")
 		{
 			try
@@ -52,6 +59,7 @@ namespace Umbrella.Xamarin.Utilities
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = "Close")
 		{
 			try
@@ -71,6 +79,7 @@ namespace Umbrella.Xamarin.Utilities
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ShowMessageAsync(string message, string title, string closeButtonText = "Close")
 		{
 			try
@@ -90,6 +99,7 @@ namespace Umbrella.Xamarin.Utilities
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = "Close")
 		{
 			try
@@ -109,6 +119,7 @@ namespace Umbrella.Xamarin.Utilities
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")
 		{
 			try
