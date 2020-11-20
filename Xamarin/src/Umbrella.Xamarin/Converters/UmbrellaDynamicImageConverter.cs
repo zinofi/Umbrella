@@ -19,6 +19,17 @@ namespace Umbrella.Xamarin.Converters
 		protected DynamicImageFormat ImageFormat { get; }
 		protected string? StripPrefix { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaDynamicImageConverter"/> class.
+		/// </summary>
+		/// <param name="maxPixelDensity">The maximum pixel density.</param>
+		/// <param name="innerConverter">The inner converter.</param>
+		/// <param name="dynamicImagePathPrefix">The dynamic image path prefix.</param>
+		/// <param name="widthRequest">The width request.</param>
+		/// <param name="heightRequest">The height request.</param>
+		/// <param name="resizeMode">The resize mode.</param>
+		/// <param name="imageFormat">The image format.</param>
+		/// <param name="stripPrefix">The strip prefix.</param>
 		public UmbrellaDynamicImageConverter(
 			int maxPixelDensity,
 			IValueConverter? innerConverter,
@@ -37,9 +48,10 @@ namespace Umbrella.Xamarin.Converters
 			ImageFormat = imageFormat;
 			StripPrefix = stripPrefix;
 
-			DynamicImageUtility = UmbrellaXamarinServices.Services.GetService<IDynamicImageUtility>();
+			DynamicImageUtility = UmbrellaXamarinServices.GetService<IDynamicImageUtility>();
 		}
 
+		/// <inheritdoc />
 		public override object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value is string imageUrl)

@@ -14,6 +14,7 @@ namespace Umbrella.Xamarin.MarkupExtensions
 		public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
 		public string? StripPrefix { get; set; }
 
+		/// <inheritdoc />
 		public override BindingBase ProvideValue(IServiceProvider serviceProvider)
 		{
 			var converter = new UmbrellaDynamicImageConverter(MaxPixelDensity, Converter, DynamicImagePathPrefix, WidthRequest, HeightRequest, ResizeMode, ImageFormat, StripPrefix);

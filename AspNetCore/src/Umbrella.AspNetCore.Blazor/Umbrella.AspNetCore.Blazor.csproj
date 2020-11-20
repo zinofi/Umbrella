@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<RazorLangVersion>3.0</RazorLangVersion>
+		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Xamarin.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.1\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-		<DevelopmentDependency>true</DevelopmentDependency>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
@@ -18,12 +18,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.Xamarin</PackageId>
+		<PackageId>Umbrella.AspNetCore.Blazor</PackageId>
 		<Version>3.0.0-preview-0137</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
-		<Description>This package contains various utilities and controls for use with Xamarin Forms projects.</Description>
+		<Description>
+			This package contains code to be used with Blazor projects.
+		</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
@@ -32,12 +34,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
+		<PackageReference Include="Blazored.Modal" Version="5.1.0" />
+		<PackageReference Include="Blazored.SessionStorage" Version="1.0.12" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
-		<PackageReference Include="Xamarin.Forms" Version="4.8.0.1560" />
+		<PackageReference Include="Tewr.Blazor.FileReader" Version="2.1.0.20274" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,14 +50,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
-	  <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Update="Controls\UmbrellaActivityInidicatorView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>

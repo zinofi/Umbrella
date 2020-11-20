@@ -7,6 +7,10 @@ using Xamarin.Essentials;
 
 namespace Umbrella.Xamarin.Utilities
 {
+	/// <summary>
+	/// A persistent storage service used to store string values used by the app using the <see cref="SecureStorage"/> mechanism.
+	/// </summary>
+	/// <seealso cref="IAppLocalStorageService" />
 	public class XamarinLocalStorageService : IAppLocalStorageService
 	{
 		private readonly ILogger _logger;
@@ -21,7 +25,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<string> GetAsync(string key)
+		public async ValueTask<string?> GetAsync(string key)
 		{
 			try
 			{

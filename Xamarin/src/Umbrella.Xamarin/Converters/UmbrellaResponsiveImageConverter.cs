@@ -13,6 +13,11 @@ namespace Umbrella.Xamarin.Converters
 		protected IValueConverter? InnerConverter { get; }
 		private IResponsiveImageHelper ResponsiveImageHelper { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaResponsiveImageConverter"/> class.
+		/// </summary>
+		/// <param name="maxPixelDensity">The maximum pixel density.</param>
+		/// <param name="innerConverter">The inner converter.</param>
 		public UmbrellaResponsiveImageConverter(int maxPixelDensity, IValueConverter? innerConverter)
 		{
 			MaxPixelDensity = maxPixelDensity;
@@ -21,6 +26,7 @@ namespace Umbrella.Xamarin.Converters
 			ResponsiveImageHelper = UmbrellaXamarinServices.GetService<IResponsiveImageHelper>();
 		}
 
+		/// <inheritdoc />
 		public virtual object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			object? convertedValue = value;

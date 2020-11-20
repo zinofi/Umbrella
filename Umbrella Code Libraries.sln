@@ -191,7 +191,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Xamarin", "Xamarin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{59E1AFF5-3834-49B7-A46F-DE5DAE2E8E47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Components", "AspNetCore\src\Umbrella.AspNetCore.Components\Umbrella.AspNetCore.Components.csproj", "{C354C210-B453-4D30-9FA0-08A04EFD5403}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Blazor", "AspNetCore\src\Umbrella.AspNetCore.Blazor\Umbrella.AspNetCore.Blazor.csproj", "{C354C210-B453-4D30-9FA0-08A04EFD5403}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AppFramework", "Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj", "{0E352693-F77E-49F8-926C-2961BB1A194F}"
 EndProject

@@ -17,6 +17,9 @@ namespace Umbrella.Xamarin.Controls
 		public static BindableProperty IsToggledProperty = BindableProperty.Create(nameof(IsToggled), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay, propertyChanged: OnIsToggledChanged);
 		public static BindableProperty GroupNameProperty = BindableProperty.Create(nameof(GroupName), typeof(string), typeof(ToggleButton));
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ToggleButton"/> class.
+		/// </summary>
 		public ToggleButton()
 		{
 			Clicked += (sender, args) => ToggleState();
@@ -40,6 +43,7 @@ namespace Umbrella.Xamarin.Controls
 			set => SetValue(GroupNameProperty, value);
 		}
 
+		/// <inheritdoc />
 		protected override void OnParentSet()
 		{
 			base.OnParentSet();

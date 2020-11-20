@@ -10,11 +10,13 @@ namespace Umbrella.Xamarin.Converters
 {
 	public class IntegerToggledConverter : IValueConverter
 	{
+		/// <inheritdoc />
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			return value is int answer && parameter is string strOption && int.TryParse(strOption, out int option) && answer == option;
 		}
 
+		/// <inheritdoc />
 		public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			return value is bool selected && selected && parameter is string strOption && int.TryParse(strOption, out int option) ? option : (int?)null;

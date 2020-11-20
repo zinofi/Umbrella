@@ -7,6 +7,7 @@ namespace Umbrella.Xamarin.Converters
 	public class EnumToggledConverter<T> : IValueConverter
 		where T : struct, Enum
 	{
+		/// <inheritdoc />
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value is null)
@@ -15,6 +16,7 @@ namespace Umbrella.Xamarin.Converters
 			return value.Equals(GetParameterValue(parameter));
 		}
 
+		/// <inheritdoc />
 		public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value is bool selected && selected)

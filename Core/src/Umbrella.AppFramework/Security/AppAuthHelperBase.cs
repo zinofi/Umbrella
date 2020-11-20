@@ -8,6 +8,10 @@ using Umbrella.Utilities.Security.Abstractions;
 
 namespace Umbrella.AppFramework.Security
 {
+	/// <summary>
+	/// A base class from which application specified authentication helpers can extend.
+	/// </summary>
+	/// <seealso cref="IAppAuthHelper" />
 	public abstract class AppAuthHelperBase : IAppAuthHelper
 	{
 		private static readonly ClaimsPrincipal _emptyPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
@@ -18,7 +22,7 @@ namespace Umbrella.AppFramework.Security
 
 		// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
 		// Could wrap this in a singleton service but not much point.
-		private static ClaimsPrincipal _claimsPrincipal;
+		private static ClaimsPrincipal? _claimsPrincipal;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppAuthHelperBase"/> class.
@@ -37,7 +41,7 @@ namespace Umbrella.AppFramework.Security
 		}
 
 		/// <inheritdoc />
-		public async Task<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string token = null)
+		public async Task<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null)
 		{
 			try
 			{

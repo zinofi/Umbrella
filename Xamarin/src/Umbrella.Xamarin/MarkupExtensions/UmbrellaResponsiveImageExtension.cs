@@ -9,6 +9,9 @@ namespace Umbrella.Xamarin.MarkupExtensions
 	[AcceptEmptyServiceProvider]
 	public class UmbrellaResponsiveImageExtension : IMarkupExtension<BindingBase>
 	{
+		/// <summary>
+		/// Gets the <see cref="BindingMode"/> being used.
+		/// </summary>
 		protected BindingMode Mode { get; } = BindingMode.Default;
 
 		public IValueConverter? Converter { get; set; }
@@ -18,6 +21,7 @@ namespace Umbrella.Xamarin.MarkupExtensions
 		public object? Source { get; set; }
 		public int MaxPixelDensity { get; set; } = 1;
 
+		/// <inheritdoc />
 		public virtual BindingBase ProvideValue(IServiceProvider serviceProvider)
 		{
 			var converter = new UmbrellaResponsiveImageConverter(MaxPixelDensity, Converter);
@@ -25,6 +29,7 @@ namespace Umbrella.Xamarin.MarkupExtensions
 			return new Binding(Path, Mode, converter, ConverterParameter, StringFormat, Source);
 		}
 
+		/// <inheritdoc />
 		object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider) => ((IMarkupExtension<string>)this).ProvideValue(serviceProvider);
 	}
 }
