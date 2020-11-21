@@ -9,7 +9,7 @@ using Umbrella.Utilities.Security.Abstractions;
 namespace Umbrella.AppFramework.Security
 {
 	/// <summary>
-	/// A base class from which application specified authentication helpers can extend.
+	/// A base class from which application specific authentication helpers can extend.
 	/// </summary>
 	/// <seealso cref="IAppAuthHelper" />
 	public abstract class AppAuthHelperBase : IAppAuthHelper
@@ -41,7 +41,7 @@ namespace Umbrella.AppFramework.Security
 		}
 
 		/// <inheritdoc />
-		public async Task<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null)
+		public async ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null)
 		{
 			try
 			{
@@ -73,7 +73,7 @@ namespace Umbrella.AppFramework.Security
 		}
 
 		/// <inheritdoc />
-		public async Task LocalLogoutAsync(bool executeDefaultPostLogoutAction = true)
+		public async ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true)
 		{
 			try
 			{
@@ -93,6 +93,6 @@ namespace Umbrella.AppFramework.Security
 		/// An action to be executed after logging out the current user locally.
 		/// </summary>
 		/// <returns>A Task that can be awaited for this operation to complete.</returns>
-		protected abstract Task ExecutePostLogoutActionAsync();
+		protected abstract ValueTask ExecutePostLogoutActionAsync();
 	}
 }

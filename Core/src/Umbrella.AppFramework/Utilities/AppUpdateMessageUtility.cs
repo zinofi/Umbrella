@@ -9,7 +9,7 @@ namespace Umbrella.AppFramework.Utilities
 		private readonly IDialogUtility _dialogUtility;
 
 		/// <inheritdoc />
-		public event Func<bool, string, Task> OnShowAsync;
+		public event Func<bool, string, Task>? OnShowAsync;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppUpdateMessageUtility"/> class.
@@ -21,7 +21,7 @@ namespace Umbrella.AppFramework.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task ShowAsync(bool updateRequired, string message)
+		public async ValueTask ShowAsync(bool updateRequired, string message)
 		{
 			var task = OnShowAsync?.Invoke(updateRequired, message);
 

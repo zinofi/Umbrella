@@ -90,7 +90,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task ShowMessageAsync(string message, string title, string closeButtonText = "Close")
+		public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = "Close")
 		{
 			try
 			{
@@ -114,7 +114,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again. If problems persist, please reload the screen.", string title = "Error", string closeButtonText = "Close")
+		public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again. If problems persist, please reload the screen.", string title = "Error", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -138,7 +138,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = "Close")
+		public async ValueTask ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -164,7 +164,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = "Close")
+		public async ValueTask ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -188,7 +188,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")
+		public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -212,7 +212,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = "Confirm", string cancelButtonText = "Cancel")
+		public async ValueTask<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = "Confirm", string cancelButtonText = "Cancel")
 		{
 			try
 			{
@@ -235,7 +235,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> ShowConfirmDangerMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title)
 		{
 			try
 			{
@@ -250,7 +250,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> ShowConfirmSuccessMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title)
 		{
 			try
 			{
@@ -265,7 +265,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> ShowConfirmInfoMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title)
 		{
 			try
 			{
@@ -280,7 +280,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> ShowConfirmWarningMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title)
 		{
 			try
 			{
@@ -295,7 +295,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null)
+		public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null)
 		{
 			try
 			{
@@ -322,7 +322,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async Task<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
+		public async ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
 			where T : ComponentBase
 		{
 			try

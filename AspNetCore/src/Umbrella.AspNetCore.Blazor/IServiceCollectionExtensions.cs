@@ -28,15 +28,9 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.AspNetCore.Blazor"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// <returns>The services builder.</returns>
-		public static IServiceCollection AddUmbrellaAspNetCoreComponents<TAuthHelper>(this IServiceCollection services)
-			where TAuthHelper : class, IAppAuthHelper
+		public static IServiceCollection AddUmbrellaBlazor(this IServiceCollection services)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
-
-			services.AddBlazoredLocalStorage();
-			services.AddBlazoredSessionStorage();
-			services.AddBlazoredModal();
-			services.AddFileReaderService(x => x.UseWasmSharedBuffer = true);
 
 			services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
 			services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();

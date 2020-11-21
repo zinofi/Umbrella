@@ -8,6 +8,9 @@ using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Utilities
 {
+	/// <summary>
+	/// A utility used to show application dialogs.
+	/// </summary>
 	public class DialogUtility : IDialogUtility
 	{
 		private readonly ILogger _logger;
@@ -27,7 +30,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = "Confirm", string cancelButtonText = "Cancel")
+		public async ValueTask<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = "Confirm", string cancelButtonText = "Cancel")
 		{
 			try
 			{
@@ -40,7 +43,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task ShowDangerMessageAsync(string message = DialogDefaults.UnknownErrorMessage, string title = "Error", string closeButtonText = "Close")
+		public async ValueTask ShowDangerMessageAsync(string message = DialogDefaults.UnknownErrorMessage, string title = "Error", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -60,7 +63,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = "Close")
+		public async ValueTask ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -80,7 +83,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task ShowMessageAsync(string message, string title, string closeButtonText = "Close")
+		public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = "Close")
 		{
 			try
 			{
@@ -100,7 +103,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = "Close")
+		public async ValueTask ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = "Close")
 		{
 			try
 			{
@@ -120,7 +123,7 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")
+		public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")
 		{
 			try
 			{

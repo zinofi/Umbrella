@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.UI;
 using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.Xamarin.Utilities.Abstractions;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.ViewModels
@@ -17,6 +18,14 @@ namespace Umbrella.Xamarin.ViewModels
 		private Page? _currentPage;
 		private bool _isRefreshing;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is refreshing.
+		/// </summary>
+		/// <remarks>
+		/// This is usually bound to a control, e.g. a <see cref="RefreshView"/>, which means its value is set by the control.
+		/// However, it needs to be manually set to <see langword="false"/> when the refresh operation has been completed
+		/// in order for the UI to change state.
+		/// </remarks>
 		public bool IsRefreshing
 		{
 			get => _isRefreshing;

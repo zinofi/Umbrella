@@ -6,6 +6,10 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 
 namespace Umbrella.AppFramework.Security
 {
+	/// <summary>
+	/// A storage service for application auth tokens.
+	/// </summary>
+	/// <seealso cref="IAppAuthTokenStorageService" />
 	public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 	{
 		private const string AuthTokenStorageKey = "App.AuthToken";
@@ -33,7 +37,7 @@ namespace Umbrella.AppFramework.Security
 		{
 			try
 			{
-				string clientId = await _storageService.GetAsync(ClientIdStorageKey);
+				string? clientId = await _storageService.GetAsync(ClientIdStorageKey);
 
 				if (string.IsNullOrEmpty(clientId))
 				{
@@ -41,10 +45,11 @@ namespace Umbrella.AppFramework.Security
 					await _storageService.SetAsync(ClientIdStorageKey, clientId);
 				}
 
-				return clientId;
+				return clientId!;
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
 			{
+				// If something goes wrong just return a new id without storing it.
 				return Guid.NewGuid().ToString("N");
 			}
 		}
@@ -86,7 +91,9 @@ namespace Umbrella.AppFramework.Security
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
 			{
-				// Do nothing
+				// Do nothing here. The token will still be persisted in memory
+				// which at worst means a user will have to reauthenticate the next time
+				// they use the application.
 			}
 		}
 	}

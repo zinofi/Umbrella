@@ -12,14 +12,38 @@ using Umbrella.Utilities.Http;
 
 namespace Umbrella.AppFramework.UI
 {
-	// Add documentation to make it clear why this implements INotifyPropertyChanged. Only Xamarin actually needs it although there's nothing to stop
-	// Blazor users making use of it if so desired.
+	/// <summary>
+	/// A base class used to provide common functionality for application view models and shared UI handlers.
+	/// </summary>
+	/// <remarks>
+	/// This class underpines multiple application frameworks, e.g. Blazor and Xamarin.
+	/// Whilst implementing <see cref="INotifyPropertyChanged"/> is not required for Blazor, it is required
+	/// for Xamarin to be able to detect changes in property values.
+	/// </remarks>
+	/// <seealso cref="INotifyPropertyChanged" />
 	public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	{
+		/// <summary>
+		/// Gets the logger.
+		/// </summary>
 		protected ILogger Logger { get; }
+
+		/// <summary>
+		/// Gets the dialog utility.
+		/// </summary>
 		protected IDialogUtility DialogUtility { get; }
+
+		/// <summary>
+		/// Gets the authentication helper.
+		/// </summary>
 		protected IAppAuthHelper AuthHelper { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UmbrellaUIHandlerBase"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="dialogUtility">The dialog utility.</param>
+		/// <param name="authHelper">The authentication helper.</param>
 		public UmbrellaUIHandlerBase(
 			ILogger logger,
 			IDialogUtility dialogUtility,
@@ -30,6 +54,10 @@ namespace Umbrella.AppFramework.UI
 			AuthHelper = authHelper;
 		}
 
+		/// <summary>
+		/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
+		/// </summary>
+		/// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
 		protected async Task<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync();
 
 		/// <summary>
@@ -37,10 +65,20 @@ namespace Umbrella.AppFramework.UI
 		/// </summary>
 		/// <param name="problemDetails">The problem details.</param>
 		/// <param name="title">The title.</param>
-		protected async Task ShowProblemDetailsErrorMessageAsync(HttpProblemDetails problemDetails, string title = "Error")
+		protected async Task ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
 			=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
 
-		protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action onChanged = null)
+		/// <summary>
+		/// Sets the property value on the specified <paramref name="backingStore"/>, fires any specified <paramref name="onChanged"/> action and also calls the
+		/// <see cref="OnPropertyChanged(string)"/> method (which internally fires the <see cref="PropertyChanged"/> event).
+		/// </summary>
+		/// <typeparam name="T">The type of the value.</typeparam>
+		/// <param name="backingStore">The backing store.</param>
+		/// <param name="value">The value.</param>
+		/// <param name="propertyName">Name of the property.</param>
+		/// <param name="onChanged">The optional <see cref="Action"/> to be invoked if the <paramref name="value"/> being assigned to the <paramref name="backingStore"/> has changed.</param>
+		/// <returns><see langword="true"/> if the property value has changed; otherwise <see langword="false"/>.</returns>
+		protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
 		{
 			if (EqualityComparer<T>.Default.Equals(backingStore, value))
 				return false;
@@ -52,9 +90,13 @@ namespace Umbrella.AppFramework.UI
 			return true;
 		}
 
-		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler PropertyChanged;
+		/// <inheritdoc />
+		public event PropertyChangedEventHandler? PropertyChanged;
+
+		/// <summary>
+		/// This should be called when a property has been changed.
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
 		protected void OnPropertyChanged([CallerMemberName] string propertyName = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		#endregion
 	}
 }
