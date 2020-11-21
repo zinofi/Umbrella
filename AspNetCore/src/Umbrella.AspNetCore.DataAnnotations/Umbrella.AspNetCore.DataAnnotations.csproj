@@ -18,7 +18,7 @@
 
 	<PropertyGroup>
 		<PackageId>Umbrella.AspNetCore.DataAnnotations</PackageId>
-		<Version>3.0.0-preview-0138</Version>
+		<Version>3.0.0-preview-0139</Version>
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
 		<Copyright>Zinofi Digital Ltd 2020</Copyright>
