@@ -7,7 +7,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage
 {
-	public class UmbrellaDynamicImageBase : UmbrellaResponsiveImage
+	public abstract class UmbrellaDynamicImageBase : UmbrellaResponsiveImageBase
 	{
 		[Inject]
 		protected IDynamicImageUtility DynamicImageUtility { get; set; } = null!;

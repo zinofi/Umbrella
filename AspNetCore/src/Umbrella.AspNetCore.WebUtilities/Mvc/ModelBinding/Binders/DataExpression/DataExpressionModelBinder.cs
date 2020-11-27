@@ -12,6 +12,7 @@ using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.Exceptions;
+using Umbrella.AspNetCore.WebUtilities.Extensions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression
 {
@@ -115,8 +116,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 						if (modelResult != null)
 						{
 							bindingContext.Result = ModelBindingResult.Success(modelResult);
-
-							return Task.CompletedTask;
+						}
+						else
+						{
+							// We don't have a result here which means the descriptor couldn't be mapped
+							// to a property on the target type.
+							// Treat as success and add the descriptor to a list.
+							bindingContext.HttpContext.TrackUnmatchedDataExpressionDescriptor(descriptor);
+							bindingContext.Result = ModelBindingResult.Success(null);
 						}
 					}
 				}
@@ -128,13 +135,16 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 
 					DescriptorTransformer?.Invoke(bindingContext, descriptors, descriptors.Count());
 
-					object? modelResult = TransformDescriptors(underlyingOrModelType, descriptors);
+					var (modelResult, unmatchedItems) = TransformDescriptors(underlyingOrModelType, descriptors);
 
 					if (modelResult != null)
 					{
 						bindingContext.Result = ModelBindingResult.Success(modelResult);
-
-						return Task.CompletedTask;
+					}
+					else
+					{
+						bindingContext.HttpContext.TrackUnmatchedDataExpressionDescriptors((IEnumerable<IDataExpressionDescriptor>)descriptors);
+						bindingContext.Result = ModelBindingResult.Success(null);
 					}
 				}
 				else
@@ -165,7 +175,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 		/// <param name="descriptors">The descriptors.</param>
 		/// <returns>The transformation output which serves as the result of the model binding process.</returns>
 		/// <exception cref="UmbrellaWebException">The type being dealt with is not an enumerable. This should not be possible based on earlier checks.</exception>
-		protected virtual object? TransformDescriptors(Type underlyingOrModelType, IEnumerable<TDescriptor> descriptors)
+		protected virtual (object? modelResult, IReadOnlyCollection<TDescriptor> unmatchedItems) TransformDescriptors(Type underlyingOrModelType, IEnumerable<TDescriptor> descriptors)
 		{
 			var (isEnumerable, elementType) = _enumerableTypeDataCache.GetOrAdd(underlyingOrModelType, type => type.GetIEnumerableTypeData());
 
@@ -175,10 +185,11 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 			object[]? lstExpression = null;
 			int count = 0;
 
+			var lstUnmatched = new List<TDescriptor>();
+
 			try
 			{
 				lstExpression = ArrayPool<object>.Shared.Rent(descriptors.Count());
-
 
 				foreach (TDescriptor descriptor in descriptors)
 				{
@@ -186,6 +197,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 
 					if (instance != null)
 						lstExpression[count++] = instance;
+					else
+						lstUnmatched.Add(descriptor);
 				}
 			}
 			finally
@@ -194,15 +207,15 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 					ArrayPool<object>.Shared.Return(lstExpression);
 			}
 
-			if (count == 0)
-				return null;
+			if (count is 0)
+				return (null, lstUnmatched);
 
 			if (underlyingOrModelType.IsArray)
 			{
 				var target = Array.CreateInstance(elementType, count);
 				Array.Copy(lstExpression, target, count);
 
-				return target;
+				return (target, lstUnmatched);
 			}
 
 			// Guaranteed to be dealing with another enumerable type here - assume list.
@@ -212,10 +225,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 			{
 				lstExpression.ForEach(x => targetList.Add(x));
 
-				return targetList;
+				return (targetList, lstUnmatched);
 			}
 
-			return null;
+			return (null, lstUnmatched);
 		}
 	}
 }

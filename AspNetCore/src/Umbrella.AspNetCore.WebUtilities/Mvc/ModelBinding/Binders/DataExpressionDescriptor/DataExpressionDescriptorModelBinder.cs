@@ -30,10 +30,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 		protected override object? TransformDescriptor(Type underlyingOrModelType, TDescriptor descriptor) => descriptor;
 
 		/// <inheritdoc />
-		protected override object? TransformDescriptors(Type underlyingOrModelType, IEnumerable<TDescriptor> descriptors) => descriptors switch
+		protected override (object? modelResult, IReadOnlyCollection<TDescriptor> unmatchedItems) TransformDescriptors(Type underlyingOrModelType, IEnumerable<TDescriptor> descriptors) => descriptors switch
 		{
-			TDescriptor[] _ => descriptors.Cast<TDescriptor>().ToArray(),
-			_ => descriptors.Cast<TDescriptor>().ToList()
+			TDescriptor[] _ => (descriptors.Cast<TDescriptor>().ToArray(), Array.Empty<TDescriptor>()),
+			_ => (descriptors.Cast<TDescriptor>().ToList(), Array.Empty<TDescriptor>())
 		};
 	}
 }
