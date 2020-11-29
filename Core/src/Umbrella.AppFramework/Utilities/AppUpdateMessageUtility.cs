@@ -4,6 +4,11 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 
 namespace Umbrella.AppFramework.Utilities
 {
+	/// <summary>
+	/// A utility used to show a message to the user when an application update is available and optionally force
+	/// the user to upgrade to the new version.
+	/// </summary>
+	/// <seealso cref="IAppUpdateMessageUtility"/>
 	public class AppUpdateMessageUtility : IAppUpdateMessageUtility
 	{
 		private readonly IDialogUtility _dialogUtility;

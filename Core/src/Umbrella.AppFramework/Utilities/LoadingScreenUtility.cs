@@ -5,11 +5,27 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 
 namespace Umbrella.AppFramework.Utilities
 {
+	// TODO V4: The events in here only allow one to be attached at a time. This is because we need to find a way to elegantly
+	// detach event handlers in Xamarin. IDisposable on the UmbrellaActivityIndicatorView content view doesn't work.
+	// Need to invent a mechanism to allow init and destroy like functionality with auto-discovery. This will do for
+	// now though. Only really a problem when we hit a use case when 2 event handlers need to be attached at the same time.
+
+	/// <summary>
+	/// A utility used to show and hide an application loading screen.
+	/// </summary>
 	public class LoadingScreenUtility : ILoadingScreenUtility
 	{
 		private CancellationTokenSource? _cancellationTokenSource;
+		private Action? _onLoadingAction;
 		private Action? _onShowAction;
 		private Action? _onHideAction;
+
+		/// <inheritdoc />
+		public event Action? OnLoading
+		{
+			add => _onLoadingAction = value;
+			remove => _onLoadingAction = null;
+		}
 
 		/// <inheritdoc />
 		public event Action OnShow
@@ -32,6 +48,8 @@ namespace Umbrella.AppFramework.Utilities
 				return;
 
 			_cancellationTokenSource = new CancellationTokenSource();
+
+			_onLoadingAction?.Invoke();
 
 			if (_onShowAction != null)
 			{

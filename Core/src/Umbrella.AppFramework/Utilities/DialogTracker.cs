@@ -3,6 +3,9 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 
 namespace Umbrella.AppFramework.Utilities
 {
+	/// <summary>
+	/// A utility used to track open dialogs.
+	/// </summary>
 	public class DialogTracker : IDialogTracker
 	{
 		private readonly HashSet<int> _dialogList = new HashSet<int>();
