@@ -110,6 +110,9 @@ namespace Umbrella.Xamarin.Utilities
 
 		private void HideValidationField(string propertyName, Page page)
 		{
+			// TODO: Need to extend this to allow visual indicator controls. The best way might to have a ContentView
+			// e.g. with an Entry and then a label. Can have an enum mode property to toggle between 3 states.
+			// Need to figure out the best way of composing this control and then updating the state.
 			string errorControlName = $"{propertyName.Replace(".", "_")}{ValidationLabelSuffix}";
 			var control = page.FindByName<Label>(errorControlName);
 
