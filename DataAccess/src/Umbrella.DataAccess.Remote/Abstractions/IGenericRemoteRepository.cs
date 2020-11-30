@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Http.Abstractions;
 
 namespace Umbrella.DataAccess.Remote.Abstractions
 {
@@ -30,7 +30,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<(HttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true);
+		Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true);
 
 		/// <summary>
 		/// Deletes the specified resource from the remote server.
@@ -38,7 +38,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="id">The identifier.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<HttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default);
+		Task<IHttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Determines if the specified resource exists on the remote server.
@@ -46,7 +46,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="id">The identifier.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<HttpCallResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
+		Task<IHttpCallResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Finds all slim results of <typeparamref name="TSlimItem"/> on the server using the specified parameters.
@@ -58,7 +58,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterCombinator">The filter combinator.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<HttpCallResult<PaginatedResultModel<TSlimItem>>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
+		Task<IHttpCallResult<PaginatedResultModel<TSlimItem>>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
 
 		/// <summary>
 		/// Finds the specified resource on the remote server.
@@ -66,14 +66,14 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="id">The identifier.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<HttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
+		Task<IHttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Finds the total count of <typeparamref name="TItem"/> that exist on the remote server.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<HttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default);
+		Task<IHttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Updates the specified resource on the remote server.
@@ -83,6 +83,6 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<(HttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true);
+		Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true);
 	}
 }

@@ -55,7 +55,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<TResult>> GetAsync<TResult>(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> GetAsync<TResult>(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -79,7 +79,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -112,7 +112,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -145,7 +145,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -182,7 +182,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult> DeleteAsync(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult> DeleteAsync(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));

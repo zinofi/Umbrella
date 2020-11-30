@@ -72,7 +72,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(id, nameof(id));
@@ -84,7 +84,7 @@ namespace Umbrella.DataAccess.Remote
 					["id"] = id.ToString()
 				};
 
-				HttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success)
 					await AfterItemLoadedAsync(result.Result, cancellationToken).ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<PaginatedResultModel<TSlimItem>>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public virtual async Task<IHttpCallResult<PaginatedResultModel<TSlimItem>>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -106,7 +106,7 @@ namespace Umbrella.DataAccess.Remote
 			{
 				var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
 
-				HttpCallResult<PaginatedResultModel<TSlimItem>> result = await RemoteService.GetAsync<PaginatedResultModel<TSlimItem>>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult<PaginatedResultModel<TSlimItem>> result = await RemoteService.GetAsync<PaginatedResultModel<TSlimItem>>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success)
 					await AfterAllItemsLoadedAsync(result.Result.Items, cancellationToken).ConfigureAwait(false);
@@ -120,7 +120,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -135,7 +135,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(id, nameof(id));
@@ -156,7 +156,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<(HttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true)
+		public virtual async Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(item, nameof(item));
@@ -177,7 +177,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<(HttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true)
+		public virtual async Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(item, nameof(item));
@@ -201,7 +201,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<HttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(id, nameof(id));
@@ -213,7 +213,7 @@ namespace Umbrella.DataAccess.Remote
 					["id"] = id.ToString()
 				};
 
-				HttpCallResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success)
 					await AfterItemDeletedAsync(id, cancellationToken).ConfigureAwait(false);
@@ -238,7 +238,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the save operation.</returns>
-		protected virtual async Task<(HttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, CancellationToken cancellationToken, bool sanitize, bool validate)
+		protected virtual async Task<(IHttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, CancellationToken cancellationToken, bool sanitize, bool validate)
 		{
 			if (sanitize)
 				await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
@@ -251,7 +251,7 @@ namespace Umbrella.DataAccess.Remote
 					return (new HttpCallResult<TResult>(false), results);
 			}
 
-			HttpCallResult<TResult> result = method switch
+			IHttpCallResult<TResult> result = method switch
 			{
 				var _ when method == HttpMethod.Post => await RemoteService.PostAsync<T, TResult>(ApiUrl, item, cancellationToken: cancellationToken).ConfigureAwait(false),
 				var _ when method == HttpMethod.Put => await RemoteService.PutAsync<T, TResult>(ApiUrl, item, cancellationToken: cancellationToken).ConfigureAwait(false),

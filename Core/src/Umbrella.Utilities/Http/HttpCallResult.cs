@@ -1,9 +1,12 @@
-﻿namespace Umbrella.Utilities.Http
+﻿using Umbrella.Utilities.Http.Abstractions;
+
+namespace Umbrella.Utilities.Http
 {
 	/// <summary>
 	/// Represents the result of a Http call.
 	/// </summary>
-	public class HttpCallResult
+	/// <seealso cref="IHttpCallResult"/>
+	public class HttpCallResult : IHttpCallResult
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HttpCallResult"/> class.
@@ -16,14 +19,10 @@
 			ProblemDetails = problemDetails;
 		}
 
-		/// <summary>
-		/// Gets a value indicating whether this <see cref="HttpCallResult"/> has been a success.
-		/// </summary>
+		/// <inheritdoc />
 		public bool Success { get; }
 
-		/// <summary>
-		/// Gets the problem details.
-		/// </summary>
+		/// <inheritdoc />
 		public HttpProblemDetails ProblemDetails { get; }
 	}
 
@@ -31,7 +30,8 @@
 	/// Represents the result of a Http call.
 	/// </summary>
 	/// <typeparam name="TResult">The type of the result.</typeparam>
-	public class HttpCallResult<TResult> : HttpCallResult // TODO: Create a covariant interface for this to simply shared result assignment.
+	/// <seealso cref="IHttpCallResult{TResult}"/>
+	public class HttpCallResult<TResult> : HttpCallResult, IHttpCallResult<TResult>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HttpCallResult{TResult}"/> class.
@@ -45,9 +45,7 @@
 			Result = result;
 		}
 
-		/// <summary>
-		/// Gets the result.
-		/// </summary>
+		/// <inheritdoc />
 		public TResult Result { get; }
 	}
 }
