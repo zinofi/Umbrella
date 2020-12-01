@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -10,7 +9,14 @@ namespace Umbrella.Utilities.Configuration
 {
 	public abstract class AppSettingsBase : ReadOnlyAppSettingsBase<IAppSettingsSource>
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AppSettingsBase"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="appSettingsSource">The application settings source.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public AppSettingsBase(ILogger logger,
 			IMemoryCache cache,
 			IAppSettingsSource appSettingsSource,

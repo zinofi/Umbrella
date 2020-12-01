@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.WebUtilities.Security;
 
@@ -20,19 +21,40 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 		/// <returns>The value of <see cref="NonceContext.Current"/> stored on the current HTTP context.</returns>
 		public static string? GetCurrentRequestNonce(this HttpContext httpContext) => httpContext.Features.Get<NonceContext>()?.Current;
 
+		/// <summary>
+		/// Tracks an <see cref="IDataExpressionDescriptor"/> that could not be matched during the model binding process performed
+		/// by types extending <see cref="DataExpressionModelBinder{TDescriptor}"/>. This is used for cases where custom sorting and
+		/// filtering needs to be done.
+		/// </summary>
+		/// <param name="httpContext">The HTTP context.</param>
+		/// <param name="dataExpressionDescriptor">The data expression descriptor.</param>
 		public static void TrackUnmatchedDataExpressionDescriptor(this HttpContext httpContext, IDataExpressionDescriptor dataExpressionDescriptor)
 		{
 			List<IDataExpressionDescriptor> lstDescriptor = GetDataExpressionDescriptors(httpContext);
 			lstDescriptor.Add(dataExpressionDescriptor);
 		}
 
+		/// <summary>
+		/// Tracks a collection of <see cref="IDataExpressionDescriptor"/> that could not be matched during the model binding process performed
+		/// by types extending <see cref="DataExpressionModelBinder{TDescriptor}"/>. This is used for cases where custom sorting and
+		/// filtering needs to be done.
+		/// </summary>
+		/// <param name="httpContext">The HTTP context.</param>
+		/// <param name="dataExpressionDescriptors">The data expression descriptors.</param>
 		public static void TrackUnmatchedDataExpressionDescriptors(this HttpContext httpContext, IEnumerable<IDataExpressionDescriptor> dataExpressionDescriptors)
 		{
 			List<IDataExpressionDescriptor> lstDescriptor = GetDataExpressionDescriptors(httpContext);
 			lstDescriptor.AddRange(dataExpressionDescriptors);
 		}
 
-		public static void GetUnmatchedDataExpressionDescriptors(this HttpContext httpContext) => GetDataExpressionDescriptors(httpContext);
+		/// <summary>
+		/// Gets all of the <see cref="IDataExpressionDescriptor"/> that could not be matched during the model binding process performed
+		/// by types extending <see cref="DataExpressionModelBinder{TDescriptor}"/>. This is used for cases where custom sorting and
+		/// filtering needs to be done.
+		/// </summary>
+		/// <param name="httpContext">The HTTP context.</param>
+		/// <returns>A collection of the unmatched <see cref="IDataExpressionDescriptor"/> instances.</returns>
+		public static IReadOnlyCollection<IDataExpressionDescriptor> GetUnmatchedDataExpressionDescriptors(this HttpContext httpContext) => GetDataExpressionDescriptors(httpContext);
 
 		private static List<IDataExpressionDescriptor> GetDataExpressionDescriptors(HttpContext httpContext)
 		{
