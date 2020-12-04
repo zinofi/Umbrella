@@ -27,7 +27,7 @@ namespace Umbrella.AppFramework.Utilities.Abstractions
 		/// called within the specified delay, the loading screen will not be displayed.
 		/// </summary>
 		/// <param name="delayMilliseconds">The delay in milliseconds.</param>
-		void Show(int delayMilliseconds = 250);
+		void Show(int delayMilliseconds = 500);
 
 		/// <summary>
 		/// Hides the loading screen.

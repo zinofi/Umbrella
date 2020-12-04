@@ -42,7 +42,7 @@ namespace Umbrella.AppFramework.Utilities
 		}
 
 		/// <inheritdoc />
-		public void Show(int delayMilliseconds = 250)
+		public void Show(int delayMilliseconds = 500)
 		{
 			if (_cancellationTokenSource != null)
 				return;
