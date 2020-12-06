@@ -163,7 +163,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				if (errorControl != null)
 				{
-					errorControl.Text = $"{error.ErrorMessage}{Environment.NewLine}";
+					errorControl.Text = $"{error.ErrorMessage}";
 					errorControl.IsVisible = true;
 
 					if (attachInlineValiation)
