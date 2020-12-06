@@ -66,6 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="umbrellaConsoleHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaHostingEnvironmentOptions"/> builder.</param>
 		/// <param name="objectGraphValidatorOptionsBuilder">The optional <see cref="ObjectGraphValidatorOptions"/> builder.</param>
 		/// <param name="httpServicesBuilder">The optional builder for all Http Services.</param>
+		/// <param name="httpServicesDefaultTimeOutSeconds">The default timeout in seconds.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
@@ -77,7 +78,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
 			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions> umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
 			Action<IServiceProvider, ObjectGraphValidatorOptions> objectGraphValidatorOptionsBuilder = null,
-			Action<Dictionary<Type, IHttpClientBuilder>> httpServicesBuilder = null)
+			Action<Dictionary<Type, IHttpClientBuilder>> httpServicesBuilder = null,
+			int httpServicesDefaultTimeOutSeconds = 20)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -109,18 +111,18 @@ namespace Microsoft.Extensions.DependencyInjection
 			{
 				var dict = new Dictionary<Type, IHttpClientBuilder>
 				{
-					[typeof(IGenericHttpService)] = services.AddHttpClient<IGenericHttpService, GenericHttpService>(),
-					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>(),
-					[typeof(IGeocodingService)] = services.AddHttpClient<IGeocodingService, PostcodesIOGeocodingService>()
+					[typeof(IGenericHttpService)] = services.AddHttpClient<IGenericHttpService, GenericHttpService>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromSeconds(httpServicesDefaultTimeOutSeconds)),
+					[typeof(IHttpResourceInfoUtility)] = services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromSeconds(httpServicesDefaultTimeOutSeconds)),
+					[typeof(IGeocodingService)] = services.AddHttpClient<IGeocodingService, PostcodesIOGeocodingService>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromSeconds(httpServicesDefaultTimeOutSeconds))
 				};
 
 				httpServicesBuilder(dict);
 			}
 			else
 			{
-				services.AddHttpClient<IGenericHttpService, GenericHttpService>().AddUmbrellaPolicyHandlers();
-				services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().AddUmbrellaPolicyHandlers();
-				services.AddHttpClient<IGeocodingService, PostcodesIOGeocodingService>().AddUmbrellaPolicyHandlers();
+				services.AddHttpClient<IGenericHttpService, GenericHttpService>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromSeconds(httpServicesDefaultTimeOutSeconds)).AddUmbrellaPolicyHandlers();
+				services.AddHttpClient<IHttpResourceInfoUtility, HttpResourceInfoUtility>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromSeconds(httpServicesDefaultTimeOutSeconds)).AddUmbrellaPolicyHandlers();
+				services.AddHttpClient<IGeocodingService, PostcodesIOGeocodingService>().ConfigureHttpClient(x => x.Timeout = TimeSpan.FromSeconds(httpServicesDefaultTimeOutSeconds)).AddUmbrellaPolicyHandlers();
 			}
 
 			// Options
