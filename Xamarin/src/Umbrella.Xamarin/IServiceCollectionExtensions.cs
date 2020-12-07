@@ -27,7 +27,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IAppLocalStorageService, XamarinLocalStorageService>();
 			services.AddSingleton<IDialogUtility, DialogUtility>();
-			services.AddSingleton<IXamarinValidationUtility, XamarinValidationUtility>();
+
+			// NB: Registering as transient service to ensure that UI elements to which event handers are attached
+			// can be successfully collected by GC.
+			services.AddTransient<IXamarinValidationUtility, XamarinValidationUtility>();
 
 			return services;
 		}

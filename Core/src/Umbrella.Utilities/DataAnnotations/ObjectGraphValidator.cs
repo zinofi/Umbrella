@@ -85,7 +85,7 @@ namespace Umbrella.Utilities.DataAnnotations
 
 				ValidateObject(instance, validationContext);
 
-				return (lstValidationResult.Count == 0, lstValidationResult);
+				return (lstValidationResult.Count is 0, lstValidationResult);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }, returnValue: true))
 			{
