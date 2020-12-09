@@ -9,6 +9,7 @@ namespace Umbrella.AppFramework.Utilities
 	// detach event handlers in Xamarin. IDisposable on the UmbrellaActivityIndicatorView content view doesn't work.
 	// Need to invent a mechanism to allow init and destroy like functionality with auto-discovery. This will do for
 	// now though. Only really a problem when we hit a use case when 2 event handlers need to be attached at the same time.
+	// Look into the use of a weak event subscription mechanism.
 
 	/// <summary>
 	/// A utility used to show and hide an application loading screen.
