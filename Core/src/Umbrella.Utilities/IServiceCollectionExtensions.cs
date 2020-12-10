@@ -42,6 +42,8 @@ using Umbrella.Utilities.Spatial;
 using Umbrella.Utilities.Spatial.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
+using Umbrella.Utilities.WeakEventManager;
+using Umbrella.Utilities.WeakEventManager.Abstractions;
 
 [assembly: InternalsVisibleTo("Umbrella.Utilities.Benchmark")]
 
@@ -71,14 +73,14 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
 			this IServiceCollection services,
-			Action<IServiceProvider, EmailFactoryOptions> emailFactoryOptionsBuilder = null,
-			Action<IServiceProvider, EmailSenderOptions> emailSenderOptionsBuilder = null,
-			Action<IServiceProvider, HybridCacheOptions> hybridCacheOptionsBuilder = null,
-			Action<IServiceProvider, HttpResourceInfoUtilityOptions> httpResourceInfoUtilityOptionsBuilder = null,
-			Action<IServiceProvider, SecureRandomStringGeneratorOptions> secureRandomStringGeneratorOptionsBuilder = null,
-			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions> umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
-			Action<IServiceProvider, ObjectGraphValidatorOptions> objectGraphValidatorOptionsBuilder = null,
-			Action<Dictionary<Type, IHttpClientBuilder>> httpServicesBuilder = null,
+			Action<IServiceProvider, EmailFactoryOptions>? emailFactoryOptionsBuilder = null,
+			Action<IServiceProvider, EmailSenderOptions>? emailSenderOptionsBuilder = null,
+			Action<IServiceProvider, HybridCacheOptions>? hybridCacheOptionsBuilder = null,
+			Action<IServiceProvider, HttpResourceInfoUtilityOptions>? httpResourceInfoUtilityOptionsBuilder = null,
+			Action<IServiceProvider, SecureRandomStringGeneratorOptions>? secureRandomStringGeneratorOptionsBuilder = null,
+			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions>? umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
+			Action<IServiceProvider, ObjectGraphValidatorOptions>? objectGraphValidatorOptionsBuilder = null,
+			Action<Dictionary<Type, IHttpClientBuilder>>? httpServicesBuilder = null,
 			int httpServicesDefaultTimeOutSeconds = 20)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
@@ -106,6 +108,9 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
 			services.AddSingleton<IResponsiveImageHelper, ResponsiveImageHelper>();
+			
+			services.AddTransient<IWeakEventManager, WeakEventManager>();
+			services.AddSingleton<IWeakEventManagerFactory, WeakEventManagerFactory>();
 
 			if (httpServicesBuilder != null)
 			{
@@ -147,7 +152,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// The same instance of <see cref="IServiceCollection"/> as passed in but with the Umbrella Options type specified by
 		/// <typeparamref name="TOptions"/> added to it.
 		/// </returns>
-		public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
+		public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions>? optionsBuilder)
 			where TOptions : class, new()
 		{
 			Guard.ArgumentNotNull(services, nameof(services));

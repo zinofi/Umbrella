@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.Utilities.WeakEventManager.Abstractions;
 
 namespace Umbrella.AppFramework.Utilities
 {
@@ -11,29 +15,49 @@ namespace Umbrella.AppFramework.Utilities
 	/// <seealso cref="IAppUpdateMessageUtility"/>
 	public class AppUpdateMessageUtility : IAppUpdateMessageUtility
 	{
+		private readonly ILogger<AppUpdateMessageUtility> _logger;
 		private readonly IDialogUtility _dialogUtility;
+		private readonly IWeakEventManager _weakEventManager;
 
 		/// <inheritdoc />
-		public event Func<bool, string, Task>? OnShowAsync;
+		public event Func<bool, string, Task> OnShow
+		{
+			add => _weakEventManager.AddEventHandler(value);
+			remove => _weakEventManager.RemoveEventHandler(value);
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppUpdateMessageUtility"/> class.
 		/// </summary>
+		/// <param name="logger">The logger.</param>
 		/// <param name="dialogUtility">The dialog utility.</param>
-		public AppUpdateMessageUtility(IDialogUtility dialogUtility)
+		/// <param name="weakEventManagerFactory">The weak event manager factory.</param>
+		public AppUpdateMessageUtility(
+			ILogger<AppUpdateMessageUtility> logger,
+			IDialogUtility dialogUtility,
+			IWeakEventManagerFactory weakEventManagerFactory)
 		{
+			_logger = logger;
 			_dialogUtility = dialogUtility;
+			_weakEventManager = weakEventManagerFactory.Create();
 		}
 
 		/// <inheritdoc />
 		public async ValueTask ShowAsync(bool updateRequired, string message)
 		{
-			var task = OnShowAsync?.Invoke(updateRequired, message);
+			try
+			{
+				IReadOnlyCollection<Task> lstTask = _weakEventManager.RaiseEvent<Task>(this, nameof(OnShow), updateRequired, message);
 
-			if (task != null)
-				await task;
+				if (lstTask?.Count > 0)
+					await Task.WhenAll(lstTask);
 
-			await _dialogUtility.ShowMessageAsync(message, "Update Required");
+				await _dialogUtility.ShowMessageAsync(message, "Update Required");
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { updateRequired, message }, returnValue: true))
+			{
+				throw new UmbrellaAppFrameworkException("There has been a problem showing the app update message.", exc);
+			}
 		}
 	}
 }

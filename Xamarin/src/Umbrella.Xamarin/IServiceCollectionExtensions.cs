@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Umbrella.AppFramework.Utilities.Abstractions;
+﻿using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Utilities;
 using Umbrella.Xamarin.Utilities;
 using Umbrella.Xamarin.Utilities.Abstractions;
@@ -27,10 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IAppLocalStorageService, XamarinLocalStorageService>();
 			services.AddSingleton<IDialogUtility, DialogUtility>();
-
-			// NB: Registering as transient service to ensure that UI elements to which event handers are attached
-			// can be successfully collected by GC.
-			services.AddTransient<IXamarinValidationUtility, XamarinValidationUtility>();
+			services.AddSingleton<IXamarinValidationUtility, XamarinValidationUtility>();
 
 			return services;
 		}

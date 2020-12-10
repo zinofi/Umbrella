@@ -12,7 +12,7 @@ namespace Umbrella.AppFramework.Utilities.Abstractions
 		/// <summary>
 		/// Occurs when the message is shown.
 		/// </summary>
-		event Func<bool, string, Task> OnShowAsync;
+		event Func<bool, string, Task> OnShow;
 
 		/// <summary>
 		/// Shows the update message.
