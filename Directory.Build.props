@@ -1,0 +1,27 @@
+<Project>
+	<PropertyGroup>
+		<Version>3.0.0-preview-0142</Version>
+
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<Configurations>Debug;Release;AzureDevOps</Configurations>
+
+		<Authors>Zinofi Digital Ltd</Authors>
+		<Company>Zinofi Digital Ltd</Company>
+		<Copyright>Zinofi Digital Ltd 2020</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/zinofi/Umbrella</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageIcon>icon.png</PackageIcon>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
+		<Optimize>true</Optimize>
+		<DefineConstants>AzureDevOps</DefineConstants>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+</Project>

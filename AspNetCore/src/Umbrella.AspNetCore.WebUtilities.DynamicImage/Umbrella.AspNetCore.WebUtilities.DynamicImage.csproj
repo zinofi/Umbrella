@@ -2,34 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<Nullable>enable</Nullable>
-		<LangVersion>latest</LangVersion>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<DocumentationFile>bin\Release\netcoreapp3.1\Umbrella.AspNetCore.WebUtilities.DynamicImage.xml</DocumentationFile>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-		<Optimize>true</Optimize>
-		<DefineConstants>AzureDevOps</DefineConstants>
-	</PropertyGroup>
-
+	
 	<PropertyGroup>
 		<PackageId>Umbrella.AspNetCore.WebUtilities.DynamicImage</PackageId>
-		<Version>3.0.0-preview-0142</Version>
-		<Authors>Zinofi Digital Ltd</Authors>
-		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2020</Copyright>
-		<Description>
-			This package contains middleware and tag helpers to be used in conjunction with the Umbrella.DynamicImage.* packages.
-		</Description>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Description>This package contains middleware and tag helpers to be used in conjunction with the Umbrella.DynamicImage.* packages.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -37,10 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>

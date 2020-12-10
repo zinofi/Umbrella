@@ -2,44 +2,19 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Extensions.Logging.AppCenter.xml</DocumentationFile>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-		<Optimize>true</Optimize>
-		<DefineConstants>AzureDevOps</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>Umbrella.Extensions.Logging.AppCenter</PackageId>
-		<Version>3.0.0-preview-0142</Version>
-		<Authors>Zinofi Digital Ltd</Authors>
-		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2020</Copyright>
-		<Description>
-			This package contains implementations of the ILogger and ILoggerProvider to allow Microsoft AppCenter to be used as a logging sink.
-		</Description>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Description>This package contains implementations of the ILogger and ILoggerProvider to allow Microsoft AppCenter to be used as a logging sink.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.0.0" />
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.10" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>

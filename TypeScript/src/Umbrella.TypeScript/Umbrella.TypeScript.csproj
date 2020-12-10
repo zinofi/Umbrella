@@ -2,34 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<LangVersion>latest</LangVersion>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.TypeScript.xml</DocumentationFile>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<DevelopmentDependency>true</DevelopmentDependency>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-		<Optimize>true</Optimize>
-		<DefineConstants>AzureDevOps</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>Umbrella.TypeScript</PackageId>
-		<Version>3.0.0-preview-0142</Version>
-		<Authors>Zinofi Digital Ltd</Authors>
-		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2020</Copyright>
-		<Description>
-			This package contains TypeScript code generators for creating POTO and Knockout classes.
-		</Description>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Description>This package contains TypeScript code generators for creating POTO and Knockout classes.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -39,10 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
 	</ItemGroup>
 

@@ -2,14 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-		<Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
-    <Configurations>Debug;Release;AzureDevOps</Configurations>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-    <Optimize>true</Optimize>
   </PropertyGroup>
 
 	<ItemGroup>

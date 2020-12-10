@@ -2,40 +2,17 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.SkiaSharp.xml</DocumentationFile>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-		<Optimize>true</Optimize>
-		<DefineConstants>AzureDevOps</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>Umbrella.DynamicImage.SkiaSharp</PackageId>
-		<Version>3.0.0-preview-0142</Version>
-		<Authors>Zinofi Digital Ltd</Authors>
-		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2020</Copyright>
-		<Description>
-			This package contains an implementation of the IDynamicImageResizer built using the SkiaSharp library. The repo for this library can be found on github: https://github.com/mono/SkiaSharp
-		</Description>
+		<Description>This package contains an implementation of the IDynamicImageResizer built using the SkiaSharp library. The repo for this library can be found on github: https://github.com/mono/SkiaSharp</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="SkiaSharp" Version="2.80.2" />
 	</ItemGroup>
 

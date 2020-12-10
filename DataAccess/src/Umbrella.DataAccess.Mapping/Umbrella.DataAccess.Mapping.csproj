@@ -2,41 +2,17 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
 		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DataAccess.Mapping.xml</DocumentationFile>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
-		<Optimize>true</Optimize>
-		<DefineConstants>AzureDevOps</DefineConstants>
 	</PropertyGroup>
   
   <PropertyGroup>
     <PackageId>Umbrella.DataAccess.Mapping</PackageId>
-    <Version>3.0.0-preview-0142</Version>
-    <Authors>Zinofi Digital Ltd</Authors>
-    <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2020</Copyright>
-    <Description>
-      This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.
-    </Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Description>This package contains utilities used for mapping data between DTOs and IEntity types found in the Umbrella.DataAccess.Abstractions package. The mapping utilities leverage the capabilities of the AutoMapper library and their primary purpose if for mapping items in both single level and nested collections.</Description>
   </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="10.0.0" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>

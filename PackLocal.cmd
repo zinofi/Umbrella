@@ -1,1 +1,1 @@
-dotnet pack -o C:\LocalTestPackages -c Release --include-symbols
+dotnet pack -o C:\LocalTestPackages -c Release
