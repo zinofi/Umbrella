@@ -21,7 +21,7 @@ namespace Umbrella.Utilities.WeakEventManager
 		/// <param name="logger">The logger.</param>
 		/// <param name="serviceProvider">The service provider.</param>
 		public WeakEventManagerFactory(
-			ILogger logger,
+			ILogger<WeakEventManagerFactory> logger,
 			IServiceProvider serviceProvider)
 		{
 			_logger = logger;
