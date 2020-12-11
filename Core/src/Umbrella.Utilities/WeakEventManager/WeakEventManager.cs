@@ -14,7 +14,7 @@ namespace Umbrella.Utilities.WeakEventManager
 	/// <seealso cref="IWeakEventManager" />
 	public class WeakEventManager : IWeakEventManager
 	{
-		private readonly ConcurrentDictionary<string, List<WeakEventSubscription>> _subscriptionDictionary = new();
+		private readonly ConcurrentDictionary<string, List<WeakEventSubscription>> _subscriptionDictionary = new ConcurrentDictionary<string, List<WeakEventSubscription>>();
 		private readonly ILogger<WeakEventManager> _logger;
 
 		/// <summary>
@@ -73,7 +73,7 @@ namespace Umbrella.Utilities.WeakEventManager
 			{
 				if (_subscriptionDictionary.TryGetValue(eventName, out List<WeakEventSubscription> lstSubscription) && lstSubscription?.Count > 0)
 				{
-					List<TReturnValue> lstReturnValue = new();
+					var lstReturnValue = new List<TReturnValue>();
 
 					foreach (WeakEventSubscription subscription in lstSubscription)
 					{
