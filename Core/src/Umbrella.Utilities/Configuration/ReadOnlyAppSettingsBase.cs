@@ -14,7 +14,14 @@ namespace Umbrella.Utilities.Configuration
 	/// <seealso cref="ReadOnlyAppSettingsBase{IReadOnlyAppSettingsSource}"/>
 	public abstract class ReadOnlyAppSettingsBase : ReadOnlyAppSettingsBase<IReadOnlyAppSettingsSource>
 	{
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyAppSettingsBase"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="appSettingsSource">The application settings source.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public ReadOnlyAppSettingsBase(ILogger logger,
 			IMemoryCache cache,
 			IReadOnlyAppSettingsSource appSettingsSource,
@@ -38,14 +45,36 @@ namespace Umbrella.Utilities.Configuration
 		private static readonly string s_CacheKeyPrefix = typeof(ReadOnlyAppSettingsBase<TAppSettingsSource>).FullName;
 		#endregion
 
-		#region Protected Properties
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the cache.
+		/// </summary>
 		protected IMemoryCache Cache { get; }
+
+		/// <summary>
+		/// Gets the application settings source.
+		/// </summary>
 		protected TAppSettingsSource AppSettingsSource { get; }
+
+		/// <summary>
+		/// Gets the generic type converter.
+		/// </summary>
 		protected IGenericTypeConverter GenericTypeConverter { get; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyAppSettingsBase{TAppSettingsSource}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="cache">The cache.</param>
+		/// <param name="appSettingsSource">The application settings source.</param>
+		/// <param name="genericTypeConverter">The generic type converter.</param>
 		public ReadOnlyAppSettingsBase(ILogger logger,
 			IMemoryCache cache,
 			TAppSettingsSource appSettingsSource,
@@ -59,20 +88,37 @@ namespace Umbrella.Utilities.Configuration
 		#endregion
 
 		#region Protected Methods
-		// Move to Options class
+		// Move to Options class		
+		/// <summary>
+		/// Generates the cache key.
+		/// </summary>
+		/// <param name="settingKey">The setting key.</param>
+		/// <returns>The cache key.</returns>
 		protected virtual string GenerateCacheKey(string settingKey) => $"{s_CacheKeyPrefix}:{settingKey}";
-		protected virtual Func<MemoryCacheEntryOptions> GetCacheEntryOptionsFunc() => null;
+
+		/// <summary>
+		/// Gets the cache entry options builder. Defaults to <see langword="null" /> unless overridden in a derived type.
+		/// </summary>
+		/// <returns>The cache entry options builder.</returns>
+		protected virtual Func<MemoryCacheEntryOptions>? GetCacheEntryOptionsFunc() => null;
+		
+		/// <summary>
+		/// Converts the specified JSON string to the specified type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="value">The value.</param>
+		/// <returns>An instance of type <typeparamref name="T"/>.</returns>
 		protected virtual T FromJson<T>(string value) => UmbrellaStatics.DeserializeJson<T>(value);
 
-		protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
+		protected virtual T? GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
 			try
 			{
-				T GetValue()
+				T? GetValue()
 				{
-					string value = AppSettingsSource.GetValue(key);
+					string? value = AppSettingsSource.GetValue(key);
 
 					if(string.IsNullOrWhiteSpace(value) && throwException)
 						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
@@ -94,15 +140,15 @@ namespace Umbrella.Utilities.Configuration
 			}
 		}
 
-		protected virtual T GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string, T> customValueConverter = null)
+		protected virtual T? GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
 			try
 			{
-				T GetValue()
+				T? GetValue()
 				{
-					string value = AppSettingsSource.GetValue(key);
+					string? value = AppSettingsSource.GetValue(key);
 
 					if (string.IsNullOrWhiteSpace(value) && throwException)
 						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
@@ -133,7 +179,7 @@ namespace Umbrella.Utilities.Configuration
 			{
 				T GetValue()
 				{
-					string value = AppSettingsSource.GetValue(key);
+					string? value = AppSettingsSource.GetValue(key);
 
 					if (string.IsNullOrWhiteSpace(value) && throwException)
 						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");

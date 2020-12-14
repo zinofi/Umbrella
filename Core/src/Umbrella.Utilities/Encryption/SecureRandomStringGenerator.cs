@@ -228,7 +228,7 @@ namespace Umbrella.Utilities.Encryption
 
 			while (scale == uint.MaxValue)
 			{
-				byte[] buffer = null;
+				byte[]? buffer = null;
 
 				try
 				{

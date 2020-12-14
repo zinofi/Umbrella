@@ -16,7 +16,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="valueTransformer">The value transformer.</param>
 		/// <param name="separator">The separator.</param>
 		/// <returns>A string containing the names of the values encapsulated by the enum.</returns>
-		public static string ToFlagsString(this Enum options, Func<string, string> valueTransformer = null, string separator = ",")
+		public static string ToFlagsString(this Enum options, Func<string, string>? valueTransformer = null, string separator = ",")
 		{
 			Guard.ArgumentNotNull(separator, nameof(separator));
 

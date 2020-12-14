@@ -31,7 +31,7 @@ namespace Umbrella.Utilities
 		/// <param name="argumentValue">The argument value to test.</param>
 		/// <param name="argumentName">The name of the argument to test.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentNotNullOrEmpty(string argumentValue, string argumentName)
+		public static void ArgumentNotNullOrEmpty(string? argumentValue, string argumentName)
 		{
 			if (argumentValue is null)
 				throw new ArgumentNullException($"{argumentName} cannot be null.");
@@ -48,7 +48,7 @@ namespace Umbrella.Utilities
 		/// <param name="argumentValue">The argument value to test.</param>
 		/// <param name="argumentName">The name of the argument to test.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentNotNullOrWhiteSpace(string argumentValue, string argumentName)
+		public static void ArgumentNotNullOrWhiteSpace(string? argumentValue, string argumentName)
 		{
 			if (argumentValue is null)
 				throw new ArgumentNullException($"{argumentName} cannot be null.");
@@ -65,7 +65,7 @@ namespace Umbrella.Utilities
 		/// <param name="argumentValue">The argument value to test.</param>
 		/// <param name="argumentName">The name of the argument to test.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentNotNullOrEmpty<T>(IEnumerable<T> argumentValue, string argumentName)
+		public static void ArgumentNotNullOrEmpty<T>(IEnumerable<T>? argumentValue, string argumentName)
 		{
 			if (argumentValue is null)
 				throw new ArgumentNullException($"{argumentName} cannot be null.");
@@ -113,7 +113,7 @@ namespace Umbrella.Utilities
 		/// <exception cref="ArgumentNullException">The value is null.</exception>
 		/// <exception cref="ArgumentOutOfRangeException">The value is not of type <typeparamref name="T"/> or a type in it's type hierarchy.</exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentOfType<T>(object argumentValue, string argumentName, string customMessage = "")
+		public static void ArgumentOfType<T>(object? argumentValue, string argumentName, string customMessage = "")
 		{
 			ArgumentNotNull(argumentValue, argumentName);
 
@@ -132,11 +132,11 @@ namespace Umbrella.Utilities
 		/// <exception cref="ArgumentNullException">The value is null.</exception>
 		/// <exception cref="ArgumentOutOfRangeException">The value is not exactly of type <typeparamref name="T"/></exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentOfTypeExact<T>(object argumentValue, string argumentName, string customMessage = "")
+		public static void ArgumentOfTypeExact<T>(object? argumentValue, string argumentName, string customMessage = "")
 		{
 			ArgumentNotNull(argumentValue, argumentName);
 
-			if (argumentValue.GetType() != typeof(T))
+			if (argumentValue!.GetType() != typeof(T))
 				throw new ArgumentOutOfRangeException($"{argumentName} is not exactly of type {nameof(T)}: {typeof(T).FullName}. {customMessage}");
 		}
 
@@ -154,14 +154,14 @@ namespace Umbrella.Utilities
 		/// The string must have a maximum length of {maxLength}
 		/// </exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void ArgumentLengthInRange(string argumentValue, string argumentName, int? minLength = null, int? maxLength = null)
+		public static void ArgumentLengthInRange(string? argumentValue, string argumentName, int? minLength = null, int? maxLength = null)
 		{
 			ArgumentNotNull(argumentValue, argumentName);
 
-			if (minLength.HasValue && argumentValue.Length < minLength)
+			if (minLength.HasValue && argumentValue!.Length < minLength)
 				throw new ArgumentOutOfRangeException(argumentName, $"The string must have a minimum length of {minLength}");
 
-			if (maxLength.HasValue && argumentValue.Length > maxLength)
+			if (maxLength.HasValue && argumentValue!.Length > maxLength)
 				throw new ArgumentOutOfRangeException(argumentName, $"The string must have a maximum length of {maxLength}");
 		}
 

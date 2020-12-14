@@ -20,22 +20,39 @@ namespace Umbrella.Utilities.Extensions
 		private static readonly Regex s_HtmlTagPatternRegex = new Regex(HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 		private static readonly Regex s_EllipsisPatternRegex = new Regex(EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-		public static string Truncate(this string text, int maxLength)
+		/// <summary>
+		/// Truncates the specified <paramref name="text"/> to the <paramref name="maxLength"/> inclusive.
+		/// </summary>
+		/// <param name="text">The text.</param>
+		/// <param name="maxLength">The maximum length.</param>
+		/// <returns>The truncated <paramref name="text"/>.</returns>
+		public static string? Truncate(this string? text, int maxLength)
 		{
-			// Ensure we strip out HTML tags
-			if (!string.IsNullOrEmpty(text))
-				text = text.StripHtml();
-
-			if (text.Length < maxLength)
+			if (text is null)
 				return text;
 
-			return AppendEllipsis(text.Substring(0, maxLength - 3));
+			// Ensure we strip out HTML tags
+			if (text.Length > 0)
+			{
+				text = text.StripHtml();
+
+				if (string.IsNullOrEmpty(text))
+					return text;
+			}
+
+			if (text?.Length < maxLength)
+				return text;
+
+			return AppendEllipsis(text?.Substring(0, maxLength - 3));
 		}
 
-		public static string TruncateAtWord(this string value, int length)
+		public static string? TruncateAtWord(this string? value, int length)
 		{
-			//Ensure we strip out HTML tags
-			if (!string.IsNullOrEmpty(value))
+			if (value is null)
+				return value;
+
+			// Ensure we strip out HTML tags
+			if (value.Length > 0)
 				value = value.StripHtml();
 
 			if (value == null || value.Length < length || value.IndexOf(" ", length) == -1)
@@ -44,17 +61,39 @@ namespace Umbrella.Utilities.Extensions
 			return AppendEllipsis(value.Substring(0, value.IndexOf(" ", length)));
 		}
 
-		public static string StripNbsp(this string value) => !string.IsNullOrEmpty(value) ? value.Replace("&nbsp;", "") : null;
+		/// <summary>
+		/// Strips HTML non-breaking space values from the <paramref name="value"/> and replaces them with empty strings.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The result or <see langword="null"/> if the <paramref name="value"/> provided was <see langword="null"/>.</returns>
+		public static string? StripNbsp(this string? value) => !string.IsNullOrEmpty(value) ? value!.Replace("&nbsp;", "") : null;
 
-		public static bool IsValidLength(this string value, int minLength, int maxLength, bool allowNull = true)
+		/// <summary>
+		/// Determines whether the specified <paramref name="value"/> has a length between the <paramref name="minLength"/> and <paramref name="maxLength"/> inclusive.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="minLength">The minimum length.</param>
+		/// <param name="maxLength">The maximum length.</param>
+		/// <param name="allowNull">if set to <see langword="true"/> and the specified <paramref name="value"/> is <see langword="null"/> or whitespace, the return value will be <see langword="true"/>.</param>
+		/// <returns>
+		///   <see langword="true"/> if the <paramref name="value"/> is between <paramref name="minLength"/> and <paramref name="maxLength"/> inclusive,
+		///   or <see langword="true"/> if the <paramref name="value"/> is <see langword="null"/> or whitespace and <paramref name="allowNull"/> is <see langword="true"/>.
+		///   All other conditions will return <see langword="false"/>.
+		/// </returns>
+		public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true)
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				return allowNull;
 
-			return value.Length >= minLength && value.Length <= maxLength;
+			return value?.Length >= minLength && value.Length <= maxLength;
 		}
 
-		public static string StripHtml(this string value)
+		/// <summary>
+		/// Strips HTML tags from the specified <paramref name="value"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The value with all HTML tags removed.</returns>
+		public static string? StripHtml(this string? value)
 		{
 			if (string.IsNullOrEmpty(value))
 				return value;
@@ -62,11 +101,11 @@ namespace Umbrella.Utilities.Extensions
 			return s_HtmlTagPatternRegex.Replace(value, string.Empty);
 		}
 
-		public static string ToCamelCase(this string value) => ToCamelCaseInternal(value, false);
-		public static string ToCamelCaseInvariant(this string value) => ToCamelCaseInternal(value, true);
+		public static string? ToCamelCase(this string? value) => ToCamelCaseInternal(value, false);
+		public static string? ToCamelCaseInvariant(this string? value) => ToCamelCaseInternal(value, true);
 
 		// TODO: Internally reimplement using local functions and Span<char>
-		public static string ToCamelCaseInternal(string value, bool useInvariantCulture)
+		public static string? ToCamelCaseInternal(string? value, bool useInvariantCulture)
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				return value;
@@ -85,7 +124,7 @@ namespace Umbrella.Utilities.Extensions
 				charLower = char.ToLower;
 			}
 
-			if (value.Length == 1)
+			if (value!.Length is 1)
 				return stringLower(value);
 
 			// If 1st char is already in lowercase, return the value untouched
@@ -136,7 +175,7 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns>The value with an ellipsis appended.</returns>
-		public static string AppendEllipsis(string value)
+		public static string? AppendEllipsis(string? value)
 		{
 			if (string.IsNullOrEmpty(value))
 				return value;
@@ -146,7 +185,12 @@ namespace Umbrella.Utilities.Extensions
 			return s_EllipsisPatternRegex.Replace(value, "...");
 		}
 
-		public static string ConvertHtmlBrTagsToLineBreaks(this string value)
+		/// <summary>
+		/// Converts the any HTML br tags to line breaks.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The converted value.</returns>
+		public static string? ConvertHtmlBrTagsToLineBreaks(this string? value)
 		{
 			if (string.IsNullOrEmpty(value))
 				return value;
@@ -157,18 +201,18 @@ namespace Umbrella.Utilities.Extensions
 			return sb.ToString();
 		}
 
-		public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true, CultureInfo cultureInfo = null)
+		public static string? ToSnakeCase(this string? value, bool lowerCase = true, bool removeWhiteSpace = true, CultureInfo? cultureInfo = null)
 			=> ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, cultureInfo ?? CultureInfo.CurrentCulture);
 
-		public static string ToSnakeCaseInvariant(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
+		public static string? ToSnakeCaseInvariant(this string? value, bool lowerCase = true, bool removeWhiteSpace = true)
 		=> ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, CultureInfo.InvariantCulture);
 
-		private static string ToSnakeCaseInternal(string value, bool lowerCase, bool removeWhiteSpace, CultureInfo cultureInfo)
+		private static string? ToSnakeCaseInternal(string? value, bool lowerCase, bool removeWhiteSpace, CultureInfo cultureInfo)
 		{
 			if (string.IsNullOrWhiteSpace(value))
 				return value;
 
-			if (value.Length == 1)
+			if (value!.Length is 1)
 				return lowerCase ? value.ToLower(cultureInfo) : value;
 
 			var buffer = new List<char>(value.Length)
@@ -204,17 +248,17 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The string to seek.</param>
 		/// <param name="comparisonType">The type of <see cref="StringComparison"/> to use to locate the <paramref name="value"/> in the <paramref name="target"/>.</param>
 		/// <returns>true if the value parameter occurs within this string, otherwise, false.</returns>
-		public static bool Contains(this string target, string value, StringComparison comparisonType)
+		public static bool Contains(this string? target, string? value, StringComparison comparisonType)
 		{
-			if (target == null || value == null)
+			if (target is null || value is null)
 				return false;
 
 			return target.IndexOf(value, comparisonType) >= 0;
 		}
 
-		public static T ToEnum<T>(this string value) where T : struct, Enum => value.ToEnum(default(T));
+		public static T ToEnum<T>(this string? value) where T : struct, Enum => value.ToEnum(default(T));
 
-		public static T ToEnum<T>(this string value, T defaultValue) where T : struct, Enum
+		public static T ToEnum<T>(this string? value, T defaultValue) where T : struct, Enum
 		{
 			if (Enum.TryParse(value, true, out T result))
 				return result;
@@ -222,33 +266,57 @@ namespace Umbrella.Utilities.Extensions
 			return defaultValue;
 		}
 
-		public static string TrimToLower(this string value, CultureInfo culture = null)
+		/// <summary>
+		/// Trims the specified <paramref name="value"/> and converts it to lowercase using the specified <paramref name="culture"/>.
+		/// If the<paramref name= "culture" /> is <see langword= "null" />, <see cref="CultureInfo.CurrentCulture" /> is used.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="culture">The optional culture. If this is <see langword="null" />, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+		/// <returns>The converted string or <see langword="null"/> if the <paramref name="value"/> was null.</returns>
+		public static string TrimToLower(this string value, CultureInfo? culture = null)
 		{
 			if (string.IsNullOrEmpty(value))
 				return value;
 
 			ReadOnlySpan<char> span = value.AsSpan().Trim();
 			Span<char> lowerSpan = span.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[span.Length] : new char[span.Length];
-			span.ToLowerSlim(lowerSpan, culture);
+			span.ToLowerSlim(lowerSpan, culture ?? CultureInfo.CurrentCulture);
 
 			return lowerSpan.ToString();
 		}
 
+		/// <summary>
+		/// Trims the specified <paramref name="value"/> and converts it to lowercase using the invariant culture.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The converted string or <see langword="null"/> if the <paramref name="value"/> was null.</returns>
 		public static string TrimToLowerInvariant(this string value)
 			=> TrimToLower(value, CultureInfo.InvariantCulture);
 
-		public static string TrimToUpper(this string value, CultureInfo culture = null)
+		/// <summary>
+		/// Trims the specified <paramref name="value"/> and converts it to uppercase using the specified <paramref name="culture"/>.
+		/// If the <paramref name="culture"/> is <see langword="null" />, <see cref="CultureInfo.CurrentCulture"/> is used.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="culture">The optional culture. If this is <see langword="null" />, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+		/// <returns>The converted string or <see langword="null"/> if the <paramref name="value"/> was null.</returns>
+		public static string TrimToUpper(this string value, CultureInfo? culture = null)
 		{
 			if (string.IsNullOrEmpty(value))
 				return value;
 
 			ReadOnlySpan<char> span = value.AsSpan().Trim();
 			Span<char> upperSpan = span.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[span.Length] : new char[span.Length];
-			span.ToUpperSlim(upperSpan, culture);
+			span.ToUpperSlim(upperSpan, culture!);
 
 			return upperSpan.ToString();
 		}
 
+		/// <summary>
+		/// Trims the specified <paramref name="value"/> and converts it to uppercase using the invariant culture.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The converted string or <see langword="null"/> if the <paramref name="value"/> was null.</returns>
 		public static string TrimToUpperInvariant(this string value)
 			=> TrimToUpper(value, CultureInfo.InvariantCulture);
 
@@ -257,7 +325,7 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns>The trimmed value or <see langword="null"/>.</returns>
-		public static string TrimNull(this string value) => value?.Trim();
+		public static string? TrimNull(this string? value) => value?.Trim();
 
 		/// <summary>
 		/// Attempts to convert the name of a person into some kind of normalized format
@@ -266,14 +334,12 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <returns>The normalized name</returns>
-		public static string ToPersonNameCase(this string name)
+		public static string? ToPersonNameCase(this string? name)
 		{
 			if (string.IsNullOrWhiteSpace(name))
-			{
 				return name;
-			}
 
-			Span<char> span = name.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[name.Length] : new char[name.Length];
+			Span<char> span = name!.Length <= StackAllocConstants.MaxCharSize ? stackalloc char[name.Length] : new char[name.Length];
 
 			for (int i = 0; i < name.Length; i++)
 			{
@@ -308,7 +374,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value.</param>
 		/// <param name="cultureInfo">The optional culture information. Defaults to <see cref="CultureInfo.CurrentCulture"/>.</param>
 		/// <returns>The <paramref name="value"/> converted to title case.</returns>
-		public static string ToTitleCase(this string value, CultureInfo cultureInfo = null)
+		public static string? ToTitleCase(this string? value, CultureInfo? cultureInfo = null)
 			=> string.IsNullOrWhiteSpace(value) ? value : (cultureInfo ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(value);
 
 		/// <summary>
@@ -316,7 +382,7 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns>The <paramref name="value"/> converted to title case.</returns>
-		public static string ToTitleCaseInvariant(this string value)
+		public static string? ToTitleCaseInvariant(this string? value)
 			=> ToTitleCase(value, CultureInfo.InvariantCulture);
 	}
 }

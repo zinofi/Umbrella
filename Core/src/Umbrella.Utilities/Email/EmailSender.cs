@@ -35,7 +35,7 @@ namespace Umbrella.Utilities.Email
 		}
 
 		/// <inheritdoc />
-		public async Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default, string fromAddress = null)
+		public async Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default, string? fromAddress = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(email, nameof(email));

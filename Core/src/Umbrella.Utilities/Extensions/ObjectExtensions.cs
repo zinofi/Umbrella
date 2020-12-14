@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Extensions
+﻿namespace Umbrella.Utilities.Extensions
 {
-    public static class ObjectExtensions
+	/// <summary>
+	/// Extensions methods that operate on any <see cref="object"/>.
+	/// </summary>
+	public static class ObjectExtensions
     {
-        #region Public Static Methods
-        public static string ToJsonString(this object value, bool useCamelCasingRules = false)
+		#region Public Static Methods		
+		/// <summary>
+		/// Converts to the specified <paramref name="value"/> to a JSON string.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="useCamelCasingRules">if set to <see langword="true"/>, uses camelcase naming rules for property names.</param>
+		/// <returns>The JSON string.</returns>
+		public static string ToJsonString(this object value, bool useCamelCasingRules = false)
         {
             Guard.ArgumentNotNull(value, nameof(value));
 

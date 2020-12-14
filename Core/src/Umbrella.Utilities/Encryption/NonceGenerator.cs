@@ -35,7 +35,7 @@ namespace Umbrella.Utilities.Encryption
 		{
 			Guard.ArgumentInRange(lengthInBytes, nameof(lengthInBytes), 1, 1024);
 
-			byte[] buffer = null;
+			byte[]? buffer = null;
 
 			try
 			{
@@ -52,7 +52,7 @@ namespace Umbrella.Utilities.Encryption
 			}
 			finally
 			{
-				if (buffer != null)
+				if (buffer is not null)
 					ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}

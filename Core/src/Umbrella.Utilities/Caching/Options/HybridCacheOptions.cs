@@ -26,7 +26,7 @@ namespace Umbrella.Utilities.Caching.Options
 		/// Gets or sets the cache key builder. This is only really needed when you want the cache key to have some kind of common element to the key, e.g. a prefix
 		/// so that items that have gone into the Memory or Distributed cache have done so via the <see cref="HybridCache"/>.
 		/// </summary>
-		public HybridCacheKeyBuilder CacheKeyBuilder { get; set; }
+		public HybridCacheKeyBuilder? CacheKeyBuilder { get; set; }
 
 		/// <summary>
 		/// Gets or sets the default cache timeout in the event that callers of methods on the <see cref="HybridCache"/> do not provide a cache timeout value.

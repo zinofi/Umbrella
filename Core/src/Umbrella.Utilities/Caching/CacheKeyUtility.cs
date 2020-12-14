@@ -43,7 +43,7 @@ namespace Umbrella.Utilities.Caching
 			Guard.ArgumentNotNull(type, nameof(type));
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-			char[] rentedArray = null;
+			char[]? rentedArray = null;
 
 			try
 			{
@@ -60,7 +60,7 @@ namespace Umbrella.Utilities.Caching
 				if (!isStack)
 					span = span.Slice(0, length);
 
-				return _lookupNormalizer.Normalize(span.ToString());
+				return _lookupNormalizer.Normalize(span.ToString()) ?? throw new Exception("The span could not be normalized.");
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { type, key }, returnValue: true))
 			{
@@ -83,7 +83,7 @@ namespace Umbrella.Utilities.Caching
 			Guard.ArgumentNotEmpty(keyParts, nameof(keyParts));
 			Guard.ArgumentInRange(keyPartsLength, nameof(keyPartsLength), 1, keyParts.Length, allowNull: true);
 
-			char[] rentedArray = null;
+			char[]? rentedArray = null;
 
 			try
 			{
@@ -127,7 +127,7 @@ namespace Umbrella.Utilities.Caching
 					span = span.Slice(0, length);
 
 				// This is the only part that allocates
-				return _lookupNormalizer.Normalize(span.ToString());
+				return _lookupNormalizer.Normalize(span.ToString()) ?? throw new Exception("The span could not be normalized.");
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { type, keyParts = keyParts.ToArray(), keyPartsLength }, returnValue: true))
 			{

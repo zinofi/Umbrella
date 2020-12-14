@@ -174,7 +174,7 @@ namespace Umbrella.Utilities.Http
 		/// </summary>
 		/// <param name="queryString">The raw query string value, with or without the leading '?'.</param>
 		/// <returns>A collection of parsed keys and values, null if there are no entries.</returns>
-		public static Dictionary<string, StringValues> ParseNullableQuery(string queryString)
+		public static Dictionary<string, StringValues>? ParseNullableQuery(string queryString)
 		{
 			var accumulator = new KeyValueAccumulator();
 

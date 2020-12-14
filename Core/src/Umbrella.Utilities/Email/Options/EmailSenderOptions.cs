@@ -16,18 +16,18 @@ namespace Umbrella.Utilities.Email.Options
 		/// <summary>
 		/// The default sender address.
 		/// </summary>
-		public string DefaultFromAddress { get; set; }
+		public string? DefaultFromAddress { get; set; }
 
 		/// <summary>
 		/// The path to the folder on disk where emails will be saved when <see cref="DeliveryMethod"/> is set
 		/// to <see cref="EmailSenderDeliveryMode.SpecifiedPickupDirectory"/>.
 		/// </summary>
-		public string PickupDirectoryLocation { get; set; }
+		public string? PickupDirectoryLocation { get; set; }
 
 		/// <summary>
 		/// The address of the SMTP server.
 		/// </summary>
-		public string Host { get; set; }
+		public string? Host { get; set; }
 
 		/// <summary>
 		/// The port used to connect to the SMTP server. Defaults to 25.
@@ -37,12 +37,12 @@ namespace Umbrella.Utilities.Email.Options
 		/// <summary>
 		/// The username used to connect to the SMTP server.
 		/// </summary>
-		public string UserName { get; set; }
+		public string? UserName { get; set; }
 
 		/// <summary>
 		/// The password used to connect to the SMTP server.
 		/// </summary>
-		public string Password { get; set; }
+		public string? Password { get; set; }
 
 		/// <summary>
 		/// Specifies whether or not the SMTP server connection is secured. Defaults to <see langword="false" />.

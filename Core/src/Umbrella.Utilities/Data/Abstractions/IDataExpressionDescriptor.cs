@@ -8,7 +8,7 @@
 		/// <summary>
 		/// Gets or sets the name of the member.
 		/// </summary>
-		string MemberPath { get; set; }
+		string? MemberPath { get; set; }
 
 		/// <summary>
 		/// Returns true if the descriptor is valid.

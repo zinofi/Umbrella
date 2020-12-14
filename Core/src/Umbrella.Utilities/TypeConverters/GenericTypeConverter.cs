@@ -23,7 +23,7 @@ namespace Umbrella.Utilities.TypeConverters
 		}
 
 		/// <inheritdoc />
-		public T Convert<T>(string value, Func<T> fallbackCreator, Func<string, T> customValueConverter = null)
+		public T? Convert<T>(string? value, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null)
 		{
 			try
 			{
@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.TypeConverters
 		}
 
 		/// <inheritdoc />
-		public T Convert<T>(string value, T fallback = default, Func<string, T> customValueConverter = null)
+		public T? Convert<T>(string? value, T fallback = default, Func<string?, T>? customValueConverter = null)
 		{
 			try
 			{
@@ -58,7 +58,7 @@ namespace Umbrella.Utilities.TypeConverters
 		}
 
 		/// <inheritdoc />
-		public T ConvertToEnum<T>(string value, T fallback = default)
+		public T ConvertToEnum<T>(string? value, T fallback = default)
 			where T : struct, Enum
 		{
 			try

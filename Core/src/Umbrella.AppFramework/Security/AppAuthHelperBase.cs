@@ -62,7 +62,7 @@ namespace Umbrella.AppFramework.Security
 				if (string.IsNullOrWhiteSpace(token))
 					return _emptyPrincipal;
 
-				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(_jwtUtility.ParseClaimsFromJwt(token), "jwt"));
+				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(_jwtUtility.ParseClaimsFromJwt(token!), "jwt"));
 
 				return _claimsPrincipal;
 			}

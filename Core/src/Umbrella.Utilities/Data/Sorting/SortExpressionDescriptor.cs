@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlTypes;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Sorting
@@ -13,7 +12,7 @@ namespace Umbrella.Utilities.Data.Sorting
 	[Serializable]
 	public class SortExpressionDescriptor : IDataExpressionDescriptor
 	{
-		private string _memberName;
+		private string? _memberName;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SortExpressionDescriptor"/> class.
@@ -34,7 +33,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		}
 
 		/// <inheritdoc />
-		public string MemberPath
+		public string? MemberPath
 		{
 			get => _memberName;
 			set => _memberName = value?.Trim();

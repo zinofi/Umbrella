@@ -55,7 +55,7 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <summary>
 		/// Gets the options.
 		/// </summary>
-		protected TOptions Options { get; private set; }
+		protected TOptions? Options { get; private set; }
 		#endregion
 
 		#region Constructors		

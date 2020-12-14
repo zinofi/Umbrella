@@ -12,7 +12,7 @@ namespace Umbrella.Utilities.Data.Filtering
 	[Serializable]
 	public class FilterExpressionDescriptor : IDataExpressionDescriptor
 	{
-		private string _memberPath;
+		private string? _memberPath;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterExpressionDescriptor"/> class.
@@ -37,7 +37,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <summary>
 		/// Gets or sets the path of the member.
 		/// </summary>
-		public string MemberPath
+		public string? MemberPath
 		{
 			get => _memberPath;
 			set => _memberPath = value?.Trim();
@@ -46,7 +46,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <summary>
 		/// Gets or sets the value used for filtering.
 		/// </summary>
-		public string Value { get; set; }
+		public string? Value { get; set; }
 
 		/// <summary>
 		/// Gets or sets the filter type.

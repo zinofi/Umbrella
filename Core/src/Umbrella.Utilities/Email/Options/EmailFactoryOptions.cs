@@ -27,9 +27,9 @@ namespace Umbrella.Utilities.Email.Options
 		/// <inheritdoc />
 		public void Sanitize()
 		{
-			TemplatesVirtualPath = TemplatesVirtualPath?.Trim();
-			DataRowFormat = DataRowFormat?.Trim();
-			NewLineToken = NewLineToken?.Trim(' ');
+			TemplatesVirtualPath = TemplatesVirtualPath?.Trim() ?? "";
+			DataRowFormat = DataRowFormat?.Trim() ?? "";
+			NewLineToken = NewLineToken?.Trim(' ') ?? "";
 		}
 
 		/// <summary>

@@ -20,7 +20,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <returns>The query with the sort expressions applied to it.</returns>
 		public static IQueryable<TItem> ApplySortExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
-			IOrderedQueryable<TItem> orderedQuery = null;
+			IOrderedQueryable<TItem>? orderedQuery = null;
 
 			if (sortExpressions?.Count() > 0)
 			{
@@ -62,7 +62,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <param name="direction">The direction.</param>
 		/// <param name="comparer">The comparer.</param>
 		/// <returns>The ordered query.</returns>
-		public static IOrderedQueryable<TSource> OrderBySortDirection<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
+		public static IOrderedQueryable<TSource> OrderBySortDirection<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, SortDirection direction, IComparer<TKey>? comparer = null)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
 			Guard.ArgumentNotNull(keySelector, nameof(keySelector));

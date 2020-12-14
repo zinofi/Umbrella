@@ -17,7 +17,7 @@ namespace Umbrella.Utilities.Hosting.Options
 		/// <inheritdoc />
 		public void Sanitize()
 		{
-			BaseDirectory = BaseDirectory?.Trim();
+			BaseDirectory = BaseDirectory?.Trim()!;
 		}
 
 		/// <inheritdoc />

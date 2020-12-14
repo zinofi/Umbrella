@@ -15,7 +15,7 @@ namespace Umbrella.Utilities.Hosting
 	/// <summary>
 	/// Serves as the base class for all hosting environment implementations.
 	/// </summary>
-	/// <seealso cref="Umbrella.Utilities.Hosting.Abstractions.IUmbrellaHostingEnvironment" />
+	/// <seealso cref="IUmbrellaHostingEnvironment" />
 	public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
 	{
 		#region Protected Properties		
@@ -43,7 +43,7 @@ namespace Umbrella.Utilities.Hosting
 		/// Gets or sets the file provider.
 		/// </summary>
 		/// <remarks>Exposed as internal for unit testing / benchmarking mocks</remarks>
-		protected internal Lazy<IFileProvider> FileProvider { get; set; }
+		protected internal Lazy<IFileProvider> FileProvider { get; set; } = null!;
 		#endregion
 
 		#region Constructors		
@@ -69,10 +69,10 @@ namespace Umbrella.Utilities.Hosting
 
 		#region IUmbrellaHostingEnvironment Members
 		/// <inheritdoc />
-		public abstract string MapPath(string virtualPath);
+		public abstract string? MapPath(string virtualPath);
 
 		/// <inheritdoc />
-		public virtual async Task<string> GetFileContentAsync(string virtualPath, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
+		public virtual async Task<string?> GetFileContentAsync(string virtualPath, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
@@ -99,13 +99,13 @@ namespace Umbrella.Utilities.Hosting
 		/// <param name="watch">Specifies if the file should be watched for changes.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The file content.</returns>
-		protected virtual async Task<string> GetFileContentAsync(string fileProviderKey, IFileProvider fileProvider, string virtualPath, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
+		protected virtual async Task<string?> GetFileContentAsync(string fileProviderKey, IFileProvider fileProvider, string virtualPath, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(fileProvider, nameof(fileProvider));
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-			string[] cacheKeyParts = null;
+			string[]? cacheKeyParts = null;
 
 			try
 			{

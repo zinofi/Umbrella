@@ -2,21 +2,38 @@
 
 namespace Umbrella.Utilities.Spatial
 {
-	// TODO PR: Make readonly when JsonConstructor becomes a thing in .NET 5.
+	// TODO PR: Make readonly when JsonConstructor becomes a thing in .NET 5.	
+	/// <summary>
+	/// Represents a location using latitude and longitude and allows for calculating distances to other <see cref="GeoLocation"/> instances.
+	/// </summary>
+	/// <seealso cref="IEquatable{GeoLocation}" />
 	public struct GeoLocation : IEquatable<GeoLocation>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GeoLocation"/> struct.
+		/// </summary>
+		/// <param name="latitude">The latitude.</param>
+		/// <param name="longitude">The longitude.</param>
 		public GeoLocation(double latitude, double longitude)
 		{
 			Latitude = latitude;
 			Longitude = longitude;
 		}
 
+		/// <summary>
+		/// Gets or sets the latitude.
+		/// </summary>
 		public double Latitude { get; set; }
+
+		/// <summary>
+		/// Gets or sets the longitude.
+		/// </summary>
 		public double Longitude { get; set; }
 
 		/// <inheritdoc />
 		public override readonly bool Equals(object obj) => obj is GeoLocation location && Equals(location);
 
+		/// <inheritdoc />
 		public readonly bool Equals(GeoLocation other) => Latitude == other.Latitude &&
 				   Longitude == other.Longitude;
 
@@ -29,6 +46,12 @@ namespace Umbrella.Utilities.Spatial
 			return hashCode;
 		}
 
+		/// <summary>
+		/// Calculates the distance between the current instance and the specified <paramref name="other"/> <see cref="GeoLocation"/>.
+		/// </summary>
+		/// <param name="other">The other.</param>
+		/// <param name="distanceType">Type of the distance.</param>
+		/// <returns>The distance using the units specified by the <paramref name="distanceType"/> parameter.</returns>
 		public readonly double DistanceTo(in GeoLocation other, in GeoLocationDistanceType distanceType = GeoLocationDistanceType.Meters)
 		{
 			const double piDeg180 = Math.PI / 180;
@@ -51,8 +74,24 @@ namespace Umbrella.Utilities.Spatial
 			};
 		}
 
+		/// <summary>
+		/// Implements the operator ==.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>
+		/// The result of the operator.
+		/// </returns>
 		public static bool operator ==(in GeoLocation left, in GeoLocation right) => left.Equals(right);
 
+		/// <summary>
+		/// Implements the operator !=.
+		/// </summary>
+		/// <param name="left">The left.</param>
+		/// <param name="right">The right.</param>
+		/// <returns>
+		/// The result of the operator.
+		/// </returns>
 		public static bool operator !=(in GeoLocation left, in GeoLocation right) => !(left == right);
 	}
 }

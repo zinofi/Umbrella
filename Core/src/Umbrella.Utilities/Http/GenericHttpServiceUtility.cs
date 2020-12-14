@@ -33,11 +33,11 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>> sorters = null, IEnumerable<FilterExpression<TItem>> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>>? sorters = null, IEnumerable<FilterExpression<TItem>>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
 			=> CreateSearchQueryParameters(pageNumber, pageSize, sorters?.ToSortExpressionDescriptors(), filters?.ToFilterExpressionDescriptors(), filterCombinator);
 
 		/// <inheritdoc />
-		public IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
 		{
 			try
 			{
@@ -55,11 +55,11 @@ namespace Umbrella.Utilities.Http
 					}
 
 					if (sorterCount > 0)
-						parameters.Add("sorters", UmbrellaStatics.SerializeJson(sorters));
+						parameters.Add("sorters", UmbrellaStatics.SerializeJson(sorters!));
 
 					if (filterCount > 0)
 					{
-						parameters.Add("filters", UmbrellaStatics.SerializeJson(filters));
+						parameters.Add("filters", UmbrellaStatics.SerializeJson(filters!));
 						parameters.Add("filterCombinator", filterCombinator.ToString());
 					}
 				}

@@ -20,7 +20,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>The filtered collection.</returns>
 		public static IEnumerable<TItem> ApplyFilterExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<FilterExpression<TItem>> filterExpressions, FilterExpressionCombinator combinator, bool useCurrentCulture = true)
 		{
-			IEnumerable<TItem> filteredItems = null;
+			IEnumerable<TItem>? filteredItems = null;
 
 			if (filterExpressions?.Count() > 0)
 			{

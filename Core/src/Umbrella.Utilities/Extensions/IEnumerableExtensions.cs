@@ -37,7 +37,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="comparer">The comparer used by the hashset to determine item uniqueness.</param>
 		/// <returns>The new <see cref="HashSet{T}"/>.</returns>
 		[Obsolete("This will be removed in a future version as this method has been added to netstandard2.1")]
-		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
+		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T>? comparer = null)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
 
@@ -103,6 +103,12 @@ namespace Umbrella.Utilities.Extensions
 			}
 		}
 
+		/// <summary>
+		/// Randomly shuffles the specified items.
+		/// </summary>
+		/// <typeparam name="T">The type of the item being shuffed.</typeparam>
+		/// <param name="items">The items.</param>
+		/// <returns>The shuffled items.</returns>
 		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(x => Guid.NewGuid());
 
 		// TODO: Add documentation and unit tests.

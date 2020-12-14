@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Helpers
 {
@@ -28,7 +24,7 @@ namespace Umbrella.Utilities.Helpers
 		/// is passed uninitialized.
 		/// </param>
 		/// <returns>true if the value parameter was converted successfully; otherwise, false.</returns>
-		public static bool TryParseEnum(Type enumType, string value, bool ignoreCase, out object result)
+		public static bool TryParseEnum(Type enumType, string value, bool ignoreCase, out object? result)
 		{
 			result = null;
 

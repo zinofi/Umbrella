@@ -19,7 +19,7 @@ namespace Umbrella.TypeScript.Tools
 		where TOptions : ToolOptions, new()
 	{
 		protected ConsoleColor InitialConsoleColor { get; } = Console.ForegroundColor;
-		protected Dictionary<string, CommandOption> OptionDictionary { get; private set; }
+		protected Dictionary<string, CommandOption>? OptionDictionary { get; private set; }
 
 		public UmbrellaTypeScriptApp()
 		{
@@ -159,6 +159,9 @@ namespace Umbrella.TypeScript.Tools
 
 		protected virtual TOptions GetToolOptions()
 		{
+			if (OptionDictionary is null)
+				throw new Exception($"{nameof(OptionDictionary)} is null.");
+
 			string propertyMode = CleanInput(OptionDictionary["property-mode"].Value());
 
 			if (!Enum.TryParse(propertyMode, out TypeScriptPropertyMode tsPropertyMode))
@@ -200,9 +203,9 @@ namespace Umbrella.TypeScript.Tools
 			Console.ForegroundColor = InitialConsoleColor;
 		}
 
-		private List<string> CleanInput(List<string> values) => values?.Select(x => x.Trim('"')).ToList();
+		private List<string> CleanInput(List<string>? values) => values?.Select(x => x.Trim('"')).ToList() ?? new List<string>();
 
-		private string CleanInput(string input) => input?.Trim('"');
+		private string CleanInput(string input) => input?.Trim('"') ?? "";
 
 		private List<Assembly> LoadAssemblies(string assemblyFolderPath, List<string> lstAssemblyName)
 		{

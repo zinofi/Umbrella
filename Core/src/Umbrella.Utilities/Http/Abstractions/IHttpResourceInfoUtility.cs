@@ -15,6 +15,6 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="useCache">Determines whether to cache the resource info.</param>
 		/// <returns>The <see cref="HttpResourceInfo"/>.</returns>
-		Task<HttpResourceInfo> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true);
+		Task<HttpResourceInfo?> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true);
 	}
 }

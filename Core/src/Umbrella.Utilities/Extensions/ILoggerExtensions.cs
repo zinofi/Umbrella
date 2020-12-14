@@ -17,33 +17,114 @@ namespace Microsoft.Extensions.Logging
     {
         #region Private Static Members
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_TypePropertyInfoDictionary = new ConcurrentDictionary<Type, PropertyInfo[]>();
-        #endregion
+		#endregion
 
-        #region Public Static Methods
-        public static void WriteDebug(this ILogger log, object state = null, string message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		#region Public Static Methods		
+		/// <summary>
+		/// Writes a <see cref="LogLevel.Debug"/> message to the specified <paramref name="log"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		public static void WriteDebug(this ILogger log, object? state = null, string? message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
             => LogDetails(log, LogLevel.Debug, null, state, message, in eventId, methodName, filePath, lineNumber);
 
-        public static void WriteTrace(this ILogger log, object state = null, string message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		/// <summary>
+		/// Writes a <see cref="LogLevel.Debug"/> message to the specified <paramref name="log"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		public static void WriteTrace(this ILogger log, object? state = null, string? message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
             => LogDetails(log, LogLevel.Trace, null, state, message, in eventId, methodName, filePath, lineNumber);
 
-        public static void WriteInformation(this ILogger log, object state = null, string message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		/// <summary>
+		/// Writes a <see cref="LogLevel.Information"/> message to the specified <paramref name="log"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		public static void WriteInformation(this ILogger log, object? state = null, string? message = null, in EventId eventId = default, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
             => LogDetails(log, LogLevel.Information, null, state, message, in eventId, methodName, filePath, lineNumber);
 
-        public static bool WriteWarning(this ILogger log, Exception exc = null, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		/// <summary>
+		/// Writes a <see cref="LogLevel.Warning"/> message to the specified <paramref name="log"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="exc">The exc.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="returnValue">
+		/// The return value of this method will be this value.
+		/// This is primarily to allowed these log methods to be called as a side-effect of exception filters.
+		/// This return value can then control whether or not the associated catch block is entered.
+		/// </param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		/// <returns>The specified <paramref name="returnValue"/>.</returns>
+		public static bool WriteWarning(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Warning, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
-        public static bool WriteError(this ILogger log, Exception exc, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		/// <summary>
+		/// Writes a <see cref="LogLevel.Error"/> message to the specified <paramref name="log"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="exc">The exc.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="returnValue">
+		/// The return value of this method will be this value.
+		/// This is primarily to allowed these log methods to be called as a side-effect of exception filters.
+		/// This return value can then control whether or not the associated catch block is entered.
+		/// </param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		/// <returns>The specified <paramref name="returnValue"/>.</returns>
+		public static bool WriteError(this ILogger log, Exception exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
             return returnValue;
         }
 
-        public static bool WriteCritical(this ILogger log, Exception exc, object state = null, string message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		/// <summary>
+		/// Writes a <see cref="LogLevel.Critical"/> message to the specified <paramref name="log"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="exc">The exc.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="returnValue">
+		/// The return value of this method will be this value.
+		/// This is primarily to allowed these log methods to be called as a side-effect of exception filters.
+		/// This return value can then control whether or not the associated catch block is entered.
+		/// </param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		/// <returns>The specified <paramref name="returnValue"/>.</returns>
+		public static bool WriteCritical(this ILogger log, Exception exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Critical, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
@@ -52,7 +133,7 @@ namespace Microsoft.Extensions.Logging
         #endregion
 
         #region Private Static Methods
-        private static void LogDetails(ILogger log, LogLevel level, Exception exc, object state, string message, in EventId eventId, string methodName, string filePath, int lineNumber)
+        private static void LogDetails(ILogger log, LogLevel level, Exception? exc, object? state, string? message, in EventId eventId, string methodName, string filePath, int lineNumber)
         {
             if (!log.IsEnabled(level))
                 return;

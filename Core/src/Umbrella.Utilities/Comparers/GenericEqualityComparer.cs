@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Comparers
 {
+	/// <summary>
+	/// A generic comparer to allow for determining equality between 2 object instances
+	/// of the same type.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object.</typeparam>
+	/// <seealso cref="Umbrella.Utilities.Comparers.GenericEqualityComparer{TObject, TObject}" />
 	public class GenericEqualityComparer<TObject> : GenericEqualityComparer<TObject, TObject>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericEqualityComparer{TObject}"/> class.
+		/// </summary>
+		/// <param name="propertySelector">The property selector delegate.</param>
+		/// <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector" /> if possible.</param>
 		public GenericEqualityComparer(
 			Func<TObject, TObject> propertySelector,
-			Func<TObject, TObject, bool> customComparer = null)
+			Func<TObject, TObject, bool>? customComparer = null)
 			: base(propertySelector, customComparer)
 		{
 		}
@@ -23,8 +32,8 @@ namespace Umbrella.Utilities.Comparers
 	/// <typeparam name="TProperty">The type of the property used for comparison.</typeparam>
 	public class GenericEqualityComparer<TObject, TProperty> : EqualityComparer<TObject>
     {
-        private readonly Func<TObject, TProperty> m_PropertySelector;
-        private readonly Func<TObject, TObject, bool> m_CustomComparer;
+        private readonly Func<TObject, TProperty> _propertySelector;
+        private readonly Func<TObject, TObject, bool>? _customComparer;
 
         /// <summary>
         /// Create a new instance of the comparer using the specified delegate to select the value used to check
@@ -36,12 +45,12 @@ namespace Umbrella.Utilities.Comparers
         /// </summary>
         /// <param name="propertySelector">The property selector delegate.</param>
         /// <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector"/> if possible.</param>
-        public GenericEqualityComparer(Func<TObject, TProperty> propertySelector, Func<TObject, TObject, bool> customComparer = null)
+        public GenericEqualityComparer(Func<TObject, TProperty> propertySelector, Func<TObject, TObject, bool>? customComparer = null)
         {
             Guard.ArgumentNotNull(propertySelector, nameof(propertySelector));
 
-            m_PropertySelector = propertySelector;
-            m_CustomComparer = customComparer;
+            _propertySelector = propertySelector;
+            _customComparer = customComparer;
         }
 
         /// <summary>
@@ -62,11 +71,11 @@ namespace Umbrella.Utilities.Comparers
             if (y == null)
                 return false;
 
-            if (m_CustomComparer != null)
-                return m_CustomComparer(x, y);
+            if (_customComparer != null)
+                return _customComparer(x, y);
 
-            TProperty xProperty = m_PropertySelector(x);
-            TProperty yProperty = m_PropertySelector(y);
+            TProperty xProperty = _propertySelector(x);
+            TProperty yProperty = _propertySelector(y);
 
             if (xProperty == null && yProperty == null)
                 return true;
@@ -91,6 +100,6 @@ namespace Umbrella.Utilities.Comparers
         /// </summary>
         /// <param name="obj">The object instance to compute the hash code for.</param>
         /// <returns>The hash code</returns>
-        public override int GetHashCode(TObject obj) => m_PropertySelector(obj)?.GetHashCode() ?? 0;
+        public override int GetHashCode(TObject obj) => _propertySelector(obj)?.GetHashCode() ?? 0;
     }
 }

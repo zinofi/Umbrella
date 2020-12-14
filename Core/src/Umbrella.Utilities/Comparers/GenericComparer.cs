@@ -1,26 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Comparers
 {
+	/// <summary>
+	/// A generic comparer used to compare 2 instances of the same type.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object.</typeparam>
+	/// <seealso cref="Umbrella.Utilities.Comparers.GenericComparer{TObject, TObject}" />
 	public class GenericComparer<TObject> : GenericComparer<TObject, TObject>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericComparer{TObject}"/> class.
+		/// </summary>
+		/// <param name="propertySelector">The property selector delegate.</param>
+		/// <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector" /> if possible.</param>
 		public GenericComparer(
 			Func<TObject, TObject> propertySelector,
-			Func<TObject, TObject, int> customComparer = null)
+			Func<TObject, TObject, int>? customComparer = null)
 			: base(propertySelector, customComparer)
 		{
 		}
 	}
 
+	/// <summary>
+	/// A generic comparer used to compare 2 instances of the same type.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object.</typeparam>
+	/// <typeparam name="TProperty">The type of the property.</typeparam>
+	/// <seealso cref="Umbrella.Utilities.Comparers.GenericComparer{TObject, TObject}" />
 	public class GenericComparer<TObject , TProperty> : Comparer<TObject>
 	{
-		private readonly Func<TObject, TProperty> m_PropertySelector;
-		private readonly Func<TObject, TObject, int> m_CustomComparer;
+		private readonly Func<TObject, TProperty> _propertySelector;
+		private readonly Func<TObject, TObject, int>? _customComparer;
 
 		/// <summary>
 		/// Create a new instance of the comparer using the specified delegate to select the value used to check
@@ -32,14 +45,15 @@ namespace Umbrella.Utilities.Comparers
 		/// </summary>
 		/// <param name="propertySelector">The property selector delegate.</param>
 		/// <param name="customComparer">An optional delegate for custom comparison instead of using the <paramref name="propertySelector"/> if possible.</param>
-		public GenericComparer(Func<TObject, TProperty> propertySelector, Func<TObject, TObject, int> customComparer = null)
+		public GenericComparer(Func<TObject, TProperty> propertySelector, Func<TObject, TObject, int>? customComparer = null)
 		{
 			Guard.ArgumentNotNull(propertySelector, nameof(propertySelector));
 
-			m_PropertySelector = propertySelector;
-			m_CustomComparer = customComparer;
+			_propertySelector = propertySelector;
+			_customComparer = customComparer;
 		}
 
+		/// <inheritdoc />
 		public override int Compare(TObject x, TObject y)
 		{
 			// Check the objects for null combinations first.
@@ -52,11 +66,11 @@ namespace Umbrella.Utilities.Comparers
 			if (y == null)
 				return 0;
 
-			if (m_CustomComparer != null)
-				return m_CustomComparer(x, y);
+			if (_customComparer != null)
+				return _customComparer(x, y);
 
-			TProperty xProperty = m_PropertySelector(x);
-			TProperty yProperty = m_PropertySelector(y);
+			TProperty xProperty = _propertySelector(x);
+			TProperty yProperty = _propertySelector(y);
 
 			if (xProperty == null && yProperty == null)
 				return 1;

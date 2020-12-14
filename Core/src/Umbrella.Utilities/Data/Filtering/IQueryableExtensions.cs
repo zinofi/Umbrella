@@ -22,12 +22,12 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>The query.</returns>
 		public static IQueryable<TItem> ApplyFilterExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<FilterExpression<TItem>> filterExpressions, FilterExpressionCombinator combinator)
 		{
-			IQueryable<TItem> filteredItems = null;
+			IQueryable<TItem>? filteredItems = null;
 
 			if (filterExpressions?.Count() > 0)
 			{
 				int i = 0;
-				Expression<Func<TItem, bool>> filterPredicate = null;
+				Expression<Func<TItem, bool>>? filterPredicate = null;
 
 				foreach (FilterExpression<TItem> filterExpression in filterExpressions)
 				{
@@ -42,15 +42,15 @@ namespace Umbrella.Utilities.Data.Filtering
 						_ => null
 					};
 
-					Expression<Func<TItem, bool>> predicate = dynamicCompare != null
+					Expression<Func<TItem, bool>> predicate = dynamicCompare is not null
 						? UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
 						: UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
 
-					if (i++ == 0)
+					if (i++ is 0)
 					{
 						filterPredicate = predicate;
 					}
-					else if (filterPredicate != null)
+					else if (filterPredicate is not null)
 					{
 						filterPredicate = combinator switch
 						{

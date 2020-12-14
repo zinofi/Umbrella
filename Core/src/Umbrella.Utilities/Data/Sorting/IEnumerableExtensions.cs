@@ -19,7 +19,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <returns>The collection with the sort expressions applied to it.</returns>
 		public static IEnumerable<TItem> ApplySortExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
-			IOrderedEnumerable<TItem> orderedItems = null;
+			IOrderedEnumerable<TItem>? orderedItems = null;
 
 			if (sortExpressions?.Count() > 0)
 			{
@@ -27,7 +27,7 @@ namespace Umbrella.Utilities.Data.Sorting
 
 				foreach (SortExpression<TItem> sortExpression in sortExpressions)
 				{
-					if (i++ == 0)
+					if (i++ is 0)
 					{
 						orderedItems = sortExpression.Direction == SortDirection.Ascending
 							? items.OrderBy(sortExpression.GetDelegate())
@@ -43,7 +43,7 @@ namespace Umbrella.Utilities.Data.Sorting
 			}
 			else if (defaultSortOrderExpression == default)
 			{
-				orderedItems = defaultSortOrderExpression.Direction == SortDirection.Ascending
+				orderedItems = defaultSortOrderExpression.Direction is SortDirection.Ascending
 							? items.OrderBy(defaultSortOrderExpression.GetDelegate())
 							: items.OrderByDescending(defaultSortOrderExpression.GetDelegate());
 			}
@@ -61,15 +61,15 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <param name="direction">The direction.</param>
 		/// <param name="comparer">The comparer.</param>
 		/// <returns>The collection query.</returns>
-		public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey> comparer = null)
+		public static IOrderedEnumerable<TSource> OrderBySortDirection<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, SortDirection direction, IComparer<TKey>? comparer = null)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));
 			Guard.ArgumentNotNull(keySelector, nameof(keySelector));
 
 			return direction switch
 			{
-				SortDirection.Descending => comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer),
-				_ => comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer),
+				SortDirection.Descending => comparer is null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer),
+				_ => comparer is null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer),
 			};
 		}
 

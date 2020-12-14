@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Linq.Expressions;
-using Microsoft.Extensions.Logging;
-using Umbrella.Utilities.Data.Filtering;
-using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Exceptions;
-using Umbrella.Utilities.Expressions;
-using Umbrella.Utilities.Extensions;
-using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.Utilities.Data.Abstractions
 {
@@ -23,6 +14,6 @@ namespace Umbrella.Utilities.Data.Abstractions
 		/// <param name="elementType">Type of the element.</param>
 		/// <param name="descriptor">The descriptor.</param>
 		/// <returns>The data expression.</returns>
-		IDataExpression Create<TDescriptor>(Type elementType, TDescriptor descriptor) where TDescriptor : IDataExpressionDescriptor;
+		IDataExpression? Create<TDescriptor>(Type elementType, TDescriptor descriptor) where TDescriptor : IDataExpressionDescriptor;
 	}
 }

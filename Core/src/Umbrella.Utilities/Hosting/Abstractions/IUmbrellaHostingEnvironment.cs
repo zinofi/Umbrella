@@ -13,7 +13,7 @@ namespace Umbrella.Utilities.Hosting.Abstractions
 		/// </summary>
 		/// <param name="virtualPath">The virtual path.</param>
 		/// <returns>The mapped path.</returns>
-		string MapPath(string virtualPath);
+		string? MapPath(string virtualPath);
 
 		/// <summary>
 		/// Gets the string content of the file at the specified virtual path.
@@ -22,8 +22,7 @@ namespace Umbrella.Utilities.Hosting.Abstractions
 		/// <param name="cache">Specifies if the content should be cached.</param>
 		/// <param name="watch">Specifies if the file should be watched for changes.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>The file content.</returns>
-		/// <returns></returns>
-		Task<string> GetFileContentAsync(string virtualPath, bool cache = true, bool watch = true, CancellationToken cancellationToken = default);
+		/// <returns>The file content or null if it doesn't exist.</returns>
+		Task<string?> GetFileContentAsync(string virtualPath, bool cache = true, bool watch = true, CancellationToken cancellationToken = default);
 	}
 }

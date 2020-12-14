@@ -28,10 +28,13 @@ namespace Umbrella.Utilities.Security.Extensions
 		/// <param name="givenNameClaimType">Type of the given name claim.</param>
 		/// <param name="surnameClaimType">Type of the surname claim.</param>
 		/// <returns>The full name.</returns>
-		public static string GetFullName(this ClaimsPrincipal principal, string givenNameClaimType = ClaimTypes.GivenName, string surnameClaimType = ClaimTypes.Surname)
+		public static string? GetFullName(this ClaimsPrincipal principal, string givenNameClaimType = ClaimTypes.GivenName, string surnameClaimType = ClaimTypes.Surname)
 		{
-			string firstName = principal.FindFirst(givenNameClaimType)?.Value;
-			string lastName = principal.FindFirst(surnameClaimType)?.Value;
+			string? firstName = principal.FindFirst(givenNameClaimType)?.Value;
+			string? lastName = principal.FindFirst(surnameClaimType)?.Value;
+
+			if (string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName))
+				return null;
 
 			return $"{firstName} {lastName}";
 		}
@@ -43,7 +46,7 @@ namespace Umbrella.Utilities.Security.Extensions
 		/// <param name="principal">The principal.</param>
 		/// <param name="nameIdentifierClaimType">Type of the name identifier claim.</param>
 		/// <returns>The identifier</returns>
-		public static TUserId GetId<TUserId>(this ClaimsPrincipal principal, string nameIdentifierClaimType = ClaimTypes.NameIdentifier)
+		public static TUserId? GetId<TUserId>(this ClaimsPrincipal principal, string nameIdentifierClaimType = ClaimTypes.NameIdentifier)
 		{
 			if (!principal.Identity.IsAuthenticated)
 				return default;
@@ -73,7 +76,9 @@ namespace Umbrella.Utilities.Security.Extensions
 		/// <param name="principal">The principal.</param>
 		/// <param name="roleType">Type of the role.</param>
 		/// <returns><see langword="true"/> if yes; otherwise <see langword="false"/>.</returns>
-		public static bool IsInRole<TRole>(this ClaimsPrincipal principal, TRole roleType) => principal.IsInRole(roleType.ToString());
+		public static bool IsInRole<TRole>(this ClaimsPrincipal principal, TRole roleType)
+			where TRole : struct, Enum
+			=> principal.IsInRole(roleType.ToString());
 
 		/// <summary>
 		/// Gets the roles.
@@ -89,7 +94,7 @@ namespace Umbrella.Utilities.Security.Extensions
 
 			foreach (var roleClaim in principal.Claims.Where(x => x.Type == roleClaimType))
 			{
-				if (Enum.TryParse<TRole>(roleClaim.Value, true, out TRole result))
+				if (Enum.TryParse(roleClaim.Value, true, out TRole result))
 					lstRole.Add(result);
 			}
 

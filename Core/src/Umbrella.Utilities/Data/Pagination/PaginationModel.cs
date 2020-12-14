@@ -85,7 +85,7 @@ namespace Umbrella.Utilities.Data.Pagination
 			: this()
 		{
 			TotalCount = totalItems;
-			PageItem[] pageItems = null;
+			PageItem[]? pageItems = null;
 
 			if (pageSize.HasValue)
 			{

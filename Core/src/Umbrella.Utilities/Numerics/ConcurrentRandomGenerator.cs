@@ -160,7 +160,7 @@ namespace Umbrella.Utilities.Numerics
 
 			int sourceCount = source.Count();
 
-			if (sourceCount == 0)
+			if (sourceCount is 0)
 				yield break;
 
 			Guard.ArgumentInRange(count, nameof(count), 1, sourceCount);
@@ -177,7 +177,7 @@ namespace Umbrella.Utilities.Numerics
 		#region Private Methods
 		private Random CreateRandom()
 		{
-			byte[] buffer = null;
+			byte[]? buffer = null;
 
 			try
 			{
@@ -192,7 +192,7 @@ namespace Umbrella.Utilities.Numerics
 			}
 			finally
 			{
-				if (buffer != null)
+				if (buffer is not null)
 					ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}

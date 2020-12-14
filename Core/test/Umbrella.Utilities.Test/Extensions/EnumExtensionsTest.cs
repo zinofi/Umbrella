@@ -16,7 +16,7 @@ namespace Umbrella.Utilities.Test.Extensions
 		}
 
 		[Fact]
-		public void ToFlagsString_NullSeparator() => Assert.Throws<ArgumentNullException>(() => TestType.Type1.ToFlagsString(separator: null));
+		public void ToFlagsString_NullSeparator() => Assert.Throws<ArgumentNullException>(() => TestType.Type1.ToFlagsString(separator: null!));
 
 		[Fact]
 		public void ToFlagsString_Valid()

@@ -7,20 +7,45 @@ using Umbrella.Utilities.Encryption.Abstractions;
 
 namespace Umbrella.Utilities.Encryption
 {
-	public abstract class EncryptionUtility<T> : IEncryptionUtility, IDisposable
-		where T : SymmetricAlgorithm, new()
+	/// <summary>
+	/// An abstract base class used to encapsulate functionality common to derived encryption utilities.
+	/// </summary>
+	/// <typeparam name="TSymmetricAlgorithm">The type of the algorithm.</typeparam>
+	/// <seealso cref="IEncryptionUtility" />
+	/// <seealso cref="System.IDisposable" />
+	public abstract class EncryptionUtility<TSymmetricAlgorithm> : IEncryptionUtility, IDisposable
+		where TSymmetricAlgorithm : SymmetricAlgorithm, new()
 	{
-		#region Protected Properties
-		protected ILogger Log { get; }
-		protected SymmetricAlgorithm Algorithm { get; private set; }
-		protected ICryptoTransform Encryptor { get; private set; }
-		protected ICryptoTransform Decryptor { get; private set; }
+		#region Protected Properties		
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
+		protected ILogger Logger { get; }
+
+		/// <summary>
+		/// Gets the algorithm.
+		/// </summary>
+		protected TSymmetricAlgorithm? Algorithm { get; private set; }
+
+		/// <summary>
+		/// Gets the encryptor.
+		/// </summary>
+		protected ICryptoTransform? Encryptor { get; private set; }
+
+		/// <summary>
+		/// Gets the decryptor.
+		/// </summary>
+		protected ICryptoTransform? Decryptor { get; private set; }
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="EncryptionUtility{TSymmetricAlgorithm}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
 		public EncryptionUtility(ILogger logger)
 		{
-			Log = logger;
+			Logger = logger;
 		}
 		#endregion
 
@@ -29,20 +54,17 @@ namespace Umbrella.Utilities.Encryption
 		{
 			try
 			{
-				using (var msEncrypt = new MemoryStream())
-				{
-					using (var csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write))
-					{
-						byte[] converted = ConvertStringToByteArray(value);
+				using var msEncrypt = new MemoryStream();
+				using var csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write);
 
-						csEncrypt.Write(converted, 0, converted.Length);
-						csEncrypt.FlushFinalBlock();
+				byte[] converted = ConvertStringToByteArray(value);
 
-						return msEncrypt.ToArray();
-					}
-				}
+				csEncrypt.Write(converted, 0, converted.Length);
+				csEncrypt.FlushFinalBlock();
+
+				return msEncrypt.ToArray();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, value))
+			catch (Exception exc) when (Logger.WriteError(exc, value))
 			{
 				throw;
 			}
@@ -52,18 +74,15 @@ namespace Umbrella.Utilities.Encryption
 		{
 			try
 			{
-				using (var msDecrypt = new MemoryStream())
-				{
-					using (var csDecrypt = new CryptoStream(msDecrypt, Decryptor, CryptoStreamMode.Write))
-					{
-						csDecrypt.Write(value, 0, value.Length);
-						csDecrypt.Close();
+				using var msDecrypt = new MemoryStream();
+				using var csDecrypt = new CryptoStream(msDecrypt, Decryptor, CryptoStreamMode.Write);
 
-						return ConvertByteArrayToString(msDecrypt.ToArray());
-					}
-				}
+				csDecrypt.Write(value, 0, value.Length);
+				csDecrypt.Close();
+
+				return ConvertByteArrayToString(msDecrypt.ToArray());
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw;
 			}
@@ -81,7 +100,7 @@ namespace Umbrella.Utilities.Encryption
 			try
 			{
 				// Create provider
-				Algorithm = new T()
+				Algorithm = new TSymmetricAlgorithm()
 				{
 					// Assign key and iv
 					Mode = CipherMode.CBC,
@@ -96,7 +115,7 @@ namespace Umbrella.Utilities.Encryption
 				Encryptor = Algorithm.CreateEncryptor(key, iV);
 				Decryptor = Algorithm.CreateDecryptor(key, iV);
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw;
 			}
@@ -111,20 +130,17 @@ namespace Umbrella.Utilities.Encryption
 		{
 			try
 			{
-				using (var msEncrypt = new MemoryStream())
-				{
-					using (var csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write))
-					{
-						byte[] converted = Encoding.UTF8.GetBytes(value);
+				using var msEncrypt = new MemoryStream();
+				using var csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write);
 
-						csEncrypt.Write(converted, 0, converted.Length);
-						csEncrypt.FlushFinalBlock();
+				byte[] converted = Encoding.UTF8.GetBytes(value);
 
-						return Convert.ToBase64String(msEncrypt.ToArray());
-					}
-				}
+				csEncrypt.Write(converted, 0, converted.Length);
+				csEncrypt.FlushFinalBlock();
+
+				return Convert.ToBase64String(msEncrypt.ToArray());
 			}
-			catch (Exception exc) when (Log.WriteError(exc, value))
+			catch (Exception exc) when (Logger.WriteError(exc, value))
 			{
 				throw;
 			}
@@ -139,20 +155,17 @@ namespace Umbrella.Utilities.Encryption
 		{
 			try
 			{
-				using (var msDecrypt = new MemoryStream())
-				{
-					using (var csDecrypt = new CryptoStream(msDecrypt, Decryptor, CryptoStreamMode.Write))
-					{
-						byte[] converted = Convert.FromBase64String(value);
+				using var msDecrypt = new MemoryStream();
+				using var csDecrypt = new CryptoStream(msDecrypt, Decryptor, CryptoStreamMode.Write);
 
-						csDecrypt.Write(converted, 0, converted.Length);
-						csDecrypt.Close();
+				byte[] converted = Convert.FromBase64String(value);
 
-						return Encoding.UTF8.GetString(msDecrypt.ToArray());
-					}
-				}
+				csDecrypt.Write(converted, 0, converted.Length);
+				csDecrypt.Close();
+
+				return Encoding.UTF8.GetString(msDecrypt.ToArray());
 			}
-			catch (Exception exc) when (Log.WriteError(exc, value))
+			catch (Exception exc) when (Logger.WriteError(exc, value))
 			{
 				throw;
 			}

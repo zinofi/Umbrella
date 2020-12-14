@@ -12,7 +12,7 @@ namespace Umbrella.Utilities.Expressions
 	/// </summary>
 	public static class UmbrellaDynamicExpression
 	{
-		private static readonly ConcurrentDictionary<Type, Func<string, IFormatProvider, object>> _cache = new ConcurrentDictionary<Type, Func<string, IFormatProvider, object>>();
+		private static readonly ConcurrentDictionary<Type, Func<string, IFormatProvider?, object>> _cache = new ConcurrentDictionary<Type, Func<string, IFormatProvider?, object>>();
 
 		/// <summary>
 		/// Create a dynamic comparison expression for a given property selector, comparison method and reference value.
@@ -23,7 +23,7 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="value">The reference value to compare with.</param>
 		/// <param name="provider">The culture-specific formatting information.</param>
 		/// <returns>The dynamic comparison expression.</returns>
-		public static Expression CreateComparison(ParameterExpression target, string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider provider = null)
+		public static Expression CreateComparison(ParameterExpression target, string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider? provider = null)
 		{
 			Guard.ArgumentNotNull(target, nameof(target));
 			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
@@ -31,7 +31,7 @@ namespace Umbrella.Utilities.Expressions
 			if (!Enum.IsDefined(typeof(UmbrellaDynamicCompare), comparer))
 				throw new ArgumentOutOfRangeException(nameof(comparer));
 
-			var memberAccess = CreateMemberAccess(target, selector);
+			var memberAccess = CreateMemberAccess(target, selector) ?? throw new Exception("The memberAccess is null.");
 			var actualValue = CreateConstant(target, memberAccess, value, provider);
 
 			return comparer switch
@@ -55,13 +55,13 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="value">The reference value to compare with.</param>
 		/// <param name="provider">The culture-specific formatting information.</param>
 		/// <returns>The dynamic comparison expression.</returns>
-		public static Expression CreateComparison(ParameterExpression target, string selector, string comparer, string value, IFormatProvider provider = null)
+		public static Expression CreateComparison(ParameterExpression target, string selector, string comparer, string value, IFormatProvider? provider = null)
 		{
 			Guard.ArgumentNotNull(target, nameof(target));
 			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
 			Guard.ArgumentNotNullOrWhiteSpace(comparer, nameof(comparer));
 
-			var memberAccess = CreateMemberAccess(target, selector);
+			var memberAccess = CreateMemberAccess(target, selector) ?? throw new Exception("The memberAccess is null.");
 			var actualValue = CreateConstant(target, memberAccess, value, provider);
 
 			return Expression.Call(memberAccess, comparer, null, actualValue);
@@ -74,7 +74,7 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="selector">The property selector to parse.</param>
 		/// <param name="throwOnError">Specifies if an exception is thrown if an error is encountered. If not, this will just return <see langword="null"/>.</param>
 		/// <returns>The dynamic member access expression.</returns>
-		public static MemberExpression CreateMemberAccess(ParameterExpression target, string selector, bool throwOnError = true)
+		public static MemberExpression? CreateMemberAccess(ParameterExpression target, string selector, bool throwOnError = true)
 		{
 			Guard.ArgumentNotNull(target, nameof(target));
 			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
@@ -92,14 +92,14 @@ namespace Umbrella.Utilities.Expressions
 			}
 		}
 
-		private static Expression CreateConstant(ParameterExpression target, Expression selector, string value, IFormatProvider provider)
+		private static Expression CreateConstant(ParameterExpression target, Expression selector, string value, IFormatProvider? provider)
 		{
 			var type = Expression.Lambda(selector, target).ReturnType;
 
 			if (string.IsNullOrEmpty(value))
 				return Expression.Default(type);
 
-			if (!type.IsEnum || !EnumHelper.TryParseEnum(type, value, true, out object convertedValue))
+			if (!type.IsEnum || !EnumHelper.TryParseEnum(type, value, true, out object? convertedValue))
 			{
 				var converter = _cache.GetOrAdd(type, CreateConverter);
 				convertedValue = converter(value, provider);
@@ -108,7 +108,7 @@ namespace Umbrella.Utilities.Expressions
 			return Expression.Constant(convertedValue, type);
 		}
 
-		private static Func<string, IFormatProvider, object> CreateConverter(Type type)
+		private static Func<string, IFormatProvider?, object> CreateConverter(Type type)
 		{
 			var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
@@ -127,7 +127,7 @@ namespace Umbrella.Utilities.Expressions
 			if (cultureParse != null)
 				expression = Expression.Call(cultureParse, target, format);
 
-			return Expression.Lambda<Func<string, IFormatProvider, object>>(
+			return Expression.Lambda<Func<string, IFormatProvider?, object>>(
 				Expression.Convert(expression, typeof(object)), target, format).Compile();
 		}
 	}

@@ -71,7 +71,7 @@ namespace Umbrella.Utilities.Imaging
 		}
 
 		/// <inheritdoc />
-		public string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string> pathResolver = null)
+		public string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
 			Guard.ArgumentInRange(maxPixelDensity, nameof(maxPixelDensity), 1);
@@ -107,7 +107,7 @@ namespace Umbrella.Utilities.Imaging
 		}
 
 		/// <inheritdoc />
-		public IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string> pathResolver = null)
+		public IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
 			Guard.ArgumentInRange(maxPixelDensity, nameof(maxPixelDensity), 1);
@@ -137,7 +137,7 @@ namespace Umbrella.Utilities.Imaging
 		}
 
 		/// <inheritdoc />
-		public string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string> pathResolver = null)
+		public string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string>? pathResolver = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
 			Guard.ArgumentInRange(pixelDensity, nameof(pixelDensity), 1);

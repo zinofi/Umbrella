@@ -7,9 +7,13 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.Utilities.Configuration
 {
+	/// <summary>
+	/// An abstract base class encapsulating the core behaviour of an application settings file.
+	/// </summary>
+	/// <seealso cref="ReadOnlyAppSettingsBase{IAppSettingsSource}" />
 	public abstract class AppSettingsBase : ReadOnlyAppSettingsBase<IAppSettingsSource>
 	{
-		#region Constructors		
+		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppSettingsBase"/> class.
 		/// </summary>
@@ -26,14 +30,20 @@ namespace Umbrella.Utilities.Configuration
 		}
 		#endregion
 
-		#region Protected Methods
-		protected virtual void SetSetting<T>(T value, [CallerMemberName]string key = "")
+		#region Protected Methods		
+		/// <summary>
+		/// Sets the setting with the specifed <paramref name="key"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the value being set.</typeparam>
+		/// <param name="value">The value.</param>
+		/// <param name="key">The key.</param>
+		protected virtual void SetSetting<T>(T? value, [CallerMemberName]string key = "")
 		{
 			try
 			{
 				Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
-				string valueToStore = null;
+				string? valueToStore = null;
 
 				if (value != null)
 				{
@@ -61,6 +71,11 @@ namespace Umbrella.Utilities.Configuration
 			}
 		}
 
+		/// <summary>
+		/// Serializes the specified <paramref name="value"/> as JSON.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The JSON string.</returns>
 		protected virtual string ToJson(object value) => UmbrellaStatics.SerializeJson(value);
 		#endregion
 	}

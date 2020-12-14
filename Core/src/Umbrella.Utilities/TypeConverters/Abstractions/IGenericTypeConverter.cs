@@ -20,7 +20,7 @@ namespace Umbrella.Utilities.TypeConverters.Abstractions
 		/// </param>
 		/// <param name="customValueConverter">The custom value converter.</param>
 		/// <returns>The conversion result.</returns>
-		T Convert<T>(string value, Func<T> fallbackCreator, Func<string, T> customValueConverter = null);
+		T? Convert<T>(string? value, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null);
 
 		/// <summary>
 		/// Converts the specified value to an instance of type <typeparamref name="T"/>.
@@ -34,7 +34,7 @@ namespace Umbrella.Utilities.TypeConverters.Abstractions
 		/// </param>
 		/// <param name="customValueConverter">The custom value converter.</param>
 		/// <returns>The conversion result.</returns>
-		T Convert<T>(string value, T fallback = default, Func<string, T> customValueConverter = null);
+		T? Convert<T>(string? value, T fallback = default, Func<string?, T>? customValueConverter = null);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to an <see langword="enum"/> instance of type <typeparamref name="T"/>.
@@ -43,6 +43,6 @@ namespace Umbrella.Utilities.TypeConverters.Abstractions
 		/// <param name="value">The value.</param>
 		/// <param name="fallback">The fallback which is returned if the value is null, empty or whitespace, or if the value cannot be converted to the specified enum <typeparamref name="T"/>.</param>
 		/// <returns>The conversion result.</returns>
-		T ConvertToEnum<T>(string value, T fallback = default) where T : struct, Enum;
+		T ConvertToEnum<T>(string? value, T fallback = default) where T : struct, Enum;
 	}
 }

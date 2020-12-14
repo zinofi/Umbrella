@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Imaging
 		/// <param name="pixelDensity">The pixel density.</param>
 		/// <param name="pathResolver">The path resolver.</param>
 		/// <returns></returns>
-		string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string> pathResolver = null);
+		string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string>? pathResolver = null);
 
 		/// <summary>
 		/// Takes the image URL and returns a collection of URLs containing pixel densities between 1 and the specified maximum <paramref name="maxPixelDensity"/>, e.g.
@@ -39,7 +39,7 @@ namespace Umbrella.Utilities.Imaging
 		/// <param name="maxPixelDensity">The maximum pixel density value inclusive.</param>
 		/// <param name="pathResolver">The path resolver.</param>
 		/// <returns>The list of image URLs.</returns>
-		IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string> pathResolver = null);
+		IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null);
 
 		/// <summary>
 		/// Gets a string containing pixel densities which can be used in the srcset attribute of an HTML img tag.
@@ -48,7 +48,7 @@ namespace Umbrella.Utilities.Imaging
 		/// <param name="maxPixelDensity">The maximum pixel density value inclusive.</param>
 		/// <param name="pathResolver">The path resolver.</param>
 		/// <returns>The srcset string.</returns>
-		string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string> pathResolver = null);
+		string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null);
 
 		/// <summary>
 		/// Gets a string containing size data which can be used in the srcset attribute of an HTML img tag.

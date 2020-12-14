@@ -40,7 +40,7 @@ namespace Umbrella.Utilities.DataAnnotations
 		}
 
 		/// <inheritdoc />
-		public virtual (bool isValid, IReadOnlyCollection<ValidationResult> results) TryValidateObject(object instance, ValidationContext validationContext = null, bool validateAllProperties = false)
+		public virtual (bool isValid, IReadOnlyCollection<ValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false)
 		{
 			Guard.ArgumentNotNull(instance, nameof(instance));
 			try
@@ -49,7 +49,7 @@ namespace Umbrella.Utilities.DataAnnotations
 				var lstVisited = new HashSet<object>();
 				var lstValidationResult = new List<ValidationResult>();
 
-				void ValidateObject(object value, ValidationContext context = null)
+				void ValidateObject(object value, ValidationContext? context = null)
 				{
 					if (value is null)
 						return;

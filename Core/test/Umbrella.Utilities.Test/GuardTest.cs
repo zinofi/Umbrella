@@ -19,7 +19,7 @@ namespace Umbrella.Utilities.Test
 
         [Fact]
         public void ArgumentNotNull_Null()
-            => Assert.Throws<ArgumentNullException>(() => Guard.ArgumentNotNull((object)null, "test"));
+            => Assert.Throws<ArgumentNullException>(() => Guard.ArgumentNotNull((object?)null, "test"));
 
         [Fact]
         public void ArgumentNotNull_Valid()
@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Test
         public void ArgumentNotNullOrEmpty_IEnumerable_T_Null()
             => Assert.Throws<ArgumentNullException>(() =>
             {
-                IEnumerable<string> testArgument = null;
+                IEnumerable<string>? testArgument = null;
 
                 Guard.ArgumentNotNullOrEmpty(testArgument, nameof(testArgument));
             });

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
@@ -33,7 +32,7 @@ namespace Umbrella.Utilities.Data
 		}
 
 		/// <inheritdoc />
-		public IDataExpression Create<TDescriptor>(Type elementType, TDescriptor descriptor)
+		public IDataExpression? Create<TDescriptor>(Type elementType, TDescriptor descriptor)
 			where TDescriptor : IDataExpressionDescriptor
 		{
 			Guard.ArgumentNotNull(elementType, nameof(elementType));

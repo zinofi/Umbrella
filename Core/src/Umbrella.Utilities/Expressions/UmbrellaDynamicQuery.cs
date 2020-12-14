@@ -17,7 +17,7 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="value">The reference value to compare with.</param>
 		/// <param name="provider">The culture-specific formatting information.</param>
 		/// <returns>The dynamic predicate.</returns>
-		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider provider = null)
+		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, UmbrellaDynamicCompare comparer, string value, IFormatProvider? provider = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
 
@@ -38,7 +38,7 @@ namespace Umbrella.Utilities.Expressions
 		/// <param name="value">The reference value to compare with.</param>
 		/// <param name="provider">The culture-specific formatting information.</param>
 		/// <returns>The dynamic predicate.</returns>
-		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, string comparer, string value, IFormatProvider provider = null)
+		public static Expression<Func<T, bool>> CreatePredicate<T>(string selector, string comparer, string value, IFormatProvider? provider = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(selector, nameof(selector));
 			Guard.ArgumentNotNullOrWhiteSpace(comparer, nameof(comparer));

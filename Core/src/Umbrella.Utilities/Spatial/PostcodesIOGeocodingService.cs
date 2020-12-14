@@ -16,6 +16,11 @@ using Umbrella.Utilities.Spatial.Abstractions;
 
 namespace Umbrella.Utilities.Spatial
 {
+	/// <summary>
+	/// A service that can be used to geocode one or more postcodes or <see cref="GeoLocation"/> instances and return data about each location
+	/// using the open source https://api.postcodes.io API.
+	/// </summary>
+	/// <seealso cref="IGeocodingService" />
 	public class PostcodesIOGeocodingService : IGeocodingService
 	{
 		private class PostcodeLookupResultWrapper
@@ -130,7 +135,7 @@ namespace Umbrella.Utilities.Spatial
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool success, GeocodingResult result)> GetGeocodingDataItemByGeoLocationAsync(GeoLocation geoLocation, CancellationToken cancellationToken = default)
+		public async Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByGeoLocationAsync(GeoLocation geoLocation, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -178,7 +183,7 @@ namespace Umbrella.Utilities.Spatial
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool success, IReadOnlyCollection<GeocodingResult> results)> GetGeocodingDataItemsByGeoLocationsAsync(IEnumerable<GeoLocation> geoLocations, CancellationToken cancellationToken = default)
+		public async Task<(bool success, IReadOnlyCollection<GeocodingResult>? results)> GetGeocodingDataItemsByGeoLocationsAsync(IEnumerable<GeoLocation> geoLocations, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrEmpty(geoLocations, nameof(geoLocations));
@@ -237,7 +242,7 @@ namespace Umbrella.Utilities.Spatial
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool success, GeocodingResult result)> GetGeocodingDataItemByPostcodeAsync(string postcode, CancellationToken cancellationToken = default)
+		public async Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByPostcodeAsync(string postcode, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(postcode, nameof(postcode));
@@ -282,7 +287,7 @@ namespace Umbrella.Utilities.Spatial
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool success, IReadOnlyCollection<GeocodingResult> results)> GetGeocodingDataItemsByPostcodesAsync(IEnumerable<string> postcodes, CancellationToken cancellationToken = default)
+		public async Task<(bool success, IReadOnlyCollection<GeocodingResult>? results)> GetGeocodingDataItemsByPostcodesAsync(IEnumerable<string> postcodes, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrEmpty(postcodes, nameof(postcodes));
@@ -318,7 +323,7 @@ namespace Umbrella.Utilities.Spatial
 							{
 								Locality = SanitizeParishValue(item.Result.Parish) ?? "",
 								Location = new GeoLocation(item.Result.Latitude, item.Result.Longitude),
-								Postcode = item.Query,
+								Postcode = item.Query ?? "",
 								WiderLocality = item.Result.AdminDistrict ?? "",
 								Country = item.Result.Country ?? ""
 							};
@@ -343,7 +348,7 @@ namespace Umbrella.Utilities.Spatial
 			if (string.IsNullOrWhiteSpace(value))
 				return value;
 
-			int idx = value.IndexOf(", unparished area", StringComparison.OrdinalIgnoreCase);
+			int idx = value!.IndexOf(", unparished area", StringComparison.OrdinalIgnoreCase);
 
 			if (idx is -1)
 				return value;

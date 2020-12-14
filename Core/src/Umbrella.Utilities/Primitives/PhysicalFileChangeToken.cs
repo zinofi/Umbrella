@@ -1,44 +1,64 @@
-﻿using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 
 namespace Umbrella.Utilities.Primitives
 {
-    public class PhysicalFileChangeToken : IChangeToken
+	/// <summary>
+	/// An <see cref="IChangeToken"/> implementation that watches for changes to files
+	/// on disk using the <see cref="FileSystemWatcher" />.
+	/// </summary>
+	/// <seealso cref="IChangeToken" />
+	public class PhysicalFileChangeToken : IChangeToken
     {
-        #region Constructors
-        public PhysicalFileChangeToken(FileInfo fileInfo,
-            bool expireOnChanged = true,
-            bool expireOnError = true,
-            bool expireOnDeleted = true,
-            bool expireOnRenamed = true)
-            : this(fileInfo.DirectoryName, fileInfo.Name, expireOnChanged, expireOnError, expireOnDeleted, expireOnRenamed)
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PhysicalFileChangeToken"/> class.
+		/// </summary>
+		/// <param name="fileInfo">The file information.</param>
+		/// <param name="notifyOnChanged">if set to <see langword="true" />, raises a notification when the file is changed.</param>
+		/// <param name="notifyOnError">if set to <see langword="true" />, raises a notification when the <see cref="FileSystemWatcher"/> is no longer able to watch the file.</param>
+		/// <param name="notifyOnDeleted">if set to <see langword="true" />, raises a notification when the file is deleted.</param>
+		/// <param name="notifyOnRenamed">if set to <see langword="true" />, raises a notification when the file is renamed.</param>
+		public PhysicalFileChangeToken(
+			FileInfo fileInfo,
+            bool notifyOnChanged = true,
+            bool notifyOnError = true,
+            bool notifyOnDeleted = true,
+            bool notifyOnRenamed = true)
+            : this(fileInfo.DirectoryName, fileInfo.Name, notifyOnChanged, notifyOnError, notifyOnDeleted, notifyOnRenamed)
         {
         }
 
-        public PhysicalFileChangeToken(string directoryPath,
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PhysicalFileChangeToken"/> class.
+		/// </summary>
+		/// <param name="directoryPath">The directory path.</param>
+		/// <param name="fileName">Name of the file.</param>
+		/// <param name="notifyOnChanged">if set to <see langword="true" />, raises a notification when the file is changed.</param>
+		/// <param name="notifyOnError">if set to <see langword="true" />, raises a notification when the <see cref="FileSystemWatcher"/> is no longer able to watch the file.</param>
+		/// <param name="notifyOnDeleted">if set to <see langword="true" />, raises a notification when the file is deleted.</param>
+		/// <param name="notifyOnRenamed">if set to <see langword="true" />, raises a notification when the file is renamed.</param>
+		public PhysicalFileChangeToken(
+			string directoryPath,
             string fileName,
-            bool expireOnChanged = true,
-            bool expireOnError = true,
-            bool expireOnDeleted = true,
-            bool expireOnRenamed = true)
+            bool notifyOnChanged = true,
+            bool notifyOnError = true,
+            bool notifyOnDeleted = true,
+            bool notifyOnRenamed = true)
         {
             var fsw = new FileSystemWatcher(directoryPath, fileName);
 
-            if (expireOnChanged)
+            if (notifyOnChanged)
                 fsw.Changed += (sender, args) => HasChanged = true;
 
-            if (expireOnError)
+            if (notifyOnError)
                 fsw.Error += (sender, args) => HasChanged = true;
 
-            if (expireOnDeleted)
+            if (notifyOnDeleted)
                 fsw.Deleted += (sender, args) => HasChanged = true;
 
-            if (expireOnRenamed)
+            if (notifyOnRenamed)
                 fsw.Renamed += (sender, args) => HasChanged = true;
 
             fsw.EnableRaisingEvents = true;
@@ -46,9 +66,14 @@ namespace Umbrella.Utilities.Primitives
         #endregion
 
         #region IChangeToken Members
+		/// <inheritdoc />
         public bool HasChanged { get; set; }
-        public bool ActiveChangeCallbacks => false;
-        public IDisposable RegisterChangeCallback(Action<object> callback, object state) => EmptyDisposable.Instance;
+
+		/// <inheritdoc />
+		public bool ActiveChangeCallbacks => false;
+
+		/// <inheritdoc />
+		public IDisposable RegisterChangeCallback(Action<object> callback, object state) => EmptyDisposable.Instance;
         #endregion
     }
 }

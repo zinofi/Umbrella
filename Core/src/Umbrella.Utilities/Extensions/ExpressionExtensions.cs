@@ -20,17 +20,17 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="throwException">if set to <see langword="true"/>, an exception will be thrown when the member name cannot be determined instead of returning null.</param>
 		/// <returns>The member name.</returns>
 		/// <exception cref="Exception">The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.</exception>
-		public static string GetMemberName(this LambdaExpression expression, bool throwException = true)
+		public static string? GetMemberName(this LambdaExpression expression, bool throwException = true)
 		{
 			Guard.ArgumentNotNull(expression, nameof(expression));
 
-			MemberExpression memberExpression = expression.Body switch
+			MemberExpression? memberExpression = expression.Body switch
 			{
 				UnaryExpression x => x.Operand as MemberExpression,
 				_ => expression.Body as MemberExpression
 			};
 
-			if (memberExpression == null && throwException)
+			if (memberExpression is null && throwException)
 				throw new UmbrellaException($"The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.");
 
 			return memberExpression?.Member?.Name;
@@ -131,9 +131,9 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="expression">The expression.</param>
 		/// <returns>The text specified using the <see cref="DisplayAttribute"/> if it exists.</returns>
-		public static string GetDisplayText(this LambdaExpression expression)
+		public static string? GetDisplayText(this LambdaExpression expression)
 		{
-			MemberExpression memberExpression = expression.Body switch
+			MemberExpression? memberExpression = expression.Body switch
 			{
 				UnaryExpression x => x.Operand as MemberExpression,
 				_ => expression.Body as MemberExpression

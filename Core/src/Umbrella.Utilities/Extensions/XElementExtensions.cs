@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using Umbrella.Utilities.Exceptions;
 
@@ -14,20 +9,20 @@ namespace Umbrella.Utilities.Extensions
 	/// </summary>
 	public static class XElementExtensions
     {
-        public static string GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
+        public static string? GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
             => GetAttributeValue<string>(element, name, required, fallback);
 
-        public static T GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+        public static T? GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
         {
             Guard.ArgumentNotNull(element, nameof(element));
             Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
 
-            XAttribute attribute = element.Attribute(name);
+            XAttribute? attribute = element.Attribute(name);
 
-            if (attribute == null && required)
+            if (attribute is null && required)
 				throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
-            string attributeValue = attribute?.Value;
+            string? attributeValue = attribute?.Value;
 
             var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
@@ -36,8 +31,8 @@ namespace Umbrella.Utilities.Extensions
                 if (type.IsPrimitive || type == typeof(decimal) || type == typeof(string))
                 {
                     string cleanedAttributeValue = type.IsPrimitive || type == typeof(decimal)
-                        ? attributeValue.Replace(" ", "")
-                        : attributeValue;
+                        ? attributeValue!.Replace(" ", "")
+                        : attributeValue!;
 
                     try
                     {
@@ -56,24 +51,24 @@ namespace Umbrella.Utilities.Extensions
         }
 
         public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
-            where T : struct
+            where T : struct, Enum
         {
             Guard.ArgumentNotNull(element, nameof(element));
             Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
 
-            XAttribute attribute = element.Attribute(name);
+            XAttribute? attribute = element.Attribute(name);
 
-            if (attribute == null && required)
+            if (attribute is null && required)
                 throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
-            string attributeValue = attribute?.Value?.Replace(" ", "");
+            string? attributeValue = attribute?.Value?.Replace(" ", "");
 
             return !string.IsNullOrEmpty(attributeValue) && Enum.TryParse(attributeValue, true, out T output)
                 ? output
                 : fallback;
         }
 
-        public static (bool Success, string Value) TryGetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
+        public static (bool success, string? value) TryGetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
         {
             try
             {
@@ -85,7 +80,7 @@ namespace Umbrella.Utilities.Extensions
             }
         }
 
-        public static (bool Success, T Value) TryGetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+        public static (bool success, T? value) TryGetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
         {
             try
             {
@@ -97,8 +92,8 @@ namespace Umbrella.Utilities.Extensions
             }
         }
 
-        public static (bool Success, T Value) TryGetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
-            where T : struct
+        public static (bool success, T value) TryGetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+            where T : struct, Enum
         {
             try
             {

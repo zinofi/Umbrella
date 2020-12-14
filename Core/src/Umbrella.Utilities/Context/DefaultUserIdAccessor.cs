@@ -9,6 +9,6 @@ namespace Umbrella.Utilities.Context
 	public sealed class DefaultUserIdAccessor<T> : ICurrentUserIdAccessor<T>
 	{
 		/// <inheritdoc />
-		public T CurrentUserId => default;
+		public T? CurrentUserId => default;
 	}
 }

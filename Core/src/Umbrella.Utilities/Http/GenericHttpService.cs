@@ -55,7 +55,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> GetAsync<TResult>(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> GetAsync<TResult>(string url, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -79,7 +79,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -91,7 +91,7 @@ namespace Umbrella.Utilities.Http
 
 				// TODO v4: HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
-				string json = UmbrellaStatics.SerializeJson(item);
+				string json = UmbrellaStatics.SerializeJson(item!);
 				var request = new HttpRequestMessage(HttpMethod.Post, targetUrl)
 				{
 					Content = new StringContent(json, Encoding.UTF8, "application/json")
@@ -112,7 +112,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -124,7 +124,7 @@ namespace Umbrella.Utilities.Http
 
 				// TODO v4: HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
-				string json = UmbrellaStatics.SerializeJson(item);
+				string json = UmbrellaStatics.SerializeJson(item!);
 				var request = new HttpRequestMessage(HttpMethod.Put, targetUrl)
 				{
 					Content = new StringContent(json, Encoding.UTF8, "application/json")
@@ -145,7 +145,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -155,7 +155,7 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
-				string json = UmbrellaStatics.SerializeJson(item);
+				string json = UmbrellaStatics.SerializeJson(item!);
 				var request = new HttpRequestMessage(PatchHttpMethod, targetUrl)
 				{
 					Content = new StringContent(json, Encoding.UTF8, "application/json")
@@ -182,7 +182,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult> DeleteAsync(string url, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult> DeleteAsync(string url, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -210,13 +210,9 @@ namespace Umbrella.Utilities.Http
 		/// <param name="exception">The exception.</param>
 		/// <returns>The exception instance.</returns>
 		protected UmbrellaHttpServiceAccessException CreateServiceAccessException(Exception exception)
-		{
-			// If we already have an exception of the requested type just return it
-			if (exception is UmbrellaHttpServiceAccessException)
-				return exception as UmbrellaHttpServiceAccessException;
-
-			return new UmbrellaHttpServiceAccessException(HttpServiceMessages.DefaultUnknownErrorMessage, exception);
-		}
+			=> exception is UmbrellaHttpServiceAccessException serviceAccessException
+				? serviceAccessException
+				: new UmbrellaHttpServiceAccessException(HttpServiceMessages.DefaultUnknownErrorMessage, exception);
 
 		/// <summary>
 		/// Used to log an unknown error.

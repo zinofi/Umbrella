@@ -38,7 +38,7 @@ namespace Umbrella.Utilities.Hosting
 		}
 
 		/// <inheritdoc />
-		public override string MapPath(string virtualPath)
+		public override string? MapPath(string virtualPath)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 

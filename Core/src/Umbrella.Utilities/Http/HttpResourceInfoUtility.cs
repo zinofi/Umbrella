@@ -53,7 +53,7 @@ namespace Umbrella.Utilities.Http
 		/// <param name="useCache">Determines whether to cache the resource info.</param>
 		/// <returns>The <see cref="HttpResourceInfo"/>.</returns>
 		/// <exception cref="UmbrellaException">There was a problem retrieving data for the specified url: {url}</exception>
-		public async Task<HttpResourceInfo> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true)
+		public async Task<HttpResourceInfo?> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -71,17 +71,12 @@ namespace Umbrella.Utilities.Http
 
 						if (response.IsSuccessStatusCode && contentLength > 0)
 						{
-							var info = new HttpResourceInfo
-							{
-								ContentLength = contentLength,
-								ContentType = response.Content.Headers.ContentType.MediaType,
-								Url = url
-							};
+							DateTime? lastModified = null;
 
-							if (response.Headers.TryGetValues("Last-Modified", out System.Collections.Generic.IEnumerable<string> values) && DateTime.TryParse(values.FirstOrDefault(), out DateTime lastModified))
-								info.LastModified = lastModified;
+							if (response.Headers.TryGetValues("Last-Modified", out System.Collections.Generic.IEnumerable<string> values) && DateTime.TryParse(values.FirstOrDefault(), out DateTime result))
+								lastModified = result;
 
-							return info;
+							return new HttpResourceInfo(response.Content.Headers.ContentType.MediaType, contentLength, lastModified, url);
 						}
 
 						return null;

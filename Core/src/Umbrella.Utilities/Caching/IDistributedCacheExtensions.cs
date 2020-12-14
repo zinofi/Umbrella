@@ -31,7 +31,7 @@ namespace Umbrella.Utilities.Caching
 		/// <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
 		/// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
 		/// <exception cref="ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
-		public static (string item, UmbrellaDistributedCacheException exception) GetOrCreateString(this IDistributedCache cache, string key, Func<string> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
+		public static (string? item, UmbrellaDistributedCacheException? exception) GetOrCreateString(this IDistributedCache cache, string key, Func<string> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
 		{
 			Guard.ArgumentNotNull(cache, nameof(cache));
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
@@ -40,9 +40,9 @@ namespace Umbrella.Utilities.Caching
 
 			try
 			{
-				string result = null;
+				string? result = null;
 
-				List<Exception> lstException = throwOnCacheFailure ? new List<Exception>() : null;
+				List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
 
 				try
 				{
@@ -53,7 +53,7 @@ namespace Umbrella.Utilities.Caching
 					if (throwOnCacheFailure)
 						throw;
 
-					lstException.Add(exc);
+					lstException?.Add(exc);
 				}
 
 				if (string.IsNullOrWhiteSpace(result))
@@ -71,7 +71,7 @@ namespace Umbrella.Utilities.Caching
 						if (throwOnCacheFailure)
 							throw;
 
-						lstException.Add(exc);
+						lstException?.Add(exc);
 					}
 				}
 
@@ -101,7 +101,7 @@ namespace Umbrella.Utilities.Caching
 		/// <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
 		/// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
 		/// <exception cref="ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
-		public static async Task<(string item, UmbrellaDistributedCacheException exception)> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+		public static async Task<(string? item, UmbrellaDistributedCacheException? exception)> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(cache, nameof(cache));
@@ -111,9 +111,9 @@ namespace Umbrella.Utilities.Caching
 
 			try
 			{
-				string result = null;
+				string? result = null;
 
-				List<Exception> lstException = throwOnCacheFailure ? new List<Exception>() : null;
+				List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
 
 				try
 				{
@@ -124,7 +124,7 @@ namespace Umbrella.Utilities.Caching
 					if (throwOnCacheFailure)
 						throw;
 
-					lstException.Add(exc);
+					lstException?.Add(exc);
 				}
 
 				if (string.IsNullOrWhiteSpace(result))
@@ -142,7 +142,7 @@ namespace Umbrella.Utilities.Caching
 						if (throwOnCacheFailure)
 							throw;
 
-						lstException.Add(exc);
+						lstException?.Add(exc);
 					}
 				}
 
@@ -154,21 +154,44 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
-		public static (bool itemFound, TItem cacheItem, UmbrellaDistributedCacheException exception) TryGetValue<TItem>(this IDistributedCache cache, string key)
+		/// <summary>
+		/// Tries to get the item of type <typeparamref name="TItem"/> with the specifed <paramref name="key"/> from the <paramref name="cache"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <returns>A tuple containing a success status, the item if present and any exception thrown internally when trying to get the item.</returns>
+		public static (bool itemFound, TItem? cacheItem, UmbrellaDistributedCacheException? exception) TryGetValue<TItem>(this IDistributedCache cache, string key)
 		{
 			var (itemFound, cacheItem, exception) = TryGetValue<TItem>(cache, key, false);
-
+			
 			return (itemFound, cacheItem, exception != null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValue)} failed.", exception) : null);
 		}
 
-		public static async Task<(bool itemFound, TItem cacheItem, UmbrellaDistributedCacheException exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken = default)
+		/// <summary>
+		///  Tries to get the item of type <typeparamref name="TItem"/> with the specifed <paramref name="key"/> from the <paramref name="cache"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/> containing a tuple containing a success status, the item if present and any exception thrown internally when trying to get the item.</returns>
+		public static async Task<(bool itemFound, TItem? cacheItem, UmbrellaDistributedCacheException? exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken = default)
 		{
 			var (itemFound, cacheItem, exception) = await TryGetValueAsync<TItem>(cache, key, cancellationToken, false).ConfigureAwait(false);
 
 			return (itemFound, cacheItem, exception != null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValueAsync)} failed.", exception) : null);
 		}
 
-		public static TItem Get<TItem>(this IDistributedCache cache, string key)
+		/// <summary>
+		/// Gets the item with the specified key from the cache.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <returns>The item if found, otherwise the default value for the type.</returns>
+		/// <exception cref="UmbrellaDistributedCacheException">Get failed.</exception>
+		public static TItem? Get<TItem>(this IDistributedCache cache, string key)
 		{
 			try
 			{
@@ -182,7 +205,16 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
-		public static async Task<TItem> GetAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken = default)
+		/// <summary>
+		/// Gets the item with the specified key from the cache.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The item if found, otherwise the default value for the type.</returns>
+		/// <exception cref="UmbrellaDistributedCacheException">GetAsync failed.</exception>
+		public static async Task<TItem?> GetAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -196,6 +228,14 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <summary>
+		/// Sets the <paramref name="item"/> in the <paramref name="cache"/> using the specified <paramref name="key"/>.
+		/// </summary>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="item">The item.</param>
+		/// <param name="options">The options.</param>
+		/// <exception cref="UmbrellaDistributedCacheException">Set failed.</exception>
 		public static void Set(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options)
 		{
 			Guard.ArgumentNotNull(cache, nameof(cache));
@@ -214,6 +254,15 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
+		/// <summary>
+		/// Sets the <paramref name="item"/> in the <paramref name="cache"/> using the specified <paramref name="key"/>.
+		/// </summary>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="item">The item.</param>
+		/// <param name="options">The options.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <exception cref="UmbrellaDistributedCacheException">SetAsync failed.</exception>
 		public static async Task SetAsync(this IDistributedCache cache, string key, object item, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -233,7 +282,25 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
-		public static (TItem cacheItem, UmbrellaDistributedCacheException exception) GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
+		/// <summary>
+		/// Gets or creates the item in the cache using the specified <paramref name="factory"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="factory">The factory.</param>
+		/// <param name="optionsBuilder">The options builder.</param>
+		/// <param name="throwOnCacheFailure">
+		/// if set to <c>true</c> throws any internal exceptions. If this is <see langword="false"/>, the exception will be returned
+		/// in the method result.
+		/// </param>
+		/// <returns>
+		/// A tuple containing the cached item together with any exception thrown internally when accessing the cache.
+		/// If the <paramref name="throwOnCacheFailure"/> parameter is <see langword="true"/>, this method will throw this exception
+		/// instead of returning.
+		/// </returns>
+		/// <exception cref="UmbrellaDistributedCacheException">GetOrCreate failed.</exception>
+		public static (TItem? cacheItem, UmbrellaDistributedCacheException? exception) GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
 		{
 			Guard.ArgumentNotNull(cache, nameof(cache));
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
@@ -242,7 +309,7 @@ namespace Umbrella.Utilities.Caching
 
 			try
 			{
-				List<Exception> lstException = throwOnCacheFailure ? new List<Exception>() : null;
+				List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
 
 				var (itemFound, cacheItem, exception) = cache.TryGetValue<TItem>(key);
 
@@ -253,7 +320,7 @@ namespace Umbrella.Utilities.Caching
 					return (cacheItem, exception);
 
 				if (exception != null)
-					lstException.Add(exception);
+					lstException?.Add(exception);
 
 				// If we get this far then we haven't found the cached item
 				// Always allow this to throw an exception
@@ -269,7 +336,7 @@ namespace Umbrella.Utilities.Caching
 					if (throwOnCacheFailure && exception != null)
 						throw;
 
-					lstException.Add(exc);
+					lstException?.Add(exc);
 				}
 
 				return (createdItem, CreateUmbrellaException(lstException));
@@ -280,7 +347,26 @@ namespace Umbrella.Utilities.Caching
 			}
 		}
 
-		public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+		/// <summary>
+		/// Gets or creates the item in the cache using the specified <paramref name="factory"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="cache">The cache.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="factory">The factory.</param>
+		/// <param name="optionsBuilder">The options builder.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="throwOnCacheFailure">
+		/// if set to <c>true</c> throws any internal exceptions. If this is <see langword="false"/>, the exception will be returned
+		/// in the method result.
+		/// </param>
+		/// <returns>
+		/// A tuple containing the cached item together with any exception thrown internally when accessing the cache.
+		/// If the <paramref name="throwOnCacheFailure"/> parameter is <see langword="true"/>, this method will throw this exception
+		/// instead of returning.
+		/// </returns>
+		/// <exception cref="UmbrellaDistributedCacheException">GetOrCreateAsync failed.</exception>
+		public static async Task<(TItem? cacheItem, UmbrellaDistributedCacheException? exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(cache, nameof(cache));
@@ -290,7 +376,7 @@ namespace Umbrella.Utilities.Caching
 
 			try
 			{
-				List<Exception> lstException = throwOnCacheFailure ? new List<Exception>() : null;
+				List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
 
 				var (itemFound, cacheItem, exception) = await cache.TryGetValueAsync<TItem>(key, cancellationToken).ConfigureAwait(false);
 
@@ -301,7 +387,7 @@ namespace Umbrella.Utilities.Caching
 					return (cacheItem, exception);
 
 				if (exception != null)
-					lstException.Add(exception);
+					lstException?.Add(exception);
 
 				// If we get this far then we haven't found the cached item
 				// Always allow this to throw an exception
@@ -317,7 +403,7 @@ namespace Umbrella.Utilities.Caching
 					if (throwOnCacheFailure && exception != null)
 						throw;
 
-					lstException.Add(exc);
+					lstException?.Add(exc);
 				}
 
 				return (createdItem, CreateUmbrellaException(lstException));
@@ -330,7 +416,7 @@ namespace Umbrella.Utilities.Caching
 		#endregion
 
 		#region Private Static Methods
-		private static (bool itemFound, TItem cacheItem, Exception exception) TryGetValue<TItem>(this IDistributedCache cache, string key, bool throwError)
+		private static (bool itemFound, TItem? cacheItem, Exception? exception) TryGetValue<TItem>(this IDistributedCache cache, string key, bool throwError)
 		{
 			Guard.ArgumentNotNull(cache, nameof(cache));
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
@@ -357,7 +443,7 @@ namespace Umbrella.Utilities.Caching
 			return (false, default, null);
 		}
 
-		private static async Task<(bool itemFound, TItem cacheItem, Exception exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken, bool throwError)
+		private static async Task<(bool itemFound, TItem? cacheItem, Exception? exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken, bool throwError)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(cache, nameof(cache));
@@ -385,7 +471,7 @@ namespace Umbrella.Utilities.Caching
 			return (false, default, null);
 		}
 
-		private static UmbrellaDistributedCacheException CreateUmbrellaException(List<Exception> exceptions)
+		private static UmbrellaDistributedCacheException? CreateUmbrellaException(List<Exception>? exceptions)
 			=> exceptions?.Count > 0
 				? new UmbrellaDistributedCacheException("One or more errors have occurred. Please see the inner exception for details.", new AggregateException(exceptions))
 				: null;

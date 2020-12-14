@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Umbrella.Utilities.Extensions
 {
@@ -11,8 +10,13 @@ namespace Umbrella.Utilities.Extensions
 	/// </summary>
 	public static class TypeExtensions
     {
-        #region Public Static Methods
-        public static PropertyInfo[] GetPublicOrPrivateProperties(this Type type) => type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+		#region Public Static Methods		
+		/// <summary>
+		/// Gets the public or private instance properties defined on the specified <paramref name="type"/>.
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <returns>The properties.</returns>
+		public static PropertyInfo[] GetPublicOrPrivateProperties(this Type type) => type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         public static IEnumerable<Type> AssignableTo(this IEnumerable<Type> types, Type superType) => Enumerable.Where(types, new Func<Type, bool>(superType.IsAssignableFrom));
 
@@ -70,7 +74,7 @@ namespace Umbrella.Utilities.Extensions
             return IsAssignableToGenericType(baseType, genericType);
         }
 
-		public static (bool isEnumerable, Type elementType) GetIEnumerableTypeData(this Type givenType)
+		public static (bool isEnumerable, Type? elementType) GetIEnumerableTypeData(this Type givenType)
 		{
 			if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
 				return (true, givenType.GetGenericArguments()[0]);
@@ -85,7 +89,7 @@ namespace Umbrella.Utilities.Extensions
 
 			Type baseType = givenType.BaseType;
 
-			if (baseType == null)
+			if (baseType is null)
 				return (false, null);
 
 			return baseType.GetIEnumerableTypeData();

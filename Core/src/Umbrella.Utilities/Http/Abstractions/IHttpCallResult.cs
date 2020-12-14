@@ -8,7 +8,7 @@
 		/// <summary>
 		/// Gets the problem details.
 		/// </summary>
-		HttpProblemDetails ProblemDetails { get; }
+		HttpProblemDetails? ProblemDetails { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether this <see cref="IHttpCallResult"/> has been a success.
@@ -25,6 +25,6 @@
 		/// <summary>
 		/// Gets the result.
 		/// </summary>
-		TResult Result { get; }
+		TResult? Result { get; }
 	}
 }
