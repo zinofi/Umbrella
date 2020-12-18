@@ -9,10 +9,27 @@ namespace Umbrella.Utilities.Extensions
 	/// </summary>
 	public static class XElementExtensions
     {
-        public static string? GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
+		/// <summary>
+		/// Gets the attribute value with the specified <paramref name="name"/> from the <paramref name="element"/>.
+		/// </summary>
+		/// <param name="element">The element.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="required">if set to <see langword="true"/>, an exception will be thrown if the attribute cannot be found.</param>
+		/// <param name="fallback">The fallback value returned when <paramref name="required"/> is <see langword="false"/>.</param>
+		/// <returns>The attribute value.</returns>
+		public static string? GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
             => GetAttributeValue<string>(element, name, required, fallback);
 
-        public static T? GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+		/// <summary>
+		/// Gets the attribute value with the specified <paramref name="name"/> from the <paramref name="element"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the attribute value.</typeparam>
+		/// <param name="element">The element.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="required">if set to <see langword="true"/>, an exception will be thrown if the attribute cannot be found.</param>
+		/// <param name="fallback">The fallback value returned when <paramref name="required"/> is <see langword="false"/>.</param>
+		/// <returns>The attribute value.</returns>
+		public static T? GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
         {
             Guard.ArgumentNotNull(element, nameof(element));
             Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));

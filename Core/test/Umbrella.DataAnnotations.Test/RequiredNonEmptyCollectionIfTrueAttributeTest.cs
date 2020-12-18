@@ -10,7 +10,7 @@ namespace Umbrella.DataAnnotations.Test
 			public bool? Value1 { get; set; }
 
 			[RequiredNonEmptyCollectionIfTrue("Value1")]
-			public List<string> Value2 { get; set; }
+			public List<string>? Value2 { get; set; }
 		}
 
 		[Fact]

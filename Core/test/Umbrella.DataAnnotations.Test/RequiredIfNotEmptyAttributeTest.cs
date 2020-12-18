@@ -7,10 +7,10 @@ namespace Umbrella.DataAnnotations.Test
     {
         private class Model : ContingentValidationModelBase<RequiredIfNotEmptyAttribute>
         {
-            public string Value1 { get; set; }
+            public string? Value1 { get; set; }
 
             [RequiredIfNotEmpty("Value1")]
-            public string Value2 { get; set; }
+            public string? Value2 { get; set; }
         }
 
         [Fact]

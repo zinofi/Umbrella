@@ -52,13 +52,14 @@ namespace Umbrella.TypeScript.Test
     {
         [Range(10, 200)]
         public int TestInt { get; set; } = 100;
-        public string TestString { get; set; }
+        public string? TestString { get; set; }
+
         [EmailAddress]
-        public string EmailAddress { get; set; }
+        public string? EmailAddress { get; set; }
 
         [EmailAddress]
         [Compare(nameof(EmailAddress), ErrorMessage = "Emails must match")]
-        public string ConfirmEmailAddress { get; set; }
+        public string? ConfirmEmailAddress { get; set; }
 
         public DateTime CreatedDate { get; set; }
     }
@@ -77,7 +78,7 @@ namespace Umbrella.TypeScript.Test
         public string IHaveADefaultButAmForcedToBeNull { get; set; } = "I should not be output!";
 
         [TypeScriptEmpty]
-        public List<string> TestStringList { get; set; }
+        public List<string>? TestStringList { get; set; }
 
         [TypeScriptOverride(typeof(string))]
         public List<int> TestIntList { get; set; } = new List<int>();
@@ -85,13 +86,13 @@ namespace Umbrella.TypeScript.Test
 		public bool NeedAddress { get; set; }
 
 		[RequiredIfFalse(nameof(NeedAddress))]
-		public string NeededIfFalse { get; set; }
+		public string? NeededIfFalse { get; set; }
 
 		[RequiredIfTrue(nameof(NeedAddress))]
-		public string NeededIfTrue { get; set; }
+		public string? NeededIfTrue { get; set; }
 
 		[RequiredIf(nameof(TestChildEnum), TestEnum.Value1, ErrorMessage = "Please enter the value")]
-		public string NeededIfEqualToEnum { get; set; }
+		public string? NeededIfEqualToEnum { get; set; }
 	}
 
     [TypeScriptModel(TypeScriptOutputModelType.Interface | TypeScriptOutputModelType.KnockoutInterface)]

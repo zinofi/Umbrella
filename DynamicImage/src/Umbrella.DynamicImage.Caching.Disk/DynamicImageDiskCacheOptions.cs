@@ -17,7 +17,7 @@ namespace Umbrella.DynamicImage.Caching.Disk
 		public string CacheFolderName { get; set; } = "DynamicImageCache";
 
 		/// <inheritdoc />
-		public void Sanitize() => CacheFolderName = CacheFolderName.TrimNull();
+		public void Sanitize() => CacheFolderName = CacheFolderName.Trim();
 
 		/// <inheritdoc />
 		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(CacheFolderName, nameof(CacheFolderName));

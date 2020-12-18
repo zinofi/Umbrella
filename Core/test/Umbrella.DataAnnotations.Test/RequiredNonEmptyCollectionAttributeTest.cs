@@ -8,7 +8,7 @@ namespace Umbrella.DataAnnotations.Test
 		private class Model : ValidationModelBase<RequiredNonEmptyCollectionAttribute>
 		{
 			[RequiredNonEmptyCollection]
-			public List<string> Value1 { get; set; }
+			public List<string>? Value1 { get; set; }
 		}
 
 		[Fact]

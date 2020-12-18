@@ -24,12 +24,15 @@ namespace Umbrella.Utilities.Helpers
 		/// is passed uninitialized.
 		/// </param>
 		/// <returns>true if the value parameter was converted successfully; otherwise, false.</returns>
-		public static bool TryParseEnum(Type enumType, string value, bool ignoreCase, out object? result)
+		public static bool TryParseEnum(Type enumType, string? value, bool ignoreCase, out object? result)
 		{
 			result = null;
 
 			try
 			{
+				if (value is null)
+					return false;
+
 				result = Enum.Parse(enumType, value, ignoreCase);
 
 				return true;

@@ -98,7 +98,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Middleware
 
 			// Create the Middleware
 			var middleware = new FrontEndCompressionMiddleware(
-				null,
+				null!,
 				logger.Object,
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),
 				cache.Object,

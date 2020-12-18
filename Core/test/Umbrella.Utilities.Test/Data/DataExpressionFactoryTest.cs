@@ -35,10 +35,10 @@ namespace Umbrella.Utilities.Test.Data
 			var factory = CreateDataExpressionFactory();
 			var descriptor = new SortExpressionDescriptor(memberPath, sortDirection);
 
-			IDataExpression dataExpression = factory.Create(typeof(SortExpression<DataItem>), descriptor);
+			IDataExpression? dataExpression = factory.Create(typeof(SortExpression<DataItem>), descriptor);
 
 			Assert.NotNull(dataExpression);
-			Assert.Equal(memberPath, dataExpression.MemberPath);
+			Assert.Equal(memberPath, dataExpression!.MemberPath);
 			Assert.IsType<SortExpression<DataItem>>(dataExpression);
 
 			var sortExpression = (SortExpression<DataItem>)dataExpression;
@@ -56,10 +56,10 @@ namespace Umbrella.Utilities.Test.Data
 			var factory = CreateDataExpressionFactory();
 			var descriptor = new FilterExpressionDescriptor(memberPath, value, filterType);
 
-			IDataExpression dataExpression = factory.Create(typeof(FilterExpression<DataItem>), descriptor);
+			IDataExpression? dataExpression = factory.Create(typeof(FilterExpression<DataItem>), descriptor);
 
 			Assert.NotNull(dataExpression);
-			Assert.Equal(memberPath, dataExpression.MemberPath);
+			Assert.Equal(memberPath, dataExpression!.MemberPath);
 			Assert.IsType<FilterExpression<DataItem>>(dataExpression);
 
 			var filterExpression = (FilterExpression<DataItem>)dataExpression;

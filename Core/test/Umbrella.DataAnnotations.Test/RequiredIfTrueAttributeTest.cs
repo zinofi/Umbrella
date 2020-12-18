@@ -11,7 +11,7 @@ namespace Umbrella.DataAnnotations.Test
             public bool? Value1 { get; set; }
 
             [RequiredIfTrue("Value1")]
-            public string Value2 { get; set; }
+            public string? Value2 { get; set; }
         }
 
         [Fact]

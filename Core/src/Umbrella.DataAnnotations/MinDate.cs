@@ -72,7 +72,7 @@ namespace Umbrella.DataAnnotations
 			}
 			else
 			{
-				string strDateTime = value as string;
+				string? strDateTime = value as string;
 
 				if (!string.IsNullOrEmpty(strDateTime))
 				{

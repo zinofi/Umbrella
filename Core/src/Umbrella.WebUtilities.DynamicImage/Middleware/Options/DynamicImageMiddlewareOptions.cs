@@ -56,7 +56,7 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 				_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
 			}
 
-			DynamicImagePathPrefix = DynamicImagePathPrefix.TrimNull();
+			DynamicImagePathPrefix = DynamicImagePathPrefix.Trim();
 		}
 
 		/// <inheritdoc />

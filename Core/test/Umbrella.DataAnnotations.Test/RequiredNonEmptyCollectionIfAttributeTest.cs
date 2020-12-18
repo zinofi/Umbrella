@@ -7,23 +7,23 @@ namespace Umbrella.DataAnnotations.Test
 	{
 		private class Model : ContingentValidationModelBase<RequiredNonEmptyCollectionIfAttribute>
 		{
-			public string Value1 { get; set; }
+			public string? Value1 { get; set; }
 
 			[RequiredNonEmptyCollectionIf("Value1", "hello")]
-			public List<string> Value2 { get; set; }
+			public List<string>? Value2 { get; set; }
 		}
 
 		private class ComplexModel : ContingentValidationModelBase<RequiredIfAttribute>
 		{
 			public class SubModel
 			{
-				public string InnerValue { get; set; }
+				public string? InnerValue { get; set; }
 			}
 
-			public SubModel Value1 { get; set; }
+			public SubModel? Value1 { get; set; }
 
 			[RequiredNonEmptyCollectionIf("Value1.InnerValue", "hello")]
-			public List<string> Value2 { get; set; }
+			public List<string>? Value2 { get; set; }
 		}
 
 		[Fact]

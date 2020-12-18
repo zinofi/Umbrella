@@ -50,7 +50,7 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 				_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
 			}
 
-			FileSystemPathPrefix = FileSystemPathPrefix.TrimNull();
+			FileSystemPathPrefix = FileSystemPathPrefix.Trim();
 		}
 
 		/// <inheritdoc />

@@ -51,7 +51,10 @@ namespace Umbrella.Utilities.Data
 
 					ParameterExpression parameter = Expression.Parameter(innerType);
 
-					var memberAccess = UmbrellaDynamicExpression.CreateMemberAccess(parameter, descriptor.MemberPath, false);
+					if (string.IsNullOrWhiteSpace(descriptor.MemberPath))
+						return default;
+
+					var memberAccess = UmbrellaDynamicExpression.CreateMemberAccess(parameter, descriptor.MemberPath!, false);
 
 					if (memberAccess == null)
 						return default;
@@ -67,9 +70,9 @@ namespace Umbrella.Utilities.Data
 
 				if (descriptor is FilterExpressionDescriptor filterExpressionDescriptor)
 				{
-					string descriptorValue = filterExpressionDescriptor.Value;
+					string? descriptorValue = filterExpressionDescriptor.Value;
 
-					if (result.member.Type.IsEnum && EnumHelper.TryParseEnum(result.member.Type, filterExpressionDescriptor.Value, true, out object enumValue))
+					if (result.member.Type.IsEnum && EnumHelper.TryParseEnum(result.member.Type, descriptorValue, true, out object? enumValue))
 					{
 						object underlyingValue = Convert.ChangeType(enumValue, result.member.Type.GetEnumUnderlyingType());
 

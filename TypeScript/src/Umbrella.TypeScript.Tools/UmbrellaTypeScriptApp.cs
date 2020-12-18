@@ -101,7 +101,7 @@ namespace Umbrella.TypeScript.Tools
 				.AppendLine("// </auto-generated>")
 				.AppendLine("//------------------------------------------------------------------------------");
 
-			if (toolOptions.GeneratorList.Contains("knockout"))
+			if (toolOptions.GeneratorList?.Contains("knockout") is true)
 			{
 				builder.AppendLine("import * as ko from \"knockout\";");
 
@@ -117,10 +117,10 @@ namespace Umbrella.TypeScript.Tools
 
 		protected virtual void SetupGenerators(TypeScriptGenerator generator, TOptions options)
 		{
-			if (options.GeneratorList.Contains("standard"))
+			if (options.GeneratorList?.Contains("standard") is true)
 				generator.IncludeStandardGenerators();
 
-			if (options.GeneratorList.Contains("knockout"))
+			if (options.GeneratorList?.Contains("knockout") is true)
 				generator.IncludeKnockoutGenerators(options.KnockoutUseDecorators);
 		}
 
@@ -207,13 +207,16 @@ namespace Umbrella.TypeScript.Tools
 
 		private string CleanInput(string input) => input?.Trim('"') ?? "";
 
-		private List<Assembly> LoadAssemblies(string assemblyFolderPath, List<string> lstAssemblyName)
+		private List<Assembly> LoadAssemblies(string? assemblyFolderPath, List<string>? lstAssemblyName)
 		{
+			Guard.ArgumentNotNullOrWhiteSpace(assemblyFolderPath, nameof(assemblyFolderPath));
+			Guard.ArgumentNotNull(lstAssemblyName, nameof(lstAssemblyName));
+
 			var lstAssemblyToProcess = new List<Assembly>();
 
-			foreach (string assemblyName in lstAssemblyName)
+			foreach (string assemblyName in lstAssemblyName!)
 			{
-				string fileName = Path.Combine(assemblyFolderPath, $"{assemblyName}.dll");
+				string fileName = Path.Combine(assemblyFolderPath!, $"{assemblyName}.dll");
 
 				var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileName);
 

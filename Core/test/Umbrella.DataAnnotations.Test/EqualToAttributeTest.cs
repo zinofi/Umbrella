@@ -9,18 +9,18 @@ namespace Umbrella.DataAnnotations.Test
     {
         private class Model : ContingentValidationModelBase<EqualToAttribute>
         {
-            public string Value1 { get; set; }
+            public string? Value1 { get; set; }
 
             [EqualTo("Value1")]
-            public string Value2 { get; set; }
+            public string? Value2 { get; set; }
         }
 
         private class ModelWithPassOnNull : ContingentValidationModelBase<EqualToAttribute>
         {
-            public string Value1 { get; set; }
+            public string? Value1 { get; set; }
 
             [EqualTo("Value1", PassOnNull = true)]
-            public string Value2 { get; set; }
+            public string? Value2 { get; set; }
         }
 
         [Fact]

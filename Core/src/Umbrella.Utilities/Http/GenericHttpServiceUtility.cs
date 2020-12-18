@@ -73,7 +73,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public string GetUrlWithParmeters(string url, IDictionary<string, string> parameters)
+		public string GetUrlWithParmeters(string url, IDictionary<string, string>? parameters)
 			=> parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
 
 		/// <inheritdoc />

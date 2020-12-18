@@ -134,7 +134,7 @@ namespace Umbrella.Utilities.Test.Numerics
 
 		[Fact]
 		public void TakeRandom_Source_Null()
-			=> Assert.Throws<ArgumentNullException>(() => _concurrentRandomGenerator.TakeRandom<object>(null, 1).ToArray());
+			=> Assert.Throws<ArgumentNullException>(() => _concurrentRandomGenerator.TakeRandom<object>(null!, 1).ToArray());
 
 		[Fact]
 		public void TakeRandom_Source_Empty()
