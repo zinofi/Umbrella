@@ -35,7 +35,7 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 		/// <summary>
 		/// Gets or sets the file provider mapping.
 		/// </summary>
-		public UmbrellaFileProviderMapping FileProviderMapping { get; set; }
+		public UmbrellaFileProviderMapping FileProviderMapping { get; set; } = null!;
 
 		/// <inheritdoc />
 		public void Sanitize()

@@ -376,7 +376,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 					dateAuditEntity.CreatedDate = DateTime.UtcNow;
 
 				if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
-					userAuditEntity.CreatedById = CurrentUserIdAccessor.CurrentUserId;
+					userAuditEntity.CreatedById = CurrentUserIdAccessor.CurrentUserId ?? default!;
 
 				if (addToContext)
 					Context.Set<TEntity>().Add(entity);
@@ -388,7 +388,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 					dateAuditEntity.UpdatedDate = DateTime.UtcNow;
 
 				if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
-					userAuditEntity.UpdatedById = CurrentUserIdAccessor.CurrentUserId;
+					userAuditEntity.UpdatedById = CurrentUserIdAccessor.CurrentUserId ?? default!;
 			}
 		}
 
@@ -588,7 +588,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="options">The options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns><see langword="true" /> if it is empty, otherwise <see langword="false" /></returns>
-		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, IEnumerable<RepoOptions>? childOptions)
+		protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions? options, IEnumerable<RepoOptions>? childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -615,7 +615,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 		#region Public Methods
 		/// <inheritdoc />
-		public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+		public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

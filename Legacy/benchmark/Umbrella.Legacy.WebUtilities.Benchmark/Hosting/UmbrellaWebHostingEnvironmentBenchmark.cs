@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -31,6 +32,7 @@ namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting
 		public string TransformPath() => _umbrellaWebHostingEnvironment.TransformPath("~/path/to/a/resource.jpg", true, false, false);
 
 		[Benchmark]
+		[Obsolete]
 		public string TransformPathOld() => _umbrellaWebHostingEnvironment.TransformPathOld("~/path/to/a/resource.jpg", true, false, false);
 	}
 }

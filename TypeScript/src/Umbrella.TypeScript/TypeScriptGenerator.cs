@@ -239,7 +239,7 @@ namespace Umbrella.TypeScript
 				if (modelAttribute == null)
 					continue;
 
-				yield return new TypeScriptModelGeneratorItem { ModelType = type, ModelAttribute = modelAttribute };
+				yield return new TypeScriptModelGeneratorItem(type, modelAttribute);
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace Umbrella.TypeScript
 
 				TypeScriptEnumAttribute enumAttribute = type.GetCustomAttribute<TypeScriptEnumAttribute>();
 
-				if (enumAttribute == null)
+				if (enumAttribute is null)
 					continue;
 
 				yield return type;

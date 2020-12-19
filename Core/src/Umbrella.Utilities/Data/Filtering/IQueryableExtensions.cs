@@ -20,7 +20,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="filterExpressions">The filter expressions.</param>
 		/// <param name="combinator">The combinator.</param>
 		/// <returns>The query.</returns>
-		public static IQueryable<TItem> ApplyFilterExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<FilterExpression<TItem>> filterExpressions, FilterExpressionCombinator combinator)
+		public static IQueryable<TItem> ApplyFilterExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<FilterExpression<TItem>>? filterExpressions, FilterExpressionCombinator combinator)
 		{
 			IQueryable<TItem>? filteredItems = null;
 

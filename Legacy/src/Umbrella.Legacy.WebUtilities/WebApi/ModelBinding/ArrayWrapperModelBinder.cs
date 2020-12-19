@@ -11,15 +11,20 @@ using Newtonsoft.Json.Linq;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 {
+	/// <summary>
+	/// A model binder used to map a JSON encoded array to an enumerable collection.
+	/// </summary>
+	/// <seealso cref="System.Web.Http.ModelBinding.IModelBinder" />
 	public class ArrayWrapperModelBinder : IModelBinder
 	{
-		private readonly ConcurrentDictionary<Type, Type> _modelTypeMappingDictionary = new ConcurrentDictionary<Type, Type>();
+		private readonly ConcurrentDictionary<Type, Type?> _modelTypeMappingDictionary = new ConcurrentDictionary<Type, Type?>();
 
+		/// <inheritdoc />
 		public bool BindModel(HttpActionContext actionContext, ModelBindingContext bindingContext)
 		{
 			if (typeof(IEnumerable).IsAssignableFrom(bindingContext.ModelType))
 			{
-				string rawValue = null;
+				string? rawValue = null;
 
 				ValueProviderResult val = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
@@ -33,10 +38,9 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 						Stream stream = actionContext.Request.GetOwinContext().Request.Body;
 
 						stream.Position = 0;
-						using (var reader = new StreamReader(stream))
-						{
-							rawValue = reader.ReadToEnd();
-						}
+						using var reader = new StreamReader(stream);
+
+						rawValue = reader.ReadToEnd();
 					}
 
 					if (string.IsNullOrWhiteSpace(rawValue))
@@ -56,7 +60,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 
 				try
 				{
-					JToken token = JToken.Parse(rawValue);
+					var token = JToken.Parse(rawValue);
 
 					if (token.Type == JTokenType.Array)
 					{
@@ -67,7 +71,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 					{
 						// We need to determine what the type contained within the IEnumerable is.
 						// We could really be dealing with eith a generic collection or an array so need to test for each.
-						Type underlyingType = _modelTypeMappingDictionary.GetOrAdd(bindingContext.ModelType, type =>
+						Type? underlyingType = _modelTypeMappingDictionary.GetOrAdd(bindingContext.ModelType, type =>
 						{
 							if (type.IsGenericType)
 							{
@@ -87,7 +91,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 						}
 						else
 						{
-							var instance = token.ToObject(underlyingType);
+							object? instance = token.ToObject(underlyingType);
 
 							// Regardless of whether the model type is a generic type or an array, we can just wrap the value in an array.
 							var array = Array.CreateInstance(underlyingType, 1);

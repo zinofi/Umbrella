@@ -4,15 +4,27 @@ using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Results
 {
+	/// <summary>
+	/// An <see cref="ActionResult"/> used to rewrite the current request to the specified <see cref="Url"/>.
+	/// </summary>
+	/// <seealso cref="System.Web.Mvc.ActionResult" />
 	public class TransferResult : ActionResult
 	{
-		public string Url { get; private set; }
+		/// <summary>
+		/// Gets the target URL.
+		/// </summary>
+		public string Url { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransferResult"/> class.
+		/// </summary>
+		/// <param name="url">The URL.</param>
 		public TransferResult(string url)
 		{
 			Url = url;
 		}
 
+		/// <inheritdoc />
 		public override void ExecuteResult(ControllerContext context)
 		{
 			if (context == null)

@@ -14,7 +14,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Test
 #if AZUREDEVOPS
         private static readonly string c_StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 #else
-		private const string c_StorageConnectionString = "UseDevelopmentStorage=true";
+		private const string StorageConnectionString = "UseDevelopmentStorage=true";
 #endif
 
 		[Fact]
@@ -49,15 +49,10 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Test
 		{
 			var appender = new AzureTableStorageAppender
 			{
-				Config = new AzureTableStorageLogAppenderOptions
-				{
-					AppenderType = AzureTableStorageLogAppenderType.Server,
-					Name = "Umbrella Test Appender",
-					TablePrefix = "UmbrellaServerTest"
-				}
+				Config = new AzureTableStorageLogAppenderOptions("Umbrella Test Appender", "UmbrellaServerTest", AzureTableStorageLogAppenderType.Server)
 			};
 
-			var account = CloudStorageAccount.Parse(c_StorageConnectionString);
+			var account = CloudStorageAccount.Parse(StorageConnectionString);
 			appender.TableClient = account.CreateCloudTableClient();
 
 			return appender;

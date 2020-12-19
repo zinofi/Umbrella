@@ -12,7 +12,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		/// <summary>
 		/// The connection string for the Azure storage account in which the blobs will be stored.
 		/// </summary>
-		public string StorageConnectionString { get; set; }
+		public string StorageConnectionString { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether to cache the result of calls which check if a Blob container exists.
@@ -24,7 +24,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		/// <summary>
 		/// Sanitizes this instance.
 		/// </summary>
-		public void Sanitize() => StorageConnectionString = StorageConnectionString?.Trim();
+		public void Sanitize() => StorageConnectionString = StorageConnectionString.Trim();
 
 		/// <summary>
 		/// Validates this instance.

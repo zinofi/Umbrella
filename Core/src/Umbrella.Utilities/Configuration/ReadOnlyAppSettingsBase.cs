@@ -110,6 +110,16 @@ namespace Umbrella.Utilities.Configuration
 		/// <returns>An instance of type <typeparamref name="T"/>.</returns>
 		protected virtual T FromJson<T>(string value) => UmbrellaStatics.DeserializeJson<T>(value);
 
+		/// <summary>
+		/// Gets the setting.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="fallback">The fallback.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="useCache">if set to <see langword="true"/>, stores the item in the cache.</param>
+		/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallback"/> is returned.</param>
+		/// <param name="customValueConverter">The custom value converter.</param>
+		/// <returns>The app setting value or the fallback.</returns>
 		protected virtual T? GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
@@ -134,12 +144,22 @@ namespace Umbrella.Utilities.Configuration
 					})
 					: GetValue();
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Log.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
 			{
 				throw;
 			}
 		}
 
+		/// <summary>
+		/// Gets the setting with the specified <paramref name="key"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="fallbackCreator">The fallback creator.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="useCache">if set to <see langword="true"/>, stores the item in the cache.</param>
+		/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallbackCreator"/> is used to build the returned value.</param>
+		/// <param name="customValueConverter">The custom value converter.</param>
+		/// <returns>The app setting value or the fallback.</returns>
 		protected virtual T? GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
@@ -164,12 +184,21 @@ namespace Umbrella.Utilities.Configuration
 					})
 					: GetValue();
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Log.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
 			{
 				throw;
 			}
 		}
 
+		/// <summary>
+		/// Gets the enum setting with the specified <paramref name="key"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="fallback">The fallback.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="useCache">if set to <see langword="true"/>, stores the item in the cache.</param>
+		/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallback"/> is returned.</param>
+		/// <returns>The value of the app setting or the <paramref name="fallback"/>.</returns>
 		protected virtual T GetSettingEnum<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false)
 			where T : struct, Enum
 		{
@@ -195,7 +224,7 @@ namespace Umbrella.Utilities.Configuration
 					})
 					: GetValue();
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Log.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
 			{
 				throw;
 			}

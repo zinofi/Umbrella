@@ -17,7 +17,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 		public string ContainerName { get; set; } = "dynamicimagecache";
 
 		/// <inheritdoc />
-		public void Sanitize() => ContainerName = ContainerName?.TrimToLowerInvariant();
+		public void Sanitize() => ContainerName = ContainerName.TrimToLowerInvariant();
 
 		/// <inheritdoc />
 		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(ContainerName, nameof(ContainerName));

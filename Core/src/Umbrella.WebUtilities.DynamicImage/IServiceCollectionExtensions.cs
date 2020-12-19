@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilitiesDynamicImage(
 			this IServiceCollection services,
-			Action<IServiceProvider, DynamicImageMiddlewareOptions> optionsBuilder = null)
+			Action<IServiceProvider, DynamicImageMiddlewareOptions>? optionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

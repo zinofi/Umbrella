@@ -17,7 +17,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 	/// OWIN Middleware that is used to access files stored in a physical or virtual file system. Underling file access
 	/// is provided using the <see cref="Umbrella.FileSystem"/> infrastructure.
 	/// </summary>
-	/// <seealso cref="Microsoft.Owin.OwinMiddleware" />
+	/// <seealso cref="OwinMiddleware" />
 	public class FileSystemMiddleware : OwinMiddleware
 	{
 		private readonly ILogger _log;
@@ -66,14 +66,14 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 
 				FileSystemMiddlewareMapping mapping = _options.GetMapping(path);
 
-				if (mapping != null)
+				if (mapping is not null)
 				{
 					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
-					IUmbrellaFileInfo fileInfo = await mapping.FileProviderMapping.FileProvider.GetAsync(path, token);
+					IUmbrellaFileInfo? fileInfo = await mapping.FileProviderMapping.FileProvider.GetAsync(path, token);
 
-					if (fileInfo == null)
+					if (fileInfo is null)
 					{
 						cts.Cancel();
 						context.Response.SendStatusCode(HttpStatusCode.NotFound);
@@ -81,7 +81,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 						return;
 					}
 
-					string eTagValue = null;
+					string? eTagValue = null;
 
 					// Check the cache headers
 					if (fileInfo.LastModified.HasValue)
@@ -107,7 +107,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 
 					context.Response.ContentType = fileInfo.ContentType;
 
-					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache)
+					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache && fileInfo.LastModified.HasValue)
 					{
 						eTagValue ??= _httpHeaderValueUtility.CreateETagHeaderValue(fileInfo.LastModified.Value, fileInfo.Length);
 

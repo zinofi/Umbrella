@@ -16,12 +16,12 @@ namespace Umbrella.FileSystem.Disk
 		/// <summary>
 		/// Gets or sets the physical root path on disk for the file provider.
 		/// </summary>
-		public string RootPhysicalPath { get; set; }
+		public string RootPhysicalPath { get; set; } = null!;
 
 		/// <summary>
 		/// Sanitizes this instance.
 		/// </summary>
-		public void Sanitize() => RootPhysicalPath = PathHelper.PlatformNormalize(RootPhysicalPath?.Trim()?.TrimEnd('\\'));
+		public void Sanitize() => RootPhysicalPath = PathHelper.PlatformNormalize(RootPhysicalPath.Trim().TrimEnd('\\'));
 
 		/// <summary>
 		/// Validates this instance.

@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Umbrella.Extensions.Logging.Azure.Configuration
+﻿namespace Umbrella.Extensions.Logging.Azure.Configuration
 {
-    public enum AzureTableStorageLogAppenderType
+	/// <summary>
+	/// The type of the Azure Table Storage log appender.
+	/// </summary>
+	public enum AzureTableStorageLogAppenderType
     {
-        Client,
-        Server
-    }
+		/// <summary>
+		/// The client appender. This is used to log client side messages, e.g. web browser error, mobile app errors.
+		/// </summary>
+		Client,
+
+		/// <summary>
+		/// The server appender. This is used to log server messages.
+		/// </summary>
+		Server
+	}
 }

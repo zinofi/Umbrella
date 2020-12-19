@@ -17,7 +17,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <param name="sortExpressions">The sort expressions.</param>
 		/// <param name="defaultSortOrderExpression">The default sort order expression when <paramref name="sortExpressions"/> is null or empty.</param>
 		/// <returns>The collection with the sort expressions applied to it.</returns>
-		public static IEnumerable<TItem> ApplySortExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<SortExpression<TItem>> sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
+		public static IEnumerable<TItem> ApplySortExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<SortExpression<TItem>>? sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
 		{
 			IOrderedEnumerable<TItem>? orderedItems = null;
 

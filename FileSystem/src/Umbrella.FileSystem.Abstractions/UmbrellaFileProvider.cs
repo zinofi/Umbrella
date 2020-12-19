@@ -19,7 +19,7 @@ namespace Umbrella.FileSystem.Abstractions
 	/// <typeparam name="TOptions">The type of the options.</typeparam>
 	public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		where TFileInfo : IUmbrellaFileInfo
-		where TOptions : IUmbrellaFileProviderOptions
+		where TOptions : class, IUmbrellaFileProviderOptions
 	{
 		#region Private Static Members
 		private static readonly char[] _subpathTrimCharacters = new[] { ' ', '\\', '/', '~', ' ' };
@@ -55,7 +55,7 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <summary>
 		/// Gets the options.
 		/// </summary>
-		protected TOptions? Options { get; private set; }
+		protected TOptions Options { get; private set; } = null!;
 		#endregion
 
 		#region Constructors		
@@ -99,7 +99,12 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				return await GetFileAsync(subpath, true, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? fileInfo = await GetFileAsync(subpath, true, cancellationToken).ConfigureAwait(false);
+
+				if (fileInfo is null)
+					throw new UmbrellaFileNotFoundException(subpath);
+
+				return fileInfo;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
 			{
@@ -108,7 +113,7 @@ namespace Umbrella.FileSystem.Abstractions
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default)
+		public virtual async Task<IUmbrellaFileInfo?> GetAsync(string subpath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));
@@ -131,7 +136,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo fileInfo = await GetAsync(subpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? fileInfo = await GetAsync(subpath, cancellationToken).ConfigureAwait(false);
 
 				if (fileInfo != null)
 					return await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
@@ -169,9 +174,9 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
 
-				if (sourceFile == null)
+				if (sourceFile is null)
 					throw new UmbrellaFileNotFoundException(sourceSubpath);
 
 				return await sourceFile.CopyAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
@@ -191,7 +196,10 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+
+				if (destinationFile is null)
+					throw new UmbrellaFileNotFoundException(destinationSubpath);
 
 				return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
@@ -227,9 +235,9 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? sourceFile = await GetAsync(sourceSubpath, cancellationToken).ConfigureAwait(false);
 
-				if (sourceFile == null)
+				if (sourceFile is null)
 					throw new UmbrellaFileNotFoundException(sourceSubpath);
 
 				return await sourceFile.MoveAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
@@ -249,7 +257,10 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? destinationFile = await CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+
+				if (destinationFile is null)
+					throw new UmbrellaFileNotFoundException(destinationSubpath);
 
 				return await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
@@ -285,7 +296,11 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
+
+				if (file is null)
+					throw new UmbrellaFileNotFoundException(subpath);
+
 				await file.WriteFromByteArrayAsync(bytes, cacheContents, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
 				return file;
@@ -305,7 +320,11 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
+
+				if (file is null)
+					throw new UmbrellaFileNotFoundException(subpath);
+
 				await file.WriteFromStreamAsync(stream, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
 
 				return file;
@@ -324,7 +343,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 			try
 			{
-				IUmbrellaFileInfo file = await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? file = await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
 				
 				return file != null;
 			}
@@ -361,7 +380,7 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <param name="isNew">Specifies if the file is new.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable Task that returns the file.</returns>
-		protected abstract Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken);
+		protected abstract Task<IUmbrellaFileInfo?> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken);
 		#endregion
 	}
 }

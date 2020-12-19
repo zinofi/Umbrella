@@ -20,17 +20,17 @@ namespace Umbrella.Extensions.Logging.Azure
 		/// <summary>
 		/// Gets or sets the message.
 		/// </summary>
-		public string Message { get; set; }
+		public string? Message { get; set; }
 
 		/// <summary>
 		/// Gets or sets the level.
 		/// </summary>
-		public string Level { get; set; }
+		public string? Level { get; set; }
 
 		/// <summary>
 		/// Gets or sets the properties.
 		/// </summary>
-		public string Properties { get; set; }
+		public string? Properties { get; set; }
 		#endregion
 
 		#region Constructors		

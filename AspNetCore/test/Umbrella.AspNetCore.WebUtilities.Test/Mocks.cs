@@ -70,13 +70,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
 				});
 		}
 
-		private static ViewContext CreateViewContext(string requestPathBase = null)
+		private static ViewContext CreateViewContext(string? requestPathBase = null)
 		{
 			var actionContext = new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
-			if (requestPathBase != null)
-			{
+			
+			if (requestPathBase is not null)
 				actionContext.HttpContext.Request.PathBase = new PathString(requestPathBase);
-			}
 
 			var metadataProvider = new EmptyModelMetadataProvider();
 			var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());

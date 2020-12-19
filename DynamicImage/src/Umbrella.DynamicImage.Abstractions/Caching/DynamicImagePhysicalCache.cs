@@ -66,9 +66,10 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 				string subPath = GetSubPath(key, dynamicImage.ImageOptions.Format.ToFileExtensionString());
 
 				//Read the image content to save to the underlying file store
-				byte[] bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
+				byte[]? bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
 
-				await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken).ConfigureAwait(false);
+				if(bytes is not null)
+					await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { dynamicImage.ImageOptions }, returnValue: true))
 			{
@@ -77,7 +78,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
+		public virtual async Task<DynamicImageItem?> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -88,10 +89,10 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 				string subPath = GetSubPath(cacheKey, fileExtension);
 
 				//Find the cached file
-				IUmbrellaFileInfo fileInfo = await FileProvider.GetAsync(subPath, cancellationToken).ConfigureAwait(false);
+				IUmbrellaFileInfo? fileInfo = await FileProvider.GetAsync(subPath, cancellationToken).ConfigureAwait(false);
 
 				//No cached image available
-				if (fileInfo == null)
+				if (fileInfo is null)
 					return null;
 
 				//If the file does not exist or has been modified since the item was generated,
@@ -103,7 +104,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 					return null;
 				}
 
-				//We need to return the cached image
+				// We need to return the cached image
 				var item = new DynamicImageItem
 				{
 					UmbrellaFileInfo = fileInfo,

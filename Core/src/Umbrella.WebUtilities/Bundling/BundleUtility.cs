@@ -131,7 +131,7 @@ namespace Umbrella.WebUtilities.Bundling
 		/// The bundle content.
 		/// </returns>
 		/// <exception cref="UmbrellaWebException">There was a problem getting the script content.</exception>
-		public virtual async Task<string> GetScriptContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default)
+		public virtual async Task<string?> GetScriptContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(bundleNameOrPath, nameof(bundleNameOrPath));
@@ -189,7 +189,7 @@ namespace Umbrella.WebUtilities.Bundling
 		/// The bundle content.
 		/// </returns>
 		/// <exception cref="UmbrellaWebException">There was a problem getting the stylesheet content.</exception>
-		public virtual async Task<string> GetStyleSheetContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default)
+		public virtual async Task<string?> GetStyleSheetContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(bundleNameOrPath, nameof(bundleNameOrPath));
@@ -230,7 +230,7 @@ namespace Umbrella.WebUtilities.Bundling
 		/// <param name="bundleType">Type of the bundle.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The bundle content.</returns>
-		protected async Task<string> ResolveBundleContentAsync(string bundleNameOrPath, string bundleType, CancellationToken cancellationToken)
+		protected async Task<string?> ResolveBundleContentAsync(string bundleNameOrPath, string bundleType, CancellationToken cancellationToken)
 			=> await HostingEnvironment.GetFileContentAsync(await DetermineBundlePathAsync(bundleNameOrPath, bundleType, cancellationToken), false, Options.CacheEnabled, Options.WatchFiles, cancellationToken).ConfigureAwait(false);
 
 		/// <summary>

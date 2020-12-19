@@ -9,7 +9,8 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.MessageHandlers
     /// </summary>
     public class AggressiveNoCacheHandler : DelegatingHandler
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+		/// <inheritdoc />
+		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 

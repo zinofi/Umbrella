@@ -35,13 +35,13 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilities(
 			this IServiceCollection services,
-			Action<IServiceProvider, BundleUtilityOptions> bundleUtilityOptionsBuilder = null,
-			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions> frontEndCompressionMiddlewareOptionsBuilder = null,
-			Action<IServiceProvider, WebpackBundleUtilityOptions> webpackBundleUtilityOptionsBuilder = null,
-			Action<IServiceProvider, InternetExplorerCacheHeadersMiddlewareOptions> internetExplorerCacheHeaderMiddlewareOptionsBuilder = null,
-			Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions> umbrellaWebHostingEnvironmentOptionsBuilder = null,
-			Action<IServiceProvider, QueryStringParameterToHttpHeaderMiddlewareOptions> queryStringParameterToHttpHeaderMiddlewareOptionsBuilder = null,
-			Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions> multiTenantSessionContextMiddlewareOptionsBuilder = null)
+			Action<IServiceProvider, BundleUtilityOptions>? bundleUtilityOptionsBuilder = null,
+			Action<IServiceProvider, FrontEndCompressionMiddlewareOptions>? frontEndCompressionMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, WebpackBundleUtilityOptions>? webpackBundleUtilityOptionsBuilder = null,
+			Action<IServiceProvider, InternetExplorerCacheHeadersMiddlewareOptions>? internetExplorerCacheHeaderMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions>? umbrellaWebHostingEnvironmentOptionsBuilder = null,
+			Action<IServiceProvider, QueryStringParameterToHttpHeaderMiddlewareOptions>? queryStringParameterToHttpHeaderMiddlewareOptionsBuilder = null,
+			Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions>? multiTenantSessionContextMiddlewareOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

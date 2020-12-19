@@ -37,7 +37,7 @@ namespace Umbrella.DataAccess.Mapping
 
 		#region IMappingUtility Members
 		/// <inheritdoc />
-		public IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
+		public IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity>? newEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 			where TEntityKey : IEquatable<TEntityKey>
 		{
@@ -64,7 +64,7 @@ namespace Umbrella.DataAccess.Mapping
 
 						// Make sure the mapped entity has an default id value to avoid errors with having mapped an existing item that belongs
 						// to something like a different foreign key relationship
-						entity.Id = default;
+						entity.Id = default!;
 
 						newEntityAction?.Invoke(entity);
 

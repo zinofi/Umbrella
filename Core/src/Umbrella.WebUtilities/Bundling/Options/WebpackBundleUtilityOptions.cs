@@ -19,7 +19,7 @@ namespace Umbrella.WebUtilities.Bundling.Options
 		/// <summary>
 		/// Gets the manifest json file sub path.
 		/// </summary>
-		public string ManifestJsonFileSubPath { get; private set; }
+		public string ManifestJsonFileSubPath { get; private set; } = null!;
 
 		/// <inheritdoc />
 		public override void Sanitize()

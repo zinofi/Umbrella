@@ -9,6 +9,6 @@
 		/// <summary>
 		/// Gets or sets the current nonce value.
 		/// </summary>
-		public string Current { get; set; }
+		public string? Current { get; set; }
 	}
 }

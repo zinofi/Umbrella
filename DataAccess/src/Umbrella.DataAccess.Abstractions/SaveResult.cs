@@ -20,7 +20,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="item">The item.</param>
 		/// <param name="validationResults">The validation results.</param>
 		/// <param name="alreadyExists">Specifies whether the item already exists.</param>
-		public SaveResult(bool success, T item, IEnumerable<ValidationResult> validationResults = null, bool? alreadyExists = null)
+		public SaveResult(bool success, T item, IEnumerable<ValidationResult>? validationResults = null, bool? alreadyExists = null)
 		{
 			Success = success;
 			Item = item;
@@ -51,6 +51,6 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <summary>
 		/// Gets the primary validation message which is the first message in the <see cref="ValidationResults"/> collection.
 		/// </summary>
-		public string PrimaryValidationMessage => ValidationResults?.FirstOrDefault()?.ErrorMessage;
+		public string? PrimaryValidationMessage => ValidationResults.FirstOrDefault()?.ErrorMessage;
 	}
 }

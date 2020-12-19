@@ -44,8 +44,10 @@ namespace Umbrella.WebUtilities.Bundling
 			IUmbrellaWebHostingEnvironment hostingEnvironment)
 			: base(logger, options, hybridCache, cacheKeyUtility, hostingEnvironment)
 		{
-			string rootPath = hostingEnvironment.MapPath(Options.DefaultBundleFolderAppRelativePath, false);
-			FileProvider = new PhysicalFileProvider(rootPath);
+			string? rootPath = hostingEnvironment.MapPath(Options.DefaultBundleFolderAppRelativePath, false);
+			Guard.ArgumentNotNullOrWhiteSpace(rootPath, nameof(rootPath));
+
+			FileProvider = new PhysicalFileProvider(rootPath!);
 		}
 
 		#region Overridden Methods				

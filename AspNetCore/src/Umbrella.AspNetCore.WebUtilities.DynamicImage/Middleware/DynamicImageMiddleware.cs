@@ -116,7 +116,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 					return;
 				}
 
-				DynamicImageItem image = await _dynamicImageResizer.GenerateImageAsync(mapping.FileProviderMapping.FileProvider, imageOptions, token);
+				DynamicImageItem? image = await _dynamicImageResizer.GenerateImageAsync(mapping.FileProviderMapping.FileProvider, imageOptions, token);
 
 				if (image == null)
 				{
@@ -126,16 +126,18 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 				}
 
 				//Check the cache headers
-				if (context.Request.IfModifiedSinceHeaderMatched(image.LastModified))
+				if (image.LastModified.HasValue && context.Request.IfModifiedSinceHeaderMatched(image.LastModified.Value))
 				{
 					cts.Cancel();
 					context.Response.SendStatusCode(HttpStatusCode.NotModified);
 					return;
 				}
 
-				string eTagValue = _headerValueUtility.CreateETagHeaderValue(image.LastModified, image.Length);
+				string? eTagValue = image.LastModified.HasValue
+					? _headerValueUtility.CreateETagHeaderValue(image.LastModified.Value, image.Length)
+					: null;
 
-				if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
+				if (eTagValue is not null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
 				{
 					cts.Cancel();
 					context.Response.SendStatusCode(HttpStatusCode.NotModified);
@@ -147,9 +149,9 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 					context.Response.ContentType = _mimeTypeUtility.GetMimeType(image.ImageOptions.Format.ToFileExtensionString());
 					context.Response.ContentLength = image.Length;
 
-					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache)
+					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache && image.LastModified.HasValue)
 					{
-						context.Response.Headers["Last-Modified"] = _headerValueUtility.CreateLastModifiedHeaderValue(image.LastModified);
+						context.Response.Headers["Last-Modified"] = _headerValueUtility.CreateLastModifiedHeaderValue(image.LastModified.Value);
 						context.Response.Headers["ETag"] = eTagValue;
 						context.Response.Headers["Cache-Control"] = "no-cache";
 					}

@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilitiesFileSystem(
 			this IServiceCollection services,
-			Action<IServiceProvider, FileSystemMiddlewareOptions> optionsBuilder = null)
+			Action<IServiceProvider, FileSystemMiddlewareOptions>? optionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

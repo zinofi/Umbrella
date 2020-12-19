@@ -24,15 +24,17 @@ namespace Umbrella.DataAccess.Remote
 	/// <typeparam name="TItem">The type of the item.</typeparam>
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 	/// <typeparam name="TSlimItem">The type of the slim item.</typeparam>
+	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 	/// <typeparam name="TCreateItem">The type of the create item.</typeparam>
-	/// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 	/// <typeparam name="TCreateResult">The type of the create result.</typeparam>
+	/// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 	/// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TCreateItem, TUpdateItem, TCreateResult, TUpdateResult> : IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TCreateItem, TUpdateItem, TCreateResult, TUpdateResult>
+	public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
 		where TItem : class, IRemoteItem<TIdentifier>
 		where TSlimItem : class, IRemoteItem<TIdentifier>
 		where TUpdateItem : class, IRemoteItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
+		where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	{
 		/// <summary>
 		/// Gets the API URL.
@@ -56,7 +58,7 @@ namespace Umbrella.DataAccess.Remote
 		protected IGenericHttpServiceUtility HttpServiceUtility { get; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="GenericRemoteRepository{TItem, TIdentifier, TSlimItem, TCreateItem, TUpdateItem, TCreateResult, TUpdateResult}"/> class.
+		/// Initializes a new instance of the <see cref="GenericRemoteRepository{TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult}"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="httpService">The HTTP service.</param>
@@ -86,7 +88,7 @@ namespace Umbrella.DataAccess.Remote
 
 				IHttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
-				if (result.Success)
+				if (result.Success && result.Result is not null)
 					await AfterItemLoadedAsync(result.Result, cancellationToken).ConfigureAwait(false);
 
 				return result;
@@ -98,7 +100,7 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<PaginatedResultModel<TSlimItem>>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public virtual async Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -106,9 +108,9 @@ namespace Umbrella.DataAccess.Remote
 			{
 				var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
 
-				IHttpCallResult<PaginatedResultModel<TSlimItem>> result = await RemoteService.GetAsync<PaginatedResultModel<TSlimItem>>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult<TPaginatedResultModel> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
 
-				if (result.Success)
+				if (result.Success && result.Result is not null)
 					await AfterAllItemsLoadedAsync(result.Result.Items, cancellationToken).ConfigureAwait(false);
 
 				return result;
@@ -184,7 +186,7 @@ namespace Umbrella.DataAccess.Remote
 
 			try
 			{
-				if (item.Id.Equals(default))
+				if (item.Id.Equals(default!))
 					throw new Exception("The item being updated must have an Id");
 
 				return await SaveCoreAsync<TUpdateItem, TUpdateResult>(HttpMethod.Put, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
@@ -240,15 +242,18 @@ namespace Umbrella.DataAccess.Remote
 		/// <returns>The result of the save operation.</returns>
 		protected virtual async Task<(IHttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, CancellationToken cancellationToken, bool sanitize, bool validate)
 		{
-			if (sanitize)
-				await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
-
-			if (validate)
+			if (item is not null)
 			{
-				var (isValid, results) = await ValidateItemAsync(item, cancellationToken).ConfigureAwait(false);
+				if (sanitize)
+					await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
 
-				if (!isValid)
-					return (new HttpCallResult<TResult>(false), results);
+				if (validate)
+				{
+					var (isValid, results) = await ValidateItemAsync(item, cancellationToken).ConfigureAwait(false);
+
+					if (!isValid)
+						return (new HttpCallResult<TResult>(false), results);
+				}
 			}
 
 			IHttpCallResult<TResult> result = method switch
@@ -258,7 +263,7 @@ namespace Umbrella.DataAccess.Remote
 				_ => throw new NotSupportedException()
 			};
 
-			if (result.Success)
+			if (result.Success && item is not null)
 				await AfterItemSavedAsync(item, cancellationToken).ConfigureAwait(false);
 			else if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
 				throw new UmbrellaDataAccessConcurrencyException("The server has reported a concurrency stamp mismatch.");

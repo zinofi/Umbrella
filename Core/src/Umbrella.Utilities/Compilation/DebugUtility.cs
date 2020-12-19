@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("Umbrella.AspNetCore.WebUtilities")]
 [assembly: InternalsVisibleTo("Umbrella.AspNetCore.DynamicImage")]
@@ -13,11 +9,11 @@ using System.Threading.Tasks;
 [assembly: InternalsVisibleTo("Umbrella.FileSystem.Test")]
 namespace Umbrella.Utilities.Compilation
 {
-    /// <summary>
-    /// This is an internal class used only for the purposes of debugging the library projects. Exposing this for use outside
-    /// of these projects would be pointless once the libraries have been compiled in release mode.
-    /// </summary>
-    internal static class DebugUtility
+	/// <summary>
+	/// This is an internal class used only for the purposes of debugging the library projects. Exposing this for use outside
+	/// of these projects would be pointless once the libraries have been compiled in release mode.
+	/// </summary>
+	internal static class DebugUtility
     {
         public static bool IsDebug
         {
@@ -59,16 +55,10 @@ namespace Umbrella.Utilities.Compilation
             }
         }
 
-        [Conditional("DEBUG")]
-        private static void IAmDebug(ref bool isDebugMode)
-        {
-            isDebugMode = true;
-        }
+		[Conditional("DEBUG")]
+		private static void IAmDebug(ref bool isDebugMode) => isDebugMode = true;
 
-        [Conditional("AZUREDEVOPS")]
-        private static void IAmAzureDevOps(ref bool isAzureDevOps)
-        {
-            isAzureDevOps = true;
-        }
-    }
+		[Conditional("AZUREDEVOPS")]
+		private static void IAmAzureDevOps(ref bool isAzureDevOps) => isAzureDevOps = true;
+	}
 }

@@ -32,7 +32,7 @@ namespace Umbrella.FileSystem.Test
 #endif
 
 		private const string TestFileName = "aspnet-mvc-logo.png";
-		private static string s_BaseDirectory;
+		private static string? s_BaseDirectory;
 
 		private static string BaseDirectory
 		{
@@ -167,14 +167,14 @@ namespace Umbrella.FileSystem.Test
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 			//Get the file
-			IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{TestFileName}");
+			IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName}");
 
 			Assert.NotNull(retrievedFile);
 
-			CheckWrittenFileAssertions(provider, retrievedFile, bytes.Length, TestFileName);
+			CheckWrittenFileAssertions(provider, retrievedFile!, bytes.Length, TestFileName);
 
 			await file.ReadAsByteArrayAsync();
-			Assert.Equal(bytes.Length, retrievedFile.Length);
+			Assert.Equal(bytes.Length, retrievedFile!.Length);
 
 			//Cleanup
 			await provider.DeleteAsync(file);
@@ -199,14 +199,14 @@ namespace Umbrella.FileSystem.Test
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 			// Get the file but with a different casing
-			IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{TestFileName.ToUpperInvariant()}");
+			IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName.ToUpperInvariant()}");
 
 			Assert.NotNull(retrievedFile);
 
-			CheckWrittenFileAssertions(provider, retrievedFile, bytes.Length, TestFileName);
+			CheckWrittenFileAssertions(provider, retrievedFile!, bytes.Length, TestFileName);
 
 			await file.ReadAsByteArrayAsync();
-			Assert.Equal(bytes.Length, retrievedFile.Length);
+			Assert.Equal(bytes.Length, retrievedFile!.Length);
 
 			//Cleanup
 			await provider.DeleteAsync(file);
@@ -262,11 +262,11 @@ namespace Umbrella.FileSystem.Test
 			CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 			//Get the file
-			IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/{TestFileName}");
+			IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName}");
 
 			Assert.NotNull(retrievedFile);
 
-			CheckWrittenFileAssertions(provider, retrievedFile, bytes.Length, TestFileName);
+			CheckWrittenFileAssertions(provider, retrievedFile!, bytes.Length, TestFileName);
 
 			byte[] retrievedBytes;
 
@@ -288,7 +288,7 @@ namespace Umbrella.FileSystem.Test
 		{
 			var provider = providerFunc();
 
-			IUmbrellaFileInfo retrievedFile = await provider.GetAsync($"/images/doesnotexist.jpg");
+			IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/doesnotexist.jpg");
 
 			Assert.Null(retrievedFile);
 		}
@@ -304,10 +304,10 @@ namespace Umbrella.FileSystem.Test
 
 			Assert.True(file.IsNew);
 
-			file = await provider.GetAsync(path);
+			IUmbrellaFileInfo? reloadedFile = await provider.GetAsync(path);
 
-			//Should fail as not writing to the file won't push it to blob storage
-			Assert.Null(file);
+			// Should fail as not writing to the file won't push it to blob storage
+			Assert.Null(reloadedFile);
 		}
 
 		[Theory]
@@ -369,13 +369,15 @@ namespace Umbrella.FileSystem.Test
 
 			string subpath = $"/images/{TestFileName}";
 
-			var fileInfo = await provider.SaveAsync(subpath, bytes);
+			IUmbrellaFileInfo fileInfo = await provider.SaveAsync(subpath, bytes);
 
 			CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, TestFileName);
 
-			fileInfo = await provider.GetAsync(subpath);
+			IUmbrellaFileInfo? reloadedFileInfo = await provider.GetAsync(subpath);
 
-			CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, TestFileName);
+			Assert.NotNull(reloadedFileInfo);
+
+			CheckWrittenFileAssertions(provider, reloadedFileInfo!, bytes.Length, TestFileName);
 
 			//Cleanup
 			bool deleted = await provider.DeleteAsync(subpath);
@@ -400,9 +402,11 @@ namespace Umbrella.FileSystem.Test
 
 			CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, TestFileName);
 
-			fileInfo = await provider.GetAsync(subpath);
+			IUmbrellaFileInfo? reloadedFileInfo = await provider.GetAsync(subpath);
 
-			CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, TestFileName);
+			Assert.NotNull(reloadedFileInfo);
+
+			CheckWrittenFileAssertions(provider, reloadedFileInfo!, (int)stream.Length, TestFileName);
 
 			//Cleanup
 			bool deleted = await provider.DeleteAsync(subpath);
@@ -1139,14 +1143,15 @@ namespace Umbrella.FileSystem.Test
 			await file.SetMetadataValueAsync("LastName", "Edwards");
 
 			// Assert
-			file = await provider.GetAsync(subpath);
+			IUmbrellaFileInfo? savedFile = await provider.GetAsync(subpath);
 
-			Assert.False(file.IsNew);
+			Assert.NotNull(savedFile);
+			Assert.False(savedFile!.IsNew);
 			Assert.Equal("Richard", await file.GetMetadataValueAsync<string>("FirstName"));
 			Assert.Equal("Edwards", await file.GetMetadataValueAsync<string>("LastName"));
 
 			// Cleanup
-			await provider.DeleteAsync(file);
+			await provider.DeleteAsync(savedFile);
 		}
 
 		[Theory]
@@ -1276,10 +1281,12 @@ namespace Umbrella.FileSystem.Test
 			await file.WriteMetadataChangesAsync();
 
 			// Reload the file
-			var reloadedFile = await provider.GetAsync(subpath);
+			IUmbrellaFileInfo? reloadedFile = await provider.GetAsync(subpath);
+
+			Assert.NotNull(reloadedFile);
 
 			// Write without loading first
-			await reloadedFile.WriteMetadataChangesAsync();
+			await reloadedFile!.WriteMetadataChangesAsync();
 
 			string metaName = await reloadedFile.GetMetadataValueAsync<string>("Name");
 			string metaDescription = await reloadedFile.GetMetadataValueAsync<string>("Description");
@@ -1327,7 +1334,7 @@ namespace Umbrella.FileSystem.Test
 			CheckPOCOFileType(provider, file);
 			Assert.False(file.IsNew);
 			Assert.Equal(length, file.Length);
-			Assert.Equal(DateTimeOffset.UtcNow.Date, file.LastModified.Value.UtcDateTime.Date);
+			Assert.Equal(DateTimeOffset.UtcNow.Date, file.LastModified!.Value.UtcDateTime.Date);
 			Assert.Equal(fileName, file.Name);
 			Assert.Equal("image/png", file.ContentType);
 		}

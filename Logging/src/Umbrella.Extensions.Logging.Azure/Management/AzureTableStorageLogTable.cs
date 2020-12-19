@@ -1,12 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Umbrella.Extensions.Logging.Azure.Management
 {
-    public class AzureTableStorageLogTable
+	/// <summary>
+	/// Represents a log table stored in Azure Table Storage.
+	/// </summary>
+	public class AzureTableStorageLogTable
     {
-        public DateTime Date { get; set; }
-        public string Name { get; set; }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AzureTableStorageLogTable"/> class.
+		/// </summary>
+		/// <param name="date">The date.</param>
+		/// <param name="name">The name.</param>
+		public AzureTableStorageLogTable(DateTime date, string name)
+		{
+			Date = date;
+			Name = name;
+		}
+
+		/// <summary>
+		/// Gets the date.
+		/// </summary>
+		public DateTime Date { get; }
+
+		/// <summary>
+		/// Gets the name.
+		/// </summary>
+		public string Name { get; }
     }
 }

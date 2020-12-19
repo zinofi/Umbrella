@@ -22,7 +22,7 @@ namespace Umbrella.WebUtilities.Bundling.Abstractions
 		/// <param name="bundleNameOrPath">The bundle name or path.</param>
 		/// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
 		/// <returns>The bundle content.</returns>
-		Task<string> GetScriptContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default);
+		Task<string?> GetScriptContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Gets the path to the named css bundle or path.
@@ -38,6 +38,6 @@ namespace Umbrella.WebUtilities.Bundling.Abstractions
 		/// <param name="bundleNameOrPath">The bundle name or path.</param>
 		/// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
 		/// <returns>The bundle content.</returns>
-		Task<string> GetStyleSheetContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default);
+		Task<string?> GetStyleSheetContentAsync(string bundleNameOrPath, CancellationToken cancellationToken = default);
 	}
 }

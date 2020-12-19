@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Web.UI;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions
 {
-    public static class ControlExtensions
+	/// <summary>
+	/// Extension methods for use with the <see cref="Control"/> type.
+	/// </summary>
+	public static class ControlExtensions
     {
         #region Control Finders
         /// <summary>
@@ -15,15 +17,15 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="from"></param>
         /// <param name="predicate"></param>
-        /// <returns></returns>
-        public static T FindFirstControl<T>(this Control from, Predicate<T> predicate) where T : Control
+        /// <returns>The control to be found.</returns>
+        public static T? FindFirstControl<T>(this Control from, Predicate<T> predicate) where T : Control
         {
-            if (from is T && predicate(from as T))
-                return from as T;
+            if (from is T obj && predicate(obj))
+                return obj;
 
             foreach (Control idx in from.Controls)
             {
-                T tmpRetVal = idx.FindFirstControl<T>(predicate);
+                T? tmpRetVal = idx.FindFirstControl(predicate);
                 if (tmpRetVal != null)
                     return tmpRetVal;
             }
@@ -31,68 +33,71 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
             return null;
         }
 
-        /// <summary>
-        /// Recursively searches Control hierarchy for the first control that
-        /// matches the type of T and returns it as T
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="from"></param>
-        /// <returns></returns>
-        public static T FindFirstControl<T>(this Control from) where T : Control
-        {
-            return from.FindFirstControl<T>(x => x is T);
-        }
+		/// <summary>
+		/// Recursively searches Control hierarchy for the first control that
+		/// matches the type of T and returns it as T
+		/// </summary>
+		/// <typeparam name="T">The type of the control.</typeparam>
+		/// <param name="from"></param>
+		/// <returns>The control to be found.</returns>
+		public static T? FindFirstControl<T>(this Control from) where T : Control => from.FindFirstControl<T>(x => x is T);
 
-        /// <summary>
-        /// Recursively search Control hierarcy for ALL controls that
-        /// matches the given Predicate and returns them as T
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="from"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> FindControls<T>(this Control from, Predicate<T> predicate) where T : Control
+		/// <summary>
+		/// Recursively search Control hierarcy for ALL controls that
+		/// matches the given Predicate and returns them as T
+		/// </summary>
+		/// <typeparam name="T">The type of the control.</typeparam>
+		/// <param name="from"></param>
+		/// <param name="predicate"></param>
+		/// <returns>The controls.</returns>
+		public static IEnumerable<T> FindControls<T>(this Control from, Predicate<T> predicate) where T : Control
         {
-            if (from is T)
+            if (from is T obj)
             {
-                if (predicate(from as T))
-                    yield return from as T;
+                if (predicate(obj))
+                    yield return obj;
             }
 
             foreach (Control idx in from.Controls)
             {
-                foreach (T idxInner in idx.FindControls<T>(predicate))
+                foreach (T idxInner in idx.FindControls(predicate))
                 {
                     yield return idxInner;
                 }
             }
         }
 
-        /// <summary>
-        /// Recursively search Control hierarcy for ALL controls that
-        /// matches the type of T and returns them as T
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="from"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> FindControls<T>(this Control from) where T : Control
-        {
-            return from.FindControls<T>(x => x is T);
-        }
-        #endregion
+		/// <summary>
+		/// Recursively search Control hierarcy for ALL controls that
+		/// matches the type of T and returns them as T
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="from"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> FindControls<T>(this Control from) where T : Control => from.FindControls<T>(x => x is T);
+		#endregion
 
-        #region Utilities
-        public static string ToHtmlString(this Control ctrl)
-        {
-            return ctrl.ToStringBuilder().ToString();
-        }
+		#region Utilities		
+		/// <summary>
+		/// Renders the specified control to an HTML string.
+		/// </summary>
+		/// <param name="ctrl">The control.</param>
+		/// <returns>The HTML string.</returns>
+		public static string ToHtmlString(this Control ctrl) => ctrl.ToStringBuilder().ToString();
 
-        public static StringBuilder ToStringBuilder(this Control ctrl)
+		/// <summary>
+		/// Renders the HTML of the specified control to a <see cref="StringBuilder"/>
+		/// </summary>
+		/// <param name="ctrl">The control.</param>
+		/// <returns>The <see cref="StringBuilder"/> containing the HTML string.</returns>
+		public static StringBuilder ToStringBuilder(this Control ctrl)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            System.IO.StringWriter tw = new System.IO.StringWriter(sb);
-            System.Web.UI.HtmlTextWriter hw = new System.Web.UI.HtmlTextWriter(tw);
-            ctrl.RenderControl(hw);
+            var sb = new StringBuilder();
+            var tw = new System.IO.StringWriter(sb);
+            var hw = new HtmlTextWriter(tw);
+            
+			ctrl.RenderControl(hw);
+
             return sb;
         }
         #endregion

@@ -11,7 +11,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		/// <summary>
 		/// Gets or sets the property to sort on.
 		/// </summary>
-		public string SortProperty { get; set; }
+		public string? SortProperty { get; set; }
 
 		/// <summary>
 		/// Gets or sets the sort direction.
@@ -31,6 +31,6 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		/// <summary>
 		/// Gets or sets the filters.
 		/// </summary>
-		public Dictionary<string, string> Filters { get; set; }
+		public Dictionary<string, string>? Filters { get; set; }
 	}
 }

@@ -72,9 +72,9 @@ namespace Umbrella.AspNetCore.WebUtilities.FileSystem.Middleware
 					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
 					CancellationToken token = cts.Token;
 
-					IUmbrellaFileInfo fileInfo = await mapping.FileProviderMapping.FileProvider.GetAsync(path, token);
+					IUmbrellaFileInfo? fileInfo = await mapping.FileProviderMapping.FileProvider.GetAsync(path, token);
 
-					if (fileInfo == null)
+					if (fileInfo is null)
 					{
 						cts.Cancel();
 						context.Response.SendStatusCode(HttpStatusCode.NotFound);

@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Configuration
 
 				string? valueToStore = null;
 
-				if (value != null)
+				if (value is not null)
 				{
 					Type type = typeof(T);
 

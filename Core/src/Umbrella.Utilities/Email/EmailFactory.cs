@@ -21,7 +21,7 @@ namespace Umbrella.Utilities.Email
 	{
 		#region Private Static Members
 		private static readonly CultureInfo _cultureInfo = new CultureInfo("en-GB");
-		private static Dictionary<string, string> _emailTemplateDictionary;
+		private static Dictionary<string, string>? _emailTemplateDictionary;
 		#endregion
 
 		#region Private Members
@@ -59,7 +59,7 @@ namespace Umbrella.Utilities.Email
 
 			try
 			{
-				string absolutePath = _hostingEnvironment.MapPath(options.TemplatesVirtualPath);
+				string? absolutePath = _hostingEnvironment.MapPath(options.TemplatesVirtualPath);
 
 				var dicItems = new Dictionary<string, string>();
 
@@ -94,7 +94,7 @@ namespace Umbrella.Utilities.Email
 			{
 				var builder = isRawHtml
 						? new StringBuilder(source)
-						: new StringBuilder(_emailTemplateDictionary[_lookupNormalizer.Normalize(source)]);
+						: new StringBuilder(_emailTemplateDictionary![_lookupNormalizer.Normalize(source)]);
 
 				// Make sure the date is shown in the correct format for the current user
 				builder.Replace("{datetime}", DateTime.Now.ToString(_cultureInfo));

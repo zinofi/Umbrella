@@ -12,14 +12,14 @@ namespace Umbrella.DynamicImage.Abstractions
 	/// </summary>
 	public class DynamicImageItem
 	{
-		private DateTimeOffset _lastModified;
+		private DateTimeOffset? _lastModified;
 
 		/// <summary>
 		/// Gets or sets the last modified date
 		/// </summary>
-		public DateTimeOffset LastModified
+		public DateTimeOffset? LastModified
 		{
-			get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified.Value : _lastModified;
+			get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified : _lastModified;
 			set => _lastModified = value;
 		}
 
@@ -36,23 +36,23 @@ namespace Umbrella.DynamicImage.Abstractions
 		/// <summary>
 		/// Gets or sets the content.
 		/// </summary>
-		public byte[] Content { private get; set; }
+		public byte[]? Content { private get; set; }
 
 		/// <summary>
 		/// Gets or sets the <see cref="IUmbrellaFileInfo"/> instance.
 		/// </summary>
-		public IUmbrellaFileInfo UmbrellaFileInfo { get; set; }
+		public IUmbrellaFileInfo? UmbrellaFileInfo { get; set; }
 
 		/// <summary>
 		/// Gets the content of the image file.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The image file content.</returns>
-		public async Task<byte[]> GetContentAsync(CancellationToken cancellationToken = default)
+		public async Task<byte[]?> GetContentAsync(CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			if (Content == null && UmbrellaFileInfo != null)
+			if (Content is null && UmbrellaFileInfo is not null)
 				Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
 
 			return Content;
@@ -70,10 +70,13 @@ namespace Umbrella.DynamicImage.Abstractions
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(target, nameof(target));
 
-			if (Content == null && UmbrellaFileInfo != null)
+			if (Content is null && UmbrellaFileInfo is not null)
 				return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
 
-			return target.WriteAsync(Content, 0, Content.Length);
+			if(Content is not null)
+				return target.WriteAsync(Content, 0, Content.Length);
+
+			return Task.CompletedTask;
 		}
 	}
 }

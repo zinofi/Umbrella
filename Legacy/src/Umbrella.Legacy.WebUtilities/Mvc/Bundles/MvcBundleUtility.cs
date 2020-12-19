@@ -15,6 +15,14 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 {
 	public class MvcBundleUtility : MvcBundleUtility<IBundleUtility, BundleUtilityOptions>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MvcBundleUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="hybridCache">The hybrid cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="bundleUtility">The bundle utility.</param>
+		/// <param name="options">The options.</param>
 		public MvcBundleUtility(
 			ILogger<MvcBundleUtility> logger,
 			IHybridCache hybridCache,
@@ -30,12 +38,39 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 		where TBundleUtility : IBundleUtility
 		where TOptions : BundleUtilityOptions
 	{
+		/// <summary>
+		/// Gets the log.
+		/// </summary>
 		protected ILogger Log { get; }
+
+		/// <summary>
+		/// Gets the cache.
+		/// </summary>
 		protected IHybridCache Cache { get; }
+
+		/// <summary>
+		/// Gets the cache key utility.
+		/// </summary>
 		protected ICacheKeyUtility CacheKeyUtility { get; }
+
+		/// <summary>
+		/// Gets the bundle utility.
+		/// </summary>
 		protected TBundleUtility BundleUtility { get; }
+
+		/// <summary>
+		/// Gets the options.
+		/// </summary>
 		protected TOptions Options { get; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MvcBundleUtility{TBundleUtility, TOptions}"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="hybridCache">The hybrid cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="bundleUtility">The bundle utility.</param>
+		/// <param name="options">The options.</param>
 		public MvcBundleUtility(
 			ILogger<MvcBundleUtility> logger,
 			IHybridCache hybridCache,
@@ -50,7 +85,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 			Options = options;
 		}
 
-		public virtual MvcHtmlString GetScript(string bundleName)
+		/// <inheritdoc />
+		public virtual MvcHtmlString? GetScript(string bundleName)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(bundleName, nameof(bundleName));
 
@@ -73,7 +109,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 			}
 		}
 
-		public virtual MvcHtmlString GetScriptInline(string bundleName)
+		/// <inheritdoc />
+		public virtual MvcHtmlString? GetScriptInline(string bundleName)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(bundleName, nameof(bundleName));
 
@@ -84,7 +121,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 				return Cache.GetOrCreate(cacheKey,
 					() =>
 					{
-						string content = BundleUtility.GetScriptContentAsync(bundleName).Result;
+						string? content = BundleUtility.GetScriptContentAsync(bundleName).Result;
 
 						if (string.IsNullOrWhiteSpace(content))
 							return null;
@@ -105,7 +142,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 			}
 		}
 
-		public virtual MvcHtmlString GetStyleSheet(string bundleName)
+		/// <inheritdoc />
+		public virtual MvcHtmlString? GetStyleSheet(string bundleName)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(bundleName, nameof(bundleName));
 
@@ -128,7 +166,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 			}
 		}
 
-		public virtual MvcHtmlString GetStyleSheetInline(string bundleName)
+		/// <inheritdoc />
+		public virtual MvcHtmlString? GetStyleSheetInline(string bundleName)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(bundleName, nameof(bundleName));
 
@@ -139,7 +178,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 				return Cache.GetOrCreate(cacheKey,
 					() =>
 					{
-						string content = BundleUtility.GetStyleSheetContentAsync(bundleName).Result;
+						string? content = BundleUtility.GetStyleSheetContentAsync(bundleName).Result;
 
 						if (string.IsNullOrWhiteSpace(content))
 							return null;

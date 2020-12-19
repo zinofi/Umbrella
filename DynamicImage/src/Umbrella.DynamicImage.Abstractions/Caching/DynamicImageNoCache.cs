@@ -16,8 +16,8 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 			=> Task.CompletedTask;
 
 		/// <inheritdoc />
-		public Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
-			=> Task.FromResult<DynamicImageItem>(null);
+		public Task<DynamicImageItem?> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
+			=> Task.FromResult<DynamicImageItem?>(null);
 
 		/// <inheritdoc />
 		public Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)

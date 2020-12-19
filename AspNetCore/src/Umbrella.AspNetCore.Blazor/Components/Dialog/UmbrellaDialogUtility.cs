@@ -12,6 +12,10 @@ using Umbrella.AspNetCore.Blazor.Exceptions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 {
+	/// <summary>
+	/// Used to show dialogs in Blazor applications.
+	/// </summary>
+	/// <seealso cref="IUmbrellaDialogUtility" />
 	public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	{
 		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultMessageButtons = new[]

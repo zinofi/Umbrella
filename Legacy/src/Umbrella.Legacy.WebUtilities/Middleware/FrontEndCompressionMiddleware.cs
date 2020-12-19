@@ -32,7 +32,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 	{
 		#region Private Static Members
 		private static readonly char[] _headerValueSplitters = new[] { ',' };
-		private static readonly ConcurrentDictionary<string, IFileInfo> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo>();
+		private static readonly ConcurrentDictionary<string, IFileInfo?> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo?>();
 		#endregion
 
 		#region Private Members
@@ -97,7 +97,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			{
 				string path = context.Request.Path.Value.Trim();
 
-				FrontEndCompressionMiddlewareMapping mapping = _options.GetMapping(path);
+				FrontEndCompressionMiddlewareMapping? mapping = _options.GetMapping(path);
 
 				if (mapping == null)
 				{
@@ -111,9 +111,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;
 
-					IFileInfo fileInfo = GetFileInfo(path, mapping.WatchFiles);
+					IFileInfo? fileInfo = GetFileInfo(path, mapping.WatchFiles);
 
-					if (fileInfo == null)
+					if (fileInfo is null)
 					{
 						cts.Cancel();
 						context.Response.SendStatusCode(HttpStatusCode.NotFound);
@@ -177,7 +177,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						context.Response.Headers["Cache-Control"] = MiddlewareHttpCacheability.NoStore.ToCacheControlString();
 					}
 
-					byte[] bytes = null;
+					byte[]? bytes = null;
 
 					if (mapping.CompressionEnabled && context.Request.Headers.TryGetValue(_options.AcceptEncodingHeaderKey, out string[] encodingValues))
 					{
@@ -204,7 +204,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						_options.AcceptEncodingModifier?.Invoke(context.Request.Headers.ToDictionary(x => x.Key, x => x.Value.AsEnumerable()), lstEncodingValue);
 
 						string flattenedEncodingHeaders = string.Join(", ", lstEncodingValue).ToUpperInvariant();
-						string[] cacheKeyParts = null;
+						string[]? cacheKeyParts = null;
 
 						try
 						{
@@ -216,7 +216,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 							(string contentEncoding, byte[] bytes) result = await _cache.GetOrCreateAsync(cacheKey, async () =>
 							{
-								string contentEncoding = null;
+								string? contentEncoding = null;
 
 								using Stream fs = fileInfo.CreateReadStream();
 								using var ms = new MemoryStream();
@@ -347,9 +347,9 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		#endregion
 
 		#region Private Methods
-		private IFileInfo GetFileInfo(string path, bool watchFiles)
+		private IFileInfo? GetFileInfo(string path, bool watchFiles)
 		{
-			IFileInfo LoadFileInfo()
+			IFileInfo? LoadFileInfo()
 			{
 				IFileInfo fileInfo = FileProvider.GetFileInfo(path);
 

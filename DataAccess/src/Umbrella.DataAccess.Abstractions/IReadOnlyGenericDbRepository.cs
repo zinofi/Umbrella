@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.DataAccess.Abstractions
@@ -51,12 +52,8 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child repo options.</param>
-		/// <returns>
-		/// A tuple containing a collection of the results together with the total count of all entities in the database that match
-		/// the <paramref name="filterExpressions"/> and <paramref name="sortExpressions"/> where pagination is being used
-		/// in order to determine if more results are available in the database.
-		/// </returns>
-		Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, IEnumerable<SortExpression<TEntity>> sortExpressions = null, IEnumerable<FilterExpression<TEntity>> filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null);
+		/// <returns>The paginated results.</returns>
+		Task<PaginatedResultModel<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, IEnumerable<SortExpression<TEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
 
 		/// <summary>
 		/// Finds an entity in the database using its id.
@@ -68,7 +65,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child repo options.</param>
 		/// <returns>The entity.</returns>
-		Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null, TRepoOptions repoOptions = null, IEnumerable<RepoOptions> childOptions = null);
+		Task<TEntity?> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
 
 		/// <summary>
 		/// Finds the total count of all <typeparamref name="TEntity"/> entities in the database.

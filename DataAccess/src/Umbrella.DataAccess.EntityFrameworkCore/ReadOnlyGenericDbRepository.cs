@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EntityFrameworkCore.Extensions;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
@@ -165,7 +163,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <summary>
 		/// Gets the current user identifier.
 		/// </summary>
-		protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
+		protected TUserAuditKey? CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
 
 		/// <summary>
 		/// Gets the current user identifier accessor.
@@ -197,53 +195,79 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 		#region IReadOnlyGenericRepository Members
 		/// <inheritdoc />
-		public virtual async Task<(IReadOnlyCollection<TEntity> results, int totalCount)> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity> map = null!, IEnumerable<SortExpression<TEntity>> sortExpressions = null!, IEnumerable<FilterExpression<TEntity>> filterExpressions = null!, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+		public virtual async Task<PaginatedResultModel<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null!, IEnumerable<SortExpression<TEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
-			repoOptions ??= DefaultRepoOptions;
 
 			try
 			{
-				ValidateFilters(filterExpressions);
-
-				var filteredQuery = Items.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator);
-
-				// TODO: It would seem the need for 2 db calls has been rectified by the EF Core team. Investigate!
-				// SO: https://stackoverflow.com/questions/7767409/better-way-to-query-a-page-of-data-and-get-total-count-in-entity-framework-4-1
-				//var results = query.OrderBy(p => p.Name)
-				//   .Select(p => new
-				//   {
-				//	   Person = new PersonResult { Name = p.Name },
-				//	   TotalCount = query.Count()
-				//   })
-				//   .Skip(skipRows).Take(pageSize)
-				//   .ToArray(); // query is executed once, here
-
-				//var totalCount = results.First().TotalCount;
-				//var people = results.Select(r => r.Person).ToArray();
-
-				int totalCount = await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
-				List<TEntity> entities = await filteredQuery
-					.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
-					.ApplyPagination(pageNumber, pageSize)
-					.TrackChanges(trackChanges)
-					.IncludeMap(map)
-					.ToListAsync(cancellationToken)
-					.ConfigureAwait(false);
-
-				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
-				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
-
-				return (entities, totalCount);
+				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions.ToSortExpressionDescriptors(), filterExpressions = filterExpressions.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
+			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
 		}
 
+		/// <summary>
+		/// Finds all entities using the specified parameters.
+		/// </summary>
+		/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
+		/// <param name="pageSize">Size of the page.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="trackChanges">if set to <c>true</c>, tracking entries are created in the database context (where supported).</param>
+		/// <param name="map">The include map to specify related entities to load at the same time.</param>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <param name="filterExpressions">The filter expressions.</param>
+		/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
+		/// <param name="repoOptions">The repo options.</param>
+		/// <param name="childOptions">The child repo options.</param>
+		/// <param name="filterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> are applied.</param>
+		/// <returns>The paginated results.</returns>
+		protected virtual async Task<PaginatedResultModel<TEntity>> FindAllCoreAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null!, IEnumerable<SortExpression<TEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, Expression<Func<TEntity, bool>>? filterExpression = null)
+		{
+			repoOptions ??= DefaultRepoOptions;
+
+			ValidateFilters(filterExpressions);
+
+			var filteredQuery = Items;
+
+			if (filterExpression is not null)
+				filteredQuery = filteredQuery.Where(filterExpression);
+
+			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator);
+
+			// TODO: It would seem the need for 2 db calls has been rectified by the EF Core team. Investigate!
+			// SO: https://stackoverflow.com/questions/7767409/better-way-to-query-a-page-of-data-and-get-total-count-in-entity-framework-4-1
+			//var results = query.OrderBy(p => p.Name)
+			//   .Select(p => new
+			//   {
+			//	   Person = new PersonResult { Name = p.Name },
+			//	   TotalCount = query.Count()
+			//   })
+			//   .Skip(skipRows).Take(pageSize)
+			//   .ToArray(); // query is executed once, here
+
+			//var totalCount = results.First().TotalCount;
+			//var people = results.Select(r => r.Person).ToArray();
+
+			int totalCount = await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
+			List<TEntity> entities = await filteredQuery
+				.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
+				.ApplyPagination(pageNumber, pageSize)
+				.TrackChanges(trackChanges)
+				.IncludeMap(map)
+				.ToListAsync(cancellationToken)
+				.ConfigureAwait(false);
+
+			await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
+			await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+
+			return new PaginatedResultModel<TEntity>(entities, pageNumber, pageSize, totalCount);
+		}
+
 		/// <inheritdoc />
-		public virtual async Task<TEntity> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+		public virtual async Task<TEntity?> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			repoOptions ??= DefaultRepoOptions;
@@ -252,11 +276,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			{
 				var entity = await Items.TrackChanges(trackChanges).IncludeMap(map).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 
-				if (entity == null)
-					return null!;
+				if (entity is null)
+					return null;
 
 				await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-
 				await AfterItemLoadedAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				return entity;
@@ -323,7 +346,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// </summary>
 		/// <param name="filters">The filters.</param>
 		/// <returns><see langword="true"/> if they are all valid; otherwise <see langword="false"/>.</returns>
-		protected virtual bool ValidateFilters(IEnumerable<FilterExpression<TEntity>> filters)
+		protected virtual bool ValidateFilters(IEnumerable<FilterExpression<TEntity>>? filters)
 		{
 			if (filters is null || _validFilterPaths is null)
 				return true;

@@ -14,14 +14,14 @@ namespace Umbrella.FileSystem.Disk
 	/// <summary>
 	/// An implementation of <see cref="IUmbrellaFileInfo"/> that uses the physical disk as the underlying storage mechanism.
 	/// </summary>
-	/// <seealso cref="Umbrella.FileSystem.Abstractions.IUmbrellaFileInfo" />
-	/// <seealso cref="T:System.IEquatable{Umbrella.FileSystem.Disk.UmbrellaDiskFileInfo}" />
+	/// <seealso cref="IUmbrellaFileInfo" />
+	/// <seealso cref="IEquatable{UmbrellaDiskFileInfo}" />
 	public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFileInfo>
 	{
 		#region Private Members
 		private readonly string _metadataFullFileName;
-		private byte[] m_Contents;
-		private Dictionary<string, string> _metadataDictionary;
+		private byte[]? m_Contents;
+		private Dictionary<string, string>? _metadataDictionary;
 		#endregion
 
 		#region Protected Properties		
@@ -371,7 +371,7 @@ namespace Umbrella.FileSystem.Disk
 		}
 
 		/// <inheritdoc />
-		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null)
+		public async Task<T?> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T?>? customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
@@ -379,12 +379,17 @@ namespace Umbrella.FileSystem.Disk
 
 			try
 			{
-				if (_metadataDictionary == null)
+				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				_metadataDictionary.TryGetValue(key, out string rawValue);
+				if (_metadataDictionary is not null)
+				{
+					_metadataDictionary.TryGetValue(key, out string rawValue);
 
-				return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter);
+					return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter);
+				}
+
+				return default;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
 			{
@@ -401,20 +406,23 @@ namespace Umbrella.FileSystem.Disk
 
 			try
 			{
-				if (_metadataDictionary == null)
+				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				if (value == null)
+				if (_metadataDictionary is not null)
 				{
-					_metadataDictionary.Remove(key);
-				}
-				else
-				{
-					_metadataDictionary[key] = value.ToString();
-				}
+					if (value is null)
+					{
+						_metadataDictionary.Remove(key);
+					}
+					else
+					{
+						_metadataDictionary[key] = value.ToString();
+					}
 
-				if (writeChanges)
-					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+					if (writeChanges)
+						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
 			{
@@ -431,13 +439,16 @@ namespace Umbrella.FileSystem.Disk
 
 			try
 			{
-				if (_metadataDictionary == null)
+				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				_metadataDictionary.Remove(key);
+				if (_metadataDictionary is not null)
+				{
+					_metadataDictionary.Remove(key);
 
-				if (writeChanges)
-					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+					if (writeChanges)
+						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, writeChanges }, returnValue: true))
 			{
@@ -453,13 +464,16 @@ namespace Umbrella.FileSystem.Disk
 
 			try
 			{
-				if (_metadataDictionary == null)
+				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				_metadataDictionary.Clear();
+				if (_metadataDictionary is not null)
+				{
+					_metadataDictionary.Clear();
 
-				if (writeChanges)
-					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+					if (writeChanges)
+						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { writeChanges }, returnValue: true))
 			{
@@ -508,8 +522,8 @@ namespace Umbrella.FileSystem.Disk
 		/// <returns>
 		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
 		/// </returns>
-		public bool Equals(UmbrellaDiskFileInfo other)
-			=> other != null &&
+		public bool Equals(UmbrellaDiskFileInfo? other)
+			=> other is not null &&
 				IsNew == other.IsNew &&
 				Name == other.Name &&
 				SubPath == other.SubPath &&
@@ -578,7 +592,7 @@ namespace Umbrella.FileSystem.Disk
 
 			try
 			{
-				string json = null;
+				string? json = null;
 
 				if (!File.Exists(_metadataFullFileName))
 				{

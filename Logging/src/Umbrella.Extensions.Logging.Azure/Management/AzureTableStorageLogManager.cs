@@ -28,10 +28,18 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		#region Private Inner Classes
 		private class LogEntryMetaData
 		{
-			public string PartitionKey { get; set; }
-			public string RowKey { get; set; }
-			public DateTime EventTimeStamp { get; set; }
-			public string Level { get; set; }
+			public LogEntryMetaData(string partitionKey, string rowKey, DateTime? eventTimeStamp, string level)
+			{
+				PartitionKey = partitionKey;
+				RowKey = rowKey;
+				EventTimeStamp = eventTimeStamp;
+				Level = level;
+			}
+
+			public string PartitionKey { get; }
+			public string RowKey { get; }
+			public DateTime? EventTimeStamp { get; }
+			public string Level { get; }
 		}
 		#endregion
 
@@ -152,12 +160,12 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 				int totalCount = lstDataSource.Count();
 
 				//Apply sorting - always default
-				string sortBy = options.SortProperty;
+				string? sortBy = options.SortProperty;
 
 				if (string.IsNullOrWhiteSpace(sortBy))
 					sortBy = nameof(AzureTableStorageLogDataSource.CategoryName);
 
-				sortBy = Normalize(sortBy);
+				sortBy = Normalize(sortBy!);
 
 				if (sortBy == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.AppenderType)])
 					lstDataSource = lstDataSource.OrderBySortDirection(x => x.AppenderType, options.SortDirection);
@@ -193,14 +201,14 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 			try
 			{
 				//Using the DistributedCache to store the table models so that changes are reflected globally
-				(IEnumerable<AzureTableStorageLogTable> cacheItem, UmbrellaDistributedCacheException exception) = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async () =>
+				(IEnumerable<AzureTableStorageLogTable>? cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(GenerateCacheKey(tablePrefix), async () =>
 				{
 					cancellationToken.ThrowIfCancellationRequested();
 
 					CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
 
-					TableContinuationToken continuationToken = null;
-					TableResultSegment resultSegment = null;
+					TableContinuationToken? continuationToken = null;
+					TableResultSegment? resultSegment = null;
 
 					var hsResult = new HashSet<CloudTable>(s_CloudTableEqualityComparer);
 
@@ -228,21 +236,16 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 					hsResult.AsParallel().ForAll(x =>
 					{
 						//The date is stored as part of the table name in the format {tablePrefix}xxxxxx{yyyy}x{mm}x{dd}, e.g. CostsBudgITPortalServerxxxxxx2016-09-27
-						string[] strDateParts = x.Name.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1)?.Split('x');
+						string[]? strDateParts = x.Name.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1)?.Split('x');
 
-						if (strDateParts.Length == 3)
+						if (strDateParts?.Length == 3)
 						{
 							int year = int.Parse(strDateParts[0]);
 							int month = int.Parse(strDateParts[1]);
 							int day = int.Parse(strDateParts[2]);
 
 							var dtDate = new DateTime(year, month, day);
-
-							var tableModel = new AzureTableStorageLogTable
-							{
-								Date = dtDate,
-								Name = x.Name
-							};
+							var tableModel = new AzureTableStorageLogTable(dtDate, x.Name);
 
 							cbTableModel.Add(tableModel);
 						}
@@ -253,16 +256,16 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 				int totalCount = cacheItem?.Count() ?? 0;
 
-				if (totalCount == 0)
+				if (cacheItem is null || totalCount is 0)
 					return (new List<AzureTableStorageLogTable>(), 0);
 
 				//Apply sorting - always default
-				string sortBy = options.SortProperty;
+				string? sortBy = options.SortProperty;
 
 				if (string.IsNullOrWhiteSpace(sortBy))
 					sortBy = nameof(AzureTableStorageLogTable.Date);
 
-				sortBy = Normalize(sortBy);
+				sortBy = Normalize(sortBy!);
 
 				if (sortBy == s_NormalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Date)])
 					cacheItem = cacheItem.OrderBySortDirection(x => x.Date, options.SortDirection);
@@ -311,8 +314,8 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 				bool cacheFirstBuild = false;
 				string cacheKey = GenerateCacheKey(tableName);
-				TableContinuationToken continuationToken = null;
-				TableQuerySegment<DynamicTableEntity> querySegment = null;
+				TableContinuationToken? continuationToken = null;
+				TableQuerySegment<DynamicTableEntity>? querySegment = null;
 
 				//Try and get existing cache items - if there are none build the cache
 				List<LogEntryMetaData> lstMetaData = await MemoryCache.GetOrCreateAsync(cacheKey, async cacheEntry =>
@@ -327,15 +330,9 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 					{
 						querySegment = await table.ExecuteQuerySegmentedAsync(cacheQuery, continuationToken, cancellationToken).ConfigureAwait(false);
 
-						foreach (var entity in querySegment.Results)
+						foreach (DynamicTableEntity entity in querySegment.Results)
 						{
-							var result = new LogEntryMetaData
-							{
-								PartitionKey = entity.PartitionKey,
-								RowKey = entity.RowKey,
-								EventTimeStamp = entity[nameof(LogEntryMetaData.EventTimeStamp)].DateTime.Value,
-								Level = entity[nameof(LogEntryMetaData.Level)].StringValue
-							};
+							var result = new LogEntryMetaData(entity.PartitionKey, entity.RowKey, entity[nameof(LogEntryMetaData.EventTimeStamp)].DateTime, entity[nameof(LogEntryMetaData.Level)].StringValue);
 
 							lstResult.Add(result);
 						}
@@ -352,7 +349,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 					//Check ATS for any new rows added since the cache was populated but only if
 					//we haven't just populated the cache in this request.
 					//Get the last item in the cache
-					LogEntryMetaData entry = lstMetaData?.LastOrDefault();
+					LogEntryMetaData? entry = lstMetaData.LastOrDefault();
 
 					if (entry != null)
 					{
@@ -370,13 +367,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 
 							foreach (var entity in querySegment.Results)
 							{
-								var result = new LogEntryMetaData
-								{
-									PartitionKey = entity.PartitionKey,
-									RowKey = entity.RowKey,
-									EventTimeStamp = entity[nameof(LogEntryMetaData.EventTimeStamp)].DateTime.Value,
-									Level = entity[nameof(LogEntryMetaData.Level)].StringValue
-								};
+								var result = new LogEntryMetaData(entity.PartitionKey, entity.RowKey, entity[nameof(LogEntryMetaData.EventTimeStamp)].DateTime, entity[nameof(LogEntryMetaData.Level)].StringValue);
 
 								lstNewEntries.Add(result);
 							}
@@ -393,12 +384,12 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 				int totalCount = lstMetaData.Count();
 
 				//Apply sorting - always default
-				string sortBy = options.SortProperty;
+				string? sortBy = options.SortProperty;
 
 				if (string.IsNullOrWhiteSpace(sortBy))
 					sortBy = nameof(LogEntryMetaData.EventTimeStamp);
 
-				sortBy = Normalize(sortBy);
+				sortBy = Normalize(sortBy!);
 
 				IEnumerable<LogEntryMetaData> results = lstMetaData.ToList();
 
@@ -421,7 +412,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 				//point lookups in a batch so each item will have to be retrieved manually.
 				var tableOperation = dataSource.AppenderType == AzureTableStorageLogAppenderType.Client
 					? TableOperation.Retrieve<AzureLoggingClientEventEntity>
-					: (Func<string, string, List<string>, TableOperation>)TableOperation.Retrieve<AzureLoggingServerEventEntity>;
+					: (Func<string, string, List<string>?, TableOperation>)TableOperation.Retrieve<AzureLoggingServerEventEntity>;
 
 				var opResults = await Task.WhenAll(results.Select(x => table.ExecuteAsync(tableOperation(x.PartitionKey, x.RowKey, null)))).ConfigureAwait(false);
 
@@ -503,21 +494,11 @@ namespace Umbrella.Extensions.Logging.Azure.Management
 		#endregion
 
 		#region Private Static Methods
-		private static string Normalize(string value) => value?.Trim()?.ToUpperInvariant()?.Normalize();
+		private static string Normalize(string value) => value.Trim().ToUpperInvariant().Normalize();
 		#endregion
 
 		#region Private Methods
 		private string GenerateCacheKey(string key) => Normalize($"{s_CacheKeyPrefix}:{key}");
-
-		private async Task<List<TTableEntity>> BuildListingModelAsync<TTableEntity>(AzureTableStorageLogDataSource dataSource, CloudTable table, int totalCount, IEnumerable<LogEntryMetaData> lstSortedFilteredItem)
-				where TTableEntity : ITableEntity
-		{
-			var results = await Task.WhenAll(lstSortedFilteredItem.Select(x => table.ExecuteAsync(TableOperation.Retrieve<TTableEntity>(x.PartitionKey, x.RowKey))));
-
-			var items = results.Select(x => x.Result).Cast<TTableEntity>();
-
-			return items.ToList();
-		}
 		#endregion
 	}
 }

@@ -16,12 +16,12 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 	/// <seealso cref="IValidatableUmbrellaOptions" />
 	public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
-		private Dictionary<string, FileSystemMiddlewareMapping> _flattenedMappings;
+		private Dictionary<string, FileSystemMiddlewareMapping>? _flattenedMappings;
 
 		/// <summary>
 		/// Gets or sets the mappings.
 		/// </summary>
-		public List<FileSystemMiddlewareMapping> Mappings { get; set; }
+		public List<FileSystemMiddlewareMapping>? Mappings { get; set; }
 
 		/// <summary>
 		/// Gets or sets the file system path prefix. Defaults to <see cref="FileSystemConstants.DefaultPathPrefix"/>.

@@ -19,27 +19,18 @@ namespace Umbrella.Extensions.Logging.Log4Net
 		#endregion
 
 		#region ILogger Members
-		public IDisposable BeginScope<TState>(TState state) => null;
+		public IDisposable? BeginScope<TState>(TState state) => null;
 
-		public bool IsEnabled(LogLevel logLevel)
+		public bool IsEnabled(LogLevel logLevel) => logLevel switch
 		{
-			switch (logLevel)
-			{
-				case LogLevel.Trace:
-				case LogLevel.Debug:
-					return m_Logger.IsDebugEnabled;
-				case LogLevel.Information:
-					return m_Logger.IsInfoEnabled;
-				case LogLevel.Warning:
-					return m_Logger.IsWarnEnabled;
-				case LogLevel.Error:
-					return m_Logger.IsErrorEnabled;
-				case LogLevel.Critical:
-					return m_Logger.IsFatalEnabled;
-				default:
-					throw new ArgumentException($"Unknown log level {logLevel}.", nameof(logLevel));
-			}
-		}
+			LogLevel.Trace or LogLevel.Debug => m_Logger.IsDebugEnabled,
+			LogLevel.Information => m_Logger.IsInfoEnabled,
+			LogLevel.Warning => m_Logger.IsWarnEnabled,
+			LogLevel.Error => m_Logger.IsErrorEnabled,
+			LogLevel.Critical => m_Logger.IsFatalEnabled,
+			LogLevel.None => false,
+			_ => throw new ArgumentException($"Unknown log level {logLevel}.", nameof(logLevel)),
+		};
 
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
 			=> LogInner(logLevel, eventId, state, exception, formatter);
@@ -63,7 +54,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
 			// If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
 			// to this method to use the same id for correlating messages.
-			string messageId = eventId.Id == 0
+			string messageId = eventId.Id is 0
 				? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name
 				: eventId.Id.ToString();
 
@@ -98,10 +89,12 @@ namespace Umbrella.Extensions.Logging.Log4Net
 			}
 
 			// Log4Net doesn't seem to log AggregateExceptions properly so handling them manually here
-			if (exception != null)
+			if (exception is not null)
 			{
-				if (!(exception is AggregateException aggregate))
-					aggregate = exception?.InnerException as AggregateException;
+				AggregateException? aggregate = null;
+
+				if (exception is not AggregateException)
+					aggregate = exception.InnerException as AggregateException;
 
 				if (aggregate?.InnerExceptions?.Count > 0)
 				{

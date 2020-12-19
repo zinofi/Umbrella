@@ -187,7 +187,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		}
 
 		/// <inheritdoc />
-		public async Task<string> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
+		public async Task<string?> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));

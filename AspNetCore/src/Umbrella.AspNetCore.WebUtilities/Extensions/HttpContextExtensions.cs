@@ -58,7 +58,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 
 		private static List<IDataExpressionDescriptor> GetDataExpressionDescriptors(HttpContext httpContext)
 		{
-			if (!httpContext.Items.TryGetValue(UnmatchedDataExpressionDescriptorKey, out object? objValue) || !(objValue is List<IDataExpressionDescriptor> lstDescriptor))
+			if (!httpContext.Items.TryGetValue(UnmatchedDataExpressionDescriptorKey, out object? objValue) || objValue is not List<IDataExpressionDescriptor> lstDescriptor)
 			{
 				lstDescriptor = new List<IDataExpressionDescriptor>();
 				httpContext.Items[UnmatchedDataExpressionDescriptorKey] = lstDescriptor;

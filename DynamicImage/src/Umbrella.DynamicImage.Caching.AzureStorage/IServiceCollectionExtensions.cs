@@ -22,8 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDynamicImageAzureBlobStorageCache(
 			this IServiceCollection services,
-			Action<IServiceProvider, DynamicImageCacheCoreOptions> dynamicImageCacheCoreOptionsBuilder = null,
-			Action<IServiceProvider, DynamicImageAzureBlobStorageCacheOptions> dynamicImageAzureBlobStorageCacheOptionsBuilder = null)
+			Action<IServiceProvider, DynamicImageCacheCoreOptions>? dynamicImageCacheCoreOptionsBuilder = null,
+			Action<IServiceProvider, DynamicImageAzureBlobStorageCacheOptions>? dynamicImageAzureBlobStorageCacheOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

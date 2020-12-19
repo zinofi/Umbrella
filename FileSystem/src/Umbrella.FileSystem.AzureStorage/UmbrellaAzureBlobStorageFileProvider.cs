@@ -61,12 +61,12 @@ namespace Umbrella.FileSystem.AzureStorage
 		/// <summary>
 		/// Gets the service client.
 		/// </summary>
-		protected BlobServiceClient ServiceClient { get; set; }
+		protected BlobServiceClient ServiceClient { get; set; } = null!;
 
 		/// <summary>
 		/// Gets the container resolution cache.
 		/// </summary>
-		protected ConcurrentDictionary<string, bool> ContainerResolutionCache { get; set; }
+		protected ConcurrentDictionary<string, bool>? ContainerResolutionCache { get; set; }
 		#endregion
 
 		#region Constructors
@@ -126,7 +126,7 @@ namespace Umbrella.FileSystem.AzureStorage
 					await container.DeleteIfExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 					// Remove from the resolution cache.
-					ContainerResolutionCache.TryRemove(containerName, out bool success);
+					ContainerResolutionCache?.TryRemove(containerName, out bool success);
 				}
 				else
 				{
@@ -154,7 +154,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				string cleanedPath = SanitizeSubPathCore(subpath);
 
-				if (Log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (Log.IsEnabled(LogLevel.Debug))
 					Log.WriteDebug(new { subpath, cleanedPath }, "Directory");
 
 				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
@@ -203,7 +203,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 
 		/// <inheritdoc />
-		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
+		protected override async Task<IUmbrellaFileInfo?> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));

@@ -59,7 +59,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling
 		/// <summary>
 		/// Gets or sets the name of the bundle.
 		/// </summary>
-		public string? Name { get; set; }
+		public string Name { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the contents of the bundle should be rendered inline in the HTML.
@@ -85,8 +85,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling
 		/// <inheritdoc />
 		public override void Init(TagHelperContext context)
 		{
-			Name = Name?.TrimToLowerInvariant();
-
+			Guard.ArgumentNotNullOrWhiteSpace(Name, nameof(Name));
+			Name = Name.TrimToLowerInvariant();
 			Guard.ArgumentNotNullOrWhiteSpace(Name, nameof(Name));
 
 			base.Init(context);
@@ -102,7 +102,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling
 
 				if (RenderInline)
 				{
-					string content = await BundleUtility.GetScriptContentAsync(Name);
+					string? content = await BundleUtility.GetScriptContentAsync(Name);
 
 					if (string.IsNullOrWhiteSpace(content))
 					{

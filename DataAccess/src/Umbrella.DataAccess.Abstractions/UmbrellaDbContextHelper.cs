@@ -73,9 +73,9 @@ namespace Umbrella.DataAccess.Abstractions
 				// because of the overheads unless we encounter problems.
 				foreach (var func in dicItem.Values)
 				{
-					Task task = func?.Invoke(cancellationToken);
+					Task? task = func?.Invoke(cancellationToken);
 
-					if (task != null)
+					if (task is not null)
 					{
 						if (Log.IsEnabled(LogLevel.Debug))
 							Log.WriteDebug(message: "Post save callback found to execute");

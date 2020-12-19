@@ -61,13 +61,13 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers
 		public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 		{
 			//If we don't have any size information just call into the base method
-			IReadOnlyCollection<int> lstSizeWidth = ResponsiveImageHelper.GetParsedIntegerItems(SizeWidths);
+			IReadOnlyCollection<int>? lstSizeWidth = SizeWidths is not null ? ResponsiveImageHelper.GetParsedIntegerItems(SizeWidths) : null;
 
-			if (lstSizeWidth.Count == 0)
+			if (lstSizeWidth is null || lstSizeWidth.Count is 0)
 			{
 				await base.ProcessAsync(context, output);
 			}
-			else
+			else if (SizeWidths is not null)
 			{
 				string src = BuildCoreTag(output);
 

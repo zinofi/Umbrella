@@ -55,16 +55,16 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
 		#region IUmbrellaHostingEnvironment Members
 		/// <inheritdoc />
-		public override string MapPath(string virtualPath) => MapPath(virtualPath, true);
+		public override string? MapPath(string virtualPath) => MapPath(virtualPath, true);
 		#endregion
 
 		#region IUmbrellaWebHostingEnvironment Members
 		/// <inheritdoc />
-		public virtual string MapPath(string virtualPath, bool fromContentRoot)
+		public virtual string? MapPath(string virtualPath, bool fromContentRoot)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 
-			string[] cacheKeyParts = null;
+			string[]? cacheKeyParts = null;
 
 			try
 			{
@@ -103,7 +103,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 			Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
 			Guard.ArgumentNotNullOrWhiteSpace(versionParameterName, nameof(versionParameterName));
 
-			string[] cacheKeyParts = null;
+			string[]? cacheKeyParts = null;
 
 			try
 			{
@@ -165,7 +165,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 		}
 
 		/// <inheritdoc />
-		public async Task<string> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
+		public async Task<string?> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
@@ -183,8 +183,14 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 		}
 		#endregion
 
-		#region Protected Methods
+		#region Protected Methods		
+		/// <summary>
+		/// Resolves the HTTP host of the current request.
+		/// </summary>
+		/// <returns>The HTTP host for the current request.</returns>
 		protected virtual string ResolveHttpHost() => HttpContext.Current.Request.Url.Host;
+
+		/// <inheritdoc />
 		protected override string TransformPathForFileProvider(string virtualPath) => TransformPath(virtualPath, false, true, true);
 		#endregion
 

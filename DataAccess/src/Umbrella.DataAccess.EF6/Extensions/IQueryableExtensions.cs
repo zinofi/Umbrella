@@ -16,10 +16,10 @@ namespace Umbrella.DataAccess.EF6.Extensions
 		/// <param name="items">The items.</param>
 		/// <param name="map">The include map.</param>
 		/// <returns>The query.</returns>
-		public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity> map)
+		public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity>? map)
 			where TEntity : class
 		{
-			if (map == null)
+			if (map is null)
 				return items;
 
 			var query = items;

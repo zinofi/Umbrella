@@ -14,7 +14,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
 		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
 		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNull<T>(this HashSet<T?> hashSet, T? value)
+		public static bool AddNotNull<T>(this HashSet<T> hashSet, T? value)
 		{
 			Guard.ArgumentNotNull(hashSet, nameof(hashSet));
 
@@ -32,7 +32,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
 		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
 		public static bool AddNotNullTrim(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.Trim());
+			=> AddNotNull(hashSet, value?.Trim());
 
 		/// <summary>
 		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
@@ -42,7 +42,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
 		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
 		public static bool AddNotNullTrimToLower(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToLower());
+			=> AddNotNull(hashSet, value?.TrimToLower());
 
 		/// <summary>
 		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
@@ -62,7 +62,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
 		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
 		public static bool AddNotNullTrimToUpper(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToUpper());
+			=> AddNotNull(hashSet, value?.TrimToUpper());
 
 		/// <summary>
 		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
@@ -72,6 +72,6 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
 		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
 		public static bool AddNotNullTrimToUpperInvariant(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToUpperInvariant());
+			=> AddNotNull(hashSet, value?.TrimToUpperInvariant());
 	}
 }

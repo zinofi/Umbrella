@@ -16,7 +16,7 @@
 		/// <value>
 		/// The application tenant identifier.
 		/// </value>
-		public TAppTenantKey AppTenantId { get; set; }
+		public TAppTenantKey? AppTenantId { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this tenant is authenticated.

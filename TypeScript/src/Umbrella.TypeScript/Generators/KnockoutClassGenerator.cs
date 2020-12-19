@@ -19,7 +19,7 @@ namespace Umbrella.TypeScript.Generators
 		/// This is the same regex used inside the implementation of the EmailAddressAttribute. Found this by checking the Microsoft Reference Source.
 		/// This string has been double escaped so it is output in a JavaScript friendly format.
 		/// </summary>
-		private const string c_RegexEmail = "new RegExp(\"^((([a-z]|\\\\d|[!#\\\\$%&'\\\\*\\\\+\\\\-\\\\/=\\\\?\\\\^_`{\\\\|}~]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])+(\\\\.([a-z]|\\\\d|[!#\\\\$%&'\\\\*\\\\+\\\\-\\\\/=\\\\?\\\\^_`{\\\\|}~]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])+)*)|((\\\\x22)((((\\\\x20|\\\\x09)*(\\\\x0d\\\\x0a))?(\\\\x20|\\\\x09)+)?(([\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x7f]|\\\\x21|[\\\\x23-\\\\x5b]|[\\\\x5d-\\\\x7e]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(\\\\\\\\([\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0d-\\\\x7f]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF]))))*(((\\\\x20|\\\\x09)*(\\\\x0d\\\\x0a))?(\\\\x20|\\\\x09)+)?(\\\\x22)))@((([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])([a-z]|\\\\d|-|\\\\.|_|~|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])*([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])))\\\\.)+(([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])([a-z]|\\\\d|-|\\\\.|_|~|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])*([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])))\\\\.?$\", \"i\")";
+		private const string RegexEmail = "new RegExp(\"^((([a-z]|\\\\d|[!#\\\\$%&'\\\\*\\\\+\\\\-\\\\/=\\\\?\\\\^_`{\\\\|}~]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])+(\\\\.([a-z]|\\\\d|[!#\\\\$%&'\\\\*\\\\+\\\\-\\\\/=\\\\?\\\\^_`{\\\\|}~]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])+)*)|((\\\\x22)((((\\\\x20|\\\\x09)*(\\\\x0d\\\\x0a))?(\\\\x20|\\\\x09)+)?(([\\\\x01-\\\\x08\\\\x0b\\\\x0c\\\\x0e-\\\\x1f\\\\x7f]|\\\\x21|[\\\\x23-\\\\x5b]|[\\\\x5d-\\\\x7e]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(\\\\\\\\([\\\\x01-\\\\x09\\\\x0b\\\\x0c\\\\x0d-\\\\x7f]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF]))))*(((\\\\x20|\\\\x09)*(\\\\x0d\\\\x0a))?(\\\\x20|\\\\x09)+)?(\\\\x22)))@((([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])([a-z]|\\\\d|-|\\\\.|_|~|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])*([a-z]|\\\\d|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])))\\\\.)+(([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])|(([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])([a-z]|\\\\d|-|\\\\.|_|~|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])*([a-z]|[\\\\u00A0-\\\\uD7FF\\\\uF900-\\\\uFDCF\\\\uFDF0-\\\\uFFEF])))\\\\.?$\", \"i\")";
 		#endregion
 
 		private readonly bool _useDecorators;
@@ -53,7 +53,7 @@ namespace Umbrella.TypeScript.Generators
 				string strInitialOutputValue = PropertyMode switch
 				{
 					TypeScriptPropertyMode.Null => "null",
-					TypeScriptPropertyMode.Model => tsInfo.InitialOutputValue,
+					TypeScriptPropertyMode.Model => tsInfo.InitialOutputValue ?? "null",
 					_ => "",
 				};
 
@@ -65,7 +65,7 @@ namespace Umbrella.TypeScript.Generators
 				{
 					formatString.AppendLineWithTabIndent("@observable({ expose: true })", 2);
 
-					StringBuilder coreValidationBuilder = CreateValidationExtendItems(pi, 3);
+					StringBuilder? coreValidationBuilder = CreateValidationExtendItems(pi, 3);
 
 					if (coreValidationBuilder?.Length > 0)
 					{
@@ -80,7 +80,7 @@ namespace Umbrella.TypeScript.Generators
 				{
 					formatString.Append($"\t\t{tsInfo.Name}: ");
 
-					if (tsInfo.TypeName.EndsWith("[]"))
+					if (tsInfo.TypeName?.EndsWith("[]") is true)
 					{
 						tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
 						formatString.Append($"KnockoutObservableArray<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observableArray<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
@@ -96,9 +96,9 @@ namespace Umbrella.TypeScript.Generators
 		}
 
 		/// <inheritdoc />
-		protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder validationBuilder)
+		protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder? validationBuilder)
 		{
-			StringBuilder ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
+			StringBuilder? ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
 
 			string thisVariable = "this";
 			string exposePrefix = "";
@@ -118,7 +118,7 @@ namespace Umbrella.TypeScript.Generators
 
 			var coreBuilder = !_useDecorators ? CreateValidationExtendItems(propertyInfo) : null;
 
-			if (coreBuilder?.Length > 0 || ctorExtendBuilder?.Length > 0)
+			if (validationBuilder is not null && (coreBuilder?.Length > 0 || ctorExtendBuilder?.Length > 0))
 			{
 				if (_useDecorators)
 				{
@@ -139,13 +139,13 @@ namespace Umbrella.TypeScript.Generators
 			}
 		}
 
-		private StringBuilder CreateValidationExtendItems(PropertyInfo propertyInfo, int indent = 4)
+		private StringBuilder? CreateValidationExtendItems(PropertyInfo propertyInfo, int indent = 4)
 		{
 			//Get all types that are either of type ValidationAttribute or derive from it
 			//However, specifically exclude instances of type DataTypeAttribute
 			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
 
-			if (lstValidationAttribute.Count == 0)
+			if (lstValidationAttribute.Count is 0)
 				return null;
 
 			var validationBuilder = new StringBuilder();
@@ -167,7 +167,7 @@ namespace Umbrella.TypeScript.Generators
 						validationBuilder.AppendLineWithTabIndent($"equal: {{ params: this.{otherPropertyName}, message: {message} }},", indent);
 						break;
 					case EmailAddressAttribute attr:
-						validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {c_RegexEmail}, message: {message} }},", indent);
+						validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {RegexEmail}, message: {message} }},", indent);
 						break;
 					case MinLengthAttribute attr:
 						validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.Length}, message: {message} }},", indent);
@@ -197,13 +197,13 @@ namespace Umbrella.TypeScript.Generators
 			return validationBuilder;
 		}
 
-		private StringBuilder CreateConstructorValidationRules(PropertyInfo propertyInfo, int indent = 4)
+		private StringBuilder? CreateConstructorValidationRules(PropertyInfo propertyInfo, int indent = 4)
 		{
 			// Get all types that are either of type ValidationAttribute or derive from it
 			// However, specifically exclude instances of type DataTypeAttribute
 			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
 
-			if (lstValidationAttribute.Count == 0)
+			if (lstValidationAttribute.Count is 0)
 				return null;
 
 			var validationBuilder = new StringBuilder();
@@ -240,7 +240,7 @@ namespace Umbrella.TypeScript.Generators
 							_ => attr.DependentValue.ToString()
 						};
 
-						string dependentPropertyName = null;
+						string? dependentPropertyName = null;
 
 						if (attr.DependentProperty.Contains("."))
 						{
@@ -263,11 +263,11 @@ namespace Umbrella.TypeScript.Generators
 		}
 
 		/// <inheritdoc />
-		protected override void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder validationBuilder)
+		protected override void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder? validationBuilder)
 		{
 			// Only write the validation rules if some validation rules have been generated
 			// and we are not using decorators
-			if (!_useDecorators || validationBuilder?.Length > 0)
+			if (!_useDecorators && validationBuilder?.Length > 0)
 			{
 				typeBuilder.AppendLine();
 

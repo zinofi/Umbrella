@@ -23,7 +23,7 @@ namespace Umbrella.Legacy.WebUtilities.Controls
 		/// <summary>
 		/// The on framework initialized delegate invoked by the <see cref="FrameworkInitialize"/> method after it has executed all other code.
 		/// </summary>
-		protected Action OnFrameworkInitialized;
+		protected Action? OnFrameworkInitialized;
 		#endregion
 
 		#region Overridden Methods

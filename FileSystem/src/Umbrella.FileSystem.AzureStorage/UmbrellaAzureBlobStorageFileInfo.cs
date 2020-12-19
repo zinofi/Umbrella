@@ -19,15 +19,15 @@ namespace Umbrella.FileSystem.AzureStorage
 	/// <summary>
 	/// An implementation of <see cref="IUmbrellaFileInfo"/> that uses Azure Blob Storage as the underlying storage mechanism.
 	/// </summary>
-	/// <seealso cref="Umbrella.FileSystem.Abstractions.IUmbrellaFileInfo" />
-	/// <seealso cref="T:System.IEquatable{Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileInfo}" />
+	/// <seealso cref="IUmbrellaFileInfo" />
+	/// <seealso cref="IEquatable{UmbrellaAzureBlobStorageFileInfo}" />
 	public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaAzureBlobStorageFileInfo>
 	{
 		#region Private Members
-		private byte[] _content;
+		private byte[]? _content;
 		private long _length = -1;
-		private string _contentType;
-		private BlobProperties _blobProperties;
+		private string? _contentType;
+		private BlobProperties? _blobProperties;
 		#endregion
 
 		#region Protected Properties		
@@ -64,17 +64,17 @@ namespace Umbrella.FileSystem.AzureStorage
 		/// <inheritdoc />
 		public long Length
 		{
-			get => IsNew ? _length : _blobProperties.ContentLength;
+			get => IsNew ? _length : _blobProperties?.ContentLength ?? -1;
 			private set => _length = value;
 		}
 
 		/// <inheritdoc />
-		public DateTimeOffset? LastModified => IsNew ? (DateTimeOffset?)null : _blobProperties.LastModified;
+		public DateTimeOffset? LastModified => IsNew ? null : _blobProperties?.LastModified;
 
 		/// <inheritdoc />
-		public string ContentType
+		public string? ContentType
 		{
-			get => IsNew ? _contentType : _blobProperties.ContentType;
+			get => IsNew ? _contentType : _blobProperties?.ContentType;
 			set => _contentType = value;
 		}
 		#endregion
@@ -246,7 +246,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				await Blob.UploadAsync(
 					stream,
 					new BlobHttpHeaders { ContentType = ContentType },
-					_blobProperties.Metadata,
+					_blobProperties?.Metadata,
 					transferOptions: CreateStorageTransferOptions(bufferSizeOverride),
 					cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -373,7 +373,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 
 		/// <inheritdoc />
-		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string, T> customValueConverter = null)
+		public async Task<T?> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T?>? customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
@@ -381,9 +381,14 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				_blobProperties.Metadata.TryGetValue(key, out string rawValue);
+				if (_blobProperties is not null)
+				{
+					_blobProperties.Metadata.TryGetValue(key, out string rawValue);
 
-				return await Task.FromResult(GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)).ConfigureAwait(false);
+					return await Task.FromResult(GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)).ConfigureAwait(false);
+				}
+
+				return default;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
 			{
@@ -400,17 +405,20 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (value == null)
+				if (_blobProperties is not null)
 				{
-					_blobProperties.Metadata.Remove(key);
-				}
-				else
-				{
-					_blobProperties.Metadata[key] = value.ToString();
-				}
+					if (value is null)
+					{
+						_blobProperties.Metadata.Remove(key);
+					}
+					else
+					{
+						_blobProperties.Metadata[key] = value.ToString();
+					}
 
-				if (writeChanges)
-					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+					if (writeChanges)
+						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
 			{
@@ -427,10 +435,13 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				_blobProperties.Metadata.Remove(key);
+				if (_blobProperties is not null)
+				{
+					_blobProperties.Metadata.Remove(key);
 
-				if (writeChanges)
-					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+					if (writeChanges)
+						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, writeChanges }, returnValue: true))
 			{
@@ -446,10 +457,13 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				_blobProperties.Metadata.Clear();
+				if (_blobProperties is not null)
+				{
+					_blobProperties.Metadata.Clear();
 
-				if (writeChanges)
-					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+					if (writeChanges)
+						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+				}
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { writeChanges }, returnValue: true))
 			{
@@ -465,7 +479,8 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
+				if (_blobProperties is not null)
+					await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
@@ -487,8 +502,8 @@ namespace Umbrella.FileSystem.AzureStorage
 
 		#region IEquatable Members
 		/// <inheritdoc />
-		public bool Equals(UmbrellaAzureBlobStorageFileInfo other)
-			=> other != null &&
+		public bool Equals(UmbrellaAzureBlobStorageFileInfo? other)
+			=> other is not null &&
 				IsNew == other.IsNew &&
 				Name == other.Name &&
 				SubPath == other.SubPath &&
@@ -510,7 +525,10 @@ namespace Umbrella.FileSystem.AzureStorage
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(SubPath);
 			hashCode = hashCode * -1521134295 + Length.GetHashCode();
 			hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContentType);
+			
+			if(ContentType is not null)
+				hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContentType);
+
 			return hashCode;
 		}
 		#endregion

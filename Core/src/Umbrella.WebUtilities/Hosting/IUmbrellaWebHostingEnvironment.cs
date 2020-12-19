@@ -16,7 +16,7 @@ namespace Umbrella.WebUtilities.Hosting
 		/// <param name="virtualPath">The virtual path.</param>
 		/// <param name="fromContentRoot">Determines whether to map the virtual path from the web (only applicable for ASP.NET Core) or the content root.</param>
 		/// <returns>The mapped path.</returns>
-		string MapPath(string virtualPath, bool fromContentRoot);
+		string? MapPath(string virtualPath, bool fromContentRoot);
 
 		/// <summary>
 		/// Maps the web path.
@@ -41,6 +41,6 @@ namespace Umbrella.WebUtilities.Hosting
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The file content.</returns>
 		/// <returns></returns>
-		Task<string> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default);
+		Task<string?> GetFileContentAsync(string virtualPath, bool fromContentRoot, bool cache = true, bool watch = true, CancellationToken cancellationToken = default);
 	}
 }

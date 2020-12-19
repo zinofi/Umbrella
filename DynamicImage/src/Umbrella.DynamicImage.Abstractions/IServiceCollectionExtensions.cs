@@ -40,8 +40,8 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDynamicImageMemoryCache(
 			this IServiceCollection services,
-			Action<IServiceProvider, DynamicImageCacheCoreOptions> dynamicImageCacheCoreOptionsBuilder = null,
-			Action<IServiceProvider, DynamicImageMemoryCacheOptions> dynamicImageMemoryCacheOptionsBuilder = null)
+			Action<IServiceProvider, DynamicImageCacheCoreOptions>? dynamicImageCacheCoreOptionsBuilder = null,
+			Action<IServiceProvider, DynamicImageMemoryCacheOptions>? dynamicImageMemoryCacheOptionsBuilder = null)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 

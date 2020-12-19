@@ -34,7 +34,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 		public static List<object[]> CacheListMemberData = CacheList.Select(x => new object[] { x }).ToList();
 
-		private static string s_BaseDirectory;
+		private static string? s_BaseDirectory;
 
 		private static string BaseDirectory
 		{
@@ -69,14 +69,15 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 			await cache.AddAsync(item);
 
-			DynamicImageItem cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+			DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
 
 			Assert.NotNull(cachedItem);
-			Assert.Equal(item.ImageOptions, cachedItem.ImageOptions);
+			Assert.Equal(item.ImageOptions, cachedItem!.ImageOptions);
 
-			byte[] cachedBytes = await cachedItem.GetContentAsync();
+			byte[]? cachedBytes = await cachedItem.GetContentAsync();
 
-			Assert.Equal(sourceBytes.Length, cachedBytes.Length);
+			Assert.NotNull(cachedBytes);
+			Assert.Equal(sourceBytes.Length, cachedBytes!.Length);
 
 			//Perform cleanup by removing the file from the cache
 			await cache.RemoveAsync(item.ImageOptions, "jpg");
@@ -104,12 +105,12 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 			await cache.AddAsync(item);
 
-			DynamicImageItem cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+			DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
 
 			Assert.NotNull(cachedItem);
-			Assert.Equal(item.ImageOptions, cachedItem.ImageOptions);
+			Assert.Equal(item.ImageOptions, cachedItem!.ImageOptions);
 
-			byte[] cachedBytes = null;
+			byte[]? cachedBytes = null;
 
 			using (var ms = new MemoryStream())
 			{
@@ -139,7 +140,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 				LastModified = DateTime.UtcNow
 			};
 
-			DynamicImageItem cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.MinValue, "jpg");
+			DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.MinValue, "jpg");
 
 			Assert.Null(cachedItem);
 		}
@@ -162,7 +163,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 
 			await cache.AddAsync(item);
 
-			DynamicImageItem cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(5), "jpg");
+			DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(5), "jpg");
 
 			Assert.Null(cachedItem);
 		}

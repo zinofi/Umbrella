@@ -16,12 +16,12 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
 	public class DynamicImageMiddlewareOptions : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
 	{
-		private Dictionary<string, DynamicImageMiddlewareMapping> _flattenedMappings;
+		private Dictionary<string, DynamicImageMiddlewareMapping> _flattenedMappings = null!;
 
 		/// <summary>
 		/// Gets or sets the mappings.
 		/// </summary>
-		public List<DynamicImageMiddlewareMapping> Mappings { get; set; }
+		public List<DynamicImageMiddlewareMapping> Mappings { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets the dynamic image path prefix. Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix"/>.

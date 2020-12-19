@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using Microsoft.Extensions.FileProviders;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.WebUtilities.Middleware.Options
@@ -15,12 +16,12 @@ namespace Umbrella.WebUtilities.Middleware.Options
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
 	public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
-		private Dictionary<string, FrontEndCompressionMiddlewareMapping> _flattenedMappings;
+		private Dictionary<string, FrontEndCompressionMiddlewareMapping>? _flattenedMappings;
 
 		/// <summary>
 		/// Gets or sets the mappings.
 		/// </summary>
-		public List<FrontEndCompressionMiddlewareMapping> Mappings { get; set; }
+		public List<FrontEndCompressionMiddlewareMapping>? Mappings { get; set; }
 
 		/// <summary>
 		/// Gets or sets the Accept-Encoding header key. Defaults to "Accept-Encoding".
@@ -32,7 +33,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 		/// Gets or sets a transformation applied to the "Accept-Encoding" header values based on the headers of the current request.
 		/// This is useful for last resort scenarios where, e.g. User Agent sniffing is needed to refine the encoding values.
 		/// </summary>
-		public Action<IReadOnlyDictionary<string, IEnumerable<string>>, HashSet<string>> AcceptEncodingModifier { get; set; }
+		public Action<IReadOnlyDictionary<string, IEnumerable<string>>, HashSet<string>>? AcceptEncodingModifier { get; set; }
 
 		/// <summary>
 		/// Gets or sets the buffer size in bytes when copying data between streams during compression. Defaults to 81920.
@@ -42,7 +43,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 		/// <summary>
 		/// Gets or sets the optional response cache determiner. Used to perform additional checks to see if the response should have caching headers applied.
 		/// </summary>
-		public Func<IFileInfo, bool> ResponseCacheDeterminer { get; set; }
+		public Func<IFileInfo, bool>? ResponseCacheDeterminer { get; set; }
 
 		/// <summary>
 		/// Gets the file provider for the specified <paramref name="searchPath"/>.
@@ -50,11 +51,11 @@ namespace Umbrella.WebUtilities.Middleware.Options
 		/// <param name="searchPath">The search path.</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public FrontEndCompressionMiddlewareMapping GetMapping(string searchPath)
+		public FrontEndCompressionMiddlewareMapping? GetMapping(string searchPath)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(searchPath, nameof(searchPath));
 
-			return _flattenedMappings.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
+			return _flattenedMappings?.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
 		}
 
 		/// <summary>
@@ -62,7 +63,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 		/// </summary>
 		public void Sanitize()
 		{
-			AcceptEncodingHeaderKey = AcceptEncodingHeaderKey?.Trim()?.ToLowerInvariant();
+			AcceptEncodingHeaderKey = AcceptEncodingHeaderKey.TrimToLowerInvariant();
 
 			if (Mappings != null)
 			{

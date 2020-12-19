@@ -82,7 +82,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
 			try
 			{
-				string url = relativeUrl?.TrimToLowerInvariant();
+				string url = relativeUrl.TrimToLowerInvariant();
 
 				if (!Path.HasExtension(url))
 					return (DynamicImageParseUrlResult.Invalid, default);

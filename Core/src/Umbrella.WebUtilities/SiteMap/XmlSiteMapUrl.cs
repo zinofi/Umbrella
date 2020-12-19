@@ -17,7 +17,7 @@ namespace Umbrella.WebUtilities.SiteMap
 		/// Gets or sets the last modified date
 		/// </summary>
 		[XmlElement("lastmod")]
-		public string LastModified { get; set; }
+		public string? LastModified { get; set; }
 
 		/// <summary>
 		/// Gets or sets the priority.
@@ -29,7 +29,7 @@ namespace Umbrella.WebUtilities.SiteMap
 		/// Gets or sets the URL.
 		/// </summary>
 		[XmlElement("loc")]
-		public string Url { get; set; }
+		public string? Url { get; set; }
 
 		/// <summary>
 		/// Determines if the <see cref="ChangeFrequency"/> should be included when this instance is serialized.

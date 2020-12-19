@@ -26,7 +26,7 @@ namespace Umbrella.Extensions.Logging.AppCenter
 		}
 
 		/// <inheritdoc />
-		public IDisposable BeginScope<TState>(TState state) => null;
+		public IDisposable? BeginScope<TState>(TState state) => null;
 
 		/// <inheritdoc />
 		public bool IsEnabled(LogLevel logLevel) => logLevel >= _minLevel;

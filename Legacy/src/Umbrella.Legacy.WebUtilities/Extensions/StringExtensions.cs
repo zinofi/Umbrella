@@ -19,7 +19,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
 		/// <param name="portOverride">The port override.</param>
 		/// <returns>Provided relativeUrl parameter as fully qualified Url.</returns>
 		/// <example>~/path/to/foo or /path/to/foo to http://www.web.com/path/to/foo</example>
-		public static string ToAbsoluteUrl(this string relativeUrl, Uri requestUri, string schemeOverride = null, string hostOverride = null, int portOverride = 0)
+		public static string ToAbsoluteUrl(this string relativeUrl, Uri requestUri, string? schemeOverride = null, string? hostOverride = null, int portOverride = 0)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
 			Guard.ArgumentNotNull(requestUri, nameof(requestUri));

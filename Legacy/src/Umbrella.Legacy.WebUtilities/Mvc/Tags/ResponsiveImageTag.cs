@@ -6,18 +6,39 @@ using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
 {
-	// TODO - vUnlikely: Add parameters to enable absolute path generation
 	public class ResponsiveImageTag : IHtmlString
 	{
-		#region Protected Members
+		#region Protected Members		
+		/// <summary>
+		/// Gets the path.
+		/// </summary>
 		protected string Path { get; }
+
+		/// <summary>
+		/// Gets the map virtual path function.
+		/// </summary>
 		protected Func<string, string> MapVirtualPathFunc { get; }
+
+		/// <summary>
+		/// Gets the pixel densities.
+		/// </summary>
 		protected HashSet<int> PixelDensities { get; } = new HashSet<int> { 1 };
+
+		/// <summary>
+		/// Gets the HTML attributes.
+		/// </summary>
 		protected Dictionary<string, string> HtmlAttributes { get; }
 		#endregion
 
-		#region Constructors
-		public ResponsiveImageTag(string path, string altText, IDictionary<string, object> htmlAttributes, Func<string, string> mapVirtualPath)
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ResponsiveImageTag"/> class.
+		/// </summary>
+		/// <param name="path">The path.</param>
+		/// <param name="altText">The alt text.</param>
+		/// <param name="htmlAttributes">The HTML attributes.</param>
+		/// <param name="mapVirtualPath">The map virtual path.</param>
+		public ResponsiveImageTag(string path, string altText, IDictionary<string, object>? htmlAttributes, Func<string, string> mapVirtualPath)
 		{
 			Path = path;
 			MapVirtualPathFunc = mapVirtualPath;
@@ -32,7 +53,10 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Tags
 		}
 		#endregion
 
-		#region IHtmlString Members
+		#region IHtmlString Members		
+		/// <summary>
+		/// Converts this tag to an HTML string.
+		/// </summary>
 		public virtual string ToHtmlString()
 		{
 			var imgTag = new TagBuilder("img");

@@ -32,7 +32,7 @@ namespace Umbrella.TypeScript.Generators
 
 				string formatString = "\t\t{0}: ";
 
-				if (tsInfo.TypeName.EndsWith("[]"))
+				if (tsInfo.TypeName!.EndsWith("[]"))
 				{
 					formatString += _useDecorators ? "{1}" : "KnockoutObservableArray<{1}>;";
 

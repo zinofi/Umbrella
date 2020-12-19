@@ -12,7 +12,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 	{
 		#region Private Members
 		private readonly HashSet<int> m_SizeWidths = new HashSet<int>();
-		private string m_SizeAttributeValue;
+		private string? m_SizeAttributeValue;
 		private readonly float m_Ratio;
 		private readonly IDynamicImageUtility m_DynamicImageUtility;
 		private readonly DynamicResizeMode m_ResizeMode;
@@ -20,12 +20,30 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 		private readonly string m_DynamicImagePathPrefix;
 		private readonly bool m_ToAbsolutePath;
 		private readonly HttpRequestBase m_HttpRequest;
-		private readonly string m_SchemeOverride;
-		private readonly string m_HostOverride;
+		private readonly string? m_SchemeOverride;
+		private readonly string? m_HostOverride;
 		private readonly int m_PortOverride;
 		#endregion
 
-		#region Constructors
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ResponsiveDynamicImageTag"/> class.
+		/// </summary>
+		/// <param name="dynamicImageUtility">The dynamic image utility.</param>
+		/// <param name="dynamicImagePathPrefix">The dynamic image path prefix.</param>
+		/// <param name="path">The path.</param>
+		/// <param name="altText">The alt text.</param>
+		/// <param name="width">The width.</param>
+		/// <param name="height">The height.</param>
+		/// <param name="resizeMode">The resize mode.</param>
+		/// <param name="htmlAttributes">The HTML attributes.</param>
+		/// <param name="format">The format.</param>
+		/// <param name="mapVirtualPathFunc">The map virtual path function.</param>
+		/// <param name="toAbsolutePath">if set to <c>true</c> [to absolute path].</param>
+		/// <param name="request">The request.</param>
+		/// <param name="schemeOverride">The scheme override.</param>
+		/// <param name="hostOverride">The host override.</param>
+		/// <param name="portOverride">The port override.</param>
 		public ResponsiveDynamicImageTag(
 			IDynamicImageUtility dynamicImageUtility,
 			string dynamicImagePathPrefix,
@@ -39,8 +57,8 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags
 			Func<string, string> mapVirtualPathFunc,
 			bool toAbsolutePath,
 			HttpRequestBase request,
-			string schemeOverride,
-			string hostOverride,
+			string? schemeOverride,
+			string? hostOverride,
 			int portOverride)
 			: base(path, altText, htmlAttributes, mapVirtualPathFunc)
 		{

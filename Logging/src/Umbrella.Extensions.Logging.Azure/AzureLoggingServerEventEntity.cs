@@ -20,52 +20,52 @@ namespace Umbrella.Extensions.Logging.Azure
 		/// <summary>
 		/// Gets or sets the name of the class.
 		/// </summary>
-		public string ClassName { get; set; }
+		public string? ClassName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the exception.
 		/// </summary>
-		public string Exception { get; set; }
+		public string? Exception { get; set; }
 
 		/// <summary>
 		/// Gets or sets the name of the file.
 		/// </summary>
-		public string FileName { get; set; }
+		public string? FileName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the level.
 		/// </summary>
-		public string Level { get; set; }
+		public string? Level { get; set; }
 
 		/// <summary>
 		/// Gets or sets the line number.
 		/// </summary>
-		public string LineNumber { get; set; }
+		public string? LineNumber { get; set; }
 
 		/// <summary>
 		/// Gets or sets the location.
 		/// </summary>
-		public string Location { get; set; }
+		public string? Location { get; set; }
 
 		/// <summary>
 		/// Gets or sets the message.
 		/// </summary>
-		public string Message { get; set; }
+		public string? Message { get; set; }
 
 		/// <summary>
 		/// Gets or sets the name of the method.
 		/// </summary>
-		public string MethodName { get; set; }
+		public string? MethodName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the properties.
 		/// </summary>
-		public string Properties { get; set; }
+		public string? Properties { get; set; }
 
 		/// <summary>
 		/// Gets or sets the name of the thread.
 		/// </summary>
-		public string ThreadName { get; set; }
+		public string? ThreadName { get; set; }
 		#endregion
 
 		#region Constructors		

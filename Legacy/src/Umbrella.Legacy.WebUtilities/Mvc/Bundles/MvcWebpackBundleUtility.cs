@@ -8,6 +8,14 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 {
 	public class MvcWebpackBundleUtility : MvcBundleUtility<IWebpackBundleUtility, WebpackBundleUtilityOptions>, IMvcWebpackBundleUtility
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MvcWebpackBundleUtility"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="hybridCache">The hybrid cache.</param>
+		/// <param name="cacheKeyUtility">The cache key utility.</param>
+		/// <param name="bundleUtility">The bundle utility.</param>
+		/// <param name="options">The options.</param>
 		public MvcWebpackBundleUtility(
 			ILogger<MvcBundleUtility> logger,
 			IHybridCache hybridCache,

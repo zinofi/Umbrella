@@ -9,8 +9,8 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 	/// <summary>
 	/// A Dynamic Image cache implementation that is backed by In-Memory storage.
 	/// </summary>
-	/// <seealso cref="Umbrella.DynamicImage.Abstractions.Caching.DynamicImageCache" />
-	/// <seealso cref="Umbrella.DynamicImage.Abstractions.Caching.IDynamicImageCache" />
+	/// <seealso cref="DynamicImageCache" />
+	/// <seealso cref="IDynamicImageCache" />
 	public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 	{
 		#region Private Members
@@ -58,7 +58,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 		}
 
 		/// <inheritdoc />
-		public async Task<DynamicImageItem> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
+		public async Task<DynamicImageItem?> GetAsync(DynamicImageOptions options, DateTimeOffset sourceLastModified, string fileExtension, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

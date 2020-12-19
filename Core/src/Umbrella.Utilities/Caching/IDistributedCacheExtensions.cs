@@ -165,7 +165,7 @@ namespace Umbrella.Utilities.Caching
 		{
 			var (itemFound, cacheItem, exception) = TryGetValue<TItem>(cache, key, false);
 			
-			return (itemFound, cacheItem, exception != null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValue)} failed.", exception) : null);
+			return (itemFound, cacheItem, exception is not null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValue)} failed.", exception) : null);
 		}
 
 		/// <summary>
@@ -180,7 +180,7 @@ namespace Umbrella.Utilities.Caching
 		{
 			var (itemFound, cacheItem, exception) = await TryGetValueAsync<TItem>(cache, key, cancellationToken, false).ConfigureAwait(false);
 
-			return (itemFound, cacheItem, exception != null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValueAsync)} failed.", exception) : null);
+			return (itemFound, cacheItem, exception is not null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValueAsync)} failed.", exception) : null);
 		}
 
 		/// <summary>
@@ -300,7 +300,7 @@ namespace Umbrella.Utilities.Caching
 		/// instead of returning.
 		/// </returns>
 		/// <exception cref="UmbrellaDistributedCacheException">GetOrCreate failed.</exception>
-		public static (TItem? cacheItem, UmbrellaDistributedCacheException? exception) GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
+		public static (TItem cacheItem, UmbrellaDistributedCacheException? exception) GetOrCreate<TItem>(this IDistributedCache cache, string key, Func<TItem> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true)
 		{
 			Guard.ArgumentNotNull(cache, nameof(cache));
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
@@ -313,13 +313,13 @@ namespace Umbrella.Utilities.Caching
 
 				var (itemFound, cacheItem, exception) = cache.TryGetValue<TItem>(key);
 
-				if (throwOnCacheFailure && exception != null)
+				if (throwOnCacheFailure && exception is not null)
 					throw exception;
 
-				if (itemFound)
+				if (itemFound && cacheItem is not null)
 					return (cacheItem, exception);
 
-				if (exception != null)
+				if (exception is not null)
 					lstException?.Add(exception);
 
 				// If we get this far then we haven't found the cached item
@@ -328,12 +328,12 @@ namespace Umbrella.Utilities.Caching
 
 				try
 				{
-					if (createdItem != null)
+					if (createdItem is not null)
 						Set(cache, key, createdItem, optionsBuilder());
 				}
 				catch (Exception exc)
 				{
-					if (throwOnCacheFailure && exception != null)
+					if (throwOnCacheFailure && exception is not null)
 						throw;
 
 					lstException?.Add(exc);
@@ -366,7 +366,7 @@ namespace Umbrella.Utilities.Caching
 		/// instead of returning.
 		/// </returns>
 		/// <exception cref="UmbrellaDistributedCacheException">GetOrCreateAsync failed.</exception>
-		public static async Task<(TItem? cacheItem, UmbrellaDistributedCacheException? exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+		public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException? exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(cache, nameof(cache));
@@ -380,13 +380,13 @@ namespace Umbrella.Utilities.Caching
 
 				var (itemFound, cacheItem, exception) = await cache.TryGetValueAsync<TItem>(key, cancellationToken).ConfigureAwait(false);
 
-				if (throwOnCacheFailure && exception != null)
+				if (throwOnCacheFailure && exception is not null)
 					throw exception;
 
-				if (itemFound)
+				if (itemFound && cacheItem is not null)
 					return (cacheItem, exception);
 
-				if (exception != null)
+				if (exception is not null)
 					lstException?.Add(exception);
 
 				// If we get this far then we haven't found the cached item
@@ -395,12 +395,12 @@ namespace Umbrella.Utilities.Caching
 
 				try
 				{
-					if (createdItem != null)
+					if (createdItem is not null)
 						await SetAsync(cache, key, createdItem, optionsBuilder(), cancellationToken).ConfigureAwait(false);
 				}
 				catch (Exception exc)
 				{
-					if (throwOnCacheFailure && exception != null)
+					if (throwOnCacheFailure && exception is not null)
 						throw;
 
 					lstException?.Add(exc);

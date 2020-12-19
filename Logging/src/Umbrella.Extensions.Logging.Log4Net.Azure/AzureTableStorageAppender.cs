@@ -27,8 +27,8 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 
 		#region Internal Properties
 		//Exposed as internal for unit testing purposes
-		internal AzureTableStorageLogAppenderOptions Config { get; set; }
-		internal CloudTableClient TableClient { get; set; }
+		internal AzureTableStorageLogAppenderOptions? Config { get; set; }
+		internal CloudTableClient? TableClient { get; set; }
 		#endregion
 
 		#region Internal Methods
@@ -43,12 +43,12 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 					throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
 				//Get the table we need to write stuff to and create it if needed
-				CloudTable table = TableClient.GetTableReference($"{Config.TablePrefix}{AzureTableStorageLoggingOptions.TableNameSeparator}{DateTime.UtcNow:yyyyxMMxdd}");
+				CloudTable table = TableClient!.GetTableReference($"{Config.TablePrefix}{AzureTableStorageLoggingOptions.TableNameSeparator}{DateTime.UtcNow:yyyyxMMxdd}");
 				await table.CreateIfNotExistsAsync().ConfigureAwait(false);
 
 				//Create the required table entities to write to storage and group them by PartitionKey.
 				//This is because entities written in a batch must all have the same PartitionKey.
-				var paritionKeyGroups = events.Select(x => GetLogEntity(x)).GroupBy(x => x.PartitionKey);
+				var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x is not null).GroupBy(x => x!.PartitionKey);
 
 				foreach (var group in paritionKeyGroups)
 				{
@@ -166,9 +166,9 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 		#endregion
 
 		#region Private Methods
-		private ITableEntity GetLogEntity(LoggingEvent e)
+		private ITableEntity? GetLogEntity(LoggingEvent e)
 		{
-			switch (Config.AppenderType)
+			switch (Config!.AppenderType)
 			{
 				case AzureTableStorageLogAppenderType.Client:
 					return new AzureLoggingClientEventEntity(e.Level.ToString(), e.RenderedMessage, e.GetExceptionString(), e.TimeStampUtc, e.Properties);

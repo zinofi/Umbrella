@@ -9,18 +9,31 @@ namespace Umbrella.Extensions.Logging.Azure.Management.Configuration
 	public class AzureTableStorageLogDataSource
 	{
 		/// <summary>
-		/// Gets or sets the table prefix.
+		/// Initializes a new instance of the <see cref="AzureTableStorageLogDataSource"/> class.
 		/// </summary>
-		public string TablePrefix { get; set; }
+		/// <param name="tablePrefix">The table prefix.</param>
+		/// <param name="appenderType">Type of the appender.</param>
+		/// <param name="categoryName">Name of the category.</param>
+		public AzureTableStorageLogDataSource(string tablePrefix, AzureTableStorageLogAppenderType appenderType, string categoryName)
+		{
+			TablePrefix = tablePrefix;
+			AppenderType = appenderType;
+			CategoryName = categoryName;
+		}
 
 		/// <summary>
-		/// Gets or sets the type of the appender.
+		/// Gets the table prefix.
 		/// </summary>
-		public AzureTableStorageLogAppenderType AppenderType { get; set; }
+		public string TablePrefix { get; }
 
 		/// <summary>
-		/// Gets or sets the name of the category.
+		/// Gets the type of the appender.
 		/// </summary>
-		public string CategoryName { get; set; }
+		public AzureTableStorageLogAppenderType AppenderType { get; }
+
+		/// <summary>
+		/// Gets the name of the category.
+		/// </summary>
+		public string CategoryName { get; }
 	}
 }

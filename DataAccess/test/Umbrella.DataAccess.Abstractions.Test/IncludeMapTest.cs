@@ -17,9 +17,9 @@ namespace Umbrella.DataAccess.Abstractions.Test
 				x => x.Assembly.Location,
 				x => x.Assembly.ImageRuntimeVersion.Length,
 				x => x.Assembly.ExportedTypes.Select(x => x.FullName),
-				x => x.Assembly.ExportedTypes.Select(x => x.FullName.Length),
+				x => x.Assembly.ExportedTypes.Select(x => x.FullName!.Length),
 				x => x.GenericTypeArguments.Select(x => x.FullName),
-				x => x.GenericTypeArguments.Select(x => x.Assembly.FullName.Length),
+				x => x.GenericTypeArguments.Select(x => x.Assembly.FullName!.Length),
 				// TODO: Extends to allow nested Select/SelectMany calls. Needed though??
 				//x => x.GenericTypeArguments.Select(x => x.GenericTypeArguments.Select(x => x.FullName.Length)),
 				//x => x.GenericTypeArguments.SelectMany(x => x.GenericTypeArguments.Select(x => x.FullName.Length))

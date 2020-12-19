@@ -24,7 +24,7 @@ namespace Umbrella.DataAccess.Mapping
 		/// <param name="autoInclusionSelector">The automatic inclusion selector.</param>
 		/// <param name="innerActions">The inner actions to be applied to nested objects. Nested objects need to be explicitly handled.</param>
 		/// <returns>A collection of <typeparamref name="TEntity"/> instances.</returns>
-		IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity> newEntityAction = null, Func<TEntity, bool> autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
+		IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity>? newEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 			where TEntityKey : IEquatable<TEntityKey>;
 	}

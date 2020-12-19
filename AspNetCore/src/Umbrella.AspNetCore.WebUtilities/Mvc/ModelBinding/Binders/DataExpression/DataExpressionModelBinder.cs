@@ -24,7 +24,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 	public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 		where TDescriptor : IDataExpressionDescriptor
 	{
-		private static readonly ConcurrentDictionary<Type, (bool isEnumerable, Type elementType)> _enumerableTypeDataCache = new ConcurrentDictionary<Type, (bool, Type)>();
+		private static readonly ConcurrentDictionary<Type, (bool isEnumerable, Type? elementType)> _enumerableTypeDataCache = new ConcurrentDictionary<Type, (bool, Type?)>();
 		private static readonly ConcurrentDictionary<Type, Type> _genericListTypeCache = new ConcurrentDictionary<Type, Type>();
 
 		/// <summary>

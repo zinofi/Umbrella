@@ -1,20 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Extensions;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Controls
 {
+	/// <summary>
+	/// A control that extends the <see cref="Button"/> control to provide checkbox and radiobutton behaviour.
+	/// </summary>
+	/// <seealso cref="Button" />
 	public class ToggleButton : Button
 	{
+		/// <summary>
+		/// Occurs when the toggle state of the button changes.
+		/// </summary>
 		public event EventHandler<ToggledEventArgs>? Toggled;
 
+		/// <summary>
+		/// The labelled by property
+		/// </summary>
 		public static BindableProperty LabelledByProperty = BindableProperty.Create(nameof(LabelledBy), typeof(Label), typeof(ToggleButton));
+
+		/// <summary>
+		/// The is toggled property
+		/// </summary>
 		public static BindableProperty IsToggledProperty = BindableProperty.Create(nameof(IsToggled), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay, propertyChanged: OnIsToggledChanged);
+
+		/// <summary>
+		/// The group name property
+		/// </summary>
 		public static BindableProperty GroupNameProperty = BindableProperty.Create(nameof(GroupName), typeof(string), typeof(ToggleButton));
 
 		/// <summary>
@@ -25,18 +41,27 @@ namespace Umbrella.Xamarin.Controls
 			Clicked += (sender, args) => ToggleState();
 		}
 
+		/// <summary>
+		/// Gets or sets the <see cref="Label"/> that is associated with this control.
+		/// </summary>
 		public Label? LabelledBy
 		{
 			set => SetValue(LabelledByProperty, value);
 			get => (Label?)GetValue(LabelledByProperty);
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is toggled.
+		/// </summary>
 		public bool IsToggled
 		{
 			set => SetValue(IsToggledProperty, value);
 			get => (bool)GetValue(IsToggledProperty);
 		}
 
+		/// <summary>
+		/// Gets or sets the name of the group. This is used to provide radio button behaviour.
+		/// </summary>
 		public string? GroupName
 		{
 			get => (string?)GetValue(GroupNameProperty);

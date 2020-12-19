@@ -42,7 +42,7 @@ namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware
 			};
 
 			_frontEndCompressionMiddleware = new FrontEndCompressionMiddleware(
-				null,
+				null!,
 				logger.Object,
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),
 				cache.Object,

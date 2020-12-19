@@ -138,7 +138,7 @@ namespace Umbrella.FileSystem.Disk
 
 		#region Overridden Methods
 		/// <inheritdoc />
-		protected override async Task<IUmbrellaFileInfo> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
+		protected override async Task<IUmbrellaFileInfo?> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(subpath, nameof(subpath));

@@ -1,23 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.UI;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
 {
-    public static class EmbeddedResourceHelpers
+	/// <summary>
+	/// Extension methods for use with the <see cref="UrlHelper"/> type, specifically for accessing embeddeded assembly resources.
+	/// </summary>
+	public static class EmbeddedResourceHelpers
     {
-        private static readonly Page s_Page = new Page();
+        private static readonly Page _page = new Page();
 
-        public static string GetWebResourceUrl(this UrlHelper helper, Type type, string resourceId)
+		/// <summary>
+		/// Gets a URL that can be used to access an embedded resource.
+		/// </summary>
+		/// <param name="helper">The helper.</param>
+		/// <param name="type">The type of the resource. This just needs to be a type inside the assembly that contains the resource.</param>
+		/// <param name="resourceId">The resource identifier.</param>
+		/// <returns>A URL to the resource.</returns>
+		public static string GetWebResourceUrl(this UrlHelper helper, Type type, string resourceId)
         {
             if (type == null)
                 type = typeof(EmbeddedResourceHelpers);
 
-            return s_Page.ClientScript.GetWebResourceUrl(type, resourceId);
+            return _page.ClientScript.GetWebResourceUrl(type, resourceId);
         }
     }
 }

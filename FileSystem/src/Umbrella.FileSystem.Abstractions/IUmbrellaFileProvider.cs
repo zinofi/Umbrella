@@ -30,7 +30,7 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <param name="subpath">The subpath.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The file.</returns>
-		Task<IUmbrellaFileInfo> GetAsync(string subpath, CancellationToken cancellationToken = default);
+		Task<IUmbrellaFileInfo?> GetAsync(string subpath, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Deletes the file at the specified <paramref name="subpath"/>.

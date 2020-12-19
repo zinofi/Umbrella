@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Umbrella.Utilities.Data.Pagination
 {
+	// TODO: Could this be a readonly struct?? Or even a record (not yet though!).
+
 	/// <summary>
 	/// Represents the result of a paginated query.
 	/// </summary>

@@ -17,7 +17,7 @@ namespace Umbrella.Utilities.Email
 		#region Private Members
 		private readonly ILogger _log;
 		private readonly StringBuilder _builder;
-		private StringBuilder _rowsBuilder;
+		private StringBuilder? _rowsBuilder;
 		private readonly string _dataRowFormat;
 		private readonly string _newLineToken;
 		private readonly string _encodedNewLineToken;
@@ -53,7 +53,7 @@ namespace Umbrella.Utilities.Email
 		{
 			try
 			{
-				if (_rowsBuilder == null)
+				if (_rowsBuilder is null)
 					_rowsBuilder = new StringBuilder();
 
 				_rowsBuilder.AppendFormat(_dataRowFormat, name, SanitizeValue(value, htmlEncode, replaceNewLines));

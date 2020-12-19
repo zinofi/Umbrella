@@ -20,7 +20,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 		/// Gets or sets the value transformation function to execute on each QueryString parameter value before copying it
 		/// to the corresponding HTTP Header.
 		/// </summary>
-		public Func<string, string> ValueTransformer { get; set; }
+		public Func<string, string>? ValueTransformer { get; set; }
 
 		/// <inheritdoc />
 		public void Validate() => Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));

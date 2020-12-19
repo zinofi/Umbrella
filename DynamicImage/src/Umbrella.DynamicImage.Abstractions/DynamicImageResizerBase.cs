@@ -43,7 +43,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
 		#region IDynamicImageResizer Members
 		/// <inheritdoc />
-		public async Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
+		public async Task<DynamicImageItem?> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
         {
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(sourceFileProvider, nameof(sourceFileProvider));
@@ -57,6 +57,9 @@ namespace Umbrella.DynamicImage.Abstractions
 
                 if (await fileInfo.ExistsAsync().ConfigureAwait(false))
                 {
+					if (!fileInfo.LastModified.HasValue)
+						throw new Exception("The fileInfo must have a last modified value.");
+
                     return await GenerateImageAsync(() => fileInfo.ReadAsByteArrayAsync(cancellationToken),
                         fileInfo.LastModified.Value,
                         options,
@@ -84,7 +87,7 @@ namespace Umbrella.DynamicImage.Abstractions
                     Log.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
 
                 //Check if the image exists in the cache
-                DynamicImageItem dynamicImage = await Cache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
+                DynamicImageItem? dynamicImage = await Cache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
 
                 if (Log.IsEnabled(LogLevel.Debug))
                     Log.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
@@ -100,7 +103,7 @@ namespace Umbrella.DynamicImage.Abstractions
                 //Item cannot be found in the cache - build a new image
                 byte[] originalBytes = await sourceBytesProvider().ConfigureAwait(false);
 
-                //Need to get the newly resized image and assign it to the instance
+                // Need to get the newly resized image and assign it to the instance
                 dynamicImage = new DynamicImageItem
                 {
                     ImageOptions = options,

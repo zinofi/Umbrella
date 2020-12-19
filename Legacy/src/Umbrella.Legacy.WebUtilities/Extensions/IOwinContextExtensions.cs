@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using Umbrella.WebUtilities.Security;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions
 {
-    public static class IOwinContextExtensions
+	/// <summary>
+	/// Extension methods for use with the <see cref="IOwinContext"/> type.
+	/// </summary>
+	public static class IOwinContextExtensions
     {
-        public static string GetCurrentRequestNonce(this IOwinContext context) => context.Get<string>(SecurityConstants.DefaultNonceKey);
+		/// <summary>
+		/// Gets the current request nonce if it exists on the context.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <returns>The nonce.</returns>
+		public static string GetCurrentRequestNonce(this IOwinContext context) => context.Get<string>(SecurityConstants.DefaultNonceKey);
 	}
 }

@@ -30,7 +30,7 @@ namespace Umbrella.DynamicImage.Abstractions
 		/// <param name="options">The options.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The resized image.</returns>
-		Task<DynamicImageItem> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default);
+		Task<DynamicImageItem?> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Generates the image using the specified options or finds its existing version in the cache.

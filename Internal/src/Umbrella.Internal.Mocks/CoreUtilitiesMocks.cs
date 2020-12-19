@@ -22,9 +22,6 @@ namespace Umbrella.Internal.Mocks
 			var lookupNormalizer = new Mock<IDataLookupNormalizer>();
 			lookupNormalizer.Setup(x => x.Normalize(It.IsAny<string>(), It.IsAny<bool>())).Returns<string, bool>((value, trim) =>
 			{
-				if (value is null)
-					return null;
-
 				return trim ? value.Trim().ToUpperInvariant() : value.ToUpperInvariant();
 			});
 
@@ -46,7 +43,7 @@ namespace Umbrella.Internal.Mocks
 		public static IGenericTypeConverter CreateGenericTypeConverter()
 		{
 			var genericTypeConverter = new Mock<IGenericTypeConverter>();
-			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
+			genericTypeConverter.Setup(x => x.Convert(It.IsAny<string>(), (string)null!, null)).Returns<string, string, Func<string, string>>((x, y, z) => x);
 
 			return genericTypeConverter.Object;
 		}

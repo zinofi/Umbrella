@@ -19,7 +19,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 		/// <summary>
 		/// Gets or sets the front end root folder application relative paths.
 		/// </summary>
-		public string[] AppRelativeFolderPaths { get; set; }
+		public string[] AppRelativeFolderPaths { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets the target file extensions. Defaults to .css and .js files.

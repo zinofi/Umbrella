@@ -37,10 +37,9 @@ namespace Umbrella.Utilities.Data
 		/// The normalized value.
 		/// </returns>
 		/// <exception cref="UmbrellaException">There has been a problem normalizing the specified value.</exception>
-		public string? Normalize(string? value, bool trim = true)
+		public string Normalize(string value, bool trim = true)
 		{
-			if (value is null)
-				return null;
+			Guard.ArgumentNotNull(value, nameof(value));
 
 			try
 			{

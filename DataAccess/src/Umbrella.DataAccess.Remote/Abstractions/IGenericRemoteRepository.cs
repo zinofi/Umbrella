@@ -16,11 +16,20 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 	/// <summary>
 	/// A generic repository used to query and update a remote resource.
 	/// </summary>
-	public interface IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TCreateItem, TUpdateItem, TCreateResult, TUpdateResult>
+	/// <typeparam name="TItem">The type of the item.</typeparam>
+	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
+	/// <typeparam name="TSlimItem">The type of the slim item.</typeparam>
+	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
+	/// <typeparam name="TCreateItem">The type of the create item.</typeparam>
+	/// <typeparam name="TCreateResult">The type of the create result.</typeparam>
+	/// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
+	/// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
+	public interface IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
 		where TItem : class, IRemoteItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TSlimItem : class, IRemoteItem<TIdentifier>
 		where TUpdateItem : class, IRemoteItem<TIdentifier>
+		where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	{
 		/// <summary>
 		/// Creates the specified resource on the remote server.
@@ -58,7 +67,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterCombinator">The filter combinator.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<IHttpCallResult<PaginatedResultModel<TSlimItem>>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor> sorters = null, IEnumerable<FilterExpressionDescriptor> filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
+		Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
 
 		/// <summary>
 		/// Finds the specified resource on the remote server.

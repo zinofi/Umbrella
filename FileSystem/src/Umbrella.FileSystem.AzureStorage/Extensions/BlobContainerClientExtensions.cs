@@ -27,7 +27,7 @@ namespace Umbrella.FileSystem.AzureStorage.Extensions
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			string prefix = !string.IsNullOrWhiteSpace(directoryName) ? CleanDirectoryName(directoryName, directorySeparator) : null;
+			string? prefix = !string.IsNullOrWhiteSpace(directoryName) ? CleanDirectoryName(directoryName, directorySeparator) : null;
 
 			var lstBlob = new List<BlobClient>();
 			var lstItem = new List<BlobItem>();

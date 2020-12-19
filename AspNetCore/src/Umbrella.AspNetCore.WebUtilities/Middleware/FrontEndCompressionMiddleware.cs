@@ -102,7 +102,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 					return;
 				}
 
-				FrontEndCompressionMiddlewareMapping mapping = _options.GetMapping(path);
+				FrontEndCompressionMiddlewareMapping? mapping = _options.GetMapping(path);
 
 				if (mapping is null)
 				{
