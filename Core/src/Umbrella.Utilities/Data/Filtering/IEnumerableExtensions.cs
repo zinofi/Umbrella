@@ -18,7 +18,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="combinator">The filter combinator.</param>
 		/// <param name="useCurrentCulture">if set to <c>true</c>, uses the current culture rules for any culture based comparisons, e.g. strings.</param>
 		/// <returns>The filtered collection.</returns>
-		public static IEnumerable<TItem> ApplyFilterExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<FilterExpression<TItem>> filterExpressions, FilterExpressionCombinator combinator, bool useCurrentCulture = true)
+		public static IEnumerable<TItem> ApplyFilterExpressions<TItem>(this IEnumerable<TItem> items, IEnumerable<FilterExpression<TItem>>? filterExpressions, FilterExpressionCombinator combinator, bool useCurrentCulture = true)
 		{
 			IEnumerable<TItem>? filteredItems = null;
 
@@ -79,5 +79,15 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>A <see cref="IEnumerable{FilterExpressionDescriptor}"/> collection.</returns>
 		public static IEnumerable<FilterExpressionDescriptor> ToFilterExpressionDescriptors<TItem>(this IEnumerable<FilterExpression<TItem>> filterExpressions)
 			=> filterExpressions.Select(x => (FilterExpressionDescriptor)x);
+
+		/// <summary>
+		/// Finds a filter with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <returns>The filter, if it exists.</returns>
+		public static FilterExpression<TItem>? FindByMemberPath<TItem>(this IEnumerable<FilterExpression<TItem>>? filters, string memberPath)
+			=> filters?.SingleOrDefault(x => x.MemberPath.Equals(memberPath, StringComparison.OrdinalIgnoreCase));
 	}
 }

@@ -81,5 +81,15 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <returns>A <see cref="IEnumerable{SortExpressionDescriptor}"/> collection.</returns>
 		public static IEnumerable<SortExpressionDescriptor> ToSortExpressionDescriptors<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
 			=> sortExpressions.Select(x => (SortExpressionDescriptor)x);
+
+		/// <summary>
+		/// Finds a sorter with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="sorters">The sorters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <returns>The sorter, if it exists.</returns>
+		public static SortExpression<TItem>? FindByMemberPath<TItem>(this IEnumerable<SortExpression<TItem>>? sorters, string memberPath)
+			=> sorters?.SingleOrDefault(x => x.MemberPath.Equals(memberPath, StringComparison.OrdinalIgnoreCase));
 	}
 }

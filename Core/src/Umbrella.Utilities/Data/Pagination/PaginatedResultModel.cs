@@ -4,6 +4,8 @@ using System.Collections.Generic;
 namespace Umbrella.Utilities.Data.Pagination
 {
 	// TODO: Could this be a readonly struct?? Or even a record (not yet though!).
+	// NO. Can't be either yet because we need to be able to deserialize JSON to it.
+	// When we can full utilize .NET 5 we can do the above.
 
 	/// <summary>
 	/// Represents the result of a paginated query.
