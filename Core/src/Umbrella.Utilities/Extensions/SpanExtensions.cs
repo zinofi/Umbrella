@@ -15,7 +15,7 @@ namespace Umbrella.Utilities.Extensions
 #if NET461 || DEBUG
 			AppendInternalNetClr(span, startIndex, value);
 #else
-            return AppendInternalCoreClr(span, startIndex, value);
+            AppendInternalCoreClr(span, startIndex, value);
 #endif
 
 
@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Extensions
 #if NET461 || DEBUG
 			AppendInternalNetClr(source, startIndex, value);
 #else
-            return AppendInternalCoreClr(source, startIndex, value);
+            AppendInternalCoreClr(source, startIndex, value);
 #endif
 
 
