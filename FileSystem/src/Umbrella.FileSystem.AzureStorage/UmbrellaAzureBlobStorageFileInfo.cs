@@ -373,7 +373,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 
 		/// <inheritdoc />
-		public async Task<T?> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T?>? customValueConverter = null)
+		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T>? customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
@@ -381,14 +381,14 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (_blobProperties is not null)
+				if (_blobProperties != null)
 				{
 					_blobProperties.Metadata.TryGetValue(key, out string rawValue);
 
-					return await Task.FromResult(GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)).ConfigureAwait(false);
+					return await Task.FromResult(GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)!).ConfigureAwait(false);
 				}
 
-				return default;
+				return default!;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
 			{
@@ -405,7 +405,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (_blobProperties is not null)
+				if (_blobProperties != null)
 				{
 					if (value is null)
 					{
@@ -435,7 +435,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (_blobProperties is not null)
+				if (_blobProperties != null)
 				{
 					_blobProperties.Metadata.Remove(key);
 
@@ -457,7 +457,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (_blobProperties is not null)
+				if (_blobProperties != null)
 				{
 					_blobProperties.Metadata.Clear();
 
@@ -479,7 +479,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			try
 			{
-				if (_blobProperties is not null)
+				if (_blobProperties != null)
 					await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
@@ -503,7 +503,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		#region IEquatable Members
 		/// <inheritdoc />
 		public bool Equals(UmbrellaAzureBlobStorageFileInfo? other)
-			=> other is not null &&
+			=> !(other is null) &&
 				IsNew == other.IsNew &&
 				Name == other.Name &&
 				SubPath == other.SubPath &&
@@ -526,7 +526,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			hashCode = hashCode * -1521134295 + Length.GetHashCode();
 			hashCode = hashCode * -1521134295 + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
 			
-			if(ContentType is not null)
+			if(ContentType != null)
 				hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContentType);
 
 			return hashCode;

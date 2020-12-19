@@ -88,7 +88,7 @@ namespace Umbrella.DataAccess.Remote
 
 				IHttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
-				if (result.Success && result.Result is not null)
+				if (result.Success && result.Result != null)
 					await AfterItemLoadedAsync(result.Result, cancellationToken).ConfigureAwait(false);
 
 				return result;
@@ -110,7 +110,7 @@ namespace Umbrella.DataAccess.Remote
 
 				IHttpCallResult<TPaginatedResultModel> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
 
-				if (result.Success && result.Result is not null)
+				if (result.Success && result.Result != null)
 					await AfterAllItemsLoadedAsync(result.Result.Items, cancellationToken).ConfigureAwait(false);
 
 				return result;
@@ -242,7 +242,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <returns>The result of the save operation.</returns>
 		protected virtual async Task<(IHttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, CancellationToken cancellationToken, bool sanitize, bool validate)
 		{
-			if (item is not null)
+			if (item != null)
 			{
 				if (sanitize)
 					await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
@@ -263,7 +263,7 @@ namespace Umbrella.DataAccess.Remote
 				_ => throw new NotSupportedException()
 			};
 
-			if (result.Success && item is not null)
+			if (result.Success && item != null)
 				await AfterItemSavedAsync(item, cancellationToken).ConfigureAwait(false);
 			else if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
 				throw new UmbrellaDataAccessConcurrencyException("The server has reported a concurrency stamp mismatch.");

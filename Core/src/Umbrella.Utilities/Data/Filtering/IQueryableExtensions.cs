@@ -42,7 +42,7 @@ namespace Umbrella.Utilities.Data.Filtering
 						_ => null
 					};
 
-					Expression<Func<TItem, bool>> predicate = dynamicCompare is not null
+					Expression<Func<TItem, bool>> predicate = dynamicCompare != null
 						? UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
 						: UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
 
@@ -50,7 +50,7 @@ namespace Umbrella.Utilities.Data.Filtering
 					{
 						filterPredicate = predicate;
 					}
-					else if (filterPredicate is not null)
+					else if (filterPredicate != null)
 					{
 						filterPredicate = combinator switch
 						{

@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="required">if set to <see langword="true"/>, an exception will be thrown if the attribute cannot be found.</param>
 		/// <param name="fallback">The fallback value returned when <paramref name="required"/> is <see langword="false"/>.</param>
 		/// <returns>The attribute value.</returns>
-		public static T? GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+		public static T GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
         {
             Guard.ArgumentNotNull(element, nameof(element));
             Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
@@ -64,7 +64,7 @@ namespace Umbrella.Utilities.Extensions
 
             return type == typeof(string) && fallback == null
                 ? (T)Convert.ChangeType(string.Empty, type)
-                : fallback;
+                : fallback!;
         }
 
         public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
@@ -97,15 +97,15 @@ namespace Umbrella.Utilities.Extensions
             }
         }
 
-        public static (bool success, T? value) TryGetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+        public static (bool success, T value) TryGetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
         {
             try
             {
-                return (true, GetAttributeValue(element, name, required, fallback));
+                return (true, GetAttributeValue(element, name, required, fallback)!);
             }
             catch (Exception)
             {
-                return (false, fallback);
+                return (false, fallback!);
             }
         }
 

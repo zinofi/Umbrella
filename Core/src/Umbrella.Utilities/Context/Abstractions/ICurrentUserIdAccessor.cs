@@ -9,6 +9,6 @@
 		/// <summary>
 		/// Gets the current user identifier.
 		/// </summary>
-		T? CurrentUserId { get; }
+		T CurrentUserId { get; }
 	}
 }

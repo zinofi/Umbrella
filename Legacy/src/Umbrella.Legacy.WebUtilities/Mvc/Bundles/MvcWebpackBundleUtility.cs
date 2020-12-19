@@ -6,6 +6,11 @@ using Umbrella.WebUtilities.Bundling.Options;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 {
+	/// <summary>
+	/// A utility that can generate HTML script and style/link tags for embedding named Webpack bundles inside a HTML document.
+	/// </summary>
+	/// <seealso cref="MvcBundleUtility{IWebpackBundleUtility, WebpackBundleUtilityOptions}" />
+	/// <seealso cref="IMvcWebpackBundleUtility" />
 	public class MvcWebpackBundleUtility : MvcBundleUtility<IWebpackBundleUtility, WebpackBundleUtilityOptions>, IMvcWebpackBundleUtility
 	{
 		/// <summary>

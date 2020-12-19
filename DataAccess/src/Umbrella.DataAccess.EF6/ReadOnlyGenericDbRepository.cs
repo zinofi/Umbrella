@@ -158,7 +158,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <summary>
 		/// Gets the current user identifier.
 		/// </summary>
-		protected TUserAuditKey? CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
+		protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
 
 		/// <summary>
 		/// Gets the current user identifier accessor.
@@ -226,7 +226,7 @@ namespace Umbrella.DataAccess.EF6
 
 			var filteredQuery = Items;
 
-			if (filterExpression is not null)
+			if (filterExpression != null)
 				filteredQuery = filteredQuery.Where(filterExpression);
 
 			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator);

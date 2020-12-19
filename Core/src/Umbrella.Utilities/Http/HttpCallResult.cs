@@ -42,10 +42,10 @@ namespace Umbrella.Utilities.Http
 		public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null, TResult result = default)
 			: base(success, problemDetails)
 		{
-			Result = result;
+			Result = result!;
 		}
 
 		/// <inheritdoc />
-		public TResult? Result { get; }
+		public TResult Result { get; }
 	}
 }

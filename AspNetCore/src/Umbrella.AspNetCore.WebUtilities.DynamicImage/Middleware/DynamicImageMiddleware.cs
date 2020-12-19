@@ -137,7 +137,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 					? _headerValueUtility.CreateETagHeaderValue(image.LastModified.Value, image.Length)
 					: null;
 
-				if (eTagValue is not null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
+				if (eTagValue != null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
 				{
 					cts.Cancel();
 					context.Response.SendStatusCode(HttpStatusCode.NotModified);

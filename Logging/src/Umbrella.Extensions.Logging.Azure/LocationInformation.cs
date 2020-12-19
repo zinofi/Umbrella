@@ -1,21 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Umbrella.Extensions.Logging.Azure
+﻿namespace Umbrella.Extensions.Logging.Azure
 {
-    public class LocationInformation
+	/// <summary>
+	/// Specifies information about the callsite of a log event.
+	/// </summary>
+	public class LocationInformation
     {
-        public string ClassName { get; }
-        public string FileName { get; }
-        public string LineNumber { get; }
-        public string MethodName { get; }
-        public string FullInfo { get; }
+		/// <summary>
+		/// Gets the name of the class.
+		/// </summary>
+		public string ClassName { get; }
 
-        public LocationInformation(string className, string fileName, string lineNumber, string methodName, string fullInfo)
+		/// <summary>
+		/// Gets the name of the file.
+		/// </summary>
+		public string FileName { get; }
+
+		/// <summary>
+		/// Gets the line number.
+		/// </summary>
+		public string LineNumber { get; }
+
+		/// <summary>
+		/// Gets the name of the method.
+		/// </summary>
+		public string MethodName { get; }
+
+		/// <summary>
+		/// Gets the full information.
+		/// </summary>
+		public string FullInfo { get; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="LocationInformation"/> class.
+		/// </summary>
+		/// <param name="className">Name of the class.</param>
+		/// <param name="fileName">Name of the file.</param>
+		/// <param name="lineNumber">The line number.</param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="fullInfo">The full information.</param>
+		public LocationInformation(string className, string fileName, string lineNumber, string methodName, string fullInfo)
         {
             ClassName = className;
             FileName = fileName;

@@ -13,6 +13,10 @@ using Umbrella.WebUtilities.Security;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 {
+	/// <summary>
+	/// A utility that can generate HTML script and style/link tags for embedding named bundles inside a HTML document.
+	/// </summary>
+	/// <seealso cref="MvcBundleUtility{IBundleUtility, BundleUtilityOptions}" />
 	public class MvcBundleUtility : MvcBundleUtility<IBundleUtility, BundleUtilityOptions>
 	{
 		/// <summary>
@@ -34,6 +38,12 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 		}
 	}
 
+	/// <summary>
+	/// A utility that can generate HTML script and style/link tags for embedding named bundles inside a HTML document.
+	/// </summary>
+	/// <typeparam name="TBundleUtility">The type of the bundle utility.</typeparam>
+	/// <typeparam name="TOptions">The type of the options.</typeparam>
+	/// <seealso cref="MvcBundleUtility{IBundleUtility, BundleUtilityOptions}" />
 	public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUtility
 		where TBundleUtility : IBundleUtility
 		where TOptions : BundleUtilityOptions

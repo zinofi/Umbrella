@@ -23,7 +23,7 @@ namespace Umbrella.Utilities.TypeConverters
 		}
 
 		/// <inheritdoc />
-		public T? Convert<T>(string? value, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null)
+		public T Convert<T>(string? value, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null)
 		{
 			try
 			{
@@ -36,7 +36,7 @@ namespace Umbrella.Utilities.TypeConverters
 
 				return type == typeof(string) && fallback == null
 					? (T)System.Convert.ChangeType(string.Empty, type)
-					: fallback;
+					: fallback!;
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { value, fallbackCreator, customValueConverter }, returnValue: true))
 			{
@@ -45,11 +45,11 @@ namespace Umbrella.Utilities.TypeConverters
 		}
 
 		/// <inheritdoc />
-		public T? Convert<T>(string? value, T fallback = default, Func<string?, T>? customValueConverter = null)
+		public T Convert<T>(string? value, T fallback = default, Func<string?, T>? customValueConverter = null)
 		{
 			try
 			{
-				return Convert(value, () => fallback, customValueConverter);
+				return Convert(value, () => fallback, customValueConverter)!;
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { value, fallback, customValueConverter }, returnValue: true))
 			{

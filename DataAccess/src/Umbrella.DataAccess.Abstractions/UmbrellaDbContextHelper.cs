@@ -75,7 +75,7 @@ namespace Umbrella.DataAccess.Abstractions
 				{
 					Task? task = func?.Invoke(cancellationToken);
 
-					if (task is not null)
+					if (task != null)
 					{
 						if (Log.IsEnabled(LogLevel.Debug))
 							Log.WriteDebug(message: "Post save callback found to execute");

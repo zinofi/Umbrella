@@ -85,7 +85,7 @@ namespace Umbrella.TypeScript.Generators
 
 				//We are generating the validation rules here so that this work can be done in the same step
 				//as the work to generate the property itself.
-				if (validationBuilder is not null)
+				if (validationBuilder != null)
 					WriteValidationRules(pi, tsInfo, validationBuilder);
 			}
 		}

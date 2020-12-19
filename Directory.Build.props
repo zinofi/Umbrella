@@ -3,7 +3,7 @@
 		<Version>3.0.0-preview-0145</Version>
 
 		<Nullable>enable</Nullable>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>8.0</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
 
 		<Authors>Zinofi Digital Ltd</Authors>

@@ -53,7 +53,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 		}
 
 		/// <inheritdoc />
-		public virtual TUserId? CurrentUserId
+		public virtual TUserId CurrentUserId
 		{
 			get
 			{

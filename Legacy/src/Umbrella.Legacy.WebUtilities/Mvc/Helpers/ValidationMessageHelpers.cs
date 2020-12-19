@@ -21,7 +21,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers
         {
             string validationCssClass = "validate-error field-validation-valid";
 
-            TagBuilder outerBuilder = new TagBuilder("div");
+            var outerBuilder = new TagBuilder("div");
             outerBuilder.MergeAttribute("data-valmsg-for", name);
             outerBuilder.MergeAttribute("data-valmsg-replace", "true");
 

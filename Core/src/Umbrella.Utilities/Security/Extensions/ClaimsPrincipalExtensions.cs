@@ -46,10 +46,10 @@ namespace Umbrella.Utilities.Security.Extensions
 		/// <param name="principal">The principal.</param>
 		/// <param name="nameIdentifierClaimType">Type of the name identifier claim.</param>
 		/// <returns>The identifier</returns>
-		public static TUserId? GetId<TUserId>(this ClaimsPrincipal principal, string nameIdentifierClaimType = ClaimTypes.NameIdentifier)
+		public static TUserId GetId<TUserId>(this ClaimsPrincipal principal, string nameIdentifierClaimType = ClaimTypes.NameIdentifier)
 		{
 			if (!principal.Identity.IsAuthenticated)
-				return default;
+				return default!;
 
 			Claim idClaim = principal.FindFirst(nameIdentifierClaimType);
 

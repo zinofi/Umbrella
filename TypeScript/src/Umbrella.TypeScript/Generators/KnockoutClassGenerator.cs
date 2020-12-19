@@ -118,7 +118,7 @@ namespace Umbrella.TypeScript.Generators
 
 			var coreBuilder = !_useDecorators ? CreateValidationExtendItems(propertyInfo) : null;
 
-			if (validationBuilder is not null && (coreBuilder?.Length > 0 || ctorExtendBuilder?.Length > 0))
+			if (validationBuilder != null && (coreBuilder?.Length > 0 || ctorExtendBuilder?.Length > 0))
 			{
 				if (_useDecorators)
 				{

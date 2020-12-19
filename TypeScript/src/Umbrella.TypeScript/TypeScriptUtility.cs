@@ -214,7 +214,7 @@ namespace Umbrella.TypeScript
 
                     if (propertyValue is null)
                     {
-                        if (info.TypeName?.EndsWith("[]") is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() is not null)
+                        if (info.TypeName?.EndsWith("[]") is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() != null)
                         {
                             info.InitialOutputValue = "[]";
                         }

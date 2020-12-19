@@ -25,6 +25,6 @@
 		/// <summary>
 		/// Gets the result.
 		/// </summary>
-		TResult? Result { get; }
+		TResult Result { get; }
 	}
 }

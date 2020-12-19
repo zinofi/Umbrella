@@ -52,7 +52,7 @@ namespace Umbrella.DynamicImage.Abstractions
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
-			if (Content is null && UmbrellaFileInfo is not null)
+			if (Content is null && UmbrellaFileInfo != null)
 				Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
 
 			return Content;
@@ -70,10 +70,10 @@ namespace Umbrella.DynamicImage.Abstractions
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNull(target, nameof(target));
 
-			if (Content is null && UmbrellaFileInfo is not null)
+			if (Content is null && UmbrellaFileInfo != null)
 				return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
 
-			if(Content is not null)
+			if(Content != null)
 				return target.WriteAsync(Content, 0, Content.Length);
 
 			return Task.CompletedTask;

@@ -116,7 +116,7 @@ namespace Umbrella.Utilities.Caching
 						{
 							(T cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.GetOrCreate(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), false);
 
-							if (exception is not null)
+							if (exception != null)
 							{
 								if (!throwOnCacheFailure)
 								{
@@ -155,7 +155,7 @@ namespace Umbrella.Utilities.Caching
 
 								T entryToAdd = actionFunction();
 
-								if (entryToAdd is not null && TrackKeys)
+								if (entryToAdd != null && TrackKeys)
 								{
 									cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 									MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
@@ -165,7 +165,7 @@ namespace Umbrella.Utilities.Caching
 								return entryToAdd;
 							});
 
-							if (cacheMetaEntry is not null && TrackKeysAndHits)
+							if (cacheMetaEntry != null && TrackKeysAndHits)
 								cacheMetaEntry.AddHit();
 
 							return cacheItem;
@@ -230,7 +230,7 @@ namespace Umbrella.Utilities.Caching
 					{
 						try
 						{
-							(T? cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), cancellationToken, false).ConfigureAwait(false);
+							(T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), cancellationToken, false).ConfigureAwait(false);
 
 							if (!throwOnCacheFailure)
 							{
@@ -273,7 +273,7 @@ namespace Umbrella.Utilities.Caching
 
 								T entryToAdd = await actionFunction().ConfigureAwait(false);
 
-								if (entryToAdd is not null && TrackKeys)
+								if (entryToAdd != null && TrackKeys)
 								{
 									cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 									MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
@@ -284,7 +284,7 @@ namespace Umbrella.Utilities.Caching
 
 							}).ConfigureAwait(false);
 
-							if (cacheMetaEntry is not null && TrackKeysAndHits)
+							if (cacheMetaEntry != null && TrackKeysAndHits)
 								cacheMetaEntry.AddHit();
 
 							return cacheItem;
@@ -311,7 +311,7 @@ namespace Umbrella.Utilities.Caching
 			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 		/// <inheritdoc />
-		public (bool itemFound, T? cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory)
+		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -321,9 +321,9 @@ namespace Umbrella.Utilities.Caching
 
 				if (cacheMode is HybridCacheMode.Distributed)
 				{
-					(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
+					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
 
-					if (exception is not null)
+					if (exception != null)
 						Log.WriteError(exception, new { cacheKey, cacheMode });
 
 					return (itemFound, cacheItem);
@@ -345,7 +345,7 @@ namespace Umbrella.Utilities.Caching
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool itemFound, T? cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
+		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -356,9 +356,9 @@ namespace Umbrella.Utilities.Caching
 
 				if (cacheMode is HybridCacheMode.Distributed)
 				{
-					(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
+					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 
-					if (exception is not null)
+					if (exception != null)
 						Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode });
 
 					return (itemFound, cacheItem);
@@ -590,15 +590,15 @@ namespace Umbrella.Utilities.Caching
 
 			options.SetPriority(priority);
 
-			if (expirationTokensBuilder is not null)
+			if (expirationTokensBuilder != null)
 			{
 				IEnumerable<IChangeToken>? tokens = expirationTokensBuilder();
 
-				if (tokens is not null)
+				if (tokens != null)
 				{
 					foreach (IChangeToken token in tokens)
 					{
-						if (token is not null)
+						if (token != null)
 							options.AddExpirationToken(token);
 					}
 				}

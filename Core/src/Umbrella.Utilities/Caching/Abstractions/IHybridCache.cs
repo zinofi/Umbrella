@@ -127,7 +127,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="cacheMode">The cache mode.</param>
 		/// <returns>A tuple specifying whether the item was found in the cache together with the cached item if it exists.</returns>
-		(bool itemFound, T? cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory);
+		(bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory);
 
 		/// <summary>
 		/// Tries to get the item from the cache with the specified <paramref name="cacheKey"/>.
@@ -137,7 +137,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="cacheMode">The cache mode.</param>
 		/// <returns>A tuple specifying whether the item was found in the cache together with the cached item if it exists.</returns>
-		Task<(bool itemFound, T? cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory);
+		Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory);
 
 		/// <summary>
 		/// Adds the specified item to the cache.

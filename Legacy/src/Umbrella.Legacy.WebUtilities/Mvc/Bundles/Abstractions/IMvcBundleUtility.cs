@@ -4,7 +4,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles.Abstractions
 {
 	/// <summary>
 	/// Defines the contract for a utility that can generate HTML script and style/link tags
-	/// for embedding names bundles inside a HTML document.
+	/// for embedding named bundles inside a HTML document.
 	/// </summary>
 	public interface IMvcBundleUtility
 	{

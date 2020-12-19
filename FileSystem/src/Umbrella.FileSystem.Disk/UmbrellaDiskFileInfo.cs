@@ -371,7 +371,7 @@ namespace Umbrella.FileSystem.Disk
 		}
 
 		/// <inheritdoc />
-		public async Task<T?> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T?>? customValueConverter = null)
+		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T>? customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();
@@ -382,14 +382,14 @@ namespace Umbrella.FileSystem.Disk
 				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				if (_metadataDictionary is not null)
+				if (_metadataDictionary != null)
 				{
 					_metadataDictionary.TryGetValue(key, out string rawValue);
 
-					return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter);
+					return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)!;
 				}
 
-				return default;
+				return default!;
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
 			{
@@ -409,7 +409,7 @@ namespace Umbrella.FileSystem.Disk
 				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				if (_metadataDictionary is not null)
+				if (_metadataDictionary != null)
 				{
 					if (value is null)
 					{
@@ -442,7 +442,7 @@ namespace Umbrella.FileSystem.Disk
 				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				if (_metadataDictionary is not null)
+				if (_metadataDictionary != null)
 				{
 					_metadataDictionary.Remove(key);
 
@@ -467,7 +467,7 @@ namespace Umbrella.FileSystem.Disk
 				if (_metadataDictionary is null)
 					await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-				if (_metadataDictionary is not null)
+				if (_metadataDictionary != null)
 				{
 					_metadataDictionary.Clear();
 
@@ -523,7 +523,7 @@ namespace Umbrella.FileSystem.Disk
 		/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
 		/// </returns>
 		public bool Equals(UmbrellaDiskFileInfo? other)
-			=> other is not null &&
+			=> !(other is null) &&
 				IsNew == other.IsNew &&
 				Name == other.Name &&
 				SubPath == other.SubPath &&

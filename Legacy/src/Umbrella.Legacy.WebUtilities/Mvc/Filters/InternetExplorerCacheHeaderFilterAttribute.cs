@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Umbrella.Legacy.WebUtilities.Extensions;
-using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Filters
 {
-    /// <summary>
-    /// A custom MVC action filter to ensure that responses are not cached by Internet Explorer for AJAX requests.
-    /// This involves User Agent sniffing to ensure only IE is targeted.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+	/// <summary>
+	/// A custom MVC action filter to ensure that responses are not cached by Internet Explorer for AJAX requests.
+	/// This involves User Agent sniffing to ensure only IE is targeted.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class InternetExplorerCacheHeaderFilterAttribute : ActionFilterAttribute
     {
+		/// <inheritdoc />
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
             var request = filterContext.HttpContext.Request;

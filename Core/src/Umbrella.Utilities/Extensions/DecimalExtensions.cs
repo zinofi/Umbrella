@@ -12,7 +12,7 @@
 		/// <param name="format">The format.</param>
 		/// <param name="valueIfZero">The value if zero.</param>
 		/// <returns>The result.</returns>
-		public static string ToFriendlyString(this decimal value, string format, string valueIfZero = "") => value is not 0 ? value.ToString(format) : valueIfZero;
+		public static string ToFriendlyString(this decimal value, string format, string valueIfZero = "") => value != 0 ? value.ToString(format) : valueIfZero;
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is null, the string specified by <paramref name="valueIfNull"/> is returned.

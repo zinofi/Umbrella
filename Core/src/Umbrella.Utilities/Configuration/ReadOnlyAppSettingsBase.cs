@@ -120,20 +120,20 @@ namespace Umbrella.Utilities.Configuration
 		/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallback"/> is returned.</param>
 		/// <param name="customValueConverter">The custom value converter.</param>
 		/// <returns>The app setting value or the fallback.</returns>
-		protected virtual T? GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
+		protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
 			try
 			{
-				T? GetValue()
+				T GetValue()
 				{
 					string? value = AppSettingsSource.GetValue(key);
 
 					if(string.IsNullOrWhiteSpace(value) && throwException)
 						throw new ArgumentException($"The value for key: {key} is not valid. An app setting with that key cannot be found.");
 
-					return GenericTypeConverter.Convert(value, fallback, customValueConverter);
+					return GenericTypeConverter.Convert(value, fallback, customValueConverter)!;
 				}
 
 				return useCache
@@ -160,13 +160,13 @@ namespace Umbrella.Utilities.Configuration
 		/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallbackCreator"/> is used to build the returned value.</param>
 		/// <param name="customValueConverter">The custom value converter.</param>
 		/// <returns>The app setting value or the fallback.</returns>
-		protected virtual T? GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
+		protected virtual T GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 
 			try
 			{
-				T? GetValue()
+				T GetValue()
 				{
 					string? value = AppSettingsSource.GetValue(key);
 

@@ -37,7 +37,7 @@ namespace Umbrella.Utilities.Configuration
 		/// <typeparam name="T">The type of the value being set.</typeparam>
 		/// <param name="value">The value.</param>
 		/// <param name="key">The key.</param>
-		protected virtual void SetSetting<T>(T? value, [CallerMemberName]string key = "")
+		protected virtual void SetSetting<T>(T value, [CallerMemberName]string key = "")
 		{
 			try
 			{
@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Configuration
 
 				string? valueToStore = null;
 
-				if (value is not null)
+				if (value != null)
 				{
 					Type type = typeof(T);
 

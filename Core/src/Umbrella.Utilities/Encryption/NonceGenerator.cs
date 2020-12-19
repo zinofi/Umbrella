@@ -52,7 +52,7 @@ namespace Umbrella.Utilities.Encryption
 			}
 			finally
 			{
-				if (buffer is not null)
+				if (buffer != null)
 					ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}

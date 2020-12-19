@@ -23,7 +23,8 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
 		public bool IsEnabled(LogLevel logLevel) => logLevel switch
 		{
-			LogLevel.Trace or LogLevel.Debug => m_Logger.IsDebugEnabled,
+			LogLevel.Trace => m_Logger.IsDebugEnabled,
+			LogLevel.Debug => m_Logger.IsDebugEnabled,
 			LogLevel.Information => m_Logger.IsInfoEnabled,
 			LogLevel.Warning => m_Logger.IsWarnEnabled,
 			LogLevel.Error => m_Logger.IsErrorEnabled,
@@ -89,11 +90,11 @@ namespace Umbrella.Extensions.Logging.Log4Net
 			}
 
 			// Log4Net doesn't seem to log AggregateExceptions properly so handling them manually here
-			if (exception is not null)
+			if (exception != null)
 			{
 				AggregateException? aggregate = null;
 
-				if (exception is not AggregateException)
+				if (!(exception is AggregateException))
 					aggregate = exception.InnerException as AggregateException;
 
 				if (aggregate?.InnerExceptions?.Count > 0)

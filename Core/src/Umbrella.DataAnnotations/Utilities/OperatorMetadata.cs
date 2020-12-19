@@ -36,7 +36,7 @@ namespace Umbrella.DataAnnotations.Utilities
 						{
 							if (value is null && dependentValue is null)
 								return true;
-							else if (value is null && dependentValue is not null)
+							else if (value is null && dependentValue != null)
 								return false;
 
 							return value?.Equals(dependentValue) is true;
@@ -49,7 +49,7 @@ namespace Umbrella.DataAnnotations.Utilities
 						ErrorMessage = "not equal to",
 						IsValid = (value, dependentValue) =>
 						{
-							if (value is null && dependentValue is not null)
+							if (value is null && dependentValue != null)
 								return true;
 							else if (value is null && dependentValue is null)
 								return false;

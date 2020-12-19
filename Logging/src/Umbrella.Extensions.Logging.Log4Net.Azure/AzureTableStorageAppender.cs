@@ -48,7 +48,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure
 
 				//Create the required table entities to write to storage and group them by PartitionKey.
 				//This is because entities written in a batch must all have the same PartitionKey.
-				var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x is not null).GroupBy(x => x!.PartitionKey);
+				var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x != null).GroupBy(x => x!.PartitionKey);
 
 				foreach (var group in paritionKeyGroups)
 				{
