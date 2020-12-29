@@ -67,7 +67,20 @@ namespace Umbrella.Utilities.Extensions
                 : fallback!;
         }
 
-        public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+		/// <summary>
+		/// Gets the value with the specified <paramref name="name"/> from the <paramref name="element"/> and converts to an enum
+		/// of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the enum.</typeparam>
+		/// <param name="element">The element.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="required">if set to <see langword="true"/>, causes an exception to be thrown if the attribute cannot be found.
+		/// If set to <see langword="false"/>, the <paramref name="fallback"/> is returned.
+		/// </param>
+		/// <param name="fallback">The fallback.</param>
+		/// <returns>The enum value, or the fallback if it cannot be found.</returns>
+		/// <exception cref="UmbrellaException">The {name} attribute of a {element.Name} element could not be found.</exception>
+		public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
             where T : struct, Enum
         {
             Guard.ArgumentNotNull(element, nameof(element));
@@ -85,11 +98,18 @@ namespace Umbrella.Utilities.Extensions
                 : fallback;
         }
 
-        public static (bool success, string? value) TryGetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
+		/// <summary>
+		/// Tries the get the attribute value with the specified <paramref name="name"/>.
+		/// </summary>
+		/// <param name="element">The element.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="fallback">The fallback if the attribute cannot be found.</param>
+		/// <returns>A tuple indicating success or failure together with the value or fallback.</returns>
+		public static (bool success, string? value) TryGetAttributeValue(this XElement element, string name, string fallback = "")
         {
             try
             {
-                return (true, GetAttributeValue(element, name, required, fallback));
+                return (true, GetAttributeValue(element, name, true, fallback));
             }
             catch(Exception)
             {
@@ -97,11 +117,19 @@ namespace Umbrella.Utilities.Extensions
             }
         }
 
-        public static (bool success, T value) TryGetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+		/// <summary>
+		/// Tries the get the attribute value with the specified <paramref name="name"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the value.</typeparam>
+		/// <param name="element">The element.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="fallback">The fallback if the attribute cannot be found.</param>
+		/// <returns>A tuple indicating success or failure together with the value or fallback.</returns>
+		public static (bool success, T value) TryGetAttributeValue<T>(this XElement element, string name, T fallback = default)
         {
             try
             {
-                return (true, GetAttributeValue(element, name, required, fallback)!);
+                return (true, GetAttributeValue(element, name, true, fallback)!);
             }
             catch (Exception)
             {
@@ -109,12 +137,20 @@ namespace Umbrella.Utilities.Extensions
             }
         }
 
-        public static (bool success, T value) TryGetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
+		/// <summary>
+		/// Tries the get the attribute value as an enum of type <typeparamref name="T"/> with the specified <paramref name="name"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the enum.</typeparam>
+		/// <param name="element">The element.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="fallback">The fallback if the attribute cannot be found.</param>
+		/// <returns>A tuple indicating success or failure together with the value or fallback.</returns>
+		public static (bool success, T value) TryGetAttributeEnumValue<T>(this XElement element, string name, T fallback = default)
             where T : struct, Enum
         {
             try
             {
-                return (true, GetAttributeEnumValue(element, name, required, fallback));
+                return (true, GetAttributeEnumValue(element, name, true, fallback));
             }
             catch (Exception)
             {

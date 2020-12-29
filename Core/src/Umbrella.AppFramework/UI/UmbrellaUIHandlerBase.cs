@@ -58,14 +58,14 @@ namespace Umbrella.AppFramework.UI
 		/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
 		/// </summary>
 		/// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
-		protected async Task<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync();
+		protected async ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync();
 
 		/// <summary>
 		/// Shows a friendly error message for the specified <paramref name="problemDetails"/> using the <see cref="DialogUtility"/>.
 		/// </summary>
 		/// <param name="problemDetails">The problem details.</param>
 		/// <param name="title">The title.</param>
-		protected async Task ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
+		protected async ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
 			=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
 
 		/// <summary>

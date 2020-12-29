@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Umbrella.Utilities.Context.Abstractions
 {
 	/// <summary>
 	/// Used to allow access to the roles of the current user.
 	/// </summary>
-	/// <typeparam name="T">The type of the role.</typeparam>
-	public interface ICurrentUserRolesAccessor<T>
+	/// <typeparam name="TRole">The type of the role.</typeparam>
+	public interface ICurrentUserRolesAccessor<TRole>
+		where TRole : struct, Enum
 	{
 		/// <summary>
 		/// Gets the role names.
@@ -16,6 +18,6 @@ namespace Umbrella.Utilities.Context.Abstractions
 		/// <summary>
 		/// Gets the roles.
 		/// </summary>
-		IReadOnlyCollection<T> Roles { get; }
+		IReadOnlyCollection<TRole> Roles { get; }
 	}
 }
