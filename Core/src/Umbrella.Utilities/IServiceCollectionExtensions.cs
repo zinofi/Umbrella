@@ -233,6 +233,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <returns>The services.</returns>
 		public static IServiceCollection ConfigureCurrentUserRolesAccessor<TCurrentUserRolesAccessor, TRoleType>(this IServiceCollection services)
 			where TCurrentUserRolesAccessor : class, ICurrentUserRolesAccessor<TRoleType>
+			where TRoleType : struct, Enum
 		{
 			services.ReplaceSingleton<ICurrentUserRolesAccessor<TRoleType>, TCurrentUserRolesAccessor>();
 

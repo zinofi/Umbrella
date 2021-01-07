@@ -15,14 +15,16 @@ namespace Umbrella.DataAnnotations
 		/// <inheritdoc />
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
+			string[] memberNames = !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>();
+
 			if (value is null)
-				return new ValidationResult(FormatErrorMessage(validationContext?.DisplayName));
+				return new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), memberNames);
 
 			bool isValid = ValidationHelper.IsNonEmptyCollection(value);
 
 			return isValid
 				? ValidationResult.Success
-				: new ValidationResult(FormatErrorMessage(validationContext?.DisplayName));
+				: new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), memberNames);
 		}
 	}
 }

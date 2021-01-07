@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
@@ -64,13 +65,15 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Validators
 					}
 				});
 
-                var message = new HttpResponseMessage { StatusCode = StatusCode, ReasonPhrase = FormatErrorMessage(validationContext.DisplayName) };
+                var message = new HttpResponseMessage { StatusCode = StatusCode, ReasonPhrase = FormatErrorMessage(validationContext?.DisplayName) };
                 message.Content = new ObjectContent<ValidationResponse>(response, new JsonMediaTypeFormatter());
 
                 throw new HttpResponseException(message);
             }
 
-            return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
+			string[] memberNames = !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>();
+
+            return new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), memberNames);
         }
     }
 }

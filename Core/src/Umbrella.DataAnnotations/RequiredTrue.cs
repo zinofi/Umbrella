@@ -10,6 +10,6 @@ namespace Umbrella.DataAnnotations
 	{
 		/// <inheritdoc />
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-			=> value is true ? ValidationResult.Success : new ValidationResult(FormatErrorMessage(validationContext?.DisplayName));
+			=> value is true ? ValidationResult.Success : new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>());
 	}
 }
