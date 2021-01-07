@@ -12,7 +12,7 @@ namespace Umbrella.DataAnnotations.Utilities
 		{
 			null => false,
 			Array _ => _minLengthAttribute.IsValid(value),
-			ICollection collection => collection.Count > 1,
+			ICollection collection => collection.Count > 0,
 			_ => throw new NotImplementedException("The value being validated must be of type Array or implement ICollection.")
 		};
 	}
