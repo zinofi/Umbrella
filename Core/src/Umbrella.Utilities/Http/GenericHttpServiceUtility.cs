@@ -77,6 +77,32 @@ namespace Umbrella.Utilities.Http
 			=> parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
 
 		/// <inheritdoc />
+		public async Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
+		{
+			if (response.IsSuccessStatusCode)
+			{
+				if (response.StatusCode == HttpStatusCode.NoContent)
+					return (true, new HttpCallResult<TResult>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+
+				if (response.Content.Headers.ContentLength > 0)
+				{
+					TResult result = response.Content.Headers.ContentType.MediaType switch
+					{
+						"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
+						// TODO v4: "application/json" => await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false),
+						"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync()),
+						"text/html" => throw new NotSupportedException("HTML responses are not supported and should not be returned by API endpoints. This might indicate an incorrect API url is being used which doesn't exist on the server."),
+						_ => throw new NotImplementedException()
+					};
+
+					return (true, new HttpCallResult<TResult>(true, result: result));
+				}
+			}
+
+			return default;
+		}
+
+		/// <inheritdoc />
 		public async Task<HttpProblemDetails> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
 		{
 			string defaultMessage = response.StatusCode switch

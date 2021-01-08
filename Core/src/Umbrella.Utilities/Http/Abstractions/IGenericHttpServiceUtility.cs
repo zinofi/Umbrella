@@ -50,5 +50,14 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="parameters">The parameters.</param>
 		/// <returns>The URL.</returns>
 		string GetUrlWithParmeters(string url, IDictionary<string, string>? parameters);
+
+		/// <summary>
+		/// Processes the response.
+		/// </summary>
+		/// <typeparam name="TResult">The type of the result.</typeparam>
+		/// <param name="response">The response.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A tuple containing the result.</returns>
+		Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken);
 	}
 }
