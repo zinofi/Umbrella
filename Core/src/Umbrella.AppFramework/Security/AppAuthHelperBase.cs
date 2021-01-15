@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -62,7 +63,21 @@ namespace Umbrella.AppFramework.Security
 				if (string.IsNullOrWhiteSpace(token))
 					return _emptyPrincipal;
 
-				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(_jwtUtility.ParseClaimsFromJwt(token!), "jwt"));
+				IReadOnlyCollection<Claim>? claims = null;
+
+				try
+				{
+					claims = _jwtUtility.ParseClaimsFromJwt(token!);
+				}
+				catch (Exception)
+				{
+					// There was a problem parsing the token. To ensure the user can get a new token,
+					// remove it from storage.
+					await _tokenStorageService.SetTokenAsync(null);
+					throw;
+				}
+
+				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
 
 				return _claimsPrincipal;
 			}

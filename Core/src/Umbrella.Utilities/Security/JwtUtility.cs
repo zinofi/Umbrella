@@ -76,6 +76,9 @@ namespace Umbrella.Utilities.Security
 				_ => base64
 			};
 
+			// Replace invalid characters.
+			base64 = base64.Replace('-', '+').Replace('_', '/');
+
 			return Convert.FromBase64String(base64);
 		}
 	}
