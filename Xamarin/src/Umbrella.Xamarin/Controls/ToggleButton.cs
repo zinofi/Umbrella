@@ -77,6 +77,8 @@ namespace Umbrella.Xamarin.Controls
 
 			if (LabelledBy != null)
 			{
+				VisualStateManager.GoToState(LabelledBy, "ToggledOff");
+
 				var grTap = new TapGestureRecognizer
 				{
 					Command = new Command(ToggleState)
@@ -122,6 +124,9 @@ namespace Umbrella.Xamarin.Controls
 
 			// Set the visual state
 			VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
+
+			if (toggleButton.LabelledBy != null)
+				VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 		}
 	}
 }

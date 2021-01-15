@@ -20,6 +20,11 @@ namespace Umbrella.Xamarin.Controls
 		public event EventHandler<ToggledEventArgs>? Toggled;
 
 		/// <summary>
+		/// The labelled by property
+		/// </summary>
+		public static BindableProperty LabelledByProperty = BindableProperty.Create(nameof(LabelledBy), typeof(Label), typeof(ToggleButton));
+
+		/// <summary>
 		/// The is toggled property
 		/// </summary>
 		public static BindableProperty IsToggledProperty = BindableProperty.Create(nameof(IsToggled), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay, propertyChanged: OnIsToggledChanged);
@@ -34,31 +39,16 @@ namespace Umbrella.Xamarin.Controls
 		/// </summary>
 		public ToggleImageButton()
 		{
-			Clicked += (sender, args) =>
-			{
-				if (!string.IsNullOrEmpty(GroupName))
-				{
-					IReadOnlyCollection<ToggleImageButton> lstToggleButton = this.FindPageControls<ToggleImageButton>(x => x.GroupName == GroupName);
+			Clicked += (sender, args) => ToggleState(); 
+		}
 
-					bool newValue = !IsToggled;
-
-					if (newValue)
-					{
-						// Ensure others in the group are deselected
-						lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
-						IsToggled = newValue;
-					}
-					else
-					{
-						// Never allow deselection for grouped items as we need to ensure 1 is always selected
-						// once an initial selection has been made.
-					}
-				}
-				else
-				{
-					IsToggled = !IsToggled;
-				}
-			};
+		/// <summary>
+		/// Gets or sets the <see cref="Label"/> that is associated with this control.
+		/// </summary>
+		public Label? LabelledBy
+		{
+			set => SetValue(LabelledByProperty, value);
+			get => (Label?)GetValue(LabelledByProperty);
 		}
 
 		/// <summary>
@@ -84,6 +74,44 @@ namespace Umbrella.Xamarin.Controls
 		{
 			base.OnParentSet();
 			VisualStateManager.GoToState(this, "ToggledOff");
+
+			if (LabelledBy != null)
+			{
+				VisualStateManager.GoToState(LabelledBy, "ToggledOff");
+
+				var grTap = new TapGestureRecognizer
+				{
+					Command = new Command(ToggleState)
+				};
+
+				LabelledBy.GestureRecognizers.Add(grTap);
+			}
+		}
+
+		private void ToggleState()
+		{
+			if (!string.IsNullOrEmpty(GroupName))
+			{
+				IReadOnlyCollection<ToggleImageButton> lstToggleButton = this.FindPageControls<ToggleImageButton>(x => x.GroupName == GroupName);
+
+				bool newValue = !IsToggled;
+
+				if (newValue)
+				{
+					// Ensure others in the group are deselected
+					lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
+					IsToggled = newValue;
+				}
+				else
+				{
+					// Never allow deselection for grouped items as we need to ensure 1 is always selected
+					// once an initial selection has been made.
+				}
+			}
+			else
+			{
+				IsToggled = !IsToggled;
+			}
 		}
 
 		private static async void OnIsToggledChanged(BindableObject bindable, object oldValue, object newValue)
@@ -99,6 +127,9 @@ namespace Umbrella.Xamarin.Controls
 
 			// Set the visual state
 			VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
+
+			if (toggleButton.LabelledBy != null)
+				VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 		}
 	}
 }
