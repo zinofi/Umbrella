@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<Version>3.0.0-preview-0151</Version>
+		<Version>3.0.0-preview-0152</Version>
 
 		<Nullable>enable</Nullable>
 		<LangVersion>8.0</LangVersion>
