@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Text;
-// TODO v4: using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -89,8 +87,6 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
-				// TODO v4: HttpResponseMessage response = await Client.PostAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
-
 				string json = UmbrellaStatics.SerializeJson(item!);
 				var request = new HttpRequestMessage(HttpMethod.Post, targetUrl)
 				{
@@ -121,8 +117,6 @@ namespace Umbrella.Utilities.Http
 			try
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
-
-				// TODO v4: HttpResponseMessage response = await Client.PutAsJsonAsync(targetUrl, item, cancellationToken).ConfigureAwait(false);
 
 				string json = UmbrellaStatics.SerializeJson(item!);
 				var request = new HttpRequestMessage(HttpMethod.Put, targetUrl)
@@ -160,12 +154,6 @@ namespace Umbrella.Utilities.Http
 				{
 					Content = new StringContent(json, Encoding.UTF8, "application/json")
 				};
-
-				// TODO v4
-				//var request = new HttpRequestMessage(PatchHttpMethod, targetUrl)
-				//{
-				//	Content = JsonContent.Create(item)
-				//};
 
 				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 

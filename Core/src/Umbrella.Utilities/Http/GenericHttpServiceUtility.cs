@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-// TODO v4: using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -89,7 +88,6 @@ namespace Umbrella.Utilities.Http
 					TResult result = response.Content.Headers.ContentType.MediaType switch
 					{
 						"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
-						// TODO v4: "application/json" => await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false),
 						"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync()),
 						"text/html" => throw new NotSupportedException("HTML responses are not supported and should not be returned by API endpoints. This might indicate an incorrect API url is being used which doesn't exist on the server."),
 						_ => throw new NotImplementedException()
@@ -121,8 +119,6 @@ namespace Umbrella.Utilities.Http
 			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
 			return UmbrellaStatics.DeserializeJson<HttpProblemDetails>(json);
-
-			// TODO v4: return await response.Content.ReadFromJsonAsync<HttpProblemDetails>(cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 	}
 }

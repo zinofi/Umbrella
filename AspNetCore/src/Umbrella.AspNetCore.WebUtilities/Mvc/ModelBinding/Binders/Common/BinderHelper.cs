@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Umbrella.Utilities.JsonConverters;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common
 {
@@ -11,6 +12,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common
 		/// <summary>
 		/// JSON Serializer options commonly used with model binders.
 		/// </summary>
-		public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+		public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
+		{
+			PropertyNameCaseInsensitive = true,
+			Converters = {
+				new JsonStringEnumConverter(),
+				new TimeSpanConverter(),
+				new NullableTimeSpanConverter()
+			}
+		};
 	}
 }
