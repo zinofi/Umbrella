@@ -13,7 +13,6 @@ namespace Umbrella.Utilities
 		private static readonly JsonSerializerOptions _defaultOptions = new JsonSerializerOptions
 		{
 			Converters = {
-				new JsonStringEnumConverter(),
 				new JsonTimeSpanConverter()
 			}
 		};
@@ -22,7 +21,6 @@ namespace Umbrella.Utilities
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 			Converters = {
-				new JsonStringEnumConverter(),
 				new JsonTimeSpanConverter()
 			}
 		};
@@ -31,7 +29,6 @@ namespace Umbrella.Utilities
 		{
 			PropertyNameCaseInsensitive = true,
 			Converters = {
-				new JsonStringEnumConverter(),
 				new JsonTimeSpanConverter()
 			}
 		};
