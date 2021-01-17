@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Umbrella.Utilities.JsonConverters;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common
 {
@@ -17,8 +16,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common
 			PropertyNameCaseInsensitive = true,
 			Converters = {
 				new JsonStringEnumConverter(),
-				new TimeSpanJsonConverter(),
-				new NullableTimeSpanJsonConverter()
+				new JsonTimeSpanConverter()
 			}
 		};
 	}

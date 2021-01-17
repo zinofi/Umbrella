@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Umbrella.Utilities.Exceptions;
-using Umbrella.Utilities.JsonConverters;
 
 namespace Umbrella.Utilities
 {
@@ -16,8 +15,7 @@ namespace Umbrella.Utilities
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 			Converters = {
 				new JsonStringEnumConverter(),
-				new TimeSpanJsonConverter(),
-				new NullableTimeSpanJsonConverter()
+				new JsonTimeSpanConverter()
 			}
 		};
 
@@ -26,8 +24,7 @@ namespace Umbrella.Utilities
 			PropertyNameCaseInsensitive = true,
 			Converters = {
 				new JsonStringEnumConverter(),
-				new TimeSpanJsonConverter(),
-				new NullableTimeSpanJsonConverter()
+				new JsonTimeSpanConverter()
 			}
 		};
 
