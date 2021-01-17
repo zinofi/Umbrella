@@ -5,6 +5,7 @@ using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Extensions;
 using Xamarin.Forms;
 
+// TODO: Remove GroupName support here.
 namespace Umbrella.Xamarin.Controls
 {
 	/// <summary>
@@ -126,7 +127,7 @@ namespace Umbrella.Xamarin.Controls
 			VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 
 			if (toggleButton.LabelledBy != null)
-				VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
+				VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
 		}
 	}
 }

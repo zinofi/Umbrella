@@ -129,7 +129,7 @@ namespace Umbrella.Xamarin.Controls
 			VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 
 			if (toggleButton.LabelledBy != null)
-				VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
+				VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
 		}
 	}
 }
