@@ -11,7 +11,7 @@ namespace Umbrella.Utilities.JsonConverters
 	/// <remarks>
 	/// Built in support should be available in .NET 6 after which this will be removed.
 	/// </remarks>
-	public class TimeSpanConverter : JsonConverter<TimeSpan>
+	public class TimeSpanJsonConverter : JsonConverter<TimeSpan>
 	{
 		/// <inheritdoc />
 		public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

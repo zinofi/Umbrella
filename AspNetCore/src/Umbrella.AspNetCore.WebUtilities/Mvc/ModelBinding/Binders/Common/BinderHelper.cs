@@ -17,8 +17,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common
 			PropertyNameCaseInsensitive = true,
 			Converters = {
 				new JsonStringEnumConverter(),
-				new TimeSpanConverter(),
-				new NullableTimeSpanConverter()
+				new TimeSpanJsonConverter(),
+				new NullableTimeSpanJsonConverter()
 			}
 		};
 	}
