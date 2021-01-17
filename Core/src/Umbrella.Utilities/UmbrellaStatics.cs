@@ -10,6 +10,14 @@ namespace Umbrella.Utilities
 	/// </summary>
 	public static class UmbrellaStatics
 	{
+		private static readonly JsonSerializerOptions _defaultOptions = new JsonSerializerOptions
+		{
+			Converters = {
+				new JsonStringEnumConverter(),
+				new JsonTimeSpanConverter()
+			}
+		};
+
 		private static readonly JsonSerializerOptions _camelCaseOptions = new JsonSerializerOptions
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -94,7 +102,7 @@ namespace Umbrella.Utilities
 		/// <param name="value">The value.</param>
 		/// <param name="useCamelCasingRules">if set to <see langword="true"/>, camel case will be used for property names.</param>
 		/// <returns>The JSON string.</returns>
-		public static string DefaultSerialize(object value, bool useCamelCasingRules) => JsonSerializer.Serialize(value, value.GetType(), useCamelCasingRules ? _camelCaseOptions : null);
+		public static string DefaultSerialize(object value, bool useCamelCasingRules) => JsonSerializer.Serialize(value, value.GetType(), useCamelCasingRules ? _camelCaseOptions : _defaultOptions);
 
 		/// <summary>
 		/// Deserializes the JSON to the specified type <paramref name="type"/>.
