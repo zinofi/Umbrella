@@ -8,7 +8,7 @@ namespace Umbrella.DataAnnotations.BaseClasses
 	/// Serves as the base class for contingent validation attributes.
 	/// </summary>
 	/// <seealso cref="Umbrella.DataAnnotations.BaseClasses.ModelAwareValidationAttribute" />
-	[AttributeUsage(AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 	public abstract class ContingentValidationAttribute : ModelAwareValidationAttribute
 	{
 		/// <summary>
