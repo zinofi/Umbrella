@@ -597,7 +597,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The collection of repo options. This can be used by this method to determine if the synchronization logic should be executed.</param>
 		/// <returns>An awaitable <see cref="Task" /> which will complete once all work has been completed.</returns>
-		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions> options)
+		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions>? options)
 					where TTargetEntity : class, IEntity<TTargetEntityKey>
 					where TTargetEntityKey : IEquatable<TTargetEntityKey>
 					where TTargetEntityRepoOptions : RepoOptions, new()
@@ -606,7 +606,7 @@ namespace Umbrella.DataAccess.EF6
 			cancellationToken.ThrowIfCancellationRequested();
 
 			// Find the RepoOptions for this repository if provided in the options collection
-			TTargetEntityRepoOptions targetOptions = options.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
+			TTargetEntityRepoOptions? targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
 			// Copy the incoming list here - this is because the code in the foreach declaration below finds all the entities matching the where clause
 			// but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means

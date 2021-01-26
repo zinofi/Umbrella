@@ -539,7 +539,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			cancellationToken.ThrowIfCancellationRequested();
 
 			// Find the RepoOptions for this repository if provided in the options collection
-			TTargetEntityRepoOptions targetOptions = repoOptions.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
+			TTargetEntityRepoOptions? targetOptions = repoOptions?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
 			//Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
 			//but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
