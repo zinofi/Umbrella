@@ -86,6 +86,7 @@ namespace Umbrella.Xamarin.Controls
 				};
 
 				LabelledBy.GestureRecognizers.Add(grTap);
+				AutomationProperties.SetLabeledBy(this, LabelledBy);
 			}
 		}
 
