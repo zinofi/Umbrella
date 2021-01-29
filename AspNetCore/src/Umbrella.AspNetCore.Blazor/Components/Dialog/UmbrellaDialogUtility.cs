@@ -118,7 +118,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again. If problems persist, please reload the screen.", string title = "Error", string closeButtonText = "Close")
+		public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again.", string title = "Error", string closeButtonText = "Close")
 		{
 			try
 			{

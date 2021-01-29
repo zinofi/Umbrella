@@ -23,6 +23,6 @@
 		/// <summary>
 		/// The default unknown error message
 		/// </summary>
-		public const string UnknownErrorMessage = "An unknown error has occurred. Please try again. If problems persist, please reload the screen.";
+		public const string UnknownErrorMessage = "An unknown error has occurred. Please try again.";
 	}
 }
