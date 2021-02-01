@@ -17,6 +17,7 @@ namespace Umbrella.AppFramework.Utilities
 	{
 		private readonly ILogger<AppUpdateMessageUtility> _logger;
 		private readonly IDialogUtility _dialogUtility;
+		private readonly IUriNavigator _uriNavigator;
 		private readonly IWeakEventManager _weakEventManager;
 
 		/// <inheritdoc />
@@ -31,19 +32,22 @@ namespace Umbrella.AppFramework.Utilities
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="dialogUtility">The dialog utility.</param>
+		/// <param name="uriNavigator">The URI navigator.</param>
 		/// <param name="weakEventManagerFactory">The weak event manager factory.</param>
 		public AppUpdateMessageUtility(
 			ILogger<AppUpdateMessageUtility> logger,
 			IDialogUtility dialogUtility,
+			IUriNavigator uriNavigator,
 			IWeakEventManagerFactory weakEventManagerFactory)
 		{
 			_logger = logger;
 			_dialogUtility = dialogUtility;
+			_uriNavigator = uriNavigator;
 			_weakEventManager = weakEventManagerFactory.Create();
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowAsync(bool updateRequired, string message)
+		public async ValueTask ShowAsync(bool updateRequired, string message, string? storeLink)
 		{
 			try
 			{
@@ -52,7 +56,28 @@ namespace Umbrella.AppFramework.Utilities
 				if (lstTask?.Count > 0)
 					await Task.WhenAll(lstTask);
 
-				await _dialogUtility.ShowMessageAsync(message, "Update Required");
+				string title = updateRequired ? "Update Required" : "Update Available";
+
+				if (!string.IsNullOrEmpty(storeLink))
+				{
+					if (updateRequired)
+					{
+						await _dialogUtility.ShowMessageAsync(message, title, "Update");
+						await _uriNavigator.OpenAsync(storeLink!, true);
+					}
+					else
+					{
+						bool openLink = await _dialogUtility.ShowConfirmMessageAsync(message, title, "Update");
+
+						if (openLink)
+							await _uriNavigator.OpenAsync(storeLink!, true);
+					}
+				}
+				else
+				{
+					// No store link is available so we can only show the message.
+					await _dialogUtility.ShowMessageAsync(message, title, "Close");
+				}
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { updateRequired, message }, returnValue: true))
 			{

@@ -22,6 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IAppLocalStorageService, XamarinLocalStorageService>();
 			services.AddSingleton<IDialogUtility, DialogUtility>();
 			services.AddSingleton<IXamarinValidationUtility, XamarinValidationUtility>();
+			services.AddSingleton<IUriNavigator, UriNavigator>();
 
 			return services;
 		}

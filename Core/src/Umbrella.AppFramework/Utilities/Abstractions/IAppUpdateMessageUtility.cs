@@ -19,7 +19,8 @@ namespace Umbrella.AppFramework.Utilities.Abstractions
 		/// </summary>
 		/// <param name="updateRequired">if set to <c>true</c> the update is required.</param>
 		/// <param name="message">The message.</param>
+		/// <param name="storeLink">The link to the app in the relevant app store, e.g. App Store, Google Play, etc.</param>
 		/// <returns>A task that completes when the message has been actioned by the user.</returns>
-		ValueTask ShowAsync(bool updateRequired, string message);
+		ValueTask ShowAsync(bool updateRequired, string message, string? storeLink);
 	}
 }
