@@ -118,9 +118,9 @@ namespace Umbrella.DynamicImage.Test
 		{
 			DynamicImageUtility utility = CreateDynamicImageUtility();
 
-			string url = utility.GenerateVirtualPath(DynamicImageConstants.DefaultPathPrefix, new DynamicImageOptions("/images/test.png?key=value.test.onex&stuff=xxx", 100, 200, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg));
+			string url = utility.GenerateVirtualPath(DynamicImageConstants.DefaultPathPrefix, new DynamicImageOptions("/images/test.png?key=value.test.onEX&stuff=xxx", 100, 200, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg));
 
-			Assert.Equal($"~/{DynamicImageConstants.DefaultPathPrefix}/100/200/UniformFill/png/images/test.jpg?key=value.test.onex&stuff=xxx", url);
+			Assert.Equal($"~/{DynamicImageConstants.DefaultPathPrefix}/100/200/UniformFill/png/images/test.jpg?key=value.test.onEX&stuff=xxx", url);
 		}
 
 		private DynamicImageUtility CreateDynamicImageUtility()

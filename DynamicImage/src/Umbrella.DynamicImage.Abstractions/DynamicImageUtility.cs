@@ -203,7 +203,7 @@ namespace Umbrella.DynamicImage.Abstractions
 					options.Height,
 					options.ResizeMode,
 					originalExtension,
-					path.Replace(originalExtension, options.Format.ToFileExtensionString()));
+					path.Replace(originalExtension, options.Format.ToFileExtensionString()).ToLowerInvariant());
 
 				if (!string.IsNullOrEmpty(qs))
 					virtualPath += "?" + qs;

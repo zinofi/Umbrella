@@ -58,8 +58,8 @@ namespace Umbrella.Utilities.Test.Imaging
 		[InlineData("/images/test.png", 1, "")]
 		[InlineData("/images/test.png", 2, "/images/test.png 1x, /images/test@2x.png 2x")]
 		[InlineData("/images/test.png", 3, "/images/test.png 1x, /images/test@2x.png 2x, /images/test@3x.png 3x")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 2, "/images/test.png?key=x.y.z&o=k 1x, /images/test@2x.png?key=x.y.z&o=k 2x")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 3, "/images/test.png?key=x.y.z&o=k 1x, /images/test@2x.png?key=x.y.z&o=k 2x, /images/test@3x.png?key=x.y.z&o=k 3x")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 2, "/images/test.png?key=X.Y.Z&o=k 1x, /images/test@2x.png?key=X.Y.Z&o=k 2x")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 3, "/images/test.png?key=X.Y.Z&o=k 1x, /images/test@2x.png?key=X.Y.Z&o=k 2x, /images/test@3x.png?key=X.Y.Z&o=k 3x")]
 		public void GetPixelDensitySrcSetValue_Valid(string imageUrl, int maxPixelDensity, string output)
 		{
 			var helper = CreateResponsiveImageHelper();
@@ -73,8 +73,8 @@ namespace Umbrella.Utilities.Test.Imaging
 		[InlineData("/images/test.png", 1, new[] { "/images/test.png" })]
 		[InlineData("/images/test.png", 2, new[] { "/images/test.png", "/images/test@2x.png" })]
 		[InlineData("/images/test.png", 3, new[] { "/images/test.png", "/images/test@2x.png", "/images/test@3x.png" })]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 2, new[] { "/images/test.png?key=x.y.z&o=k", "/images/test@2x.png?key=x.y.z&o=k" })]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 3, new[] { "/images/test.png?key=x.y.z&o=k", "/images/test@2x.png?key=x.y.z&o=k", "/images/test@3x.png?key=x.y.z&o=k" })]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 2, new[] { "/images/test.png?key=X.Y.Z&o=k", "/images/test@2x.png?key=X.Y.Z&o=k" })]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 3, new[] { "/images/test.png?key=X.Y.Z&o=k", "/images/test@2x.png?key=X.Y.Z&o=k", "/images/test@3x.png?key=X.Y.Z&o=k" })]
 		public void GetPixelDensityImageUrls_Valid(string imageUrl, int maxPixelDensity, string[] output)
 		{
 			var helper = CreateResponsiveImageHelper();
@@ -88,9 +88,9 @@ namespace Umbrella.Utilities.Test.Imaging
 		[InlineData("/images/test.png", 1, "/images/test.png")]
 		[InlineData("/images/test.png", 2, "/images/test@2x.png")]
 		[InlineData("/images/test.png", 3, "/images/test@3x.png")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 1, "/images/test.png?key=x.y.z&o=k")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 2, "/images/test@2x.png?key=x.y.z&o=k")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", 3, "/images/test@3x.png?key=x.y.z&o=k")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 1, "/images/test.png?key=X.Y.Z&o=k")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 2, "/images/test@2x.png?key=X.Y.Z&o=k")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", 3, "/images/test@3x.png?key=X.Y.Z&o=k")]
 		public void GetPixelDensityImageUrl_Valid(string imageUrl, int pixelDensity, string output)
 		{
 			var helper = CreateResponsiveImageHelper();
@@ -110,15 +110,15 @@ namespace Umbrella.Utilities.Test.Imaging
 		[InlineData("/images/test.png", "100", 3, 200, 100, "/100/50/images/test.png 100w, /200/100/images/test.png 200w, /300/150/images/test.png 300w")]
 		[InlineData("/images/test.png", "100, 200", 3, 200, 100, "/100/50/images/test.png 100w, /200/100/images/test.png 200w, /300/150/images/test.png 300w, /400/200/images/test.png 400w, /600/300/images/test.png 600w")]
 		[InlineData("/images/test.png", "100, 200, 300", 3, 200, 100, "/100/50/images/test.png 100w, /200/100/images/test.png 200w, /300/150/images/test.png 300w, /400/200/images/test.png 400w, /600/300/images/test.png 600w, /900/450/images/test.png 900w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100", 1, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100, 200", 1, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100, 200, 300", 1, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w, /300/150/images/test.png?key=x.y.z&o=k 300w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100", 2, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100, 200", 2, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w, /400/200/images/test.png?key=x.y.z&o=k 400w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100, 200, 300", 2, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w, /300/150/images/test.png?key=x.y.z&o=k 300w, /400/200/images/test.png?key=x.y.z&o=k 400w, /600/300/images/test.png?key=x.y.z&o=k 600w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100", 3, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w, /300/150/images/test.png?key=x.y.z&o=k 300w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100, 200", 3, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w, /300/150/images/test.png?key=x.y.z&o=k 300w, /400/200/images/test.png?key=x.y.z&o=k 400w, /600/300/images/test.png?key=x.y.z&o=k 600w")]
-		[InlineData("/images/test.png?key=x.y.z&o=k", "100, 200, 300", 3, 200, 100, "/100/50/images/test.png?key=x.y.z&o=k 100w, /200/100/images/test.png?key=x.y.z&o=k 200w, /300/150/images/test.png?key=x.y.z&o=k 300w, /400/200/images/test.png?key=x.y.z&o=k 400w, /600/300/images/test.png?key=x.y.z&o=k 600w, /900/450/images/test.png?key=x.y.z&o=k 900w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100", 1, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100, 200", 1, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100, 200, 300", 1, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w, /300/150/images/test.png?key=X.Y.Z&o=k 300w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100", 2, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100, 200", 2, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w, /400/200/images/test.png?key=X.Y.Z&o=k 400w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100, 200, 300", 2, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w, /300/150/images/test.png?key=X.Y.Z&o=k 300w, /400/200/images/test.png?key=X.Y.Z&o=k 400w, /600/300/images/test.png?key=X.Y.Z&o=k 600w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100", 3, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w, /300/150/images/test.png?key=X.Y.Z&o=k 300w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100, 200", 3, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w, /300/150/images/test.png?key=X.Y.Z&o=k 300w, /400/200/images/test.png?key=X.Y.Z&o=k 400w, /600/300/images/test.png?key=X.Y.Z&o=k 600w")]
+		[InlineData("/images/test.png?key=X.Y.Z&o=k", "100, 200, 300", 3, 200, 100, "/100/50/images/test.png?key=X.Y.Z&o=k 100w, /200/100/images/test.png?key=X.Y.Z&o=k 200w, /300/150/images/test.png?key=X.Y.Z&o=k 300w, /400/200/images/test.png?key=X.Y.Z&o=k 400w, /600/300/images/test.png?key=X.Y.Z&o=k 600w, /900/450/images/test.png?key=X.Y.Z&o=k 900w")]
 		public void GetSizeSrcSetValue_Valid(string imageUrl, string sizeWidths, int maxPixelDensity, int widthRequest, int heightRequest, string output)
 		{
 			var helper = CreateResponsiveImageHelper();

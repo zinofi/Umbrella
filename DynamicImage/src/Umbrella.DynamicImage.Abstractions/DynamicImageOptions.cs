@@ -53,7 +53,7 @@ namespace Umbrella.DynamicImage.Abstractions
 			DynamicResizeMode resizeMode,
 			DynamicImageFormat format)
 		{
-			SourcePath = path.ToLowerInvariant();
+			SourcePath = path;
 			Width = width;
 			Height = height;
 			ResizeMode = resizeMode;
