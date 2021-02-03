@@ -28,6 +28,11 @@ namespace Umbrella.Utilities.Spatial
 			public PostcodeLookupResult? Result { get; set; }
 		}
 
+		private class PostcodeLookupPartialMapResultsWrapper
+		{
+			public PostcodeLookupResult[]? Result { get; set; }
+		}
+
 		private class PostcodeLookupResult
 		{
 			public double Latitude { get; set; }
@@ -283,6 +288,53 @@ namespace Umbrella.Utilities.Spatial
 			catch (Exception exc) when (_logger.WriteError(exc, new { postcode }, returnValue: true))
 			{
 				throw new UmbrellaException("There was a problem lookup up the data for the specified postcode.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByPartialPostcodeAsync(string partialPostcode, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(partialPostcode, nameof(partialPostcode));
+
+			try
+			{
+				string cleanedPostcode = partialPostcode.TrimToUpperInvariant();
+
+				string encodedPostcode = UrlEncoder.Default.Encode(cleanedPostcode);
+
+				string url = $"{_apiUrl}/postcodes?q={encodedPostcode}";
+
+				HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+
+				if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json"))
+				{
+					var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupPartialMapResultsWrapper>(cancellationToken: cancellationToken);
+
+					PostcodeLookupResult[]? result = resultWrapper.Result;
+
+					if (result != null && result.Length > 0)
+					{
+						var firstMatch = result[0];
+
+						var dataItem = new GeocodingResult
+						{
+							Locality = SanitizeParishValue(firstMatch.Parish) ?? "",
+							Location = new GeoLocation(firstMatch.Latitude, firstMatch.Longitude),
+							Postcode = cleanedPostcode,
+							WiderLocality = firstMatch.AdminDistrict ?? "",
+							Country = firstMatch.Country ?? ""
+						};
+
+						return (true, dataItem);
+					}
+				}
+
+				return default;
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { partialPostcode }, returnValue: true))
+			{
+				throw new UmbrellaException("There was a problem lookup up the data for the specified partial postcode.", exc);
 			}
 		}
 

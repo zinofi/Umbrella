@@ -40,5 +40,6 @@ namespace Umbrella.Utilities.Spatial.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An tuple which indicates if the operation was a success together with the result.</returns>
 		Task<(bool success, IReadOnlyCollection<GeocodingResult>? results)> GetGeocodingDataItemsByGeoLocationsAsync(IEnumerable<GeoLocation> geoLocations, CancellationToken cancellationToken = default);
+		Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByPartialPostcodeAsync(string partialPostcode, CancellationToken cancellationToken = default);
 	}
 }
