@@ -83,10 +83,9 @@ namespace Umbrella.Utilities.Imaging
 				if (lstPixelDensity.Count < 2)
 					return string.Empty;
 
-				// TODO: Alter all code in here to safely allow querystrings
-				// Probably best to strip any QS, do the work we need and then add it back.
-				// Look at IDynamicImageUtility as well
-				int densityIndex = imageUrl.LastIndexOf('.');
+				var (sanitizedImageUrl, qs) = SplitImageUrl(imageUrl);
+
+				int densityIndex = sanitizedImageUrl.LastIndexOf('.');
 
 				if (densityIndex is -1)
 					return "Invalid image path";
@@ -95,8 +94,8 @@ namespace Umbrella.Utilities.Imaging
 					from density in lstPixelDensity
 					orderby density
 					let densityX = $"{density}x"
-					let highResImagePath = density > 1 ? imageUrl.Insert(densityIndex, $"@{densityX}") : imageUrl
-					select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + " " + densityX;
+					let highResImagePath = density > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{densityX}") : sanitizedImageUrl
+					select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null) + " " + densityX;
 
 				return string.Join(", ", srcsetImagePaths);
 			}
@@ -116,7 +115,9 @@ namespace Umbrella.Utilities.Imaging
 			{
 				var lstPixelDensity = GetPixelDensities(maxPixelDensity);
 
-				int densityIndex = imageUrl.LastIndexOf('.');
+				var (sanitizedImageUrl, qs) = SplitImageUrl(imageUrl);
+
+				int densityIndex = sanitizedImageUrl.LastIndexOf('.');
 
 				if (densityIndex is -1)
 					throw new Exception("The image URL must contain a '.'");
@@ -125,8 +126,8 @@ namespace Umbrella.Utilities.Imaging
 					from density in lstPixelDensity
 					orderby density
 					let densityX = $"{density}x"
-					let highResImagePath = density > 1 ? imageUrl.Insert(densityIndex, $"@{densityX}") : imageUrl
-					select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath);
+					let highResImagePath = density > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{densityX}") : sanitizedImageUrl
+					select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null);
 
 				return paths.ToArray();
 			}
@@ -144,19 +145,40 @@ namespace Umbrella.Utilities.Imaging
 
 			try
 			{
-				int densityIndex = imageUrl.LastIndexOf('.');
+				var (sanitizedImageUrl, qs) = SplitImageUrl(imageUrl);
+
+				int densityIndex = sanitizedImageUrl.LastIndexOf('.');
 
 				if (densityIndex is -1)
 					throw new Exception("The image URL must contain a '.'");
 
-				string highResImagePath = pixelDensity > 1 ? imageUrl.Insert(densityIndex, $"@{pixelDensity}x") : imageUrl;
+				string highResImagePath = pixelDensity > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{pixelDensity}x") : sanitizedImageUrl;
 
-				return pathResolver?.Invoke(highResImagePath) ?? highResImagePath;
+				return (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null);
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, pixelDensity }, returnValue: true))
 			{
 				throw new UmbrellaException("There has been a problem creating the url.", exc);
 			}
+		}
+
+		private static (string sanitizedImageUrl, string? qs) SplitImageUrl(string imageUrl)
+		{
+			string sanitizedImageUrl = imageUrl;
+			string? qs = null;
+
+			if (imageUrl.Contains('?'))
+			{
+				string[] parts = imageUrl.Split('?');
+
+				if (parts.Length != 2)
+					throw new Exception("The path contains more than one '?'.");
+
+				sanitizedImageUrl = parts[0];
+				qs = parts[1];
+			}
+
+			return (sanitizedImageUrl, qs);
 		}
 
 		/// <inheritdoc />

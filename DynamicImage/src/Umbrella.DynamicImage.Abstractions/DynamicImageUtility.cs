@@ -84,6 +84,10 @@ namespace Umbrella.DynamicImage.Abstractions
 			{
 				string url = relativeUrl.TrimToLowerInvariant();
 
+				// Strip away any QueryString
+				if (url.Contains('?'))
+					url = url.Substring(0, url.IndexOf('?'));
+
 				if (!Path.HasExtension(url))
 					return (DynamicImageParseUrlResult.Invalid, default);
 
@@ -175,9 +179,23 @@ namespace Umbrella.DynamicImage.Abstractions
 
 			try
 			{
-				string originalExtension = Path.GetExtension(options.SourcePath).ToLower().Remove(0, 1);
+				string path = options.SourcePath.Replace("~/", "").TrimStart('/');
 
-				string path = options.SourcePath.Replace("~/", "");
+				// Remove the querystring and append to the end of the generated URL.
+				string? qs = null;
+
+				if (path.Contains('?'))
+				{
+					string[] parts = path.Split('?');
+
+					if (parts.Length != 2)
+						throw new Exception("The path contains more than one '?'.");
+
+					path = parts[0];
+					qs = parts[1];
+				}
+
+				string originalExtension = Path.GetExtension(path).ToLower().Remove(0, 1);
 
 				string virtualPath = string.Format(VirtualPathFormat,
 					dynamicImagePathPrefix,
@@ -186,6 +204,9 @@ namespace Umbrella.DynamicImage.Abstractions
 					options.ResizeMode,
 					originalExtension,
 					path.Replace(originalExtension, options.Format.ToFileExtensionString()));
+
+				if (!string.IsNullOrEmpty(qs))
+					virtualPath += "?" + qs;
 
 				return virtualPath;
 			}

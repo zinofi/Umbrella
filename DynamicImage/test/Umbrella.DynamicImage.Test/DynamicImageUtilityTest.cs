@@ -28,11 +28,27 @@ namespace Umbrella.DynamicImage.Test
 		}
 
 		[Fact]
-		public void TryParseUrl()
+		public void TryParseUrl_Valid()
 		{
 			DynamicImageUtility utility = CreateDynamicImageUtility();
 
 			string path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg";
+
+			(DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
+
+			Assert.Equal(DynamicImageParseUrlResult.Success, status);
+
+			var options = new DynamicImageOptions("/images/mobile-devices.png", 680 * 2, 649 * 2, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg);
+
+			Assert.Equal(options, imageOptions);
+		}
+
+		[Fact]
+		public void TryParseUrl_Valid_QueryString()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
+
+			string path = "/dynamicimage/680/649/Uniform/png/images/mobile-devices@2x.jpg?key=value.test.onex&stuff=xxx";
 
 			(DynamicImageParseUrlResult status, DynamicImageOptions imageOptions) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
@@ -85,6 +101,26 @@ namespace Umbrella.DynamicImage.Test
 			(DynamicImageParseUrlResult status, _) = utility.TryParseUrl(DynamicImageConstants.DefaultPathPrefix, path);
 
 			Assert.Equal(DynamicImageParseUrlResult.Invalid, status);
+		}
+
+		[Fact]
+		public void GenerateVirtualPath_Valid()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
+
+			string url = utility.GenerateVirtualPath(DynamicImageConstants.DefaultPathPrefix, new DynamicImageOptions("/images/test.png", 100, 200, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg));
+
+			Assert.Equal($"~/{DynamicImageConstants.DefaultPathPrefix}/100/200/UniformFill/png/images/test.jpg", url);
+		}
+
+		[Fact]
+		public void GenerateVirtualPath_Valid_QueryString()
+		{
+			DynamicImageUtility utility = CreateDynamicImageUtility();
+
+			string url = utility.GenerateVirtualPath(DynamicImageConstants.DefaultPathPrefix, new DynamicImageOptions("/images/test.png?key=value.test.onex&stuff=xxx", 100, 200, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg));
+
+			Assert.Equal($"~/{DynamicImageConstants.DefaultPathPrefix}/100/200/UniformFill/png/images/test.jpg?key=value.test.onex&stuff=xxx", url);
 		}
 
 		private DynamicImageUtility CreateDynamicImageUtility()
