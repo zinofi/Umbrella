@@ -1,5 +1,7 @@
 ﻿using System;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
+using Umbrella.AspNetCore.WebUtilities.Razor;
+using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
 using Umbrella.AspNetCore.WebUtilities.Security;
 using Umbrella.AspNetCore.WebUtilities.Security.Options;
 using Umbrella.Utilities;
@@ -57,6 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ReplaceSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
 
 			services.AddSingleton<ApiIntegrationCookieAuthenticationEvents>();
+			services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
 			services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaClaimsUserAccessorOptionsOptionsBuilder);

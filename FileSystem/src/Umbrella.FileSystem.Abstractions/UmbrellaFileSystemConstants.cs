@@ -35,5 +35,15 @@ namespace Umbrella.FileSystem.Abstractions
 		/// Large buffer size better suited for use with the UmbrellaAzureBlobStorageFileProvider and UmbrellaAzureBlobStorageFileInfo.
 		/// </summary>
 		public const int LargeBufferSize = (int)(4 * MB);
+
+		/// <summary>
+		/// The metadata key for the CreatedById value.
+		/// </summary>
+		public const string CreatedByIdMetadataKey = "CreatedById";
+
+		/// <summary>
+		/// The metadata key for the FileName value.
+		/// </summary>
+		public const string FileNameMetadataKey = "FileName";
 	}
 }

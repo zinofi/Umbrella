@@ -487,6 +487,66 @@ namespace Umbrella.FileSystem.AzureStorage
 				throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 			}
 		}
+
+		/// <inheritdoc />
+		public async Task<TUserId> GetCreatedByIdAsync<TUserId>(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task SetCreatedByIdAsync<TUserId>(TUserId value, CancellationToken cancellationToken = default, bool writeChanges = true)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, cancellationToken, writeChanges);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<string> GetFileNameAsync(CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task SetFileNameAsync(string value, CancellationToken cancellationToken = default, bool writeChanges = true)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, cancellationToken, writeChanges);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
+			}
+		}
 		#endregion
 
 		#region Private Methods

@@ -177,5 +177,39 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> which completes when the data has been persisted.</returns>
 		Task WriteMetadataChangesAsync(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// Gets the id of the user that created the file, if the id exists.
+		/// </summary>
+		/// <typeparam name="TUserId">The type of the user id.</typeparam>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The user id, if it exists.</returns>
+		Task<TUserId> GetCreatedByIdAsync<TUserId>(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// Sets the id of the user that created the file.
+		/// </summary>
+		/// <typeparam name="TUserId">The type of the user id.</typeparam>
+		/// <param name="value">The user id.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+		/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
+		Task SetCreatedByIdAsync<TUserId>(TUserId value, CancellationToken cancellationToken = default, bool writeChanges = true);
+
+		/// <summary>
+		/// Get the file name, if the file name exists.
+		/// </summary>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The file name, if it exists.</returns>
+		Task<string> GetFileNameAsync(CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// Sets the file name.
+		/// </summary>
+		/// <param name="value">The file name.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+		/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
+		Task SetFileNameAsync(string value, CancellationToken cancellationToken = default, bool writeChanges = true);
 	}
 }
