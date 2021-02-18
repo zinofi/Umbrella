@@ -12,16 +12,6 @@ namespace Umbrella.Xamarin.MarkupExtensions
 	public class UmbrellaDynamicImageExtension : UmbrellaResponsiveImageExtension
 	{
 		/// <summary>
-		/// The width request property.
-		/// </summary>
-		public static BindableProperty WidthRequestProperty = BindableProperty.Create(nameof(WidthRequest), typeof(int), typeof(UmbrellaDynamicImageExtension), 1);
-
-		/// <summary>
-		/// The height request property.
-		/// </summary>
-		public static BindableProperty HeightRequestProperty = BindableProperty.Create(nameof(HeightRequest), typeof(int), typeof(UmbrellaDynamicImageExtension), 1);
-
-		/// <summary>
 		/// Gets or sets the dynamic image path prefix. Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix"/>.
 		/// </summary>
 		public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
@@ -29,20 +19,12 @@ namespace Umbrella.Xamarin.MarkupExtensions
 		/// <summary>
 		/// Gets or sets the width request in pixels. Defaults to 1.
 		/// </summary>
-		public int WidthRequest
-		{
-			get => (int)GetValue(WidthRequestProperty);
-			set => SetValue(WidthRequestProperty, value);
-		}
+		public int WidthRequest { get; set; } = 1;
 
 		/// <summary>
 		/// Gets or sets the height request in pixels. Defaults to 1.
 		/// </summary>
-		public int HeightRequest
-		{
-			get => (int)GetValue(HeightRequestProperty);
-			set => SetValue(HeightRequestProperty, value);
-		}
+		public int HeightRequest { get; set; } = 1;
 
 		/// <summary>
 		/// Gets or sets the resize mode. Defaults to <see cref="DynamicResizeMode.UniformFill"/>.

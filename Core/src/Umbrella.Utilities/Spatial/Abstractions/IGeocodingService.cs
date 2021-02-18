@@ -14,7 +14,7 @@ namespace Umbrella.Utilities.Spatial.Abstractions
 		/// </summary>
 		/// <param name="postcode">The postcode.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An tuple which indicates if the operation was a success together with the result.</returns>
+		/// <returns>A tuple which indicates if the operation was a success together with the result.</returns>
 		Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByPostcodeAsync(string postcode, CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -22,7 +22,7 @@ namespace Umbrella.Utilities.Spatial.Abstractions
 		/// </summary>
 		/// <param name="postcodes">The postcodes.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An tuple which indicates if the operation was a success together with the results.</returns>
+		/// <returns>A tuple which indicates if the operation was a success together with the results.</returns>
 		Task<(bool success, IReadOnlyCollection<GeocodingResult>? results)> GetGeocodingDataItemsByPostcodesAsync(IEnumerable<string> postcodes, CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -30,7 +30,7 @@ namespace Umbrella.Utilities.Spatial.Abstractions
 		/// </summary>
 		/// <param name="geoLocation">The location.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An tuple which indicates if the operation was a success together with the result.</returns>
+		/// <returns>A tuple which indicates if the operation was a success together with the result.</returns>
 		Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByGeoLocationAsync(GeoLocation geoLocation, CancellationToken cancellationToken = default);
 
 		/// <summary>
@@ -38,8 +38,15 @@ namespace Umbrella.Utilities.Spatial.Abstractions
 		/// </summary>
 		/// <param name="geoLocations">The locations.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An tuple which indicates if the operation was a success together with the result.</returns>
+		/// <returns>A tuple which indicates if the operation was a success together with the result.</returns>
 		Task<(bool success, IReadOnlyCollection<GeocodingResult>? results)> GetGeocodingDataItemsByGeoLocationsAsync(IEnumerable<GeoLocation> geoLocations, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// Gets the geocoding data for the specified <paramref name="partialPostcode"/>.
+		/// </summary>
+		/// <param name="partialPostcode">The partial postcode.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A tuple which indicates if the operation was a success together with the result.</returns>
 		Task<(bool success, GeocodingResult? result)> GetGeocodingDataItemByPartialPostcodeAsync(string partialPostcode, CancellationToken cancellationToken = default);
 	}
 }

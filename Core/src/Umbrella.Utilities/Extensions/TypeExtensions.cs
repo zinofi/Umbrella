@@ -18,11 +18,30 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>The properties.</returns>
 		public static PropertyInfo[] GetPublicOrPrivateProperties(this Type type) => type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        public static IEnumerable<Type> AssignableTo(this IEnumerable<Type> types, Type superType) => Enumerable.Where(types, new Func<Type, bool>(superType.IsAssignableFrom));
+		/// <summary>
+		/// Determines which of the specified <paramref name="types"/> are assignable to the specified <paramref name="superType"/>
+		/// and returns a filtered collection containing the matches.
+		/// </summary>
+		/// <param name="types">The types.</param>
+		/// <param name="superType">The super type.</param>
+		/// <returns>A filtered collection containing the matches.</returns>
+		public static IEnumerable<Type> AssignableTo(this IEnumerable<Type> types, Type superType) => Enumerable.Where(types, new Func<Type, bool>(superType.IsAssignableFrom));
 
-        public static IEnumerable<Type> Concrete(this IEnumerable<Type> types) => Enumerable.Where(types, type => !type.IsAbstract);
+		/// <summary>
+		/// Filters the specified <paramref name="types"/> to remove any types marked as <see langword="abstract"/>.
+		/// </summary>
+		/// <param name="types">The types.</param>
+		/// <returns>The filtered collection of concrete types.</returns>
+		public static IEnumerable<Type> Concrete(this IEnumerable<Type> types) => Enumerable.Where(types, type => !type.IsAbstract);
 
-        public static bool IsNullableType(this Type type)
+		/// <summary>
+		/// Determines whether the specified <paramref name="type"/> is <see cref="Nullable{T}"/>.
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <returns>
+		///   <see langword="true"/> if the specified <paramref name="type"/> is <see cref="Nullable{T}"/>; otherwise, <see langword="false"/>.
+		/// </returns>
+		public static bool IsNullableType(this Type type)
         {
             if (type.IsGenericType)
                 return type.GetGenericTypeDefinition().Equals(typeof(Nullable<>));
