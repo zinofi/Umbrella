@@ -10,10 +10,11 @@ namespace Umbrella.Xamarin.MarkupExtensions
 	/// of the device the app is running on and then determining the optimal image resolution. This results in, e.g. /images/garden.png being
 	/// rewritten to include the optimal density value, e.g. /images/garden@3x.png, etc.
 	/// </summary>
+	/// <seealso cref="BindableObject" />
 	/// <seealso cref="IMarkupExtension{BindingBase}" />
 	[ContentProperty("Path")]
 	[AcceptEmptyServiceProvider]
-	public class UmbrellaResponsiveImageExtension : IMarkupExtension<BindingBase>
+	public class UmbrellaResponsiveImageExtension : BindableObject, IMarkupExtension<BindingBase>
 	{
 		/// <summary>
 		/// Gets the <see cref="BindingMode"/> being used.

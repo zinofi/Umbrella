@@ -26,13 +26,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage
 		public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
 
 		/// <summary>
-		/// Gets or sets the width request.
+		/// Gets or sets the width request in pixels. Defaults to 1.
 		/// </summary>
 		[Parameter]
 		public int WidthRequest { get; set; } = 1;
 
 		/// <summary>
-		/// Gets or sets the height request.
+		/// Gets or sets the height request in pixels. Defaults to 1.
 		/// </summary>
 		[Parameter]
 		public int HeightRequest { get; set; } = 1;
