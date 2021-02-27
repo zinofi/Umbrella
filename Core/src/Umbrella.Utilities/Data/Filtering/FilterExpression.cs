@@ -14,19 +14,19 @@ namespace Umbrella.Utilities.Data.Filtering
 	[StructLayout(LayoutKind.Auto)]
 	public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TItem>>, IDataExpression<TItem>
 	{
-		private readonly Lazy<Func<TItem, object>> _lazyFunc;
-		private readonly Lazy<string> _lazyMemberPath;
+		private readonly Lazy<Func<TItem, object>>? _lazyFunc;
+		private readonly Lazy<string>? _lazyMemberPath;
 
 		/// <inheritdoc />
-		public Expression<Func<TItem, object>> Expression { get; }
+		public Expression<Func<TItem, object>>? Expression { get; }
 
 		/// <inheritdoc />
-		public string MemberPath => _lazyMemberPath.Value;
+		public string? MemberPath => _lazyMemberPath?.Value;
 
 		/// <summary>
 		/// Gets the value used for filtering.
 		/// </summary>
-		public object Value { get; }
+		public object? Value { get; }
 
 		/// <summary>
 		/// Gets the filter type.
@@ -71,7 +71,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		}
 
 		/// <inheritdoc />
-		public Func<TItem, object> GetDelegate() => _lazyFunc.Value;
+		public Func<TItem, object>? GetDelegate() => _lazyFunc?.Value;
 
 		/// <inheritdoc />
 		public override string ToString() => $"{MemberPath} - {Value} - {Type}";
@@ -80,27 +80,27 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// Converts to this instance to a <see cref="FilterExpressionDescriptor"/>.
 		/// </summary>
 		/// <returns>The <see cref="FilterExpressionDescriptor"/> instance.</returns>
-		public FilterExpressionDescriptor ToFilterExpressionDescriptor()
-			=> (FilterExpressionDescriptor)this;
+		public FilterExpressionDescriptor? ToFilterExpressionDescriptor()
+			=> (FilterExpressionDescriptor?)this;
 
 		/// <inheritdoc />
 		public override bool Equals(object obj) => obj is FilterExpression<TItem> expression && Equals(expression);
 
 		/// <inheritdoc />
-		public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>>.Default.Equals(GetDelegate(), other.GetDelegate()) &&
-				   EqualityComparer<Expression<Func<TItem, object>>>.Default.Equals(Expression, other.Expression) &&
+		public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>?>.Default.Equals(GetDelegate(), other.GetDelegate()) &&
+				   EqualityComparer<Expression<Func<TItem, object>>?>.Default.Equals(Expression, other.Expression) &&
 				   MemberPath == other.MemberPath &&
-				   EqualityComparer<object>.Default.Equals(Value, other.Value) &&
+				   EqualityComparer<object?>.Default.Equals(Value, other.Value) &&
 				   Type == other.Type;
 
 		/// <inheritdoc />
 		public override int GetHashCode()
 		{
 			int hashCode = -1510804887;
-			hashCode = hashCode * -1521134295 + EqualityComparer<Func<TItem, object>>.Default.GetHashCode(GetDelegate());
-			hashCode = hashCode * -1521134295 + EqualityComparer<Expression<Func<TItem, object>>>.Default.GetHashCode(Expression);
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MemberPath);
-			hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
+			hashCode = hashCode * -1521134295 + EqualityComparer<Func<TItem, object>?>.Default.GetHashCode(GetDelegate());
+			hashCode = hashCode * -1521134295 + EqualityComparer<Expression<Func<TItem, object>>?>.Default.GetHashCode(Expression);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string?>.Default.GetHashCode(MemberPath);
+			hashCode = hashCode * -1521134295 + EqualityComparer<object?>.Default.GetHashCode(Value);
 			hashCode = hashCode * -1521134295 + Type.GetHashCode();
 			return hashCode;
 		}
@@ -112,8 +112,10 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>
 		/// The result of the conversion.
 		/// </returns>
-		public static explicit operator FilterExpressionDescriptor(FilterExpression<TItem> filterExpression)
-			=> new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value.ToString(), filterExpression.Type);
+		public static explicit operator FilterExpressionDescriptor?(FilterExpression<TItem> filterExpression)
+			=> filterExpression != default && filterExpression.MemberPath != null
+				? new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value!.ToString(), filterExpression.Type)
+				: null;
 
 		/// <summary>
 		/// Implements the operator ==.

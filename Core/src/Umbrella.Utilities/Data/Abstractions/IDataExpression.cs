@@ -13,7 +13,7 @@ namespace Umbrella.Utilities.Data.Abstractions
 		/// <summary>
 		/// Gets the expression.
 		/// </summary>
-		Expression<Func<TItem, object>> Expression { get; }
+		Expression<Func<TItem, object>>? Expression { get; }
 
 		/// <summary>
 		/// Gets the compiled <see cref="Expression"/>.
@@ -24,7 +24,7 @@ namespace Umbrella.Utilities.Data.Abstractions
 		/// When reading the property value, the model validation code was throwing an exception and the only way to workaround
 		/// that was to make this a method.
 		/// </remarks>
-		Func<TItem, object> GetDelegate();
+		Func<TItem, object>? GetDelegate();
 	}
 
 	/// <summary>
@@ -35,6 +35,6 @@ namespace Umbrella.Utilities.Data.Abstractions
 		/// <summary>
 		/// Gets the path of the member.
 		/// </summary>
-		string MemberPath { get; }
+		string? MemberPath { get; }
 	}
 }

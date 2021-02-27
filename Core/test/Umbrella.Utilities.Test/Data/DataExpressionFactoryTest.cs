@@ -44,7 +44,7 @@ namespace Umbrella.Utilities.Test.Data
 			var sortExpression = (SortExpression<DataItem>)dataExpression;
 
 			Assert.Equal(sortDirection, sortExpression.Direction);
-			Assert.Equal(result, sortExpression.GetDelegate()(new DataItem()));
+			Assert.Equal(result, sortExpression.GetDelegate()?.Invoke(new DataItem()));
 		}
 
 		[Theory]
@@ -66,7 +66,7 @@ namespace Umbrella.Utilities.Test.Data
 
 			Assert.Equal(value, filterExpression.Value);
 			Assert.Equal(filterType, filterExpression.Type);
-			Assert.Equal(result, filterExpression.GetDelegate()(new DataItem()));
+			Assert.Equal(result, filterExpression.GetDelegate()?.Invoke(new DataItem()));
 		}
 
 		private DataExpressionFactory CreateDataExpressionFactory() => new DataExpressionFactory(CoreUtilitiesMocks.CreateLogger<DataExpressionFactory>());

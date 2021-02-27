@@ -30,8 +30,8 @@ namespace Umbrella.Utilities.Data.Filtering
 				{
 					bool predicate(TItem x)
 					{
-						object filterValue = filterExpression.Value;
-						object propertyValue = filterExpression.GetDelegate()(x);
+						object? filterValue = filterExpression.Value;
+						object? propertyValue = filterExpression.GetDelegate()?.Invoke(x);
 
 						if (propertyValue is string strPropertyValue && filterValue is string strFilterValue)
 						{
@@ -48,7 +48,7 @@ namespace Umbrella.Utilities.Data.Filtering
 							};
 						}
 
-						return propertyValue.Equals(filterValue);
+						return propertyValue?.Equals(filterValue) ?? false;
 					}
 
 					lstFilterPredicate.Add(predicate);
@@ -78,7 +78,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="filterExpressions">The filter expressions.</param>
 		/// <returns>A <see cref="IEnumerable{FilterExpressionDescriptor}"/> collection.</returns>
 		public static IEnumerable<FilterExpressionDescriptor> ToFilterExpressionDescriptors<TItem>(this IEnumerable<FilterExpression<TItem>> filterExpressions)
-			=> filterExpressions.Select(x => (FilterExpressionDescriptor)x);
+			=> filterExpressions.Select(x => (FilterExpressionDescriptor?)x).OfType<FilterExpressionDescriptor>();
 
 		/// <summary>
 		/// Finds a filter with the specified <paramref name="memberPath"/>.
@@ -88,6 +88,10 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="memberPath">The member path.</param>
 		/// <returns>The filter, if it exists.</returns>
 		public static FilterExpression<TItem>? FindByMemberPath<TItem>(this IEnumerable<FilterExpression<TItem>>? filters, string memberPath)
-			=> filters?.SingleOrDefault(x => x.MemberPath.Equals(memberPath, StringComparison.OrdinalIgnoreCase));
+		{
+			FilterExpression<TItem>? result = filters?.SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
+
+			return result != default ? result : null;
+		}
 	}
 }

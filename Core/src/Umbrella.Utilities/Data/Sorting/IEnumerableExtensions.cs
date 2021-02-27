@@ -80,7 +80,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <param name="sortExpressions">The sort expressions.</param>
 		/// <returns>A <see cref="IEnumerable{SortExpressionDescriptor}"/> collection.</returns>
 		public static IEnumerable<SortExpressionDescriptor> ToSortExpressionDescriptors<TItem>(this IEnumerable<SortExpression<TItem>> sortExpressions)
-			=> sortExpressions.Select(x => (SortExpressionDescriptor)x);
+			=> sortExpressions.Select(x => (SortExpressionDescriptor?)x).OfType<SortExpressionDescriptor>();
 
 		/// <summary>
 		/// Finds a sorter with the specified <paramref name="memberPath"/>.
@@ -90,6 +90,10 @@ namespace Umbrella.Utilities.Data.Sorting
 		/// <param name="memberPath">The member path.</param>
 		/// <returns>The sorter, if it exists.</returns>
 		public static SortExpression<TItem>? FindByMemberPath<TItem>(this IEnumerable<SortExpression<TItem>>? sorters, string memberPath)
-			=> sorters?.SingleOrDefault(x => x.MemberPath.Equals(memberPath, StringComparison.OrdinalIgnoreCase));
+		{
+			SortExpression<TItem>? result = sorters?.SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
+
+			return result != default ? result : null;
+		}
 	}
 }

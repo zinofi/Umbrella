@@ -31,6 +31,9 @@ namespace Umbrella.Utilities.Data.Filtering
 
 				foreach (FilterExpression<TItem> filterExpression in filterExpressions)
 				{
+					if (filterExpression == default || filterExpression.MemberPath is null || filterExpression.Value is null)
+						continue;
+
 					UmbrellaDynamicCompare? dynamicCompare = filterExpression.Type switch
 					{
 						FilterType.Equal => UmbrellaDynamicCompare.Equal,
