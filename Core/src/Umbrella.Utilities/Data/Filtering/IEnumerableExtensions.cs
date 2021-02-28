@@ -91,7 +91,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		{
 			FilterExpression<TItem>? result = filters?.SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
 
-			return result != default ? result : null;
+			return result != default(FilterExpression<TItem>) ? result : null;
 		}
 	}
 }

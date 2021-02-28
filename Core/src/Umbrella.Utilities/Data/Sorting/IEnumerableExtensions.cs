@@ -93,7 +93,7 @@ namespace Umbrella.Utilities.Data.Sorting
 		{
 			SortExpression<TItem>? result = sorters?.SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
 
-			return result != default ? result : null;
+			return result != default(SortExpression<TItem>) ? result : null;
 		}
 	}
 }
