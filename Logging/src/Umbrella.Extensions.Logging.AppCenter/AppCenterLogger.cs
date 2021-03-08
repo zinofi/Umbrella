@@ -6,7 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Extensions.Logging.AppCenter
 {
-	internal class AppCenterLogger : ILogger
+	/// <summary>
+	/// An AppCenter specific implementation of the Microsoft <see cref="ILogger"/>.
+	/// </summary>
+	public class AppCenterLogger : ILogger
 	{
 		private readonly string _categoryName;
 		private readonly LogLevel _minLevel;

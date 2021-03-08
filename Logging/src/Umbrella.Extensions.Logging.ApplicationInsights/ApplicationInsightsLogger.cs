@@ -8,7 +8,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Extensions.Logging.ApplicationInsights
 {
-	internal class ApplicationInsightsLogger : ILogger
+	/// <summary>
+	/// /// A ApplicationInsights specific implementation of the Microsoft <see cref="ILoggerProvider"/>.
+	/// </summary>
+	public class ApplicationInsightsLogger : ILogger
 	{
 		private readonly string _categoryName;
 		private readonly TelemetryClient _telemetryClient;
@@ -17,8 +20,13 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
 		private readonly bool _includeEventId;
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ApplicationInsightsLogger"/>
+		/// Initializes a new instance of the <see cref="ApplicationInsightsLogger"/> class.
 		/// </summary>
+		/// <param name="name">The name.</param>
+		/// <param name="telemetryClient">The telemetry client.</param>
+		/// <param name="minLevel">The minimum level.</param>
+		/// <param name="trackExceptionsAsExceptionTelemetry">if set to <c>true</c> tracks exceptions as exception telemetry.</param>
+		/// <param name="includeEventId">if set to <c>true</c> includes the event id on logging output..</param>
 		public ApplicationInsightsLogger(string name, TelemetryClient telemetryClient, LogLevel minLevel, bool trackExceptionsAsExceptionTelemetry, bool includeEventId)
 		{
 			_categoryName = name;

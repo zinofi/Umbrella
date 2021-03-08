@@ -12,6 +12,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 	/// A log4net specific implementation of the Microsoft <see cref="ILoggerProvider"/>.
 	/// </summary>
 	/// <seealso cref="ILoggerProvider" />
+	[ProviderAlias("log4net")]
 	public class Log4NetProvider : ILoggerProvider
 	{
 		private readonly ConcurrentDictionary<string, ILogger> _loggerDictionary = new ConcurrentDictionary<string, ILogger>();
@@ -35,7 +36,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <returns>The logger.</returns>
-		public ILogger CreateLogger(string name) => _loggerDictionary.GetOrAdd(name, (x) => new Log4NetAdapter(_loggerRepository.Name, x));
+		public ILogger CreateLogger(string name) => _loggerDictionary.GetOrAdd(name, (x) => new Log4NetLogger(_loggerRepository.Name, x));
 
 		#region IDisposable Support
 		private bool _disposedValue = false; // To detect redundant calls

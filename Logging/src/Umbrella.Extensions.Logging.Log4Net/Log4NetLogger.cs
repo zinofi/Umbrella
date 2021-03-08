@@ -5,22 +5,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {
-	internal sealed class Log4NetAdapter : ILogger
+	/// <summary>
+	/// A log4net specific implementation of the Microsoft <see cref="ILogger"/>.
+	/// </summary>
+	public class Log4NetLogger : ILogger
 	{
 		#region Private Members
 		private readonly ILog m_Logger;
 		#endregion
 
 		#region Constructors
-		public Log4NetAdapter(string repositoryName, string loggerName)
+		/// <summary>
+		/// Creates a new instance of <see cref="Log4NetLogger"/>.
+		/// </summary>
+		/// <param name="repositoryName">The repo name.</param>
+		/// <param name="loggerName">The logger name.</param>
+		public Log4NetLogger(string repositoryName, string loggerName)
 		{
 			m_Logger = LogManager.GetLogger(repositoryName, loggerName);
 		}
 		#endregion
 
 		#region ILogger Members
+		/// <inheritdoc />
 		public IDisposable? BeginScope<TState>(TState state) => null;
 
+		/// <inheritdoc />
 		public bool IsEnabled(LogLevel logLevel) => logLevel switch
 		{
 			LogLevel.Trace => m_Logger.IsDebugEnabled,
@@ -33,6 +43,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 			_ => throw new ArgumentException($"Unknown log level {logLevel}.", nameof(logLevel)),
 		};
 
+		/// <inheritdoc />
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
 			=> LogInner(logLevel, eventId, state, exception, formatter);
 

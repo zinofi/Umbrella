@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Umbrella.Extensions.Logging.ApplicationInsights
 {
-    /// <summary>
-    /// <see cref="ILoggerProvider"/> implementation that creates instances of <see cref="ApplicationInsightsLogger"/>
-    /// </summary>
-    internal class ApplicationInsightsLoggerProvider : ILoggerProvider
+	/// <summary>
+	/// <see cref="ILoggerProvider"/> implementation that creates instances of <see cref="ApplicationInsightsLogger"/>
+	/// </summary>
+	[ProviderAlias("ApplicationInsights")]
+	public class ApplicationInsightsLoggerProvider : ILoggerProvider
     {
         private readonly TelemetryClient _telemetryClient;
         private readonly LogLevel _minLevel;
@@ -27,7 +28,7 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
             _minLevel = minLevel;
             _trackExceptionsAsExceptionTelemetry = trackExceptionsAsExceptionTelemetry;
             _includeEventId = includeEventId;
-        }
+		}
 
         /// <inheritdoc />
         public ILogger CreateLogger(string categoryName)
