@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.UI;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Xamarin.Utilities.Abstractions;
+using Xamarin.CommunityToolkit.ObjectModel;
+using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.ViewModels
@@ -17,6 +20,7 @@ namespace Umbrella.Xamarin.ViewModels
 		private bool _isBusy;
 		private Page? _currentPage;
 		private bool _isRefreshing;
+		private LayoutState _currentState = LayoutState.Loading;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is refreshing.
@@ -30,6 +34,15 @@ namespace Umbrella.Xamarin.ViewModels
 		{
 			get => _isRefreshing;
 			set => SetProperty(ref _isRefreshing, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the current layout state. The initial state is <see cref="LayoutState.Loading"/>.
+		/// </summary>
+		public LayoutState CurrentState
+		{
+			get => _currentState;
+			set => SetProperty(ref _currentState, value);
 		}
 
 		/// <summary>
@@ -54,6 +67,11 @@ namespace Umbrella.Xamarin.ViewModels
 		}
 
 		/// <summary>
+		/// Gets the reload button command.
+		/// </summary>
+		public AsyncCommand ReloadButtonCommand { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewModelBase"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
@@ -65,11 +83,19 @@ namespace Umbrella.Xamarin.ViewModels
 			IAppAuthHelper authHelper)
 			: base(logger, dialogUtility, authHelper)
 		{
+			ReloadButtonCommand = new AsyncCommand(OnReloadButtonClicked);
 		}
 
 		/// <summary>
 		/// Sets the <see cref="IsBusy"/> and <see cref="IsRefreshing"/> flags to <see langword="false" />
 		/// </summary>
 		protected void ClearFlags() => IsBusy = IsRefreshing = false;
+
+		/// <summary>
+		/// Called when the <see cref="ReloadButtonCommand"/> is invoked. Unless overridden, this method
+		/// just returns <see cref="Task.CompletedTask"/>.
+		/// </summary>
+		/// <returns>An awaitable Task that completes when the operation completes.</returns>
+		protected virtual Task OnReloadButtonClicked() => Task.CompletedTask;
 	}
 }
