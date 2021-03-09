@@ -33,7 +33,16 @@ namespace Umbrella.Utilities.Http
 
 		/// <inheritdoc />
 		public IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>>? sorters = null, IEnumerable<FilterExpression<TItem>>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
-			=> CreateSearchQueryParameters(pageNumber, pageSize, sorters?.ToSortExpressionDescriptors(), filters?.ToFilterExpressionDescriptors(), filterCombinator);
+		{
+			try
+			{
+				return CreateSearchQueryParameters(pageNumber, pageSize, sorters?.ToSortExpressionDescriptors(), filters?.ToFilterExpressionDescriptors(), filterCombinator);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { pageNumber, pageSize, sorters = sorters?.ToSortExpressionDescriptors(), filters = filters?.ToFilterExpressionDescriptors(), filterCombinator }, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem creating the query parameters from the search parameters.", exc);
+			}
+		}
 
 		/// <inheritdoc />
 		public IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
@@ -73,52 +82,75 @@ namespace Umbrella.Utilities.Http
 
 		/// <inheritdoc />
 		public string GetUrlWithParmeters(string url, IDictionary<string, string>? parameters)
-			=> parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
+		{
+			try
+			{
+				return parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem creating the url with the specified parameters appended.", exc);
+			}
+		}
 
 		/// <inheritdoc />
 		public async Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
 		{
-			if (response.IsSuccessStatusCode)
+			try
 			{
-				if (response.StatusCode == HttpStatusCode.NoContent)
-					return (true, new HttpCallResult<TResult>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
-
-				if (response.Content.Headers.ContentLength > 0)
+				if (response.IsSuccessStatusCode)
 				{
-					TResult result = response.Content.Headers.ContentType.MediaType switch
+					if (response.StatusCode == HttpStatusCode.NoContent)
+						return (true, new HttpCallResult<TResult>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+
+					if (response.Content.Headers.ContentLength > 0)
 					{
-						"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
-						"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync()),
-						"text/html" => throw new NotSupportedException("HTML responses are not supported and should not be returned by API endpoints. This might indicate an incorrect API url is being used which doesn't exist on the server."),
-						_ => throw new NotImplementedException()
-					};
+						TResult result = response.Content.Headers.ContentType.MediaType switch
+						{
+							"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
+							"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync()),
+							"text/html" => throw new NotSupportedException("HTML responses are not supported and should not be returned by API endpoints. This might indicate an incorrect API url is being used which doesn't exist on the server."),
+							_ => throw new NotImplementedException()
+						};
 
-					return (true, new HttpCallResult<TResult>(true, result: result));
+						return (true, new HttpCallResult<TResult>(true, result: result));
+					}
 				}
-			}
 
-			return default;
+				return default;
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem processing the response.", exc);
+			}
 		}
 
 		/// <inheritdoc />
 		public async Task<HttpProblemDetails> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
 		{
-			string defaultMessage = response.StatusCode switch
+			try
 			{
-				HttpStatusCode.Unauthorized => HttpServiceMessages.DefaultUnauthorizedErrorMessage,
-				HttpStatusCode.Forbidden => HttpServiceMessages.DefaultForbiddenErrorMessage,
-				HttpStatusCode.InternalServerError => HttpServiceMessages.DefaultServerErrorMessage,
-				_ => HttpServiceMessages.DefaultUnknownErrorMessage
-			};
+				string defaultMessage = response.StatusCode switch
+				{
+					HttpStatusCode.Unauthorized => HttpServiceMessages.DefaultUnauthorizedErrorMessage,
+					HttpStatusCode.Forbidden => HttpServiceMessages.DefaultForbiddenErrorMessage,
+					HttpStatusCode.InternalServerError => HttpServiceMessages.DefaultServerErrorMessage,
+					_ => HttpServiceMessages.DefaultUnknownErrorMessage
+				};
 
-			HttpContentHeaders headers = response.Content.Headers;
+				HttpContentHeaders headers = response.Content.Headers;
 
-			if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
-				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
+				if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
+					return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 
-			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-			return UmbrellaStatics.DeserializeJson<HttpProblemDetails>(json);
+				return UmbrellaStatics.DeserializeJson<HttpProblemDetails>(json);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem getting the problemdetails response.", exc);
+			}
 		}
 	}
 }
