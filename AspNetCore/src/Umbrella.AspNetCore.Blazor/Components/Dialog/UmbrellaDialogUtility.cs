@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.Modal;
 using Blazored.Modal.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
@@ -76,6 +80,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		private readonly ILogger _logger;
 		private readonly IDialogTracker _dialogTracker;
 		private readonly IModalService _modalService;
+		private readonly IAppAuthHelper _appAuthHelper;
+		private readonly IAuthorizationService _authorizationService;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UmbrellaDialogUtility"/> class.
@@ -83,14 +89,20 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		/// <param name="logger">The logger.</param>
 		/// <param name="dialogTracker">The dialog tracker.</param>
 		/// <param name="modalService">The modal service.</param>
+		/// <param name="appAuthHelper">The auth helper.</param>
+		/// <param name="authorizationService">The authorization service.</param>
 		public UmbrellaDialogUtility(
 			ILogger<UmbrellaDialogUtility> logger,
 			IDialogTracker dialogTracker,
-			IModalService modalService)
+			IModalService modalService,
+			IAppAuthHelper appAuthHelper,
+			IAuthorizationService authorizationService)
 		{
 			_logger = logger;
 			_dialogTracker = dialogTracker;
 			_modalService = modalService;
+			_appAuthHelper = appAuthHelper;
+			_authorizationService = authorizationService;
 		}
 
 		/// <inheritdoc />
@@ -326,11 +338,50 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
+		public ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
+			where T : ComponentBase => ShowDialogAsync<T, ModalResult>(title, cssClass, modalParameters);
+
+		/// <inheritdoc />
+		public async ValueTask<TResult> ShowDialogAsync<T, TResult>(string title, string cssClass, ModalParameters? modalParameters = null)
 			where T : ComponentBase
+			where TResult : ModalResult
 		{
 			try
 			{
+				AuthorizeAttribute[] authorizeAttributes = typeof(T).CustomAttributes.OfType<AuthorizeAttribute>().ToArray();
+				
+				if (authorizeAttributes.Length > 0)
+				{
+					static void ThrowAccessDeniedException() => throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
+
+					ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync();
+
+					if (!claimsPrincipal.Identity.IsAuthenticated)
+						ThrowAccessDeniedException();
+
+					foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
+					{
+						bool authorized = false;
+
+						if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
+						{
+							string[] roles = authorizeAttribute.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+							if (roles.Length > 0)
+								authorized = roles.Any(x => claimsPrincipal.IsInRole(x));
+						}
+
+						if (!authorized)
+						{
+							AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(claimsPrincipal, authorizeAttribute.Policy);
+							authorized = authResult.Succeeded;
+						}
+
+						if (!authorized)
+							ThrowAccessDeniedException();
+					}
+				}
+
 				var options = new ModalOptions
 				{
 					Class = cssClass,
@@ -340,7 +391,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				IModalReference modal = _modalService.Show<T>(title, modalParameters, options);
 
-				return await modal.Result;
+				return (TResult)await modal.Result;
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }, returnValue: true))
 			{

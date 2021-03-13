@@ -11,6 +11,21 @@ namespace Umbrella.Utilities
 	public static class Guard
 	{
 		/// <summary>
+		/// Throws <see cref="ArgumentException"/> if the given argument is not defined on the specified <see langword="enum"/> type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the <see langword="enum"/>.</typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="argumentName">Name of the argument.</param>
+		/// <exception cref="ArgumentException">The <paramref name="argumentValue"/> is not defined on the <see langword="enum"/> type <typeparamref name="T"/>.</exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void ArgumentIsDefined<T>(T argumentValue, string argumentName)
+			where T : struct, Enum
+		{
+			if (!Enum.IsDefined(typeof(T), argumentValue))
+				throw new ArgumentException(argumentName);
+		}
+
+		/// <summary>
 		/// Throws <see cref="ArgumentNullException"/> if the given argument is null.
 		/// </summary>
 		/// <exception cref="ArgumentNullException">The value is null.</exception>

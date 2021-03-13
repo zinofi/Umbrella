@@ -66,5 +66,18 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions
 		/// <returns>An awaitable task that completes when the dialog has been actioned.</returns>
 		ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
 			where T : ComponentBase;
+
+		/// <summary>
+		/// Shows a custom dialog.
+		/// </summary>
+		/// <typeparam name="T">The type of the component rendered inside the dialog.</typeparam>
+		/// <typeparam name="TResult">The type of the result.</typeparam>
+		/// <param name="title">The title.</param>
+		/// <param name="cssClass">The custom css class applied to the dialog container.</param>
+		/// <param name="modalParameters">The modal parameters used to pass data to the dialog instance.</param>
+		/// <returns>An awaitable task that completes when the dialog has been actioned.</returns>
+		ValueTask<TResult> ShowDialogAsync<T, TResult>(string title, string cssClass, ModalParameters? modalParameters = null)
+			where T : ComponentBase
+			where TResult : ModalResult;
 	}
 }
