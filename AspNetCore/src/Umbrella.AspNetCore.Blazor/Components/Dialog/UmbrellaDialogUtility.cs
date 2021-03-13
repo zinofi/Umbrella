@@ -328,7 +328,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 				{
 					Class = cssClass,
 					DisableBackgroundCancel = true,
-					UseCustomLayout = true
+					UseCustomLayout = true,
+					ContentScrollable = true
 				};
 
 				IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);
@@ -353,7 +354,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			try
 			{
 				IReadOnlyCollection<AuthorizeAttribute> authorizeAttributes = _authorizationAttributeCache.GetOrAdd(typeof(T), key => key.GetCustomAttributes<AuthorizeAttribute>(true).ToArray());
-				
+
 				if (authorizeAttributes.Count > 0)
 				{
 					static void ThrowAccessDeniedException() => throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
@@ -363,22 +364,39 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 					if (!claimsPrincipal.Identity.IsAuthenticated)
 						ThrowAccessDeniedException();
 
+					// We will now check all authorization attributes. The first one that fails will throw an exception.
 					foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
 					{
 						bool authorized = false;
 
-						if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
+						if (string.IsNullOrEmpty(authorizeAttribute.Roles) && string.IsNullOrEmpty(authorizeAttribute.Policy))
 						{
-							string[] roles = authorizeAttribute.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-							if (roles.Length > 0)
-								authorized = roles.Any(x => claimsPrincipal.IsInRole(x));
+							// No custom policy or roles have been specified. Just authorize based on whether or not the user
+							// is authenticated.
+							authorized = claimsPrincipal.Identity.IsAuthenticated;
 						}
-
-						if (!authorized)
+						else
 						{
-							AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(claimsPrincipal, authorizeAttribute.Policy);
-							authorized = authResult.Succeeded;
+							// Start by assuming both types of checks are authorized.
+							// If roles and/or a policy have been provided they can be invalidated.
+							bool rolesAuthorized = true;
+							bool policyAuthorized = true;
+
+							if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
+							{
+								string[] roles = authorizeAttribute.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+								if (roles.Length > 0)
+									rolesAuthorized = roles.Any(x => claimsPrincipal.IsInRole(x));
+							}
+
+							if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
+							{
+								AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(claimsPrincipal, authorizeAttribute.Policy);
+								policyAuthorized = authResult.Succeeded;
+							}
+
+							authorized = rolesAuthorized && policyAuthorized;
 						}
 
 						if (!authorized)
@@ -390,7 +408,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 				{
 					Class = cssClass,
 					DisableBackgroundCancel = true,
-					UseCustomLayout = true
+					UseCustomLayout = true,
+					ContentScrollable = true
 				};
 
 				IModalReference modal = _modalService.Show<T>(title, modalParameters, options);
