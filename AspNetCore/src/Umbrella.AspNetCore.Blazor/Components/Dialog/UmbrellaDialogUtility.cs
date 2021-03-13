@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.Modal;
@@ -22,6 +24,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 	/// <seealso cref="IUmbrellaDialogUtility" />
 	public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	{
+		private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>>();
+
 		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultMessageButtons = new[]
 		{
 			new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Primary)
@@ -348,9 +352,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		{
 			try
 			{
-				AuthorizeAttribute[] authorizeAttributes = typeof(T).CustomAttributes.OfType<AuthorizeAttribute>().ToArray();
+				IReadOnlyCollection<AuthorizeAttribute> authorizeAttributes = _authorizationAttributeCache.GetOrAdd(typeof(T), key => key.GetCustomAttributes<AuthorizeAttribute>(true).ToArray());
 				
-				if (authorizeAttributes.Length > 0)
+				if (authorizeAttributes.Count > 0)
 				{
 					static void ThrowAccessDeniedException() => throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
 
