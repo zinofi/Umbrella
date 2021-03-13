@@ -1,6 +1,6 @@
 ﻿<div class="modal-backdrop fade show" @onclick="BackgroundClick"></div>
 <div class="modal fade show d-block u-dialog" tabindex="-1" role="dialog">
-	<div class="modal-dialog @(ModalInstance.Options.Class)" role="document">
+	<div class="modal-dialog @(ModalInstance.Options.Class) @(ModalInstance.Options.ContentScrollable is true ? "modal-dialog-scrollable" : "")" role="document">
 		<div class="modal-content">
 			@if (ModalInstance.Options.HideHeader != true)
 			{

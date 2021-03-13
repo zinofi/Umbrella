@@ -328,8 +328,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 				{
 					Class = cssClass,
 					DisableBackgroundCancel = true,
-					UseCustomLayout = true,
-					ContentScrollable = true
+					UseCustomLayout = true
 				};
 
 				IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);
