@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbrella.Utilities.Data.Filtering;
@@ -52,8 +53,22 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child repo options.</param>
+		/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
+		/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
 		/// <returns>The paginated results.</returns>
-		Task<PaginatedResultModel<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, IEnumerable<SortExpression<TEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
+		Task<PaginatedResultModel<TEntity>> FindAllAsync(
+			int pageNumber = 0,
+			int pageSize = 20,
+			CancellationToken cancellationToken = default,
+			bool trackChanges = false,
+			IncludeMap<TEntity>? map = null,
+			IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
+			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
+			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
+			TRepoOptions? repoOptions = null,
+			IEnumerable<RepoOptions>? childOptions = null,
+			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null);
 
 		/// <summary>
 		/// Finds an entity in the database using its id.

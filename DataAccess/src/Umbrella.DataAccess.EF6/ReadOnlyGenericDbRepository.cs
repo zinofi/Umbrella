@@ -189,13 +189,25 @@ namespace Umbrella.DataAccess.EF6
 
 		#region IReadOnlyGenericRepository Members
 		/// <inheritdoc />
-		public virtual async Task<PaginatedResultModel<TEntity>> FindAllAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, IEnumerable<SortExpression<TEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+		public virtual async Task<PaginatedResultModel<TEntity>> FindAllAsync(
+			int pageNumber = 0,
+			int pageSize = 20,
+			CancellationToken cancellationToken = default,
+			bool trackChanges = false,
+			IncludeMap<TEntity>? map = null,
+			IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
+			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
+			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
+			TRepoOptions? repoOptions = null,
+			IEnumerable<RepoOptions>? childOptions = null,
+			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			try
 			{
-				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions);
+				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
 			{
@@ -216,9 +228,22 @@ namespace Umbrella.DataAccess.EF6
 		/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child repo options.</param>
-		/// <param name="filterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> are applied.</param>
+		/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
+		/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
 		/// <returns>The paginated results.</returns>
-		protected virtual async Task<PaginatedResultModel<TEntity>> FindAllCoreAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null!, IEnumerable<SortExpression<TEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, Expression<Func<TEntity, bool>>? filterExpression = null)
+		protected virtual async Task<PaginatedResultModel<TEntity>> FindAllCoreAsync(
+			int pageNumber = 0,
+			int pageSize = 20,
+			CancellationToken cancellationToken = default,
+			bool trackChanges = false,
+			IncludeMap<TEntity>? map = null!,
+			IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
+			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
+			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
+			TRepoOptions? repoOptions = null,
+			IEnumerable<RepoOptions>? childOptions = null,
+			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 		{
 			repoOptions ??= DefaultRepoOptions;
 
@@ -226,10 +251,10 @@ namespace Umbrella.DataAccess.EF6
 
 			var filteredQuery = Items;
 
-			if (filterExpression != null)
-				filteredQuery = filteredQuery.Where(filterExpression);
+			if (coreFilterExpression != null)
+				filteredQuery = filteredQuery.Where(coreFilterExpression);
 
-			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator);
+			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);
 
 			int totalCount = await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 			List<TEntity> entities = await filteredQuery
