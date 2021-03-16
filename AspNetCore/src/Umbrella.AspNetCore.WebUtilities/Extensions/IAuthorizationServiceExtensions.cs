@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +13,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 	public static class IAuthorizationServiceExtensions
 	{
 		/// <summary>
-		/// Authorizes the specified 
+		/// Checks if the specified <paramref name="user"/> is permitted to access all specified <paramref name="resources"/> using the provided <paramref name="policyName"/>.
 		/// </summary>
 		/// <typeparam name="TResource">The type of the resource being authorized for access by the specifed user.</typeparam>
 		/// <param name="authorizationService">The authorization service.</param>

@@ -15,6 +15,7 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Exceptions;
+using Umbrella.AspNetCore.Blazor.Extensions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 {
@@ -366,37 +367,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 					// We will now check all authorization attributes. The first one that fails will throw an exception.
 					foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
 					{
-						bool authorized = false;
-
-						if (string.IsNullOrEmpty(authorizeAttribute.Roles) && string.IsNullOrEmpty(authorizeAttribute.Policy))
-						{
-							// No custom policy or roles have been specified. Just authorize based on whether or not the user
-							// is authenticated.
-							authorized = claimsPrincipal.Identity.IsAuthenticated;
-						}
-						else
-						{
-							// Start by assuming both types of checks are authorized.
-							// If roles and/or a policy have been provided they can be invalidated.
-							bool rolesAuthorized = true;
-							bool policyAuthorized = true;
-
-							if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
-							{
-								string[] roles = authorizeAttribute.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-								if (roles.Length > 0)
-									rolesAuthorized = roles.Any(x => claimsPrincipal.IsInRole(x));
-							}
-
-							if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
-							{
-								AuthorizationResult authResult = await _authorizationService.AuthorizeAsync(claimsPrincipal, authorizeAttribute.Policy);
-								policyAuthorized = authResult.Succeeded;
-							}
-
-							authorized = rolesAuthorized && policyAuthorized;
-						}
+						bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, authorizeAttribute.Roles, authorizeAttribute.Policy);
 
 						if (!authorized)
 							ThrowAccessDeniedException();
