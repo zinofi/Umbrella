@@ -23,6 +23,8 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <returns>The query.</returns>
 		public static IQueryable<TItem> ApplyFilterExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<FilterExpression<TItem>>? filterExpressions, FilterExpressionCombinator combinator, IEnumerable<Expression<Func<TItem, bool>>>? additionalFilterExpressions = null)
 		{
+			// TODO: Replicate this approach for the SortExpressions.
+			// Might as well extend the IEnumerable versions too.
 			IQueryable<TItem>? filteredItems = null;
 
 			int filterExpressionsCount = filterExpressions?.Count() ?? 0;
