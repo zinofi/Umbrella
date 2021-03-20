@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Http;
 
@@ -44,6 +45,11 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure
 		/// Gets the logger.
 		/// </summary>
 		protected ILogger Logger { get; private set; } = null!;
+
+		/// <summary>
+		/// Gets or sets the current layout state. The initial state is <see cref="LayoutState.Loading"/>.
+		/// </summary>
+		protected LayoutState CurrentState { get; private set; } = LayoutState.Loading;
 
 		/// <inheritdoc />
 		protected override void OnInitialized()
