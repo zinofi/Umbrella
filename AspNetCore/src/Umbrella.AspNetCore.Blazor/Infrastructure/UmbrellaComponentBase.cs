@@ -49,7 +49,7 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure
 		/// <summary>
 		/// Gets or sets the current layout state. The initial state is <see cref="LayoutState.Loading"/>.
 		/// </summary>
-		protected LayoutState CurrentState { get; private set; } = LayoutState.Loading;
+		protected LayoutState CurrentState { get; set; } = LayoutState.Loading;
 
 		/// <inheritdoc />
 		protected override void OnInitialized()
