@@ -59,6 +59,8 @@ namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
 			Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));
 			Guard.ArgumentNotNullOrWhiteSpace(FileSystemPathPrefix, nameof(FileSystemPathPrefix));
 			Guard.ArgumentNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
+
+			Mappings?.ForEach(x => x.Validate());
 		}
 	}
 }
