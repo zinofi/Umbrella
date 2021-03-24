@@ -368,7 +368,12 @@ namespace Umbrella.FileSystem.Abstractions
 
 			// Force all files to be stored and read in lowercase to avoid issues with Blob Storage
 			// and Linux which both use case-sensitive file systems.
-			return _multipleSlashSelector.Replace(pathBuilder.ToString(), "/").ToLowerInvariant();
+			string cleanedName = _multipleSlashSelector.Replace(pathBuilder.ToString(), "/").ToLowerInvariant();
+
+			if (!cleanedName.StartsWith("/"))
+				cleanedName = "/" + cleanedName;
+
+			return cleanedName;
 		}
 		#endregion
 
