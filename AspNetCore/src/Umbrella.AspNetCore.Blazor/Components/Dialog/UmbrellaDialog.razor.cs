@@ -51,13 +51,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		protected async Task BackgroundClick()
 		{
 			if (ModalInstance.Options.DisableBackgroundCancel != true)
-				await ModalInstance.Cancel();
+				await ModalInstance.CancelAsync();
 		}
 
 		/// <summary>
 		/// Handles close button clicks and closes the current dialog.
 		/// </summary>
-		protected async Task CloseClick() => await ModalInstance.Cancel();
+		protected async Task CloseClick() => await ModalInstance.CancelAsync();
 
 		/// <summary>
 		/// Handles a button click of one of the specified <see cref="Buttons"/>.
@@ -71,11 +71,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			else if (button.IsCancel)
 			{
-				await ModalInstance.Cancel();
+				await ModalInstance.CancelAsync();
 			}
 			else
 			{
-				await ModalInstance.Close(ModalResult.Ok(button));
+				await ModalInstance.CloseAsync(ModalResult.Ok(button));
 			}
 		}
 	}
