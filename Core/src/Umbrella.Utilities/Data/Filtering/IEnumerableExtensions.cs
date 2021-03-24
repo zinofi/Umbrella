@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Data.Filtering
 {
@@ -92,6 +94,79 @@ namespace Umbrella.Utilities.Data.Filtering
 			FilterExpression<TItem>? result = filters?.SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
 
 			return result != default(FilterExpression<TItem>) ? result : null;
+		}
+
+		/// <summary>
+		/// Pops the filter with the specified <paramref name="filterSelector"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <typeparam name="TFilterValue">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="filterSelector">The filter selector.</param>
+		/// <returns>A tuple containing details of whether the filter exists, its value, and the updated filters without the popped filter.</returns>
+		public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, Expression<Func<TItem, TFilterValue>> filterSelector)
+			=> PopFilter<TItem, TFilterValue>(filters, filterSelector.GetMemberPath());
+
+		/// <summary>
+		/// Pops the filter with the specified <paramref name="filterPath"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <typeparam name="TFilterValue">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="filterPath">The filter path.</param>
+		/// <returns>A tuple containing details of whether the filter exists, its value, and the updated filters without the popped filter.</returns>
+		public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, string filterPath)
+		{
+			FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
+
+			if (filter is null)
+				return (false, default!, filters);
+
+			var updatedFilters = filters.Where(x => x != filter);
+
+			if (filter.Value.Value is null)
+				return (true, default!, updatedFilters);
+
+			object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
+
+			if (value != null)
+				return (true, (TFilterValue)value, updatedFilters);
+
+			return (false, default!, updatedFilters);
+		}
+
+		/// <summary>
+		/// Peeks at the filter with the specified <paramref name="filterSelector"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <typeparam name="TFilterValue">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="filterSelector">The filter selector.</param>
+		/// <returns>A tuple containing details of whether the filter exists and its value.</returns>
+		public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, Expression<Func<TItem, TFilterValue>> filterSelector)
+			=> PeekFilter<TItem, TFilterValue>(filters, filterSelector.GetMemberPath());
+
+		/// <summary>
+		/// Peeks the filter with the specified <paramref name="filterPath"/>.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <typeparam name="TFilterValue">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="filterPath">The filter path.</param>
+		/// <returns>A tuple containing details of whether the filter exists and its value.</returns>
+		public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, string filterPath)
+		{
+			FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
+
+			if (filter is null || filter.Value.Value is null)
+				return (false, default!);
+
+			object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
+
+			if (value != null)
+				return (true, (TFilterValue)value);
+
+			return (false, default!);
 		}
 	}
 }
