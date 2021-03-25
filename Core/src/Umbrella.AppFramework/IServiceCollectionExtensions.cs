@@ -18,10 +18,10 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <summary>
 		/// Adds the <see cref="Umbrella.AppFramework"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
-		/// /// <returns>The services builder.</returns>
-		public static IServiceCollection AddUmbrellaAppFramework<TAuthHelper>(
-			this IServiceCollection services,
-			Action<IServiceProvider, RequestNotificationHandlerOptions>? requestNotificationHandlerOptionsBuilder = null)
+		/// <typeparam name="TAuthHelper">The type of the authentication helper.</typeparam>
+		/// <param name="services">The services.</param>
+		/// <returns>The services.</returns>
+		public static IServiceCollection AddUmbrellaAppFramework<TAuthHelper>(this IServiceCollection services)
 			where TAuthHelper : class, IAppAuthHelper
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
@@ -40,10 +40,23 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddScoped<RefreshedAuthTokenHandler>();
 			services.AddScoped<RequestNotificationHandler>();
 
+			return services;
+		}
+
+		/// <summary>
+		/// Configures the <see cref="Umbrella.AppFramework"/> services.
+		/// </summary>
+		/// <param name="services">The services.</param>
+		/// <param name="requestNotificationHandlerOptionsBuilder">The request notification handler options builder.</param>
+		/// <returns></returns>
+		public static IServiceCollection ConfigureUmbrellaAppFramework(
+			this IServiceCollection services,
+			Action<IServiceProvider, RequestNotificationHandlerOptions>? requestNotificationHandlerOptionsBuilder = null)
+		{
 			// Options
 			services.ConfigureUmbrellaOptions(requestNotificationHandlerOptionsBuilder);
 
 			return services;
 		}
-    }
+	}
 }
