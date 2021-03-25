@@ -3,6 +3,7 @@
 		<Version>3.0.0-preview-0180</Version>
 
 		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<LangVersion>8.0</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
 
