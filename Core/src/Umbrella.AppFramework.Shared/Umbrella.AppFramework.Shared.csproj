@@ -2,12 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.AppFramework.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.AppFramework.Shared.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Umbrella.AppFramework</PackageId>
-		<Description>This package contains the core framework code which supports the Umbrella.Xamarin and Umbrella.AspNetCore.Blazor packages.</Description>
+		<PackageId>Umbrella.AppFramework.Shared</PackageId>
+		<Description>This package contains supporting code used by the Umbrella.AppFramework package.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Umbrella.AppFramework.Shared\Umbrella.AppFramework.Shared.csproj" />
+		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>
 
 </Project>

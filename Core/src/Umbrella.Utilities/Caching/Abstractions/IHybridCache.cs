@@ -83,7 +83,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// <param name="cancellationToken"></param>
 		/// <param name="expirationTokensBuilder">The expiration tokens builder.</param>
 		/// <returns>The item that has been retrieved or just added to the cache.</returns>
-		Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>?> expirationTokensBuilder = null);
+		Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null);
 
 		/// <summary>
 		/// Gets the or creates a cache item.

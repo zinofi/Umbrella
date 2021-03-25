@@ -18,6 +18,6 @@ namespace Umbrella.Utilities.Email.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="fromAddress">The email address of the sender. If this is not specified, the default email address will be automatically set to the default value <see cref="EmailSenderOptions.DefaultFromAddress"/>.</param>
 		/// <returns>An awaitable task which will complete when the email has been sent.</returns>
-		Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default, string fromAddress = null);
+		Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default, string? fromAddress = null);
 	}
 }

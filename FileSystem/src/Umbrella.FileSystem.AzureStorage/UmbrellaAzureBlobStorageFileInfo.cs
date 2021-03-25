@@ -373,7 +373,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		}
 
 		/// <inheritdoc />
-		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T>? customValueConverter = null)
+		public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default!, Func<string?, T>? customValueConverter = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfIsNew();

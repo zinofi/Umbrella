@@ -39,7 +39,7 @@ namespace Umbrella.Utilities.Http
 		/// <param name="success">if set to <c>true</c> signals that the call succeeded without errors.</param>
 		/// <param name="problemDetails">The problem details.</param>
 		/// <param name="result">The result.</param>
-		public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null, TResult result = default)
+		public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null, TResult result = default!)
 			: base(success, problemDetails)
 		{
 			Result = result!;

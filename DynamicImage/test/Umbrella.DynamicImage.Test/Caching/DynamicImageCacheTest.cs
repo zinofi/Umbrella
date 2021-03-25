@@ -19,7 +19,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 	public class DynamicImageCacheTest
 	{
 #if AZUREDEVOPS
-        private static readonly string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
+        private static readonly string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
 #else
 		private const string StorageConnectionString = "UseDevelopmentStorage=true";
 #endif

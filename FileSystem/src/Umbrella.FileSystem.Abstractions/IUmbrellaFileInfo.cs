@@ -141,7 +141,7 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <param name="fallback">The fallback value where the metadata <paramref name="key"/> does not exist.</param>
 		/// <param name="customValueConverter">The custom value converter to transform the value before returning it.</param>
 		/// <returns>The metadata value for the specified <paramref name="key"/>.</returns>
-		Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default, Func<string?, T>? customValueConverter = null);
+		Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default!, Func<string?, T>? customValueConverter = null);
 
 		/// <summary>
 		/// Sets the metadata value with the specified <paramref name="key"/>.

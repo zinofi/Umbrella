@@ -120,7 +120,7 @@ namespace Umbrella.Utilities.Configuration
 		/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallback"/> is returned.</param>
 		/// <param name="customValueConverter">The custom value converter.</param>
 		/// <returns>The app setting value or the fallback.</returns>
-		protected virtual T GetSetting<T>(T fallback = default, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
+		protected virtual T GetSetting<T>(T fallback = default!, [CallerMemberName]string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(key, nameof(key));
 

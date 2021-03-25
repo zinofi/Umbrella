@@ -1,4 +1,6 @@
-﻿using Umbrella.AppFramework.Security;
+﻿using System;
+using Umbrella.AppFramework.Http.Handlers.Options;
+using Umbrella.AppFramework.Security;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities;
 using Umbrella.AppFramework.Utilities.Abstractions;
@@ -16,7 +18,9 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// Adds the <see cref="Umbrella.AppFramework"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 		/// </summary>
 		/// /// <returns>The services builder.</returns>
-		public static IServiceCollection AddUmbrellaAppFramework<TAuthHelper>(this IServiceCollection services)
+		public static IServiceCollection AddUmbrellaAppFramework<TAuthHelper>(
+			this IServiceCollection services,
+			Action<IServiceProvider, RequestNotificationHandlerOptions>? requestNotificationHandlerOptionsBuilder = null)
 			where TAuthHelper : class, IAppAuthHelper
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
@@ -29,6 +33,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IDialogTracker, DialogTracker>();
 			services.AddSingleton<ILoadingScreenUtility, LoadingScreenUtility>();
+
+			// Options
+			services.ConfigureUmbrellaOptions(requestNotificationHandlerOptionsBuilder);
 
 			return services;
 		}

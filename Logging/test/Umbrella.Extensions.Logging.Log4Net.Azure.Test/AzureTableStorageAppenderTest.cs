@@ -12,7 +12,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure.Test
 	public class AzureTableStorageAppenderTest
 	{
 #if AZUREDEVOPS
-        private static readonly string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
+        private static readonly string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
 #else
 		private const string StorageConnectionString = "UseDevelopmentStorage=true";
 #endif

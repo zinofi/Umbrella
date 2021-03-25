@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.TypeConverters
 		}
 
 		/// <inheritdoc />
-		public T Convert<T>(string? value, T fallback = default, Func<string?, T>? customValueConverter = null)
+		public T Convert<T>(string? value, T fallback = default!, Func<string?, T>? customValueConverter = null)
 		{
 			try
 			{
