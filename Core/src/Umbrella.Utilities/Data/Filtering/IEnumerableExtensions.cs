@@ -104,7 +104,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterSelector">The filter selector.</param>
 		/// <returns>A tuple containing details of whether the filter exists, its value, and the updated filters without the popped filter.</returns>
-		public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, Expression<Func<TItem, TFilterValue>> filterSelector)
+		public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, Expression<Func<TItem, TFilterValue>> filterSelector)
 			=> PopFilter<TItem, TFilterValue>(filters, filterSelector.GetMemberPath());
 
 		/// <summary>
@@ -115,7 +115,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterPath">The filter path.</param>
 		/// <returns>A tuple containing details of whether the filter exists, its value, and the updated filters without the popped filter.</returns>
-		public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, string filterPath)
+		public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath)
 		{
 			FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
 
@@ -143,7 +143,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterSelector">The filter selector.</param>
 		/// <returns>A tuple containing details of whether the filter exists and its value.</returns>
-		public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, Expression<Func<TItem, TFilterValue>> filterSelector)
+		public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, Expression<Func<TItem, TFilterValue>> filterSelector)
 			=> PeekFilter<TItem, TFilterValue>(filters, filterSelector.GetMemberPath());
 
 		/// <summary>
@@ -154,7 +154,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterPath">The filter path.</param>
 		/// <returns>A tuple containing details of whether the filter exists and its value.</returns>
-		public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(FilterExpression<TItem>[]? filters, string filterPath)
+		public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath)
 		{
 			FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
 

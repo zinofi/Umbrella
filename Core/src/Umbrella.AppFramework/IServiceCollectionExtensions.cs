@@ -1,4 +1,5 @@
 ﻿using System;
+using Umbrella.AppFramework.Http.Handlers;
 using Umbrella.AppFramework.Http.Handlers.Options;
 using Umbrella.AppFramework.Security;
 using Umbrella.AppFramework.Security.Abstractions;
@@ -33,6 +34,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IDialogTracker, DialogTracker>();
 			services.AddSingleton<ILoadingScreenUtility, LoadingScreenUtility>();
+
+			// HTTP Delegating Handlers
+			services.AddScoped<AuthTokenHandler>();
+			services.AddScoped<RefreshedAuthTokenHandler>();
+			services.AddScoped<RequestNotificationHandler>();
 
 			// Options
 			services.ConfigureUmbrellaOptions(requestNotificationHandlerOptionsBuilder);
