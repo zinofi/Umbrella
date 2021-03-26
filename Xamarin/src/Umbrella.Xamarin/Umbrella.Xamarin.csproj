@@ -28,13 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Controls\UmbrellaActivityInidicatorView.shared.xaml.cs">
-	    <DependentUpon>UmbrellaActivityInidicatorView.shared.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Update="Controls\UmbrellaActivityInidicatorView.shared.xaml">
+	  <EmbeddedResource Update="Controls\UmbrellaActivityInidicatorView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </EmbeddedResource>
 	</ItemGroup>
