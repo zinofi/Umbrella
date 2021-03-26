@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Umbrella.DataAnnotations.RegularExpressions;
 
 namespace Umbrella.DataAnnotations
 {
@@ -12,7 +13,7 @@ namespace Umbrella.DataAnnotations
 		/// Initializes a new instance of the <see cref="UmbrellaPhoneAttribute"/> class.
 		/// </summary>
 		public UmbrellaPhoneAttribute()
-			: base(@"^(\(?\+?[0-9]*\)?)?[0-9_\- \(\)]*$")
+			: base(PhoneRegularExpressions.UKPhoneRegexString)
 		{
 		}
 	}

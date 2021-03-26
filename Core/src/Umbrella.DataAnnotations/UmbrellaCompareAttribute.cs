@@ -4,7 +4,7 @@ using System.Linq;
 namespace Umbrella.DataAnnotations
 {
 	/// <summary>
-	/// An extensions of the <see cref="CompareAttribute"/> with a fix to ensure that the <see cref="ValidationResult"/> that is
+	/// An extension of the <see cref="CompareAttribute"/> with a fix to ensure that the <see cref="ValidationResult"/> that is
 	/// returned on validation failure contains the member name that the attribute targets.
 	/// </summary>
 	/// <seealso cref="System.ComponentModel.DataAnnotations.CompareAttribute" />
