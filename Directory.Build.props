@@ -27,7 +27,5 @@
 		<Optimize>true</Optimize>
 		<DefineConstants>AzureDevOps</DefineConstants>
 		<DebugType>embedded</DebugType>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 </Project>
