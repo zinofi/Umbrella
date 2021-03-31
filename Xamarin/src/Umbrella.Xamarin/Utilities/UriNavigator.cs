@@ -15,6 +15,10 @@ namespace Umbrella.Xamarin.Utilities
 	{
 		private readonly ILogger _logger;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UriNavigator"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
 		public UriNavigator(ILogger<UriNavigator> logger)
 		{
 			_logger = logger;

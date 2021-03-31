@@ -18,6 +18,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Form
 		[Parameter]
 		public RenderFragment? Content { get; set; }
 
+		/// <summary>
+		/// Gets or sets the additional attributes. Contains all unmatched attributes.
+		/// </summary>
 		[Parameter(CaptureUnmatchedValues = true)]
 		public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = null!;
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 namespace Umbrella.AspNetCore.Blazor.Extensions
 {
 	/// <summary>
-	/// Blazor specific extension method
+	/// Blazor specific extension methods for use with strings.
 	/// </summary>
 	public static class StringExtensions
 	{
@@ -15,6 +15,12 @@ namespace Umbrella.AspNetCore.Blazor.Extensions
 			_encodedNewLineToken = HtmlEncoder.Default.Encode("\n");
 		}
 
+		/// <summary>
+		/// Encodes the specified <paramref name="value"/> as HTML and then replaces all encoded '\n' new line characters with the specified <paramref name="replacement"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="replacement">The replacement.</param>
+		/// <returns>The HTML encoded output.</returns>
 		public static MarkupString ReplaceNewLine(this string? value, string replacement = "<br />")
 		{
 			if (string.IsNullOrWhiteSpace(value))

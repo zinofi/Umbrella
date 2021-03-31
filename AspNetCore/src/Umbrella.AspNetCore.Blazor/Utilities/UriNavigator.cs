@@ -18,6 +18,11 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 		private readonly ILogger _logger;
 		private readonly NavigationManager _navigationManager;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UriNavigator"/> class.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="navigationManager">The navigation manager.</param>
 		public UriNavigator(
 			ILogger<UriNavigator> logger,
 			NavigationManager navigationManager)
