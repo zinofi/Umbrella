@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Utilities.Abstractions;
@@ -14,6 +15,8 @@ namespace Umbrella.Xamarin.Utilities
 	public class XamarinLocalStorageService : IAppLocalStorageService
 	{
 		private readonly ILogger _logger;
+		private readonly Dictionary<string, string> _virtualStorage = new Dictionary<string, string>();
+		private readonly bool _useVirtualStorage = DeviceInfo.DeviceType == DeviceType.Virtual && DeviceInfo.Platform == DevicePlatform.iOS;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="XamarinLocalStorageService"/> class.
@@ -29,6 +32,11 @@ namespace Umbrella.Xamarin.Utilities
 		{
 			try
 			{
+				// The iOS Simulator doesn't support SecureStorage without enabling KeyChain which we don't want
+				// to do so we are using an in-memory storage solution.
+				if (_useVirtualStorage)
+					return _virtualStorage.TryGetValue(key, out string value) ? value : null;
+
 				return await SecureStorage.GetAsync(key);
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
@@ -42,7 +50,10 @@ namespace Umbrella.Xamarin.Utilities
 		{
 			try
 			{
-				SecureStorage.Remove(key);
+				if (_useVirtualStorage)
+					_virtualStorage.Remove(key);
+				else
+					SecureStorage.Remove(key);
 
 				return default;
 			}
@@ -57,7 +68,10 @@ namespace Umbrella.Xamarin.Utilities
 		{
 			try
 			{
-				await SecureStorage.SetAsync(key, value);
+				if (_useVirtualStorage)
+					_virtualStorage[key] = value;
+				else
+					await SecureStorage.SetAsync(key, value);
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
 			{

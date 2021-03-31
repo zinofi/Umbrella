@@ -83,7 +83,9 @@ namespace Umbrella.Xamarin.ViewModels
 			IAppAuthHelper authHelper)
 			: base(logger, dialogUtility, authHelper)
 		{
-			ReloadButtonCommand = new AsyncCommand(OnReloadButtonClicked);
+			// TODO TEMP365/SPARK: Use the IUmbrellaCommandFactory here.
+			// Add a new virtual property to specify network checks for reloading. Default to true.
+			ReloadButtonCommand = new AsyncCommand(OnReloadButtonClicked, allowsMultipleExecutions: false);
 		}
 
 		/// <summary>
