@@ -63,6 +63,8 @@ namespace Umbrella.DataAnnotations
 		/// </returns>
 		public override bool IsValid(object value, object container)
 		{
+			// TODO: Consider enforcing the value to be specified as DateTimeKind.Utc to avoid issues.
+
 			DateTime maxDate = GetMaxDate();
 
 			if (value is DateTime result)

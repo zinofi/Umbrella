@@ -61,6 +61,8 @@ namespace Umbrella.DataAnnotations
 		/// </returns>
 		public override bool IsValid(object value, object container)
 		{
+			// TODO: Consider enforcing the value to be specified as DateTimeKind.Utc to avoid issues.
+
 			DateTime minDate = GetMinDate();
 
 			if (value is DateTime result)
