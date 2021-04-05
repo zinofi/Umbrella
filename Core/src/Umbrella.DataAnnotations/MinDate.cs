@@ -65,7 +65,7 @@ namespace Umbrella.DataAnnotations
 
 			if (value is DateTime result)
 			{
-				if (result.ToUniversalTime().Date < minDate)
+				if (result.Date < minDate)
 				{
 					return false;
 				}
@@ -77,7 +77,7 @@ namespace Umbrella.DataAnnotations
 				if (!string.IsNullOrEmpty(strDateTime))
 				{
 					// We have a value - try and parse it to a datetime
-					if (DateTime.TryParse(strDateTime, out result) && result.ToUniversalTime().Date < minDate)
+					if (DateTime.TryParse(strDateTime, out result) && result.Date < minDate)
 					{
 						return false;
 					}

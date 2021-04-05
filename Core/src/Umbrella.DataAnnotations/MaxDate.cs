@@ -67,7 +67,7 @@ namespace Umbrella.DataAnnotations
 
 			if (value is DateTime result)
 			{
-				if (result.ToUniversalTime() > maxDate)
+				if (result > maxDate)
 				{
 					return false;
 				}
@@ -79,7 +79,7 @@ namespace Umbrella.DataAnnotations
 				if (!string.IsNullOrEmpty(strDateTime))
 				{
 					// We have a value - try and parse it to a datetime
-					if (DateTime.TryParse(strDateTime, out result) && result.ToUniversalTime() > maxDate)
+					if (DateTime.TryParse(strDateTime, out result) && result > maxDate)
 					{
 						return false;
 					}
