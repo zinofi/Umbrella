@@ -1,0 +1,33 @@
+﻿@if (!ScanMode && IsVisible)
+{
+	@if (IsFirstColumn)
+	{
+		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Full)
+		{
+			<th scope="row" @attributes="AdditionalAttributes">
+				@ChildContent
+			</th>
+		}
+		else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Slim)
+		{
+			<div @attributes="AdditionalAttributes">
+				@ChildContent
+			</div>
+		}
+	}
+	else
+	{
+		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Full)
+		{
+			<td class="@(IsActions ? "u-grid__actions" : "")" @attributes="AdditionalAttributes">
+				@ChildContent
+			</td>
+		}
+		else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Slim)
+		{
+			<div @attributes="AdditionalAttributes">
+				@ChildContent
+			</div>
+		}
+	}
+}

@@ -1,0 +1,60 @@
+﻿/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-radio-color-primary
+	--u-radio-color-secondary
+	--u-radio-width
+	--u-radio-height
+	--u-radio-spacing
+	--u-radio-border-width
+	--u-radio-border-radius
+*/
+
+.u-radio
+{
+	$colorPrimary: red;
+	$colorSecondary: blue;
+	$width: 24px;
+	$height: 24px;
+	$spacing: 8px;
+	$borderWidth: 1px;
+	$borderRadius: 5px;
+
+	position: relative;
+
+	&__input
+	{
+		display: none;
+
+		&:checked
+		{
+			& + label::before
+			{
+				background: var(--u-radio-color-primary, $colorPrimary);
+			}
+		}
+	}
+
+	&__label
+	{
+		position: relative;
+		display: flex;
+		align-items: center;
+		z-index: 0;
+		margin: 0;
+		padding: 0;
+
+		&::before
+		{
+			width: var(--u-radio-width, $width);
+			min-width: var(--u-radio-width, $width);
+			height: var(--u-radio-height, $height);
+			border: var(--u-radio-border-width, $borderWidth) solid var(--u-radio-color-primary, $colorPrimary);
+			background: var(--u-radio-color-secondary, $colorSecondary);
+			margin-right: var(--u-radio-spacing, $spacing);
+			cursor: pointer;
+			border-radius: var(--u-radio-border-radius, $borderRadius);
+			content: " ";
+		}
+	}
+}

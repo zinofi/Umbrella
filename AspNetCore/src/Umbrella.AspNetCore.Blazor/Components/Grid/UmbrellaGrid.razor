@@ -1,0 +1,135 @@
+﻿@typeparam TItem
+
+<CascadingValue Value="this">
+	<div class="u-grid">
+		@if (!ColumnScanComplete && RenderMode == UmbrellaGridRenderMode.Full)
+		{
+			<CascadingValue Name="ScanMode" Value="true">
+				@ChildContent?.Invoke(default!)
+			</CascadingValue>
+		}
+
+		@if (FilterableColumns?.Count > 0 && ShowFilters)
+		{
+			<div class="u-grid__filters">
+				@if (!string.IsNullOrWhiteSpace(FilterOptionsHeading))
+				{
+					<h2 class="u-grid__filters-heading text-secondary">@FilterOptionsHeading</h2>
+				}
+				<form method="get" novalidate>
+					<div class="row">
+						@foreach (var column in FilterableColumns)
+						{
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>@column.Heading</label>
+									@if (column.FilterControlType == UmbrellaColumnFilterType.Options)
+									{
+										<select class="custom-select custom-select-sm" @bind="column.FilterValue">
+											<option>Any</option>
+											@foreach (object option in column.FilterOptions)
+											{
+												<option value="@option">@column.GetFilterOptionDisplayName(option)</option>
+											}
+										</select>
+									}
+									else
+									{
+										<input class="form-control form-control-sm" type="@column.FilterControlType" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
+									}
+								</div>
+							</div>
+						}
+					</div>
+					<button type="submit" class="btn btn-primary btn-sm" @onclick="ApplyFiltersClick" @onclick:preventDefault>Search <i class="fas fa-search"></i></button>
+					<button type="reset" class="btn btn-secondary btn-sm" @onclick="ResetFiltersClick">Reset <i class="fas fa-times-circle"></i></button>
+				</form>
+			</div>
+		}
+
+		@if (CurrentState == LayoutState.Loading)
+		{
+			<LoadingStateView Message="@LoadingMessage" />
+		}
+		else if (CurrentState == LayoutState.Empty)
+		{
+			<EmptyStateView Message="@EmptyMessage" />
+		}
+		else if (CurrentState == LayoutState.Success)
+		{
+			if (RenderMode is UmbrellaGridRenderMode.Full)
+			{
+				<table class="u-grid__results @GridCssClass">
+					@if (ShowCaption)
+					{
+						<caption class="u-grid__caption">@CaptionText</caption>
+					}
+					<colgroup>
+						@foreach (var column in Columns)
+						{
+							<col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
+						}
+					</colgroup>
+					<thead>
+						<tr>
+							@foreach (var column in Columns)
+							{
+								<th @attributes="column.AdditionalAttributes">
+									@if (column.Sortable)
+									{
+										<a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault>
+											@column.Heading
+											<i class="@column.DirectionCssClass"></i>
+										</a>
+									}
+									else
+									{
+										@column.Heading
+									}
+								</th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Items)
+						{
+							<tr class="u-grid__item @ItemCssClass">
+								@ChildContent?.Invoke(item)
+							</tr>
+						}
+					</tbody>
+				</table>
+
+				@if (ShowPagination)
+				{
+					<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
+				}
+			}
+			else if (RenderMode is UmbrellaGridRenderMode.Slim)
+			{
+				<div class="u-grid__results @GridCssClass">
+					@foreach (var item in Items)
+					{
+						<div class="u-grid__item @ItemCssClass">
+							@ChildContent?.Invoke(item)
+						</div>
+					}
+				</div>
+
+				@if (ShowCaption)
+				{
+					<div class="u-grid__caption">@CaptionText</div>
+				}
+
+				@if (ShowPagination)
+				{
+					<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
+				}
+			}
+		}
+		else
+		{
+			<ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClick" />
+		}
+	</div>
+</CascadingValue>

@@ -3,6 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<RazorLangVersion>3.0</RazorLangVersion>
+		<TypeScriptToolsVersion>4.1</TypeScriptToolsVersion>
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 		<DocumentationFile>bin\Release\netstandard2.1\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
 	</PropertyGroup>
 
@@ -10,6 +12,13 @@
 		<PackageId>Umbrella.AspNetCore.Blazor</PackageId>
 		<Description>This package contains code to be used with Blazor projects.</Description>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Remove="package-lock.json" />
+	  <Content Remove="package.json" />
+	  <Content Remove="tsconfig.json" />
+	  <Content Remove="Content\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
@@ -21,11 +30,19 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+		<None Include="package-lock.json" />
+		<None Include="package.json" />
+		<None Include="tsconfig.json" />
+		<None Include="Content\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
 	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
 </Project>

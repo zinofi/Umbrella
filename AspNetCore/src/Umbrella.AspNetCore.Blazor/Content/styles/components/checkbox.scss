@@ -1,0 +1,64 @@
+﻿/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-checkbox-color-primary
+	--u-checkbox-color-secondary
+	--u-checkbox-width
+	--u-checkbox-height
+	--u-checkbox-spacing
+	--u-checkbox-border-width
+	--u-checkbox-border-radius
+*/
+
+.u-checkbox
+{
+	$colorPrimary: red;
+	$colorSecondary: blue;
+	$width: 22px;
+	$height: 22px;
+	$spacing: 8px;
+	$borderWidth: 1px;
+	$borderRadius: 5px;
+
+	position: relative;
+
+	&__input
+	{
+		display: none;
+
+		&:checked
+		{
+			& + label::before
+			{
+				background: var(--u-checkbox-color-primary, $colorPrimary);
+			}
+		}
+	}
+
+	&__label
+	{
+		position: relative;
+		display: flex;
+		align-items: center;
+		z-index: 0;
+		margin: 0;
+		padding: 0;
+
+		&-content
+		{
+		}
+
+		&::before
+		{
+			width: var(--u-checkbox-width, $width);
+			min-width: var(--u-checkbox-width, $width);
+			height: var(--u-checkbox-height, $height);
+			border: var(--u-checkbox-border-width, $borderWidth) solid var(--u-checkbox-color-primary, $colorPrimary);
+			background: var(--u-checkbox-color-secondary, $colorSecondary);
+			margin-right: var(--u-checkbox-spacing, $spacing);
+			cursor: pointer;
+			border-radius: var(--u-checkbox-border-radius, $borderRadius);
+			content: " ";
+		}
+	}
+}

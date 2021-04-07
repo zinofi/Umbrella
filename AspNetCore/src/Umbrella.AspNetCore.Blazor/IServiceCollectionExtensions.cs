@@ -14,6 +14,7 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Utilities;
+using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
 using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -36,6 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();
 			services.AddScoped<IUriNavigator, UriNavigator>();
 			services.AddTransient<IDialogUtility>(x => x.GetService<IUmbrellaDialogUtility>());
+			services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
 
 			return services;
 		}

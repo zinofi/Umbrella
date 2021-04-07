@@ -1,0 +1,85 @@
+﻿/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-grid-heading-font-size
+	--u-grid-spacing
+*/
+
+.u-grid
+{
+	$defaultSpacing: 16px;
+	$headingFontSize: 24px;
+
+	margin-top: var(--u-grid-spacing, $defaultSpacing);
+
+	&__filters
+	{
+		&-heading
+		{
+			font-size: var(--u-grid-heading-font-size, $headingFontSize);
+		}
+	}
+
+	&__results
+	{
+		margin-top: var(--u-grid-spacing, $defaultSpacing);
+
+		thead
+		{
+			th
+			{
+				a
+				{
+					display: flex;
+					align-items: center;
+					white-space: nowrap;
+
+					&:hover,
+					&:active
+					{
+						text-decoration: none;
+					}
+
+					.fas
+					{
+						margin-left: var(--u-grid-spacing, $defaultSpacing);
+					}
+				}
+			}
+		}
+	}
+
+	&__item
+	{
+		th, td
+		{
+			vertical-align: middle;
+		}
+	}
+
+	&__actions
+	{
+		text-align: right;
+		white-space: nowrap;
+	}
+
+	&__column
+	{
+		&--auto
+		{
+			width: auto;
+		}
+
+		@for $i from 0 through 100
+		{
+			&--#{$i}
+			{
+				width: unquote(#{$i}) + unquote("%");
+			}
+		}
+	}
+
+	&__caption
+	{
+	}
+}
