@@ -6,7 +6,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserJsPlugin = require("terser-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const nodeExternals = require('webpack-node-externals');
 
 module.exports = (env, argv) =>
 {
@@ -24,7 +23,6 @@ module.exports = (env, argv) =>
 	return [{
 		mode: isDevMode ? "development" : "production",
 		devtool: 'source-map',
-		externals: [nodeExternals()],
 		entry: {
 			"umbrella-blazor": "scripts"
 		},
