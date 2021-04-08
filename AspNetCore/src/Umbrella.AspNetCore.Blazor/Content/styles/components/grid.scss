@@ -82,4 +82,9 @@
 	&__caption
 	{
 	}
+
+	.u-state-view
+	{
+		margin-top: var(--u-grid-spacing, $defaultSpacing);
+	}
 }
