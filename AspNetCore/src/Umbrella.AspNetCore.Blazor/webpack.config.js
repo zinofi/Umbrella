@@ -37,7 +37,8 @@ module.exports = (env, argv) =>
 		output: {
 			filename: "[name].js",
 			chunkFilename: "[name].js",
-			path: path.resolve(__dirname, paths.dist)
+			path: path.resolve(__dirname, paths.dist),
+			publicPath: paths.publicPath
 		},
 		module: {
 			rules: [
