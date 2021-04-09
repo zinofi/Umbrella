@@ -1,5 +1,9 @@
 ﻿namespace Umbrella.DataAnnotations
 {
+	/// <summary>
+	/// Specifies that the value of a property should not be equal to the value of another named property on the same type.
+	/// </summary>
+	/// <seealso cref="Umbrella.DataAnnotations.IsAttribute" />
 	public class NotEqualToAttribute : IsAttribute
 	{
 		/// <summary>

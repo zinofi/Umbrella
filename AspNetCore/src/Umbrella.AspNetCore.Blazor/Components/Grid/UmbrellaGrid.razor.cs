@@ -28,15 +28,23 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Inject]
 		private IUmbrellaBlazorInteropUtility BlazorInteropUtility { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.
+		/// </summary>
 		protected UmbrellaPagination PaginationInstance { get; set; } = null!;
 
 		protected bool ColumnScanComplete { get; set; }
 
 		protected List<UmbrellaColumnDefinition> Columns { get; } = new List<UmbrellaColumnDefinition>();
+
+		/// <inheritdoc />
 		public string? FirstColumnPropertyName { get; private set; }
 
 		protected IReadOnlyCollection<UmbrellaColumnDefinition>? FilterableColumns { get; private set; }
 
+		/// <summary>
+		/// Gets the current <see cref="LayoutState"/> of the component.
+		/// </summary>
 		public LayoutState CurrentState { get; private set; } = LayoutState.Loading;
 		protected int TotalCount { get; set; }
 		public int PageNumber { get; private set; } = UmbrellaPaginationDefaults.PageNumber;
@@ -62,15 +70,25 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public string FilterOptionsHeading { get; set; } = "Search Options";
 
+		/// <summary>
+		/// Gets or sets a value indicating whether filter options should be displayed.
+		/// </summary>
 		[Parameter]
 		public bool ShowFilters { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether pagination controls should be displayed.
+		/// </summary>
 		[Parameter]
 		public bool ShowPagination { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the grid caption showing the range of results metadata should be displayed.
+		/// </summary>
 		[Parameter]
 		public bool ShowCaption { get; set; } = true;
 
+		/// <inheritdoc />
 		[Parameter]
 		public UmbrellaGridRenderMode RenderMode { get; set; } = UmbrellaGridRenderMode.Full;
 
@@ -92,6 +110,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public string? ItemCssClass { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the pagination controls should be rendered using smaller styling.
+		/// </summary>
 		[Parameter]
 		public bool SmallPagination { get; set; } = true;
 
@@ -101,7 +122,10 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public int ScrollTopOffset { get; set; }
 
-		public string CaptionText
+		/// <summary>
+		/// Gets the caption text.
+		/// </summary>
+		protected string CaptionText
 		{
 			get
 			{
@@ -115,10 +139,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			}
 		}
 
+		/// <inheritdoc />
 		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
 
+		/// <inheritdoc />
 		public void AddColumnDefinition(UmbrellaColumnDefinition column) => Columns.Add(column);
 
+		/// <inheritdoc />
 		public void SetColumnScanCompleted()
 		{
 			if (!ColumnScanComplete)
@@ -147,6 +174,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			}
 		}
 
+		/// <summary>
+		/// Changes the <see cref="CurrentState"/> to <see cref="LayoutState.Error"/> and forces re-rendering.
+		/// </summary>
 		public void SetErrorState()
 		{
 			CurrentState = LayoutState.Error;

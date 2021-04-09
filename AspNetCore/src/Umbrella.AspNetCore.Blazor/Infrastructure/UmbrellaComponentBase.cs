@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
@@ -72,5 +73,11 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure
 		/// <param name="title">The title.</param>
 		protected async Task ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
 			=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+
+		/// <summary>
+		/// Reloads the component primarily in response to an error during the initial loading phase.
+		/// </summary>
+		/// <returns>An awaitable Task that completed when this operation has completed.</returns>
+		protected virtual Task ReloadAsync() => throw new NotImplementedException("Reloading has not been implemented.");
 	}
 }

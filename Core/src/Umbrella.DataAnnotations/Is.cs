@@ -6,6 +6,11 @@ using Umbrella.DataAnnotations.Utilities;
 
 namespace Umbrella.DataAnnotations
 {
+	/// <summary>
+	/// Specifies that the value of a property should compared to the value of another named property on the same type
+	/// using the specified <see cref="Operator"/>.
+	/// </summary>
+	/// <seealso cref="Umbrella.DataAnnotations.BaseClasses.ContingentValidationAttribute" />
 	public class IsAttribute : ContingentValidationAttribute
 	{
 		private readonly OperatorMetadata _metadata;
