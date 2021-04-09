@@ -27,7 +27,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="memberPath">The member path.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
-		public FilterExpressionDescriptor(string memberPath, string value, FilterType type)
+		public FilterExpressionDescriptor(string memberPath, string? value, FilterType type)
 		{
 			MemberPath = memberPath;
 			Value = value;
@@ -54,8 +54,8 @@ namespace Umbrella.Utilities.Data.Filtering
 		public FilterType Type { get; set; }
 
 		/// <inheritdoc />
-		/// <remarks>This will return true even if the <see cref="Value"/> is only whitespace as we might need to filter on that, e.g. looking for values that contain spaces.</remarks>
-		public bool IsValid() => !string.IsNullOrEmpty(MemberPath) && !string.IsNullOrEmpty(Value);
+		/// <remarks>This will return true even if the <see cref="Value"/> is null as we might need to filter on that, e.g. looking for matches that have no value.</remarks>
+		public bool IsValid() => !string.IsNullOrEmpty(MemberPath);
 
 		/// <inheritdoc />
 		public override string ToString() => $"{MemberPath}:{Value}:{Type}";

@@ -181,15 +181,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 
 		protected async Task ResetFiltersClick()
 		{
-			foreach (var column in Columns)
-			{
-				column.FilterValue = null;
-				column.Direction = null;
-
-				if (column.PropertyName == InitialSortPropertyName)
-					column.Direction = InitialSortDirection;
-			}
-
+			ResetFiltersAndSorters();
 			await UpdateGridAsync();
 		}
 
@@ -215,9 +207,25 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			await UpdateGridAsync();
 		}
 
-		protected Task ReloadButtonClick() => UpdateGridAsync(PageNumber, PageSize);
+		protected async Task ReloadButtonClick()
+		{
+			ResetFiltersAndSorters();
+			await UpdateGridAsync(PageNumber, PageSize);
+		}
 
 		protected Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(args.PageNumber, args.PageSize);
+
+		private void ResetFiltersAndSorters()
+		{
+			foreach (var column in Columns)
+			{
+				column.FilterValue = null;
+				column.Direction = null;
+
+				if (column.PropertyName == InitialSortPropertyName)
+					column.Direction = InitialSortDirection;
+			}
+		}
 
 		private async Task UpdateGridAsync(int? pageNumber = null, int? pageSize = null)
 		{

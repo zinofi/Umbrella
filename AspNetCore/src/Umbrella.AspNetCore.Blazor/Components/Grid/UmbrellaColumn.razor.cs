@@ -18,6 +18,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Inject]
 		private IAppAuthHelper AuthHelper { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets the <see cref="IUmbrellaGrid"/> instance that contains this column.
+		/// </summary>
 		[CascadingParameter]
 		protected IUmbrellaGrid UmbrellaGridInstance { get; set; } = null!;
 
@@ -36,15 +39,27 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public int? PercentageWidth { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="UmbrellaColumn"/> is sortable.
+		/// </summary>
 		[Parameter]
 		public bool Sortable { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="UmbrellaColumn"/> is filterable.
+		/// </summary>
 		[Parameter]
 		public bool Filterable { get; set; }
 
+		/// <summary>
+		/// Gets or sets the type of the filter control.
+		/// </summary>
 		[Parameter]
 		public UmbrellaColumnFilterType FilterControlType { get; set; }
 
+		/// <summary>
+		/// Gets or sets the type of the filter match. Defaults to <see cref="FilterType.Contains"/>.
+		/// </summary>
 		[Parameter]
 		public FilterType FilterMatchType { get; set; } = FilterType.Contains;
 
@@ -66,16 +81,35 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter(CaptureUnmatchedValues = true)]
 		public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets the comma-delimited list of roles for which this column should be displayed.
+		/// </summary>
+		/// <remarks>
+		/// Used in conjunction with the <see cref="Policy"/> property.
+		/// </remarks>
 		[Parameter]
 		public string? Roles { get; set; }
 
+		/// <summary>
+		/// Gets or sets the authorization policy for which this column should be displayed.
+		/// </summary>
+		/// <remarks>
+		/// Used in conjunction with the <see cref="Roles"/> property.
+		/// </remarks>
 		[Parameter]
 		public string? Policy { get; set; }
 
+		/// <summary>
+		/// Gets a value indicating whether this column is visible.
+		/// </summary>
 		public bool IsVisible { get; private set; } = true;
 
+		/// <summary>
+		/// Gets a value indicating whether this is the first column in the grid.
+		/// </summary>
 		public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(PropertyName) == true;
 
+		/// <inheritdoc />
 		protected override async Task OnInitializedAsync()
 		{
 			ClaimsPrincipal claimsPrincipal = await AuthHelper.GetCurrentClaimsPrincipalAsync();

@@ -12,7 +12,7 @@ namespace Umbrella.AspNetCore.Blazor.Extensions
 	public static class IAuthorizationServiceExtensions
     {
 		/// <summary>
-		/// Checks if the specified<paramref name= "user" /> has the necessary specified <paramref name="roles"/> and meets the specified <paramref name="policyName"/>.
+		/// Checks if the specified <paramref name= "user" /> has the necessary specified <paramref name="roles"/> and meets the specified <paramref name="policyName"/>.
 		/// </summary>
 		/// <param name="authorizationService">The authorization service.</param>
 		/// <param name="user">The user.</param>

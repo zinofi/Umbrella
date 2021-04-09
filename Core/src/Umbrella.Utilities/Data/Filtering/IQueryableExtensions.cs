@@ -38,7 +38,7 @@ namespace Umbrella.Utilities.Data.Filtering
 				{
 					foreach (FilterExpression<TItem> filterExpression in filterExpressions!)
 					{
-						if (filterExpression == default || filterExpression.MemberPath is null || filterExpression.Value is null)
+						if (filterExpression == default || filterExpression.MemberPath is null)
 							continue;
 
 						Expression<Func<TItem, bool>>? predicate = null;
@@ -55,8 +55,8 @@ namespace Umbrella.Utilities.Data.Filtering
 						};
 
 						predicate = dynamicCompare != null
-							? UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value.ToString() ?? "")
-							: UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value.ToString() ?? "");
+							? UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value?.ToString() ?? "")
+							: UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value?.ToString() ?? "");
 
 						if (filterPredicate is null)
 						{
@@ -94,7 +94,8 @@ namespace Umbrella.Utilities.Data.Filtering
 					}
 				}
 
-				filteredItems = items.Where(filterPredicate);
+				if(filterPredicate != null)
+					filteredItems = items.Where(filterPredicate);
 			}
 
 			return filteredItems ?? items;

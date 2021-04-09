@@ -39,7 +39,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="expression">The expression.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
-		public FilterExpression(Expression<Func<TItem, object>> expression, object value, FilterType type = FilterType.Contains)
+		public FilterExpression(Expression<Func<TItem, object>> expression, object? value, FilterType type = FilterType.Contains)
 		{
 			Guard.ArgumentNotNull(expression, nameof(expression));
 
@@ -60,7 +60,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
 		/// <remarks>This is dynamically invoked by the <see cref="DataExpressionFactory"/>.</remarks>
-		public FilterExpression(LambdaExpression expression, Lazy<Delegate> @delegate, Lazy<string> memberPath, object value, FilterType type)
+		public FilterExpression(LambdaExpression expression, Lazy<Delegate> @delegate, Lazy<string> memberPath, object? value, FilterType type)
 		{
 			Expression = (Expression<Func<TItem, object>>)expression;
 			Value = value;
