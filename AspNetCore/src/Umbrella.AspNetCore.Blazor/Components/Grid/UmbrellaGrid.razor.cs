@@ -183,7 +183,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			StateHasChanged();
 		}
 
-		public void Update(IReadOnlyCollection<TItem> items, int? totalCount = null, int? pageNumber = null, int? pageSize = null)
+		public void Update(IReadOnlyCollection<TItem> items, int? totalCount = null, int? pageNumber = null, int? pageSize = null, bool callStateHasChanged = true)
 		{
 			Items = items;
 			TotalCount = totalCount ?? TotalCount;
@@ -198,9 +198,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 
 			CurrentState = Items.Count > 0 ? LayoutState.Success : LayoutState.Empty;
 
-			StateHasChanged();
+			if(callStateHasChanged)
+				StateHasChanged();
 		}
 
+		/// <inheritdoc />
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (!firstRender && PaginationInstance != null)
