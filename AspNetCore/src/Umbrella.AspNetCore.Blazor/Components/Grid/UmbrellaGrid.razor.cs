@@ -105,7 +105,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		public IReadOnlyCollection<int> PageSizeOptions { get; set; } = UmbrellaPaginationDefaults.PageSizeOptions;
 
 		[Parameter]
-		public string? GridCssClass { get; set; } = "table table-hover table-sm table-responsive-sm";
+		public string? GridCssClass { get; set; } = "table table-hover table-sm table-responsive";
 
 		[Parameter]
 		public string? ItemCssClass { get; set; }
