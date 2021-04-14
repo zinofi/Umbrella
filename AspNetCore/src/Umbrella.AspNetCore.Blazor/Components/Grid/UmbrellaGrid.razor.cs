@@ -33,40 +33,81 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// </summary>
 		protected UmbrellaPagination PaginationInstance { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the scanning process that occurs when the grid is first initialized, which looks for columns, has been completed.
+		/// </summary>
 		protected bool ColumnScanComplete { get; set; }
 
+		/// <summary>
+		/// Gets the columns.
+		/// </summary>
 		protected List<UmbrellaColumnDefinition> Columns { get; } = new List<UmbrellaColumnDefinition>();
 
 		/// <inheritdoc />
 		public string? FirstColumnPropertyName { get; private set; }
 
+		/// <summary>
+		/// Gets the filterable columns.
+		/// </summary>
 		protected IReadOnlyCollection<UmbrellaColumnDefinition>? FilterableColumns { get; private set; }
 
 		/// <summary>
 		/// Gets the current <see cref="LayoutState"/> of the component.
 		/// </summary>
 		public LayoutState CurrentState { get; private set; } = LayoutState.Loading;
+
+		/// <summary>
+		/// Gets or sets the total count of all items that are available to be loaded into the grid.
+		/// This will be larger than the number of items currently displayed where pagination has been applied.
+		/// </summary>
 		protected int TotalCount { get; set; }
+
+		/// <summary>
+		/// Gets the current page number. Defaults to <see cref="UmbrellaPaginationDefaults.PageNumber"/>.
+		/// </summary>
 		public int PageNumber { get; private set; } = UmbrellaPaginationDefaults.PageNumber;
+
+		/// <summary>
+		/// Gets the current page size. Defaults to <see cref="UmbrellaPaginationDefaults.PageSize"/>.
+		/// </summary>
 		public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
 
 		[Parameter]
 		public RenderFragment<TItem>? ChildContent { get; set; }
 
+		/// <summary>
+		/// Gets or sets the items collection displayed in the grid.
+		/// </summary>
 		public IReadOnlyCollection<TItem> Items { get; set; } = Array.Empty<TItem>();
 
+		/// <summary>
+		/// Gets or sets the message displayed when the grid is loading.
+		/// This is ususally only shown when the grid is first initialized.
+		/// </summary>
 		[Parameter]
 		public string LoadingMessage { get; set; } = "Loading... Please wait.";
 
+		/// <summary>
+		/// Gets or sets the message displayed when the grid contains no data.
+		/// </summary>
 		[Parameter]
 		public string EmptyMessage { get; set; } = "There is either no data to display or your search options have no results.";
 
+		/// <summary>
+		/// Gets or sets the error message displayed when the grid fails to load correctly.
+		/// </summary>
 		[Parameter]
 		public string ErrorMessage { get; set; } = "There has been a problem. Please try again.";
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the reload button should be shown when the grid has failed to load correctly. Defaults to <see langword="true"/>.
+		/// </summary>
 		[Parameter]
-		public bool ShowReloadButton { get; set; }
+		public bool ShowReloadButton { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets the heading displayed above the filer options.
+		/// </summary>
 		[Parameter]
 		public string FilterOptionsHeading { get; set; } = "Search Options";
 
@@ -92,21 +133,36 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public UmbrellaGridRenderMode RenderMode { get; set; } = UmbrellaGridRenderMode.Full;
 
+		/// <summary>
+		/// Gets or sets the name of the property which will be used to sort the data when the grid is first initialized.
+		/// </summary>
 		[Parameter]
 		public string InitialSortPropertyName { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets the initial sort direction. Defaults to <see cref="SortDirection.Descending"/>.
+		/// </summary>
 		[Parameter]
 		public SortDirection InitialSortDirection { get; set; } = SortDirection.Descending;
 
 		[Parameter]
 		public EventCallback<UmbrellaGridRefreshEventArgs> OnGridOptionsChanged { get; set; }
 
+		/// <summary>
+		/// Gets or sets the page size options. Defaults to <see cref="UmbrellaPaginationDefaults.PageSizeOptions"/>.
+		/// </summary>
 		[Parameter]
 		public IReadOnlyCollection<int> PageSizeOptions { get; set; } = UmbrellaPaginationDefaults.PageSizeOptions;
 
+		/// <summary>
+		/// Gets or sets the CSS class applied to the grid.
+		/// </summary>
 		[Parameter]
 		public string? GridCssClass { get; set; } = "table table-hover table-sm table-responsive";
 
+		/// <summary>
+		/// Gets or sets the CSS class applied to each item in the grid.
+		/// </summary>
 		[Parameter]
 		public string? ItemCssClass { get; set; }
 

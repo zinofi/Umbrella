@@ -1,6 +1,6 @@
 ﻿<div class="u-state-view u-state-view--error">
 	<p>@Message</p>
-	@if (OnReloadButtonClick.HasDelegate)
+	@if (OnReloadButtonClick.HasDelegate && ShowReloadButton)
 	{
 		<button class="btn btn-primary" @onclick="async () => await OnReloadButtonClick.InvokeAsync(null)">Reload</button>
 	}

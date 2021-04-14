@@ -18,5 +18,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.StateViews
 		/// </summary>
 		[Parameter]
 		public EventCallback OnReloadButtonClick { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether to show the reload button. Defaults to <see langword="true"/>.
+		/// </summary>
+		[Parameter]
+		public bool ShowReloadButton { get; set; } = true;
 	}
 }
