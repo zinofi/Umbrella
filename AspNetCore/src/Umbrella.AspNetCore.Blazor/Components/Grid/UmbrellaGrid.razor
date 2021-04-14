@@ -57,9 +57,9 @@
 		}
 		else if (CurrentState == LayoutState.Success)
 		{
-			<div class="u-grid__results-container">
-				@if (RenderMode is UmbrellaGridRenderMode.Full)
-				{
+			@if (RenderMode is UmbrellaGridRenderMode.Full)
+			{
+				<div class="u-grid__results-container">
 					<table class="u-grid__results @GridCssClass">
 						@if (ShowCaption)
 						{
@@ -100,34 +100,34 @@
 							}
 						</tbody>
 					</table>
+				</div>
 
-					@if (ShowPagination)
-					{
-						<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
-					}
-				}
-				else if (RenderMode is UmbrellaGridRenderMode.Slim)
+				@if (ShowPagination)
 				{
-					<div class="u-grid__results @GridCssClass">
-						@foreach (var item in Items)
-						{
-							<div class="u-grid__item @ItemCssClass">
-								@ChildContent?.Invoke(item)
-							</div>
-						}
-					</div>
-
-					@if (ShowCaption)
-					{
-						<div class="u-grid__caption">@CaptionText</div>
-					}
-
-					@if (ShowPagination)
-					{
-						<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
-					}
+					<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
 				}
-			</div>
+			}
+			else if (RenderMode is UmbrellaGridRenderMode.Slim)
+			{
+				<div class="u-grid__results @GridCssClass">
+					@foreach (var item in Items)
+					{
+						<div class="u-grid__item @ItemCssClass">
+							@ChildContent?.Invoke(item)
+						</div>
+					}
+				</div>
+
+				@if (ShowCaption)
+				{
+					<div class="u-grid__caption">@CaptionText</div>
+				}
+
+				@if (ShowPagination)
+				{
+					<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
+				}
+			}
 		}
 		else
 		{

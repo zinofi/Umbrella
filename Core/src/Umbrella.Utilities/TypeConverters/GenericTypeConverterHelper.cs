@@ -6,14 +6,14 @@ namespace Umbrella.Utilities.TypeConverters
 	{
 		public static T Convert<T>(string? value, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null)
 		{
-			Type type = typeof(T);
+			Type type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
 			if (!string.IsNullOrEmpty(value))
 				return customValueConverter != null ? customValueConverter(value) : (T)System.Convert.ChangeType(value, type);
 
 			T fallback = fallbackCreator != null ? fallbackCreator() : default;
 
-			return type == typeof(string) && fallback == null
+			return type == typeof(string) && fallback is null
 				? (T)System.Convert.ChangeType(string.Empty, type)
 				: fallback!;
 		}
