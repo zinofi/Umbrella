@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.TypeConverters;
 
 namespace Umbrella.Utilities.Security.Extensions
 {
@@ -147,6 +148,63 @@ namespace Umbrella.Utilities.Security.Extensions
 			}
 
 			return lstRole;
+		}
+
+		/// <summary>
+		/// Find the first claim value of the specified type and convert it to an instance of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The type to convert to.</typeparam>
+		/// <param name="claimsPrincipal">The claims principal.</param>
+		/// <param name="claimType">The type of the claim.</param>
+		/// <param name="fallbackCreator">
+		/// The fallback creator.
+		/// This is used to provide a default value in cases where the claim's value is null or empty.
+		/// In cases where no fallback has been specified, the <see langword="default"/> value for <typeparamref name="T"/> will be returned EXCEPT if <typeparamref name="T"/>
+		/// is a <see langword="string"/> in which case <see cref="string.Empty"/> will be returned.
+		/// </param>
+		/// <param name="customValueConverter">The custom value converter.</param>
+		/// <returns>The conversion result.</returns>
+		public static T GetFirstValueOrDefault<T>(this ClaimsPrincipal claimsPrincipal, string claimType, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null)
+		{
+			Claim? claim = claimsPrincipal.FindFirst(claimType);
+
+			return GenericTypeConverterHelper.Convert(claim?.Value, fallbackCreator, customValueConverter);
+		}
+
+		/// <summary>
+		/// Find the first claim value of the specified type and convert it to an instance of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The type to convert to.</typeparam>
+		/// <param name="claimsPrincipal">The claims principal.</param>
+		/// <param name="claimType">The type of the claim.</param>
+		/// <param name="fallback">
+		/// The fallback. This is used to provide a default value in cases where the claim's value is null or empty.
+		/// In cases where no fallback has been specified, the <see langword="default"/> value for <typeparamref name="T"/> will be returned EXCEPT if <typeparamref name="T"/>
+		/// is a <see langword="string"/> in which case <see cref="string.Empty"/> will be returned.
+		/// </param>
+		/// <param name="customValueConverter">The custom value converter.</param>
+		/// <returns>The conversion result.</returns>
+		public static T GetFirstValueOrDefault<T>(this ClaimsPrincipal claimsPrincipal, string claimType, T fallback = default!, Func<string?, T>? customValueConverter = null)
+		{
+			Claim? claim = claimsPrincipal.FindFirst(claimType);
+
+			return GenericTypeConverterHelper.Convert(claim?.Value, fallback, customValueConverter);
+		}
+
+		/// <summary>
+		/// Find the first claim value of the specified type and convert it to an <see langword="enum"/> instance of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The <see langword="enum"/></typeparam>
+		/// <param name="claimsPrincipal">The claims principal.</param>
+		/// <param name="claimType">The type of the claim.</param>
+		/// <param name="fallback">The fallback which is returned if the value is null, empty or whitespace, or if the value cannot be converted to the specified enum <typeparamref name="T"/>.</param>
+		/// <returns>The conversion result.</returns>
+		public static T GetFirstEnumValueOrDefault<T>(this ClaimsPrincipal claimsPrincipal, string claimType, T fallback = default)
+			where T : struct, Enum
+		{
+			Claim? claim = claimsPrincipal.FindFirst(claimType);
+
+			return GenericTypeConverterHelper.ConvertToEnum(claim?.Value, fallback);
 		}
 	}
 }

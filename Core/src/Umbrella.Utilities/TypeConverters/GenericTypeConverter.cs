@@ -27,16 +27,7 @@ namespace Umbrella.Utilities.TypeConverters
 		{
 			try
 			{
-				Type type = typeof(T);
-
-				if (!string.IsNullOrEmpty(value))
-					return customValueConverter != null ? customValueConverter(value) : (T)System.Convert.ChangeType(value, type);
-
-				T fallback = fallbackCreator != null ? fallbackCreator() : default;
-
-				return type == typeof(string) && fallback == null
-					? (T)System.Convert.ChangeType(string.Empty, type)
-					: fallback!;
+				return GenericTypeConverterHelper.Convert(value, fallbackCreator, customValueConverter);
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { value, fallbackCreator, customValueConverter }, returnValue: true))
 			{
@@ -49,7 +40,7 @@ namespace Umbrella.Utilities.TypeConverters
 		{
 			try
 			{
-				return Convert(value, () => fallback, customValueConverter)!;
+				return GenericTypeConverterHelper.Convert(value, fallback, customValueConverter)!;
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { value, fallback, customValueConverter }, returnValue: true))
 			{
@@ -63,10 +54,7 @@ namespace Umbrella.Utilities.TypeConverters
 		{
 			try
 			{
-				if (!string.IsNullOrWhiteSpace(value) && Enum.TryParse(value, true, out T output))
-					return output;
-
-				return fallback;
+				return GenericTypeConverterHelper.ConvertToEnum(value, fallback);
 			}
 			catch (Exception exc) when (_log.WriteError(exc, new { value }, returnValue: true))
 			{
