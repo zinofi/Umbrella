@@ -24,6 +24,12 @@
 	{
 		margin-top: var(--u-grid-spacing, $defaultSpacing);
 
+		&-container
+		{
+			width: 100%;
+			overflow-x: auto;
+		}
+
 		thead
 		{
 			th

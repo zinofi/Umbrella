@@ -57,75 +57,77 @@
 		}
 		else if (CurrentState == LayoutState.Success)
 		{
-			if (RenderMode is UmbrellaGridRenderMode.Full)
-			{
-				<table class="u-grid__results @GridCssClass">
-					@if (ShowCaption)
-					{
-						<caption class="u-grid__caption">@CaptionText</caption>
-					}
-					<colgroup>
-						@foreach (var column in Columns)
+			<div class="u-grid__results-container">
+				@if (RenderMode is UmbrellaGridRenderMode.Full)
+				{
+					<table class="u-grid__results @GridCssClass">
+						@if (ShowCaption)
 						{
-							<col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
+							<caption class="u-grid__caption">@CaptionText</caption>
 						}
-					</colgroup>
-					<thead>
-						<tr>
+						<colgroup>
 							@foreach (var column in Columns)
 							{
-								<th @attributes="column.AdditionalAttributes">
-									@if (column.Sortable)
-									{
-										<a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault>
-											@column.Heading
-											<i class="@column.DirectionCssClass"></i>
-										</a>
-									}
-									else
-									{
-										@column.Heading
-									}
-								</th>
+								<col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
 							}
-						</tr>
-					</thead>
-					<tbody>
+						</colgroup>
+						<thead>
+							<tr>
+								@foreach (var column in Columns)
+								{
+									<th @attributes="column.AdditionalAttributes">
+										@if (column.Sortable)
+										{
+											<a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault>
+												@column.Heading
+												<i class="@column.DirectionCssClass"></i>
+											</a>
+										}
+										else
+										{
+											@column.Heading
+										}
+									</th>
+								}
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Items)
+							{
+								<tr class="u-grid__item @ItemCssClass">
+									@ChildContent?.Invoke(item)
+								</tr>
+							}
+						</tbody>
+					</table>
+
+					@if (ShowPagination)
+					{
+						<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
+					}
+				}
+				else if (RenderMode is UmbrellaGridRenderMode.Slim)
+				{
+					<div class="u-grid__results @GridCssClass">
 						@foreach (var item in Items)
 						{
-							<tr class="u-grid__item @ItemCssClass">
+							<div class="u-grid__item @ItemCssClass">
 								@ChildContent?.Invoke(item)
-							</tr>
+							</div>
 						}
-					</tbody>
-				</table>
+					</div>
 
-				@if (ShowPagination)
-				{
-					<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
-				}
-			}
-			else if (RenderMode is UmbrellaGridRenderMode.Slim)
-			{
-				<div class="u-grid__results @GridCssClass">
-					@foreach (var item in Items)
+					@if (ShowCaption)
 					{
-						<div class="u-grid__item @ItemCssClass">
-							@ChildContent?.Invoke(item)
-						</div>
+						<div class="u-grid__caption">@CaptionText</div>
 					}
-				</div>
 
-				@if (ShowCaption)
-				{
-					<div class="u-grid__caption">@CaptionText</div>
+					@if (ShowPagination)
+					{
+						<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
+					}
 				}
-
-				@if (ShowPagination)
-				{
-					<UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
-				}
-			}
+			</div>
 		}
 		else
 		{

@@ -158,7 +158,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// Gets or sets the CSS class applied to the grid.
 		/// </summary>
 		[Parameter]
-		public string? GridCssClass { get; set; } = "table table-hover table-sm table-responsive";
+		public string? GridCssClass { get; set; } = "table table-hover table-sm";
 
 		/// <summary>
 		/// Gets or sets the CSS class applied to each item in the grid.
