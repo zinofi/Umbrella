@@ -64,15 +64,15 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure
 		/// Gets the claims principal for the current user.
 		/// </summary>
 		/// <returns>The claims principal.</returns>
-		protected async Task<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync();
+		protected ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => AuthHelper.GetCurrentClaimsPrincipalAsync();
 
 		/// <summary>
 		/// Shows the problem details error message. If this does not exist, the error message defaults to <see cref="DialogDefaults.UnknownErrorMessage"/>.
 		/// </summary>
 		/// <param name="problemDetails">The problem details.</param>
 		/// <param name="title">The title.</param>
-		protected async Task ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
-			=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+		protected ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
+			=> DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
 
 		/// <summary>
 		/// Reloads the component primarily in response to an error during the initial loading phase.
