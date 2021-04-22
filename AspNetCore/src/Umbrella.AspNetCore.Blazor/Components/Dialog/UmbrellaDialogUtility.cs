@@ -111,7 +111,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = "Close")
+		public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText)
 		{
 			try
 			{
@@ -135,7 +135,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again.", string title = "Error", string closeButtonText = "Close")
+		public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again.", string title = "Error", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
 		{
 			try
 			{
@@ -159,7 +159,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = "Close")
+		public async ValueTask ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
 		{
 			try
 			{
@@ -185,7 +185,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = "Close")
+		public async ValueTask ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
 		{
 			try
 			{
@@ -209,7 +209,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")
+		public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
 		{
 			try
 			{
@@ -233,17 +233,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = "Confirm", string cancelButtonText = "Cancel")
+		public async ValueTask<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
 		{
 			try
 			{
-				var buttons = acceptButtonText is DialogDefaults.DefaultConfirmButtonText && cancelButtonText is DialogDefaults.DefaultCancelButtonText
-					? _defaultConfirmButtons
-					: new[]
-					{
-						new UmbrellaDialogButton(cancelButtonText, UmbrellaDialogButtonType.Danger),
-						new UmbrellaDialogButton(acceptButtonText, UmbrellaDialogButtonType.Danger)
-					};
+				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Primary, _defaultConfirmButtons, acceptButtonText, cancelButtonText);
 
 				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm", buttons);
 
@@ -256,11 +250,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
 		{
 			try
 			{
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-danger", _defaultConfirmDangerButtons);
+				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Danger, _defaultConfirmDangerButtons, acceptButtonText, cancelButtonText);
+
+				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-danger", buttons);
 
 				return !result.Cancelled;
 			}
@@ -271,11 +267,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
 		{
 			try
 			{
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-success", _defaultConfirmSuccessButtons);
+				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Success, _defaultConfirmSuccessButtons, acceptButtonText, cancelButtonText);
+
+				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-success", buttons);
 
 				return !result.Cancelled;
 			}
@@ -286,11 +284,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
 		{
 			try
 			{
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-info", _defaultConfirmInfoButtons);
+				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Info, _defaultConfirmInfoButtons, acceptButtonText, cancelButtonText);
+
+				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-info", buttons);
 
 				return !result.Cancelled;
 			}
@@ -301,11 +301,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		}
 
 		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title)
+		public async ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
 		{
 			try
 			{
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-warning", _defaultConfirmWarningButtons);
+				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Warning, _defaultConfirmWarningButtons, acceptButtonText, cancelButtonText);
+
+				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-warning", buttons);
 
 				return !result.Cancelled;
 			}
@@ -391,5 +393,14 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
 			}
 		}
+
+		private IReadOnlyCollection<UmbrellaDialogButton> GetConfirmButtons(UmbrellaDialogButtonType acceptButtonType, IReadOnlyCollection<UmbrellaDialogButton> defaultButtons, string acceptButtonText, string cancelButtonText)
+			=> acceptButtonText is DialogDefaults.DefaultConfirmButtonText && cancelButtonText is DialogDefaults.DefaultCancelButtonText
+				? defaultButtons
+				: new[]
+				{
+					new UmbrellaDialogButton(cancelButtonText, UmbrellaDialogButtonType.Default, true),
+					new UmbrellaDialogButton(acceptButtonText, acceptButtonType)
+				};
 	}
 }

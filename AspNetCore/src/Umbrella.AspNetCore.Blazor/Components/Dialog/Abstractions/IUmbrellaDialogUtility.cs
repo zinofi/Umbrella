@@ -4,6 +4,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Utilities.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions
 {
@@ -18,32 +19,40 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions
 		/// </summary>
 		/// <param name="message">The message.</param>
 		/// <param name="title">The title.</param>
+		/// <param name="acceptButtonText">The accept button text.</param>
+		/// <param name="cancelButtonText">The cancel button text.</param>
 		/// <returns>An awaitable task that completes when the dialog has been actioned with a value indicating whether the message was confirmed or not by the user.</returns>
-		ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title);
+		ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText);
 
 		/// <summary>
 		/// Shows a confirmation danger dialog.
 		/// </summary>
 		/// <param name="message">The message.</param>
 		/// <param name="title">The title.</param>
+		/// <param name="acceptButtonText">The accept button text.</param>
+		/// <param name="cancelButtonText">The cancel button text.</param>
 		/// <returns>An awaitable task that completes when the dialog has been actioned with a value indicating whether the message was confirmed or not by the user.</returns>
-		ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title);
+		ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText);
 
 		/// <summary>
 		/// Shows a confirmation info dialog.
 		/// </summary>
 		/// <param name="message">The message.</param>
 		/// <param name="title">The title.</param>
+		/// <param name="acceptButtonText">The accept button text.</param>
+		/// <param name="cancelButtonText">The cancel button text.</param>
 		/// <returns>An awaitable task that completes when the dialog has been actioned with a value indicating whether the message was confirmed or not by the user.</returns>
-		ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title);
+		ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText);
 
 		/// <summary>
 		/// Shows a confirmation warning dialog.
 		/// </summary>
 		/// <param name="message">The message.</param>
 		/// <param name="title">The title.</param>
+		/// <param name="acceptButtonText">The accept button text.</param>
+		/// <param name="cancelButtonText">The cancel button text.</param>
 		/// <returns>An awaitable task that completes when the dialog has been actioned with a value indicating whether the message was confirmed or not by the user.</returns>
-		ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title);
+		ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText);
 
 		/// <summary>
 		/// Shows a custom dialog.
