@@ -18,7 +18,7 @@
     <Version>2.9.9</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2020</Copyright>
+    <Copyright>Zinofi Digital Ltd 2021</Copyright>
     <Description>This package is a placeholder for a future EF Core port of the Umbrella.DataAccess.EF6 package.</Description>
     <PackageLicenseUrl>https://github.com/zinofi/Umbrella/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
@@ -26,10 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

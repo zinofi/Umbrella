@@ -16,10 +16,10 @@ foreach ($file in $configFiles)
 	}
 
 	# Ensure Copyright year is correct
-	if($content -like "*<Copyright>Zinofi Digital Ltd 2019</Copyright>*")
+	if($content -like "*<Copyright>Zinofi Digital Ltd 2020</Copyright>*")
 	{
 		$affectedFiles.Add($file.Name)
-		$content -replace ("<Copyright>Zinofi Digital Ltd 2019</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2020</Copyright>") | Set-Content $file.PSPath
+		$content -replace ("<Copyright>Zinofi Digital Ltd 2020</Copyright>"), ("<Copyright>Zinofi Digital Ltd 2021</Copyright>") | Set-Content $file.PSPath
 	}
 }
 

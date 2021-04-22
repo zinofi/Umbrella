@@ -18,7 +18,7 @@
     <Version>2.9.9</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2020</Copyright>
+    <Copyright>Zinofi Digital Ltd 2021</Copyright>
     <Description>
       This package contains TypeScript code generators for creating POTO and Knockout classes.
     </Description>
@@ -32,10 +32,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
   </ItemGroup>
 

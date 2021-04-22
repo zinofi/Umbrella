@@ -19,7 +19,7 @@
     <Version>2.9.9</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2020</Copyright>
+    <Copyright>Zinofi Digital Ltd 2021</Copyright>
     <Description>
       This package is used to support the Umbrella.Utilities package by providing integration with Newtonsoft.Json
     </Description>
@@ -28,10 +28,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
   

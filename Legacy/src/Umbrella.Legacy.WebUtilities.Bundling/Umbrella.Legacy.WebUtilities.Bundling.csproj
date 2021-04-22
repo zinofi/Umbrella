@@ -18,7 +18,7 @@
     <Version>2.9.9</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2020</Copyright>
+    <Copyright>Zinofi Digital Ltd 2021</Copyright>
     <Description>
       This package contains bundling utilities to aid using the legacy ASP.NET stack with the Microsoft.AspNet.Web.Optimization package.
     </Description>
@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

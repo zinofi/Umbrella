@@ -20,7 +20,7 @@
     <Version>2.9.9</Version>
     <Authors>Richard Edwards</Authors>
     <Company>Zinofi Digital Ltd</Company>
-    <Copyright>Zinofi Digital Ltd 2020</Copyright>
+    <Copyright>Zinofi Digital Ltd 2021</Copyright>
     <Description>
       This package contains implementations of the ILogger and ILoggerProvider to allow ApplicationInsights to be used with the Microsoft.Extensions.Logging infrastructure
       inside an application that doesn't use the Microsoft.DependencyInjection package or one where it is not being used as the primary DI container.
@@ -34,10 +34,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.8.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
