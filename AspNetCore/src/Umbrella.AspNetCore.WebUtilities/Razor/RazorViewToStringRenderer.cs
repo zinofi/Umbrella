@@ -44,49 +44,49 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor
 		}
 
 		/// <inheritdoc />
-		public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)
+		public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, HttpContext? httpContext = null)
 		{
-			var actionContext = new ActionContext(_httpContextAccessor.HttpContext, new RouteData(), new ActionDescriptor());
+			httpContext ??= _httpContextAccessor.HttpContext;
+			
+			var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 			var view = FindView(actionContext, viewName);
 
-			using (var output = new StringWriter())
-			{
-				var viewContext = new ViewContext(
-					actionContext,
-					view,
-					new ViewDataDictionary<TModel>(
-						metadataProvider: new EmptyModelMetadataProvider(),
-						modelState: new ModelStateDictionary())
-					{
-						Model = model
-					},
-					new TempDataDictionary(
-						actionContext.HttpContext,
-						_tempDataProvider),
-					output,
-					new HtmlHelperOptions());
+			using var output = new StringWriter();
 
-				await view.RenderAsync(viewContext);
+			var viewContext = new ViewContext(
+				actionContext,
+				view,
+				new ViewDataDictionary<TModel>(
+					metadataProvider: new EmptyModelMetadataProvider(),
+					modelState: new ModelStateDictionary())
+				{
+					Model = model
+				},
+				new TempDataDictionary(
+					actionContext.HttpContext,
+					_tempDataProvider),
+				output,
+				new HtmlHelperOptions());
 
-				return output.ToString();
-			}
+			await view.RenderAsync(viewContext);
+
+			return output.ToString();
 		}
 
 		private IView FindView(ActionContext actionContext, string viewName)
 		{
 			var getViewResult = _viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
+
 			if (getViewResult.Success)
-			{
 				return getViewResult.View;
-			}
 
 			var findViewResult = _viewEngine.FindView(actionContext, viewName, isMainPage: true);
+
 			if (findViewResult.Success)
-			{
 				return findViewResult.View;
-			}
 
 			var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
+
 			string? errorMessage = string.Join(
 				Environment.NewLine,
 				new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations)); ;

@@ -1,5 +1,9 @@
 ﻿namespace Umbrella.DataAnnotations
 {
+	/// <summary>
+	/// Specifies that the value of a property should be required if the value of another named property on the same type is <see langword="true"/>.
+	/// </summary>
+	/// <seealso cref="RequiredIfAttribute"/>
 	public class RequiredIfTrueAttribute : RequiredIfAttribute
 	{
 		/// <summary>

@@ -14,6 +14,8 @@ namespace Umbrella.Utilities.WeakEventManager
 	/// <seealso cref="IWeakEventManager" />
 	public class WeakEventManager : IWeakEventManager
 	{
+		// TODO: Can we use ConditionalWeakTable here instead? Would need to intern the string key
+		// but would still be more memory efficient than this.
 		private readonly ConcurrentDictionary<string, List<WeakEventSubscription>> _subscriptionDictionary = new ConcurrentDictionary<string, List<WeakEventSubscription>>();
 		private readonly ILogger<WeakEventManager> _logger;
 
@@ -53,6 +55,7 @@ namespace Umbrella.Utilities.WeakEventManager
 			{
 				if (_subscriptionDictionary.TryGetValue(eventName, out List<WeakEventSubscription> lstSubscription) && lstSubscription?.Count > 0)
 				{
+					// TODO: Shouldn't have to new up a subscription just to remove it.
 					var subscription = new WeakEventSubscription(new WeakReference(handler.Target), handler.Method);
 					lstSubscription.RemoveAll(x => x == subscription);
 				}

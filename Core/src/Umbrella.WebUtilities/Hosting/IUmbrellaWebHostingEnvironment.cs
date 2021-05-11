@@ -28,8 +28,10 @@ namespace Umbrella.WebUtilities.Hosting
 		/// <param name="versionParameterName">Name of the version parameter.</param>
 		/// <param name="mapFromContentRoot">if set to <c>true</c> maps the path from the content root..</param>
 		/// <param name="watchWhenAppendVersion">if set to <c>true</c> watches the path for changes.</param>
-		/// <returns></returns>
-		string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "https", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true);
+		/// <param name="pathBaseOverride">An optional base path used to override the path determined from the current HTTP Context.</param>
+		/// <param name="hostOverride">An optional hostname used to override the hostname determined from the current HTTP Context.</param>
+		/// <returns>The mapped path.</returns>
+		string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "https", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true, string? pathBaseOverride = null, string? hostOverride = null);
 
 		/// <summary>
 		/// Gets the string content of the file at the specified virtual path.

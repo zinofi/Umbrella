@@ -97,7 +97,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 		}
 
 		/// <inheritdoc />
-		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "https", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true)
+		public virtual string MapWebPath(string virtualPath, bool toAbsoluteUrl = false, string scheme = "https", bool appendVersion = false, string versionParameterName = "v", bool mapFromContentRoot = true, bool watchWhenAppendVersion = true, string? pathBaseOverride = null, string? hostOverride = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(virtualPath, nameof(virtualPath));
 			Guard.ArgumentNotNullOrWhiteSpace(scheme, nameof(scheme));
@@ -121,9 +121,9 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 
 				return Cache.GetOrCreate(key, () =>
 				{
-					string virtualApplicationPath = HttpRuntime.AppDomainAppVirtualPath != "/"
+					string virtualApplicationPath = pathBaseOverride ?? (HttpRuntime.AppDomainAppVirtualPath != "/"
 						? HttpRuntime.AppDomainAppVirtualPath
-						: "";
+						: "");
 
 					//Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
 					string url = cleanedPath.StartsWith(virtualApplicationPath, StringComparison.OrdinalIgnoreCase)
@@ -131,7 +131,7 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 						: virtualApplicationPath + cleanedPath;
 
 					if (toAbsoluteUrl)
-						url = $"{scheme}://{ResolveHttpHost()}{url}";
+						url = $"{scheme}://{ResolveHttpHost(hostOverride)}{url}";
 
 					if (appendVersion)
 					{
@@ -187,8 +187,9 @@ namespace Umbrella.Legacy.WebUtilities.Hosting
 		/// <summary>
 		/// Resolves the HTTP host of the current request.
 		/// </summary>
+		/// <param name="hostOverride">The value used to override the hostname from the current HttpContext.</param>
 		/// <returns>The HTTP host for the current request.</returns>
-		protected virtual string ResolveHttpHost() => HttpContext.Current.Request.Url.Host;
+		protected virtual string ResolveHttpHost(string? hostOverride) => hostOverride ?? HttpContext.Current.Request.Url.Host;
 
 		/// <inheritdoc />
 		protected override string TransformPathForFileProvider(string virtualPath) => TransformPath(virtualPath, false, true, true);
