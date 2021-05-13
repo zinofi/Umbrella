@@ -49,29 +49,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor
 		}
 
 		/// <inheritdoc />
-		public async Task<string> RenderViewToStringWithHttpContextFallbackAsync<TModel>(string viewName, TModel model, Func<HttpContext> httpContextFallbackFactory, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				HttpContext context = _httpContextAccessor.HttpContext;
-
-				if (context is null)
-					context = httpContextFallbackFactory();
-
-				if (context is null)
-					throw new InvalidOperationException("A HTTP Context could not be found.");
-
-				return await RenderViewToStringAsync(viewName, model, cancellationToken, context);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }, returnValue: true))
-			{
-				throw new UmbrellaWebException("There has been a problem rendering the view.", exc);
-			}
-		}
-
-		/// <inheritdoc />
 		public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken cancellationToken = default, HttpContext? httpContext = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

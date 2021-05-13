@@ -26,17 +26,5 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.Abstractions
 		/// </param>
 		/// <returns>The view as a string.</returns>
 		Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken cancellationToken = default, HttpContext? httpContext = null);
-
-		/// <summary>
-		/// Renders the MVC View with the specified <paramref name="viewName"/> using the specified <paramref name="model"/>
-		/// to a string.
-		/// </summary>
-		/// <typeparam name="TModel">The type of the model.</typeparam>
-		/// <param name="viewName">The view name.</param>
-		/// <param name="model">The model.</param>
-		/// <param name="httpContextFallbackFactory">The factory method used to create the HTTP Context fallback.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>The view as a string.</returns>
-		Task<string> RenderViewToStringWithHttpContextFallbackAsync<TModel>(string viewName, TModel model, Func<HttpContext> httpContextFallbackFactory, CancellationToken cancellationToken = default);
 	}
 }
