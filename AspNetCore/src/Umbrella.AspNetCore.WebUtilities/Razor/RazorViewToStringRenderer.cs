@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
+using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Razor
 {
@@ -23,6 +24,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor
 	/// <seealso cref="IRazorViewToStringRenderer" />
 	public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 	{
+		private readonly ILogger<RazorViewToStringRenderer> _logger;
 		private readonly IRazorViewEngine _viewEngine;
 		private readonly ITempDataProvider _tempDataProvider;
 		private readonly IHttpContextAccessor _httpContextAccessor;
@@ -30,47 +32,82 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RazorViewToStringRenderer"/> class.
 		/// </summary>
+		/// <param name="logger">The logger.</param>
 		/// <param name="viewEngine">The view engine.</param>
 		/// <param name="tempDataProvider">The temp data provider.</param>
 		/// <param name="httpContextAccessor">The HTTP context accessor.</param>
 		public RazorViewToStringRenderer(
+			ILogger<RazorViewToStringRenderer> logger,
 			IRazorViewEngine viewEngine,
 			ITempDataProvider tempDataProvider,
 			IHttpContextAccessor httpContextAccessor)
 		{
+			_logger = logger;
 			_viewEngine = viewEngine;
 			_tempDataProvider = tempDataProvider;
 			_httpContextAccessor = httpContextAccessor;
 		}
 
 		/// <inheritdoc />
-		public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, HttpContext? httpContext = null)
+		public async Task<string> RenderViewToStringWithHttpContextFallbackAsync<TModel>(string viewName, TModel model, Func<HttpContext> httpContextFallbackFactory, CancellationToken cancellationToken = default)
 		{
-			httpContext ??= _httpContextAccessor.HttpContext;
-			
-			var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
-			var view = FindView(actionContext, viewName);
+			cancellationToken.ThrowIfCancellationRequested();
 
-			using var output = new StringWriter();
+			try
+			{
+				HttpContext context = _httpContextAccessor.HttpContext;
 
-			var viewContext = new ViewContext(
-				actionContext,
-				view,
-				new ViewDataDictionary<TModel>(
-					metadataProvider: new EmptyModelMetadataProvider(),
-					modelState: new ModelStateDictionary())
-				{
-					Model = model
-				},
-				new TempDataDictionary(
-					actionContext.HttpContext,
-					_tempDataProvider),
-				output,
-				new HtmlHelperOptions());
+				if (context is null)
+					context = httpContextFallbackFactory();
 
-			await view.RenderAsync(viewContext);
+				if (context is null)
+					throw new InvalidOperationException("A HTTP Context could not be found.");
 
-			return output.ToString();
+				return await RenderViewToStringAsync(viewName, model, cancellationToken, context);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }, returnValue: true))
+			{
+				throw new UmbrellaWebException("There has been a problem rendering the view.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken cancellationToken = default, HttpContext? httpContext = null)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				httpContext ??= _httpContextAccessor.HttpContext;
+
+				var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+				var view = FindView(actionContext, viewName);
+
+				using var output = new StringWriter();
+
+				var viewContext = new ViewContext(
+					actionContext,
+					view,
+					new ViewDataDictionary<TModel>(
+						metadataProvider: new EmptyModelMetadataProvider(),
+						modelState: new ModelStateDictionary())
+					{
+						Model = model
+					},
+					new TempDataDictionary(
+						actionContext.HttpContext,
+						_tempDataProvider),
+					output,
+					new HtmlHelperOptions());
+
+				await view.RenderAsync(viewContext);
+
+				return output.ToString();
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }, returnValue: true))
+			{
+				throw new UmbrellaWebException("There has been a problem rendering the view.", exc);
+			}
 		}
 
 		private IView FindView(ActionContext actionContext, string viewName)
