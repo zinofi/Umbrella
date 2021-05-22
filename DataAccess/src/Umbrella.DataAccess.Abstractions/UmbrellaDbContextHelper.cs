@@ -113,7 +113,7 @@ namespace Umbrella.DataAccess.Abstractions
 
 				return result;
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}
@@ -136,7 +136,7 @@ namespace Umbrella.DataAccess.Abstractions
 
 				return result;
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}
