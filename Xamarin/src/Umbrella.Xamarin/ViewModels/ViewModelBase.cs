@@ -7,6 +7,7 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Xamarin.Utilities.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.CommunityToolkit.UI.Views;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.ViewModels
@@ -99,5 +100,46 @@ namespace Umbrella.Xamarin.ViewModels
 		/// </summary>
 		/// <returns>An awaitable Task that completes when the operation completes.</returns>
 		protected virtual Task OnReloadButtonClicked() => Task.CompletedTask;
+
+		/// <summary>
+		/// Opens the specified <paramref name="url"/>.
+		/// </summary>
+		/// <param name="url">The URL to open.</param>
+		/// <param name="openInsideApp">
+		/// If <see langword="true"/>, opens the specified <paramref name="url"/> inside the app; otherwise
+		/// the <paramref name="url"/> will open in the default web browser.
+		/// </param>
+		/// <returns>An awaitable Task that completes when the operation completes.</returns>
+		protected async Task OpenUrlAsync(string? url, bool openInsideApp)
+		{
+			try
+			{
+				if (string.IsNullOrWhiteSpace(url))
+					throw new Exception("The url is null or empty");
+
+				await Browser.OpenAsync(url, openInsideApp ? BrowserLaunchMode.SystemPreferred : BrowserLaunchMode.External);
+			}
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, openInsideApp }, returnValue: true))
+			{
+				await DialogUtility.ShowDangerMessageAsync();
+			}
+		}
+
+		/// <summary>
+		/// Performs navigation from the current page to the specified path.
+		/// </summary>
+		/// <param name="path">The application path to navigate to.</param>
+		/// <returns>An awaitable Task that completes when the operation completes.</returns>
+		protected async Task NavigateToAppPathAsync(string path)
+		{
+			try
+			{
+				await Shell.Current.GoToAsync(path);
+			}
+			catch (Exception exc) when (Logger.WriteError(exc, new { path }, returnValue: true))
+			{
+				await DialogUtility.ShowDangerMessageAsync();
+			}
+		}
 	}
 }
