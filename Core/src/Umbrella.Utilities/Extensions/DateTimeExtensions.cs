@@ -19,6 +19,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="format">The format for a DateTime value to be returned in. Defaults to a short date string.</param>
 		/// <param name="dtComparison">Allows a reference value to be passed. By default this method use DateTime.Now for comparison.</param>
 		/// <returns>A string representing the time that has passed.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string ToTimeSinceString(this DateTime date, string format = "d", DateTime? dtComparison = null)
 		{
 			DateTime utcDate = date.ToUniversalTime();

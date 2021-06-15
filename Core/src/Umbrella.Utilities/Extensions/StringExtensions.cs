@@ -25,6 +25,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="maxLength">The maximum length.</param>
 		/// <param name="stripHtml">Specifies if the <paramref name="value"/> should be stripped of HTML.</param>
 		/// <returns>The truncated <paramref name="value"/>.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string Truncate(this string value, int maxLength, bool stripHtml = true)
 		{
 			Guard.ArgumentNotNull(value, nameof(value));
@@ -51,6 +52,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="maxLength">The maximum length.</param>
 		/// <param name="stripHtml">Specifies if the <paramref name="value"/> should be stripped of HTML.</param>
 		/// <returns>The truncated <paramref name="value"/>.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string TruncateAtWord(this string value, int maxLength, bool stripHtml = true)
 		{
 			Guard.ArgumentNotNull(value, nameof(value));
@@ -116,6 +118,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value.</param>
 		/// <param name="cultureInfo">The culture used for the conversion. If not specified <see cref="CultureInfo.CurrentCulture"/> is used.</param>
 		/// <returns>The <paramref name="value"/> converted to CamelCase.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string ToCamelCase(this string value, CultureInfo? cultureInfo = null) => ToCamelCaseInternal(value, cultureInfo ?? CultureInfo.CurrentCulture);
 
 		/// <summary>
@@ -124,6 +127,7 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns>The <paramref name="value"/> converted to CamelCase.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string ToCamelCaseInvariant(this string value) => ToCamelCaseInternal(value, CultureInfo.InvariantCulture);
 
 		private static string ToCamelCaseInternal(string value, CultureInfo cultureInfo)
@@ -184,6 +188,7 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns>The value with an ellipsis appended.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string AppendEllipsis(string value)
 		{
 			Guard.ArgumentNotNull(value, nameof(value));
@@ -218,6 +223,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="removeWhiteSpace">if set to <see langword="true"/> removes all whitespace.</param>
 		/// <param name="cultureInfo">The culture used for the conversion. If not specified <see cref="CultureInfo.CurrentCulture"/> is used.</param>
 		/// <returns>The <paramref name="value"/> converted to SnakeCase.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true, CultureInfo? cultureInfo = null)
 			=> ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, cultureInfo ?? CultureInfo.CurrentCulture);
 
@@ -229,6 +235,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="lowerCase">if set to <see langword="true"/> converts the output to lowercase.</param>
 		/// <param name="removeWhiteSpace">if set to <see langword="true"/> removes all whitespace.</param>
 		/// <returns>The <paramref name="value"/> converted to SnakeCase.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string ToSnakeCaseInvariant(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
 			=> ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, CultureInfo.InvariantCulture);
 
@@ -399,6 +406,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="value">The value.</param>
 		/// <param name="cultureInfo">The optional culture information. Defaults to <see cref="CultureInfo.CurrentCulture"/>.</param>
 		/// <returns>The <paramref name="value"/> converted to title case.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string? ToTitleCase(this string? value, CultureInfo? cultureInfo = null)
 			=> string.IsNullOrWhiteSpace(value) ? value : (cultureInfo ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(value);
 
@@ -407,6 +415,7 @@ namespace Umbrella.Utilities.Extensions
 		/// </summary>
 		/// <param name="value">The value.</param>
 		/// <returns>The <paramref name="value"/> converted to title case.</returns>
+		[Obsolete("Use Humanizer")]
 		public static string? ToTitleCaseInvariant(this string? value)
 			=> ToTitleCase(value, CultureInfo.InvariantCulture);
 	}
