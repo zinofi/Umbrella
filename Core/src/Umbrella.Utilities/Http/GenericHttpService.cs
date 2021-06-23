@@ -170,6 +170,32 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
+		public virtual async Task<IHttpCallResult> PatchAsync(string url, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
+
+			try
+			{
+				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+
+				var request = new HttpRequestMessage(PatchHttpMethod, targetUrl);
+
+				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+				var (processed, result) = await HttpServiceUtility.ProcessResponseAsync(response, cancellationToken).ConfigureAwait(false);
+
+				return processed
+					? result
+					: new HttpCallResult(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+			}
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			{
+				throw CreateServiceAccessException(exc);
+			}
+		}
+
+		/// <inheritdoc />
 		public virtual async Task<IHttpCallResult> DeleteAsync(string url, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

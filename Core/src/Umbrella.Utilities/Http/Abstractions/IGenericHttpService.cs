@@ -63,5 +63,14 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the operation.</returns>
 		Task<IHttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// PATCH the resource to the server.
+		/// </summary>
+		/// <param name="url">The URL.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The result of the operation.</returns>
+		Task<IHttpCallResult> PatchAsync(string url, IDictionary<string, string>? parameters = null, CancellationToken cancellationToken = default);
 	}
 }

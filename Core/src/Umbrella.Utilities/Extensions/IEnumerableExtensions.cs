@@ -18,6 +18,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="source">The collection to be split into groups</param>
 		/// <param name="itemsPerGroup">The number of items per group</param>
 		/// <returns>A nested collection split into groups</returns>
+		[Obsolete("This will be removed in a future version. Please use the new .NET 6 Chunk method when available.")]
 		public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> source, int itemsPerGroup)
 		{
 			Guard.ArgumentNotNull(source, nameof(source));

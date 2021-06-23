@@ -59,5 +59,13 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>A tuple containing the result.</returns>
 		Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken);
+
+		/// <summary>
+		/// Processes the response.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>A tuple containing the result.</returns>
+		Task<(bool processed, HttpCallResult result)> ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken);
 	}
 }

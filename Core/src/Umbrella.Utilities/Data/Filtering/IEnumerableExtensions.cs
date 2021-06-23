@@ -161,6 +161,8 @@ namespace Umbrella.Utilities.Data.Filtering
 			if (filter is null || filter.Value.Value is null)
 				return (false, default!);
 
+			// TODO: Will this work for enums?? Should do but can't remember.
+			// It'll only work if the filter value has already been converted to a enum before this method has been called into. Check the model binders.
 			object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
 
 			if (value != null)

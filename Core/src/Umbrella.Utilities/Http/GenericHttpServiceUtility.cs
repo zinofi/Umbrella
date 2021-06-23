@@ -100,6 +100,7 @@ namespace Umbrella.Utilities.Http
 			{
 				if (response.IsSuccessStatusCode)
 				{
+					// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
 					if (response.StatusCode == HttpStatusCode.NoContent)
 						return (true, new HttpCallResult<TResult>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 
@@ -115,6 +116,27 @@ namespace Umbrella.Utilities.Http
 
 						return (true, new HttpCallResult<TResult>(true, result: result));
 					}
+				}
+
+				return default;
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			{
+				throw new UmbrellaException("There has been a problem processing the response.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<(bool processed, HttpCallResult result)> ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+		{
+			try
+			{
+				if (response.IsSuccessStatusCode)
+				{
+					if (response.StatusCode == HttpStatusCode.NoContent)
+						return (true, new HttpCallResult(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+
+					throw new NotSupportedException("Only 204 NoContent responses are supported when there is no result from the endpoint.");
 				}
 
 				return default;
