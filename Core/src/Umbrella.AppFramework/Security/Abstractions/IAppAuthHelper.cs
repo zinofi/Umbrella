@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Umbrella.AppFramework.Security.Abstractions
@@ -8,6 +9,11 @@ namespace Umbrella.AppFramework.Security.Abstractions
 	/// </summary>
 	public interface IAppAuthHelper
 	{
+		/// <summary>
+		/// Invoked when the authentication state changes.
+		/// </summary>
+		event Func<ClaimsPrincipal, Task>? OnAuthenticationStateChangedAsync;
+
 		/// <summary>
 		/// Gets the current claims principal.
 		/// </summary>

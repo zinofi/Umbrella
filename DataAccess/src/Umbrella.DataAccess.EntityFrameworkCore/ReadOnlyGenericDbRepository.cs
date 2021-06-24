@@ -252,8 +252,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 		{
 			repoOptions ??= DefaultRepoOptions;
-
-			ValidateFilters(filterExpressions);
+			ThrowIfFiltersInvalid(filterExpressions);
 
 			var filteredQuery = Items;
 
@@ -359,12 +358,22 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// </summary>
 		/// <param name="filters">The filters.</param>
 		/// <returns><see langword="true"/> if they are all valid; otherwise <see langword="false"/>.</returns>
-		protected virtual bool ValidateFilters(IEnumerable<FilterExpression<TEntity>>? filters)
+		private protected virtual bool ValidateFilters(IEnumerable<FilterExpression<TEntity>>? filters)
 		{
 			if (filters is null || _validFilterPaths is null)
 				return true;
 
 			return filters.All(x => _validFilterPaths.Contains(x.MemberPath));
+		}
+
+		/// <summary>
+		/// Throws an exception if one or more of the specified <paramref name="filters"/> is invalid.
+		/// </summary>
+		/// <param name="filters">The filters.</param>
+		protected void ThrowIfFiltersInvalid(IEnumerable<FilterExpression<TEntity>>? filters)
+		{
+			if (!ValidateFilters(filters))
+				throw new Exception("One or more of the specified filters is invalid.");
 		}
 
 		/// <summary>

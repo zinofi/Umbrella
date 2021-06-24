@@ -23,11 +23,6 @@ namespace Umbrella.AppFramework.Http.Handlers
 		private readonly IAppAuthHelper _authHelper;
 
 		/// <summary>
-		/// Occurs when the auth token has been refreshed.
-		/// </summary>
-		public static event Func<ClaimsPrincipal, Task>? OnAuthTokenRefreshedAsync;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="RefreshedAuthTokenHandler"/> class.
 		/// </summary>
 		/// <param name="authHelper">The authentication helper.</param>
@@ -49,13 +44,7 @@ namespace Umbrella.AppFramework.Http.Handlers
 				string? token = values.FirstOrDefault()?.Trim();
 
 				if (!string.IsNullOrWhiteSpace(token))
-				{
-					ClaimsPrincipal principal = await _authHelper.GetCurrentClaimsPrincipalAsync(token);
-					Task? task = OnAuthTokenRefreshedAsync?.Invoke(principal);
-
-					if (task != null)
-						await task;
-				}
+					await _authHelper.GetCurrentClaimsPrincipalAsync(token);
 			}
 			else if (response.StatusCode is HttpStatusCode.Unauthorized && request.RequestUri.ToString().EndsWith("/auth/login", StringComparison.OrdinalIgnoreCase) is false)
 			{

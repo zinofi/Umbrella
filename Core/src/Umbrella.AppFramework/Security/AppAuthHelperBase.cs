@@ -25,6 +25,9 @@ namespace Umbrella.AppFramework.Security
 		// Could wrap this in a singleton service but not much point.
 		private static ClaimsPrincipal? _claimsPrincipal;
 
+		/// <inheritdoc />
+		public event Func<ClaimsPrincipal, Task>? OnAuthenticationStateChangedAsync;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppAuthHelperBase"/> class.
 		/// </summary>
@@ -78,6 +81,7 @@ namespace Umbrella.AppFramework.Security
 				}
 
 				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
+				OnAuthenticationStateChangedAsync?.Invoke(_claimsPrincipal);
 
 				return _claimsPrincipal;
 			}
