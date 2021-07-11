@@ -76,7 +76,7 @@ namespace Microsoft.Extensions.Logging
 		/// <param name="filePath">The file path.</param>
 		/// <param name="lineNumber">The line number.</param>
 		/// <returns>The specified <paramref name="returnValue"/>.</returns>
-		public static bool WriteWarning(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		public static bool WriteWarning(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Warning, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
@@ -100,7 +100,7 @@ namespace Microsoft.Extensions.Logging
 		/// <param name="filePath">The file path.</param>
 		/// <param name="lineNumber">The line number.</param>
 		/// <returns>The specified <paramref name="returnValue"/>.</returns>
-		public static bool WriteError(this ILogger log, Exception? exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		public static bool WriteError(this ILogger log, Exception? exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
@@ -124,7 +124,7 @@ namespace Microsoft.Extensions.Logging
 		/// <param name="filePath">The file path.</param>
 		/// <param name="lineNumber">The line number.</param>
 		/// <returns>The specified <paramref name="returnValue"/>.</returns>
-		public static bool WriteCritical(this ILogger log, Exception exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = false, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
+		public static bool WriteCritical(this ILogger log, Exception exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName]string methodName = "", [CallerFilePath]string filePath = "", [CallerLineNumber]int lineNumber = 0)
         {
             LogDetails(log, LogLevel.Critical, exc, state, message, in eventId, methodName, filePath, lineNumber);
 

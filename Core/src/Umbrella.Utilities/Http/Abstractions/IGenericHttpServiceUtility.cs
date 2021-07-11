@@ -49,7 +49,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="url">The URL.</param>
 		/// <param name="parameters">The parameters.</param>
 		/// <returns>The URL.</returns>
-		string GetUrlWithParmeters(string url, IDictionary<string, string>? parameters);
+		string GetUrlWithParmeters(string url, IEnumerable<KeyValuePair<string, string>>? parameters);
 
 		/// <summary>
 		/// Processes the response.

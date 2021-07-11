@@ -81,11 +81,11 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public string GetUrlWithParmeters(string url, IDictionary<string, string>? parameters)
+		public string GetUrlWithParmeters(string url, IEnumerable<KeyValuePair<string, string>>? parameters)
 		{
 			try
 			{
-				return parameters?.Count > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
+				return parameters?.Count() > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{

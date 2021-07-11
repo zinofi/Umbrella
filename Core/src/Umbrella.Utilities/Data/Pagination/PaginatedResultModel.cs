@@ -7,6 +7,9 @@ namespace Umbrella.Utilities.Data.Pagination
 	// NO. Can't be either yet because we need to be able to deserialize JSON to it.
 	// When we can full utilize .NET 5 we can do the above.
 
+	// TODO: Create a PaginatedResultModel<T>.Empty inside Umbrella to avoid allocations. Can only do this
+	// when it becomes readonly. Use C# 9 init too.
+
 	/// <summary>
 	/// Represents the result of a paginated query.
 	/// </summary>
