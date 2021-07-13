@@ -73,6 +73,16 @@ namespace Umbrella.Xamarin.ViewModels
 		public AsyncCommand ReloadButtonCommand { get; }
 
 		/// <summary>
+		/// Gets the OpenUrlInternal command.
+		/// </summary>
+		public AsyncCommand<string?> OpenUrlInternalCommand { get; }
+
+		/// <summary>
+		/// Gets the OpenUrlExternal command.
+		/// </summary>
+		public AsyncCommand<string?> OpenUrlExternalCommand { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewModelBase"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
@@ -87,6 +97,8 @@ namespace Umbrella.Xamarin.ViewModels
 			// TODO TEMP365/SPARK: Use the IUmbrellaCommandFactory here.
 			// Add a new virtual property to specify network checks for reloading. Default to true.
 			ReloadButtonCommand = new AsyncCommand(OnReloadButtonClicked, allowsMultipleExecutions: false);
+			OpenUrlInternalCommand = new AsyncCommand<string?>(x => OpenUrlAsync(x, true), allowsMultipleExecutions: false);
+			OpenUrlExternalCommand = new AsyncCommand<string?>(x => OpenUrlAsync(x, false), allowsMultipleExecutions: false);
 		}
 
 		/// <summary>
