@@ -99,6 +99,8 @@ namespace Umbrella.AppFramework.Security
 				await _tokenStorageService.SetTokenAsync(null);
 				_claimsPrincipal = null;
 
+				OnAuthenticationStateChangedAsync?.Invoke(new ClaimsPrincipal(new ClaimsIdentity()));
+
 				if (executeDefaultPostLogoutAction)
 					await ExecutePostLogoutActionAsync();
 			}

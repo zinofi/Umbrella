@@ -5,7 +5,7 @@ using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Extensions;
 using Xamarin.Forms;
 
-// TODO: Remove GroupName support here.
+// TODO: Remove GroupName support here. ??? Why have I added this TODO comment???
 namespace Umbrella.Xamarin.Controls
 {
 	/// <summary>
@@ -84,7 +84,7 @@ namespace Umbrella.Xamarin.Controls
 				{
 					Command = new Command(ToggleState)
 				};
-
+				
 				LabelledBy.GestureRecognizers.Add(grTap);
 				AutomationProperties.SetLabeledBy(this, LabelledBy);
 			}
