@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Umbrella.Utilities.ObjectModel
 {
@@ -145,6 +146,8 @@ namespace Umbrella.Utilities.ObjectModel
 			
 			bool previouslyEmpty = Items.Count == 0;
 
+			var oldItems = Items.ToList();
+
 			Items.Clear();
 
 			AddArrangeCore(collection);
@@ -154,7 +157,7 @@ namespace Umbrella.Utilities.ObjectModel
 			if (previouslyEmpty && currentlyEmpty)
 				return;
 
-			RaiseChangeNotificationEvents(NotifyCollectionChangedAction.Reset);
+			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, collection.ToList(), oldItems));
 		}
 
 		/// <inheritdoc />
