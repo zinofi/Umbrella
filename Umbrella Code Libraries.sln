@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		commands.json = commands.json
 		Directory.Build.props = Directory.Build.props
 		global.json = global.json
 		icon.png = icon.png
@@ -198,7 +199,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AppFramework", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.AppCenter", "Logging\src\Umbrella.Extensions.Logging.AppCenter\Umbrella.Extensions.Logging.AppCenter.csproj", "{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AppFramework.Shared", "Core\src\Umbrella.AppFramework.Shared\Umbrella.AppFramework.Shared.csproj", "{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AppFramework.Shared", "Core\src\Umbrella.AppFramework.Shared\Umbrella.AppFramework.Shared.csproj", "{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

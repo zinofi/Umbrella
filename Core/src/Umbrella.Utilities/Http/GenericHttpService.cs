@@ -77,6 +77,10 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
+		public virtual async Task<IHttpCallResult> PostAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+			=> await PostAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
+
+		/// <inheritdoc />
 		public virtual async Task<IHttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -108,6 +112,10 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
+		public virtual async Task<IHttpCallResult> PutAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+			=> await PutAsync<TItem, object?>(url, item, parameters, cancellationToken);
+
+		/// <inheritdoc />
 		public virtual async Task<IHttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -137,6 +145,10 @@ namespace Umbrella.Utilities.Http
 				throw CreateServiceAccessException(exc);
 			}
 		}
+
+		/// <inheritdoc />
+		public virtual async Task<IHttpCallResult> PatchAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+			=> await PatchAsync<TItem, object?>(url, item, parameters, cancellationToken);
 
 		/// <inheritdoc />
 		public virtual async Task<IHttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)

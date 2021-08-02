@@ -32,6 +32,17 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// POST the resource to the server.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="url">The URL.</param>
+		/// <param name="item">The item.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The result of the operation.</returns>
+		Task<IHttpCallResult> PostAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// POST the resource to the server.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
 		/// <typeparam name="TResult">The type of the result.</typeparam>
 		/// <param name="url">The URL.</param>
 		/// <param name="item">The item.</param>
@@ -44,6 +55,17 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// PUT the resource to the server.
 		/// </summary>
 		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="url">The URL.</param>
+		/// <param name="item">The item.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The result of the operation.</returns>
+		Task<IHttpCallResult> PutAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// PUT the resource to the server.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
 		/// <typeparam name="TResult">The type of the result.</typeparam>
 		/// <param name="url">The URL.</param>
 		/// <param name="item">The item.</param>
@@ -51,6 +73,17 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the operation.</returns>
 		Task<IHttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+
+		/// <summary>
+		/// PATCH the resource to the server.
+		/// </summary>
+		/// <typeparam name="TItem">The type of the item.</typeparam>
+		/// <param name="url">The URL.</param>
+		/// <param name="item">The item.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The result of the operation.</returns>
+		Task<IHttpCallResult> PatchAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// PATCH the resource to the server.
