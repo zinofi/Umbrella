@@ -272,6 +272,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				await BeforeContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 				
 				Context.Set<TEntity>().Remove(entity);
+
+				// TODO: Is this line redundant?
 				Context.Entry(entity).State = EntityState.Deleted;
 
 				await AfterContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
