@@ -330,6 +330,17 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <returns>
 		///   <see langword="true"/> if it matches; otherwise, <see langword="false"/>.
 		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// When an entity is saved, the value of the <see cref="IConcurrencyStamp.ConcurrencyStamp"/> on the original entity tracked by the <see cref="DbContext"/> is compared against the value loaded
+		/// from the database during <see cref="DbContext.SaveChanges()"/> and a <see cref="DbUpdateConcurrencyException"/> is thrown. However, this does not catch cases where the value has
+		/// been modified on the entity we are modifying and results in a mismatch with the value of the original entity. This is the purpose of calls to this method.
+		/// </para>
+		/// <para>
+		/// A common use case for this would be where the entity has been loaded by a web app with the ConcurrencyStamp stored in a hidden field which is then POSTed back to the server.
+		/// This check allows for differences between these token values to be identified.
+		/// </para>
+		/// </remarks>
 		protected bool IsConcurrencyTokenMismatch(TEntity entity)
 			=> !entity.Id.Equals(default!) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
 
@@ -337,6 +348,17 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// Throws an exception if there is a concurrency token mismatch.
 		/// </summary>
 		/// <param name="entity">The entity.</param>
+		/// <remarks>
+		/// <para>
+		/// When an entity is saved, the value of the <see cref="IConcurrencyStamp.ConcurrencyStamp"/> on the original entity tracked by the <see cref="DbContext"/> is compared against the value loaded
+		/// from the database during <see cref="DbContext.SaveChanges()"/> and a <see cref="DbUpdateConcurrencyException"/> is thrown. However, this does not catch cases where the value has
+		/// been modified on the entity we are modifying and results in a mismatch with the value of the original entity. This is the purpose of calls to this method.
+		/// </para>
+		/// <para>
+		/// A common use case for this would be where the entity has been loaded by a web app with the ConcurrencyStamp stored in a hidden field which is then POSTed back to the server.
+		/// This check allows for differences between these token values to be identified.
+		/// </para>
+		/// </remarks>
 		protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
 		{
 			if (IsConcurrencyTokenMismatch(entity))
