@@ -74,7 +74,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -113,7 +113,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -152,7 +152,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -191,7 +191,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -221,7 +221,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -247,7 +247,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
 			{
 				throw CreateServiceAccessException(exc);
 			}
