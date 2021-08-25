@@ -14,7 +14,7 @@ using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
-using Umbrella.Utilities.Http.Constants;
+using Umbrella.Utilities.Http.Exceptions;
 
 namespace Umbrella.DataAccess.Remote
 {
@@ -167,10 +167,9 @@ namespace Umbrella.DataAccess.Remote
 			{
 				return await SaveCoreAsync<TCreateItem, TCreateResult>(HttpMethod.Post, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
 			}
-			catch (UmbrellaDataAccessConcurrencyException)
+			catch (UmbrellaHttpServiceAccessException exc)
 			{
-				// Just rethrow without logging.
-				throw;
+				throw new UmbrellaDataAccessConcurrencyException("There has been a concurrency error whilst creating the specified item.", exc);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
@@ -191,10 +190,9 @@ namespace Umbrella.DataAccess.Remote
 
 				return await SaveCoreAsync<TUpdateItem, TUpdateResult>(HttpMethod.Put, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
 			}
-			catch (UmbrellaDataAccessConcurrencyException)
+			catch (UmbrellaHttpServiceAccessException exc)
 			{
-				// Just rethrow without logging.
-				throw;
+				throw new UmbrellaDataAccessConcurrencyException("There has been a concurrency error whilst updating the specified item.", exc);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { item.Id }, returnValue: true))
 			{
@@ -221,6 +219,10 @@ namespace Umbrella.DataAccess.Remote
 					await AfterItemDeletedAsync(id, cancellationToken).ConfigureAwait(false);
 
 				return result;
+			}
+			catch (UmbrellaHttpServiceAccessException exc)
+			{
+				throw new UmbrellaDataAccessConcurrencyException("There has been a concurrency error whilst deleting the specified item.", exc);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: true))
 			{
@@ -265,8 +267,6 @@ namespace Umbrella.DataAccess.Remote
 
 			if (result.Success && item != null)
 				await AfterItemSavedAsync(item, cancellationToken).ConfigureAwait(false);
-			else if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
-				throw new UmbrellaDataAccessConcurrencyException("The server has reported a concurrency stamp mismatch.");
 
 			return (result, result.ProblemDetails?.ToValidationResults() ?? Array.Empty<ValidationResult>());
 		}

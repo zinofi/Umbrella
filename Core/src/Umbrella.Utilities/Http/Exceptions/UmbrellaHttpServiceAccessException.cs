@@ -7,7 +7,7 @@ namespace Umbrella.Utilities.Http.Exceptions
 	/// Represents an error that occurs during execution of a HTTP Request.
 	/// </summary>
 	/// <seealso cref="UmbrellaException" />
-	public sealed class UmbrellaHttpServiceAccessException : UmbrellaException
+	public class UmbrellaHttpServiceAccessException : UmbrellaException
 	{
 		internal UmbrellaHttpServiceAccessException()
 		{

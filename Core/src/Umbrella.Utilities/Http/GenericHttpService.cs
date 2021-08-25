@@ -66,11 +66,15 @@ namespace Umbrella.Utilities.Http
 
 				var (processed, result) = await HttpServiceUtility.ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
-				return processed
+				var retVal = processed
 					? result
 					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+
+				ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -101,11 +105,15 @@ namespace Umbrella.Utilities.Http
 
 				var (processed, result) = await HttpServiceUtility.ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
-				return processed
+				var retVal = processed
 					? result
 					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+
+				ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -136,11 +144,15 @@ namespace Umbrella.Utilities.Http
 
 				var (processed, result) = await HttpServiceUtility.ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
-				return processed
+				var retVal = processed
 					? result
 					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+
+				ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -171,11 +183,15 @@ namespace Umbrella.Utilities.Http
 
 				var (processed, result) = await HttpServiceUtility.ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
 
-				return processed
+				var retVal = processed
 					? result
 					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+
+				ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -197,11 +213,15 @@ namespace Umbrella.Utilities.Http
 
 				var (processed, result) = await HttpServiceUtility.ProcessResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
-				return processed
+				var retVal = processed
 					? result
 					: new HttpCallResult(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+
+				ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }, returnValue: true))
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -219,15 +239,29 @@ namespace Umbrella.Utilities.Http
 
 				HttpResponseMessage response = await Client.DeleteAsync(targetUrl, cancellationToken).ConfigureAwait(false);
 
-				if (response.IsSuccessStatusCode)
-					return new HttpCallResult(true);
+				var retVal = response.IsSuccessStatusCode
+					? new HttpCallResult(true)
+					: new HttpCallResult(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
-				return new HttpCallResult(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (!(exc is UmbrellaHttpServiceConcurrencyException) && Logger.WriteError(exc, new { url, parameters }))
 			{
 				throw CreateServiceAccessException(exc);
 			}
+		}
+
+		/// <summary>
+		/// Throws a <see cref="UmbrellaHttpServiceConcurrencyException"/> if the server returns
+		/// a <see cref="HttpProblemCodes.ConcurrencyStampMismatch"/> code in the problem details response.
+		/// </summary>
+		/// <param name="result">The result of the Http server call.</param>
+		protected void ThrowIfConcurrencyStampMismatchResponse(IHttpCallResult result)
+		{
+			if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
+				throw new UmbrellaHttpServiceConcurrencyException("The server has reported a concurrency stamp mismatch.");
 		}
 
 		/// <summary>
