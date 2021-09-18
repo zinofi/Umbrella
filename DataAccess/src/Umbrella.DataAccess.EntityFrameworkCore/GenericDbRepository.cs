@@ -389,7 +389,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			// Set the Concurrency Stamp
 			if (entity is IConcurrencyStamp concurrencyStampEntity)
-				concurrencyStampEntity.ConcurrencyStamp = Guid.NewGuid().ToString();
+				concurrencyStampEntity.UpdateConcurrencyStamp();
 
 			// Check if this entity is in the context, i.e. is it new
 			if (forceAdd || (entity.Id.Equals(default!) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached))))
