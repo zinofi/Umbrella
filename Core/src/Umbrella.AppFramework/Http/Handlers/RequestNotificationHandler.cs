@@ -42,13 +42,15 @@ namespace Umbrella.AppFramework.Http.Handlers
 			try
 			{
 				_loadingScreenUtility.Show();
-
+				
 				HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
 				return response;
 			}
 			finally
 			{
+				// TODO: Potential issue somewhere here where the loading screen sometimes gets stuck and never disappears.
+				// Need to figure out if we can set a timeout on the request or loading screen so it auto-hides after a few minutes.
 				_loadingScreenUtility.Hide();
 			}
 		}

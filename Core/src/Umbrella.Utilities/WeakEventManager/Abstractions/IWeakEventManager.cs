@@ -36,6 +36,12 @@ namespace Umbrella.Utilities.WeakEventManager.Abstractions
 		/// <param name="args">The arguments.</param>
 		/// <returns>A collection of return values that have been output as the result of calling the registered handlers for the named event.</returns>
 		IReadOnlyCollection<TReturnValue> RaiseEvent<TReturnValue>(object sender, string eventName, params object[] args);
+		
+		/// <summary>
+		/// Removes all event handlers registered with the specified <paramref name="eventName"/>.
+		/// </summary>
+		/// <param name="eventName">The name of the event.</param>
+		void RemoveAllEventHandlers(string eventName);
 
 		/// <summary>
 		/// Removes the event <paramref name="handler"/> registered with the specified <paramref name="eventName"/>.

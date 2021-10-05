@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.WeakEventManager.Abstractions;
@@ -47,6 +48,20 @@ namespace Umbrella.Utilities.WeakEventManager
 				throw new UmbrellaException("There was a problem adding the specified event handler.");
 			}
 		}
+
+		/// <inheritdoc />
+		public void RemoveAllEventHandlers(string eventName)
+		{
+			try
+			{
+				_subscriptionDictionary.TryRemove(eventName, out List<WeakEventSubscription> lstSubscription);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { eventName }, returnValue: true))
+			{
+				throw new UmbrellaException("There was a problem removing the handlers for the specified event.");
+			}
+		}
+
 		/// <inheritdoc />
 		public void RemoveEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "")
 			where TEventHandler : Delegate

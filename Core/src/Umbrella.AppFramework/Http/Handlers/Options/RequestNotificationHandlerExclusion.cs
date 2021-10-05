@@ -22,6 +22,10 @@ namespace Umbrella.AppFramework.Http.Handlers.Options
 		public RequestNotificationHandlerExclusion(string path, HttpMethod method)
 		{
 			Path = path.TrimToLowerInvariant();
+
+			if (!Path.StartsWith("/"))
+				Path = "/" + Path;
+
 			Method = method;
 		}
 

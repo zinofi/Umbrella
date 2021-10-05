@@ -111,6 +111,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			
 			services.AddTransient<IWeakEventManager, WeakEventManager>();
 			services.AddSingleton<IWeakEventManagerFactory, WeakEventManagerFactory>();
+			services.AddSingleton<IGlobalWeakEventManager, GlobalWeakEventManager>();
 
 			if (httpServicesBuilder != null)
 			{
