@@ -216,11 +216,51 @@ namespace Umbrella.DynamicImage.Impl.Test
 
 		[Theory]
 		[MemberData(nameof(ResizersList))]
+		public void ResizeImage_EmptyImage(IDynamicImageResizer imageResizer)
+		{
+			byte[] bytes = new byte[0];
+
+			Assert.Throws<ArgumentException>(() => imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
+		}
+
+		[Theory]
+		[MemberData(nameof(ResizersList))]
+		public void ResizeImage_NullImage(IDynamicImageResizer imageResizer)
+		{
+			byte[]? bytes = null;
+
+			Assert.Throws<ArgumentNullException>(() => imageResizer.ResizeImage(bytes!, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
+		}
+
+		[Theory]
+		[MemberData(nameof(ResizersList))]
 		public void IsImage_InvalidImage(IDynamicImageResizer imageResizer)
 		{
 			byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\IkeaManual.pdf"));
 
 			bool isValid = imageResizer.IsImage(bytes);
+
+			Assert.False(isValid);
+		}
+
+		[Theory]
+		[MemberData(nameof(ResizersList))]
+		public void IsImage_EmptyImage(IDynamicImageResizer imageResizer)
+		{
+			byte[] bytes = new byte[0];
+
+			bool isValid = imageResizer.IsImage(bytes);
+
+			Assert.False(isValid);
+		}
+
+		[Theory]
+		[MemberData(nameof(ResizersList))]
+		public void IsImage_NullImage(IDynamicImageResizer imageResizer)
+		{
+			byte[]? bytes = null;
+
+			bool isValid = imageResizer.IsImage(bytes!);
 
 			Assert.False(isValid);
 		}

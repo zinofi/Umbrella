@@ -32,10 +32,10 @@ namespace Umbrella.DynamicImage.SkiaSharp
 		/// <inheritdoc />
 		public override bool IsImage(byte[] bytes)
 		{
-			Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
-
 			try
 			{
+				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+
 				using var image = LoadBitmap(bytes);
 
 				return image != null;
@@ -95,8 +95,13 @@ namespace Umbrella.DynamicImage.SkiaSharp
 		private SKBitmap LoadBitmap(byte[] bytes)
 		{
 			using var ms = new MemoryStream(bytes);
-			using var s = new SKManagedStream(ms);
-			using var codec = SKCodec.Create(s);
+
+			// NB: This breaks using 20.8.3. Using the replacement SkData.Create fixes things.
+			// See: https://github.com/mono/SkiaSharp/issues/1551
+			//using var s = new SKManagedStream(ms);
+
+			using var skData = SKData.Create(ms);
+			using var codec = SKCodec.Create(skData);
 
 			var info = codec.Info;
 			var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height, info.ColorType, info.AlphaType, info.ColorSpace));
