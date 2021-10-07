@@ -216,6 +216,17 @@ namespace Umbrella.DynamicImage.Impl.Test
 
 		[Theory]
 		[MemberData(nameof(ResizersList))]
+		public void ResizeImage_DodgyImage(IDynamicImageResizer imageResizer)
+		{
+			byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\test-dodgy-image.jpg"));
+
+			byte[] result = imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg);
+
+			Assert.True(result.Length > 0);
+		}
+
+		[Theory]
+		[MemberData(nameof(ResizersList))]
 		public void ResizeImage_EmptyImage(IDynamicImageResizer imageResizer)
 		{
 			byte[] bytes = new byte[0];

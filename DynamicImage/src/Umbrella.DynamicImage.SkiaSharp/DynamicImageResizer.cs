@@ -99,6 +99,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
 			// NB: This breaks using 20.8.3. Using the replacement SkData.Create fixes things.
 			// See: https://github.com/mono/SkiaSharp/issues/1551
 			//using var s = new SKManagedStream(ms);
+			//using var codec = SKCodec.Create(ms);
 
 			using var skData = SKData.Create(ms);
 			using var codec = SKCodec.Create(skData);
