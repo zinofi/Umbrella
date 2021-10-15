@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Umbrella.Utilities.WeakEventManager
@@ -16,13 +15,13 @@ namespace Umbrella.Utilities.WeakEventManager
 		public MethodInfo Handler { get; }
 
 		public override bool Equals(object? obj) => obj is WeakEventSubscription subscription && Equals(subscription);
-		public bool Equals(WeakEventSubscription other) => EqualityComparer<WeakReference>.Default.Equals(Subscriber, other.Subscriber) && EqualityComparer<MethodInfo>.Default.Equals(Handler, other.Handler);
+		public bool Equals(WeakEventSubscription other) => Subscriber.Target.Equals(other.Subscriber.Target) && Handler.Equals(other.Handler);
 
 		public override int GetHashCode()
 		{
 			int hashCode = 42314382;
-			hashCode = hashCode * -1521134295 + EqualityComparer<WeakReference>.Default.GetHashCode(Subscriber);
-			hashCode = hashCode * -1521134295 + EqualityComparer<MethodInfo>.Default.GetHashCode(Handler);
+			hashCode = hashCode * -1521134295 + Subscriber.Target.GetHashCode();
+			hashCode = hashCode * -1521134295 + Handler.GetHashCode();
 			return hashCode;
 		}
 

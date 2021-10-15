@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.UI;
 using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.Utilities.Http.Exceptions;
+using Umbrella.Utilities.WeakEventManager.Abstractions;
 using Umbrella.Xamarin.Utilities.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.CommunityToolkit.UI.Views;
@@ -83,17 +85,26 @@ namespace Umbrella.Xamarin.ViewModels
 		public AsyncCommand<string?> OpenUrlExternalCommand { get; }
 
 		/// <summary>
+		/// Gets the event manager.
+		/// </summary>
+		public IGlobalWeakEventManager EventManager { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewModelBase"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="authHelper">The authentication helper.</param>
+		/// <param name="eventManager">The event manager.</param>
 		/// <param name="dialogUtility">The dialog utility.</param>
 		public ViewModelBase(
 			ILogger logger,
 			IDialogUtility dialogUtility,
-			IAppAuthHelper authHelper)
+			IAppAuthHelper authHelper,
+			IGlobalWeakEventManager eventManager)
 			: base(logger, dialogUtility, authHelper)
 		{
+			EventManager = eventManager;
+
 			// TODO TEMP365/SPARK: Use the IUmbrellaCommandFactory here.
 			// Add a new virtual property to specify network checks for reloading. Default to true.
 			ReloadButtonCommand = new AsyncCommand(OnReloadButtonClicked, allowsMultipleExecutions: false);
@@ -150,6 +161,89 @@ namespace Umbrella.Xamarin.ViewModels
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { path }, returnValue: true))
 			{
+				await DialogUtility.ShowDangerMessageAsync();
+			}
+		}
+
+		/// <summary>
+		/// Registers an auto-unsubscribing event subscription with the specified <paramref name="eventName"/>.
+		/// This replaces any existing subscriptions for the same named event. After the event is raised by a publisher,
+		/// the subscription is automatically removed to prevent the <paramref name="eventHandler"/> being executed again.
+		/// </summary>
+		/// <param name="eventName">The name of the event to subscribe to.</param>
+		/// <param name="eventHandler">The event handler.</param>
+		/// <returns>A <see cref="Task"/> which completes after the subscription has been registered.</returns>
+		protected async Task RegisterAutoUnsubscribingEventAsync(string eventName, Func<Task> eventHandler)
+		{
+			try
+			{
+				EventManager.RemoveAllEventHandlers(eventName);
+				EventManager.AddEventHandler<Action>(async () =>
+				{
+					try
+					{
+						await eventHandler();
+					}
+					catch (UmbrellaHttpServiceConcurrencyException)
+					{
+						await DialogUtility.ShowDangerMessageAsync("The data on this page has changed since it was loaded. Please try again.");
+					}
+					catch (Exception exc) when (Logger.WriteError(exc))
+					{
+						await DialogUtility.ShowDangerMessageAsync();
+					}
+					finally
+					{
+						EventManager.RemoveAllEventHandlers(eventName);
+					}
+				},
+				eventName);
+			}
+			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
+			{
+				EventManager.RemoveAllEventHandlers(eventName);
+				await DialogUtility.ShowDangerMessageAsync();
+			}
+		}
+
+		/// <summary>
+		/// Registers an auto-unsubscribing event subscription with the specified <paramref name="eventName"/>.
+		/// This replaces any existing subscriptions for the same named event. After the event is raised by a publisher,
+		/// the subscription is automatically removed to prevent the <paramref name="eventHandler"/> being executed again.
+		/// </summary>
+		/// <typeparam name="TResult">The type of the result raised by a publisher and supplied as the argument to the <paramref name="eventHandler"/>.</typeparam>
+		/// <param name="eventName">The name of the event to subscribe to.</param>
+		/// <param name="eventHandler">The event handler.</param>
+		/// <returns>A <see cref="Task"/> which completes after the subscription has been registered.</returns>
+		protected async Task RegisterAutoUnsubscribingEventAsync<TResult>(string eventName, Func<TResult, Task> eventHandler)
+		{
+			try
+			{
+				EventManager.RemoveAllEventHandlers(eventName);
+				EventManager.AddEventHandler<Func<TResult, Task>>(async result =>
+				{
+				   try
+				   {
+					   await eventHandler(result);
+				   }
+				   catch (UmbrellaHttpServiceConcurrencyException)
+				   {
+					   await DialogUtility.ShowDangerMessageAsync("The data on this page has changed since it was loaded. Please try again.");
+				   }
+				   catch (Exception exc) when (Logger.WriteError(exc))
+				   {
+					   await DialogUtility.ShowDangerMessageAsync();
+				   }
+				   finally
+				   {
+					   EventManager.RemoveAllEventHandlers(eventName);
+				   }
+				},
+				eventName);
+			}
+			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
+			{
+				EventManager.RemoveAllEventHandlers(eventName);
 				await DialogUtility.ShowDangerMessageAsync();
 			}
 		}

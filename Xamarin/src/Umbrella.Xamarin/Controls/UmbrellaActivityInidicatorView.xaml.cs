@@ -63,8 +63,10 @@ namespace Umbrella.Xamarin.Controls
 
 			ILoadingScreenUtility loadingScreenUtility = UmbrellaXamarinServices.GetService<ILoadingScreenUtility>();
 
-			loadingScreenUtility.OnShow += () => IsLoading = true;
-			loadingScreenUtility.OnHide += () => IsLoading = false;
+			// TODO: Maybe the times when the spinner remains on screen can be traced to the update
+			// not being invoked on the UI Thread?
+			loadingScreenUtility.OnShow += () => Device.BeginInvokeOnMainThread(() => IsLoading = true);
+			loadingScreenUtility.OnHide += () => Device.BeginInvokeOnMainThread(() => IsLoading = false);
 		}
 	}
 }

@@ -51,7 +51,7 @@ namespace Umbrella.AppFramework.Utilities
 		{
 			try
 			{
-				IReadOnlyCollection<Task> lstTask = _weakEventManager.RaiseEvent<Task>(this, nameof(OnShow), updateRequired, message);
+				IReadOnlyCollection<Task> lstTask = _weakEventManager.RaiseEvent<Task>(nameof(OnShow), updateRequired, message);
 
 				if (lstTask?.Count > 0)
 					await Task.WhenAll(lstTask);

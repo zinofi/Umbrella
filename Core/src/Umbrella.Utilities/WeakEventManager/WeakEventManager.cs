@@ -70,7 +70,6 @@ namespace Umbrella.Utilities.WeakEventManager
 			{
 				if (_subscriptionDictionary.TryGetValue(eventName, out List<WeakEventSubscription> lstSubscription) && lstSubscription?.Count > 0)
 				{
-					// TODO: Shouldn't have to new up a subscription just to remove it.
 					var subscription = new WeakEventSubscription(new WeakReference(handler.Target), handler.Method);
 					lstSubscription.RemoveAll(x => x == subscription);
 				}
@@ -82,10 +81,10 @@ namespace Umbrella.Utilities.WeakEventManager
 		}
 
 		/// <inheritdoc />
-		public void RaiseEvent(object sender, string eventName, params object[] args) => RaiseEvent<object>(sender, eventName, args);
+		public void RaiseEvent(string eventName, params object[] args) => RaiseEvent<object>(eventName, args);
 
 		/// <inheritdoc />
-		public IReadOnlyCollection<TReturnValue> RaiseEvent<TReturnValue>(object sender, string eventName, params object[] args)
+		public IReadOnlyCollection<TReturnValue> RaiseEvent<TReturnValue>(string eventName, params object[] args)
 		{
 			try
 			{

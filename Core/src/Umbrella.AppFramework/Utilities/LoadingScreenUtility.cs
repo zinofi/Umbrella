@@ -61,14 +61,14 @@ namespace Umbrella.AppFramework.Utilities
 
 				_cancellationTokenSource = new CancellationTokenSource();
 
-				_weakEventManager.RaiseEvent(this, nameof(OnLoading));
+				_weakEventManager.RaiseEvent(nameof(OnLoading));
 
 				var token = _cancellationTokenSource.Token;
 
 				Task.Delay(delayMilliseconds, token).ContinueWith(x =>
 				{
 					if (!token.IsCancellationRequested)
-						_weakEventManager.RaiseEvent(this, nameof(OnShow));
+						_weakEventManager.RaiseEvent(nameof(OnShow));
 				});
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { delayMilliseconds }, returnValue: true))
