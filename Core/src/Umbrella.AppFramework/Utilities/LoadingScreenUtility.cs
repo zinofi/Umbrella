@@ -83,7 +83,7 @@ namespace Umbrella.AppFramework.Utilities
 			try
 			{
 				_cancellationTokenSource?.Cancel();
-				_weakEventManager.RaiseEvent(this, nameof(OnHide));
+				_weakEventManager.RaiseEvent(nameof(OnHide));
 			}
 			catch (Exception exc)
 			{
