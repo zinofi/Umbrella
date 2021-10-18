@@ -15,8 +15,6 @@ namespace Umbrella.Utilities.WeakEventManager
 	/// <seealso cref="IWeakEventManager" />
 	public class WeakEventManager : IWeakEventManager
 	{
-		// TODO: Can we use ConditionalWeakTable here instead? Would need to intern the string key
-		// but would still be more memory efficient than this.
 		private readonly ConcurrentDictionary<string, List<WeakEventSubscription>> _subscriptionDictionary = new ConcurrentDictionary<string, List<WeakEventSubscription>>();
 		private readonly ILogger<WeakEventManager> _logger;
 
@@ -30,12 +28,12 @@ namespace Umbrella.Utilities.WeakEventManager
 		}
 
 		/// <inheritdoc />
-		public void AddEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "")
+		public void AddEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "", object? targetOverride = null)
 			where TEventHandler : Delegate
 		{
 			try
 			{
-				var subscription = new WeakEventSubscription(new WeakReference(handler.Target), handler.Method);
+				var subscription = new WeakEventSubscription(new WeakReference(targetOverride ?? handler.Target), handler.Method);
 
 				_subscriptionDictionary.AddOrUpdate(eventName, new List<WeakEventSubscription> { subscription }, (key, items) =>
 				{
@@ -63,14 +61,14 @@ namespace Umbrella.Utilities.WeakEventManager
 		}
 
 		/// <inheritdoc />
-		public void RemoveEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "")
+		public void RemoveEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "", object? targetOverride = null)
 			where TEventHandler : Delegate
 		{
 			try
 			{
 				if (_subscriptionDictionary.TryGetValue(eventName, out List<WeakEventSubscription> lstSubscription) && lstSubscription?.Count > 0)
 				{
-					var subscription = new WeakEventSubscription(new WeakReference(handler.Target), handler.Method);
+					var subscription = new WeakEventSubscription(new WeakReference(targetOverride ?? handler.Target), handler.Method);
 					lstSubscription.RemoveAll(x => x == subscription);
 				}
 			}
