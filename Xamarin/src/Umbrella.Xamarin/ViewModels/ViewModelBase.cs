@@ -178,7 +178,7 @@ namespace Umbrella.Xamarin.ViewModels
 			try
 			{
 				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Action>(async () =>
+				EventManager.AddEventHandler<Func<Task>>(async () =>
 				{
 					try
 					{
