@@ -177,8 +177,7 @@ namespace Umbrella.Xamarin.ViewModels
 		{
 			try
 			{
-				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Func<Task>>(async () =>
+				async Task Handler()
 				{
 					try
 					{
@@ -196,8 +195,10 @@ namespace Umbrella.Xamarin.ViewModels
 					{
 						EventManager.RemoveAllEventHandlers(eventName);
 					}
-				},
-				eventName);
+				}
+
+				EventManager.RemoveAllEventHandlers(eventName);
+				EventManager.AddEventHandler<Func<Task>>(Handler, eventName);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
 			{
@@ -219,27 +220,28 @@ namespace Umbrella.Xamarin.ViewModels
 		{
 			try
 			{
-				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Func<TResult, Task>>(async result =>
+				async Task Handler(TResult result)
 				{
-				   try
-				   {
-					   await eventHandler(result);
-				   }
-				   catch (UmbrellaHttpServiceConcurrencyException)
-				   {
-					   await DialogUtility.ShowDangerMessageAsync("The data on this page has changed since it was loaded. Please try again.");
-				   }
-				   catch (Exception exc) when (Logger.WriteError(exc))
-				   {
-					   await DialogUtility.ShowDangerMessageAsync();
-				   }
-				   finally
-				   {
-					   EventManager.RemoveAllEventHandlers(eventName);
-				   }
-				},
-				eventName);
+					try
+					{
+						await eventHandler(result);
+					}
+					catch (UmbrellaHttpServiceConcurrencyException)
+					{
+						await DialogUtility.ShowDangerMessageAsync("The data on this page has changed since it was loaded. Please try again.");
+					}
+					catch (Exception exc) when (Logger.WriteError(exc))
+					{
+						await DialogUtility.ShowDangerMessageAsync();
+					}
+					finally
+					{
+						EventManager.RemoveAllEventHandlers(eventName);
+					}
+				}
+
+				EventManager.RemoveAllEventHandlers(eventName);
+				EventManager.AddEventHandler<Func<TResult, Task>>(Handler, eventName);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
 			{
