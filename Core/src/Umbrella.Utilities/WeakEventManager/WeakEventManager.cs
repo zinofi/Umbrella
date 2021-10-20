@@ -28,12 +28,12 @@ namespace Umbrella.Utilities.WeakEventManager
 		}
 
 		/// <inheritdoc />
-		public void AddEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "")
+		public void AddEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "", Dictionary<string, object>? state = null)
 			where TEventHandler : Delegate
 		{
 			try
 			{
-				var subscription = new WeakEventSubscription(new WeakReference(handler.Target), handler.Method);
+				var subscription = new WeakEventSubscription(new WeakReference(handler.Target), handler.Method, state);
 
 				_subscriptionDictionary.AddOrUpdate(eventName, new List<WeakEventSubscription> { subscription }, (key, items) =>
 				{
@@ -94,6 +94,14 @@ namespace Umbrella.Utilities.WeakEventManager
 					{
 						if (subscription.Subscriber.IsAlive)
 						{
+							if (subscription.State != null)
+							{
+								var lstArgs = new List<object>(args);
+								lstArgs.Insert(0, subscription.State);
+
+								args = lstArgs.ToArray();
+							}
+
 							object? result = subscription.Handler.Invoke(subscription.Subscriber.Target, args);
 
 							if (result is TReturnValue retVal)

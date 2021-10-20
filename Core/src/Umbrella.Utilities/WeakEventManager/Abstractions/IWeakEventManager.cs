@@ -15,8 +15,9 @@ namespace Umbrella.Utilities.WeakEventManager.Abstractions
 		/// <typeparam name="TEventHandler">The type of the event handler.</typeparam>
 		/// <param name="handler">The handler.</param>
 		/// <param name="eventName">Name of the event.</param>
-		/// <remarks>Because this uses <see cref="WeakReference"/> internally, NEVER use lambda expressions for the handler because they can be subject to GC. Always pass in a handler that is an instance method.</remarks>
-		void AddEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "") where TEventHandler : Delegate;
+		/// <param name="state">Optional state that will be passed in as the first parameter when the <paramref name="handler"/> is invoked if the <paramref name="state"/> parameter is not null; otherwise it will not be passed in.</param>
+		/// <remarks>Because this uses <see cref="WeakReference"/> internally, be careful when using lambda expressions for the handler because they can be subject to GC if they produce closures.</remarks>
+		void AddEventHandler<TEventHandler>(TEventHandler handler, [CallerMemberName] string eventName = "", Dictionary<string, object>? state = null) where TEventHandler : Delegate;
 
 		/// <summary>
 		/// Raises the event with the specified <paramref name="eventName"/>.

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.UI;
 using Umbrella.AppFramework.Utilities.Abstractions;
@@ -177,11 +178,19 @@ namespace Umbrella.Xamarin.ViewModels
 		{
 			try
 			{
-				async Task Handler()
+				var state = new Dictionary<string, object>
+				{
+					[nameof(eventName)] = eventName,
+					[nameof(eventHandler)] = eventHandler,
+				};
+
+				EventManager.RemoveAllEventHandlers(eventName);
+				EventManager.AddEventHandler<Func<Dictionary<string, object>, Task>>(async state =>
 				{
 					try
 					{
-						await eventHandler();
+						await ((Func<Task>)state[nameof(eventHandler)])();
+
 					}
 					catch (UmbrellaHttpServiceConcurrencyException)
 					{
@@ -193,12 +202,9 @@ namespace Umbrella.Xamarin.ViewModels
 					}
 					finally
 					{
-						EventManager.RemoveAllEventHandlers(eventName);
+						EventManager.RemoveAllEventHandlers((string)state[nameof(eventName)]);
 					}
-				}
-
-				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Func<Task>>(Handler, eventName);
+				}, eventName, state);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
 			{
@@ -220,11 +226,18 @@ namespace Umbrella.Xamarin.ViewModels
 		{
 			try
 			{
-				async Task Handler(TResult result)
+				var state = new Dictionary<string, object>
+				{
+					[nameof(eventName)] = eventName,
+					[nameof(eventHandler)] = eventHandler,
+				};
+
+				EventManager.RemoveAllEventHandlers(eventName);
+				EventManager.AddEventHandler<Func<Dictionary<string, object>, TResult, Task>>(async (state, result) =>
 				{
 					try
 					{
-						await eventHandler(result);
+						await ((Func<TResult, Task>)state[nameof(eventHandler)])(result);
 					}
 					catch (UmbrellaHttpServiceConcurrencyException)
 					{
@@ -236,12 +249,10 @@ namespace Umbrella.Xamarin.ViewModels
 					}
 					finally
 					{
-						EventManager.RemoveAllEventHandlers(eventName);
+						EventManager.RemoveAllEventHandlers((string)state[nameof(eventName)]);
 					}
-				}
 
-				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Func<TResult, Task>>(Handler, eventName);
+				}, eventName, state);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
 			{

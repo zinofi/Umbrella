@@ -6,7 +6,7 @@ namespace Umbrella.Utilities.WeakEventManager
 {
 	internal class WeakEventSubscription : IEquatable<WeakEventSubscription>
 	{
-		public WeakEventSubscription(WeakReference subscriber, MethodInfo handler)
+		public WeakEventSubscription(WeakReference subscriber, MethodInfo handler, Dictionary<string, object>? state = null)
 		{
 			Subscriber = subscriber;
 			Handler = handler;
@@ -14,6 +14,7 @@ namespace Umbrella.Utilities.WeakEventManager
 
 		public WeakReference Subscriber { get; }
 		public MethodInfo Handler { get; }
+		public Dictionary<string, object>? State { get; }
 
 		public override bool Equals(object? obj) => obj is WeakEventSubscription subscription && Equals(subscription);
 		public bool Equals(WeakEventSubscription other) => Subscriber.Target.Equals(other.Subscriber.Target) && Handler.Equals(other.Handler);
