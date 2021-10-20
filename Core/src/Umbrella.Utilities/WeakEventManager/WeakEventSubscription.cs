@@ -10,6 +10,7 @@ namespace Umbrella.Utilities.WeakEventManager
 		{
 			Subscriber = subscriber;
 			Handler = handler;
+			State = state;
 		}
 
 		public WeakReference Subscriber { get; }
