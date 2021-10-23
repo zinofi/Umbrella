@@ -23,12 +23,12 @@ namespace Umbrella.Utilities.Spatial
 		/// <summary>
 		/// Gets or sets the latitude.
 		/// </summary>
-		public double Latitude { get; set; }
+		public double Latitude { readonly get; set; }
 
 		/// <summary>
 		/// Gets or sets the longitude.
 		/// </summary>
-		public double Longitude { get; set; }
+		public double Longitude { readonly get; set; }
 
 		/// <inheritdoc />
 		public override readonly bool Equals(object obj) => obj is GeoLocation location && Equals(location);
