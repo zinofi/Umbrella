@@ -91,7 +91,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="left">The first predicate expression to combine.</param>
 		/// <param name="right">The second predicate expression to combine.</param>
 		/// <returns>A single combined predicate expression.</returns>
-		public static Expression<Func<TSource, bool>> And<TSource>(this Expression<Func<TSource, bool>> left, Expression<Func<TSource, bool>> right)
+		public static Expression<Func<TSource, bool>> CombineAnd<TSource>(this Expression<Func<TSource, bool>> left, Expression<Func<TSource, bool>> right)
 		{
 			Guard.ArgumentNotNull(left, nameof(left));
 			Guard.ArgumentNotNull(right, nameof(right));
@@ -112,7 +112,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="left">The first predicate expression to combine.</param>
 		/// <param name="right">The second predicate expression to combine.</param>
 		/// <returns>A single combined predicate expression.</returns>
-		public static Expression<Func<TSource, bool>> Or<TSource>(this Expression<Func<TSource, bool>> left, Expression<Func<TSource, bool>> right)
+		public static Expression<Func<TSource, bool>> CombineOr<TSource>(this Expression<Func<TSource, bool>> left, Expression<Func<TSource, bool>> right)
 		{
 			Guard.ArgumentNotNull(left, nameof(left));
 			Guard.ArgumentNotNull(right, nameof(right));

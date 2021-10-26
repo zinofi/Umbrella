@@ -66,8 +66,8 @@ namespace Umbrella.Utilities.Data.Filtering
 						{
 							filterPredicate = combinator switch
 							{
-								FilterExpressionCombinator.And => filterPredicate.And(predicate),
-								FilterExpressionCombinator.Or => filterPredicate.Or(predicate),
+								FilterExpressionCombinator.And => filterPredicate.CombineAnd(predicate),
+								FilterExpressionCombinator.Or => filterPredicate.CombineOr(predicate),
 								_ => throw new NotSupportedException($"The specified {nameof(FilterExpressionCombinator)} is not supported.")
 							};
 						}
@@ -86,8 +86,8 @@ namespace Umbrella.Utilities.Data.Filtering
 						{
 							filterPredicate = combinator switch
 							{
-								FilterExpressionCombinator.And => filterPredicate.And(filter),
-								FilterExpressionCombinator.Or => filterPredicate.Or(filter),
+								FilterExpressionCombinator.And => filterPredicate.CombineAnd(filter),
+								FilterExpressionCombinator.Or => filterPredicate.CombineOr(filter),
 								_ => throw new NotSupportedException($"The specified {nameof(FilterExpressionCombinator)} is not supported.")
 							};
 						}
