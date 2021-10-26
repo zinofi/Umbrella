@@ -12,7 +12,7 @@ namespace Umbrella.AppFramework.Security.Abstractions
 		/// <summary>
 		/// Invoked when the authentication state changes.
 		/// </summary>
-		event Func<ClaimsPrincipal, Task>? OnAuthenticationStateChangedAsync;
+		event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged;
 
 		/// <summary>
 		/// Gets the current claims principal.

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.Utilities.Security.Abstractions;
+using Umbrella.Utilities.WeakEventManager.Abstractions;
 
 namespace Umbrella.AppFramework.Security
 {
@@ -20,13 +21,18 @@ namespace Umbrella.AppFramework.Security
 		private readonly ILogger _logger;
 		private readonly IJwtUtility _jwtUtility;
 		private readonly IAppAuthTokenStorageService _tokenStorageService;
+		private readonly IWeakEventManager _weakEventManager;
 
 		// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
 		// Could wrap this in a singleton service but not much point.
 		private static ClaimsPrincipal? _claimsPrincipal;
 
 		/// <inheritdoc />
-		public event Func<ClaimsPrincipal, Task>? OnAuthenticationStateChangedAsync;
+		public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
+		{
+			add => _weakEventManager.AddEventHandler(value);
+			remove => _weakEventManager.RemoveEventHandler(value);
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AppAuthHelperBase"/> class.
@@ -34,14 +40,17 @@ namespace Umbrella.AppFramework.Security
 		/// <param name="logger">The logger.</param>
 		/// <param name="jwtUtility">The JWT utility.</param>
 		/// <param name="tokenStorageService">The token storage service.</param>
+		/// <param name="weakEventManager">The weak event manager.</param>
 		public AppAuthHelperBase(
 			ILogger logger,
 			IJwtUtility jwtUtility,
-			IAppAuthTokenStorageService tokenStorageService)
+			IAppAuthTokenStorageService tokenStorageService,
+			IWeakEventManager weakEventManager)
 		{
 			_logger = logger;
 			_jwtUtility = jwtUtility;
 			_tokenStorageService = tokenStorageService;
+			_weakEventManager = weakEventManager;
 		}
 
 		/// <inheritdoc />
@@ -81,7 +90,7 @@ namespace Umbrella.AppFramework.Security
 				}
 
 				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-				OnAuthenticationStateChangedAsync?.Invoke(_claimsPrincipal);
+				_weakEventManager.RaiseEvent(nameof(OnAuthenticationStateChanged), _claimsPrincipal);
 
 				return _claimsPrincipal;
 			}
@@ -99,7 +108,7 @@ namespace Umbrella.AppFramework.Security
 				await _tokenStorageService.SetTokenAsync(null);
 				_claimsPrincipal = null;
 
-				OnAuthenticationStateChangedAsync?.Invoke(new ClaimsPrincipal(new ClaimsIdentity()));
+				_weakEventManager.RaiseEvent(nameof(OnAuthenticationStateChanged), new ClaimsPrincipal(new ClaimsIdentity()));
 
 				if (executeDefaultPostLogoutAction)
 					await ExecutePostLogoutActionAsync();
