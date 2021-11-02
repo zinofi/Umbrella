@@ -46,5 +46,26 @@ namespace Umbrella.Xamarin.Extensions
 
 			return layoutController?.FindControls(elementSelector).ToArray() ?? Array.Empty<T>();
 		}
+
+		/// <summary>
+		/// Finds the current page on which the specified <paramref name="element"/> exists.
+		/// </summary>
+		/// <param name="element">The element.</param>
+		/// <returns>The current page or <see langword="null"/> if it cannot be found.</returns>
+		public static Page? FindCurrentPage(this Element element)
+		{
+			Element root = element;
+
+			do
+			{
+				if (root is Page page)
+					return page;
+
+				root = root.Parent;
+			}
+			while (root != null);
+
+			return null;
+		}
 	}
 }
