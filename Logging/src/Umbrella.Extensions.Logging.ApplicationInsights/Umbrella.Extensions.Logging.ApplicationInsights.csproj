@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.18.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.20" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.21" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
