@@ -7,6 +7,7 @@ using Umbrella.AppFramework.UI;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Utilities.Http.Exceptions;
 using Umbrella.Utilities.WeakEventManager.Abstractions;
+using Umbrella.Xamarin.ObjectModel.Abstractions;
 using Umbrella.Xamarin.Utilities.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.CommunityToolkit.UI.Views;
@@ -88,7 +89,18 @@ namespace Umbrella.Xamarin.ViewModels
 		/// <summary>
 		/// Gets the event manager.
 		/// </summary>
-		public IGlobalWeakEventManager EventManager { get; }
+		protected IGlobalWeakEventManager EventManager { get; }
+
+		/// <summary>
+		/// Gets the command factory.
+		/// </summary>
+		protected IUmbrellaCommandFactory CommandFactory { get; }
+
+		/// <summary>
+		/// Gets a value which specifies whether or not a check should be made for an active network connection when the <see cref="ReloadButtonCommand" /> is invoked.
+		/// </summary>
+		/// <remarks>Defaults to <see langword="true"/>.</remarks>
+		protected virtual bool CheckNetworkConnectionOnReload { get; } = true;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ViewModelBase"/> class.
@@ -96,25 +108,26 @@ namespace Umbrella.Xamarin.ViewModels
 		/// <param name="logger">The logger.</param>
 		/// <param name="authHelper">The authentication helper.</param>
 		/// <param name="eventManager">The event manager.</param>
+		/// <param name="commandFactory">The command factory.</param>
 		/// <param name="dialogUtility">The dialog utility.</param>
 		public ViewModelBase(
 			ILogger logger,
 			IDialogUtility dialogUtility,
 			IAppAuthHelper authHelper,
-			IGlobalWeakEventManager eventManager)
+			IGlobalWeakEventManager eventManager,
+			IUmbrellaCommandFactory commandFactory)
 			: base(logger, dialogUtility, authHelper)
 		{
 			EventManager = eventManager;
+			CommandFactory = commandFactory;
 
-			// TODO TEMP365/SPARK: Use the IUmbrellaCommandFactory here.
-			// Add a new virtual property to specify network checks for reloading. Default to true.
-			ReloadButtonCommand = new AsyncCommand(OnReloadButtonClicked, allowsMultipleExecutions: false);
-			OpenUrlInternalCommand = new AsyncCommand<string?>(x => OpenUrlAsync(x, true), allowsMultipleExecutions: false);
-			OpenUrlExternalCommand = new AsyncCommand<string?>(x => OpenUrlAsync(x, false), allowsMultipleExecutions: false);
+			ReloadButtonCommand = commandFactory.CreateAsyncCommand(OnReloadButtonClicked, CheckNetworkConnectionOnReload);
+			OpenUrlInternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, true), true);
+			OpenUrlExternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, false), true);
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IsBusy"/> and <see cref="IsRefreshing"/> flags to <see langword="false" />
+		/// Sets the <see cref="IsBusy"/> and <see cref="IsRefreshing"/> flags to <see langword="false" />.
 		/// </summary>
 		protected void ClearFlags() => IsBusy = IsRefreshing = false;
 

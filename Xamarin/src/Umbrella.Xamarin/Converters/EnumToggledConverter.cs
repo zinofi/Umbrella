@@ -4,8 +4,6 @@ using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Converters
 {
-	// TODO: Remove this. There is a EnumToBoolConverter inside the Xamarin Community Toolkit that does the same job.
-
 	/// <summary>
 	/// A converter that converts to / from a boolean if the binding value is an enum and if so,
 	/// if it matches the enum value provided as the converter parameter. Primarily used in conjunction
