@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
@@ -15,12 +16,9 @@ namespace Umbrella.DataAccess.Mapping
 	/// <seealso cref="IMappingUtility" />
 	public class MappingUtility : IMappingUtility
 	{
-		#region Private Members
 		private readonly ILogger _log;
 		private readonly IMapper _mapper;
-		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MappingUtility"/> class.
 		/// </summary>
@@ -33,19 +31,24 @@ namespace Umbrella.DataAccess.Mapping
 			_log = logger;
 			_mapper = mapper;
 		}
-		#endregion
 
-		#region IMappingUtility Members
 		/// <inheritdoc />
-		public IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity>? newEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
+		public async ValueTask<List<TEntity>> UpdateItemsListAsync<TModel, TEntity, TEntityKey>(
+			IEnumerable<TModel> modelItems,
+			IEnumerable<TEntity> existingItems,
+			Func<TModel, TEntity, bool> matchSelector,
+			Func<TEntity, ValueTask>? newEntityAction = null,
+			Func<TEntity, List<TEntity>, ValueTask>? deletedEntityAction = null,
+			Func<TEntity, bool>? autoInclusionSelector = null,
+			params Func<TModel, TEntity, ValueTask>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 			where TEntityKey : IEquatable<TEntityKey>
 		{
 			try
 			{
 				// If there is nothing to process, just return an empty list for the target entity type
-				if (modelItems == null)
-					return Array.Empty<TEntity>();
+				if (modelItems is null)
+					return new List<TEntity>();
 
 				var updatedList = new List<TEntity>();
 
@@ -58,7 +61,7 @@ namespace Umbrella.DataAccess.Mapping
 					TEntity entity = existingItems.SingleOrDefault(x => matchSelector(item, x));
 
 					// No existing item with this id, so add a new one
-					if (entity == null)
+					if (entity is null)
 					{
 						entity = _mapper.Map<TEntity>(item);
 
@@ -66,7 +69,8 @@ namespace Umbrella.DataAccess.Mapping
 						// to something like a different foreign key relationship
 						entity.Id = default!;
 
-						newEntityAction?.Invoke(entity);
+						if (newEntityAction != null)
+							await newEntityAction(entity).ConfigureAwait(false);
 
 						updatedList.Add(entity);
 					}
@@ -80,8 +84,17 @@ namespace Umbrella.DataAccess.Mapping
 					{
 						foreach (var action in innerActions)
 						{
-							action(item, entity);
+							await action(item, entity).ConfigureAwait(false);
 						}
+					}
+				}
+
+				// Process the deleted items
+				if (deletedEntityAction != null)
+				{
+					foreach (var item in existingItems.Except(updatedList))
+					{
+						await deletedEntityAction(item, updatedList).ConfigureAwait(false);
 					}
 				}
 
@@ -92,6 +105,5 @@ namespace Umbrella.DataAccess.Mapping
 				throw new UmbrellaDataAccessException("There has been a problem updating the target items list.", exc);
 			}
 		}
-		#endregion
 	}
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -206,5 +209,26 @@ namespace Umbrella.Utilities.Security.Extensions
 
 			return GenericTypeConverterHelper.ConvertToEnum(claim?.Value, fallback);
 		}
+
+		/// <summary>
+		/// Find the first claim value of the specified type and convert it to a nullable <see langword="enum"/> instance of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <typeparam name="T">The <see langword="enum"/></typeparam>
+		/// <param name="claimsPrincipal">The claims principal.</param>
+		/// <param name="claimType">The type of the claim.</param>
+		/// <param name="fallback">The fallback which is returned if the value is null, empty or whitespace, or if the value cannot be converted to the specified enum <typeparamref name="T"/>.</param>
+		/// <returns>The conversion result.</returns>
+		public static T? GetFirstNullableEnumValueOrDefault<T>(this ClaimsPrincipal claimsPrincipal, string claimType, T? fallback = null)
+			where T : struct, Enum
+			=> GenericTypeConverterHelper.ConvertToNullableEnum(claimsPrincipal.FindFirst(claimType)?.Value, fallback);
+
+		/// <summary>
+		/// Determines if a claim exists for the specified <paramref name="claimType"/> with a value of <see langword="true"/>.
+		/// </summary>
+		/// <param name="claimsPrincipal">The claims principal.</param>
+		/// <param name="claimType">The type of the claim.</param>
+		/// <returns><see langword="true"/> if a claim exists with a <see langword="true"/> value; otherwise <see langword="false"/>.</returns>
+		public static bool HasBooleanTrueClaim(this ClaimsPrincipal claimsPrincipal, string claimType)
+			=> claimsPrincipal.FindFirst(claimType)?.Value?.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase) is true;
 	}
 }

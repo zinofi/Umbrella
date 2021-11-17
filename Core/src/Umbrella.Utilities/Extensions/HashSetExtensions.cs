@@ -73,5 +73,22 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
 		public static bool AddNotNullTrimToUpperInvariant(this HashSet<string> hashSet, string value)
 			=> AddNotNull(hashSet!, value?.TrimToUpperInvariant());
+
+		/// <summary>
+		/// Adds the specified <paramref name="values"/> to the <paramref name="set"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the item in the <paramref name="set"/>.</typeparam>
+		/// <param name="set">The set.</param>
+		/// <param name="values">The values to add.</param>
+		public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> values)
+		{
+			foreach (T value in values)
+			{
+				if (value is null)
+					continue;
+
+				set.Add(value);
+			}
+		}
 	}
 }

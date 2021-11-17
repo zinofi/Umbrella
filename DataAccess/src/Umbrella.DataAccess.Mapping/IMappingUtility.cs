@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Umbrella.DataAccess.Abstractions;
 
@@ -21,10 +22,11 @@ namespace Umbrella.DataAccess.Mapping
 		/// <param name="existingItems">The existing items.</param>
 		/// <param name="matchSelector">The selector used to match items, e.g. the id.</param>
 		/// <param name="newEntityAction">The action to be applied to new entity items that do not exist in the existing items.</param>
+		/// <param name="deletedEntityAction">The action to be applied to deleted items that do not exist in the model items.</param>
 		/// <param name="autoInclusionSelector">The automatic inclusion selector.</param>
 		/// <param name="innerActions">The inner actions to be applied to nested objects. Nested objects need to be explicitly handled.</param>
 		/// <returns>A collection of <typeparamref name="TEntity"/> instances.</returns>
-		IReadOnlyCollection<TEntity> UpdateItemsList<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Action<TEntity>? newEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, params Action<TModel, TEntity>[] innerActions)
+		ValueTask<List<TEntity>> UpdateItemsListAsync<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Func<TEntity, ValueTask>? newEntityAction = null, Func<TEntity, List<TEntity>, ValueTask>? deletedEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, params Func<TModel, TEntity, ValueTask>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 			where TEntityKey : IEquatable<TEntityKey>;
 	}

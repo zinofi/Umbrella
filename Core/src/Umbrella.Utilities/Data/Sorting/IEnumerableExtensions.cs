@@ -1,6 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Sorting
 {
@@ -95,5 +99,14 @@ namespace Umbrella.Utilities.Data.Sorting
 
 			return result != default(SortExpression<TItem>) ? result : null;
 		}
+
+		/// <summary>
+		/// Finds a sorter with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <param name="sorters">The sorters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <returns>The sorter, if it exists.</returns>
+		public static SortExpressionDescriptor? FindSortExpressionDescriptor(this IEnumerable<IDataExpressionDescriptor>? sorters, string memberPath)
+			=> sorters?.OfType<SortExpressionDescriptor>().SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
 	}
 }

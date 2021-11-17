@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Forms;
 
@@ -117,6 +120,28 @@ namespace Umbrella.Xamarin.Utilities
 				_dialogTracker.Close(code);
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			{
+				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async ValueTask ShowValidationResultsMessageAsync(IEnumerable<ValidationResult> validationResults, string introMessage = "Please correct all validation errors.", string title = "Error", string closeButtonText = "Close")
+		{
+			try
+			{
+				string message = validationResults.ToValidationSummaryMessage(introMessage);
+
+				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
+
+				if (!_dialogTracker.TrackOpen(code))
+					return;
+
+				await Device.InvokeOnMainThreadAsync(() => Shell.Current.DisplayAlert(title, message, closeButtonText));
+
+				_dialogTracker.Close(code);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { title }, returnValue: true))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}

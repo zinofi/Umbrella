@@ -24,5 +24,10 @@
 		/// The default unknown error message
 		/// </summary>
 		public const string UnknownErrorMessage = "An unknown error has occurred. Please try again.";
+
+		/// <summary>
+		/// The default intro message for validation errors.
+		/// </summary>
+		public const string ValidationResultsIntroMessage = "Please correct all validation errors.";
 	}
 }

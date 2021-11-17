@@ -1,8 +1,14 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.TypeConverters;
 
 namespace Umbrella.Utilities.Data.Filtering
 {
@@ -27,6 +33,7 @@ namespace Umbrella.Utilities.Data.Filtering
 			if (filterExpressions?.Count() > 0)
 			{
 				var lstFilterPredicate = new List<Func<TItem, bool>>();
+				var lstPrimaryFilterPredicate = new List<Func<TItem, bool>>();
 
 				foreach (var filterExpression in filterExpressions)
 				{
@@ -53,10 +60,15 @@ namespace Umbrella.Utilities.Data.Filtering
 						return propertyValue?.Equals(filterValue) ?? false;
 					}
 
-					lstFilterPredicate.Add(predicate);
+					if (filterExpression.IsPrimary)
+						lstPrimaryFilterPredicate.Add(predicate);
+					else
+						lstFilterPredicate.Add(predicate);
 				}
 
 				filteredItems = items;
+
+				lstPrimaryFilterPredicate.ForEach(x => filteredItems = filteredItems.Where(y => x(y)));
 
 				if (combinator == FilterExpressionCombinator.And)
 				{
@@ -66,6 +78,7 @@ namespace Umbrella.Utilities.Data.Filtering
 				{
 					var lstItem = new HashSet<TItem>();
 					lstFilterPredicate.ForEach(x => lstItem.UnionWith(filteredItems.Where(y => x(y))));
+
 					filteredItems = lstItem;
 				}
 			}
@@ -169,6 +182,81 @@ namespace Umbrella.Utilities.Data.Filtering
 				return (true, (TFilterValue)value);
 
 			return (false, default!);
+		}
+
+		/// <summary>
+		/// Finds a filter with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <param name="filters">The filters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <returns>The filter, if it exists.</returns>
+		public static FilterExpressionDescriptor? FindFilterExpressionDescriptor(this IEnumerable<IDataExpressionDescriptor>? filters, string memberPath)
+			=> filters?.OfType<FilterExpressionDescriptor>().SingleOrDefault(x => x.MemberPath?.Equals(memberPath, StringComparison.OrdinalIgnoreCase) ?? false);
+
+		/// <summary>
+		/// Finds a filter value with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="fallbackCreator">The fallback value creator.</param>
+		/// <param name="customValueConverter">The custom value converter.</param>
+		/// <returns>The filter value, or the fallback if it does not exist.</returns>
+		public static T FindFilterValue<T>(this IEnumerable<IDataExpressionDescriptor>? filters, string memberPath, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null)
+		{
+			FilterExpressionDescriptor? descriptor = FindFilterExpressionDescriptor(filters, memberPath);
+
+			string? value = descriptor?.Value;
+
+			return GenericTypeConverterHelper.Convert(value, fallbackCreator, customValueConverter);
+		}
+
+		/// <summary>
+		/// Finds a filter value with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="fallback">The fallback value.</param>
+		/// <param name="customValueConverter">The custom value converter.</param>
+		/// <returns>The filter value, or the fallback if it does not exist.</returns>
+		public static T FindFilterValue<T>(this IEnumerable<IDataExpressionDescriptor>? filters, string memberPath, T fallback = default!, Func<string?, T>? customValueConverter = null)
+			=> FindFilterValue(filters, memberPath, () => fallback, customValueConverter);
+
+		/// <summary>
+		/// Finds a filter enum value with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="fallback">The fallback value.</param>
+		/// <returns>The filter value, or the fallback if it does not exist.</returns>
+		public static T FindFilterEnumValue<T>(this IEnumerable<IDataExpressionDescriptor>? filters, string memberPath, T fallback = default)
+			where T : struct, Enum
+		{
+			FilterExpressionDescriptor? descriptor = FindFilterExpressionDescriptor(filters, memberPath);
+
+			string? value = descriptor?.Value;
+
+			return GenericTypeConverterHelper.ConvertToEnum<T>(value, fallback);
+		}
+
+		/// <summary>
+		/// Finds a nullable filter enum value with the specified <paramref name="memberPath"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the filter value.</typeparam>
+		/// <param name="filters">The filters.</param>
+		/// <param name="memberPath">The member path.</param>
+		/// <param name="fallback">The fallback value.</param>
+		/// <returns>The filter value, or the fallback if it does not exist.</returns>
+		public static T? FindNullableFilterEnumValue<T>(this IEnumerable<IDataExpressionDescriptor>? filters, string memberPath, T? fallback = null)
+			where T : struct, Enum
+		{
+			FilterExpressionDescriptor? descriptor = FindFilterExpressionDescriptor(filters, memberPath);
+
+			string? value = descriptor?.Value;
+
+			return GenericTypeConverterHelper.ConvertToNullableEnum(value, fallback);
 		}
 	}
 }

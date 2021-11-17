@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
@@ -16,6 +17,7 @@ using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.AspNetCore.Blazor.Extensions;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 {
@@ -339,6 +341,32 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 				return await modal.Result;
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }, returnValue: true))
+			{
+				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+			}
+		}
+
+		/// <inheritdoc />
+		public async ValueTask ShowValidationResultsMessageAsync(IEnumerable<ValidationResult> validationResults, string introMessage = "Please correct all validation errors.", string title = "Error", string closeButtonText = "Close")
+		{
+			try
+			{
+				string message = validationResults.ToValidationSummaryMessage(introMessage);
+
+				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
+
+				if (!_dialogTracker.TrackOpen(code))
+					return;
+
+				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+					? _defaultDangerMessageButtons
+					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
+
+				await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
+
+				_dialogTracker.Close(code);
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, new { title }, returnValue: true))
 			{
 				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
 			}

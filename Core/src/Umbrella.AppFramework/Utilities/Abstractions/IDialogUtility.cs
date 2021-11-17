@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Umbrella.AppFramework.Utilities.Constants;
 
 namespace Umbrella.AppFramework.Utilities.Abstractions
@@ -25,6 +27,16 @@ namespace Umbrella.AppFramework.Utilities.Abstractions
 		/// <param name="closeButtonText">The close button text.</param>
 		/// <returns>An awaitable task that completes when the dialog has been actioned.</returns>
 		ValueTask ShowDangerMessageAsync(string message = DialogDefaults.UnknownErrorMessage, string title = "Error", string closeButtonText = DialogDefaults.DefaultCloseButtonText);
+
+		/// <summary>
+		/// Shows a dialog with a formatted message for the specified <paramref name="validationResults"/>.
+		/// </summary>
+		/// <param name="validationResults">The validation results.</param>
+		/// <param name="introMessage">The intro message.</param>
+		/// <param name="title">The title.</param>
+		/// <param name="closeButtonText">The close button text.</param>
+		/// <returns>An awaitable task that completes when the dialog has been actioned.</returns>
+		ValueTask ShowValidationResultsMessageAsync(IEnumerable<ValidationResult> validationResults, string introMessage = DialogDefaults.ValidationResultsIntroMessage, string title = "Error", string closeButtonText = DialogDefaults.DefaultCloseButtonText);
 
 		/// <summary>
 		/// Shows a dialog with a message indicating success.

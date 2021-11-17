@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Filtering
@@ -27,11 +30,13 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="memberPath">The member path.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
-		public FilterExpressionDescriptor(string memberPath, string? value, FilterType type)
+		/// <param name="isPrimary">Specifies whether this is a primary filter.</param>
+		public FilterExpressionDescriptor(string memberPath, string? value, FilterType type, bool isPrimary = false)
 		{
 			MemberPath = memberPath;
 			Value = value;
 			Type = type;
+			IsPrimary = isPrimary;
 		}
 
 		/// <summary>
@@ -53,11 +58,16 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// </summary>
 		public FilterType Type { get; set; }
 
+		/// <summary>
+		/// Gets or sets whether or not this filter is a primary filter.
+		/// </summary>
+		public bool IsPrimary { get; set; }
+
 		/// <inheritdoc />
 		/// <remarks>This will return true even if the <see cref="Value"/> is null as we might need to filter on that, e.g. looking for matches that have no value.</remarks>
 		public bool IsValid() => !string.IsNullOrEmpty(MemberPath);
 
 		/// <inheritdoc />
-		public override string ToString() => $"{MemberPath}:{Value}:{Type}";
+		public override string ToString() => $"{MemberPath}:{Value}:{Type}:{IsPrimary}";
 	}
 }

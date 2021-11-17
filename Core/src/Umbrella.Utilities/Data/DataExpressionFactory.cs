@@ -80,7 +80,7 @@ namespace Umbrella.Utilities.Data
 							descriptorValue = underlyingValue.ToString();
 					}
 
-					return (IDataExpression)Activator.CreateInstance(elementType, result.lambda, result.@delegate, result.memberPath, descriptorValue, filterExpressionDescriptor.Type);
+					return (IDataExpression)Activator.CreateInstance(elementType, result.lambda, result.@delegate, result.memberPath, descriptorValue, filterExpressionDescriptor.Type, filterExpressionDescriptor.IsPrimary);
 				}
 				else if (descriptor is SortExpressionDescriptor sortExpressionDescriptor)
 				{

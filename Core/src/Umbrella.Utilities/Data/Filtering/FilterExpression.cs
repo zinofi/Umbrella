@@ -34,18 +34,25 @@ namespace Umbrella.Utilities.Data.Filtering
 		public FilterType Type { get; }
 
 		/// <summary>
+		/// Gets or sets whether or not this filter is a primary filter.
+		/// </summary>
+		public bool IsPrimary { get; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterExpression{TItem}"/> struct.
 		/// </summary>
 		/// <param name="expression">The expression.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
-		public FilterExpression(Expression<Func<TItem, object>> expression, object? value, FilterType type = FilterType.Contains)
+		/// <param name="isPrimary">Specifies whether this is a primary filter.</param>
+		public FilterExpression(Expression<Func<TItem, object>> expression, object? value, FilterType type = FilterType.Contains, bool isPrimary = false)
 		{
 			Guard.ArgumentNotNull(expression, nameof(expression));
 
 			Expression = expression;
 			Value = value;
 			Type = type;
+			IsPrimary = isPrimary;
 
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
 			_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
@@ -59,12 +66,14 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// <param name="memberPath">The member path.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
+		/// <param name="isPrimary">Specifies whether this is a primary filter.</param>
 		/// <remarks>This is dynamically invoked by the <see cref="DataExpressionFactory"/>.</remarks>
-		public FilterExpression(LambdaExpression expression, Lazy<Delegate> @delegate, Lazy<string> memberPath, object? value, FilterType type)
+		public FilterExpression(LambdaExpression expression, Lazy<Delegate> @delegate, Lazy<string> memberPath, object? value, FilterType type, bool isPrimary)
 		{
 			Expression = (Expression<Func<TItem, object>>)expression;
 			Value = value;
 			Type = type;
+			IsPrimary = isPrimary;
 
 			_lazyFunc = new Lazy<Func<TItem, object>>(() => (Func<TItem, object>)@delegate.Value);
 			_lazyMemberPath = memberPath;
@@ -74,7 +83,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		public Func<TItem, object>? GetDelegate() => _lazyFunc?.Value;
 
 		/// <inheritdoc />
-		public override string ToString() => $"{MemberPath} - {Value} - {Type}";
+		public override string ToString() => $"{MemberPath} - {Value} - {Type} - {IsPrimary}";
 
 		/// <summary>
 		/// Converts to this instance to a <see cref="FilterExpressionDescriptor"/>.
@@ -114,7 +123,7 @@ namespace Umbrella.Utilities.Data.Filtering
 		/// </returns>
 		public static explicit operator FilterExpressionDescriptor?(FilterExpression<TItem> filterExpression)
 			=> filterExpression != default && filterExpression.MemberPath != null
-				? new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value!.ToString(), filterExpression.Type)
+				? new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value!.ToString(), filterExpression.Type, filterExpression.IsPrimary)
 				: null;
 
 		/// <summary>

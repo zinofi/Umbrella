@@ -31,5 +31,14 @@ namespace Umbrella.Utilities.TypeConverters
 
 			return fallback;
 		}
+
+		public static T? ConvertToNullableEnum<T>(string? value, T? fallback = null)
+			where T : struct, Enum
+		{
+			if (!string.IsNullOrWhiteSpace(value) && Enum.TryParse(value, true, out T output))
+				return output;
+
+			return fallback;
+		}
 	}
 }

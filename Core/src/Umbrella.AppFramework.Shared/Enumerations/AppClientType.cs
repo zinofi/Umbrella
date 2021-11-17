@@ -1,4 +1,7 @@
-﻿namespace Umbrella.AppFramework.Shared.Enumerations
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+namespace Umbrella.AppFramework.Shared.Enumerations
 {
 	/// <summary>
 	/// The type of the client app.

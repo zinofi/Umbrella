@@ -33,6 +33,7 @@ namespace Umbrella.Utilities.Data.Filtering
 			if (filterExpressionsCount > 0 || additionalFiltersCount > 0)
 			{
 				Expression<Func<TItem, bool>>? filterPredicate = null;
+				Expression<Func<TItem, bool>>? primaryFilterPredicate = null;
 
 				if (filterExpressionsCount > 0)
 				{
@@ -40,8 +41,6 @@ namespace Umbrella.Utilities.Data.Filtering
 					{
 						if (filterExpression == default || filterExpression.MemberPath is null)
 							continue;
-
-						Expression<Func<TItem, bool>>? predicate = null;
 
 						UmbrellaDynamicCompare? dynamicCompare = filterExpression.Type switch
 						{
@@ -54,22 +53,31 @@ namespace Umbrella.Utilities.Data.Filtering
 							_ => null
 						};
 
-						predicate = dynamicCompare != null
+						Expression<Func<TItem, bool>> predicate = dynamicCompare != null
 							? UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, dynamicCompare.Value, filterExpression.Value?.ToString() ?? "")
 							: UmbrellaDynamicQuery.CreatePredicate<TItem>(filterExpression.MemberPath, filterExpression.Type.ToString(), filterExpression.Value?.ToString() ?? "");
 
-						if (filterPredicate is null)
+						if (filterExpression.IsPrimary)
 						{
-							filterPredicate = predicate;
+							primaryFilterPredicate = primaryFilterPredicate is null
+								? predicate
+								: primaryFilterPredicate.CombineAnd(predicate);
 						}
-						else if (predicate != null)
+						else
 						{
-							filterPredicate = combinator switch
+							if (filterPredicate is null)
 							{
-								FilterExpressionCombinator.And => filterPredicate.CombineAnd(predicate),
-								FilterExpressionCombinator.Or => filterPredicate.CombineOr(predicate),
-								_ => throw new NotSupportedException($"The specified {nameof(FilterExpressionCombinator)} is not supported.")
-							};
+								filterPredicate = predicate;
+							}
+							else if (predicate != null)
+							{
+								filterPredicate = combinator switch
+								{
+									FilterExpressionCombinator.And => filterPredicate.CombineAnd(predicate),
+									FilterExpressionCombinator.Or => filterPredicate.CombineOr(predicate),
+									_ => throw new NotSupportedException($"The specified {nameof(FilterExpressionCombinator)} is not supported.")
+								};
+							}
 						}
 					}
 				}
@@ -94,7 +102,10 @@ namespace Umbrella.Utilities.Data.Filtering
 					}
 				}
 
-				if(filterPredicate != null)
+				if (primaryFilterPredicate != null)
+					filteredItems = (filteredItems ?? items).Where(primaryFilterPredicate);
+
+				if (filterPredicate != null)
 					filteredItems = items.Where(filterPredicate);
 			}
 
