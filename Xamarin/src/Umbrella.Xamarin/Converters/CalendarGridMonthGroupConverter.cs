@@ -7,7 +7,7 @@ using Umbrella.Utilities.CalendarGrid;
 using Umbrella.Utilities.Extensions;
 using Xamarin.Forms;
 
-namespace Temp365.Dental.App.Converters
+namespace Umbrella.Xamarin.Converters
 {
 	/// <summary>
 	/// A converter that splits a collection of <see cref="CalendarGridMonth{TStatus, TData}" /> items into groups of 7 for displaying as a calendar on screen.
