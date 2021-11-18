@@ -7,6 +7,11 @@ namespace Umbrella.AppFramework.Security.Abstractions
 	/// <summary>
 	/// A helper used to perform common auth actions.
 	/// </summary>
+	/// <remarks>
+	/// This is registered with DI as a scoped service due to internal dependencies which are also scoped.
+	/// However, care must be taken when using this service in conjunction with HttpClientFactory and DelegatingHandlers
+	/// because services resolved there use their own scope which means working with a different instance.
+	/// </remarks>
 	public interface IAppAuthHelper
 	{
 		/// <summary>

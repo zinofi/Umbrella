@@ -21,7 +21,7 @@ namespace Umbrella.AppFramework.Security
 		private readonly ILogger _logger;
 		private readonly IJwtUtility _jwtUtility;
 		private readonly IAppAuthTokenStorageService _tokenStorageService;
-		private readonly IWeakEventManager _weakEventManager;
+		private readonly IGlobalWeakEventManager _weakEventManager;
 
 		// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
 		// Could wrap this in a singleton service but not much point.
@@ -45,7 +45,7 @@ namespace Umbrella.AppFramework.Security
 			ILogger logger,
 			IJwtUtility jwtUtility,
 			IAppAuthTokenStorageService tokenStorageService,
-			IWeakEventManager weakEventManager)
+			IGlobalWeakEventManager weakEventManager)
 		{
 			_logger = logger;
 			_jwtUtility = jwtUtility;
