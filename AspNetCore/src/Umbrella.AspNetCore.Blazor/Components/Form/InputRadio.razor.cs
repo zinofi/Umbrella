@@ -6,11 +6,15 @@ namespace Umbrella.AspNetCore.Blazor.Components.Form
 {
 	public class InputRadioBase<TValue> : InputBase<TValue>
 	{
+		/// <summary>
+		/// Gets or sets the selected value.
+		/// </summary>
 		[Parameter]
 		public TValue SelectedValue { get; set; } = default!;
 
 		protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value.ToString();
 
+		/// <inheritdoc />
 		protected override bool TryParseValueFromString(string value, out TValue result, out string errorMessage)
 		{
 			bool success = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsedValue);

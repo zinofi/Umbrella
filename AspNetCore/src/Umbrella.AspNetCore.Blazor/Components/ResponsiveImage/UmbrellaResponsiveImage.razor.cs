@@ -5,7 +5,7 @@ using Umbrella.Utilities.Imaging;
 
 namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage
 {
-	public abstract class UmbrellaResponsiveImageBase : ComponentBase
+	public partial class UmbrellaResponsiveImage : ComponentBase
 	{
 		/// <summary>
 		/// Gets or sets the responsive image helper.

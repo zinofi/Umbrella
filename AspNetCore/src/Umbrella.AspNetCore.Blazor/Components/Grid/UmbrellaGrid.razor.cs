@@ -172,9 +172,19 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public bool SmallPagination { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets whether the grid should auto-scroll to the top when it is updated with new data.
+		/// </summary>
 		[Parameter]
 		public bool AutoScrollTop { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets the scroll offset from the top of the screen when the grid is auto-scrolled to the top if enabled using
+		/// the <see cref="AutoScrollTop"/> property.
+		/// </summary>
+		/// <remarks>
+		/// This exists to allow for things liked fixed navigation bars to be taken into account.
+		/// </remarks>
 		[Parameter]
 		public int ScrollTopOffset { get; set; }
 
@@ -239,6 +249,14 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			StateHasChanged();
 		}
 
+		/// <summary>
+		/// Updates the grid data.
+		/// </summary>
+		/// <param name="items">The data items.</param>
+		/// <param name="totalCount">The total size of all results without pagination applied.</param>
+		/// <param name="pageNumber">The current page number.</param>
+		/// <param name="pageSize">The current page size.</param>
+		/// <param name="callStateHasChanged">Specifies whether <see cref="ComponentBase.StateHasChanged"/> should be invoked.</param>
 		public void Update(IReadOnlyCollection<TItem> items, int? totalCount = null, int? pageNumber = null, int? pageSize = null, bool callStateHasChanged = true)
 		{
 			Items = items;
@@ -273,6 +291,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			await UpdateGridAsync();
 		}
 
+		/// <summary>
+		/// The click event handler for a column heading used to trigger sorting of grid data.
+		/// </summary>
+		/// <param name="target">The column that has been clicked.</param>
+		/// <returns>A <see cref="Task"/> that completes when the grid has been updated.</returns>
 		protected async Task ColumnHeadingClick(UmbrellaColumnDefinition target)
 		{
 			foreach (var column in Columns)
@@ -295,6 +318,10 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			await UpdateGridAsync();
 		}
 
+		/// <summary>
+		/// The click event handler for the reload button.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> that completes when the grid has been reloaded.</returns>
 		protected async Task ReloadButtonClick()
 		{
 			ResetFiltersAndSorters();

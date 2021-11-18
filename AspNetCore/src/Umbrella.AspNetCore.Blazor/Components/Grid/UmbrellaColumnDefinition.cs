@@ -5,6 +5,9 @@ using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid
 {
+	/// <summary>
+	/// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
+	/// </summary>
 	public class UmbrellaColumnDefinition
 	{
 		/// <summary>
@@ -48,20 +51,74 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			}
 		}
 
+		/// <summary>
+		/// Gets the property name.
+		/// </summary>
 		public string? PropertyName { get; }
+
+		/// <summary>
+		/// Gets the column heading display text.
+		/// </summary>
 		public string? Heading { get; }
-		public int? PercentageWidth { get; set; }
+
+		/// <summary>
+		/// Gets the percentage width of the column.
+		/// </summary>
+		public int? PercentageWidth { get; }
+
+		/// <summary>
+		/// Gets a value specifying whether or not the column is sortable.
+		/// </summary>
 		public bool Sortable { get; }
+
+		/// <summary>
+		/// Gets a value specifying whether or not the column is filterable.
+		/// </summary>
 		public bool Filterable { get; }
+
+		/// <summary>
+		/// Gets a value specifying the type of control that is rendered to allow filtering, if enabled using the <see cref="Filterable"/> property.
+		/// </summary>
 		public UmbrellaColumnFilterType FilterControlType { get; }
+		
+		/// <summary>
+		/// Gets a value specifying how the <see cref="FilterValue"/> will be matched against the data in the column.
+		/// </summary>
 		public FilterType FilterMatchType { get; }
+
+		/// <summary>
+		/// Gets the filter options displayed to the user.
+		/// </summary>
 		public IReadOnlyCollection<object> FilterOptions { get; }
+
+		/// <summary>
+		/// Specifies the type of the <see cref="FilterOptions"/> displayed to the user.
+		/// </summary>
 		public UmbrellaColumnFilterOptionsType? FilterOptionsType { get; }
-		public Func<object, string>? FilterOptionDisplayNameSelector { get; set; }
+
+		/// <summary>
+		/// Gets a delegate used to convert a filter option to a friendly string for displaying to the user.
+		/// </summary>
+		public Func<object, string>? FilterOptionDisplayNameSelector { get; }
+
+		/// <summary>
+		/// Gets a collection of the unmatched parameter values specified on the <see cref="UmbrellaColumn"/> component that this instance is associated with.
+		/// </summary>
 		public IReadOnlyDictionary<string, object> AdditionalAttributes { get; }
+		
+		/// <summary>
+		/// Gets or sets the value used to filter the column.
+		/// </summary>
 		public string? FilterValue { get; set; }
+
+		/// <summary>
+		/// Gets or sets the sort direction.
+		/// </summary>
 		public SortDirection? Direction { get; set; }
 
+		/// <summary>
+		/// Gets the sort direction CSS class based on the current value of the <see cref="Direction"/> property.
+		/// </summary>
 		public string DirectionCssClass => Direction switch
 		{
 			SortDirection.Ascending => "fas fa-sort-up",
@@ -69,8 +126,16 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			_ => "fas fa-sort",
 		};
 
+		/// <summary>
+		/// Gets the CSS class for the width of the column based on the value of the <see cref="PercentageWidth"/> property.
+		/// </summary>
 		public string ColumnWidthCssClass => PercentageWidth.HasValue ? $"u-grid__column--{PercentageWidth}" : "u-grid__column--auto";
 
+		/// <summary>
+		/// Gets a friendly display name for a specified filter <paramref name="option"/>.
+		/// </summary>
+		/// <param name="option">The filter option.</param>
+		/// <returns>The friendly display name.</returns>
 		public string GetFilterOptionDisplayName(object option)
 		{
 			if (FilterOptionDisplayNameSelector is null)

@@ -1,6 +1,4 @@
-﻿@inherits UmbrellaResponsiveImageBase
-
-<div class="u-responsive-image @CssClass">
+﻿<div class="u-responsive-image @CssClass">
 	@if (!string.IsNullOrWhiteSpace(SrcSetValue))
 	{
 		<img src="@Url" srcset="@SrcSetValue" @attributes="AdditionalAttributes" />

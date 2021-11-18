@@ -12,6 +12,12 @@ using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions
 {
+	/// <summary>
+	/// Serves as the base class for file handlers.
+	/// </summary>
+	/// <typeparam name="TGroupId">The type of the group id.</typeparam>
+	/// <typeparam name="TFileAccessUtility">The type of the file access utility.</typeparam>
+	/// <typeparam name="TDirectoryType">The type of the directory.</typeparam>
 	public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirectoryType> : IUmbrellaFileHandler<TGroupId>
 		where TFileAccessUtility : IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>
 		where TDirectoryType : struct, Enum
@@ -37,6 +43,7 @@ namespace Umbrella.FileSystem.Abstractions
 			FileAccessUtility = fileAccessUtility;
 		}
 
+		/// <inheritdoc />
 		public async Task<string?> GetMostRecentUrlByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -60,6 +67,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<string?> GetUrlByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -86,6 +94,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -120,6 +129,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task DeleteByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -139,6 +149,7 @@ namespace Umbrella.FileSystem.Abstractions
 			}
 		}
 
+		/// <inheritdoc />
 		public async Task DeleteAllByGroupId(TGroupId groupId, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();

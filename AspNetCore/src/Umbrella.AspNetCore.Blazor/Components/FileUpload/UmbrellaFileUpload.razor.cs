@@ -12,7 +12,7 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 {
-	public abstract class UmbrellaFileUploadBase : ComponentBase, IDisposable
+	public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	{
 		private Stream? _fileStream;
 		private CancellationTokenSource? _cancellationTokenSource;
@@ -26,33 +26,49 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 		[Inject]
 		private IFileReaderService FileReaderService { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets the maximum file size in bytes that can be uploaded.
+		/// </summary>
 		[Parameter]
 		public int? MaxFileSizeBytes { get; set; }
 
+		/// <summary>
+		/// Gets or sets whether a warning message should be shown to the user when they clear the current file selection.
+		/// </summary>
 		[Parameter]
 		public bool ShowClearWarning { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets whether a warning message should be shown to the user when they cancel the file upload.
+		/// </summary>
 		[Parameter]
 		public bool ShowCancelWarning { get; set; } = true;
 
+		/// <summary>
+		/// Gets or sets a comma-delimited list of file extensions and/or MIME types that this component will accept.
+		/// </summary>
 		[Parameter]
 		public string? Accept { get; set; }
 
 		[Parameter]
 		public EventCallback<UmbrellaFileUploadRequestEventArgs> OnRequestUpload { get; set; }
 
-		protected string Id { get; } = Guid.NewGuid().ToString();
-		protected ElementReference FileUploadReference { get; set; }
-		protected IFileReference? SelectedFile { get; private set; }
-		protected IFileInfo? SelectedFileInfo { get; private set; }
-		protected UmbrellaFileUploadStatus Status { get; private set; }
-		protected string? AcceptTypesMessage { get; private set; }
-		protected int? MaxFileSizeMegaBytes { get; private set; }
+		private string Id { get; } = Guid.NewGuid().ToString();
+		private ElementReference FileUploadReference { get; set; }
+		private IFileReference? SelectedFile { get; set; }
+		private IFileInfo? SelectedFileInfo { get; set; }
+		private UmbrellaFileUploadStatus Status { get; set; }
+		private string? AcceptTypesMessage { get; set; }
+		private int? MaxFileSizeMegaBytes { get; set; }
 
+		/// <inheritdoc />
 		protected override async Task OnParametersSetAsync()
 		{
 			try
 			{
+				if (MaxFileSizeBytes.HasValue)
+					MaxFileSizeMegaBytes = MaxFileSizeBytes / 1024 / 1024;
+
 				if (!string.IsNullOrWhiteSpace(Accept))
 				{
 					string[] types = Accept.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.TrimToLowerInvariant()).Distinct().ToArray();
@@ -69,11 +85,6 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 						? $"Please select a {types[0]} file to upload."
 						: $"Please select a {string.Join(", ", types[..^1])} or a {types[^1]} file to upload.";
 				}
-
-				if (MaxFileSizeBytes.HasValue)
-				{
-					MaxFileSizeMegaBytes = MaxFileSizeBytes / 1024 / 1024;
-				}
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
@@ -81,7 +92,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 			}
 		}
 
-		protected async Task OnFileSelected()
+		private async Task OnFileSelected()
 		{
 			try
 			{
@@ -111,7 +122,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 			}
 		}
 
-		protected async Task UploadClick()
+		private async Task UploadClick()
 		{
 			void PositionChanged(object sender, IFilePositionInfo args) => InvokeAsync(StateHasChanged);
 
@@ -142,7 +153,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 			}
 		}
 
-		protected async Task ClearClick()
+		private async Task ClearClick()
 		{
 			try
 			{
@@ -162,7 +173,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 			}
 		}
 
-		protected async Task CancelClick()
+		private async Task CancelClick()
 		{
 			try
 			{
@@ -182,6 +193,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 			}
 		}
 
+		/// <inheritdoc />
 		public void Dispose() => Cleanup();
 
 		private void Cleanup()

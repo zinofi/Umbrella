@@ -47,10 +47,27 @@ namespace Umbrella.AspNetCore.Blazor.Extensions
 					return (true, value);
 				}
 
-				throw new NotSupportedException($"Query Paramaters of type {typeof(T).Name} cannot be converted.");
+				throw new NotSupportedException($"Query Parameters of type {typeof(T).Name} cannot be converted.");
 			}
 
 			return default;
+		}
+
+		/// <summary>
+		/// Tries the get query string enum value from the <see cref="NavigationManager.Uri"/> property.
+		/// </summary>
+		/// <typeparam name="T">The type of the enum value being read from the querystring.</typeparam>
+		/// <param name="navManager">The nav manager.</param>
+		/// <param name="key">The key of the value being read from the querystring..</param>
+		/// <returns>A tuple containing fields indicating success together with any enum value.</returns>
+		public static (bool success, T value) TryGetQueryStringEnumValue<T>(this NavigationManager navManager, string key)
+			where T : struct, Enum
+		{
+			var uri = navManager.ToAbsoluteUri(navManager.Uri);
+
+			return QueryHelpers.ParseQuery(uri.Query).TryGetValue(key, out var valueFromQueryString) && Enum.TryParse<T>(valueFromQueryString, true, out var valueAsEnum)
+				? (true, valueAsEnum)
+				: default;
 		}
 	}
 }

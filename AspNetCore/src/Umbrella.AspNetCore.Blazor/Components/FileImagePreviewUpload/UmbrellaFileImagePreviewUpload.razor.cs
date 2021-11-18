@@ -8,8 +8,6 @@ using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
 {
-	public enum UmbrellaFileImagePreviewUploadMode { Upload, Current, New }
-
 	public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	{
 		[Inject]
@@ -66,8 +64,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
 		[Parameter]
 		public EventCallback OnDeleteImage { get; set; }
 
-		protected string? UpdatedImageUrl { get; set; }
-		protected UmbrellaFileImagePreviewUploadMode FileUploadMode { get; private set; }
+		private string? UpdatedImageUrl { get; set; }
+		private UmbrellaFileImagePreviewUploadMode FileUploadMode { get; set; }
 
 		/// <inheritdoc />
 		protected override void OnInitialized()
@@ -79,7 +77,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
 			}
 		}
 
-		protected async Task OnRequestUploadInner(UmbrellaFileUploadRequestEventArgs args)
+		private async Task OnRequestUploadInner(UmbrellaFileUploadRequestEventArgs args)
 		{
 			try
 			{
@@ -94,7 +92,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
 			}
 		}
 
-		protected async Task DeleteImageClick()
+		private async Task DeleteImageClick()
 		{
 			try
 			{

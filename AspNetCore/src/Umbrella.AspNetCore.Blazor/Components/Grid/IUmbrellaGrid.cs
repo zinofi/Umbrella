@@ -1,5 +1,8 @@
 ﻿namespace Umbrella.AspNetCore.Blazor.Components.Grid
 {
+	/// <summary>
+	/// An interface that encapsulates the core functionality of the <see cref="UmbrellaGrid{TItem}" /> component.
+	/// </summary>
 	public interface IUmbrellaGrid
 	{
 		/// <summary>

@@ -8,6 +8,11 @@ using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Utilities
 {
+	/// <summary>
+	/// A utility containing core interop functionality between Blazor and JavaScript for features not yet supported
+	/// natively by Blazor.
+	/// </summary>
+	/// <seealso cref="IUmbrellaBlazorInteropUtility"/>
 	public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	{
 		private readonly ILogger _logger;

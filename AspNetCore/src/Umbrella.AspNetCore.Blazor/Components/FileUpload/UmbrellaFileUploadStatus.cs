@@ -3,5 +3,11 @@
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 {
-	public enum UmbrellaFileUploadStatus { None, Selected, Uploading, Uploaded }
+	public enum UmbrellaFileUploadStatus
+	{
+		None,
+		Selected,
+		Uploading,
+		Uploaded
+	}
 }

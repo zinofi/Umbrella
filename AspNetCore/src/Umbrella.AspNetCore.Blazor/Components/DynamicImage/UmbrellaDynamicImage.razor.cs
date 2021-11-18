@@ -7,11 +7,7 @@ using Umbrella.Utilities;
 
 namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage
 {
-	/// <summary>
-	/// Serves as the base class for all Umbrella Dynamic Image components.
-	/// </summary>
-	/// <seealso cref="UmbrellaResponsiveImageBase" />
-	public abstract class UmbrellaDynamicImageBase : UmbrellaResponsiveImageBase
+	public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 	{
 		/// <summary>
 		/// Gets or sets the dynamic image utility.
