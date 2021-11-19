@@ -27,6 +27,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[CascadingParameter(Name = nameof(ScanMode))]
 		private bool ScanMode { get; set; }
 
+		// TODO NET6 - Deprecate this and replace it with an Expression<Func<T, object>> and then get the member name from that for the property name.
+		// Mark as obsolete so we can migrate gradually in target projects.
 		[Parameter]
 		public string? PropertyName { get; set; }
 
@@ -102,7 +104,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <summary>
 		/// Gets a value indicating whether this column is visible.
 		/// </summary>
-		public bool IsVisible { get; private set; } = true;
+		[Parameter]
+		public bool IsVisible { get; set; } = true;
 
 		/// <summary>
 		/// Gets a value indicating whether this is the first column in the grid.
