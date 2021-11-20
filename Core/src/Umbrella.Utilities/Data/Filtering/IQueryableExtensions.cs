@@ -102,11 +102,13 @@ namespace Umbrella.Utilities.Data.Filtering
 					}
 				}
 
+				filteredItems = items;
+
 				if (primaryFilterPredicate != null)
-					filteredItems = (filteredItems ?? items).Where(primaryFilterPredicate);
+					filteredItems = filteredItems.Where(primaryFilterPredicate);
 
 				if (filterPredicate != null)
-					filteredItems = items.Where(filterPredicate);
+					filteredItems = filteredItems.Where(filterPredicate);
 			}
 
 			return filteredItems ?? items;
