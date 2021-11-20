@@ -88,7 +88,7 @@ namespace Umbrella.Utilities.ObjectModel
 		{
 			if (notificationMode != NotifyCollectionChangedAction.Remove && notificationMode != NotifyCollectionChangedAction.Reset)
 				throw new ArgumentException("Mode must be either Remove or Reset for RemoveRange.", nameof(notificationMode));
-			
+
 			if (collection is null)
 				throw new ArgumentNullException(nameof(collection));
 
@@ -143,7 +143,7 @@ namespace Umbrella.Utilities.ObjectModel
 				throw new ArgumentNullException(nameof(collection));
 
 			CheckReentrancy();
-			
+
 			bool previouslyEmpty = Items.Count == 0;
 
 			var oldItems = Items.ToList();
@@ -157,6 +157,7 @@ namespace Umbrella.Utilities.ObjectModel
 			if (previouslyEmpty && currentlyEmpty)
 				return;
 
+			RaisePropertyChangedEvents();
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, collection.ToList(), oldItems));
 		}
 
@@ -181,10 +182,15 @@ namespace Umbrella.Utilities.ObjectModel
 			return itemAdded;
 		}
 
-		private void RaiseChangeNotificationEvents(NotifyCollectionChangedAction action, List<T>? changedItems = null, int startingIndex = -1)
+		private void RaisePropertyChangedEvents()
 		{
 			OnPropertyChanged(new PropertyChangedEventArgs(nameof(Count)));
 			OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+		}
+
+		private void RaiseChangeNotificationEvents(NotifyCollectionChangedAction action, List<T>? changedItems = null, int startingIndex = -1)
+		{
+			RaisePropertyChangedEvents();
 
 			if (changedItems is null)
 				OnCollectionChanged(new NotifyCollectionChangedEventArgs(action));
