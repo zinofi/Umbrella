@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<Version>3.0.0-preview-0232</Version>
+		<Version>3.0.0-preview-0233</Version>
 
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
@@ -10,7 +10,7 @@
 		<!-- NuGet settings -->
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd 2021</Copyright>
+		<Copyright>Zinofi Digital Ltd $([System.DateTime]::Now.Year)</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/zinofi/Umbrella</RepositoryUrl>
