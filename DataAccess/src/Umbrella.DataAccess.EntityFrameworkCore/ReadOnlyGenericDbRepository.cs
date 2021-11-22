@@ -213,7 +213,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			try
 			{
-				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
+				return await FindAllCoreAsync<TEntity>(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
 			{
@@ -224,6 +224,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <summary>
 		/// Finds all entities using the specified parameters.
 		/// </summary>
+		/// <typeparam name="TShapedEntity">The type of the shaped entity.</typeparam>
 		/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
 		/// <param name="pageSize">Size of the page.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
@@ -236,8 +237,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="childOptions">The child repo options.</param>
 		/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
 		/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+		/// <param name="shapedEntitySelector">The shaped entity selector.</param>
 		/// <returns>The paginated results.</returns>
-		protected virtual async Task<PaginatedResultModel<TEntity>> FindAllCoreAsync(
+		protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllCoreAsync<TShapedEntity>(
 			int pageNumber = 0,
 			int pageSize = 20,
 			CancellationToken cancellationToken = default,
@@ -249,7 +251,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			TRepoOptions? repoOptions = null,
 			IEnumerable<RepoOptions>? childOptions = null,
 			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null,
+			Expression<Func<TEntity, TShapedEntity>>? shapedEntitySelector = null)
+			where TShapedEntity : IEntity<TEntityKey>
 		{
 			repoOptions ??= DefaultRepoOptions;
 			ThrowIfFiltersInvalid(filterExpressions);
@@ -261,21 +265,43 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);
 
-			var results = await filteredQuery
+			var query = filteredQuery
 				.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
-				.IncludeMap(map)
-				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
-				.ApplyPagination(pageNumber, pageSize)
-				.TrackChanges(trackChanges)
-				.ToArrayAsync(cancellationToken);
+				.IncludeMap(map);
 
-			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
-			var entities = results.Select(x => x.Entity).ToList();
+			if (shapedEntitySelector is null)
+			{
+				var results = await query
+					.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
+					.ApplyPagination(pageNumber, pageSize)
+					.TrackChanges(trackChanges)
+					.ToArrayAsync(cancellationToken);
 
-			await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
-			await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+				int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
+				var entities = results.Select(x => x.Entity).ToList();
 
-			return new PaginatedResultModel<TEntity>(entities, pageNumber, pageSize, totalCount);
+				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
+				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+
+				return new PaginatedResultModel<TShapedEntity>((IReadOnlyCollection<TShapedEntity>)entities, pageNumber, pageSize, totalCount);
+			}
+			else
+			{
+				var results = await query
+					.Select(shapedEntitySelector)
+					.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
+					.ApplyPagination(pageNumber, pageSize)
+					.TrackChanges(trackChanges)
+					.ToArrayAsync(cancellationToken);
+
+				int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
+				var entities = results.Select(x => x.Entity).ToList();
+
+				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
+				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+
+				return new PaginatedResultModel<TShapedEntity>(entities, pageNumber, pageSize, totalCount);
+			}
 		}
 
 		/// <inheritdoc />
@@ -387,10 +413,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// Determines whether this entity can be accessed in the current context. By default this returns <see langword="true"/>
 		/// unless overridden by derived types.
 		/// </summary>
+		/// <typeparam name="T">The type of the entity.</typeparam>
 		/// <param name="entity">The entity.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns><see langword="true"/> if it can be accessed; otherwise <see langword="false"/>.</returns>
-		protected virtual Task<bool> CanAccessAsync(TEntity entity, CancellationToken cancellationToken)
+		protected virtual Task<bool> CanAccessAsync<T>(T entity, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -412,19 +439,23 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		}
 
 		/// <summary>
-		/// Filters the a collection of entities by calling <see cref="CanAccessAsync(TEntity, CancellationToken)"/> internally and removing any the fail the check.
+		/// Filters the a collection of entities by calling <see cref="CanAccessAsync{TEntity}(TEntity, CancellationToken)"/> internally and removing any the fail the check.
 		/// </summary>
 		/// <param name="entities">The entities.</param>
 		/// <param name="throwAccessException">if set to <c>true</c>, any items that fail the access check will result in an exception.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected async Task FilterByAccessAsync(List<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
+		protected async Task FilterByAccessAsync<T>(List<T> entities, bool throwAccessException, CancellationToken cancellationToken)
+			where T : IEntity<TEntityKey>
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			for (int i = 0; i < entities.Count; i++)
 			{
 				var entity = entities[i];
+
+				if (entity is null)
+					continue;
 
 				if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
 				{
@@ -447,7 +478,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected virtual Task AfterItemLoadedAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+		protected virtual Task AfterItemLoadedAsync<T>(T entity, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+			where T : IEntity<TEntityKey>
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -462,7 +494,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected async Task AfterAllItemsLoadedAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+		protected async Task AfterAllItemsLoadedAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+			where T : IEntity<TEntityKey>
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
