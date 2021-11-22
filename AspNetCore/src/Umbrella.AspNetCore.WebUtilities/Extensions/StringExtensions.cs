@@ -1,13 +1,22 @@
 ﻿using System;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
 	/// <summary>
-	/// Contains ASP.NET Core specific string extensions, primarily for performing operations on URLs.
+	/// Contains ASP.NET Core specific string extensions.
 	/// </summary>
 	public static class StringExtensions
 	{
+		private static readonly string _encodedNewLineToken;
+
+		static StringExtensions()
+		{
+			_encodedNewLineToken = HtmlEncoder.Default.Encode("\n");
+		}
+
 		/// <summary>
 		/// Converts the provided app-relative path into an absolute Url containing the full host name.
 		/// </summary>
@@ -32,5 +41,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 
 			return string.Format("{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride ?? currentRequest.Host.Value, port, absoluteVirtualPath);
 		}
+
+		/// <summary>
+		/// Encodes the specified <paramref name="value"/> as HTML and then replaces all encoded '\n' new line characters with the specified <paramref name="replacement"/>.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="replacement">The replacement.</param>
+		/// <returns>The HTML encoded output.</returns>
+		public static IHtmlContent? ReplaceNewLine(this string? value, string replacement = "<br />")
+			=> string.IsNullOrWhiteSpace(value) ? null : (IHtmlContent)new HtmlString(HtmlEncoder.Default.Encode(value).Replace(_encodedNewLineToken, replacement));
 	}
 }
