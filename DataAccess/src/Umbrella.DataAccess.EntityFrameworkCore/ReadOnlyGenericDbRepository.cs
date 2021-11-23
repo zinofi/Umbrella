@@ -367,7 +367,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				filteredQuery = filteredQuery.Where(coreFilterExpression);
 
 			var results = await filteredQuery
-				.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
+				// .ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
 				.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
 				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
 				.ApplyPagination(pageNumber, pageSize)
