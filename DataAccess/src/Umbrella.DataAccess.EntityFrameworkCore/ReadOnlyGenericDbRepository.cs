@@ -28,7 +28,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		where TEntity : class, IEntity<int>
 		where TDbContext : DbContext
 	{
-		#region Constructors		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext}"/> class.
 		/// </summary>
@@ -44,11 +43,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
 		}
-		#endregion
 	}
 
 	/// <summary>
-	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -59,7 +57,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		where TDbContext : DbContext
 		where TRepoOptions : RepoOptions, new()
 	{
-		#region Constructors		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions}"/> class.
 		/// </summary>
@@ -75,11 +72,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
 		}
-		#endregion
 	}
 
 	/// <summary>
-	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -92,7 +88,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
 	{
-		#region Constructors		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey}"/> class.
 		/// </summary>
@@ -108,11 +103,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 		{
 		}
-		#endregion
 	}
 
 	/// <summary>
-	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework Core.
 	/// </summary>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
@@ -120,11 +114,45 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
 	/// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
-	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TEntity>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : DbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		public ReadOnlyGenericDbRepository(
+			TDbContext dbContext,
+			ILogger logger,
+			IDataLookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework Core.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
+	/// <typeparam name="TSlimEntity">The type of the slim entity.</typeparam>
+	/// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TSlimEntity>
+		where TEntity : class, IEntity<TEntityKey>
+		where TDbContext : DbContext
+		where TRepoOptions : RepoOptions, new()
+		where TEntityKey : IEquatable<TEntityKey>
+		where TSlimEntity : class, IEntity<TEntityKey>
 	{
 		#region Private Static Members
 		private static IReadOnlyCollection<string>? _validFilterPaths;
@@ -174,7 +202,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity}"/> class.
 		/// </summary>
 		/// <param name="dbContext">The database context.</param>
 		/// <param name="logger">The logger.</param>
@@ -213,7 +241,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			try
 			{
-				return await FindAllCoreAsync<TEntity>(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
+				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
 			}
 			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
 			{
@@ -221,10 +249,39 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			}
 		}
 
+		/// <inheritdoc />
+		public virtual async Task<PaginatedResultModel<TSlimEntity>> FindAllSlimAsync(
+			int pageNumber = 0,
+			int pageSize = 20,
+			CancellationToken cancellationToken = default,
+			IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null,
+			IEnumerable<FilterExpression<TSlimEntity>>? filterExpressions = null,
+			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
+			Expression<Func<TSlimEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TSlimEntity, bool>>>? additionalFilterExpressions = null)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
+			{
+				return await FindAllShapedAsync(CreateSlimEntitySelector(), pageNumber, pageSize, cancellationToken, sortExpressions, filterExpressions, filterExpressionCombinator, coreFilterExpression, additionalFilterExpressions);
+			}
+			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator }))
+			{
+				throw new UmbrellaDataAccessException("There has been a problem retrieving all slim items using the specified parameters.", exc);
+			}
+		}
+
+		/// <summary>
+		/// Creates the selector used to shape the results of the FindAllSlimAsync and FindSlimById methods.
+		/// </summary>
+		/// <returns>The selector.</returns>
+		/// <exception cref="NotImplementedException">Thrown if this method is not overridden with an implementation in a dervied type.</exception>
+		protected virtual Expression<Func<TEntity, TSlimEntity>> CreateSlimEntitySelector() => throw new NotImplementedException();
+
 		/// <summary>
 		/// Finds all entities using the specified parameters.
 		/// </summary>
-		/// <typeparam name="TShapedEntity">The type of the shaped entity.</typeparam>
 		/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
 		/// <param name="pageSize">Size of the page.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
@@ -237,9 +294,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="childOptions">The child repo options.</param>
 		/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
 		/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
-		/// <param name="shapedEntitySelector">The shaped entity selector.</param>
 		/// <returns>The paginated results.</returns>
-		protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllCoreAsync<TShapedEntity>(
+		protected virtual async Task<PaginatedResultModel<TEntity>> FindAllCoreAsync(
 			int pageNumber = 0,
 			int pageSize = 20,
 			CancellationToken cancellationToken = default,
@@ -251,9 +307,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			TRepoOptions? repoOptions = null,
 			IEnumerable<RepoOptions>? childOptions = null,
 			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null,
-			Expression<Func<TEntity, TShapedEntity>>? shapedEntitySelector = null)
-			where TShapedEntity : IEntity<TEntityKey>
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 		{
 			repoOptions ??= DefaultRepoOptions;
 			ThrowIfFiltersInvalid(filterExpressions);
@@ -263,44 +317,85 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			if (coreFilterExpression != null)
 				filteredQuery = filteredQuery.Where(coreFilterExpression);
 
-			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);
-
-			var query = filteredQuery
+			var results = await filteredQuery
+				.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
 				.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
-				.IncludeMap(map);
+				.IncludeMap(map)
+				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
+				.ApplyPagination(pageNumber, pageSize)
+				.TrackChanges(trackChanges)
+				.ToArrayAsync(cancellationToken);
 
-			if (shapedEntitySelector is null)
+			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
+			var entities = results.Select(x => x.Entity).ToList();
+
+			await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
+			await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+
+			return new PaginatedResultModel<TEntity>(entities, pageNumber, pageSize, totalCount);
+		}
+
+		/// <summary>
+		/// Finds all shaped entities using the specified parameters.
+		/// </summary>
+		/// <typeparam name="TShapedEntity">The type of the shaped entity.</typeparam>
+		/// <param name="shapedEntitySelector">The shaped entity selector.</param>
+		/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
+		/// <param name="pageSize">Size of the page.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <param name="filterExpressions">The filter expressions.</param>
+		/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
+		/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
+		/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+		/// <returns>The paginated results.</returns>
+		protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllShapedAsync<TShapedEntity>(
+			Expression<Func<TEntity, TShapedEntity>>? shapedEntitySelector,
+			int pageNumber = 0,
+			int pageSize = 20,
+			CancellationToken cancellationToken = default,
+			IEnumerable<SortExpression<TShapedEntity>>? sortExpressions = null,
+			IEnumerable<FilterExpression<TShapedEntity>>? filterExpressions = null,
+			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
+			Expression<Func<TShapedEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TShapedEntity, bool>>>? additionalFilterExpressions = null)
+			where TShapedEntity : IEntity<TEntityKey>
+		{
+			var filteredQuery = Items.Select(shapedEntitySelector);
+
+			if (coreFilterExpression != null)
+				filteredQuery = filteredQuery.Where(coreFilterExpression);
+
+			var results = await filteredQuery
+				.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
+				.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
+				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
+				.ApplyPagination(pageNumber, pageSize)
+				.ToArrayAsync(cancellationToken);
+
+			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
+			var entities = results.Select(x => x.Entity).ToList();
+
+			return new PaginatedResultModel<TShapedEntity>(entities, pageNumber, pageSize, totalCount);
+		}
+
+		/// <inheritdoc />
+		public virtual async Task<TSlimEntity?> FindSlimByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			try
 			{
-				var results = await query
-					.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
-					.ApplyPagination(pageNumber, pageSize)
-					.TrackChanges(trackChanges)
-					.ToArrayAsync(cancellationToken);
+				var entity = await Items.Select(CreateSlimEntitySelector()).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 
-				int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
-				var entities = results.Select(x => x.Entity).ToList();
+				if (entity is null)
+					return null;
 
-				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
-				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
-
-				return new PaginatedResultModel<TShapedEntity>((IReadOnlyCollection<TShapedEntity>)entities, pageNumber, pageSize, totalCount);
+				return entity;
 			}
-			else
+			catch (Exception exc) when (Log.WriteError(exc, new { id }, returnValue: true))
 			{
-				var results = await query
-					.Select(shapedEntitySelector)
-					.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
-					.ApplyPagination(pageNumber, pageSize)
-					.TrackChanges(trackChanges)
-					.ToArrayAsync(cancellationToken);
-
-				int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
-				var entities = results.Select(x => x.Entity).ToList();
-
-				await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
-				await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
-
-				return new PaginatedResultModel<TShapedEntity>(entities, pageNumber, pageSize, totalCount);
+				throw new UmbrellaDataAccessException("There has been a problem retrieving the slim item with the specified id.", exc);
 			}
 		}
 
@@ -413,11 +508,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// Determines whether this entity can be accessed in the current context. By default this returns <see langword="true"/>
 		/// unless overridden by derived types.
 		/// </summary>
-		/// <typeparam name="T">The type of the entity.</typeparam>
 		/// <param name="entity">The entity.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns><see langword="true"/> if it can be accessed; otherwise <see langword="false"/>.</returns>
-		protected virtual Task<bool> CanAccessAsync<T>(T entity, CancellationToken cancellationToken)
+		protected virtual Task<bool> CanAccessAsync(TEntity entity, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -439,14 +533,13 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		}
 
 		/// <summary>
-		/// Filters the a collection of entities by calling <see cref="CanAccessAsync{TEntity}(TEntity, CancellationToken)"/> internally and removing any the fail the check.
+		/// Filters the a collection of entities by calling <see cref="CanAccessAsync(TEntity, CancellationToken)"/> internally and removing any the fail the check.
 		/// </summary>
 		/// <param name="entities">The entities.</param>
 		/// <param name="throwAccessException">if set to <c>true</c>, any items that fail the access check will result in an exception.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected async Task FilterByAccessAsync<T>(List<T> entities, bool throwAccessException, CancellationToken cancellationToken)
-			where T : IEntity<TEntityKey>
+		protected async Task FilterByAccessAsync(List<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -478,8 +571,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected virtual Task AfterItemLoadedAsync<T>(T entity, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
-			where T : IEntity<TEntityKey>
+		protected virtual Task AfterItemLoadedAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -494,8 +586,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="repoOptions">The repo options.</param>
 		/// <param name="childOptions">The child options.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected async Task AfterAllItemsLoadedAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
-			where T : IEntity<TEntityKey>
+		protected async Task AfterAllItemsLoadedAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

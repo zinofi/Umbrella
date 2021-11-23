@@ -34,10 +34,26 @@ namespace Umbrella.DataAccess.Abstractions
 	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <seealso cref="F:Umbrella.DataAccess.Abstractions.IGenericDbRepository{TEntity, Umbrella.DataAccess.Abstractions.RepoOptions}" />
-	public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+	public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TEntity>
 		where TEntity : class, IEntity<TEntityKey>
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+	{
+	}
+
+	/// <summary>
+	/// Encapsulates CRUD operations for a database repository.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TSlimEntity">The type of the entity.</typeparam>
+	/// <seealso cref="F:Umbrella.DataAccess.Abstractions.IGenericDbRepository{TEntity, Umbrella.DataAccess.Abstractions.RepoOptions}" />
+	public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey, TSlimEntity> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TSlimEntity>
+		where TEntity : class, IEntity<TEntityKey>
+		where TRepoOptions : RepoOptions, new()
+		where TEntityKey : IEquatable<TEntityKey>
+		where TSlimEntity : class, IEntity<TEntityKey>
 	{
 		/// <summary>
 		/// Removes the empty entities from the <paramref name="entities"/> collection. This collection will be mutated by this method.

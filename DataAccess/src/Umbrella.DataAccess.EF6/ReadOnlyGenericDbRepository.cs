@@ -117,11 +117,46 @@ namespace Umbrella.DataAccess.EF6
 	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
-	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TEntity>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+	{
+		#region Constructors		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		public ReadOnlyGenericDbRepository(
+			TDbContext dbContext,
+			ILogger logger,
+			IDataLookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		{
+		}
+		#endregion
+	}
+
+	/// <summary>
+	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
+	/// <typeparam name="TSlimEntity">The type of the slim entity.</typeparam>
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TSlimEntity>
+		where TEntity : class, IEntity<TEntityKey>
+		where TDbContext : UmbrellaDbContext
+		where TRepoOptions : RepoOptions, new()
+		where TEntityKey : IEquatable<TEntityKey>
+		where TSlimEntity : class, IEntity<TEntityKey>
 	{
 		#region Private Static Members
 		private static IReadOnlyCollection<string>? _validFilterPaths;
@@ -168,7 +203,7 @@ namespace Umbrella.DataAccess.EF6
 
 		#region Constructors		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity}"/> class.
 		/// </summary>
 		/// <param name="dbContext">The database context.</param>
 		/// <param name="logger">The logger.</param>
@@ -214,6 +249,14 @@ namespace Umbrella.DataAccess.EF6
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
 		}
+
+		/// <inheritdoc />
+		public Task<PaginatedResultModel<TSlimEntity>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TSlimEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, Expression<Func<TSlimEntity, bool>>? coreFilterExpression = null, IEnumerable<Expression<Func<TSlimEntity, bool>>>? additionalFilterExpressions = null)
+			=> throw new NotImplementedException("This functionality is only supported on EF Core.");
+
+		/// <inheritdoc />
+		public Task<TSlimEntity?> FindSlimByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+			=> throw new NotImplementedException("This functionality is only supported on EF Core.");
 
 		/// <summary>
 		/// Finds all entities using the specified parameters.

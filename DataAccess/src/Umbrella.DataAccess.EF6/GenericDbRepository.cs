@@ -121,11 +121,48 @@ namespace Umbrella.DataAccess.EF6
 	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
-	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey>, IGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
+	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TEntity>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : UmbrellaDbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="logger">The logger.</param>
+		/// <param name="lookupNormalizer">The lookup normalizer.</param>
+		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
+		/// <param name="dbContextHelper">The database context helper.</param>
+		/// <param name="entityValidator">The entity validator.</param>
+		public GenericDbRepository(
+			TDbContext dbContext,
+			ILogger logger,
+			IDataLookupNormalizer lookupNormalizer,
+			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
+			IUmbrellaDbContextHelper dbContextHelper,
+			IEntityValidator entityValidator)
+			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework 6.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
+	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
+	/// <typeparam name="TSlimEntity">The type of the slim entity.</typeparam>
+	public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity>, IGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TSlimEntity>
+		where TEntity : class, IEntity<TEntityKey>
+		where TDbContext : UmbrellaDbContext
+		where TRepoOptions : RepoOptions, new()
+		where TEntityKey : IEquatable<TEntityKey>
+		where TSlimEntity : class, IEntity<TEntityKey>
 	{
 		#region Protected Properties
 		/// <summary>
@@ -141,7 +178,7 @@ namespace Umbrella.DataAccess.EF6
 
 		#region Constructors		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
+		/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity}"/> class.
 		/// </summary>
 		/// <param name="dbContext">The database context.</param>
 		/// <param name="logger">The logger.</param>
@@ -613,22 +650,24 @@ namespace Umbrella.DataAccess.EF6
 		/// <typeparam name="TTargetEntityRepoOptions">The type of the target entity repo options.</typeparam>
 		/// <typeparam name="TTargetEntityKey">The type of the target entity key.</typeparam>
 		/// <typeparam name="TTargetRepository">The type of the target repository.</typeparam>
+		/// <typeparam name="TTargetSlimEntity">The type of the target slim entity.</typeparam>
 		/// <param name="alteredColl">The altered collection.</param>
 		/// <param name="repository">The target repository.</param>
 		/// <param name="predicate">The predicate used to filter .</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="options">The collection of repo options. This can be used by this method to determine if the synchronization logic should be executed.</param>
 		/// <returns>An awaitable <see cref="Task" /> which will complete once all work has been completed.</returns>
-		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions>? options)
-					where TTargetEntity : class, IEntity<TTargetEntityKey>
-					where TTargetEntityKey : IEquatable<TTargetEntityKey>
-					where TTargetEntityRepoOptions : RepoOptions, new()
-					where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey>
+		protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository, TTargetSlimEntity>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions>? options)
+			where TTargetEntity : class, IEntity<TTargetEntityKey>
+			where TTargetEntityKey : IEquatable<TTargetEntityKey>
+			where TTargetEntityRepoOptions : RepoOptions, new()
+			where TTargetRepository : IGenericDbRepository<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetSlimEntity>
+			where TTargetSlimEntity : class, IEntity<TTargetEntityKey>
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
 			// Find the RepoOptions for this repository if provided in the options collection
-			TTargetEntityRepoOptions? targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
+			TTargetEntityRepoOptions? targetOptions = options?.OfType<TTargetEntityRepoOptions>().FirstOrDefault(); 
 
 			// Copy the incoming list here - this is because the code in the foreach declaration below finds all the entities matching the where clause
 			// but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
