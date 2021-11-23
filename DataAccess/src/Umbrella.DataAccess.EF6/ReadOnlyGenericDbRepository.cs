@@ -251,7 +251,7 @@ namespace Umbrella.DataAccess.EF6
 		}
 
 		/// <inheritdoc />
-		public Task<PaginatedResultModel<TSlimEntity>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TSlimEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, Expression<Func<TSlimEntity, bool>>? coreFilterExpression = null, IEnumerable<Expression<Func<TSlimEntity, bool>>>? additionalFilterExpressions = null)
+		public Task<PaginatedResultModel<TSlimEntity>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null, IEnumerable<FilterExpression<TEntity>>? filterExpressions = null, FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or, Expression<Func<TEntity, bool>>? coreFilterExpression = null, IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 			=> throw new NotImplementedException("This functionality is only supported on EF Core.");
 
 		/// <inheritdoc />

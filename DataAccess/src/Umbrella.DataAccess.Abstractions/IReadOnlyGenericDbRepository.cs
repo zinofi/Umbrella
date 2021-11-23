@@ -102,10 +102,10 @@ namespace Umbrella.DataAccess.Abstractions
 			int pageSize = 20,
 			CancellationToken cancellationToken = default,
 			IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null,
-			IEnumerable<FilterExpression<TSlimEntity>>? filterExpressions = null,
+			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
 			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
-			Expression<Func<TSlimEntity, bool>>? coreFilterExpression = null,
-			IEnumerable<Expression<Func<TSlimEntity, bool>>>? additionalFilterExpressions = null);
+			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null);
 
 		/// <summary>
 		/// Finds an entity in the database using its id.

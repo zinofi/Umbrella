@@ -255,10 +255,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			int pageSize = 20,
 			CancellationToken cancellationToken = default,
 			IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null,
-			IEnumerable<FilterExpression<TSlimEntity>>? filterExpressions = null,
+			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
 			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
-			Expression<Func<TSlimEntity, bool>>? coreFilterExpression = null,
-			IEnumerable<Expression<Func<TSlimEntity, bool>>>? additionalFilterExpressions = null)
+			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -355,19 +355,20 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			int pageSize = 20,
 			CancellationToken cancellationToken = default,
 			IEnumerable<SortExpression<TShapedEntity>>? sortExpressions = null,
-			IEnumerable<FilterExpression<TShapedEntity>>? filterExpressions = null,
+			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
 			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
-			Expression<Func<TShapedEntity, bool>>? coreFilterExpression = null,
-			IEnumerable<Expression<Func<TShapedEntity, bool>>>? additionalFilterExpressions = null)
+			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
+			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
 			where TShapedEntity : IEntity<TEntityKey>
 		{
-			var filteredQuery = Items.Select(shapedEntitySelector);
+			var filteredQuery = Items;
 
 			if (coreFilterExpression != null)
 				filteredQuery = filteredQuery.Where(coreFilterExpression);
 
 			var results = await filteredQuery
-				// .ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
+				.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
+				.Select(shapedEntitySelector)
 				.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
 				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
 				.ApplyPagination(pageNumber, pageSize)
