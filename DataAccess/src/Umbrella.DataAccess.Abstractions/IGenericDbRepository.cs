@@ -34,7 +34,7 @@ namespace Umbrella.DataAccess.Abstractions
 	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <seealso cref="F:Umbrella.DataAccess.Abstractions.IGenericDbRepository{TEntity, Umbrella.DataAccess.Abstractions.RepoOptions}" />
-	public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TEntity>
+	public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TEntity>
 		where TEntity : class, IEntity<TEntityKey>
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
