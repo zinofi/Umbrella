@@ -7,9 +7,13 @@ using Umbrella.Utilities.Data.Filtering;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.AppFramework.Security.Abstractions;
 using System.Security.Claims;
+using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid
 {
+	/// <summary>
+	/// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
+	/// </summary>
 	public partial class UmbrellaColumn
 	{
 		[Inject]
@@ -29,9 +33,36 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 
 		// TODO NET6 - Deprecate this and replace it with an Expression<Func<T, object>> and then get the member name from that for the property name.
 		// Mark as obsolete so we can migrate gradually in target projects.
+
+		/// <summary>
+		/// Gets or sets the name of the property on the parent data item model that this column represents.
+		/// </summary>
 		[Parameter]
 		public string? PropertyName { get; set; }
 
+		/// <summary>
+		/// Gets or sets the property path override used as the <see cref="FilterExpressionDescriptor.MemberPath"/> property value when
+		/// creating filters.
+		/// </summary>
+		/// <remarks>
+		/// If this value is <see langword="null"/>, the <see cref="PropertyName"/> will be used.
+		/// </remarks>
+		[Parameter]
+		public string? FilterMemberPathOverride { get; set; }
+
+		/// <summary>
+		/// Gets or sets the property path override used as the value <see cref="SortExpressionDescriptor.MemberPath"/> property value when
+		/// creating sorters.
+		/// </summary>
+		/// <remarks>
+		/// If this value is <see langword="null"/>, the <see cref="PropertyName"/> will be used.
+		/// </remarks>
+		[Parameter]
+		public string? SorterMemberPathOverride { get; set; }
+
+		/// <summary>
+		/// Gets or sets the text for the column heading.
+		/// </summary>
 		[Parameter]
 		public string? Heading { get; set; }
 
@@ -74,12 +105,22 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public Func<object, string>? FilterOptionDisplayNameSelector { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value that specifies whether or not this column contains actions, e.g. buttons, links,
+		/// that can be used to perform actions on the data item that this column is associated with.
+		/// </summary>
 		[Parameter]
 		public bool IsActions { get; set; }
 
+		/// <summary>
+		/// Gets or sets the child content rendered by this column.
+		/// </summary>
 		[Parameter]
 		public RenderFragment? ChildContent { get; set; }
 
+		/// <summary>
+		/// Gets or sets the uncaptured attributes that have been specified on this component. This dictionary is automatically populated by Blazor.
+		/// </summary>
 		[Parameter(CaptureUnmatchedValues = true)]
 		public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = null!;
 
@@ -124,7 +165,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			{
 				if (IsVisible)
 				{
-					var definition = new UmbrellaColumnDefinition(Heading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, PropertyName);
+					var definition = new UmbrellaColumnDefinition(Heading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, PropertyName, FilterMemberPathOverride, SorterMemberPathOverride);
 					UmbrellaGridInstance.AddColumnDefinition(definition);
 				}
 			}

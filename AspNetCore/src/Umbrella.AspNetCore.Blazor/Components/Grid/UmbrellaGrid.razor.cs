@@ -12,12 +12,23 @@ using Umbrella.Utilities.Data.Sorting;
 namespace Umbrella.AspNetCore.Blazor.Components.Grid
 {
 	// TODO: Maybe it's better to create a new CollectionView control here. This Grid adds nothing more than a loop and some basic structure for that scenario.
-	// Solve the double request bug first and then do that. Could even have some kind of base component that encapsulates core functionality, e.g. auto-scroll.
+	// Could even have some kind of base component that encapsulates core functionality, e.g. auto-scroll.
 	// TODO: Rename to Table and CollectionView
 	// TODO: Create a PaginationMode option to replace ShowPagination: None, Top, Bottom, Both. Do the same for caption. Default to Bottom.
+	
+	/// <summary>
+	/// The rendering mode the <see cref="UmbrellaGrid{TItem}"/> component.
+	/// </summary>
 	public enum UmbrellaGridRenderMode
 	{
+		/// <summary>
+		/// Full rendering mode where the grid is rendered as a table.
+		/// </summary>
 		Full,
+
+		/// <summary>
+		/// Slim rendering mode the grid and its columns are rendered using divs in order to allow non-tabular layouts to be used.
+		/// </summary>
 		Slim
 	}
 
@@ -72,6 +83,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// </summary>
 		public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
 
+		/// <summary>
+		/// Gets or sets the child content contained by this component. This is usually a collection of <see cref="UmbrellaColumn"/> components.
+		/// </summary>
 		[Parameter]
 		public RenderFragment<TItem>? ChildContent { get; set; }
 
@@ -145,6 +159,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public SortDirection InitialSortDirection { get; set; } = SortDirection.Descending;
 
+		/// <summary>
+		/// Gets or sets the event callback invoked by this component when its filtering, sorting or pagination state has changed.
+		/// </summary>
 		[Parameter]
 		public EventCallback<UmbrellaGridRefreshEventArgs> OnGridOptionsChanged { get; set; }
 
@@ -283,8 +300,16 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
 		}
 
+		/// <summary>
+		/// The click event handler for the apply filters button.
+		/// </summary>
+		/// <returns></returns>
 		protected async Task ApplyFiltersClick() => await UpdateGridAsync();
 
+		/// <summary>
+		/// The click event handler for the reset filters button.
+		/// </summary>
+		/// <returns></returns>
 		protected async Task ResetFiltersClick()
 		{
 			ResetFiltersAndSorters();
@@ -328,6 +353,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			await UpdateGridAsync(PageNumber, PageSize);
 		}
 
+		/// <summary>
+		/// The event handler invoked by the <see cref="UmbrellaPagination"/> component when its state has changed as result of user interaction.
+		/// </summary>
+		/// <param name="args">The event arguments containing the updated state of the pagination component.</param>
+		/// <returns>An awaitable Task that completed when this operation has completed.</returns>
 		protected Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(args.PageNumber, args.PageSize);
 
 		private void ResetFiltersAndSorters()
@@ -362,7 +392,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 					if (column.Sortable && column.Direction.HasValue)
 					{
 						lstSorters ??= new List<SortExpressionDescriptor>();
-						lstSorters.Add(new SortExpressionDescriptor(column.PropertyName, column.Direction.Value));
+						lstSorters.Add(new SortExpressionDescriptor(column.SorterMemberPathOverride ?? column.PropertyName, column.Direction.Value));
 					}
 
 					if (column.Filterable && !string.IsNullOrWhiteSpace(column.FilterValue))
@@ -380,7 +410,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 						};
 
 						if (!string.IsNullOrWhiteSpace(filterValue))
-							lstFilters.Add(new FilterExpressionDescriptor(column.PropertyName, filterValue, column.FilterMatchType));
+							lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, filterValue, column.FilterMatchType));
 					}
 				}
 

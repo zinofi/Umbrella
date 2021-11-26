@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
@@ -24,7 +25,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <param name="filterMatchType">Type of the filter match.</param>
 		/// <param name="filterOptionsType">Type of the filter options.</param>
 		/// <param name="propertyName">Name of the property.</param>
-		public UmbrellaColumnDefinition(string? heading, int? percentageWidth, bool sortable, bool filterable, IReadOnlyCollection<object> filterOptions, Func<object, string>? filterOptionDisplayNameSelector, IReadOnlyDictionary<string, object> additionalAttributes, UmbrellaColumnFilterType filterControlType, FilterType filterMatchType, UmbrellaColumnFilterOptionsType? filterOptionsType, string? propertyName)
+		/// <param name="filterMemberPathOverride">The filter member override.</param>
+		/// <param name="sorterMemberPathOverride">The sorter member override.</param>
+		public UmbrellaColumnDefinition(string? heading, int? percentageWidth, bool sortable, bool filterable, IReadOnlyCollection<object> filterOptions, Func<object, string>? filterOptionDisplayNameSelector, IReadOnlyDictionary<string, object> additionalAttributes, UmbrellaColumnFilterType filterControlType, FilterType filterMatchType, UmbrellaColumnFilterOptionsType? filterOptionsType, string? propertyName, string? filterMemberPathOverride, string? sorterMemberPathOverride)
 		{
 			Heading = heading;
 			PercentageWidth = percentageWidth;
@@ -37,13 +40,15 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			FilterMatchType = filterMatchType;
 			FilterOptionsType = filterOptionsType;
 			PropertyName = propertyName;
+			FilterMemberPathOverride = filterMemberPathOverride;
+			SorterMemberPathOverride = sorterMemberPathOverride;
 
 			if (FilterOptions.Count > 0)
 			{
 				FilterControlType = UmbrellaColumnFilterType.Options;
 				FilterMatchType = FilterType.Equal;
 			}
-			else if(FilterOptionsType == UmbrellaColumnFilterOptionsType.Boolean)
+			else if (FilterOptionsType == UmbrellaColumnFilterOptionsType.Boolean)
 			{
 				FilterControlType = UmbrellaColumnFilterType.Options;
 				FilterMatchType = FilterType.Equal;
@@ -55,6 +60,24 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// Gets the property name.
 		/// </summary>
 		public string? PropertyName { get; }
+
+		/// <summary>
+		/// Gets or sets the property path override used as the <see cref="FilterExpressionDescriptor.MemberPath"/> property value when
+		/// creating filters.
+		/// </summary>
+		/// <remarks>
+		/// If this value is <see langword="null"/>, the <see cref="PropertyName"/> will be used.
+		/// </remarks>
+		public string? FilterMemberPathOverride { get; }
+
+		/// <summary>
+		/// Gets or sets the property path override used as the value <see cref="SortExpressionDescriptor.MemberPath"/> property value when
+		/// creating sorters.
+		/// </summary>
+		/// <remarks>
+		/// If this value is <see langword="null"/>, the <see cref="PropertyName"/> will be used.
+		/// </remarks>
+		public string? SorterMemberPathOverride { get; }
 
 		/// <summary>
 		/// Gets the column heading display text.

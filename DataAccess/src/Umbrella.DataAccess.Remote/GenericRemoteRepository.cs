@@ -58,6 +58,15 @@ namespace Umbrella.DataAccess.Remote
 		protected IGenericHttpServiceUtility HttpServiceUtility { get; }
 
 		/// <summary>
+		/// The endpoint called by the <see cref="FindAllSlimAsync(int, int, CancellationToken, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?, FilterExpressionCombinator)"/>
+		/// method.
+		/// </summary>
+		/// <remarks>
+		/// Defaults to /SearchSlim. This path must start with a leading /.
+		/// </remarks>
+		protected virtual string FindAllSlimEndpoint { get; } = "/SearchSlim";
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="GenericRemoteRepository{TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult}"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
@@ -108,7 +117,7 @@ namespace Umbrella.DataAccess.Remote
 			{
 				var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
 
-				IHttpCallResult<TPaginatedResultModel> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + "/SearchSlim", parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult<TPaginatedResultModel> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + FindAllSlimEndpoint, parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success && result.Result != null)
 					await AfterAllItemsLoadedAsync(result.Result.Items, cancellationToken).ConfigureAwait(false);
