@@ -114,45 +114,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
 	/// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
-	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TEntity>
+	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TDbContext : DbContext
 		where TRepoOptions : RepoOptions, new()
 		where TEntityKey : IEquatable<TEntityKey>
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
-		/// </summary>
-		/// <param name="dbContext">The database context.</param>
-		/// <param name="logger">The logger.</param>
-		/// <param name="lookupNormalizer">The lookup normalizer.</param>
-		/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
-		public ReadOnlyGenericDbRepository(
-			TDbContext dbContext,
-			ILogger logger,
-			IDataLookupNormalizer lookupNormalizer,
-			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
-			: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
-		{
-		}
-	}
-
-	/// <summary>
-	/// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework Core.
-	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
-	/// <typeparam name="TDbContext">The type of the database context.</typeparam>
-	/// <typeparam name="TRepoOptions">The type of the repo options.</typeparam>
-	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
-	/// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
-	/// <typeparam name="TSlimEntity">The type of the slim entity.</typeparam>
-	/// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
-	public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey, TSlimEntity>
-		where TEntity : class, IEntity<TEntityKey>
-		where TDbContext : DbContext
-		where TRepoOptions : RepoOptions, new()
-		where TEntityKey : IEquatable<TEntityKey>
-		where TSlimEntity : class, IEntity<TEntityKey>
 	{
 		#region Private Static Members
 		private static IReadOnlyCollection<string>? _validFilterPaths;
@@ -202,7 +168,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 		#region Constructors
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TSlimEntity}"/> class.
+		/// Initializes a new instance of the <see cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
 		/// </summary>
 		/// <param name="dbContext">The database context.</param>
 		/// <param name="logger">The logger.</param>
@@ -248,36 +214,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
 		}
-
-		/// <inheritdoc />
-		public virtual async Task<PaginatedResultModel<TSlimEntity>> FindAllSlimAsync(
-			int pageNumber = 0,
-			int pageSize = 20,
-			CancellationToken cancellationToken = default,
-			IEnumerable<SortExpression<TSlimEntity>>? sortExpressions = null,
-			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
-			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
-			Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-			IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				return await FindAllShapedAsync(CreateSlimEntitySelector(), pageNumber, pageSize, cancellationToken, sortExpressions, filterExpressions, filterExpressionCombinator, coreFilterExpression, additionalFilterExpressions);
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator }))
-			{
-				throw new UmbrellaDataAccessException("There has been a problem retrieving all slim items using the specified parameters.", exc);
-			}
-		}
-
-		/// <summary>
-		/// Creates the selector used to shape the results of the FindAllSlimAsync and FindSlimById methods.
-		/// </summary>
-		/// <returns>The selector.</returns>
-		/// <exception cref="NotImplementedException">Thrown if this method is not overridden with an implementation in a dervied type.</exception>
-		protected virtual Expression<Func<TEntity, TSlimEntity>> CreateSlimEntitySelector() => throw new NotImplementedException();
 
 		/// <summary>
 		/// Finds all entities using the specified parameters.
@@ -378,26 +314,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			var entities = results.Select(x => x.Entity).ToList();
 
 			return new PaginatedResultModel<TShapedEntity>(entities, pageNumber, pageSize, totalCount);
-		}
-
-		/// <inheritdoc />
-		public virtual async Task<TSlimEntity?> FindSlimByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				var entity = await Items.Select(CreateSlimEntitySelector()).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
-
-				if (entity is null)
-					return null;
-
-				return entity;
-			}
-			catch (Exception exc) when (Log.WriteError(exc, new { id }, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There has been a problem retrieving the slim item with the specified id.", exc);
-			}
 		}
 
 		/// <inheritdoc />
