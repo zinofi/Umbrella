@@ -553,7 +553,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 				if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
 				{
-					Log.WriteWarning(state: new { Type = entity.GetType().FullName, entity.Id }, message: "The specified item failed the access check and has been filterd out. This should not happen and means that the query filter is not sufficient.");
+					Log.WriteWarning(state: new { Type = entity.GetType().FullName, entity.Id }, message: "The specified item failed the access check and has been filtered out. This should not happen and means that the query filter is not sufficient.");
 
 					if (throwAccessException)
 						throw new UmbrellaDataAccessForbiddenException("An entity in the specified collection cannot be accessed.");

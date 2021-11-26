@@ -95,17 +95,18 @@ namespace Umbrella.Utilities.Expressions
 		private static Expression CreateConstant(ParameterExpression target, Expression selector, string value, IFormatProvider? provider)
 		{
 			var type = Expression.Lambda(selector, target).ReturnType;
+			var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
 			if (string.IsNullOrEmpty(value))
-				return Expression.Default(type);
+				return Expression.Default(underlyingType);
 
-			if (!type.IsEnum || !EnumHelper.TryParseEnum(type, value, true, out object? convertedValue))
+			if (!underlyingType.IsEnum || !EnumHelper.TryParseEnum(underlyingType, value, true, out object? convertedValue))
 			{
-				var converter = _cache.GetOrAdd(type, CreateConverter);
+				var converter = _cache.GetOrAdd(underlyingType, CreateConverter);
 				convertedValue = converter(value, provider);
 			}
 
-			return Expression.Constant(convertedValue, type);
+			return Expression.Constant(convertedValue, underlyingType);
 		}
 
 		private static Func<string, IFormatProvider?, object> CreateConverter(Type type)
