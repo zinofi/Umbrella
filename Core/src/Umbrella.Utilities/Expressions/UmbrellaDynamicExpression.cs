@@ -92,21 +92,21 @@ namespace Umbrella.Utilities.Expressions
 			}
 		}
 
-		private static Expression CreateConstant(ParameterExpression target, Expression selector, string value, IFormatProvider? provider)
+		internal static Expression CreateConstant(ParameterExpression target, Expression selector, string value, IFormatProvider? provider)
 		{
 			var type = Expression.Lambda(selector, target).ReturnType;
 			var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
 
 			if (string.IsNullOrEmpty(value))
-				return Expression.Default(underlyingType);
+				return Expression.Default(type);
 
 			if (!underlyingType.IsEnum || !EnumHelper.TryParseEnum(underlyingType, value, true, out object? convertedValue))
 			{
-				var converter = _cache.GetOrAdd(underlyingType, CreateConverter);
+				var converter = _cache.GetOrAdd(type, CreateConverter);
 				convertedValue = converter(value, provider);
 			}
 
-			return Expression.Constant(convertedValue, underlyingType);
+			return Expression.Constant(convertedValue, type);
 		}
 
 		private static Func<string, IFormatProvider?, object> CreateConverter(Type type)
