@@ -253,8 +253,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			if (coreFilterExpression != null)
 				filteredQuery = filteredQuery.Where(coreFilterExpression);
 
+			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);
+
 			var results = await filteredQuery
-				.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
 				.ApplySortExpressions(sortExpressions, new SortExpression<TEntity>(x => x.Id, SortDirection.Ascending))
 				.IncludeMap(map)
 				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
@@ -302,8 +303,9 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			if (coreFilterExpression != null)
 				filteredQuery = filteredQuery.Where(coreFilterExpression);
 
+			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);
+
 			var results = await filteredQuery
-				.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions)
 				.Select(shapedEntitySelector)
 				.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
 				.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
