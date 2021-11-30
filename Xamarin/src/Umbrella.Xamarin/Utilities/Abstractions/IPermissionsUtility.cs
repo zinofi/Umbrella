@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Threading.Tasks;
+using Umbrella.Xamarin.Utilities.Enumerations;
 using Xamarin.Essentials;
 
 namespace Umbrella.Xamarin.Utilities.Abstractions
@@ -14,14 +15,14 @@ namespace Umbrella.Xamarin.Utilities.Abstractions
 	public interface IPermissionsUtility
 	{
 		/// <summary>
-		/// Checks the current status of the specfied <typeparamref name="TPermission"/> and requests access.
+		/// Checks the current status of the specified <paramref name="permissionType"/> and requests access.
 		/// </summary>
-		/// <typeparam name="TPermission">The type of the permission.</typeparam>
+		/// <param name="permissionType">The permission type.</param>
 		/// <returns><see langword="true" /> if the permission has been granted; otherwise <see langword="false" />.</returns>
 		/// <remarks>
 		/// If a permission has been previously denied an attempt will be made on Android devices to re-request the permission.
 		/// On iOS, this is not possible and the user needs to be directed to enable the relevant permissions from the native iOS Settings app.
 		/// </remarks>
-		Task<bool> CheckAndRequestPermissionAsync<TPermission>() where TPermission : Permissions.BasePermission, new();
+		Task<bool> CheckAndRequestPermissionAsync(PermissionType permissionType);
 	}
 }

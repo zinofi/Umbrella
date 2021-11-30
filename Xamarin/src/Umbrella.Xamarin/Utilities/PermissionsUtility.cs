@@ -3,10 +3,12 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Xamarin.Exceptions;
 using Umbrella.Xamarin.Utilities.Abstractions;
+using Umbrella.Xamarin.Utilities.Enumerations;
 using Umbrella.Xamarin.Utilities.Options;
 using Xamarin.Essentials;
 
@@ -23,6 +25,24 @@ namespace Umbrella.Xamarin.Utilities
 		private readonly ILogger _logger;
 		private readonly IDialogUtility _dialogUtility;
 		private readonly PermissionsUtilityOptions _options;
+
+		private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _androidMappings = new Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>>
+		{
+			[PermissionType.NewPhoto] = new Permissions.BasePermission[] { new Permissions.Camera(), new Permissions.StorageWrite() },
+			[PermissionType.NewVideo] = new Permissions.BasePermission[] { new Permissions.Camera(), new Permissions.StorageWrite() },
+			[PermissionType.SavedPhoto] = new Permissions.BasePermission[] { new Permissions.StorageRead() },
+			[PermissionType.SavedVideo] = new Permissions.BasePermission[] { new Permissions.StorageRead() },
+			[PermissionType.File] = new Permissions.BasePermission[] { new Permissions.StorageRead() },
+		};
+
+		private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _iOSMappings = new Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>>
+		{
+			[PermissionType.NewPhoto] = new Permissions.BasePermission[] { new Permissions.Camera() },
+			[PermissionType.NewVideo] = new Permissions.BasePermission[] { new Permissions.Camera(), new Permissions.Microphone() },
+			[PermissionType.SavedPhoto] = new Permissions.BasePermission[] { new Permissions.Photos() },
+			[PermissionType.SavedVideo] = new Permissions.BasePermission[] { new Permissions.Photos() },
+			[PermissionType.File] = Array.Empty<Permissions.BasePermission>()
+		};
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PermissionsUtility"/> type.
@@ -41,56 +61,80 @@ namespace Umbrella.Xamarin.Utilities
 		}
 
 		/// <inheritdoc />
-		public async Task<bool> CheckAndRequestPermissionAsync<TPermission>()
-			where TPermission : Permissions.BasePermission, new()
+		public async Task<bool> CheckAndRequestPermissionAsync(PermissionType permissionType)
 		{
 			try
 			{
-				ValueTask ShowDeniedErrorMessage()
+				IReadOnlyCollection<Permissions.BasePermission> lstRequiredPermission = DeviceInfo.Platform switch
 				{
-					string message = typeof(TPermission) switch
-					{
-						var type when _options.DeniedErrorMessages.ContainsKey(type) => _options.DeniedErrorMessages[type],
-						_ => _options.GenericDeniedErrorMessage
-					};
-
-					return _dialogUtility.ShowDangerMessageAsync(message, "Permissions Denied");
+					var platform when platform == DevicePlatform.iOS => _iOSMappings[permissionType],
+					var platform when platform == DevicePlatform.Android => _androidMappings[permissionType],
+					_ => throw new NotSupportedException("The current platform is not supported.")
 				};
 
-				var permission = new TPermission();
-				var status = await permission.CheckStatusAsync();
+				bool success = true;
+				bool showRationale = false;
 
-				if (status == PermissionStatus.Granted)
-					return true;
+				var lstDeniedPermission = new List<Permissions.BasePermission>();
 
-				if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+				foreach (var permission in lstRequiredPermission)
 				{
-					// Prompt the user to turn on in settings
-					// On iOS once a permission has been denied it may not be requested again from the application.
+					var status = await permission.CheckStatusAsync();
 
-					await ShowDeniedErrorMessage();
-					return false;
+					if (status == PermissionStatus.Granted)
+						continue;
+
+					// This will only return true where the permission can be requested again. This should return false
+					// for iOS according to the documentation because iOS permissions should never be requested.
+					if (permission.ShouldShowRationale())
+					{
+						showRationale = true;
+						lstDeniedPermission.Add(permission);
+					}
+
+					success = false;
 				}
 
-				if (Permissions.ShouldShowRationale<TPermission>())
+				if (success)
+					return true;
+
+				if(showRationale)
 				{
 					// Prompt the user with additional information as to why the permission is needed
-					string explanationMessage = typeof(TPermission) switch
+					string explanationMessage = permissionType switch
 					{
-						var type when _options.ExplanationMessages.ContainsKey(type) => _options.ExplanationMessages[type],
+						var _ when _options.ExplanationMessages.ContainsKey(permissionType) => _options.ExplanationMessages[permissionType],
 						_ => _options.GenericExplanationMessage
 					};
 
-					await _dialogUtility.ShowInfoMessageAsync(explanationMessage, "Permissions Required");
+					await _dialogUtility.ShowInfoMessageAsync(explanationMessage, "Permission Required");
+
+					foreach(var permission in lstDeniedPermission)
+					{
+						// We need all permissions to be granted. Fail on the first one.
+						if (await permission.RequestAsync() != PermissionStatus.Granted)
+						{
+							await _dialogUtility.ShowDangerMessageAsync("You have not granted the required permissions. Please try again.");
+							return false;
+						}
+					}
+				}
+				else
+				{
+					// We can't re-request the permission, e.g. the platform is iOS. We can only show an error message and direct
+					// the user to the native iOS Settings app.
+					string message = permissionType switch
+					{
+						var _ when _options.DeniedErrorMessages.ContainsKey(permissionType) => _options.DeniedErrorMessages[permissionType],
+						_ => _options.GenericDeniedErrorMessage
+					};
+
+					await _dialogUtility.ShowDangerMessageAsync(message, "Permission Denied");
 				}
 
-				if (await Permissions.RequestAsync<TPermission>() == PermissionStatus.Granted)
-					return true;
-
-				await ShowDeniedErrorMessage();
 				return false;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { PermissionType = typeof(TPermission).FullName }))
+			catch (Exception exc) when (_logger.WriteError(exc, new { permissionType }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem checking the specified permission.");
 			}

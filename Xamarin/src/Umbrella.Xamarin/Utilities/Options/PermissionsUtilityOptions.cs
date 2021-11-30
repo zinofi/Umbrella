@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
+using Umbrella.Xamarin.Utilities.Enumerations;
 
 namespace Umbrella.Xamarin.Utilities.Options
 {
@@ -28,12 +29,12 @@ namespace Umbrella.Xamarin.Utilities.Options
 		/// <summary>
 		/// Gets a dictionary containing permission-specific error messages when a permission has been denied.
 		/// </summary>
-		public Dictionary<Type, string> DeniedErrorMessages { get; } = new Dictionary<Type, string>();
+		public Dictionary<PermissionType, string> DeniedErrorMessages { get; } = new Dictionary<PermissionType, string>();
 
 		/// <summary>
 		/// Gets a dictionary containing permission-specific explanation messages as to why a permission has been requested.
 		/// </summary>
-		public Dictionary<Type, string> ExplanationMessages { get; } = new Dictionary<Type, string>();
+		public Dictionary<PermissionType, string> ExplanationMessages { get; } = new Dictionary<PermissionType, string>();
 
 		/// <inheritdoc />
 		public void Sanitize()
