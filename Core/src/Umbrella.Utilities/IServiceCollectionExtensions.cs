@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -109,7 +112,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
 			services.AddSingleton<IResponsiveImageHelper, ResponsiveImageHelper>();
-			
+
 			services.AddTransient<IWeakEventManager, WeakEventManager>();
 			services.AddSingleton<IWeakEventManagerFactory, WeakEventManagerFactory>();
 			services.AddSingleton<IGlobalWeakEventManager, GlobalWeakEventManager>();
