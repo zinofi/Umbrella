@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Temp365.Dental.Common.Utilities;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
@@ -16,6 +17,7 @@ using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.DataAnnotations;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.DataAnnotations.Options;
+using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.DependencyInjection;
 using Umbrella.Utilities.Email;
 using Umbrella.Utilities.Email.Abstractions;
@@ -112,6 +114,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
 			services.AddSingleton<IResponsiveImageHelper, ResponsiveImageHelper>();
+			services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 			services.AddTransient<IWeakEventManager, WeakEventManager>();
 			services.AddSingleton<IWeakEventManagerFactory, WeakEventManagerFactory>();
