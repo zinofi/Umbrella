@@ -16,13 +16,19 @@ namespace Umbrella.Utilities.Dating.Abstractions
 	public interface IDateTimeProvider
 	{
 		/// <summary>
-		/// Gets the <see cref="DateTime"/> using the local timezone.
+		/// Gets the current <see cref="DateTime"/> using the local timezone.
 		/// </summary>
 		DateTime Now { get; }
 
 		/// <summary>
-		/// Gets the <see cref="DateTime"/> using the UTC timezone.
+		/// Gets the current <see cref="DateTime"/> using the UTC timezone.
 		/// </summary>
 		DateTime UtcNow { get; }
+
+		/// <summary>
+		/// Gets the current date with the time component set to midnight. The <see cref="DateTime.Kind"/>
+		/// property should return <see cref="DateTimeKind.Local"/>.
+		/// </summary>
+		DateTime Today { get; }
 	}
 }

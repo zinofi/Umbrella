@@ -21,5 +21,8 @@ namespace Temp365.Dental.Common.Utilities
 
 		/// <inheritdoc />
 		public DateTime UtcNow => DateTime.UtcNow;
+
+		/// <inheritdoc />
+		public DateTime Today => DateTime.Today;
 	}
 }
