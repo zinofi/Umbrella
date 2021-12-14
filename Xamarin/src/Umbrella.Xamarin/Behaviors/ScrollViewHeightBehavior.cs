@@ -4,18 +4,33 @@ using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Behaviors
 {
+	/// <summary>
+	/// A custom <see cref="ScrollView"/> behavior that mitigates issues that sometime arise where
+	/// the its height does not correctly fill the height of its parent layout. This manifests itself most frequently
+	/// on iOS where the control only fills half the screen and gets cut off.
+	/// </summary>
+	/// <seealso cref="Behavior{ScrollView}" />
 	public class ScrollViewHeightBehavior : Behavior<ScrollView>
 	{
+		/// <summary>
+		/// The bindable property for the <see cref="ParentLayout"/> property.
+		/// </summary>
 		public static BindableProperty ParentLayoutProperty = BindableProperty.Create(nameof(ParentLayout), typeof(Layout), typeof(ScrollViewHeightBehavior), null, BindingMode.OneTime);
 
 		private bool _hasHeightChanged;
 
+		/// <summary>
+		/// Gets or sets the parent layout on which the height of the <see cref="ScrollView"/> should be based.
+		/// </summary>
 		public Layout? ParentLayout
 		{
 			get => (Layout?)GetValue(ParentLayoutProperty);
 			set => SetValue(ParentLayoutProperty, value);
 		}
 
+		/// <summary>
+		/// Gets the scroll view object that this behavior targets.
+		/// </summary>
 		public ScrollView? ScrollViewObject { get; private set; }
 
 		/// <inheritdoc />

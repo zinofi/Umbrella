@@ -4,10 +4,25 @@ using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Behaviors
 {
+	/// <summary>
+	/// A behaviour that can be applied to any <see cref="View"/> to conditionally add or remove a <see cref="TapGestureRecognizer"/> at runtime.
+	/// </summary>
+	/// <seealso cref="Behavior{View}" />
 	public class ConditionalTapGestureRecognizerBehavior : Behavior<View>
 	{
+		/// <summary>
+		/// The bindable property for the <see cref="IsEnabled"/> property.
+		/// </summary>
 		public static BindableProperty IsEnabledProperty = BindableProperty.Create(nameof(IsEnabled), typeof(bool), typeof(ConditionalTapGestureRecognizerBehavior), false);
+
+		/// <summary>
+		/// The bindable property for the <see cref="Command"/> property.
+		/// </summary>
 		public static BindableProperty CommandProperty = BindableProperty.Create(nameof(Command), typeof(ICommand), typeof(ConditionalTapGestureRecognizerBehavior), null);
+
+		/// <summary>
+		/// The bindable property for the <see cref="CommandParameter"/> property.
+		/// </summary>
 		public static BindableProperty CommandParameterProperty = BindableProperty.Create(nameof(CommandParameter), typeof(object), typeof(ConditionalTapGestureRecognizerBehavior), null);
 
 		private View? _view;

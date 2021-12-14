@@ -20,12 +20,14 @@
 					<div class="row">
 						@foreach (var column in FilterableColumns)
 						{
+                            var id = Guid.NewGuid().ToString("N");
+
 							<div class="col-md-4">
 								<div class="form-group">
-									<label>@column.Heading</label>
+									<label for="@id">@column.Heading</label>
 									@if (column.FilterControlType == UmbrellaColumnFilterType.Options)
 									{
-										<select class="custom-select custom-select-sm" @bind="column.FilterValue">
+										<select id="@id" class="custom-select custom-select-sm" @bind="column.FilterValue">
 											<option>Any</option>
 											@foreach (object option in column.FilterOptions)
 											{
@@ -35,7 +37,7 @@
 									}
 									else
 									{
-										<input class="form-control form-control-sm" type="@column.FilterControlType" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
+										<input id="@id" class="form-control form-control-sm" type="@column.FilterControlType" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
 									}
 								</div>
 							</div>
