@@ -264,6 +264,10 @@ namespace Umbrella.Utilities.Caching
 							// TODO: Investigate using AsyncLazy<T> to ensure that the factory only executes once. Internally, MemoryCache doesn't use locking
 							// so the factory could run multiple times. Only a problem if the factory is expensive though.
 							// Replace the boolean 'useMemoryCache' with an enum: CacheMode: Memory, MemoryMutex, Distributed, DistributedMutex
+
+							// We can use the new SynchronizationManager we have created to implement granular locking.
+							// We could also potentially provide a new argument to specify a condition that would force eviction
+							// of the item from the cache, e.g. there is a property on the cached item, e.g. expiration date
 							T cacheItem = await MemoryCache.GetOrCreateAsync(cacheKeyInternal, async entry =>
 							{
 								TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.DefaultCacheTimeout;
@@ -311,12 +315,15 @@ namespace Umbrella.Utilities.Caching
 			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 		/// <inheritdoc />
-		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory)
+		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
 			try
 			{
+				if (!IsCacheEnabled(cacheEnabledOverride))
+					return default;
+
 				string cacheKeyInternal = CreateCacheKeyNormalized<T>(cacheKey);
 
 				if (cacheMode is HybridCacheMode.Distributed)
@@ -345,13 +352,16 @@ namespace Umbrella.Utilities.Caching
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
+		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
 			try
 			{
+				if (!IsCacheEnabled(cacheEnabledOverride))
+					return default;
+
 				string cacheKeyInternal = CreateCacheKeyNormalized<T>(cacheKey);
 
 				if (cacheMode is HybridCacheMode.Distributed)

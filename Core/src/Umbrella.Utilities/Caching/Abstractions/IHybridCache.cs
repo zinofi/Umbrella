@@ -126,8 +126,12 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// <typeparam name="T">The type of the item.</typeparam>
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="cacheMode">The cache mode.</param>
+		/// <param name="cacheEnabledOverride">
+		/// The cache enabled override. This is used to override the global cache setting in order to disable the caching.
+		/// If <see cref="HybridCacheOptions.CacheEnabled"/> is set to false however, this parameter will be ignored, i.e. setting it to <see langword="true" /> will have no effect.
+		/// </param>
 		/// <returns>A tuple specifying whether the item was found in the cache together with the cached item if it exists.</returns>
-		(bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory);
+		(bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null);
 
 		/// <summary>
 		/// Tries to get the item from the cache with the specified <paramref name="cacheKey"/>.
@@ -136,8 +140,12 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="cacheMode">The cache mode.</param>
+		/// <param name="cacheEnabledOverride">
+		/// The cache enabled override. This is used to override the global cache setting in order to disable the caching.
+		/// If <see cref="HybridCacheOptions.CacheEnabled"/> is set to false however, this parameter will be ignored, i.e. setting it to <see langword="true" /> will have no effect.
+		/// </param>
 		/// <returns>A tuple specifying whether the item was found in the cache together with the cached item if it exists.</returns>
-		Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory);
+		Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null);
 
 		/// <summary>
 		/// Adds the specified item to the cache.
