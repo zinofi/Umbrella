@@ -33,6 +33,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage
 		public virtual string Url { get; set; } = null!;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the loading="lazy" attribute will be rendered
+		/// by the img tag.
+		/// </summary>
+		[Parameter]
+		public bool LazyLoadingEnabled { get; set; } = true;
+
+		/// <summary>
 		/// Gets or sets the additional attributes.
 		/// </summary>
 		[Parameter(CaptureUnmatchedValues = true)]
@@ -42,12 +49,6 @@ namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage
 		/// Gets or sets the source set value used to populate the srcset attribute.
 		/// </summary>
 		protected string? SrcSetValue { get; set; }
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the loading="lazy" attribute will be rendered
-		/// by the img tag.
-		/// </summary>
-		protected bool LazyLoadingEnabled { get; set; } = true;
 
 		/// <inheritdoc />
 		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(Url, nameof(Url));
