@@ -43,6 +43,12 @@ namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage
 		/// </summary>
 		protected string? SrcSetValue { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the loading="lazy" attribute will be rendered
+		/// by the img tag.
+		/// </summary>
+		protected bool LazyLoadingEnabled { get; set; } = true;
+
 		/// <inheritdoc />
 		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(Url, nameof(Url));
 
