@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Blazored.Modal;
 using Blazored.Modal.Services;
@@ -20,6 +22,15 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		/// </summary>
 		[CascadingParameter]
 		protected BlazoredModalInstance ModalInstance { get; set; } = null!;
+
+		/// <summary>
+		/// Gets or sets the size.
+		/// </summary>
+		/// <remarks>
+		/// Defaults to <see cref="UmbrellaDialogSize.Default"/>.
+		/// </remarks>
+		[Parameter]
+		public UmbrellaDialogSize Size { get; set; } = UmbrellaDialogSize.Default;
 
 		/// <summary>
 		/// Gets or sets the sub title.
@@ -44,6 +55,18 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 		/// </summary>
 		[Parameter]
 		public RenderFragment? ChildContent { get; set; }
+
+		/// <summary>
+		/// Gets the dialog size CSS class based on the value of the <see cref="Size"/> property.
+		/// </summary>
+		protected string? DialogSizeCssClass => Size switch
+		{
+			UmbrellaDialogSize.Default => null,
+			UmbrellaDialogSize.Small => "modal-sm",
+			UmbrellaDialogSize.Large => "modal-lg",
+			UmbrellaDialogSize.ExtraLarge => "modal-xl",
+			_ => throw new SwitchExpressionException(),
+		};
 
 		/// <summary>
 		/// Handles clicks on the modal background.
