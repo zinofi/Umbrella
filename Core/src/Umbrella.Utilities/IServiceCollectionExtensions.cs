@@ -45,6 +45,8 @@ using Umbrella.Utilities.Security;
 using Umbrella.Utilities.Security.Abstractions;
 using Umbrella.Utilities.Spatial;
 using Umbrella.Utilities.Spatial.Abstractions;
+using Umbrella.Utilities.Threading;
+using Umbrella.Utilities.Threading.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 using Umbrella.Utilities.WeakEventManager;
@@ -119,6 +121,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddTransient<IWeakEventManager, WeakEventManager>();
 			services.AddSingleton<IWeakEventManagerFactory, WeakEventManagerFactory>();
 			services.AddSingleton<IGlobalWeakEventManager, GlobalWeakEventManager>();
+
+			services.AddSingleton<ISynchronizationManager, MemorySynchronizationManager>();
 
 			if (httpServicesBuilder != null)
 			{
