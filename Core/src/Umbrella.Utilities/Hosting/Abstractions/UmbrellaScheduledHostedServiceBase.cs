@@ -42,6 +42,9 @@ namespace Umbrella.Utilities.Hosting.Abstractions
 		/// <summary>
 		/// Gets the crontab schedule in UTC format which determines when this services will be executed.
 		/// </summary>
+		/// <remarks>
+		/// See https://ncrontab.swimburger.net/ to test compatible expressions.
+		/// </remarks>
 		protected abstract string CrontabScheduleUtcString { get; }
 
 		/// <summary>
