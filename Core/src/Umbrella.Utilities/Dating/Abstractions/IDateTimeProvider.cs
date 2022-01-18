@@ -5,6 +5,8 @@ using System;
 
 namespace Umbrella.Utilities.Dating.Abstractions
 {
+	// TODO: Need to inject this and use it instead of all static calls to DateTime.x properties.
+
 	/// <summary>
 	/// A provider used to get <see cref="DateTime"/> instances.
 	/// </summary>
