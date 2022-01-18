@@ -8,10 +8,10 @@ using NCrontab;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Threading.Abstractions;
-using Umbrella.WebUtilities.Exceptions;
 
-namespace Umbrella.AspNetCore.WebUtilities.HostedServices
+namespace Umbrella.Utilities.Hosting.Abstractions
 {
 	/// <summary>
 	/// A base class containing core logic for hosted services.
@@ -104,7 +104,7 @@ namespace Umbrella.AspNetCore.WebUtilities.HostedServices
 			}
 			catch (Exception exc) when (!(exc is OperationCanceledException) && Logger.WriteError(exc, returnValue: true))
 			{
-				throw new UmbrellaWebException("There has been a problem with this service during startup.", exc);
+				throw new UmbrellaException("There has been a problem with this service during startup.", exc);
 			}
 		}
 
