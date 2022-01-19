@@ -410,14 +410,13 @@ namespace Umbrella.DataAccess.EF6
 			// Look for the entity in the context - this action will allow us to determine it's state
 			DbEntityEntry<TEntity> dbEntity = Context.Entry(entity);
 
-			// Set the Concurrency Stamp
-			if (entity is IConcurrencyStamp concurrencyStampEntity)
-				concurrencyStampEntity.UpdateConcurrencyStamp();
+			bool entityHasChanged = false;
 
 			// Check if this entity is in the context, i.e. is it new
 			if (forceAdd || (entity.Id.Equals(default!) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached))))
 			{
 				isNew = true;
+				entityHasChanged = true;
 
 				if (entity is ICreatedDateAuditEntity dateAuditEntity)
 					dateAuditEntity.CreatedDate = DateTime.UtcNow;
@@ -431,11 +430,20 @@ namespace Umbrella.DataAccess.EF6
 
 			if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
 			{
+				entityHasChanged = true;
+
 				if (entity is IUpdatedDateAuditEntity dateAuditEntity)
 					dateAuditEntity.UpdatedDate = DateTime.UtcNow;
 
 				if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 					userAuditEntity.UpdatedById = CurrentUserId ?? default!;
+			}
+
+			if (entityHasChanged)
+			{
+				// Set the Concurrency Stamp
+				if (entity is IConcurrencyStamp concurrencyStampEntity)
+					concurrencyStampEntity.UpdateConcurrencyStamp();
 			}
 		}
 
