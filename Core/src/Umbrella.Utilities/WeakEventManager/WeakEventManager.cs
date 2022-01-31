@@ -1,14 +1,19 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.WeakEventManager.Abstractions;
 
 namespace Umbrella.Utilities.WeakEventManager
 {
+	// TODO TOOLKIT: Look at the CommunityToolkit. Either switch to using that or see what ideas from it we can use.
+
 	/// <summary>
 	/// An event manager that allows subscribers to be subject to GC when still subscribed.
 	/// </summary>
@@ -105,7 +110,9 @@ namespace Umbrella.Utilities.WeakEventManager
 							object? result = subscription.Handler.Invoke(subscription.Subscriber.Target, args);
 
 							if (result is TReturnValue retVal)
+							{
 								lstReturnValue.Add(retVal);
+							}
 						}
 					}
 

@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 
 namespace Umbrella.Utilities
 {
+	// TODO TOOLKIT: Remove this when the CommunityToolkit NuGet packages come out.
+
 	/// <summary>
 	/// A static helper class that includes various parameter checking routines.
 	/// </summary>
