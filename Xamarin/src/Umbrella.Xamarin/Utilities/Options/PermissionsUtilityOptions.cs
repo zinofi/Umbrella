@@ -17,7 +17,7 @@ namespace Umbrella.Xamarin.Utilities.Options
 	public class PermissionsUtilityOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
 		/// <summary>
-		/// Gets or sets the generic error message shown when a permission-specific error message has not been provided using the <see cref="DeniedErrorMessages"/> dictionary.
+		/// Gets or sets the generic error message shown when a permission-specific error message has not been provided using the <see cref="AndroidDeniedErrorMessages"/> or <see cref="IOSDeniedErrorMessages"/> dictionaries.
 		/// </summary>
 		public string GenericDeniedErrorMessage { get; set; } = null!;
 
@@ -27,9 +27,14 @@ namespace Umbrella.Xamarin.Utilities.Options
 		public string GenericExplanationMessage { get; set; } = null!;
 
 		/// <summary>
-		/// Gets a dictionary containing permission-specific error messages when a permission has been denied.
+		/// Gets a dictionary containing Android permission-specific error messages when a permission has been denied.
 		/// </summary>
-		public Dictionary<PermissionType, string> DeniedErrorMessages { get; } = new Dictionary<PermissionType, string>();
+		public Dictionary<PermissionType, string> AndroidDeniedErrorMessages { get; } = new Dictionary<PermissionType, string>();
+
+		/// <summary>
+		/// Gets a dictionary containing iOS permission-specific error messages when a permission has been denied.
+		/// </summary>
+		public Dictionary<PermissionType, string> IOSDeniedErrorMessages { get; } = new Dictionary<PermissionType, string>();
 
 		/// <summary>
 		/// Gets a dictionary containing permission-specific explanation messages as to why a permission has been requested.

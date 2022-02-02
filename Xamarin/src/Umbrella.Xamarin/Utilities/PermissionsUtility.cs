@@ -44,6 +44,8 @@ namespace Umbrella.Xamarin.Utilities
 			[PermissionType.File] = Array.Empty<Permissions.BasePermission>()
 		};
 
+		private readonly HashSet<Type> _previousFailuresMappings = new HashSet<Type>();
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PermissionsUtility"/> type.
 		/// </summary>
@@ -84,9 +86,7 @@ namespace Umbrella.Xamarin.Utilities
 					if (status == PermissionStatus.Granted)
 						continue;
 
-					// This will only return true where the permission can be requested again. This should return false
-					// for iOS according to the documentation because iOS permissions should never be requested.
-					if (permission.ShouldShowRationale())
+					if (((DeviceInfo.Platform == DevicePlatform.Android && status == PermissionStatus.Denied) || (DeviceInfo.Platform == DevicePlatform.iOS)) && !_previousFailuresMappings.Contains(permission.GetType()))
 					{
 						showRationale = true;
 						lstDeniedPermission.Add(permission);
@@ -98,7 +98,7 @@ namespace Umbrella.Xamarin.Utilities
 				if (success)
 					return true;
 
-				if(showRationale)
+				if (showRationale)
 				{
 					// Prompt the user with additional information as to why the permission is needed
 					string explanationMessage = permissionType switch
@@ -109,13 +109,21 @@ namespace Umbrella.Xamarin.Utilities
 
 					await _dialogUtility.ShowInfoMessageAsync(explanationMessage, "Permission Required");
 
-					foreach(var permission in lstDeniedPermission)
+					foreach (var permission in lstDeniedPermission)
 					{
 						// We need all permissions to be granted. Fail on the first one.
 						if (await permission.RequestAsync() != PermissionStatus.Granted)
 						{
 							await _dialogUtility.ShowDangerMessageAsync("You have not granted the required permissions. Please try again.");
+
+							// Track this so that the next time we get a failure for this permission we don't try again.
+							_previousFailuresMappings.Add(permission.GetType());
+
 							return false;
+						}
+						else
+						{
+							success = true;
 						}
 					}
 				}
@@ -125,14 +133,15 @@ namespace Umbrella.Xamarin.Utilities
 					// the user to the native iOS Settings app.
 					string message = permissionType switch
 					{
-						var _ when _options.DeniedErrorMessages.ContainsKey(permissionType) => _options.DeniedErrorMessages[permissionType],
+						var _ when DeviceInfo.Platform == DevicePlatform.Android && _options.AndroidDeniedErrorMessages.ContainsKey(permissionType) => _options.AndroidDeniedErrorMessages[permissionType],
+						var _ when DeviceInfo.Platform == DevicePlatform.iOS && _options.IOSDeniedErrorMessages.ContainsKey(permissionType) => _options.IOSDeniedErrorMessages[permissionType],
 						_ => _options.GenericDeniedErrorMessage
 					};
 
 					await _dialogUtility.ShowDangerMessageAsync(message, "Permission Denied");
 				}
 
-				return false;
+				return success;
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { permissionType }))
 			{

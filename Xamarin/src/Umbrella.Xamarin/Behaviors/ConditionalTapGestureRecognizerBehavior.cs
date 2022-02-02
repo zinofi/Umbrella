@@ -1,5 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Umbrella.AppFramework.Utilities.Abstractions;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Behaviors
@@ -25,8 +28,17 @@ namespace Umbrella.Xamarin.Behaviors
 		/// </summary>
 		public static BindableProperty CommandParameterProperty = BindableProperty.Create(nameof(CommandParameter), typeof(object), typeof(ConditionalTapGestureRecognizerBehavior), null);
 
+		private readonly ILogger _logger;
 		private View? _view;
 		private TapGestureRecognizer? _gestureRecognizer;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ConditionalTapGestureRecognizerBehavior"/> class.
+		/// </summary>
+		public ConditionalTapGestureRecognizerBehavior()
+		{
+			_logger = UmbrellaXamarinServices.GetService<ILogger<ConditionalTapGestureRecognizerBehavior>>();
+		}
 
 		/// <summary>
 		/// Gets or sets a value that determines if this behavior is enabled.
@@ -111,6 +123,8 @@ namespace Umbrella.Xamarin.Behaviors
 		protected override void OnDetachingFrom(View bindable)
 		{
 			base.OnDetachingFrom(bindable);
+
+			_view = null;
 			RemoveGestureRecognizer(bindable);
 		}
 
@@ -136,9 +150,16 @@ namespace Umbrella.Xamarin.Behaviors
 
 		private void RemoveGestureRecognizer(View bindable)
 		{
-			if (_gestureRecognizer != null)
+			try
 			{
-				_ = bindable.GestureRecognizers.Remove(_gestureRecognizer);
+				if (_gestureRecognizer != null)
+				{
+					_ = bindable.GestureRecognizers.Remove(_gestureRecognizer);
+					_gestureRecognizer = null;
+				}
+			}
+			catch (Exception exc) when (_logger.WriteError(exc, message: "There has been a problem removing the gesture recognizer."))
+			{
 				_gestureRecognizer = null;
 			}
 		}
