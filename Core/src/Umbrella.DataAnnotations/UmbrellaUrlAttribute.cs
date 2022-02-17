@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Umbrella.DataAnnotations.RegularExpressions;
 
-namespace Temp365.Dental.Shared.EntityConstants.Attributes
+namespace Umbrella.DataAnnotations
 {
 	/// <summary>
 	/// Specifies that a data field must be a valid URL.
 	/// </summary>
-	/// <seealso cref="System.ComponentModel.DataAnnotations.RegularExpressionAttribute" />
+	/// <seealso cref="RegularExpressionAttribute" />
 	public class UmbrellaUrlAttribute : RegularExpressionAttribute
 	{
 		/// <summary>
