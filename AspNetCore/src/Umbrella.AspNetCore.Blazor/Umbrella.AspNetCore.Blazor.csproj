@@ -24,7 +24,7 @@
 		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
 		<PackageReference Include="Blazored.Modal" Version="6.0.1" />
 		<PackageReference Include="Blazored.SessionStorage" Version="1.0.13" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="Tewr.Blazor.FileReader" Version="2.1.0.20274" />
 	</ItemGroup>
 

@@ -1,12 +1,15 @@
-﻿using System.Text.RegularExpressions;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System.Text.RegularExpressions;
 
 namespace Umbrella.DataAnnotations.RegularExpressions
 {
 	/// <summary>
 	/// Contains regular expressions for validating phone numbers.
 	/// </summary>
-	public class PhoneRegularExpressions
-    {
+	public static class PhoneRegularExpressions
+	{
 		/// <summary>
 		/// A regular expression used to validate UK mobile numbers.
 		/// </summary>
@@ -26,6 +29,5 @@ namespace Umbrella.DataAnnotations.RegularExpressions
 		/// A regular expression used to validate UK phone numbers.
 		/// </summary>
 		public static Regex UKPhoneRegex = new Regex(UKPhoneRegexString, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
 	}
 }
