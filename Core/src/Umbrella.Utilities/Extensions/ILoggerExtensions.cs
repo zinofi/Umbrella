@@ -138,7 +138,7 @@ namespace Microsoft.Extensions.Logging
             if (!log.IsEnabled(level))
                 return;
 
-            var messageBuilder = new StringBuilder();
+            var messageBuilder = new StringBuilder(methodName);
 
             var stateDictionary = new List<KeyValuePair<string, string>>
             {
@@ -149,9 +149,6 @@ namespace Microsoft.Extensions.Logging
 
             if (state != null)
             {
-                string jsonState = UmbrellaStatics.SerializeJson(state);
-                messageBuilder.Append($"{methodName}({jsonState})");
-
                 //Here we will convert the stateDictionary to an IReadOnlyList<KeyValuePair<string, object>> (actual call to .AsReadOnly is further down) so that it is compatible with ApplicationInsights.
                 //It should also be compatible with other logging implementations that can perform serialization of collections.
                 PropertyInfo[] propertyInfos = s_TypePropertyInfoDictionary.GetOrAdd(state.GetType(), x => x.GetProperties());
@@ -160,10 +157,6 @@ namespace Microsoft.Extensions.Logging
                 {
                     stateDictionary.Add(new KeyValuePair<string, string>(pi.Name, Convert.ToString(pi.GetValue(state) ?? string.Empty, CultureInfo.InvariantCulture)));
                 }
-            }
-            else
-            {
-                messageBuilder.Append($"{methodName}()");
             }
 
             if (level >= LogLevel.Error)

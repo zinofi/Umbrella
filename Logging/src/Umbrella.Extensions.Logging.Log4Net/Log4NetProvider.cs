@@ -28,7 +28,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 			_loggerRepository = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
 
 			GlobalContext.Properties["appRoot"] = contentRootPath;
-			XmlConfigurator.ConfigureAndWatch(_loggerRepository, new FileInfo(Path.Combine(contentRootPath, configFileRelativePath)));
+			XmlConfigurator.ConfigureAndWatch(_loggerRepository, new FileInfo(Path.Combine(contentRootPath, configFileRelativePath.TrimStart('/'))));
 		}
 
 		/// <summary>

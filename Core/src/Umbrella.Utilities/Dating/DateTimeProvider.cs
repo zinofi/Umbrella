@@ -4,7 +4,7 @@
 using System;
 using Umbrella.Utilities.Dating.Abstractions;
 
-namespace Temp365.Dental.Common.Utilities
+namespace Umbrella.Utilities.Dating
 {
 	/// <summary>
 	/// A provider used to get <see cref="DateTime"/> instances.
