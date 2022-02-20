@@ -139,26 +139,8 @@ namespace Umbrella.Utilities.ObjectModel
 		/// <exception cref="ArgumentNullException">collection</exception>
 		public void ReplaceRange(IEnumerable<T> collection)
 		{
-			if (collection is null)
-				throw new ArgumentNullException(nameof(collection));
-
-			CheckReentrancy();
-
-			bool previouslyEmpty = Items.Count == 0;
-
-			var oldItems = Items.ToList();
-
-			Items.Clear();
-
-			AddArrangeCore(collection);
-
-			bool currentlyEmpty = Items.Count == 0;
-
-			if (previouslyEmpty && currentlyEmpty)
-				return;
-
-			RaisePropertyChangedEvents();
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, collection.ToList(), oldItems));
+			Clear();
+			AddRange(collection);
 		}
 
 		/// <inheritdoc />
