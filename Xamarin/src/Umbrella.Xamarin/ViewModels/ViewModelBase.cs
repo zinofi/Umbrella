@@ -87,6 +87,16 @@ namespace Umbrella.Xamarin.ViewModels
 		public AsyncCommand<string?> OpenUrlExternalCommand { get; }
 
 		/// <summary>
+		/// Gets the navigate back button command.
+		/// </summary>
+		public AsyncCommand NavigateBackButtonCommand { get; }
+
+		/// <summary>
+		/// Gets the navigate to application path button command.
+		/// </summary>
+		public AsyncCommand<string?> NavigateToAppPathButtonCommand { get; }
+
+		/// <summary>
 		/// Gets the event manager.
 		/// </summary>
 		protected IGlobalWeakEventManager EventManager { get; }
@@ -121,6 +131,8 @@ namespace Umbrella.Xamarin.ViewModels
 			EventManager = eventManager;
 			CommandFactory = commandFactory;
 
+			NavigateBackButtonCommand = commandFactory.CreateAsyncCommand(NavigateBackAsync);
+			NavigateToAppPathButtonCommand = commandFactory.CreateAsyncCommand<string?>(NavigateToAppPathAsync);
 			ReloadButtonCommand = commandFactory.CreateAsyncCommand(OnReloadButtonClicked, CheckNetworkConnectionOnReload);
 			OpenUrlInternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, true), true);
 			OpenUrlExternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, false), true);
@@ -156,7 +168,7 @@ namespace Umbrella.Xamarin.ViewModels
 
 				await Browser.OpenAsync(url, openInsideApp ? BrowserLaunchMode.SystemPreferred : BrowserLaunchMode.External);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, openInsideApp }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, openInsideApp }))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}
@@ -167,17 +179,26 @@ namespace Umbrella.Xamarin.ViewModels
 		/// </summary>
 		/// <param name="path">The application path to navigate to.</param>
 		/// <returns>An awaitable Task that completes when the operation completes.</returns>
-		protected async Task NavigateToAppPathAsync(string path)
+		protected async Task NavigateToAppPathAsync(string? path)
 		{
 			try
 			{
+				if (string.IsNullOrWhiteSpace(path))
+					throw new Exception("The path is null or empty");
+
 				await Shell.Current.GoToAsync(path);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { path }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { path }))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}
 		}
+
+		/// <summary>
+		/// Performs navigation from the current page to the previous page in the navigation stack.
+		/// </summary>
+		/// <returns>An awaitable Task that completes when the operation completes.</returns>
+		protected Task NavigateBackAsync() => NavigateToAppPathAsync("..");
 
 		/// <summary>
 		/// Registers an auto-unsubscribing event subscription with the specified <paramref name="eventName"/>.
