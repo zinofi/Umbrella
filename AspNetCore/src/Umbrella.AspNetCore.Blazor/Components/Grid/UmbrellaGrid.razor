@@ -37,7 +37,7 @@
 									}
 									else
 									{
-										<input id="@id" class="form-control form-control-sm" type="@column.FilterControlType" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
+										<input id="@id" class="form-control form-control-sm" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
 									}
 								</div>
 							</div>
