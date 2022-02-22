@@ -25,7 +25,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 		/// <param name="configFileRelativePath">The configuration file relative path.</param>
 		public Log4NetProvider(string contentRootPath, string configFileRelativePath)
 		{
-			_loggerRepository = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+			_loggerRepository = LogManager.CreateRepository(Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
 
 			GlobalContext.Properties["appRoot"] = contentRootPath;
 			XmlConfigurator.ConfigureAndWatch(_loggerRepository, new FileInfo(Path.Combine(contentRootPath, configFileRelativePath.TrimStart('/'))));
