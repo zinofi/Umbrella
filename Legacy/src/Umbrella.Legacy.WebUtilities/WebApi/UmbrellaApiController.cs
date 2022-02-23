@@ -19,17 +19,17 @@ namespace Umbrella.Legacy.WebUtilities.WebApi
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 		#endregion
 
-		#region Constructors		
+		#region Constructors
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UmbrellaApiController"/> class.
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		public UmbrellaApiController(ILogger logger)
         {
-            Log = logger;
+            Logger = logger;
         }
 		#endregion
 

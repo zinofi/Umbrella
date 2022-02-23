@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using log4net;
 using Microsoft.Extensions.Logging;
@@ -73,6 +75,25 @@ namespace Umbrella.Extensions.Logging.Log4Net
 			var messageBuider = new StringBuilder()
 				.AppendLine(messageId)
 				.Append(formatter(state, exception));
+
+			if (state is IEnumerable<KeyValuePair<string, string>> stateDictionary)
+			{
+				var entries = stateDictionary.ToArray();
+
+				messageBuider.AppendLine();
+				messageBuider.AppendLine();
+				messageBuider.AppendLine("--------------- Begin State ---------------");
+
+				if (entries.Length > 0)
+				{
+					foreach (var entry in stateDictionary)
+					{
+						messageBuider.AppendLine($"{entry.Key}: {entry.Value}");
+					}
+				}
+
+				messageBuider.AppendLine("--------------- End State ---------------");
+			}
 
 			string message = messageBuider.ToString();
 
