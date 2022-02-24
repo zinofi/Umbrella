@@ -197,7 +197,7 @@ namespace Umbrella.TypeScript.Tools
 			};
 
 			Guard.ArgumentNotNullOrWhiteSpace(toolOptions.AssemblyFolderPath, "--input|-i");
-			Guard.ArgumentNotNullOrEmpty(toolOptions.AssemblyNameList, "--assemblies|-a");
+			//Guard.ArgumentNotNullOrEmpty(toolOptions.AssemblyNameList, "--assemblies|-a");
 			Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputType, "--type|-t");
 			Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputPath, "--output|-o");
 
@@ -226,9 +226,13 @@ namespace Umbrella.TypeScript.Tools
 			{
 				string fileName = Path.Combine(assemblyFolderPath!, $"{assemblyName}.dll");
 
-				var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileName);
+				//var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileName);	
 
-				lstAssemblyToProcess.Add(assembly);
+				//lstAssemblyToProcess.Add(assembly);
+
+				var assemblies = new AppDomainToolkit.AssemblyLoader().LoadAssemblyWithReferences(AppDomainToolkit.LoadMethod.LoadFile, fileName);
+
+				lstAssemblyToProcess.AddRange(assemblies);
 			}
 
 			return lstAssemblyToProcess;
