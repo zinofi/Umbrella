@@ -103,13 +103,21 @@ namespace Umbrella.TypeScript.Tools
 
 			if (toolOptions.GeneratorList?.Contains("knockout") is true)
 			{
-				builder.AppendLine("import * as ko from \"knockout\";");
+				if (toolOptions.OutputType == "module")
+				{
+					builder.AppendLine("import * as ko from \"knockout\";");
 
-				if (toolOptions.ValidationEnabled)
-					builder.AppendLine("import \"knockout.validation\";");
+					if (toolOptions.ValidationEnabled)
+						builder.AppendLine("import \"knockout.validation\";");
 
-				if (toolOptions.KnockoutUseDecorators)
-					builder.AppendLine("import { observable, extend } from \"knockout-decorators\";");
+					if (toolOptions.KnockoutUseDecorators)
+						builder.AppendLine("import { observable, extend } from \"knockout-decorators\";");
+				}
+				else
+				{
+					if (toolOptions.KnockoutUseDecorators)
+						builder.AppendLine("const { observable, extend } = KnockoutDecorators;");
+				}
 			}
 
 			return builder;
