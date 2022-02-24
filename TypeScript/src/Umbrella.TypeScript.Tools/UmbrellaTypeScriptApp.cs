@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.CommandLineUtils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +10,6 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.CommandLineUtils;
 using Umbrella.Utilities;
 
 namespace Umbrella.TypeScript.Tools
@@ -36,7 +39,9 @@ namespace Umbrella.TypeScript.Tools
 				TOptions toolOptions = GetToolOptions();
 
 				if (toolOptions.DebugEnabled)
+				{
 					WriteConsoleDebugMessage($"Parsed options: {JsonSerializer.Serialize(toolOptions)}");
+				}
 
 				//Check folder exists
 				if (!Directory.Exists(toolOptions.AssemblyFolderPath))
@@ -108,16 +113,25 @@ namespace Umbrella.TypeScript.Tools
 					builder.AppendLine("import * as ko from \"knockout\";");
 
 					if (toolOptions.ValidationEnabled)
+					{
 						builder.AppendLine("import \"knockout.validation\";");
+					}
 
 					if (toolOptions.KnockoutUseDecorators)
+					{
 						builder.AppendLine("import { observable, extend } from \"knockout-decorators\";");
+					}
 				}
 				else
 				{
 					if (toolOptions.KnockoutUseDecorators)
+					{
+						builder.AppendLine("declare var KnockoutDecorators: any;");
 						builder.AppendLine("const { observable, extend } = KnockoutDecorators;");
+					}
 				}
+
+				builder.AppendLine();
 			}
 
 			return builder;
@@ -126,10 +140,14 @@ namespace Umbrella.TypeScript.Tools
 		protected virtual void SetupGenerators(TypeScriptGenerator generator, TOptions options)
 		{
 			if (options.GeneratorList?.Contains("standard") is true)
+			{
 				generator.IncludeStandardGenerators();
+			}
 
 			if (options.GeneratorList?.Contains("knockout") is true)
+			{
 				generator.IncludeKnockoutGenerators(options.KnockoutUseDecorators);
+			}
 		}
 
 		protected virtual void SetupCommandOptions()
@@ -168,7 +186,9 @@ namespace Umbrella.TypeScript.Tools
 		protected virtual TOptions GetToolOptions()
 		{
 			if (OptionDictionary is null)
+			{
 				throw new Exception($"{nameof(OptionDictionary)} is null.");
+			}
 
 			string propertyMode = CleanInput(OptionDictionary["property-mode"].Value());
 
@@ -197,7 +217,7 @@ namespace Umbrella.TypeScript.Tools
 			};
 
 			Guard.ArgumentNotNullOrWhiteSpace(toolOptions.AssemblyFolderPath, "--input|-i");
-			//Guard.ArgumentNotNullOrEmpty(toolOptions.AssemblyNameList, "--assemblies|-a");
+			Guard.ArgumentNotNullOrEmpty(toolOptions.AssemblyNameList, "--assemblies|-a");
 			Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputType, "--type|-t");
 			Guard.ArgumentNotNullOrWhiteSpace(toolOptions.OutputPath, "--output|-o");
 
@@ -226,13 +246,9 @@ namespace Umbrella.TypeScript.Tools
 			{
 				string fileName = Path.Combine(assemblyFolderPath!, $"{assemblyName}.dll");
 
-				//var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileName);	
+				var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fileName);
 
-				//lstAssemblyToProcess.Add(assembly);
-
-				var assemblies = new AppDomainToolkit.AssemblyLoader().LoadAssemblyWithReferences(AppDomainToolkit.LoadMethod.LoadFile, fileName);
-
-				lstAssemblyToProcess.AddRange(assemblies);
+				lstAssemblyToProcess.Add(assembly);
 			}
 
 			return lstAssemblyToProcess;
