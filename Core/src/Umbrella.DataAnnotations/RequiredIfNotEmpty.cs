@@ -2,6 +2,11 @@
 
 namespace Umbrella.DataAnnotations
 {
+	/// <summary>
+	/// Specifies that a data field is required contingent on whether another string property on the same
+	/// object is not null, an empty string or only whitespace.
+	/// </summary>
+	/// <seealso cref="ContingentValidationAttribute" />
 	public class RequiredIfNotEmptyAttribute : ContingentValidationAttribute
 	{
 		/// <summary>
@@ -16,8 +21,8 @@ namespace Umbrella.DataAnnotations
 		/// <inheritdoc />
 		public override bool IsValid(object value, object dependentValue, object container)
 		{
-			if (!string.IsNullOrEmpty((dependentValue ?? string.Empty).ToString().Trim()))
-				return value != null && !string.IsNullOrEmpty(value.ToString().Trim());
+			if (!string.IsNullOrWhiteSpace((dependentValue ?? string.Empty).ToString()))
+				return value != null && !string.IsNullOrWhiteSpace(value.ToString());
 
 			return true;
 		}

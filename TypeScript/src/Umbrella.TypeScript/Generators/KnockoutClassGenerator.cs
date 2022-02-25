@@ -199,6 +199,19 @@ namespace Umbrella.TypeScript.Generators
 
 		private StringBuilder? CreateConstructorValidationRules(PropertyInfo propertyInfo, int indent = 4)
 		{
+			string GetDependentPropertyName(string dependentProperty)
+			{
+				string propertyName = dependentProperty.Contains(".")
+					? string.Join("?.", dependentProperty.Split('.').Select(x => x.ToCamelCaseInvariant()))
+					: dependentProperty.ToCamelCaseInvariant();
+
+				// If we are not using decorators we need to access the value using a method call.
+				if (!_useDecorators)
+					propertyName += "()";
+
+				return propertyName;
+			}
+
 			// Get all types that are either of type ValidationAttribute or derive from it
 			// However, specifically exclude instances of type DataTypeAttribute
 			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
@@ -217,48 +230,47 @@ namespace Umbrella.TypeScript.Generators
 				switch (validationAttribute)
 				{
 					case RequiredIfAttribute attr:
-
-						string @operator = attr.Operator switch
 						{
-							Operator.EqualTo => "===",
-							Operator.GreaterThan => ">",
-							Operator.GreaterThanOrEqualTo => ">=",
-							Operator.LessThan => "<",
-							Operator.LessThanOrEqualTo => "<=",
-							Operator.NotEqualTo => "!==",
-							Operator.NotRegExMatch => throw new NotImplementedException(),
-							Operator.RegExMatch => throw new NotImplementedException(),
-							_ => throw new NotSupportedException()
-						};
+							string @operator = attr.Operator switch
+							{
+								Operator.EqualTo => "===",
+								Operator.GreaterThan => ">",
+								Operator.GreaterThanOrEqualTo => ">=",
+								Operator.LessThan => "<",
+								Operator.LessThanOrEqualTo => "<=",
+								Operator.NotEqualTo => "!==",
+								Operator.NotRegExMatch => throw new NotImplementedException(),
+								Operator.RegExMatch => throw new NotImplementedException(),
+								_ => throw new NotSupportedException()
+							};
 
-						string otherValue = attr.DependentValue switch
-						{
-							bool b when b => "true",
-							bool b when !b => "false",
-							string s => $"'{s}'",
-							Enum e => $"{e.GetType().FullName}.{e}",
-							_ => attr.DependentValue.ToString()
-						};
+							string otherValue = attr.DependentValue switch
+							{
+								bool b when b => "true",
+								bool b when !b => "false",
+								string s => $"'{s}'",
+								Enum e => $"{e.GetType().FullName}.{e}",
+								_ => attr.DependentValue.ToString()
+							};
 
-						string? dependentPropertyName = null;
+							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-						if (attr.DependentProperty.Contains("."))
-						{
-							string[] parts = attr.DependentProperty.Split('.');
-
-							dependentPropertyName = string.Join("?.", parts.Select(x => x.ToCamelCaseInvariant()));
+							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
 						}
-						else
+						break;
+					case RequiredIfEmptyAttribute attr:
 						{
-							dependentPropertyName = attr.DependentProperty.ToCamelCaseInvariant();
+							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+
+							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || this.{dependentPropertyName}.trim().length === 0, message: {message} }},", indent);
 						}
+						break;
+					case RequiredIfNotEmptyAttribute attr:
+						{
+							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-						// When not using decorators, the value of the property needs to be accessed as a method call.
-						if (!_useDecorators)
-							dependentPropertyName += "()";
-
-						// TODO: Knockout should be ok with the RequiredNonEmptyCollectionIf attribute I think.
-						validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
+							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && this.{dependentPropertyName}.trim().length > 0, message: {message} }},", indent);
+						}
 						break;
 				}
 			}
