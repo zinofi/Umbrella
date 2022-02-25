@@ -279,14 +279,17 @@ namespace Umbrella.TypeScript.Generators
 							string @operator = GetOperatorTranslation(attr.Operator);
 							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-							//Type type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+							Type type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
 
-							//if (type == typeof(string) || type.IsPrimitive)
-							//{
+							string tsType = type switch
+							{
+								var _ when type == typeof(string) => "string | null",
+								var _ when type == typeof(bool) => "boolean | null",
+								var _ when type.IsPrimitive => "number | null",
+								_ => "any"
+							};
 
-							//}
-
-							validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value, params) => value {@operator} this.{dependentPropertyName}, message: {message} }},", indent);
+							validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => value === undefined || value === null || value {@operator} this.{dependentPropertyName}!, message: {message} }},", indent);
 						}
 						break;
 				}
