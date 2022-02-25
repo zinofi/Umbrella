@@ -100,21 +100,9 @@ namespace Umbrella.TypeScript.Generators
 		{
 			StringBuilder? ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
 
-			string thisVariable = "this";
-			string exposePrefix = "";
-
-			if (_useDecorators)
-			{
-				if (ctorExtendBuilder?.Length > 0)
-				{
-					exposePrefix = "_";
-					thisVariable = "(<any>this)";
-				}
-				else
-				{
-					return;
-				}
-			}
+			(string thisVariable, string exposePrefix) = _useDecorators && ctorExtendBuilder?.Length > 0
+				? ("(<any>this)", "_")
+				: ("this", "");
 
 			var coreBuilder = !_useDecorators ? CreateValidationExtendItems(propertyInfo) : null;
 
@@ -159,7 +147,7 @@ namespace Umbrella.TypeScript.Generators
 				switch (validationAttribute)
 				{
 					case RequiredAttribute attr:
-					case RequiredNonEmptyCollectionAttribute attrCol: // TODO: Knockout should be fine with this.
+					case RequiredNonEmptyCollectionAttribute attrCol:
 						validationBuilder.AppendLineWithTabIndent($"required: {{ params: true, message: {message} }},", indent);
 						break;
 					case CompareAttribute attr:
@@ -303,7 +291,7 @@ namespace Umbrella.TypeScript.Generators
 		{
 			// Only write the validation rules if some validation rules have been generated
 			// and we are not using decorators
-			if (!_useDecorators && validationBuilder?.Length > 0)
+			if (validationBuilder?.Length > 0)
 			{
 				typeBuilder.AppendLine();
 
