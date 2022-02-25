@@ -212,6 +212,28 @@ namespace Umbrella.TypeScript.Generators
 				return propertyName;
 			}
 
+			static string GetOperatorTranslation(Operator @operator) => @operator switch
+			{
+				Operator.EqualTo => "===",
+				Operator.GreaterThan => ">",
+				Operator.GreaterThanOrEqualTo => ">=",
+				Operator.LessThan => "<",
+				Operator.LessThanOrEqualTo => "<=",
+				Operator.NotEqualTo => "!==",
+				Operator.NotRegExMatch => throw new NotImplementedException(),
+				Operator.RegExMatch => throw new NotImplementedException(),
+				_ => throw new NotSupportedException()
+			};
+
+			static string GetDependentValueTranslation(object dependentValue) => dependentValue switch
+			{
+				bool b when b => "true",
+				bool b when !b => "false",
+				string s => $"'{s}'",
+				Enum e => $"{e.GetType().FullName}.{e}",
+				_ => dependentValue.ToString()
+			};
+
 			// Get all types that are either of type ValidationAttribute or derive from it
 			// However, specifically exclude instances of type DataTypeAttribute
 			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
@@ -231,28 +253,8 @@ namespace Umbrella.TypeScript.Generators
 				{
 					case RequiredIfAttribute attr:
 						{
-							string @operator = attr.Operator switch
-							{
-								Operator.EqualTo => "===",
-								Operator.GreaterThan => ">",
-								Operator.GreaterThanOrEqualTo => ">=",
-								Operator.LessThan => "<",
-								Operator.LessThanOrEqualTo => "<=",
-								Operator.NotEqualTo => "!==",
-								Operator.NotRegExMatch => throw new NotImplementedException(),
-								Operator.RegExMatch => throw new NotImplementedException(),
-								_ => throw new NotSupportedException()
-							};
-
-							string otherValue = attr.DependentValue switch
-							{
-								bool b when b => "true",
-								bool b when !b => "false",
-								string s => $"'{s}'",
-								Enum e => $"{e.GetType().FullName}.{e}",
-								_ => attr.DependentValue.ToString()
-							};
-
+							string @operator = GetOperatorTranslation(attr.Operator);
+							string otherValue = GetDependentValueTranslation(attr.DependentValue);
 							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
 							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
@@ -270,6 +272,21 @@ namespace Umbrella.TypeScript.Generators
 							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
 							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && !(typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) && !(typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0), message: {message} }},", indent);
+						}
+						break;
+					case IsAttribute attr:
+						{
+							string @operator = GetOperatorTranslation(attr.Operator);
+							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+
+							//Type type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+
+							//if (type == typeof(string) || type.IsPrimitive)
+							//{
+
+							//}
+
+							validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value, params) => value {@operator} this.{dependentPropertyName}, message: {message} }},", indent);
 						}
 						break;
 				}
