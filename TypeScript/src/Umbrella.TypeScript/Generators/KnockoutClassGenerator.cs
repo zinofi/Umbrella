@@ -253,6 +253,10 @@ namespace Umbrella.TypeScript.Generators
 							dependentPropertyName = attr.DependentProperty.ToCamelCaseInvariant();
 						}
 
+						// When not using decorators, the value of the property needs to be accessed as a method call.
+						if (!_useDecorators)
+							dependentPropertyName += "()";
+
 						// TODO: Knockout should be ok with the RequiredNonEmptyCollectionIf attribute I think.
 						validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
 						break;
