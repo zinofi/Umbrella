@@ -126,7 +126,6 @@ namespace Umbrella.TypeScript.Tools
 				{
 					if (toolOptions.KnockoutUseDecorators)
 					{
-						builder.AppendLine("declare var KnockoutDecorators: any;");
 						builder.AppendLine("const { observable, extend } = KnockoutDecorators;");
 					}
 				}
