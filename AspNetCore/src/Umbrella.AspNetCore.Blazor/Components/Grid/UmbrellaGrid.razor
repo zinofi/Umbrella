@@ -73,61 +73,63 @@
             @if (RenderMode is UmbrellaGridRenderMode.Full)
             {
                 <div class="u-grid__results-container">
-                    <table class="u-grid__results @GridCssClass">
-                        @if (ShowCaption)
-                        {
-                            <caption class="u-grid__caption">@CaptionText</caption>
-                        }
-                        <colgroup>
-                            @foreach (var column in ColumnDefinitions)
+                    <EditForm>
+                        <table class="u-grid__results @GridCssClass">
+                            @if (ShowCaption)
                             {
-                                <col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
+                                <caption class="u-grid__caption">@CaptionText</caption>
                             }
-                        </colgroup>
-                        <thead>
-                            <tr>
+                            <colgroup>
                                 @foreach (var column in ColumnDefinitions)
                                 {
-                                    <th @attributes="column.AdditionalAttributes">
-                                        @if (column.Sortable)
-                                        {
-                                            <a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault>
-                                                @column.Heading
-                                                <i class="@column.DirectionCssClass"></i>
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            @column.Heading
-                                        }
-                                    </th>
+                                    <col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
                                 }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Items)
-                            {
-                                var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
-                                var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
-
-                                <tr class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">
-                                    @if (ShowCheckboxSelectColumn)
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    @foreach (var column in ColumnDefinitions)
                                     {
-                                        <th class="u-grid__item-checkbox">
-                                            <InputCheckbox @bind-Value="selectableItem.IsSelected" />
+                                        <th @attributes="column.AdditionalAttributes">
+                                            @if (column.Sortable)
+                                            {
+                                                <a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault>
+                                                    @column.Heading
+                                                    <i class="@column.DirectionCssClass"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                @column.Heading
+                                            }
                                         </th>
                                     }
-                                    @if (ShowRadioSelectColumn)
-                                    {
-                                        <th class="u-grid__item-radio">
-                                            <InputRadio name="@groupName" TValue="TItem" @bind-Value="SelectedRow" SelectedValue="item" />
-                                        </th>
-                                    }
-                                    @Columns?.Invoke(item)
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Items)
+                                {
+                                    var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
+                                    var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
+
+                                    <tr class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">
+                                        @if (ShowCheckboxSelectColumn)
+                                        {
+                                            <th class="u-grid__item-checkbox">
+                                                <InputCheckbox @bind-Value="selectableItem.IsSelected" />
+                                            </th>
+                                        }
+                                        @if (ShowRadioSelectColumn)
+                                        {
+                                            <th class="u-grid__item-radio">
+                                                <InputRadio GroupName="" TValue="TItem" @bind-Value="SelectedRow" SelectedValue="item" />
+                                            </th>
+                                        }
+                                        @Columns?.Invoke(item)
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </EditForm>
                 </div>
 
                 @if (ShowPagination)
@@ -138,27 +140,29 @@
             else if (RenderMode is UmbrellaGridRenderMode.Slim)
             {
                 <div class="u-grid__results @GridCssClass">
-                    @foreach (var item in Items)
-                    {
-                        var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
-                        var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
+                    <EditForm>
+                        @foreach (var item in Items)
+                        {
+                            var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
+                            var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
 
-                        <div class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">
-                            @if (ShowCheckboxSelectColumn)
-                            {
-                                <div class="u-grid__item-checkbox">
-                                    <InputCheckbox @bind-Value="selectableItem.IsSelected" />
-                                </div>
-                            }
-                            @if (ShowRadioSelectColumn)
-                            {
-                                <div class="u-grid__item-radio">
-                                    <InputRadio name="@groupName" TValue="TItem" @bind-Value="SelectedRow" SelectedValue="item" />
-                                </div>
-                            }
-                            @Columns?.Invoke(item)
-                        </div>
-                    }
+                            <div class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">
+                                @if (ShowCheckboxSelectColumn)
+                                {
+                                    <div class="u-grid__item-checkbox">
+                                        <InputCheckbox @bind-Value="selectableItem.IsSelected" />
+                                    </div>
+                                }
+                                @if (ShowRadioSelectColumn)
+                                {
+                                    <div class="u-grid__item-radio">
+                                        <InputRadio name="@groupName" TValue="TItem" @bind-Value="SelectedRow" SelectedValue="item" />
+                                    </div>
+                                }
+                                @Columns?.Invoke(item)
+                            </div>
+                        }
+                    </EditForm>
                 </div>
 
                 @if (ShowCaption)
