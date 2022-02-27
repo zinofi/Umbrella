@@ -96,12 +96,25 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public FilterType FilterMatchType { get; set; } = FilterType.Contains;
 
+		/// <summary>
+		/// Gets or sets the filter options that appear in the drop down when <see cref="FilterControlType"/> is set to <see cref="UmbrellaColumnFilterType.Options"/>.
+		/// </summary>
 		[Parameter]
 		public IReadOnlyCollection<object> FilterOptions { get; set; } = Array.Empty<object>();
 
+		/// <summary>
+		/// Gets or sets the type of the filter options.
+		/// </summary>
 		[Parameter]
 		public UmbrellaColumnFilterOptionsType? FilterOptionsType { get; set; }
 
+		/// <summary>
+		/// Gets or sets the filter option display name selector used to convert a value in the <see cref="FilterOptions"/> collection to a friendly display name.
+		/// </summary>
+		/// <remarks>
+		/// An example of where this might be required is when populating the <see cref="FilterOptions"/> collection with a list of enums. This selector can be used to
+		/// convert enum names to friendlier formatted display names.
+		/// </remarks>
 		[Parameter]
 		public Func<object, string>? FilterOptionDisplayNameSelector { get; set; }
 

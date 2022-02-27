@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
@@ -32,8 +33,26 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		Slim
 	}
 
+	/// <summary>
+	/// A grid component used to display bound items as a series of columns in a grid.
+	/// </summary>
+	/// <typeparam name="TItem">The type of the item.</typeparam>
+	/// <seealso cref="ComponentBase" />
+	/// <seealso cref="IUmbrellaGrid" />
 	public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	{
+		private class UmbrellaGridSelectableItem
+		{
+			public UmbrellaGridSelectableItem(bool isSelected, TItem item)
+			{
+				IsSelected = isSelected;
+				Item = item;
+			}
+
+			public bool IsSelected { get; set; }
+			public TItem Item { get; }
+		}
+
 		private bool _autoScrollEnabled;
 
 		[Inject]
@@ -42,17 +61,21 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <summary>
 		/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.
 		/// </summary>
-		protected UmbrellaPagination PaginationInstance { get; set; } = null!;
+		private UmbrellaPagination PaginationInstance { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the scanning process that occurs when the grid is first initialized, which looks for columns, has been completed.
 		/// </summary>
-		protected bool ColumnScanComplete { get; set; }
+		private bool ColumnScanComplete { get; set; }
 
 		/// <summary>
 		/// Gets the columns.
 		/// </summary>
-		protected List<UmbrellaColumnDefinition> Columns { get; } = new List<UmbrellaColumnDefinition>();
+		private List<UmbrellaColumnDefinition> ColumnDefinitions { get; } = new List<UmbrellaColumnDefinition>();
+
+		private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new List<UmbrellaGridSelectableItem>();
+
+		private TItem SelectedRow { get; set; } = default!;
 
 		/// <inheritdoc />
 		public string? FirstColumnPropertyName { get; private set; }
@@ -60,18 +83,18 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <summary>
 		/// Gets the filterable columns.
 		/// </summary>
-		protected IReadOnlyCollection<UmbrellaColumnDefinition>? FilterableColumns { get; private set; }
+		private IReadOnlyCollection<UmbrellaColumnDefinition>? FilterableColumns { get; set; }
 
 		/// <summary>
 		/// Gets the current <see cref="LayoutState"/> of the component.
 		/// </summary>
-		public LayoutState CurrentState { get; private set; } = LayoutState.Loading;
+		private LayoutState CurrentState { get; set; } = LayoutState.Loading;
 
 		/// <summary>
 		/// Gets or sets the total count of all items that are available to be loaded into the grid.
 		/// This will be larger than the number of items currently displayed where pagination has been applied.
 		/// </summary>
-		protected int TotalCount { get; set; }
+		private int TotalCount { get; set; }
 
 		/// <summary>
 		/// Gets the current page number. Defaults to <see cref="UmbrellaPaginationDefaults.PageNumber"/>.
@@ -84,15 +107,21 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
 
 		/// <summary>
-		/// Gets or sets the child content contained by this component. This is usually a collection of <see cref="UmbrellaColumn"/> components.
+		/// Gets or sets the columns to be displayed inside this grid component. This should be a collection of <see cref="UmbrellaColumn"/> components.
 		/// </summary>
 		[Parameter]
-		public RenderFragment<TItem>? ChildContent { get; set; }
+		public RenderFragment<TItem>? Columns { get; set; }
+
+		/// <summary>
+		/// Gets or sets the bulk actions that can be performed on items in this grid.
+		/// </summary>
+		[Parameter]
+		public RenderFragment? BulkActions { get; set; }
 
 		/// <summary>
 		/// Gets or sets the items collection displayed in the grid.
 		/// </summary>
-		public IReadOnlyCollection<TItem> Items { get; set; } = Array.Empty<TItem>();
+		private IReadOnlyCollection<TItem> Items { get; set; } = Array.Empty<TItem>();
 
 		/// <summary>
 		/// Gets or sets the message displayed when the grid is loading.
@@ -206,9 +235,28 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		public int ScrollTopOffset { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether checkboxes should be shown at the start of each row.
+		/// </summary>
+		/// <remarks>
+		/// Checkboxes on each row are used to select multiple items which can be used in conjunction with items rendered using the <see cref="BulkActions" /> property.
+		/// </remarks>
+		[Parameter]
+		public bool ShowCheckboxSelectColumn { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether radio buttons should be shown at the start of each row.
+		/// </summary>
+		/// <remarks>
+		/// This is primarily designed to allow a single row to be selected and highlighted by a user when the grid requires horizontal scrolling.
+		/// This will help a user to track a single selected row.
+		/// </remarks>
+		[Parameter]
+		public bool ShowRadioSelectColumn { get; set; }
+
+		/// <summary>
 		/// Gets the caption text.
 		/// </summary>
-		protected string CaptionText
+		private string CaptionText
 		{
 			get
 			{
@@ -226,7 +274,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
 
 		/// <inheritdoc />
-		public void AddColumnDefinition(UmbrellaColumnDefinition column) => Columns.Add(column);
+		public void AddColumnDefinition(UmbrellaColumnDefinition column) => ColumnDefinitions.Add(column);
 
 		/// <inheritdoc />
 		public void SetColumnScanCompleted()
@@ -237,9 +285,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 
 				var filterableColumns = new List<UmbrellaColumnDefinition>();
 
-				for (int i = 0; i < Columns.Count; i++)
+				for (int i = 0; i < ColumnDefinitions.Count; i++)
 				{
-					var column = Columns[i];
+					var column = ColumnDefinitions[i];
 
 					if (i == 0)
 						FirstColumnPropertyName = column.PropertyName;
@@ -281,6 +329,10 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			PageSize = pageSize ?? PageSize;
 			PageNumber = pageNumber ?? PageNumber;
 
+			SelectableItems.Clear();
+			SelectableItems.AddRange(Items.Select(x => new UmbrellaGridSelectableItem(false, x)));
+			SelectedRow = default!;
+
 			if (AutoScrollTop && _autoScrollEnabled)
 				BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
 
@@ -293,6 +345,18 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				StateHasChanged();
 		}
 
+		/// <summary>
+		/// Gets a collection of the items that have been selected determined by the checked status of the checkboxes rendered on each
+		/// row of the grid when <see cref="ShowCheckboxSelectColumn"/> is set to <see langword="true"/>.
+		/// </summary>
+		/// <returns>A collection of the selected items.</returns>
+		public IReadOnlyCollection<TItem> GetSelectedItems() => SelectableItems.Where(x => x.IsSelected).Select(x => x.Item).ToArray();
+
+		/// <summary>
+		/// Gets the selected item.
+		/// </summary>
+		public TItem GetSelectedItem() => SelectedRow;
+
 		/// <inheritdoc />
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
@@ -303,14 +367,14 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <summary>
 		/// The click event handler for the apply filters button.
 		/// </summary>
-		/// <returns></returns>
-		protected async Task ApplyFiltersClick() => await UpdateGridAsync();
+		/// <returns>An awaitable Task that completes when the operation has completed.</returns>
+		private async Task ApplyFiltersClick() => await UpdateGridAsync();
 
 		/// <summary>
 		/// The click event handler for the reset filters button.
 		/// </summary>
 		/// <returns></returns>
-		protected async Task ResetFiltersClick()
+		private async Task ResetFiltersClick()
 		{
 			ResetFiltersAndSorters();
 			await UpdateGridAsync();
@@ -321,9 +385,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// </summary>
 		/// <param name="target">The column that has been clicked.</param>
 		/// <returns>A <see cref="Task"/> that completes when the grid has been updated.</returns>
-		protected async Task ColumnHeadingClick(UmbrellaColumnDefinition target)
+		private async Task ColumnHeadingClick(UmbrellaColumnDefinition target)
 		{
-			foreach (var column in Columns)
+			foreach (var column in ColumnDefinitions)
 			{
 				if (column == target)
 				{
@@ -347,7 +411,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// The click event handler for the reload button.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> that completes when the grid has been reloaded.</returns>
-		protected async Task ReloadButtonClick()
+		private async Task ReloadButtonClick()
 		{
 			ResetFiltersAndSorters();
 			await UpdateGridAsync(PageNumber, PageSize);
@@ -358,11 +422,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// </summary>
 		/// <param name="args">The event arguments containing the updated state of the pagination component.</param>
 		/// <returns>An awaitable Task that completed when this operation has completed.</returns>
-		protected Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(args.PageNumber, args.PageSize);
+		private Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(args.PageNumber, args.PageSize);
 
 		private void ResetFiltersAndSorters()
 		{
-			foreach (var column in Columns)
+			foreach (var column in ColumnDefinitions)
 			{
 				column.FilterValue = null;
 				column.Direction = null;
@@ -384,7 +448,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				List<SortExpressionDescriptor>? lstSorters = null;
 				List<FilterExpressionDescriptor>? lstFilters = null;
 
-				foreach (var column in Columns)
+				foreach (var column in ColumnDefinitions)
 				{
 					if (string.IsNullOrWhiteSpace(column.PropertyName))
 						continue;
