@@ -366,6 +366,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			SelectableItems.Clear();
 			SelectableItems.AddRange(Items.Select(x => new UmbrellaGridSelectableItem(false, x)));
 			SelectedRow = default!;
+			CheckboxSelectColumnSelected = false;
 
 			if (AutoScrollTop && _autoScrollEnabled)
 			{
