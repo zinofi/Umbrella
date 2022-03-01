@@ -261,7 +261,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public bool ShowRadioSelectColumn { get; set; }
 
-		private void OnCheckboxSelectColumnSelectionChanged(ChangeEventArgs _) => CheckboxSelectColumnSelected = SelectableItems.Any(x => x.IsSelected);
+		private void OnCheckboxSelectColumnSelectionChanged(ChangeEventArgs _)
+		{
+			CheckboxSelectColumnSelected = SelectableItems.Any(x => x.IsSelected);
+			Console.WriteLine("Selection changed! " + CheckboxSelectColumnSelected);
+		}
 
 		/// <summary>
 		/// Gets the caption text.
