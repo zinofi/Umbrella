@@ -20,6 +20,11 @@
 		}
 	}
 
+	&__bulk-actions
+	{
+		margin-top: var(--u-grid-spacing, $defaultSpacing);
+	}
+
 	&__results
 	{
 		margin-top: var(--u-grid-spacing, $defaultSpacing);

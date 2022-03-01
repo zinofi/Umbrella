@@ -53,7 +53,7 @@
             </div>
         }
 
-        @if (BulkActions != null)
+        @if (BulkActions != null && CurrentState == LayoutState.Success)
         {
             <div class="u-grid__bulk-actions">
                 @BulkActions
@@ -79,6 +79,14 @@
                             <caption class="u-grid__caption">@CaptionText</caption>
                         }
                         <colgroup>
+                            @if (ShowCheckboxSelectColumn)
+                            {
+                                <col class="u-grid__column" />
+                            }
+                            @if (ShowRadioSelectColumn)
+                            {
+                                <col class="u-grid__column" />
+                            }
                             @foreach (var column in ColumnDefinitions)
                             {
                                 <col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
@@ -86,6 +94,14 @@
                         </colgroup>
                         <thead>
                             <tr>
+                                @if (ShowCheckboxSelectColumn)
+                                {
+                                    <th></th>
+                                }
+                                @if (ShowRadioSelectColumn)
+                                {
+                                    <th></th>
+                                }
                                 @foreach (var column in ColumnDefinitions)
                                 {
                                     <th @attributes="column.AdditionalAttributes">
@@ -114,13 +130,17 @@
                                     @if (ShowCheckboxSelectColumn)
                                     {
                                         <th class="u-grid__item-checkbox">
-                                            <input type="checkbox" @bind-value="selectableItem.IsSelected" checked="@(selectableItem!.Equals(item))" />
+                                            <div class="u-checkbox">
+                                                <input type="checkbox" @bind="selectableItem.IsSelected" class="u-checkbox__input" />
+                                            </div>
                                         </th>
                                     }
                                     @if (ShowRadioSelectColumn)
                                     {
                                         <th class="u-grid__item-radio">
-                                            <input type="radio" name="@groupName" @bind-value="SelectedRow" checked="@(SelectedRow!.Equals(item))" />
+                                            <div class="u-radio">
+                                                <input type="radio" name="@groupName" checked="@(SelectedRow?.Equals(item))" @onchange="(() => SelectedRow = item)" class="u-radio__input" />
+                                            </div>
                                         </th>
                                     }
                                     @Columns?.Invoke(item)
