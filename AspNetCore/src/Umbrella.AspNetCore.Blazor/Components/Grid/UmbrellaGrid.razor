@@ -133,7 +133,7 @@
 
                                         <th class="u-grid__item-checkbox">
                                             <div class="u-checkbox">
-                                                <input type="checkbox" id="@id" checked="@selectableItem.IsSelected" @onchange="OnCheckboxSelectColumnSelectionChanged" class="u-checkbox__input" />
+                                                <input type="checkbox" id="@id" checked="@selectableItem.IsSelected" @onchange="(e => OnCheckboxSelectColumnSelectionChanged(selectableItem))" class="u-checkbox__input" />
                                                 <label for="@id" class="u-checkbox__label">
                                                     <span class="sr-only">@item?.ToString()</span>
                                                 </label>
