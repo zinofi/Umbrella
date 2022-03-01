@@ -1,8 +1,11 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
@@ -16,7 +19,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 	// Could even have some kind of base component that encapsulates core functionality, e.g. auto-scroll.
 	// TODO: Rename to Table and CollectionView
 	// TODO: Create a PaginationMode option to replace ShowPagination: None, Top, Bottom, Both. Do the same for caption. Default to Bottom.
-	
+
 	/// <summary>
 	/// The rendering mode the <see cref="UmbrellaGrid{TItem}"/> component.
 	/// </summary>
@@ -76,6 +79,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new List<UmbrellaGridSelectableItem>();
 
 		private TItem SelectedRow { get; set; } = default!;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether an item has been selected using a row checkbox.
+		/// </summary>
+		public bool CheckboxSelectColumnSelected { get; private set; }
 
 		/// <inheritdoc />
 		public string? FirstColumnPropertyName { get; private set; }
@@ -253,6 +261,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public bool ShowRadioSelectColumn { get; set; }
 
+		private void OnCheckboxSelectColumnSelectionChanged(ChangeEventArgs _) => CheckboxSelectColumnSelected = SelectableItems.Any(x => x.IsSelected);
+
 		/// <summary>
 		/// Gets the caption text.
 		/// </summary>
@@ -264,7 +274,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				int endItem = Math.Min(PageSize, Items.Count) + (PageNumber == 1 ? 0 : startItem - 1);
 
 				if (TotalCount == 1)
+				{
 					return "Showing 1 of 1 items";
+				}
 
 				return $"Showing items {startItem} to {endItem} of {TotalCount}";
 			}
@@ -290,13 +302,19 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 					var column = ColumnDefinitions[i];
 
 					if (i == 0)
+					{
 						FirstColumnPropertyName = column.PropertyName;
+					}
 
 					if (column.Filterable)
+					{
 						filterableColumns.Add(column);
+					}
 
 					if (InitialSortPropertyName == column.PropertyName)
+					{
 						column.Direction = InitialSortDirection;
+					}
 				}
 
 				FilterableColumns = filterableColumns;
@@ -334,15 +352,19 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			SelectedRow = default!;
 
 			if (AutoScrollTop && _autoScrollEnabled)
+			{
 				BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
+			}
 
 			// Only enable auto-scrolling after the initial page load.
 			_autoScrollEnabled = true;
 
 			CurrentState = Items.Count > 0 ? LayoutState.Success : LayoutState.Empty;
 
-			if(callStateHasChanged)
+			if (callStateHasChanged)
+			{
 				StateHasChanged();
+			}
 		}
 
 		/// <summary>
@@ -361,7 +383,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (!firstRender && PaginationInstance != null)
+			{
 				await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
+			}
 		}
 
 		/// <summary>
@@ -432,7 +456,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				column.Direction = null;
 
 				if (column.PropertyName == InitialSortPropertyName)
+				{
 					column.Direction = InitialSortDirection;
+				}
 			}
 		}
 
@@ -441,7 +467,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			PageNumber = pageNumber ?? 1;
 
 			if (pageSize.HasValue)
+			{
 				PageSize = pageSize.Value;
+			}
 
 			if (OnGridOptionsChanged.HasDelegate)
 			{
@@ -451,7 +479,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				foreach (var column in ColumnDefinitions)
 				{
 					if (string.IsNullOrWhiteSpace(column.PropertyName))
+					{
 						continue;
+					}
 
 					if (column.Sortable && column.Direction.HasValue)
 					{
@@ -474,7 +504,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 						};
 
 						if (!string.IsNullOrWhiteSpace(filterValue))
+						{
 							lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, filterValue, column.FilterMatchType));
+						}
 					}
 				}
 
@@ -483,7 +515,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 					IReadOnlyCollection<T>? target = coll;
 
 					if (target is null)
+					{
 						target = Array.Empty<T>();
+					}
 
 					return target;
 				}
