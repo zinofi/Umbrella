@@ -221,6 +221,12 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		public string? ItemCssClass { get; set; }
 
 		/// <summary>
+		/// Gets or sets the CSS class applied to selected items within the grid.
+		/// </summary>
+		[Parameter]
+		public string? ItemSelectedCssClass { get; set; } = "table-primary";
+
+		/// <summary>
 		/// Gets or sets a value indicating whether the pagination controls should be rendered using smaller styling.
 		/// </summary>
 		[Parameter]

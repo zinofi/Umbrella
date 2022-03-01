@@ -126,7 +126,7 @@
                                 var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
                                 var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
 
-                                <tr class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">
+                                <tr class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "") @(isCurrentItemSelected && !string.IsNullOrWhiteSpace(ItemSelectedCssClass) ? ItemSelectedCssClass : "")">
                                     @if (ShowCheckboxSelectColumn)
                                     {
                                         string id = Guid.NewGuid().ToString("N");
