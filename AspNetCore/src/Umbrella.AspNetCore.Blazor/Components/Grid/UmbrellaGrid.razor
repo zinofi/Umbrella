@@ -96,7 +96,16 @@
                             <tr>
                                 @if (ShowCheckboxSelectColumn)
                                 {
-                                    <th></th>
+                                    string id = Guid.NewGuid().ToString("N");
+
+                                    <th class="u-grid__select-all-items-checkbox">
+                                        <div class="u-checkbox">
+                                            <input type="checkbox" id="@id" checked="@CheckboxSelectColumnSelected" @onchange="OnCheckboxSelectColumnSelectedChanged" class="u-checkbox__input" />
+                                            <label for="@id" class="u-checkbox__label">
+                                                <span class="sr-only">@(CheckboxSelectColumnSelected ? "Deselect All" : "Select All")</span>
+                                            </label>
+                                        </div>
+                                    </th>
                                 }
                                 @if (ShowRadioSelectColumn)
                                 {

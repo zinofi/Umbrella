@@ -271,8 +271,12 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		{
 			selectableItem.IsSelected = !selectableItem.IsSelected;
 			CheckboxSelectColumnSelected = SelectableItems.Any(x => x.IsSelected);
+		}
 
-			Console.WriteLine("Selection changed! " + CheckboxSelectColumnSelected);
+		private void OnCheckboxSelectColumnSelectedChanged(ChangeEventArgs e)
+		{
+			CheckboxSelectColumnSelected = !CheckboxSelectColumnSelected;
+			SelectableItems.ForEach(x => x.IsSelected = CheckboxSelectColumnSelected);
 		}
 
 		/// <summary>
