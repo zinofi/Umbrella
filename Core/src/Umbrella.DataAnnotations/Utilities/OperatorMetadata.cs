@@ -19,7 +19,7 @@ namespace Umbrella.DataAnnotations.Utilities
 		/// <summary>
 		/// Returns true if the validation check passes.
 		/// </summary>
-		public Func<object, object, bool> IsValid { get; private set; } = null!;
+		public Func<object, object, bool, bool> IsValid { get; private set; } = null!;
 
 		/// <summary>
 		/// Initializes the <see cref="OperatorMetadata"/> class.
@@ -32,8 +32,11 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.EqualTo, new OperatorMetadata()
 					{
 						ErrorMessage = "equal to",
-						IsValid = (value, dependentValue) =>
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
 						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
 							if (value is null && dependentValue is null)
 								return true;
 							else if (value is null && dependentValue != null)
@@ -47,8 +50,11 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.NotEqualTo, new OperatorMetadata()
 					{
 						ErrorMessage = "not equal to",
-						IsValid = (value, dependentValue) =>
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
 						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
 							if (value is null && dependentValue != null)
 								return true;
 							else if (value is null && dependentValue is null)
@@ -62,8 +68,11 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.GreaterThan, new OperatorMetadata()
 					{
 						ErrorMessage = "greater than",
-						IsValid = (value, dependentValue) =>
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
 						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
 							if (value is null || dependentValue is null)
 								return false;
 
@@ -75,8 +84,11 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.LessThan, new OperatorMetadata()
 					{
 						ErrorMessage = "less than",
-						IsValid = (value, dependentValue) =>
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
 						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
 							if (value is null || dependentValue is null)
 								return false;
 
@@ -88,15 +100,18 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.GreaterThanOrEqualTo, new OperatorMetadata()
 					{
 						ErrorMessage = "greater than or equal to",
-						IsValid = (value, dependentValue) =>
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
 						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
 							if (value is null && dependentValue is null)
 								return true;
 
 							if (value is null || dependentValue is null)
 								return false;
 
-							return Get(Operator.EqualTo).IsValid(value, dependentValue) || Comparer<object>.Default.Compare(value, dependentValue) >= 1;
+							return Get(Operator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) >= 1;
 						}
 					}
 				},
@@ -104,15 +119,18 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.LessThanOrEqualTo, new OperatorMetadata()
 					{
 						ErrorMessage = "less than or equal to",
-						IsValid = (value, dependentValue) =>
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
 						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
 							if (value is null && dependentValue is null)
 								return true;
 
 							if (value is null || dependentValue is null)
 								return false;
 
-							return Get(Operator.EqualTo).IsValid(value, dependentValue) || Comparer<object>.Default.Compare(value, dependentValue) <= -1;
+							return Get(Operator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) <= -1;
 						}
 					}
 				},
@@ -120,14 +138,26 @@ namespace Umbrella.DataAnnotations.Utilities
 					Operator.RegExMatch, new OperatorMetadata()
 					{
 						ErrorMessage = "a match to",
-						IsValid = (value, dependentValue) => Regex.Match((value ?? "").ToString(), dependentValue.ToString()).Success
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
+							return Regex.Match((value ?? "").ToString(), dependentValue?.ToString() ?? "").Success;
+						}
 					}
 				},
 				{
 					Operator.NotRegExMatch, new OperatorMetadata()
 					{
 						ErrorMessage = "not a match to",
-						IsValid = (value, dependentValue) => !Regex.Match((value ?? "").ToString(), dependentValue.ToString()).Success
+						IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
+							return !Regex.Match((value ?? "").ToString(), dependentValue?.ToString() ?? "").Success;
+						}
 					}
 				}
 			};

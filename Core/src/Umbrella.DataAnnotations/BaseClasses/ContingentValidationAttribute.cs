@@ -17,6 +17,13 @@ namespace Umbrella.DataAnnotations.BaseClasses
 		public string DependentProperty { get; private set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether validation will succeed if either
+		/// the value on which this attrubute has been applied is null or the value of
+		/// the <see cref="DependentProperty"/> is null.
+		/// </summary>
+		public bool ReturnTrueOnEitherNull { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="ContingentValidationAttribute"/> class.
 		/// </summary>
 		/// <param name="dependentProperty">The dependent property.</param>

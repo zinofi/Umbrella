@@ -27,6 +27,6 @@ namespace Umbrella.DataAnnotations
 
 		/// <inheritdoc />
 		public override bool IsValid(object value, object dependentValue, object container)
-			=> !Metadata.IsValid(dependentValue, DependentValue) || ValidationHelper.IsNonEmptyCollection(value);
+			=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || ValidationHelper.IsNonEmptyCollection(value);
 	}
 }

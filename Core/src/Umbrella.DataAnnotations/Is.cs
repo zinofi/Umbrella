@@ -55,7 +55,7 @@ namespace Umbrella.DataAnnotations
 			if (PassOnNull && (value == null || dependentValue == null))
 				return true;
 
-			return _metadata.IsValid(value, dependentValue);
+			return _metadata.IsValid(value, dependentValue, ReturnTrueOnEitherNull);
 		}
 
 		/// <inheritdoc />
