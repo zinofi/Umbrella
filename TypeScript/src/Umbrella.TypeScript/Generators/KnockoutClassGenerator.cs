@@ -259,7 +259,7 @@ namespace Umbrella.TypeScript.Generators
 						{
 							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && !(typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) && !(typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0), message: {message} }},", indent);
+							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)), message: {message} }},", indent);
 						}
 						break;
 					case IsAttribute attr:
