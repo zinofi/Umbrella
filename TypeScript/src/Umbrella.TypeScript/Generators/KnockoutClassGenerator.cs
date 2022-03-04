@@ -277,7 +277,7 @@ namespace Umbrella.TypeScript.Generators
 								_ => "any"
 							};
 
-							validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => value === undefined || value === null || value {@operator} this.{dependentPropertyName}!, message: {message} }},", indent);
+							validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!, message: {message} }},", indent);
 						}
 						break;
 				}

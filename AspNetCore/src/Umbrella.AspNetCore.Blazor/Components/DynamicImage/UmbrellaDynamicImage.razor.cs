@@ -55,7 +55,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage
 		public string? SizeWidths { get; set; }
 
 		/// <summary>
-		/// Gets or sets the prefix to be stripped from the <see cref="UmbrellaResponsiveImageBase.Url"/>.
+		/// Gets or sets the prefix to be stripped from the <see cref="UmbrellaResponsiveImage.Url"/>.
 		/// </summary>
 		[Parameter]
 		public string? StripPrefix { get; set; }
