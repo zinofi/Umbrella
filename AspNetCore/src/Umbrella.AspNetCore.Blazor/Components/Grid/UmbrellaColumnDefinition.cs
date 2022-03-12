@@ -27,7 +27,22 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <param name="propertyName">Name of the property.</param>
 		/// <param name="filterMemberPathOverride">The filter member override.</param>
 		/// <param name="sorterMemberPathOverride">The sorter member override.</param>
-		public UmbrellaColumnDefinition(string? heading, int? percentageWidth, bool sortable, bool filterable, IReadOnlyCollection<object> filterOptions, Func<object, string>? filterOptionDisplayNameSelector, IReadOnlyDictionary<string, object> additionalAttributes, UmbrellaColumnFilterType filterControlType, FilterType filterMatchType, UmbrellaColumnFilterOptionsType? filterOptionsType, string? propertyName, string? filterMemberPathOverride, string? sorterMemberPathOverride)
+		/// <param name="displayMode">The display mode.</param>
+		public UmbrellaColumnDefinition(
+			string? heading,
+			int? percentageWidth,
+			bool sortable,
+			bool filterable,
+			IReadOnlyCollection<object> filterOptions,
+			Func<object, string>? filterOptionDisplayNameSelector,
+			IReadOnlyDictionary<string, object> additionalAttributes,
+			UmbrellaColumnFilterType filterControlType,
+			FilterType filterMatchType,
+			UmbrellaColumnFilterOptionsType? filterOptionsType,
+			string? propertyName,
+			string? filterMemberPathOverride,
+			string? sorterMemberPathOverride,
+			UmbrellaColumnDisplayMode displayMode)
 		{
 			Heading = heading;
 			PercentageWidth = percentageWidth;
@@ -42,6 +57,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			PropertyName = propertyName;
 			FilterMemberPathOverride = filterMemberPathOverride;
 			SorterMemberPathOverride = sorterMemberPathOverride;
+			DisplayMode = displayMode;
 
 			if (FilterOptions.Count > 0)
 			{
@@ -78,6 +94,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// If this value is <see langword="null"/>, the <see cref="PropertyName"/> will be used.
 		/// </remarks>
 		public string? SorterMemberPathOverride { get; }
+
+		/// <summary>
+		/// Gets the display mode.
+		/// </summary>
+		public UmbrellaColumnDisplayMode DisplayMode { get; }
 
 		/// <summary>
 		/// Gets the column heading display text.

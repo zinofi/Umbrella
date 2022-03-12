@@ -317,6 +317,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 				{
 					var column = ColumnDefinitions[i];
 
+					if (column.DisplayMode == UmbrellaColumnDisplayMode.None)
+					{
+						continue;
+					}
+
 					if (i == 0)
 					{
 						FirstColumnPropertyName = column.PropertyName;
@@ -495,7 +500,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 
 				foreach (var column in ColumnDefinitions)
 				{
-					if (string.IsNullOrWhiteSpace(column.PropertyName))
+					if (string.IsNullOrWhiteSpace(column.PropertyName) || column.DisplayMode == UmbrellaColumnDisplayMode.None)
 					{
 						continue;
 					}

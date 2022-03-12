@@ -156,10 +156,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		public string? Policy { get; set; }
 
 		/// <summary>
-		/// Gets a value indicating whether this column is visible.
+		/// Gets or sets a value which determines how this column will be rendered.
 		/// </summary>
+		/// <remarks>
+		/// Defaults to <see cref="UmbrellaColumnDisplayMode.Full"/>.
+		/// </remarks>
 		[Parameter]
-		public bool IsVisible { get; set; } = true;
+		public UmbrellaColumnDisplayMode DisplayMode { get; set; }
 
 		/// <summary>
 		/// Gets a value indicating whether this is the first column in the grid.
@@ -172,13 +175,13 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			ClaimsPrincipal claimsPrincipal = await AuthHelper.GetCurrentClaimsPrincipalAsync();
 
 			if (!await AuthorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
-				IsVisible = false;
+				DisplayMode = UmbrellaColumnDisplayMode.None;
 
 			if (ScanMode)
 			{
-				if (IsVisible)
+				if (DisplayMode != UmbrellaColumnDisplayMode.None)
 				{
-					var definition = new UmbrellaColumnDefinition(Heading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, PropertyName, FilterMemberPathOverride, SorterMemberPathOverride);
+					var definition = new UmbrellaColumnDefinition(Heading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, PropertyName, FilterMemberPathOverride, SorterMemberPathOverride, DisplayMode);
 					UmbrellaGridInstance.AddColumnDefinition(definition);
 				}
 			}
