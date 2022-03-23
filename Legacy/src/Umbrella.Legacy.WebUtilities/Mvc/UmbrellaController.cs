@@ -1,5 +1,9 @@
-﻿using System.Web.Mvc;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc
 {
@@ -25,5 +29,26 @@ namespace Umbrella.Legacy.WebUtilities.Mvc
 			Log = logger;
 		}
 		#endregion
+
+		/// <summary>
+		/// Renders the specified view to a string.
+		/// </summary>
+		/// <param name="viewName">Name of the view.</param>
+		/// <param name="model">The model.</param>
+		/// <returns>An HTML string of the rendered view.</returns>
+		protected string RenderViewToString(string viewName, object model)
+		{
+			ViewData.Model = model;
+
+			using var sw = new StringWriter();
+
+			ViewEngineResult viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
+			var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
+
+			viewResult.View.Render(viewContext, sw);
+			viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
+
+			return sw.GetStringBuilder().ToString();
+		}
 	}
 }
