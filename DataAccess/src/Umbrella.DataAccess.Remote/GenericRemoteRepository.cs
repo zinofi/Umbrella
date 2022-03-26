@@ -68,7 +68,7 @@ namespace Umbrella.DataAccess.Remote
 
 		/// <inheritdoc />
 		public virtual Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
-			=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync, FindAllSlimEndpoint);
+			=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync);
 
 		/// <inheritdoc />
 		public virtual async Task<IHttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
