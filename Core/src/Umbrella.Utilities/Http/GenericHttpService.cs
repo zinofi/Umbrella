@@ -17,11 +17,6 @@ namespace Umbrella.Utilities.Http
 	public class GenericHttpService : IGenericHttpService
 	{
 		/// <summary>
-		/// Gets the patch HTTP method.
-		/// </summary>
-		protected static HttpMethod PatchHttpMethod { get; } = new HttpMethod("PATCH");
-
-		/// <summary>
 		/// Gets the logger
 		/// </summary>
 		protected ILogger Logger { get; }
@@ -174,7 +169,7 @@ namespace Umbrella.Utilities.Http
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
 				string json = UmbrellaStatics.SerializeJson(item!);
-				var request = new HttpRequestMessage(PatchHttpMethod, targetUrl)
+				var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl)
 				{
 					Content = new StringContent(json, Encoding.UTF8, "application/json")
 				};
@@ -207,7 +202,7 @@ namespace Umbrella.Utilities.Http
 			{
 				string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
-				var request = new HttpRequestMessage(PatchHttpMethod, targetUrl);
+				var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl);
 
 				HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 

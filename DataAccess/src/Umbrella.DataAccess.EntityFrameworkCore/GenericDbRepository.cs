@@ -13,6 +13,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore

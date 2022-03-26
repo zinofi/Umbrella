@@ -1,9 +1,12 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.DataAnnotations.Options;
 using Umbrella.Utilities.Exceptions;
@@ -13,7 +16,7 @@ namespace Umbrella.Utilities.DataAnnotations
 	/// <summary>
 	/// A validator used to recursively validate an object graph which uses <see cref="ValidationAttribute"/>s.
 	/// </summary>
-	/// <seealso cref="Umbrella.Utilities.DataAnnotations.Abstractions.IObjectGraphValidator" />
+	/// <seealso cref="IObjectGraphValidator" />
 	public class ObjectGraphValidator : IObjectGraphValidator
 	{
 		/// <summary>
@@ -40,7 +43,7 @@ namespace Umbrella.Utilities.DataAnnotations
 		}
 
 		/// <inheritdoc />
-		public virtual (bool isValid, IReadOnlyCollection<ValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false)
+		public (bool isValid, IReadOnlyCollection<ValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false)
 		{
 			Guard.ArgumentNotNull(instance, nameof(instance));
 			try
@@ -52,10 +55,14 @@ namespace Umbrella.Utilities.DataAnnotations
 				void ValidateObject(object value, ValidationContext? context = null)
 				{
 					if (value is null)
+					{
 						return;
+					}
 
 					if (!lstVisited.Add(value))
+					{
 						return;
+					}
 
 					// Check if we are dealing with a collection first as we will want to dig into it and validate each item recursively.
 					if (value is IEnumerable enumerable)
@@ -76,7 +83,9 @@ namespace Umbrella.Utilities.DataAnnotations
 					{
 						// Skip any properties we shouldn't be dealing with
 						if (pi.PropertyType == typeof(string) || pi.PropertyType.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(pi.PropertyType) ?? false))
+						{
 							continue;
+						}
 
 						object child = pi.GetValue(value);
 						ValidateObject(child);

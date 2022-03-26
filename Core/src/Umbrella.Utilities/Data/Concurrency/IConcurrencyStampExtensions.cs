@@ -1,6 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
 
-namespace Umbrella.DataAccess.Abstractions
+using System;
+
+namespace Umbrella.Utilities.Data.Concurrency
 {
 	/// <summary>
 	/// Extensions for the <see cref="IConcurrencyStamp"/> type.
@@ -10,7 +13,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <summary>
 		/// Updated the <see cref="IConcurrencyStamp.ConcurrencyStamp" /> value.
 		/// </summary>
-		/// <param name="target">The entity whose concurrency stamp will be updated.</param>
+		/// <param name="target">The item whose concurrency stamp will be updated.</param>
 		public static void UpdateConcurrencyStamp(this IConcurrencyStamp target) => target.ConcurrencyStamp = Guid.NewGuid().ToString();
 	}
 }

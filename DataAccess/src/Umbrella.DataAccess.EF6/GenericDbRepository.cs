@@ -14,6 +14,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Data.Concurrency;
 
 namespace Umbrella.DataAccess.EF6
 {

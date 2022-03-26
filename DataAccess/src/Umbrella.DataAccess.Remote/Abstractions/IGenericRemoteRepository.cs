@@ -1,18 +1,20 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.DataAnnotations.Enumerations;
 using Umbrella.Utilities.Http.Abstractions;
 
 namespace Umbrella.DataAccess.Remote.Abstractions
 {
-	// TODO: Create a read-only remote repo?
-	// TODO: More generic overloads to avoid this issues.
-
 	/// <summary>
 	/// A generic repository used to query and update a remote resource.
 	/// </summary>
@@ -25,10 +27,10 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 	/// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 	/// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
 	public interface IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
-		where TItem : class, IRemoteItem<TIdentifier>
+		where TItem : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
-		where TSlimItem : class, IRemoteItem<TIdentifier>
-		where TUpdateItem : class, IRemoteItem<TIdentifier>
+		where TSlimItem : class, IKeyedItem<TIdentifier>
+		where TUpdateItem : class, IKeyedItem<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	{
 		/// <summary>
@@ -37,9 +39,9 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="item">The item.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
-		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
+		/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true);
+		Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
 
 		/// <summary>
 		/// Deletes the specified resource from the remote server.
@@ -90,8 +92,8 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="item">The item.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
-		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
+		/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true);
+		Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
 	}
 }

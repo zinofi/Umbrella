@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Umbrella.DataAccess.Remote.Abstractions
+namespace Umbrella.Utilities.Data.Abstractions
 {
 	/// <summary>
-	/// An item that can be loaded from a remote location.
+	/// An item that has a key of type <typeparamref name="TIdentifier"/>.
 	/// </summary>
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
-	public interface IRemoteItem<TIdentifier>
+	public interface IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 	{
 		/// <summary>

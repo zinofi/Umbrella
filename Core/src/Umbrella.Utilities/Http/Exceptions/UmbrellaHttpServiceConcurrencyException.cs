@@ -1,12 +1,14 @@
 ﻿using System;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Http.Exceptions
 {
 	/// <summary>
-	/// Represents a conurrency error that occurs during execution of a HTTP Request.
+	/// Represents a concurrency error that occurs during execution of a HTTP Request.
 	/// </summary>
-	/// <seealso cref="UmbrellaHttpServiceAccessException" />
-	public class UmbrellaHttpServiceConcurrencyException : UmbrellaHttpServiceAccessException
+	/// <remarks>By design, this does not derive from <see cref="UmbrellaHttpServiceAccessException"/> and as such will have to be handled separately.</remarks>
+	/// <seealso cref="UmbrellaConcurrencyException" />
+	public class UmbrellaHttpServiceConcurrencyException : UmbrellaConcurrencyException
 	{
 		internal UmbrellaHttpServiceConcurrencyException()
 		{

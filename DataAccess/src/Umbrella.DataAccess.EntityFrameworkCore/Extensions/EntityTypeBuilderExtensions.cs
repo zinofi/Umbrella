@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Umbrella.DataAccess.Abstractions;
+using Umbrella.Utilities.Data.Concurrency;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 {

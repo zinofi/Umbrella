@@ -112,6 +112,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddTransient(typeof(Lazy<>), typeof(LazyProxy<>));
 			services.AddSingleton<IUmbrellaHostingEnvironment, UmbrellaConsoleHostingEnvironment>();
 			services.AddSingleton<IObjectGraphValidator, ObjectGraphValidator>();
+			services.AddSingleton<IUmbrellaValidator, UmbrellaValidator>();
 			services.AddSingleton<IDataExpressionFactory, DataExpressionFactory>();
 			services.AddSingleton<IJwtUtility, JwtUtility>();
 			services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();

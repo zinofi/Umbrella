@@ -1,20 +1,22 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.Remote.Abstractions;
+using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;
+using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
-using Umbrella.Utilities.Http;
+using Umbrella.Utilities.DataAnnotations.Enumerations;
 using Umbrella.Utilities.Http.Abstractions;
-using Umbrella.Utilities.Http.Exceptions;
 
 namespace Umbrella.DataAccess.Remote
 {
@@ -29,34 +31,13 @@ namespace Umbrella.DataAccess.Remote
 	/// <typeparam name="TCreateResult">The type of the create result.</typeparam>
 	/// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 	/// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
-	public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
-		where TItem : class, IRemoteItem<TIdentifier>
-		where TSlimItem : class, IRemoteItem<TIdentifier>
-		where TUpdateItem : class, IRemoteItem<TIdentifier>
+	public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : GenericRemoteDataService, IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
+		where TItem : class, IKeyedItem<TIdentifier>
+		where TSlimItem : class, IKeyedItem<TIdentifier>
+		where TUpdateItem : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	{
-		/// <summary>
-		/// Gets the API URL.
-		/// </summary>
-		/// <remarks>This is relative to the server and should not have a leading or trailing slash, e.g. api/v1/people</remarks>
-		protected abstract string ApiUrl { get; }
-
-		/// <summary>
-		/// Gets the logger.
-		/// </summary>
-		protected ILogger Logger { get; }
-
-		/// <summary>
-		/// Gets the remote service.
-		/// </summary>
-		protected IGenericHttpService RemoteService { get; }
-
-		/// <summary>
-		/// Gets the HTTP service utility.
-		/// </summary>
-		protected IGenericHttpServiceUtility HttpServiceUtility { get; }
-
 		/// <summary>
 		/// The endpoint called by the <see cref="FindAllSlimAsync(int, int, CancellationToken, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?, FilterExpressionCombinator)"/>
 		/// method.
@@ -72,63 +53,22 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="logger">The logger.</param>
 		/// <param name="httpService">The HTTP service.</param>
 		/// <param name="httpServiceUtility">The HTTP service utility.</param>
+		/// <param name="validator">The validator.</param>
 		public GenericRemoteRepository(
 			ILogger logger,
 			IGenericHttpService httpService,
-			IGenericHttpServiceUtility httpServiceUtility)
+			IGenericHttpServiceUtility httpServiceUtility,
+			IUmbrellaValidator validator) : base(logger, httpService, httpServiceUtility, validator)
 		{
-			Logger = logger;
-			RemoteService = httpService;
-			HttpServiceUtility = httpServiceUtility;
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(id, nameof(id));
-
-			try
-			{
-				var parameters = new Dictionary<string, string>
-				{
-					["id"] = id.ToString()
-				};
-
-				IHttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
-
-				if (result.Success && result.Result != null)
-					await AfterItemLoadedAsync(result.Result, cancellationToken).ConfigureAwait(false);
-
-				return result;
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There was a problem finding the specified item.", exc);
-			}
-		}
+		public virtual Task<IHttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+			=> GetByIdAsync<TItem, TIdentifier>(id, cancellationToken, AfterItemLoadedAsync);
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
-
-				IHttpCallResult<TPaginatedResultModel> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + FindAllSlimEndpoint, parameters, cancellationToken).ConfigureAwait(false);
-
-				if (result.Success && result.Result != null)
-					await AfterAllItemsLoadedAsync(result.Result.Items, cancellationToken).ConfigureAwait(false);
-
-				return result;
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, sorters, filters, filterCombinator }, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There was a problem finding the items using the specified parameters.", exc);
-			}
-		}
+		public virtual Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+			=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync, FindAllSlimEndpoint);
 
 		/// <inheritdoc />
 		public virtual async Task<IHttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
@@ -141,7 +81,7 @@ namespace Umbrella.DataAccess.Remote
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
-				throw new UmbrellaDataAccessException("There was a problem finding the total count.", exc);
+				throw new UmbrellaRemoteDataAccessException("There was a problem finding the total count.", exc);
 			}
 		}
 
@@ -162,156 +102,21 @@ namespace Umbrella.DataAccess.Remote
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: true))
 			{
-				throw new UmbrellaDataAccessException("There was a problem determining if the specified item exists.", exc);
+				throw new UmbrellaRemoteDataAccessException("There was a problem determining if the specified item exists.", exc);
 			}
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(item, nameof(item));
-
-			try
-			{
-				return await SaveCoreAsync<TCreateItem, TCreateResult>(HttpMethod.Post, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
-			}
-			catch (UmbrellaHttpServiceAccessException exc)
-			{
-				throw new UmbrellaDataAccessConcurrencyException("There has been a concurrency error whilst creating the specified item.", exc);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There was a problem creating the specified item.", exc);
-			}
-		}
+		public virtual Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
+			=> PostAsync<TCreateItem, TCreateResult>(item, cancellationToken, sanitize, validationType, AfterItemCreatedAsync);
 
 		/// <inheritdoc />
-		public virtual async Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, bool validate = true)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(item, nameof(item));
-
-			try
-			{
-				if (item.Id.Equals(default!))
-					throw new Exception("The item being updated must have an Id");
-
-				return await SaveCoreAsync<TUpdateItem, TUpdateResult>(HttpMethod.Put, item, cancellationToken, sanitize, validate).ConfigureAwait(false);
-			}
-			catch (UmbrellaHttpServiceAccessException exc)
-			{
-				throw new UmbrellaDataAccessConcurrencyException("There has been a concurrency error whilst updating the specified item.", exc);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { item.Id }, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There was a problem updating the specified item.", exc);
-			}
-		}
+		public virtual Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
+			=> PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, cancellationToken, sanitize, validationType, AfterItemUpdatedAsync);
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(id, nameof(id));
-
-			try
-			{
-				var parameters = new Dictionary<string, string>
-				{
-					["id"] = id.ToString()
-				};
-
-				IHttpCallResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
-
-				if (result.Success)
-					await AfterItemDeletedAsync(id, cancellationToken).ConfigureAwait(false);
-
-				return result;
-			}
-			catch (UmbrellaHttpServiceAccessException exc)
-			{
-				throw new UmbrellaDataAccessConcurrencyException("There has been a concurrency error whilst deleting the specified item.", exc);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: true))
-			{
-				throw new UmbrellaDataAccessException("There was a problem deleting the specified item.", exc);
-			}
-		}
-
-		#region Protected Methods		
-		/// <summary>
-		/// Performs the core save operation logic.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="TResult">The type of the result.</typeparam>
-		/// <param name="method">The method.</param>
-		/// <param name="item">The item.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
-		/// <param name="validate">if set to <c>true</c> validated the <paramref name="item"/> before saving.</param>
-		/// <returns>The result of the save operation.</returns>
-		protected virtual async Task<(IHttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<T, TResult>(HttpMethod method, T item, CancellationToken cancellationToken, bool sanitize, bool validate)
-		{
-			if (item != null)
-			{
-				if (sanitize)
-					await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
-
-				if (validate)
-				{
-					var (isValid, results) = await ValidateItemAsync(item, cancellationToken).ConfigureAwait(false);
-
-					if (!isValid)
-						return (new HttpCallResult<TResult>(false), results);
-				}
-			}
-
-			IHttpCallResult<TResult> result = method switch
-			{
-				var _ when method == HttpMethod.Post => await RemoteService.PostAsync<T, TResult>(ApiUrl, item, cancellationToken: cancellationToken).ConfigureAwait(false),
-				var _ when method == HttpMethod.Put => await RemoteService.PutAsync<T, TResult>(ApiUrl, item, cancellationToken: cancellationToken).ConfigureAwait(false),
-				_ => throw new NotSupportedException()
-			};
-
-			if (result.Success && item != null)
-				await AfterItemSavedAsync(item, cancellationToken).ConfigureAwait(false);
-
-			return (result, result.ProblemDetails?.ToValidationResults() ?? Array.Empty<ValidationResult>());
-		}
-
-		/// <summary>
-		/// Sanitizes the item.
-		/// </summary>
-		/// <param name="item">The item.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>A task to await sanitization of the item.</returns>
-		protected virtual Task SanitizeItemAsync(object item, CancellationToken cancellationToken)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			return Task.CompletedTask;
-		}
-
-		/// <summary>
-		/// Overriding this method allows you to perform custom validation on the item.
-		/// By default, this calls into the <see cref="Validator.TryValidateObject(object, ValidationContext, ICollection{ValidationResult}, bool)"/> method.
-		/// By design, this doesn't recursively perform validation on the entity. If this is required, override this method and use the <see cref="IObjectGraphValidator"/>
-		/// by injecting it as a service or perform more extensive validation elsewhere.
-		/// </summary>
-		/// <param name="item">The item.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-		protected virtual Task<(bool isValid, List<ValidationResult> results)> ValidateItemAsync(object item, CancellationToken cancellationToken)
-		{
-			var lstResult = new List<ValidationResult>();
-
-			var ctx = new ValidationContext(item);
-
-			bool isValid = Validator.TryValidateObject(item, ctx, lstResult, true);
-
-			return Task.FromResult((isValid, lstResult));
-		}
+		public virtual Task<IHttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
+			=> DeleteAsync(id, cancellationToken, AfterItemDeletedAsync);
 
 		/// <summary>
 		/// Override this in a derived type to perform an operation on the item after it has been loaded.
@@ -319,7 +124,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="item">The item.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected virtual Task AfterItemLoadedAsync(object item, CancellationToken cancellationToken)
+		protected virtual Task AfterItemLoadedAsync(TItem item, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -331,7 +136,7 @@ namespace Umbrella.DataAccess.Remote
 		/// </summary>
 		/// <param name="items">The items.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		protected virtual Task AfterAllItemsLoadedAsync(IEnumerable<object> items, CancellationToken cancellationToken)
+		protected virtual Task AfterAllItemsLoadedAsync(IEnumerable<TSlimItem> items, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -339,12 +144,27 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <summary>
-		/// Overriding this method allows you to perform any work after the item has been saved.
+		/// Overriding this method allows you to perform any work after the item has been created.
 		/// </summary>
 		/// <param name="item">The item.</param>
+		/// <param name="result">The result.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected virtual Task AfterItemSavedAsync(object item, CancellationToken cancellationToken)
+		protected virtual Task AfterItemCreatedAsync(TCreateItem item, TCreateResult result, CancellationToken cancellationToken)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Overriding this method allows you to perform any work after the item has been updated.
+		/// </summary>
+		/// <param name="item">The item.</param>
+		/// <param name="result">The result.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
+		protected virtual Task AfterItemUpdatedAsync(TUpdateItem item, TUpdateResult result, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -363,6 +183,5 @@ namespace Umbrella.DataAccess.Remote
 
 			return Task.CompletedTask;
 		}
-		#endregion
 	}
 }
