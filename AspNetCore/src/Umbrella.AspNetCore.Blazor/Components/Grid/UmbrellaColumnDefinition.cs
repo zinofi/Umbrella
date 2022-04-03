@@ -15,6 +15,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition"/> class.
 		/// </summary>
 		/// <param name="heading">The heading.</param>
+		/// <param name="shortHeading">The short heading.</param>
 		/// <param name="percentageWidth">Width of the percentage.</param>
 		/// <param name="sortable">if set to <c>true</c> allows the column to be sortable.</param>
 		/// <param name="filterable">if set to <c>true</c> allows the column to be filterable.</param>
@@ -30,6 +31,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// <param name="displayMode">The display mode.</param>
 		public UmbrellaColumnDefinition(
 			string? heading,
+			string? shortHeading,
 			int? percentageWidth,
 			bool sortable,
 			bool filterable,
@@ -45,6 +47,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			UmbrellaColumnDisplayMode displayMode)
 		{
 			Heading = heading;
+			ShortHeading = shortHeading;
 			PercentageWidth = percentageWidth;
 			Sortable = sortable;
 			Filterable = filterable;
@@ -104,6 +107,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// Gets the column heading display text.
 		/// </summary>
 		public string? Heading { get; }
+
+		/// <summary>
+		/// Gets the column short heading display text.
+		/// </summary>
+		public string? ShortHeading { get; }
 
 		/// <summary>
 		/// Gets the percentage width of the column.

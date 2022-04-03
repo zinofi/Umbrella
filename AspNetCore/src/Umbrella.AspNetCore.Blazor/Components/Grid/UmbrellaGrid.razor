@@ -116,14 +116,16 @@
                                     <th @attributes="column.AdditionalAttributes">
                                         @if (column.Sortable)
                                         {
-                                            <a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault>
-                                                @column.Heading
+                                            <a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault title="@column.Heading">
+                                                @(column.ShortHeading ?? column.Heading)
                                                 <i class="@column.DirectionCssClass"></i>
                                             </a>
                                         }
                                         else
                                         {
-                                            @column.Heading
+                                            <span title="@column.Heading">
+                                            @(column.ShortHeading ?? column.Heading)
+                                            </span>
                                         }
                                     </th>
                                 }

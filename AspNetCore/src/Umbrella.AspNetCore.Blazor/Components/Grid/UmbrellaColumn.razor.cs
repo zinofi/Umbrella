@@ -67,6 +67,15 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		public string? Heading { get; set; }
 
 		/// <summary>
+		/// Gets the column short heading display text to be applied to the column heading only.
+		/// </summary>
+		/// <remarks>
+		/// If not specified, <see cref="Heading"/> is used. The <see cref="Heading"/> property will always be used for the filter field
+		/// name and will also be shown as a tooltip for the column heading where this property has a value.
+		/// </remarks>
+		public string? ShortHeading { get; set; }
+
+		/// <summary>
 		/// Gets or sets the percentage width.
 		/// </summary>
 		[Parameter]
@@ -181,7 +190,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 			{
 				if (DisplayMode != UmbrellaColumnDisplayMode.None)
 				{
-					var definition = new UmbrellaColumnDefinition(Heading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, PropertyName, FilterMemberPathOverride, SorterMemberPathOverride, DisplayMode);
+					var definition = new UmbrellaColumnDefinition(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, PropertyName, FilterMemberPathOverride, SorterMemberPathOverride, DisplayMode);
 					UmbrellaGridInstance.AddColumnDefinition(definition);
 				}
 			}
