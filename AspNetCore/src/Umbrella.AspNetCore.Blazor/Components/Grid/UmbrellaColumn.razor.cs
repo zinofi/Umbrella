@@ -73,6 +73,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		/// If not specified, <see cref="Heading"/> is used. The <see cref="Heading"/> property will always be used for the filter field
 		/// name and will also be shown as a tooltip for the column heading where this property has a value.
 		/// </remarks>
+		[Parameter]
 		public string? ShortHeading { get; set; }
 
 		/// <summary>
