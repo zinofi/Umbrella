@@ -15,12 +15,16 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 		/// <typeparam name="TProperty">The type of the property.</typeparam>
 		/// <param name="property">The property to check for changes.</param>
 		/// <returns><see langword="true"/> if the value of the <paramref name="property"/> has changed; otherwise <see langword="false"/></returns>
+		/// <remarks>This method will return <see langword="true"/> when the property has been modified from the default value for the property's type
+		/// even when the entity is new which is <b>NOT</b> the case when checking for modifications using the <see cref="PropertyEntry.IsModified"/> property.
+		/// This will always return <see langword="false"/> for new entities.
+		/// </remarks>
 		public static bool HasChanged<TEntity, TProperty>(this PropertyEntry<TEntity, TProperty> property)
 			where TEntity : class
 		{
 			TProperty currentValue = property.CurrentValue;
 			TProperty originalValue = property.OriginalValue;
-
+			
 			if (currentValue is null && originalValue is null)
 				return false;
 
