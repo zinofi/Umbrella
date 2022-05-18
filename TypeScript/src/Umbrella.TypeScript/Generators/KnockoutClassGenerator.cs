@@ -246,7 +246,7 @@ namespace Umbrella.TypeScript.Generators
 
 				var sbRule = new StringBuilder();
 
-				if (group.Key == typeof(RequiredIfAttribute))
+				if (typeof(RequiredIfAttribute).IsAssignableFrom(group.Key))
 				{
 					for (int i = 0; i < lstValidationAttribute.Length; i++)
 					{
@@ -264,7 +264,7 @@ namespace Umbrella.TypeScript.Generators
 
 					validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 				}
-				else if (group.Key == typeof(RequiredIfEmptyAttribute))
+				else if (typeof(RequiredIfEmptyAttribute).IsAssignableFrom(group.Key))
 				{
 					for (int i = 0; i < lstValidationAttribute.Length; i++)
 					{
@@ -280,7 +280,7 @@ namespace Umbrella.TypeScript.Generators
 
 					validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 				}
-				else if (group.Key == typeof(RequiredIfNotEmptyAttribute))
+				else if (typeof(RequiredIfNotEmptyAttribute).IsAssignableFrom(group.Key))
 				{
 					for (int i = 0; i < lstValidationAttribute.Length; i++)
 					{
@@ -296,7 +296,7 @@ namespace Umbrella.TypeScript.Generators
 
 					validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 				}
-				else if (group.Key == typeof(IsAttribute))
+				else if (typeof(IsAttribute).IsAssignableFrom(group.Key))
 				{
 					Type? type = null;
 					string? tsType = null;
