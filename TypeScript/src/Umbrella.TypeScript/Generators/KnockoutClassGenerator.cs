@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -224,62 +226,109 @@ namespace Umbrella.TypeScript.Generators
 
 			// Get all types that are either of type ValidationAttribute or derive from it
 			// However, specifically exclude instances of type DataTypeAttribute
-			var lstValidationAttribute = propertyInfo.GetCustomAttributes<ValidationAttribute>().Where(x => x.GetType() != typeof(DataTypeAttribute)).ToList();
+			var lstValidationAttributeGroup = propertyInfo
+				.GetCustomAttributes<ValidationAttribute>()
+				.Where(x => x.GetType() != typeof(DataTypeAttribute))
+				.GroupBy(x => x.GetType())
+				.ToArray();
 
-			if (lstValidationAttribute.Count is 0)
+			if (lstValidationAttributeGroup.Length is 0)
 				return null;
 
 			var validationBuilder = new StringBuilder();
 
-			for (int i = 0; i < lstValidationAttribute.Count; i++)
+			foreach (var group in lstValidationAttributeGroup)
 			{
-				var validationAttribute = lstValidationAttribute[i];
+				var lstValidationAttribute = group.ToArray();
 
-				string message = $"\"{validationAttribute.FormatErrorMessage(propertyInfo.Name)}\"";
+				// Arbitrarily use the first message from the group
+				string message = $"\"{lstValidationAttribute[0].FormatErrorMessage(propertyInfo.Name)}\"";
 
-				switch (validationAttribute)
+				var sbRule = new StringBuilder();
+
+				if (group.Key == typeof(RequiredIfAttribute))
 				{
-					case RequiredIfAttribute attr:
+					for (int i = 0; i < lstValidationAttribute.Length; i++)
+					{
+						var attr = (RequiredIfAttribute)lstValidationAttribute[i];
+
+						if (i > 0)
+							sbRule.Append(" || ");
+
+						string @operator = GetOperatorTranslation(attr.Operator);
+						string otherValue = GetDependentValueTranslation(attr.DependentValue);
+						string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+
+						sbRule.Append($"(this.{dependentPropertyName} {@operator} {otherValue})");
+					}
+
+					validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				}
+				else if (group.Key == typeof(RequiredIfEmptyAttribute))
+				{
+					for (int i = 0; i < lstValidationAttribute.Length; i++)
+					{
+						var attr = (RequiredIfEmptyAttribute)lstValidationAttribute[i];
+
+						if (i > 0)
+							sbRule.Append(" || ");
+
+						string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+
+						sbRule.Append($"(this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0))");
+					}
+
+					validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				}
+				else if (group.Key == typeof(RequiredIfNotEmptyAttribute))
+				{
+					for (int i = 0; i < lstValidationAttribute.Length; i++)
+					{
+						var attr = (RequiredIfNotEmptyAttribute)lstValidationAttribute[i];
+
+						if (i > 0)
+							sbRule.Append(" || ");
+
+						string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+
+						sbRule.Append($"(this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)))");
+					}
+
+					validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				}
+				else if (group.Key == typeof(IsAttribute))
+				{
+					Type? type = null;
+					string? tsType = null;
+
+					for (int i = 0; i < lstValidationAttribute.Length; i++)
+					{
+						var attr = (IsAttribute)lstValidationAttribute[i];
+
+						if (i == 0)
 						{
-							string @operator = GetOperatorTranslation(attr.Operator);
-							string otherValue = GetDependentValueTranslation(attr.DependentValue);
-							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+							type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
 
-							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} {@operator} {otherValue}, message: {message} }},", indent);
-						}
-						break;
-					case RequiredIfEmptyAttribute attr:
-						{
-							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
-
-							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0), message: {message} }},", indent);
-						}
-						break;
-					case RequiredIfNotEmptyAttribute attr:
-						{
-							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
-
-							validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)), message: {message} }},", indent);
-						}
-						break;
-					case IsAttribute attr:
-						{
-							string @operator = GetOperatorTranslation(attr.Operator);
-							string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
-
-							Type type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-
-							string tsType = type switch
+							tsType = type switch
 							{
 								var _ when type == typeof(string) => "string | null",
 								var _ when type == typeof(bool) => "boolean | null",
 								var _ when type.IsPrimitive => "number | null",
 								_ => "any"
 							};
-
-							validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!, message: {message} }},", indent);
 						}
-						break;
+						else
+						{
+							sbRule.Append(" || ");
+						}
+
+						string @operator = GetOperatorTranslation(attr.Operator);
+						string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
+
+						sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
+					}
+
+					validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => {sbRule}, message: {message} }},", indent);
 				}
 			}
 
