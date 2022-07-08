@@ -143,6 +143,7 @@ namespace Microsoft.Extensions.Logging
 
 			var messageBuilder = new StringBuilder(methodName);
 
+			// TODO: Add a timestamp for UTC Now
 			var stateDictionary = new List<KeyValuePair<string, string>>
 			{
 				new KeyValuePair<string, string>(nameof(methodName), methodName),
