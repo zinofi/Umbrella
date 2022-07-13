@@ -64,7 +64,5 @@ namespace Umbrella.Extensions.Logging.Log4Net
 		/// </summary>
 		public void Dispose() => Dispose(true);
 		#endregion
-
-
 	}
 }

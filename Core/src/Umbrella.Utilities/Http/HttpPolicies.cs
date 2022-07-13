@@ -14,6 +14,9 @@ namespace Umbrella.Utilities.Http
 	{
 		private static readonly Random _random = new Random();
 
+		// TODO: need to move to using Random.Shared in .NET 6 as Random.Next() is not thread-safe
+		// and will return zero when accessed by multiple threads concurrently.
+
 		/// <summary>
 		/// The error and timeout policy.
 		/// </summary>

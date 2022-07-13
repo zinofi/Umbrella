@@ -74,6 +74,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
 			var messageBuider = new StringBuilder()
 				.AppendLine(messageId)
+				.AppendLine($"{DateTime.UtcNow} UTC")
 				.Append(formatter(state, exception));
 
 			if (state is IEnumerable<KeyValuePair<string, string>> stateDictionary)
