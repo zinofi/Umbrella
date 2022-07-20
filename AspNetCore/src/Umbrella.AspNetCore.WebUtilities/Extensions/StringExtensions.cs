@@ -14,6 +14,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 
 		static StringExtensions()
 		{
+			// TODO: Need to allow this to deal with \r\n and \n to cope with differences between Windows and Unix.
 			_encodedNewLineToken = HtmlEncoder.Default.Encode("\n");
 		}
 

@@ -209,6 +209,8 @@ namespace Umbrella.Utilities.Extensions
 				return value;
 
 			var sb = new StringBuilder(value);
+
+			// TODO: This should be using Environment.NewLine.
 			sb.ConvertHtmlBrTagsToReplacement("\n");
 
 			return sb.ToString();

@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Umbrella.Utilities;
 
 namespace Microsoft.Extensions.Logging
 {
@@ -66,7 +65,7 @@ namespace Microsoft.Extensions.Logging
 		/// Writes a <see cref="LogLevel.Warning"/> message to the specified <paramref name="log"/>.
 		/// </summary>
 		/// <param name="log">The log.</param>
-		/// <param name="exc">The exc.</param>
+		/// <param name="exc">The exception.</param>
 		/// <param name="state">The state.</param>
 		/// <param name="message">The message.</param>
 		/// <param name="eventId">The event identifier.</param>
@@ -79,6 +78,9 @@ namespace Microsoft.Extensions.Logging
 		/// <param name="filePath">The file path.</param>
 		/// <param name="lineNumber">The line number.</param>
 		/// <returns>The specified <paramref name="returnValue"/>.</returns>
+		/// <remarks>
+		/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
+		/// </remarks>
 		public static bool WriteWarning(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			LogDetails(log, LogLevel.Warning, exc, state, message, in eventId, methodName, filePath, lineNumber);
@@ -90,7 +92,7 @@ namespace Microsoft.Extensions.Logging
 		/// Writes a <see cref="LogLevel.Error"/> message to the specified <paramref name="log"/>.
 		/// </summary>
 		/// <param name="log">The log.</param>
-		/// <param name="exc">The exc.</param>
+		/// <param name="exc">The exception.</param>
 		/// <param name="state">The state.</param>
 		/// <param name="message">The message.</param>
 		/// <param name="eventId">The event identifier.</param>
@@ -103,7 +105,10 @@ namespace Microsoft.Extensions.Logging
 		/// <param name="filePath">The file path.</param>
 		/// <param name="lineNumber">The line number.</param>
 		/// <returns>The specified <paramref name="returnValue"/>.</returns>
-		public static bool WriteError(this ILogger log, Exception? exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+		/// <remarks>
+		/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
+		/// </remarks>
+		public static bool WriteError(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
@@ -114,7 +119,7 @@ namespace Microsoft.Extensions.Logging
 		/// Writes a <see cref="LogLevel.Critical"/> message to the specified <paramref name="log"/>.
 		/// </summary>
 		/// <param name="log">The log.</param>
-		/// <param name="exc">The exc.</param>
+		/// <param name="exc">The exception.</param>
 		/// <param name="state">The state.</param>
 		/// <param name="message">The message.</param>
 		/// <param name="eventId">The event identifier.</param>
@@ -127,9 +132,40 @@ namespace Microsoft.Extensions.Logging
 		/// <param name="filePath">The file path.</param>
 		/// <param name="lineNumber">The line number.</param>
 		/// <returns>The specified <paramref name="returnValue"/>.</returns>
-		public static bool WriteCritical(this ILogger log, Exception exc, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+		/// <remarks>
+		/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
+		/// </remarks>
+		public static bool WriteCritical(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			LogDetails(log, LogLevel.Critical, exc, state, message, in eventId, methodName, filePath, lineNumber);
+
+			return returnValue;
+		}
+
+		/// <summary>
+		/// Writes a message to the specified <paramref name="log"/> with the specified <paramref name="level"/>.
+		/// </summary>
+		/// <param name="log">The log.</param>
+		/// <param name="level">The log level.</param>
+		/// <param name="exc">The exception.</param>
+		/// <param name="state">The state.</param>
+		/// <param name="message">The message.</param>
+		/// <param name="eventId">The event identifier.</param>
+		/// <param name="returnValue">
+		/// The return value of this method will be this value.
+		/// This is primarily to allowed these log methods to be called as a side-effect of exception filters.
+		/// This return value can then control whether or not the associated catch block is entered.
+		/// </param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="filePath">The file path.</param>
+		/// <param name="lineNumber">The line number.</param>
+		/// <returns>The specified <paramref name="returnValue"/>.</returns>
+		/// <remarks>
+		/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
+		/// </remarks>
+		public static bool Write(this ILogger log, LogLevel level, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+		{
+			LogDetails(log, level, exc, state, message, in eventId, methodName, filePath, lineNumber);
 
 			return returnValue;
 		}

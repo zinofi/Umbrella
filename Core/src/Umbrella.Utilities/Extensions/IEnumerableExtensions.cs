@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -88,6 +89,36 @@ namespace Umbrella.Utilities.Extensions
 			Guard.ArgumentNotNull(selector, nameof(selector));
 
 			return await Task.WhenAll(source.Select(x => selector(x, cancellationToken)));
+		}
+
+		/// <summary>
+		/// Allows parallel processing of asynchronous code on a specified collection.
+		/// </summary>
+		/// <typeparam name="T">The type of the item in the collection.</typeparam>
+		/// <param name="source">The source.</param>
+		/// <param name="funcBody">The function body.</param>
+		/// <param name="degreeOfParallelism">The degree of parallelism.</param>
+		/// <returns>An awaitabe <see cref="Task"/>.</returns>
+		public static Task ParallelForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> funcBody, int degreeOfParallelism = 4)
+		{
+			async Task AwaitPartition(IEnumerator<T> partition)
+			{
+				using (partition)
+				{
+					while (partition.MoveNext())
+					{
+						await Task.Yield(); // prevents a sync/hot thread hangup
+						await funcBody(partition.Current);
+					}
+				}
+			}
+
+			return Task.WhenAll(
+				Partitioner
+					.Create(source)
+					.GetPartitions(degreeOfParallelism)
+					.AsParallel()
+					.Select(p => AwaitPartition(p)));
 		}
 
 		/// <summary>

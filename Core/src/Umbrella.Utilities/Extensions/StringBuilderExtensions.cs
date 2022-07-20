@@ -137,7 +137,7 @@ namespace Umbrella.Utilities.Extensions
 		}
 
 		/// <summary>
-		/// Trims the specified character fro mthe start and end of the specified string builder.
+		/// Trims the specified character from the start and end of the specified string builder.
 		/// </summary>
 		/// <param name="sb">The string builder.</param>
 		/// <param name="c">The character to trim.</param>
@@ -150,23 +150,28 @@ namespace Umbrella.Utilities.Extensions
 			{
 				int length = 0;
 				int num2 = sb.Length;
+
 				while ((length < num2) && (sb[length] == c))
 				{
 					length++;
 				}
+
 				if (length > 0)
 				{
 					sb.Remove(0, length);
 					num2 = sb.Length;
 				}
+
 				length = num2 - 1;
+
 				while ((length > -1) && (sb[length] == c))
 				{
 					length--;
 				}
+
 				if (length < (num2 - 1))
 				{
-					sb.Remove(length + 1, (num2 - length) - 1);
+					sb.Remove(length + 1, num2 - length - 1);
 				}
 			}
 			return sb;
@@ -246,6 +251,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>The same instance as specified by <paramref name="value"/>.</returns>
 		public static StringBuilder ConvertHtmlBrTagsToReplacement(this StringBuilder value, string replacement)
 		{
+			// TODO: Use a Regex here to cope with multiple whitespaces better
 			value.Replace("</br>", "")
 				.Replace("<br>", replacement)
 				.Replace("<br/>", replacement)
