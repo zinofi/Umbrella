@@ -61,8 +61,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			// Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
 			services.AddSingleton<TUmbrellaWebHostingEnvironment>();
-			services.ReplaceSingleton<IUmbrellaHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
-			services.ReplaceSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetService<TUmbrellaWebHostingEnvironment>());
+			services.ReplaceSingleton<IUmbrellaHostingEnvironment>(x => x.GetRequiredService<TUmbrellaWebHostingEnvironment>());
+			services.ReplaceSingleton<IUmbrellaWebHostingEnvironment>(x => x.GetRequiredService<TUmbrellaWebHostingEnvironment>());
 
 			services.AddSingleton<ApiIntegrationCookieAuthenticationEvents>();
 			services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();

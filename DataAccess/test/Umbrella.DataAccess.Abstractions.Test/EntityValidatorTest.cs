@@ -12,7 +12,7 @@ namespace Umbrella.DataAccess.Abstractions.Test
 	// TODO: Add test for the other method and more data for the first test.
     public class EntityValidatorTest
     {
-		private static readonly GenericEqualityComparer<ValidationResult, string> _validationResultComparer = new GenericEqualityComparer<ValidationResult, string>(x => x.ErrorMessage, (x, y) => x.ErrorMessage == y.ErrorMessage && x.MemberNames.SequenceEqual(y.MemberNames));
+		private static readonly GenericEqualityComparer<ValidationResult, string?> _validationResultComparer = new(x => x.ErrorMessage, (x, y) => x.ErrorMessage == y.ErrorMessage && x.MemberNames.SequenceEqual(y.MemberNames));
 
 		[Theory]
 		[InlineData(null, "Prop1", 1, 2, true, false)]
@@ -28,7 +28,7 @@ namespace Umbrella.DataAccess.Abstractions.Test
 			ValidationResult result = entityValidator.ValidatePropertyStringLength(value, propertyName, minLength, maxLength, required);
 
 			ValidationResult expected = shouldPass
-				? ValidationResult.Success
+				? ValidationResult.Success!
 				: new ValidationResult(string.Format(ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
 
 			Assert.Equal(expected, result, _validationResultComparer);
@@ -44,7 +44,7 @@ namespace Umbrella.DataAccess.Abstractions.Test
 			ValidationResult result = entityValidator.ValidatePropertyNumberRange(value, propertyName, minLength, maxLength, required);
 
 			ValidationResult expected = shouldPass
-				? ValidationResult.Success
+				? ValidationResult.Success!
 				: new ValidationResult(string.Format(ErrorMessages.InvalidPropertyNumberRangeErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
 
 			Assert.Equal(expected, result, _validationResultComparer);

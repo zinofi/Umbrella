@@ -61,7 +61,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Navigation
 				if (!(output.Attributes["href"]?.Value is HtmlString hrefHtmlString))
 					return;
 
-				string href = hrefHtmlString.Value;
+				string? href = hrefHtmlString.Value;
 
 				if (!string.IsNullOrWhiteSpace(href))
 				{

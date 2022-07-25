@@ -94,7 +94,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 
 			try
 			{
-				string path = context.Request.Path.Value.Trim();
+				string? path = context.Request.Path.Value?.Trim();
 
 				if (string.IsNullOrEmpty(path))
 				{

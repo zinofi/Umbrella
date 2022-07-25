@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<DocumentationFile>bin\Release\netcoreapp3.1\Umbrella.AspNetCore.WebUtilities.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\net5.0\Umbrella.AspNetCore.WebUtilities.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>

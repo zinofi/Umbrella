@@ -75,7 +75,7 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware
 
 			try
 			{
-				string path = context.Request.Path.Value.Trim();
+				string? path = context.Request.Path.Value?.Trim();
 
 				if (string.IsNullOrEmpty(path) || !path.StartsWith($"/{_options.DynamicImagePathPrefix}/", StringComparison.OrdinalIgnoreCase))
 				{

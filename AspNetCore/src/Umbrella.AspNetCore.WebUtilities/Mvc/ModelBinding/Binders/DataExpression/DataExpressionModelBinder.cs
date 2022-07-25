@@ -79,7 +79,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 
 			try
 			{
-				string value = result.FirstValue;
+				string value = result.FirstValue ?? string.Empty;
 
 				bool isEnumerable = underlyingOrModelType.IsAssignableToGenericType(typeof(IEnumerable<>));
 				Type deserializationType = isEnumerable ? EnumerableDescriptorType : DescriptorType;
@@ -87,7 +87,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 				if (isEnumerable && !value.StartsWith('[') && !value.EndsWith(']'))
 					value = $"[{value}]";
 
-				object model = JsonSerializer.Deserialize(value, deserializationType, BinderHelper.SerializerOptions);
+				object? model = JsonSerializer.Deserialize(value, deserializationType, BinderHelper.SerializerOptions);
 
 				if (model is TDescriptor descriptor)
 				{

@@ -10,6 +10,6 @@ namespace Umbrella.Utilities.Context.Abstractions
 		/// <summary>
 		/// Gets the current principal.
 		/// </summary>
-		ClaimsPrincipal CurrentPrincipal { get; }
+		ClaimsPrincipal? CurrentPrincipal { get; }
 	}
 }

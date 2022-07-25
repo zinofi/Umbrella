@@ -54,7 +54,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 
 					if (!StringValues.IsNullOrEmpty(values))
 					{
-						string value = values.FirstOrDefault();
+						string? value = values.FirstOrDefault();
 
 						if (!string.IsNullOrWhiteSpace(value))
 						{

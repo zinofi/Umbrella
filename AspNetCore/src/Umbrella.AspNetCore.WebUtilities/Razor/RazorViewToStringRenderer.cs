@@ -57,6 +57,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor
 			{
 				httpContext ??= _httpContextAccessor.HttpContext;
 
+				if (httpContext is null)
+					throw new UmbrellaWebException("The current httpContext is not available.");
+
 				var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 				var view = FindView(actionContext, viewName);
 

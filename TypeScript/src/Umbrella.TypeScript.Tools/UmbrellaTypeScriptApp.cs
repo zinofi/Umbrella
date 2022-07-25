@@ -73,7 +73,7 @@ namespace Umbrella.TypeScript.Tools
 
 				sbOutput.AppendLine(strOutput);
 
-				using (StreamWriter sw = File.CreateText(toolOptions.OutputPath))
+				using (StreamWriter sw = File.CreateText(toolOptions.OutputPath!))
 				{
 					sw.Write(sbOutput.ToString());
 				}

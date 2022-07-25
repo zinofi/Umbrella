@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Security.Options;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Security.Extensions;
+using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Security
 {
@@ -59,7 +60,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 			{
 				try
 				{
-					return HttpContextAccessor.HttpContext.User.GetId<TUserId>(Options.NameIdentifierClaimType);
+					return HttpContextAccessor.HttpContext is null
+						? throw new UmbrellaWebException("The current HttpContext is unavailable.")
+						: HttpContextAccessor.HttpContext.User.GetId<TUserId>(Options.NameIdentifierClaimType);
 				}
 				catch (Exception exc) when (Logger.WriteError(exc, message: "There has been a problem accessing the id of the current user."))
 				{
@@ -69,15 +72,15 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 		}
 
 		/// <inheritdoc />
-		public virtual IReadOnlyCollection<string> RoleNames => HttpContextAccessor.HttpContext.User.GetRoleNames();
+		public virtual IReadOnlyCollection<string> RoleNames => HttpContextAccessor.HttpContext?.User.GetRoleNames() ?? Array.Empty<string>();
 
 		/// <inheritdoc />
-		public virtual IReadOnlyCollection<TRole> Roles => HttpContextAccessor.HttpContext.User.GetRoles<TRole>();
+		public virtual IReadOnlyCollection<TRole> Roles => HttpContextAccessor.HttpContext?.User.GetRoles<TRole>() ?? Array.Empty<TRole>();
 
 		/// <inheritdoc />
-		public IReadOnlyCollection<Claim> Claims => HttpContextAccessor.HttpContext.User.Claims.ToArray();
+		public IReadOnlyCollection<Claim> Claims => HttpContextAccessor.HttpContext?.User.Claims.ToArray() ?? Array.Empty<Claim>();
 
 		/// <inheritdoc />
-		public ClaimsPrincipal CurrentPrincipal => HttpContextAccessor.HttpContext.User;
+		public ClaimsPrincipal? CurrentPrincipal => HttpContextAccessor.HttpContext?.User;
 	}
 }

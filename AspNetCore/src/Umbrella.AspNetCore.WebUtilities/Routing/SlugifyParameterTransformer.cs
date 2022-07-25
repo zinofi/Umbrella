@@ -9,9 +9,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Routing
 	/// <seealso cref="Microsoft.AspNetCore.Routing.IOutboundParameterTransformer" />
 	public class SlugifyParameterTransformer : IOutboundParameterTransformer
 	{
-		private static readonly Regex _urlTransformer = new Regex("([a-z])([A-Z])", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+		private static readonly Regex _urlTransformer = new("([a-z])([A-Z])", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
 		/// <inheritdoc />
-		public string? TransformOutbound(object value) => value == null ? null : _urlTransformer.Replace(value.ToString(), "$1-$2").ToLowerInvariant();
+		public string? TransformOutbound(object? value) => value is null ? null : _urlTransformer.Replace(value.ToString() ?? string.Empty, "$1-$2").ToLowerInvariant();
 	}
 }

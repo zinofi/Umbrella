@@ -53,7 +53,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers
 			if (srcSetShouldExist)
 			{
 				Assert.NotNull(srcSetAttribute);
-				Assert.Equal(expectedOutput, srcSetAttribute.Value);
+				Assert.Equal(expectedOutput, srcSetAttribute!.Value);
 			}
 			else
 				Assert.Null(srcSetAttribute);

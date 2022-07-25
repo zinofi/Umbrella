@@ -39,7 +39,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Filters
 		/// <inheritdoc />
 		public void OnResourceExecuting(ResourceExecutingContext context)
 		{
-			if (context.HttpContext.User.Identity.IsAuthenticated)
+			if (context.HttpContext.User.Identity?.IsAuthenticated is true)
 			{
 				string? userName = context.HttpContext.User.Identity.Name;
 

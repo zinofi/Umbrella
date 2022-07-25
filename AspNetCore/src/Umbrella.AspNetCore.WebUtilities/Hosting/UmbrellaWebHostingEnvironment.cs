@@ -150,12 +150,21 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 				return Cache.GetOrCreate(key, () =>
 				{
 					// NB: This will be empty for non-virtual applications
-					PathString applicationPath = !string.IsNullOrEmpty(pathBaseOverride) ? new PathString(pathBaseOverride) : HttpContextAccessor.HttpContext.Request.PathBase;
+					PathString applicationPath = !string.IsNullOrEmpty(pathBaseOverride) ? new PathString(pathBaseOverride) : HttpContextAccessor.HttpContext?.Request.PathBase ?? default;
 
 					// Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
-					string url = applicationPath.HasValue && cleanedPath.StartsWith(applicationPath, StringComparison.OrdinalIgnoreCase)
+					string? url = applicationPath.HasValue && cleanedPath.StartsWith(applicationPath, StringComparison.OrdinalIgnoreCase)
 						? cleanedPath
 						: applicationPath.Add(cleanedPath).Value;
+
+					if (url is null)
+					{
+						var exception = new UmbrellaWebException("The url could not be determined.");
+						exception.Data.Add(nameof(cleanedPath), cleanedPath);
+						exception.Data.Add(nameof(applicationPath), applicationPath);
+
+						throw exception;
+					}
 
 					if (toAbsoluteUrl)
 						url = $"{scheme}://{ResolveHttpHost(hostOverride)}{url}";
@@ -211,7 +220,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 		/// </summary>
 		/// <param name="hostOverride">The value used to override the hostname from the current HttpContext.</param>
 		/// <returns>The HTTP host.</returns>
-		protected virtual string ResolveHttpHost(string? hostOverride) => hostOverride ?? HttpContextAccessor.HttpContext.Request.Host.Value;
+		protected virtual string ResolveHttpHost(string? hostOverride) => hostOverride ?? HttpContextAccessor.HttpContext?.Request.Host.Value ?? "";
 
 		/// <inheritdoc />
 		protected override string TransformPathForFileProvider(string virtualPath) => TransformPath(virtualPath, false, true, false);

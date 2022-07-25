@@ -11,7 +11,7 @@ namespace Umbrella.Utilities.TypeConverters
 			if (!string.IsNullOrEmpty(value))
 				return customValueConverter != null ? customValueConverter(value) : (T)System.Convert.ChangeType(value, type);
 
-			T fallback = fallbackCreator != null ? fallbackCreator() : default;
+			T? fallback = fallbackCreator != null ? fallbackCreator() : default;
 
 			return type == typeof(string) && fallback is null
 				? (T)System.Convert.ChangeType(string.Empty, type)

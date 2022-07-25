@@ -27,12 +27,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Extensions
 				{
 					foreach (string key in memberNames)
 					{
-						dictionary.AddModelError(key, item.ErrorMessage);
+						dictionary.AddModelError(key, item.ErrorMessage ?? string.Empty);
 					}
 				}
 				else
 				{
-					dictionary.AddModelError(string.Empty, item.ErrorMessage);
+					if(!string.IsNullOrEmpty(item.ErrorMessage))
+						dictionary.AddModelError(string.Empty, item.ErrorMessage);
 				}
 			}
 

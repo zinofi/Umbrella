@@ -2,6 +2,7 @@
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
+using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions
 {
@@ -33,9 +34,18 @@ namespace Umbrella.AspNetCore.WebUtilities.Extensions
 			PathString applicationPath = currentRequest.PathBase;
 
 			// Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
-			string absoluteVirtualPath = applicationPath.HasValue && relativeUrl.StartsWith(applicationPath, StringComparison.OrdinalIgnoreCase)
+			string? absoluteVirtualPath = applicationPath.HasValue && relativeUrl.StartsWith(applicationPath, StringComparison.OrdinalIgnoreCase)
 				? relativeUrl
 				: applicationPath.Add(relativeUrl).Value;
+
+			if (absoluteVirtualPath is null)
+			{
+				var exception = new UmbrellaWebException("The absoluteVirtualPath could not be determined.");
+				exception.Data.Add(nameof(relativeUrl), relativeUrl);
+				exception.Data.Add(nameof(applicationPath), applicationPath);
+
+				throw exception;
+			}
 
 			int? currentPort = currentRequest.Host.Port;
 			string? port = portOverride > 0 ? portOverride.ToString() : (currentPort.HasValue && currentPort.Value != 80 ? (":" + currentPort) : string.Empty);

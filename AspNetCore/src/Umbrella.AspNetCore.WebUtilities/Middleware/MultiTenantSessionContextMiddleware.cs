@@ -46,7 +46,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 		{
 			try
 			{
-				if (context.User.Identity.IsAuthenticated)
+				if (context.User.Identity?.IsAuthenticated is true)
 				{
 					string? strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
 
@@ -108,7 +108,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 		{
 			try
 			{
-				if (context.User.Identity.IsAuthenticated)
+				if (context.User.Identity?.IsAuthenticated is true)
 				{
 					string? strAppTenantId = context.User.Claims.SingleOrDefault(x => x.Type == _options.TenantClaimType)?.Value;
 

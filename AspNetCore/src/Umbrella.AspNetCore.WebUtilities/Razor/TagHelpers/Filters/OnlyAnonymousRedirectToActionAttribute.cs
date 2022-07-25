@@ -30,7 +30,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Filters
 		/// <inheritdoc />
 		public void OnResourceExecuting(ResourceExecutingContext context)
 		{
-			if (context.HttpContext.User.Identity.IsAuthenticated)
+			if (context.HttpContext.User.Identity?.IsAuthenticated is true)
 				context.Result = new RedirectToActionResult(ActionName, ControllerName, null);
 		}
 	}

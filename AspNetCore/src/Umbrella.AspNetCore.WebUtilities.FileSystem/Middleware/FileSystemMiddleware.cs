@@ -53,7 +53,7 @@ namespace Umbrella.AspNetCore.WebUtilities.FileSystem.Middleware
 
 			try
 			{
-				string path = context.Request.Path.Value.Trim();
+				string? path = context.Request.Path.Value?.Trim();
 
 				if (string.IsNullOrEmpty(path) || !path.StartsWith($"/{_options.FileSystemPathPrefix}/", StringComparison.OrdinalIgnoreCase))
 				{
@@ -106,7 +106,7 @@ namespace Umbrella.AspNetCore.WebUtilities.FileSystem.Middleware
 						}
 					}
 
-					context.Response.ContentType = fileInfo.ContentType;
+					context.Response.ContentType = fileInfo.ContentType ?? "application/octet-stream";
 
 					if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache && fileInfo.LastModified.HasValue)
 					{
