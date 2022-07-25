@@ -2,11 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading;
-using System.Threading.Tasks;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;
@@ -63,11 +59,11 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual Task<IHttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		public virtual Task<IHttpCallResult<TItem?>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
 			=> GetByIdAsync<TItem, TIdentifier>(id, cancellationToken, AfterItemLoadedAsync);
 
 		/// <inheritdoc />
-		public virtual Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public virtual Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
 			=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync);
 
 		/// <inheritdoc />
@@ -107,11 +103,11 @@ namespace Umbrella.DataAccess.Remote
 		}
 
 		/// <inheritdoc />
-		public virtual Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
+		public virtual Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
 			=> PostAsync<TCreateItem, TCreateResult>(item, cancellationToken, sanitize, validationType, AfterItemCreatedAsync);
 
 		/// <inheritdoc />
-		public virtual Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
+		public virtual Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
 			=> PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, cancellationToken, sanitize, validationType, AfterItemUpdatedAsync);
 
 		/// <inheritdoc />
@@ -150,7 +146,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="result">The result.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected virtual Task AfterItemCreatedAsync(TCreateItem item, TCreateResult result, CancellationToken cancellationToken)
+		protected virtual Task AfterItemCreatedAsync(TCreateItem item, TCreateResult? result, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 
@@ -164,7 +160,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="result">The result.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-		protected virtual Task AfterItemUpdatedAsync(TUpdateItem item, TUpdateResult result, CancellationToken cancellationToken)
+		protected virtual Task AfterItemUpdatedAsync(TUpdateItem item, TUpdateResult? result, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 

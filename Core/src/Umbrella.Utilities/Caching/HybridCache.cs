@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Concurrent;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
@@ -24,8 +22,8 @@ namespace Umbrella.Utilities.Caching
 	public class HybridCache : IHybridCache, IDisposable
 	{
 		#region Private Members
-		private readonly ReaderWriterLockSlim _nukeReaderWriterLock = new ReaderWriterLockSlim();
-		private CancellationTokenSource _nukeTokenSource = new CancellationTokenSource();
+		private readonly ReaderWriterLockSlim _nukeReaderWriterLock = new();
+		private CancellationTokenSource _nukeTokenSource = new();
 		#endregion
 
 		#region Protected Properties		
@@ -238,7 +236,7 @@ namespace Umbrella.Utilities.Caching
 							}
 							else
 							{
-								if(exception is null)
+								if (exception is null)
 									throw new HybridCacheException("There has been an unknown problem");
 
 								throw exception;
@@ -315,7 +313,7 @@ namespace Umbrella.Utilities.Caching
 			=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 		/// <inheritdoc />
-		public (bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
+		public (bool itemFound, T? cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
 
@@ -328,7 +326,7 @@ namespace Umbrella.Utilities.Caching
 
 				if (cacheMode is HybridCacheMode.Distributed)
 				{
-					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
+					(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
 
 					if (exception != null)
 						Log.WriteError(exception, new { cacheKey, cacheMode });
@@ -352,7 +350,7 @@ namespace Umbrella.Utilities.Caching
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
+		public async Task<(bool itemFound, T? cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
@@ -366,7 +364,7 @@ namespace Umbrella.Utilities.Caching
 
 				if (cacheMode is HybridCacheMode.Distributed)
 				{
-					(bool itemFound, T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
+					(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 
 					if (exception != null)
 						Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode });

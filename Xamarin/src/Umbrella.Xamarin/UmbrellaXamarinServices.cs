@@ -1,6 +1,8 @@
-﻿using System;
-using Umbrella.Xamarin.Exceptions;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Extensions.DependencyInjection;
+using Umbrella.Xamarin.Exceptions;
 
 namespace Umbrella.Xamarin
 {
@@ -27,6 +29,6 @@ namespace Umbrella.Xamarin
 		/// </summary>
 		/// <typeparam name="T">The type of the service to get.</typeparam>
 		/// <returns>The service of the specified type <typeparamref name="T"/>.</returns>
-		public static T GetService<T>() => Services.GetService<T>();
+		public static T GetService<T>() where T : notnull => Services.GetRequiredService<T>();
 	}
 }

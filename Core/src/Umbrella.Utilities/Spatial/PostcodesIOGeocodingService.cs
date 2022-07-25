@@ -162,7 +162,7 @@ namespace Umbrella.Utilities.Spatial
 				{
 					var resultWrapper = await response.Content.ReadFromJsonAsync<ReverseGeocodingResultWrapper>(cancellationToken: cancellationToken);
 
-					if (resultWrapper.Result?.Count > 0)
+					if (resultWrapper?.Result?.Count > 0)
 					{
 						var result = resultWrapper.Result.First();
 
@@ -211,13 +211,13 @@ namespace Umbrella.Utilities.Spatial
 				{
 					var result = await response.Content.ReadFromJsonAsync<BulkReverseGeocodingResult>(cancellationToken: cancellationToken);
 
-					if (result.Result?.Count > 0)
+					if (result?.Result?.Count > 0)
 					{
 						var lstResult = new List<GeocodingResult>();
 
 						foreach (var item in result.Result)
 						{
-							if (item.Query is null || item.Result is null || item.Result.Count == 0)
+							if (item.Query is null || item.Result is null || item.Result.Count is 0)
 								continue;
 
 							var postCodeResult = item.Result.First();
@@ -266,9 +266,9 @@ namespace Umbrella.Utilities.Spatial
 				{
 					var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupResultWrapper>(cancellationToken: cancellationToken);
 
-					PostcodeLookupResult? result = resultWrapper.Result;
+					PostcodeLookupResult? result = resultWrapper?.Result;
 
-					if (result != null)
+					if (result is not null)
 					{
 						var dataItem = new GeocodingResult
 						{
@@ -311,9 +311,9 @@ namespace Umbrella.Utilities.Spatial
 				{
 					var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupPartialMapResultsWrapper>(cancellationToken: cancellationToken);
 
-					PostcodeLookupResult[]? result = resultWrapper.Result;
+					PostcodeLookupResult[]? result = resultWrapper?.Result;
 
-					if (result != null && result.Length > 0)
+					if (result is not null && result.Length > 0)
 					{
 						var firstMatch = result[0];
 
@@ -362,7 +362,7 @@ namespace Umbrella.Utilities.Spatial
 				{
 					var result = await response.Content.ReadFromJsonAsync<BulkPostcodeLookupResult>(cancellationToken: cancellationToken);
 
-					if (result.Result?.Count > 0)
+					if (result?.Result?.Count > 0)
 					{
 						var lstResult = new List<GeocodingResult>();
 

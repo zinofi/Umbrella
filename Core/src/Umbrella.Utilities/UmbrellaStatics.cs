@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Umbrella.Utilities.Exceptions;
 
@@ -10,14 +9,14 @@ namespace Umbrella.Utilities
 	/// </summary>
 	public static class UmbrellaStatics
 	{
-		private static readonly JsonSerializerOptions _defaultOptions = new JsonSerializerOptions
+		private static readonly JsonSerializerOptions _defaultOptions = new()
 		{
 			Converters = {
 				new JsonTimeSpanConverter()
 			}
 		};
 
-		private static readonly JsonSerializerOptions _camelCaseOptions = new JsonSerializerOptions
+		private static readonly JsonSerializerOptions _camelCaseOptions = new()
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 			Converters = {
@@ -25,7 +24,7 @@ namespace Umbrella.Utilities
 			}
 		};
 
-		private static readonly JsonSerializerOptions _ignoreCaseOptions = new JsonSerializerOptions
+		private static readonly JsonSerializerOptions _ignoreCaseOptions = new()
 		{
 			PropertyNameCaseInsensitive = true,
 			Converters = {
@@ -47,7 +46,7 @@ namespace Umbrella.Utilities
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
 		/// <returns>The deserialized object.</returns>
-		public delegate object DeserializeJsonDelegate(string value, Type type);
+		public delegate object? DeserializeJsonDelegate(string value, Type type);
 
 		/// <summary>
 		/// Gets or sets the JSON serializer implementation. Defaults to <see cref="DefaultSerialize(object, bool)"/>.
@@ -83,14 +82,14 @@ namespace Umbrella.Utilities
 		/// <param name="value">The value.</param>
 		/// <returns>The deserialized object.</returns>
 		/// <exception cref="UmbrellaException">The JsonDeserializer has not been assigned. This should be done on application startup.</exception>
-		public static T DeserializeJson<T>(string value)
+		public static T? DeserializeJson<T>(string value)
 		{
 			Guard.ArgumentNotNullOrWhiteSpace(value, nameof(value));
 
 			if (JsonDeserializerImplementation == null)
 				throw new UmbrellaException("The JsonDeserializer has not been assigned. This should be done on application startup.");
 
-			return (T)JsonDeserializerImplementation(value, typeof(T));
+			return (T?)JsonDeserializerImplementation(value, typeof(T));
 		}
 
 		/// <summary>
@@ -107,6 +106,6 @@ namespace Umbrella.Utilities
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
 		/// <returns>The deserialized object.</returns>
-		public static object DefaultDeserialize(string value, Type type) => JsonSerializer.Deserialize(value, type, _ignoreCaseOptions);
+		public static object? DefaultDeserialize(string value, Type type) => JsonSerializer.Deserialize(value, type, _ignoreCaseOptions);
 	}
 }

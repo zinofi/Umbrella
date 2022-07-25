@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
 			services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();
 			services.AddScoped<IUriNavigator, UriNavigator>();
-			services.AddTransient<IDialogUtility>(x => x.GetService<IUmbrellaDialogUtility>());
+			services.AddTransient<IDialogUtility>(x => x.GetRequiredService<IUmbrellaDialogUtility>());
 			services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
 
 			return services;

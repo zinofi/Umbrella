@@ -2,12 +2,8 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Data.Abstractions;
@@ -88,7 +84,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="afterAllItemsLoadedCallback">The optional callback to invoke on the results.</param>
 		/// <returns>The result of the remote operation.</returns>
 		/// <exception cref="UmbrellaRemoteDataAccessException" />
-		protected virtual async Task<IHttpCallResult<TPaginatedResultModel>> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(
+		protected virtual async Task<IHttpCallResult<TPaginatedResultModel?>> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(
 			string endpointPath,
 			int pageNumber = 0,
 			int pageSize = 20,
@@ -107,7 +103,7 @@ namespace Umbrella.DataAccess.Remote
 			{
 				var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
 
-				IHttpCallResult<TPaginatedResultModel> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult<TPaginatedResultModel?> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success && result.Result != null && afterAllItemsLoadedCallback != null)
 					await afterAllItemsLoadedCallback(result.Result.Items, cancellationToken).ConfigureAwait(false);
@@ -131,7 +127,7 @@ namespace Umbrella.DataAccess.Remote
 		/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
 		/// <returns>The result of the remote operation.</returns>
 		/// <exception cref="UmbrellaRemoteDataAccessException" />
-		protected async Task<IHttpCallResult<TItem>> GetByIdAsync<TItem, TIdentifier>(
+		protected async Task<IHttpCallResult<TItem?>> GetByIdAsync<TItem, TIdentifier>(
 			TIdentifier id,
 			CancellationToken cancellationToken,
 			Func<TItem, CancellationToken, Task>? afterItemLoadedCallback = null,
@@ -149,7 +145,7 @@ namespace Umbrella.DataAccess.Remote
 					["id"] = id.ToString()
 				};
 
-				IHttpCallResult<TItem> result = await RemoteService.GetAsync<TItem>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
+				IHttpCallResult<TItem?> result = await RemoteService.GetAsync<TItem>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
 
 				if (result.Success && result.Result != null && afterItemLoadedCallback != null)
 					await afterItemLoadedCallback(result.Result, cancellationToken).ConfigureAwait(false);
@@ -176,12 +172,12 @@ namespace Umbrella.DataAccess.Remote
 		/// <returns>The result of the remote operation.</returns>
 		/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 		/// <exception cref="UmbrellaRemoteDataAccessException" />
-		protected virtual async Task<(IHttpCallResult<TPostResult> result, IReadOnlyCollection<ValidationResult> validationResults)> PostAsync<TItem, TPostResult>(
+		protected virtual async Task<(IHttpCallResult<TPostResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PostAsync<TItem, TPostResult>(
 			TItem item,
 			CancellationToken cancellationToken = default,
 			bool sanitize = true,
 			ValidationType validationType = ValidationType.Shallow,
-			Func<TItem, TPostResult, CancellationToken, Task>? afterItemSavedCallback = null,
+			Func<TItem, TPostResult?, CancellationToken, Task>? afterItemSavedCallback = null,
 			string endpointPath = "")
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -216,12 +212,12 @@ namespace Umbrella.DataAccess.Remote
 		/// <returns>The result of the remote operation.</returns>
 		/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 		/// <exception cref="UmbrellaRemoteDataAccessException" />
-		protected virtual async Task<(IHttpCallResult<TPutResult> result, IReadOnlyCollection<ValidationResult> validationResults)> PutAsync<TItem, TIdentifier, TPutResult>(
+		protected virtual async Task<(IHttpCallResult<TPutResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PutAsync<TItem, TIdentifier, TPutResult>(
 			TItem item,
 			CancellationToken cancellationToken = default,
 			bool sanitize = true,
 			ValidationType validationType = ValidationType.Shallow,
-			Func<TItem, TPutResult, CancellationToken, Task>? afterItemSavedCallback = null,
+			Func<TItem, TPutResult?, CancellationToken, Task>? afterItemSavedCallback = null,
 			string endpointPath = "")
 			where TItem : class, IKeyedItem<TIdentifier>
 			where TIdentifier : IEquatable<TIdentifier>
@@ -261,12 +257,12 @@ namespace Umbrella.DataAccess.Remote
 		/// <returns>The result of the remote operation.</returns>
 		/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 		/// <exception cref="UmbrellaRemoteDataAccessException" />
-		protected virtual async Task<(IHttpCallResult<TPatchResult> result, IReadOnlyCollection<ValidationResult> validationResults)> PatchAsync<TItem, TIdentifier, TPatchResult>(
+		protected virtual async Task<(IHttpCallResult<TPatchResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PatchAsync<TItem, TIdentifier, TPatchResult>(
 			TItem item,
 			CancellationToken cancellationToken = default,
 			bool sanitize = true,
 			ValidationType validationType = ValidationType.Shallow,
-			Func<TItem, TPatchResult, CancellationToken, Task>? afterItemSavedCallback = null,
+			Func<TItem, TPatchResult?, CancellationToken, Task>? afterItemSavedCallback = null,
 			string endpointPath = "")
 			where TItem : class, IKeyedItem<TIdentifier>
 			where TIdentifier : IEquatable<TIdentifier>
@@ -364,14 +360,14 @@ namespace Umbrella.DataAccess.Remote
 			return Task.FromResult(Validator.ValidateItemAsync(item, validationType));
 		}
 
-		private async Task<(IHttpCallResult<TResult> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<TItem, TResult>(
+		private async Task<(IHttpCallResult<TResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<TItem, TResult>(
 			HttpMethod method,
 			string endpointPath,
 			TItem item,
 			CancellationToken cancellationToken,
 			bool sanitize,
 			ValidationType validationType,
-			Func<TItem, TResult, CancellationToken, Task>? afterItemSavedCallback)
+			Func<TItem, TResult?, CancellationToken, Task>? afterItemSavedCallback)
 		{
 			if (item != null)
 			{
@@ -389,7 +385,7 @@ namespace Umbrella.DataAccess.Remote
 
 			string url = ApiUrl + endpointPath;
 
-			IHttpCallResult<TResult> result = method switch
+			IHttpCallResult<TResult?> result = method switch
 			{
 				var _ when method == HttpMethod.Post => await RemoteService.PostAsync<TItem, TResult>(url, item, cancellationToken: cancellationToken).ConfigureAwait(false),
 				var _ when method == HttpMethod.Put => await RemoteService.PutAsync<TItem, TResult>(url, item, cancellationToken: cancellationToken).ConfigureAwait(false),

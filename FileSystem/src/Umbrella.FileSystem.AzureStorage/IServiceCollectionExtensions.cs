@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.Utilities;
@@ -62,12 +64,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider>(x =>
 			{
-				var factory = x.GetService<IUmbrellaFileProviderFactory>();
-				var options = x.GetService<TOptions>();
+				var factory = x.GetRequiredService<IUmbrellaFileProviderFactory>();
+				var options = x.GetRequiredService<TOptions>();
 
 				return factory.CreateProvider<TFileProvider, TOptions>(options);
 			});
-			services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaAzureBlobStorageFileProvider>());
+			services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetRequiredService<IUmbrellaAzureBlobStorageFileProvider>());
 
 			// Options
 			services.ConfigureUmbrellaOptions(optionsBuilder);

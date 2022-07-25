@@ -94,7 +94,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public async Task<(bool processed, HttpCallResult<TResult> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
+		public async Task<(bool processed, HttpCallResult<TResult?> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
 		{
 			try
 			{
@@ -102,19 +102,19 @@ namespace Umbrella.Utilities.Http
 				{
 					// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
 					if (response.StatusCode == HttpStatusCode.NoContent)
-						return (true, new HttpCallResult<TResult>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+						return (true, new HttpCallResult<TResult?>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 
 					if (response.Content.Headers.ContentLength > 0)
 					{
-						TResult result = response.Content.Headers.ContentType.MediaType switch
+						TResult? result = response.Content.Headers.ContentType.MediaType switch
 						{
-							"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
-							"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync()),
+							"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)await response.Content.ReadAsStringAsync().ConfigureAwait(false),
+							"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
 							"text/html" => throw new NotSupportedException("HTML responses are not supported and should not be returned by API endpoints. This might indicate an incorrect API url is being used which doesn't exist on the server."),
 							_ => throw new NotImplementedException()
 						};
 
-						return (true, new HttpCallResult<TResult>(true, result: result));
+						return (true, new HttpCallResult<TResult?>(true, result: result));
 					}
 				}
 
@@ -148,7 +148,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public async Task<HttpProblemDetails> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
+		public async Task<HttpProblemDetails?> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
 		{
 			try
 			{

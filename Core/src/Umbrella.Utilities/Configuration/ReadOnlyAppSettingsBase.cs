@@ -108,7 +108,7 @@ namespace Umbrella.Utilities.Configuration
 		/// <typeparam name="T"></typeparam>
 		/// <param name="value">The value.</param>
 		/// <returns>An instance of type <typeparamref name="T"/>.</returns>
-		protected virtual T FromJson<T>(string value) => UmbrellaStatics.DeserializeJson<T>(value);
+		protected virtual T? FromJson<T>(string value) => UmbrellaStatics.DeserializeJson<T>(value);
 
 		/// <summary>
 		/// Gets the setting.

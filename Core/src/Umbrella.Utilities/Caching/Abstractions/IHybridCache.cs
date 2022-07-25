@@ -131,7 +131,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// If <see cref="HybridCacheOptions.CacheEnabled"/> is set to false however, this parameter will be ignored, i.e. setting it to <see langword="true" /> will have no effect.
 		/// </param>
 		/// <returns>A tuple specifying whether the item was found in the cache together with the cached item if it exists.</returns>
-		(bool itemFound, T cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null);
+		(bool itemFound, T? cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null);
 
 		/// <summary>
 		/// Tries to get the item from the cache with the specified <paramref name="cacheKey"/>.
@@ -145,7 +145,7 @@ namespace Umbrella.Utilities.Caching.Abstractions
 		/// If <see cref="HybridCacheOptions.CacheEnabled"/> is set to false however, this parameter will be ignored, i.e. setting it to <see langword="true" /> will have no effect.
 		/// </param>
 		/// <returns>A tuple specifying whether the item was found in the cache together with the cached item if it exists.</returns>
-		Task<(bool itemFound, T cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null);
+		Task<(bool itemFound, T? cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null);
 
 		/// <summary>
 		/// Adds the specified item to the cache.

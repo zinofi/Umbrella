@@ -36,13 +36,19 @@ namespace Umbrella.Utilities.Security
 				string json = Encoding.UTF8.GetString(jsonBytes);
 				var keyValuePairs = UmbrellaStatics.DeserializeJson<Dictionary<string, object>>(json);
 
+				if (keyValuePairs is null)
+					throw new Exception("The json could not be converted to a dictionary of key/value pairs.");
+
 				keyValuePairs.TryGetValue(roleClaimType, out object roles);
 
 				if (roles != null)
 				{
 					if (roles.ToString().Trim().StartsWith("["))
 					{
-						string[] parsedRoles = UmbrellaStatics.DeserializeJson<string[]>(roles.ToString());
+						string[]? parsedRoles = UmbrellaStatics.DeserializeJson<string[]>(roles.ToString());
+
+						if (parsedRoles is null)
+							throw new Exception("The roles could not be parsed.");
 
 						foreach (string parsedRole in parsedRoles)
 						{

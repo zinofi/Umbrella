@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Utilities;
@@ -53,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDiskFileProvider<TFileProvider, TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
 			where TFileProvider : class, IUmbrellaDiskFileProvider
-			where TOptions: UmbrellaDiskFileProviderOptions, new()
+			where TOptions : UmbrellaDiskFileProviderOptions, new()
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
@@ -62,12 +64,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
 			services.AddSingleton<IUmbrellaDiskFileProvider>(x =>
 			{
-				var factory = x.GetService<IUmbrellaFileProviderFactory>();
-				var options = x.GetService<TOptions>();
+				var factory = x.GetRequiredService<IUmbrellaFileProviderFactory>();
+				var options = x.GetRequiredService<TOptions>();
 
 				return factory.CreateProvider<TFileProvider, TOptions>(options);
 			});
-			services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetService<IUmbrellaDiskFileProvider>());
+			services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetRequiredService<IUmbrellaDiskFileProvider>());
 
 			// Options
 			services.ConfigureUmbrellaOptions(optionsBuilder);

@@ -41,7 +41,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 		/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<(IHttpCallResult<TCreateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
+		Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
 
 		/// <summary>
 		/// Deletes the specified resource from the remote server.
@@ -69,7 +69,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterCombinator">The filter combinator.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<IHttpCallResult<TPaginatedResultModel>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
+		Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
 
 		/// <summary>
 		/// Finds the specified resource on the remote server.
@@ -77,7 +77,7 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="id">The identifier.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<IHttpCallResult<TItem>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
+		Task<IHttpCallResult<TItem?>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
 
 		/// <summary>
 		/// Finds the total count of <typeparamref name="TItem"/> that exist on the remote server.
@@ -94,6 +94,6 @@ namespace Umbrella.DataAccess.Remote.Abstractions
 		/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 		/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 		/// <returns>The result of the remote operation.</returns>
-		Task<(IHttpCallResult<TUpdateResult> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
+		Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
 	}
 }

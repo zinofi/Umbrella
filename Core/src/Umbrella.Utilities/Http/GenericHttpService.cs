@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Constants;
 using Umbrella.Utilities.Http.Exceptions;
@@ -48,7 +47,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult?>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -63,13 +62,13 @@ namespace Umbrella.Utilities.Http
 
 				var retVal = processed
 					? result
-					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+					: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 				ThrowIfConcurrencyStampMismatchResponse(retVal);
 
 				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -80,7 +79,7 @@ namespace Umbrella.Utilities.Http
 			=> await PostAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult?>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -102,13 +101,13 @@ namespace Umbrella.Utilities.Http
 
 				var retVal = processed
 					? result
-					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+					: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 				ThrowIfConcurrencyStampMismatchResponse(retVal);
 
 				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -119,7 +118,7 @@ namespace Umbrella.Utilities.Http
 			=> await PutAsync<TItem, object?>(url, item, parameters, cancellationToken);
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -141,13 +140,13 @@ namespace Umbrella.Utilities.Http
 
 				var retVal = processed
 					? result
-					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+					: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 				ThrowIfConcurrencyStampMismatchResponse(retVal);
 
 				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -158,7 +157,7 @@ namespace Umbrella.Utilities.Http
 			=> await PatchAsync<TItem, object?>(url, item, parameters, cancellationToken);
 
 		/// <inheritdoc />
-		public virtual async Task<IHttpCallResult<TResult>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		public virtual async Task<IHttpCallResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
@@ -180,13 +179,13 @@ namespace Umbrella.Utilities.Http
 
 				var retVal = processed
 					? result
-					: new HttpCallResult<TResult>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+					: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 				ThrowIfConcurrencyStampMismatchResponse(retVal);
 
 				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -216,7 +215,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
 			{
 				throw CreateServiceAccessException(exc);
 			}
@@ -242,7 +241,7 @@ namespace Umbrella.Utilities.Http
 
 				return retVal;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && !(exc is UmbrellaHttpServiceConcurrencyException))
+			catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
 			{
 				throw CreateServiceAccessException(exc);
 			}
