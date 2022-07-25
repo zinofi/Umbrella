@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DataAccess.EntityFrameworkCore.SqlServer.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\netstandard2.1\Umbrella.DataAccess.EntityFrameworkCore.SqlServer.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
