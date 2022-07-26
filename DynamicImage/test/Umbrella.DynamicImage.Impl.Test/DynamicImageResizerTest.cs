@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.FileSystem.Abstractions;
@@ -33,7 +32,7 @@ namespace Umbrella.DynamicImage.Impl.Test
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
+					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net5.0"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
@@ -41,7 +40,7 @@ namespace Umbrella.DynamicImage.Impl.Test
 			}
 		}
 
-		private static readonly List<(DynamicImageOptions Options, Size TargetSize)> s_OptionsList = new List<(DynamicImageOptions, Size)>
+		private static readonly List<(DynamicImageOptions Options, Size TargetSize)> s_OptionsList = new()
 		{
             //These images are small than the original image dimensions of 300 x 193
             (new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(50, 150)),
@@ -103,9 +102,9 @@ namespace Umbrella.DynamicImage.Impl.Test
 			(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Gif), new Size(50, 32)),
 		};
 
-		public static List<object[]> OptionsList = new List<object[]>();
+		public static List<object[]> OptionsList = new();
 
-		public static List<object[]> ResizersList = new List<object[]>
+		public static List<object[]> ResizersList = new()
 		{
 			new object[] { CreateDynamicImageResizer<FreeImageResizer>() },
 			new object[] { CreateDynamicImageResizer<SkiaSharpResizer>() },
@@ -229,7 +228,7 @@ namespace Umbrella.DynamicImage.Impl.Test
 		[MemberData(nameof(ResizersList))]
 		public void ResizeImage_EmptyImage(IDynamicImageResizer imageResizer)
 		{
-			byte[] bytes = new byte[0];
+			byte[] bytes = Array.Empty<byte>();
 
 			Assert.Throws<ArgumentException>(() => imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
 		}
@@ -258,7 +257,7 @@ namespace Umbrella.DynamicImage.Impl.Test
 		[MemberData(nameof(ResizersList))]
 		public void IsImage_EmptyImage(IDynamicImageResizer imageResizer)
 		{
-			byte[] bytes = new byte[0];
+			byte[] bytes = Array.Empty<byte>();
 
 			bool isValid = imageResizer.IsImage(bytes);
 

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.DynamicImage.Caching.AzureStorage;
@@ -25,7 +23,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 #endif
 		private const string TestFileName = "aspnet-mvc-logo.png";
 
-		private static readonly List<IDynamicImageCache> CacheList = new List<IDynamicImageCache>
+		private static readonly List<IDynamicImageCache> CacheList = new()
 		{
 			CreateDynamicImageMemoryCache(),
 			CreateDynamicImageDiskCache(),
@@ -43,7 +41,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
+					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net5.0"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
@@ -191,7 +189,7 @@ namespace Umbrella.DynamicImage.Test.Caching
 				new DynamicImageDiskCacheOptions());
 		}
 
-		private static DynamicImageMemoryCache CreateDynamicImageMemoryCache() => new DynamicImageMemoryCache(
+		private static DynamicImageMemoryCache CreateDynamicImageMemoryCache() => new(
 				CoreUtilitiesMocks.CreateLogger<DynamicImageMemoryCache>(),
 				CoreUtilitiesMocks.CreateHybridCache(),
 				CoreUtilitiesMocks.CreateCacheKeyUtility(),

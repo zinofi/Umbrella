@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Moq;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Helpers;
-using Umbrella.Utilities.Mime.Abstractions;
-using Umbrella.Utilities.TypeConverters.Abstractions;
 using Xunit;
 using Xunit.Extensions.Ordering;
 
@@ -41,7 +35,7 @@ namespace Umbrella.FileSystem.Test
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\netcoreapp3.1"));
+					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net5.0"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
@@ -49,13 +43,13 @@ namespace Umbrella.FileSystem.Test
 			}
 		}
 
-		public static List<Func<IUmbrellaFileProvider>> Providers = new List<Func<IUmbrellaFileProvider>>
+		public static List<Func<IUmbrellaFileProvider>> Providers = new()
 		{
 			() => CreateAzureBlobFileProvider(),
 			() => CreateDiskFileProvider()
 		};
 
-		public static List<string> PathsToTest = new List<string>
+		public static List<string> PathsToTest = new()
 		{
 			$"~/images/{TestFileName}",
 			$"/images/{TestFileName}",
@@ -71,7 +65,7 @@ namespace Umbrella.FileSystem.Test
 		public static List<object[]> ProvidersMemberData = Providers.Select(x => new object[] { x }).ToList();
 		public static List<object[]> PathsToTestMemberData = PathsToTest.Select(x => new object[] { x }).ToList();
 
-		public static List<object[]> ProvidersAndPathsMemberData = new List<object[]>();
+		public static List<object[]> ProvidersAndPathsMemberData = new();
 
 		static UmbrellaFileProviderTest()
 		{
@@ -1329,7 +1323,7 @@ namespace Umbrella.FileSystem.Test
 			return provider;
 		}
 
-		private void CheckWrittenFileAssertions(IUmbrellaFileProvider provider, IUmbrellaFileInfo file, int length, string fileName)
+		private static void CheckWrittenFileAssertions(IUmbrellaFileProvider provider, IUmbrellaFileInfo file, int length, string fileName)
 		{
 			CheckPOCOFileType(provider, file);
 			Assert.False(file.IsNew);
@@ -1339,7 +1333,7 @@ namespace Umbrella.FileSystem.Test
 			Assert.Equal("image/png", file.ContentType);
 		}
 
-		private void CheckPOCOFileType(IUmbrellaFileProvider provider, IUmbrellaFileInfo file)
+		private static void CheckPOCOFileType(IUmbrellaFileProvider provider, IUmbrellaFileInfo file)
 		{
 			switch (provider)
 			{
