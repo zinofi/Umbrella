@@ -27,7 +27,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Checkbox
 		public RenderFragment? ChildContent { get; set; }
 
 		/// <inheritdoc />
-		protected override bool TryParseValueFromString(string value, out bool result, out string validationErrorMessage)
+		protected override bool TryParseValueFromString(string? value, out bool result, out string validationErrorMessage)
 			=> throw new NotImplementedException($"This component does not parse string inputs. Bind to the '{nameof(CurrentValue)}' property, not '{nameof(CurrentValueAsString)}'.");
 	}
 }

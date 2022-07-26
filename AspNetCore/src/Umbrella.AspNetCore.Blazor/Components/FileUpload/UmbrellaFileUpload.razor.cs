@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Tewr.Blazor.FileReader;
@@ -12,6 +9,8 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 {
+	// TODO: Change the internal implementation to use the built-in InputFile component from .NET 5.0
+	// Do this when migrating to .NET 6.0
 	public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	{
 		private Stream? _fileStream;
@@ -124,7 +123,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 
 		private async Task UploadClick()
 		{
-			void PositionChanged(object sender, IFilePositionInfo args) => InvokeAsync(StateHasChanged);
+			void PositionChanged(object? sender, IFilePositionInfo args) => InvokeAsync(StateHasChanged);
 
 			try
 			{

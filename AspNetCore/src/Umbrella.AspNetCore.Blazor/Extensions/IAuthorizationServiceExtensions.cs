@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Umbrella.AspNetCore.Blazor.Extensions
 {
@@ -10,7 +10,7 @@ namespace Umbrella.AspNetCore.Blazor.Extensions
 	/// Extension methods for the <see cref="IAuthorizationService" /> type.
 	/// </summary>
 	public static class IAuthorizationServiceExtensions
-    {
+	{
 		/// <summary>
 		/// Checks if the specified <paramref name= "user" /> has the necessary specified <paramref name="roles"/> and meets the specified <paramref name="policyName"/>.
 		/// </summary>
@@ -25,7 +25,7 @@ namespace Umbrella.AspNetCore.Blazor.Extensions
 			{
 				// No custom policy or roles have been specified. Just authorize based on whether or not the user
 				// is authenticated.
-				return user.Identity.IsAuthenticated;
+				return user.Identity?.IsAuthenticated is true;
 			}
 			else
 			{
@@ -51,5 +51,5 @@ namespace Umbrella.AspNetCore.Blazor.Extensions
 				return rolesAuthorized && policyAuthorized;
 			}
 		}
-    }
+	}
 }

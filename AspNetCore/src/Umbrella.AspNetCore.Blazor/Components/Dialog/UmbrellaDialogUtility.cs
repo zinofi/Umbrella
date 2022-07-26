@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
@@ -27,7 +26,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 	/// <seealso cref="IUmbrellaDialogUtility" />
 	public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	{
-		private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>>();
+		private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new();
 
 		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultMessageButtons = new[]
 		{
@@ -132,7 +131,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -156,7 +155,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -182,7 +181,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -206,7 +205,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -230,7 +229,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -247,7 +246,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -264,7 +263,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -281,7 +280,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -298,7 +297,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -315,7 +314,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -342,7 +341,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -368,7 +367,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { title }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 
@@ -391,7 +390,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 					ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync();
 
-					if (!claimsPrincipal.Identity.IsAuthenticated)
+					if (claimsPrincipal.Identity?.IsAuthenticated is false)
 						ThrowAccessDeniedException();
 
 					// We will now check all authorization attributes. The first one that fails will throw an exception.
@@ -418,7 +417,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
+				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
 		}
 

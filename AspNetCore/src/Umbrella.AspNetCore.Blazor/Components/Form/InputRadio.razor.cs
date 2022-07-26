@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Form
 {
+	/// <summary>
+	/// Serves as the base class of the <see cref="InputRadio{TValue}"/> component.
+	/// </summary>
 	public class InputRadioBase<TValue> : InputBase<TValue>
 	{
 		/// <summary>
@@ -12,14 +15,18 @@ namespace Umbrella.AspNetCore.Blazor.Components.Form
 		[Parameter]
 		public TValue SelectedValue { get; set; } = default!;
 
-		protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value.ToString();
+		/// <summary>
+		/// Called by the Blazor infrastructure when the <see cref="SelectedValue"/> changes.
+		/// </summary>
+		/// <param name="args">The <see cref="ChangeEventArgs"/>.</param>
+		protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value?.ToString();
 
 		/// <inheritdoc />
-		protected override bool TryParseValueFromString(string value, out TValue result, out string errorMessage)
+		protected override bool TryParseValueFromString(string? value, out TValue result, out string errorMessage)
 		{
 			bool success = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsedValue);
 
-			if (success)
+			if (success && parsedValue is not null)
 			{
 				result = parsedValue;
 				errorMessage = null!;

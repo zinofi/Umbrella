@@ -134,7 +134,7 @@
                         <tbody>
                             @foreach (var item in Items)
                             {
-                                var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
+                                var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item))!;
                                 var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
 
                                 <tr class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "") @(isCurrentItemSelected && !string.IsNullOrWhiteSpace(ItemSelectedCssClass) ? ItemSelectedCssClass : "")">
@@ -181,7 +181,7 @@
                 <div class="u-grid__results @GridCssClass">
                     @foreach (var item in Items)
                     {
-                        var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
+                        var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item))!;
                         var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
 
                         <div class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 
@@ -207,7 +208,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 					return string.Join("", lstChar);
 				}
 
-				return option.ToString();
+				string? optionDisplayName = option.ToString();
+
+				return optionDisplayName is null
+					? throw new UmbrellaBlazorException("The display name for the option must have a value.")
+					: optionDisplayName;
 			}
 
 			return FilterOptionDisplayNameSelector(option);

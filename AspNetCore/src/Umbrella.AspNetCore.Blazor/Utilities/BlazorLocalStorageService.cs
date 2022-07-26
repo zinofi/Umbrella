@@ -38,7 +38,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem retrieving the item with the specified key.", exc);
+				throw new UmbrellaBlazorException("There has been a problem retrieving the item with the specified key.", exc);
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem removing the item with the specified key.", exc);
+				throw new UmbrellaBlazorException("There has been a problem removing the item with the specified key.", exc);
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
 			{
-				throw new UmbrellaWebComponentException("There has been a problem setting the item with the specified key.", exc);
+				throw new UmbrellaBlazorException("There has been a problem setting the item with the specified key.", exc);
 			}
 		}
 	}

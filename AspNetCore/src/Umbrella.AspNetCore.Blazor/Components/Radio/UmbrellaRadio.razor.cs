@@ -46,14 +46,14 @@ namespace Umbrella.AspNetCore.Blazor.Components.Radio
 		/// Called by the Blazor infrastructure when the <see cref="SelectedValue"/> changes.
 		/// </summary>
 		/// <param name="args">The <see cref="ChangeEventArgs"/>.</param>
-		protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value.ToString();
+		protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value?.ToString();
 
 		/// <inheritdoc />
-		protected override bool TryParseValueFromString(string value, out TValue result, out string errorMessage)
+		protected override bool TryParseValueFromString(string? value, out TValue result, out string errorMessage)
 		{
 			bool success = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsedValue);
 
-			if (success)
+			if (success && parsedValue is not null)
 			{
 				result = parsedValue;
 				errorMessage = null!;

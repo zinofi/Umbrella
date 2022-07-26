@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<RazorLangVersion>3.0</RazorLangVersion>
 		<TypeScriptToolsVersion>4.6</TypeScriptToolsVersion>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-		<DocumentationFile>bin\Release\netstandard2.1\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
+		<DocumentationFile>bin\Release\net5.0\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,11 +21,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
 		<PackageReference Include="Blazored.Modal" Version="6.0.1" />
-		<PackageReference Include="Blazored.SessionStorage" Version="1.0.13" />
+		<PackageReference Include="Blazored.SessionStorage" Version="2.2.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Tewr.Blazor.FileReader" Version="2.1.0.20274" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.17" />
+		<PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.1.21360" />
 	</ItemGroup>
 
 	<ItemGroup>
