@@ -135,7 +135,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <summary>
 		/// Gets the database context.
 		/// </summary>
-		protected TDbContext Context { get; }
+		protected TDbContext Context { get; } // TODO: Wrap this in a Lazy<> to avoid creating until we need it.
 
 		/// <summary>
 		/// Gets the log.
