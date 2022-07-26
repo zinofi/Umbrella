@@ -14,7 +14,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="package-lock.json" />
 	  <Content Remove="package.json" />
 	  <Content Remove="tsconfig.json" />
 	  <Content Remove="Content\**" />
@@ -31,7 +30,6 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
-		<None Include="package-lock.json" />
 		<None Include="package.json" />
 		<None Include="tsconfig.json" />
 		<None Include="Content\**" />
