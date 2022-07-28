@@ -420,7 +420,7 @@ namespace Umbrella.DataAccess.EF6
 				entityHasChanged = true;
 
 				if (entity is ICreatedDateAuditEntity dateAuditEntity)
-					dateAuditEntity.CreatedDate = DateTime.UtcNow;
+					dateAuditEntity.CreatedDateUtc = DateTime.UtcNow;
 
 				if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 					userAuditEntity.CreatedById = CurrentUserId ?? default!;
@@ -434,7 +434,7 @@ namespace Umbrella.DataAccess.EF6
 				entityHasChanged = true;
 
 				if (entity is IUpdatedDateAuditEntity dateAuditEntity)
-					dateAuditEntity.UpdatedDate = DateTime.UtcNow;
+					dateAuditEntity.UpdatedDateUtc = DateTime.UtcNow;
 
 				if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 					userAuditEntity.UpdatedById = CurrentUserId ?? default!;
