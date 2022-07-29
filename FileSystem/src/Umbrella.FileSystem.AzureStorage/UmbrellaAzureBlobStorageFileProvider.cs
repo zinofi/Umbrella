@@ -94,7 +94,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				ContainerResolutionCache?.Clear();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem clearing the container resolution cache.", exc);
 			}
@@ -108,8 +108,8 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				string cleanedPath = SanitizeSubPathCore(subpath);
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(new { subpath, cleanedPath }, "Directory");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { subpath, cleanedPath }, "Directory");
 
 				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
@@ -138,7 +138,7 @@ namespace Umbrella.FileSystem.AzureStorage
 					}
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem deleting the specified directory.", exc);
 			}
@@ -154,8 +154,8 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				string cleanedPath = SanitizeSubPathCore(subpath);
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(new { subpath, cleanedPath }, "Directory");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { subpath, cleanedPath }, "Directory");
 
 				string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
@@ -179,12 +179,12 @@ namespace Umbrella.FileSystem.AzureStorage
 					if (await CheckFileAccessAsync(file, file.Blob, cancellationToken).ConfigureAwait(false))
 						lstResult.Add(file);
 					else
-						Log.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
+						Logger.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
 				}
 
 				return lstResult;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem enumerating the files in the specified directory.", exc);
 			}
@@ -210,8 +210,8 @@ namespace Umbrella.FileSystem.AzureStorage
 
 			string cleanedPath = SanitizeSubPathCore(subpath);
 
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { subpath, cleanedPath }, "File");
+			if (Logger.IsEnabled(LogLevel.Debug))
+				Logger.WriteDebug(new { subpath, cleanedPath }, "File");
 
 			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 

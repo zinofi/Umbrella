@@ -54,7 +54,7 @@ namespace Umbrella.Utilities.Hosting
 				},
 				Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath }))
+			catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath }))
 			{
 				throw new UmbrellaException("There was a problem mapping the path.", exc);
 			}

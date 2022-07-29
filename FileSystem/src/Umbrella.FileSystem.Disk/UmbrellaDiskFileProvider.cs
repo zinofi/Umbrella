@@ -71,8 +71,8 @@ namespace Umbrella.FileSystem.Disk
 			{
 				string physicalPath = CleanPath(subpath);
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(new { subpath, physicalPath }, "Directory");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { subpath, physicalPath }, "Directory");
 
 				if (Directory.Exists(physicalPath))
 				{
@@ -82,13 +82,13 @@ namespace Umbrella.FileSystem.Disk
 					}
 					catch
 					{
-						Log.WriteWarning(state: new { subpath, physicalPath }, message: "The specified directory to be deleted no longer exists, most likely because of a race condition.");
+						Logger.WriteWarning(state: new { subpath, physicalPath }, message: "The specified directory to be deleted no longer exists, most likely because of a race condition.");
 					}
 				}
 
 				return Task.CompletedTask;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem deleting the specified directory.", exc);
 			}
@@ -104,8 +104,8 @@ namespace Umbrella.FileSystem.Disk
 			{
 				string physicalPath = CleanPath(subpath);
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(new { subpath, physicalPath }, "Directory");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { subpath, physicalPath }, "Directory");
 
 				var directoryInfo = new DirectoryInfo(physicalPath);
 
@@ -125,12 +125,12 @@ namespace Umbrella.FileSystem.Disk
 					if (await CheckFileAccessAsync(file, file.PhysicalFileInfo, cancellationToken))
 						lstResult.Add(file);
 					else
-						Log.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
+						Logger.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
 				}
 
 				return lstResult;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem enumerating the files in the specified directory.", exc);
 			}
@@ -146,8 +146,8 @@ namespace Umbrella.FileSystem.Disk
 			string physicalPath = CleanPath(subpath);
 			string cleanedSubPath = PathHelper.PlatformNormalize(subpath);
 
-			if (Log.IsEnabled(LogLevel.Debug))
-				Log.WriteDebug(new { subpath, cleanedSubPath, physicalPath }, "File");
+			if (Logger.IsEnabled(LogLevel.Debug))
+				Logger.WriteDebug(new { subpath, cleanedSubPath, physicalPath }, "File");
 
 			var physicalFileInfo = new FileInfo(physicalPath);
 

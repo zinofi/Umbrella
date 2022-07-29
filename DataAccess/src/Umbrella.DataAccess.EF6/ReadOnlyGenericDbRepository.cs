@@ -143,7 +143,7 @@ namespace Umbrella.DataAccess.EF6
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the lookup normalizer.
@@ -181,7 +181,7 @@ namespace Umbrella.DataAccess.EF6
 			ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
 		{
 			Context = dbContext;
-			Log = logger;
+			Logger = logger;
 			LookupNormalizer = lookupNormalizer;
 			CurrentUserIdAccessor = currentUserIdAccessor;
 		}
@@ -209,7 +209,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
@@ -289,7 +289,7 @@ namespace Umbrella.DataAccess.EF6
 
 				return entity;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { id, trackChanges, map }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { id, trackChanges, map }, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the item with the specified id.", exc);
 			}
@@ -304,7 +304,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				return await Items.CountAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the count of all items.", exc);
 			}
@@ -319,7 +319,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				return await Items.AnyAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem determining if the item exists.", exc);
 			}
@@ -421,7 +421,7 @@ namespace Umbrella.DataAccess.EF6
 
 				if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
 				{
-					Log.WriteWarning(state: new { Type = entity.GetType().FullName, entity.Id }, message: "The specified item failed the access check. This should not happen.");
+					Logger.WriteWarning(state: new { Type = entity.GetType().FullName, entity.Id }, message: "The specified item failed the access check. This should not happen.");
 
 					if (throwAccessException)
 						throw new UmbrellaDataAccessForbiddenException("An entity in the specified collection cannot be accessed.");

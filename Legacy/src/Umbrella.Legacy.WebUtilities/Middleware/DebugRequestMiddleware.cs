@@ -16,7 +16,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 		/// <summary>
 		/// Gets the logger.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DebugRequestMiddleware"/> class.
@@ -27,7 +27,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 			ILogger<DebugRequestMiddleware> logger)
 			: base(next)
 		{
-			Log = logger;
+			Logger = logger;
 		}
 
 		/// <summary>
@@ -41,7 +41,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 			try
 			{
-				if (Log.IsEnabled(LogLevel.Debug))
+				if (Logger.IsEnabled(LogLevel.Debug))
 				{
 					var requestData = new
 					{
@@ -50,12 +50,12 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						context.Request.Headers
 					};
 
-					Log.WriteDebug(requestData, "Debug request state");
+					Logger.WriteDebug(requestData, "Debug request state");
 				}
 
 				return Next.Invoke(context);
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw;
 			}

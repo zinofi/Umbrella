@@ -12,7 +12,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <summary>
 		/// Gets the logger.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 		#endregion
 
 		#region Constructors		
@@ -22,7 +22,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <param name="logger">The logger.</param>
 		public UmbrellaController(ILogger logger)
 		{
-			Log = logger;
+			Logger = logger;
 		}
 		#endregion
 	}

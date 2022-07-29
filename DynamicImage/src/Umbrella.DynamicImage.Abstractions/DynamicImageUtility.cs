@@ -31,7 +31,7 @@ namespace Umbrella.DynamicImage.Abstractions
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 		#endregion
 
 		#region Constructors		
@@ -41,7 +41,7 @@ namespace Umbrella.DynamicImage.Abstractions
 		/// <param name="logger">The logger.</param>
 		public DynamicImageUtility(ILogger<DynamicImageUtility> logger)
 		{
-			Log = logger;
+			Logger = logger;
 		}
 		#endregion
 
@@ -68,7 +68,7 @@ namespace Umbrella.DynamicImage.Abstractions
 					_ => DynamicImageFormat.Jpeg
 				};
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { format }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { format }, returnValue: true))
 			{
 				throw new DynamicImageException("There has been a problem parsing the image format.", exc);
 			}
@@ -148,7 +148,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
 				return (DynamicImageParseUrlResult.Success, imageOptions);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }, returnValue: true))
 			{
 				return s_InvalidParseUrlResult;
 			}
@@ -166,7 +166,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
 				return true;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { imageOptions, validMappings }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { imageOptions, validMappings }, returnValue: true))
 			{
 				throw new DynamicImageException("An error has occurred whilst validating the image options.", exc);
 			}
@@ -210,7 +210,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
 				return virtualPath;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { dynamicImagePathPrefix, options }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, options }, returnValue: true))
 			{
 				throw new DynamicImageException("An error has occurred whilst generating the virtual path.", exc);
 			}

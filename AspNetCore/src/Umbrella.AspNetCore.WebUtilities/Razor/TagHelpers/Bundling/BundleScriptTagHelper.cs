@@ -44,7 +44,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling
 		/// <summary>
 		/// Gets the logger.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the bundle utility.
@@ -77,7 +77,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling
 			TBundleUtility bundleUtility,
 			Lazy<NonceContext> nonceContext)
 		{
-			Log = logger;
+			Logger = logger;
 			BundleUtility = bundleUtility;
 			_lazyNonceContext = nonceContext;
 		}
@@ -128,7 +128,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling
 					output.Attributes.Add("src", path);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { Name, RenderInline }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { Name, RenderInline }, returnValue: true))
 			{
 				throw new UmbrellaWebException($"There was a problem rendering the bundle script tag helper for named bundle: {Name}.", exc);
 			}

@@ -30,7 +30,7 @@ namespace Umbrella.Utilities.Caching
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the options.
@@ -84,7 +84,7 @@ namespace Umbrella.Utilities.Caching
 			IDistributedCache distributedCache,
 			IMemoryCache memoryCache)
 		{
-			Log = logger;
+			Logger = logger;
 			Options = options;
 			LookupNormalizer = lookupNormalizer;
 			DistributedCache = distributedCache;
@@ -118,7 +118,7 @@ namespace Umbrella.Utilities.Caching
 							{
 								if (!throwOnCacheFailure)
 								{
-									Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride });
+									Logger.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride });
 								}
 								else
 								{
@@ -131,7 +131,7 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+						catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
 							if (throwOnCacheFailure)
 								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -168,7 +168,7 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+						catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
 							if (throwOnCacheFailure)
 								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -178,7 +178,7 @@ namespace Umbrella.Utilities.Caching
 
 				return actionFunction();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				// If we get this far then there has definitely been a problem with the actionFunction. We need to always throw here.
 				throw new HybridCacheException("There has been a problem with the cache.", exc);
@@ -200,7 +200,7 @@ namespace Umbrella.Utilities.Caching
 			{
 				return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), cancellationToken, expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				throw new HybridCacheException("There has been a problem with the cache.", exc);
 			}
@@ -232,7 +232,7 @@ namespace Umbrella.Utilities.Caching
 
 							if (!throwOnCacheFailure)
 							{
-								Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride });
+								Logger.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride });
 							}
 							else
 							{
@@ -244,7 +244,7 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+						catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
 							if (throwOnCacheFailure)
 								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -291,7 +291,7 @@ namespace Umbrella.Utilities.Caching
 
 							return cacheItem;
 						}
-						catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+						catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 						{
 							if (throwOnCacheFailure)
 								throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -301,7 +301,7 @@ namespace Umbrella.Utilities.Caching
 
 				return await actionFunction();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				// If we get this far then there has definitely been a problem with the actionFunction. We need to throw here.
 				throw new HybridCacheException("There has been a problem with the cache.", exc);
@@ -329,7 +329,7 @@ namespace Umbrella.Utilities.Caching
 					(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
 
 					if (exception != null)
-						Log.WriteError(exception, new { cacheKey, cacheMode });
+						Logger.WriteError(exception, new { cacheKey, cacheMode });
 
 					return (itemFound, cacheItem);
 				}
@@ -343,7 +343,7 @@ namespace Umbrella.Utilities.Caching
 					return (found, value);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
 			{
 				return default;
 			}
@@ -367,7 +367,7 @@ namespace Umbrella.Utilities.Caching
 					(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 
 					if (exception != null)
-						Log.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode });
+						Logger.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode });
 
 					return (itemFound, cacheItem);
 				}
@@ -381,7 +381,7 @@ namespace Umbrella.Utilities.Caching
 					return (found, value);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
 			{
 				return default;
 			}
@@ -423,7 +423,7 @@ namespace Umbrella.Utilities.Caching
 						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, tsExpiration, slidingExpiration));
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				if (throwOnCacheFailure)
 					throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
@@ -472,7 +472,7 @@ namespace Umbrella.Utilities.Caching
 						MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, tsExpiration, slidingExpiration));
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
 			{
 				if (throwOnCacheFailure)
 					throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
@@ -495,7 +495,7 @@ namespace Umbrella.Utilities.Caching
 			{
 				return MemoryCacheMetaEntryDictionary.Select(x => x.Value).ToList();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new HybridCacheException("There has been a problem reading the memory cache keys.", exc);
 			}
@@ -516,7 +516,7 @@ namespace Umbrella.Utilities.Caching
 				else if (cacheMode is HybridCacheMode.Distributed)
 					await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheKey }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey }, returnValue: true))
 			{
 				throw new HybridCacheException("There has been a problem removing the item with the key: " + cacheKey, exc);
 			}
@@ -535,7 +535,7 @@ namespace Umbrella.Utilities.Caching
 				// Reset things so that all future items added to the MemoryCache use a new CancellationToken.
 				_nukeTokenSource = new CancellationTokenSource();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new HybridCacheException("There was a problem clearing all items from the memory cache.", exc);
 			}
@@ -659,7 +659,7 @@ namespace Umbrella.Utilities.Caching
 				// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 				Dispose(true);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new HybridCacheException("There has been a problem disposing this instance.", exc);
 			}

@@ -51,7 +51,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the cache.
@@ -88,7 +88,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 			TBundleUtility bundleUtility,
 			TOptions options)
 		{
-			Log = logger;
+			Logger = logger;
 			Cache = hybridCache;
 			CacheKeyUtility = cacheKeyUtility;
 			BundleUtility = bundleUtility;
@@ -113,7 +113,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 					},
 					Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bundleName }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem generating the script tag HTML.", exc);
 			}
@@ -146,7 +146,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 					},
 					Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bundleName }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem generating the inline script HTML.", exc);
 			}
@@ -170,7 +170,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 					},
 					Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bundleName }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem generating the style tag HTML.", exc);
 			}
@@ -203,7 +203,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Bundles
 					},
 					Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bundleName }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem generating the inline style HTML.", exc);
 			}

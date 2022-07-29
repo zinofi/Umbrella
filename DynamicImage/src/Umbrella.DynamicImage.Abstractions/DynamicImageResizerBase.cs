@@ -18,7 +18,7 @@ namespace Umbrella.DynamicImage.Abstractions
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the cache.
@@ -36,7 +36,7 @@ namespace Umbrella.DynamicImage.Abstractions
 			ILogger logger,
             IDynamicImageCache dynamicImageCache)
         {
-            Log = logger;
+            Logger = logger;
             Cache = dynamicImageCache;
         }
 		#endregion
@@ -69,7 +69,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
                 return null;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { options }, returnValue: true) && exc is DynamicImageException == false)
+            catch (Exception exc) when (Logger.WriteError(exc, new { options }, returnValue: true) && exc is DynamicImageException == false)
             {
                 throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
             }
@@ -83,19 +83,19 @@ namespace Umbrella.DynamicImage.Abstractions
 
 			try
             {
-                if (Log.IsEnabled(LogLevel.Debug))
-                    Log.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
+                if (Logger.IsEnabled(LogLevel.Debug))
+                    Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
 
                 //Check if the image exists in the cache
                 DynamicImageItem? dynamicImage = await Cache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
 
-                if (Log.IsEnabled(LogLevel.Debug))
-                    Log.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
+                if (Logger.IsEnabled(LogLevel.Debug))
+                    Logger.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
 
                 if (dynamicImage != null)
                 {
-                    if (Log.IsEnabled(LogLevel.Debug))
-                        Log.WriteDebug(new { dynamicImage.ImageOptions, dynamicImage.LastModified }, "Image found in cache.");
+                    if (Logger.IsEnabled(LogLevel.Debug))
+                        Logger.WriteDebug(new { dynamicImage.ImageOptions, dynamicImage.LastModified }, "Image found in cache.");
 
                     return dynamicImage;
                 }
@@ -117,7 +117,7 @@ namespace Umbrella.DynamicImage.Abstractions
 
                 return dynamicImage;
             }
-            catch (Exception exc) when (Log.WriteError(exc, new { sourceLastModified, options }, returnValue: true) && exc is DynamicImageException == false)
+            catch (Exception exc) when (Logger.WriteError(exc, new { sourceLastModified, options }, returnValue: true) && exc is DynamicImageException == false)
             {
                 throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
             }

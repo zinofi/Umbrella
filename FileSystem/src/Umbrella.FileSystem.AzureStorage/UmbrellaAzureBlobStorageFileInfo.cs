@@ -34,7 +34,7 @@ namespace Umbrella.FileSystem.AzureStorage
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the file provider used to create this file.
@@ -88,7 +88,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			BlobClient blob,
 			bool isNew)
 		{
-			Log = logger;
+			Logger = logger;
 			Provider = provider;
 			GenericTypeConverter = genericTypeConverter;
 
@@ -119,7 +119,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				if (result != null)
 					_blobProperties = result.Value;
 			}
-			catch (RequestFailedException exc) when (Log.WriteWarning(exc))
+			catch (RequestFailedException exc) when (Logger.WriteWarning(exc))
 			{
 				throw;
 			}
@@ -136,7 +136,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				return await Blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem deleting the file.", exc);
 			}
@@ -156,7 +156,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				// The container is in the process of being deleted which is fine and means the Blob is on its way to Blob heaven.
 				return false;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem determining if the file exists.", exc);
 			}
@@ -188,7 +188,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return bytes;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem reading the file to a byte array.", exc);
 			}
@@ -206,7 +206,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				await Blob.DownloadToAsync(target, transferOptions: CreateStorageTransferOptions(bufferSizeOverride), cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem writing the file to the specified stream.", exc);
 			}
@@ -226,7 +226,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				_content = cacheContents ? bytes : null;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified bytes.", exc);
 			}
@@ -255,7 +255,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				// Trigger a call to this to ensure property population
 				await InitializeAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified stream.", exc);
 			}
@@ -277,7 +277,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem copying the file to the specified destination path.", exc);
 			}
@@ -308,7 +308,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem copying the file to the specified destination file.", exc);
 			}
@@ -327,7 +327,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationSubpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem moving the file to the specified destination path.", exc);
 			}
@@ -346,7 +346,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return destinationFile;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { destinationFile }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem moving the specified file to the specified destination file.", exc);
 			}
@@ -366,7 +366,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return response.Content;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error reading the Blob as a Stream.", exc);
 			}
@@ -390,7 +390,7 @@ namespace Umbrella.FileSystem.AzureStorage
 
 				return default!;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error getting the metadata value for the specified key.", exc);
 			}
@@ -420,7 +420,7 @@ namespace Umbrella.FileSystem.AzureStorage
 						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error setting the metadata value for the specified key.", exc);
 			}
@@ -443,7 +443,7 @@ namespace Umbrella.FileSystem.AzureStorage
 						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { key, writeChanges }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { key, writeChanges }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error removing the metadata value for the specified key.", exc);
 			}
@@ -465,7 +465,7 @@ namespace Umbrella.FileSystem.AzureStorage
 						await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 				}
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { writeChanges }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { writeChanges }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error clearing the metadata.", exc);
 			}
@@ -482,7 +482,7 @@ namespace Umbrella.FileSystem.AzureStorage
 				if (_blobProperties != null)
 					await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 			}
@@ -497,7 +497,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
 			}
@@ -512,7 +512,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, cancellationToken, writeChanges);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
 			}
@@ -527,7 +527,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
 			}
@@ -542,7 +542,7 @@ namespace Umbrella.FileSystem.AzureStorage
 			{
 				await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, cancellationToken, writeChanges);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
 			}

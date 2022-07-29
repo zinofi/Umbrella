@@ -12,7 +12,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.RazorPages
 		/// <summary>
 		/// Gets the logger.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UmbrellaPageModel"/> class.
@@ -21,7 +21,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.RazorPages
 		public UmbrellaPageModel(
 			ILogger logger)
 		{
-			Log = logger;
+			Logger = logger;
 		}
 	}
 }

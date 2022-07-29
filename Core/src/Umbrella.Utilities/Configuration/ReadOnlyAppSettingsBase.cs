@@ -49,7 +49,7 @@ namespace Umbrella.Utilities.Configuration
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the cache.
@@ -80,7 +80,7 @@ namespace Umbrella.Utilities.Configuration
 			TAppSettingsSource appSettingsSource,
 			IGenericTypeConverter genericTypeConverter)
 		{
-			Log = logger;
+			Logger = logger;
 			Cache = cache;
 			AppSettingsSource = appSettingsSource;
 			GenericTypeConverter = genericTypeConverter;
@@ -144,7 +144,7 @@ namespace Umbrella.Utilities.Configuration
 					})
 					: GetValue();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
 			{
 				throw;
 			}
@@ -184,7 +184,7 @@ namespace Umbrella.Utilities.Configuration
 					})
 					: GetValue();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
 			{
 				throw;
 			}
@@ -224,7 +224,7 @@ namespace Umbrella.Utilities.Configuration
 					})
 					: GetValue();
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
 			{
 				throw;
 			}

@@ -16,7 +16,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		/// <summary>
 		/// Gets the logger.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the hosting environment.
@@ -39,7 +39,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			ILogger logger,
 			IWebHostEnvironment hostingEnvironment)
 		{
-			Log = logger;
+			Logger = logger;
 			HostingEnvironment = hostingEnvironment;
 
 		}

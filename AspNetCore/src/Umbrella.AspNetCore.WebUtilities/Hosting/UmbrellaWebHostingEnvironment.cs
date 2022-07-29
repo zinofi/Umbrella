@@ -109,7 +109,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 				},
 				Options);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, fromContentRoot }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There has been a problem mapping the specified virtual path.", exc);
 			}
@@ -189,7 +189,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 				Options,
 				() => appendVersion && watchWhenAppendVersion ? new[] { fileProvider.Watch(cleanedPath) } : null);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, toAbsoluteUrl, scheme, appendVersion, versionParameterName, mapFromContentRoot }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There was a problem mapping the web path.", exc);
 			}
@@ -207,7 +207,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting
 					? await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken)
 					: await GetFileContentAsync("Web", WebRootFileProvider.Value, virtualPath, cache, watch, cancellationToken);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, cache, watch }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, cache, watch }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There has been a problem reading the contents of the specified file.", exc);
 			}

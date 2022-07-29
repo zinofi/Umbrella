@@ -65,7 +65,7 @@ namespace Umbrella.Utilities.Configuration
 				AppSettingsSource.SetValue(key, valueToStore);
 				Cache.Remove(GenerateCacheKey(key));
 			}
-			catch (Exception exc) when (Log.WriteError(exc))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw;
 			}

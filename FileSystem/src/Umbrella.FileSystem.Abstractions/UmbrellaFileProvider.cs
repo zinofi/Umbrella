@@ -30,7 +30,7 @@ namespace Umbrella.FileSystem.Abstractions
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the logger factory.
@@ -72,7 +72,7 @@ namespace Umbrella.FileSystem.Abstractions
 			IMimeTypeUtility mimeTypeUtility,
 			IGenericTypeConverter genericTypeConverter)
 		{
-			Log = logger;
+			Logger = logger;
 			LoggerFactory = loggerFactory;
 			MimeTypeUtility = mimeTypeUtility;
 			GenericTypeConverter = genericTypeConverter;
@@ -106,7 +106,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return fileInfo;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -122,7 +122,7 @@ namespace Umbrella.FileSystem.Abstractions
 			{
 				return await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -143,7 +143,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return true;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -159,7 +159,7 @@ namespace Umbrella.FileSystem.Abstractions
 			{
 				return await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { fileInfo }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -181,7 +181,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return await sourceFile.CopyAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Logger.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -203,7 +203,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -220,7 +220,7 @@ namespace Umbrella.FileSystem.Abstractions
 			{
 				return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -242,7 +242,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return await sourceFile.MoveAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Logger.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -264,7 +264,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -281,7 +281,7 @@ namespace Umbrella.FileSystem.Abstractions
 			{
 				return await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
+			catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && exc is UmbrellaFileNotFoundException == false)
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -305,7 +305,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return file;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -329,7 +329,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return file;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}
@@ -347,7 +347,7 @@ namespace Umbrella.FileSystem.Abstractions
 				
 				return file != null;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { subpath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
 			{
 				throw new UmbrellaFileSystemException(exc.Message, exc);
 			}

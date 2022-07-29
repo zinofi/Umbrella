@@ -15,7 +15,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 		/// <summary>
 		/// Gets the logger.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the cache.
@@ -47,7 +47,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 			ICacheKeyUtility cacheKeyUtility,
 			DynamicImageCacheCoreOptions cacheOptions)
 		{
-			Log = logger;
+			Logger = logger;
 			Cache = cache;
 			CacheKeyUtility = cacheKeyUtility;
 			CacheOptions = cacheOptions;
@@ -83,7 +83,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 				},
 				CacheOptions);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { options }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { options }, returnValue: true))
 			{
 				throw new DynamicImageException("There was a problem generating the cache key.", exc, options);
 			}

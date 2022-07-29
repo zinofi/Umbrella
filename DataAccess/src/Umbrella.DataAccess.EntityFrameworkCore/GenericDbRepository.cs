@@ -205,11 +205,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 				return new SaveResult<TEntity>(true, entity);
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Failed for Id", returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
+			catch (Exception exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Failed for Id", returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the entity.", exc);
 			}
@@ -245,11 +245,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 				return entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
+			catch (Exception exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem saving the specified entities.", exc);
 			}
@@ -284,11 +284,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Concurrency Exception for Id", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Concurrency Exception for Id", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Failed for Id", returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
+			catch (Exception exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Failed for Id", returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entity.", exc);
 			}
@@ -310,11 +310,11 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				if (pushChangesToDb)
 					await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (DbUpdateConcurrencyException exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
+			catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, "Bulk Delete Concurrency Exception", returnValue: true))
 			{
 				throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
+			catch (Exception exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, returnValue: !(exc is UmbrellaDataAccessConcurrencyException)))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem deleting the specified entities.", exc);
 			}

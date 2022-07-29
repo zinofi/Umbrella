@@ -22,7 +22,7 @@ namespace Umbrella.Utilities.Hosting
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the options.
@@ -60,7 +60,7 @@ namespace Umbrella.Utilities.Hosting
 			IHybridCache cache,
 			ICacheKeyUtility cacheKeyUtility)
 		{
-			Log = logger;
+			Logger = logger;
 			Options = options;
 			Cache = cache;
 			CacheKeyUtility = cacheKeyUtility;
@@ -81,7 +81,7 @@ namespace Umbrella.Utilities.Hosting
 			{
 				return await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { virtualPath, cache, watch }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, cache, watch }, returnValue: true))
 			{
 				throw new UmbrellaException("There has been a problem reading the contents of the specified file.", exc);
 			}

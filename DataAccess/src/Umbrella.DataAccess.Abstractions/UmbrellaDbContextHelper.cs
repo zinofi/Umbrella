@@ -18,7 +18,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <summary>
 		/// Gets the log.
 		/// </summary>
-		protected ILogger Log { get; }
+		protected ILogger Logger { get; }
 
 		/// <summary>
 		/// Gets the dictionary containing the pending actions to be executed after <see cref="SaveChanges(Func{int})"/> or <see cref="SaveChangesAsync(Func{CancellationToken, Task{int}}, CancellationToken)"/> is called.
@@ -31,7 +31,7 @@ namespace Umbrella.DataAccess.Abstractions
 		/// <param name="logger">The logger.</param>
 		public UmbrellaDbContextHelper(ILogger<UmbrellaDbContextHelper> logger)
 		{
-			Log = logger;
+			Logger = logger;
 		}
 
 		/// <inheritdoc />
@@ -41,10 +41,10 @@ namespace Umbrella.DataAccess.Abstractions
 			{
 				PostSaveChangesSaveActionDictionary[entity] = wrappedAction;
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(message: "Post save callback registered");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(message: "Post save callback registered");
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem registering the action.", exc);
 			}
@@ -57,8 +57,8 @@ namespace Umbrella.DataAccess.Abstractions
 
 			try
 			{
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { StartPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Started executing post save callbacks");
 
 				// Firstly, create a copy of the callback dictionary and iterate over this
 				var dicItem = PostSaveChangesSaveActionDictionary.ToDictionary(x => x.Key, x => x.Value);
@@ -77,17 +77,17 @@ namespace Umbrella.DataAccess.Abstractions
 
 					if (task != null)
 					{
-						if (Log.IsEnabled(LogLevel.Debug))
-							Log.WriteDebug(message: "Post save callback found to execute");
+						if (Logger.IsEnabled(LogLevel.Debug))
+							Logger.WriteDebug(message: "Post save callback found to execute");
 
 						await task.ConfigureAwait(false);
 					}
 				}
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem executing the pending post-save actions.", exc);
 			}
@@ -98,8 +98,8 @@ namespace Umbrella.DataAccess.Abstractions
 		{
 			try
 			{
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(message: "Started SaveChanges()");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(message: "Started SaveChanges()");
 
 				int result = baseSaveChanges();
 
@@ -108,12 +108,12 @@ namespace Umbrella.DataAccess.Abstractions
 				var t = Task.Run(() => ExecutePostSaveChangesActionsAsync());
 				t.Wait();
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(message: "Finished SaveChanges()");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(message: "Finished SaveChanges()");
 
 				return result;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}
@@ -124,19 +124,19 @@ namespace Umbrella.DataAccess.Abstractions
 		{
 			try
 			{
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(message: "Started SaveChangesAsync()");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(message: "Started SaveChangesAsync()");
 
 				int result = await baseSaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
 				await ExecutePostSaveChangesActionsAsync(cancellationToken).ConfigureAwait(false);
 
-				if (Log.IsEnabled(LogLevel.Debug))
-					Log.WriteDebug(message: "Finished SaveChangesAsync()");
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(message: "Finished SaveChangesAsync()");
 
 				return result;
 			}
-			catch (Exception exc) when (Log.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}

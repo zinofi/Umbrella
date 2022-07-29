@@ -75,7 +75,7 @@ namespace Umbrella.WebUtilities.Bundling
 					cancellationToken)
 					.ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There has been a problem resolving the path to the Webpack bundle.", exc);
 			}
@@ -105,7 +105,7 @@ namespace Umbrella.WebUtilities.Bundling
 					cancellationToken)
 					.ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Log.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
 			{
 				throw new UmbrellaWebException("There has been a problem resolving the path to the Webpack bundle.", exc);
 			}
