@@ -224,7 +224,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			{
 				if (synchronizeAccess)
 				{
-					(Type type, string key)? syncKey = GetCreateSynchronizationRootKey(model);
+					(Type type, string key)? syncKey = GetCreateSynchronizationRootKey(model!);
 
 					if (syncKey.HasValue)
 						syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync(syncKey.Value.type, syncKey.Value.key, cancellationToken).ConfigureAwait(false);
@@ -490,6 +490,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			pageSize = Math.Clamp(pageSize, 1, 50);
 		}
 
-		protected virtual (Type type, string key)? GetCreateSynchronizationRootKey<TCreateModel>(TCreateModel model) => null;
+		protected virtual (Type type, string key)? GetCreateSynchronizationRootKey(object model) => null;
 	}
 }
