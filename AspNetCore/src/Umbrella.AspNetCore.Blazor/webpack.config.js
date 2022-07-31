@@ -1,11 +1,10 @@
 ﻿const path = require("path");
 const paths = require("./webpack.paths");
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserJsPlugin = require("terser-webpack-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CssMinimizerWebpackPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = (env, argv) =>
 {
@@ -42,7 +41,7 @@ module.exports = (env, argv) =>
 		},
 		module: {
 			rules: [
-				{ test: /\.ts/, exclude: /(node_modules|bower_components)/, use: "awesome-typescript-loader?silent=true" },
+				{ test: /\.ts/, exclude: /(node_modules|bower_components)/, use: "ts-loader" },
 				{
 					test: /\.(css|scss)$/,
 					exclude: /(node_modules|bower_components)/,
@@ -69,11 +68,12 @@ module.exports = (env, argv) =>
 			]
 		},
 		optimization: {
+			minimize: !isDevMode,
 			minimizer: [
-				!isDevMode ? new TerserJsPlugin({
+				new TerserJsPlugin({
 					parallel: true,
 					terserOptions: {
-						ecma: 2015,
+						ecma: 2019,
 						compress: {
 							passes: 2
 						},
@@ -83,20 +83,17 @@ module.exports = (env, argv) =>
 						keep_fnames: true
 					},
 					extractComments: false
-				}) : null,
-				!isDevMode ? new OptimizeCSSAssetsPlugin({
-					cssProcessorOptions: {
-						safe: true,
+				}),
+				new CssMinimizerWebpackPlugin({
+					minimizerOptions: {
 						discardComments: { removeAll: true },
-						map: { inline: false }
 					}
-				}) : null
+				})
 			].filter(x => x)
 		},
 		plugins: [
 			// Remove existing assets from dist folder.
 			new CleanWebpackPlugin(),
-			new CheckerPlugin(),
 			new MiniCssExtractPlugin({
 				filename: "[name].css"
 			}),
