@@ -25,6 +25,11 @@ using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
 {
+	// TODO: We could expand on this approach with an UmbrellaDataAccessPageModel and UmbrellaGenericRepositoryPageModel
+	// Also, an UmbrellaDataAccessController and UmbrellaGenericRepositoryController.
+	// We could encapsulate all of the core logic into a utility class of some kind and pass in a enum to change the behaviour, e.g. Mode = Api, Mvc, RazorPage
+	// and that would then determine if we returned, e.g. Page(model) - RazorPages, View(model) - Mvc, Ok(model) - Api.
+	// Would be a good way of doing things for non-blazor projects where we use server page rendering.
 	public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	{
 		protected virtual string ConcurrencyErrorMessage { get; } = "This information has been changed elsewhere since this screen was loaded. Please refresh the screen and try again.";
