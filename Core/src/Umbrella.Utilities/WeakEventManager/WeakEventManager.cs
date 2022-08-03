@@ -6,13 +6,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.WeakEventManager.Abstractions;
 
 namespace Umbrella.Utilities.WeakEventManager
 {
-	// TODO TOOLKIT: Look at the CommunityToolkit. Either switch to using that or see what ideas from it we can use.
+	// TODO TOOLKIT: Not happy with how this has turned out.
+	// Look at the CommunityToolkit. Either switch to using that or see what ideas from it we can use.
 
 	/// <summary>
 	/// An event manager that allows subscribers to be subject to GC when still subscribed.

@@ -207,7 +207,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			try
 			{
-				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
+				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
 			{
@@ -263,7 +263,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				.TrackChanges(trackChanges)
 				.ToArrayAsync(cancellationToken);
 
-			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
+			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 			var entities = results.Select(x => x.Entity).ToList();
 
 			await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
@@ -315,7 +315,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 				.ApplyPagination(pageNumber, pageSize)
 				.ToArrayAsync(cancellationToken);
 
-			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken);
+			int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 			var entities = results.Select(x => x.Entity).ToList();
 
 			return new PaginatedResultModel<TShapedEntity>(entities, pageNumber, pageSize, totalCount);
