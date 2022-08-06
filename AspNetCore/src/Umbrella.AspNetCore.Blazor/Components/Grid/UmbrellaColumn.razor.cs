@@ -60,6 +60,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public string? SorterMemberPathOverride { get; set; }
 
+		// TODO NET 6 - If this is null, try and read the value from a [Display] attribute.
 		/// <summary>
 		/// Gets or sets the text for the column heading.
 		/// </summary>
