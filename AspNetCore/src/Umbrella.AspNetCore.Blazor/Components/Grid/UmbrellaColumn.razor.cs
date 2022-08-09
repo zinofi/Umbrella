@@ -60,6 +60,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public string? SorterMemberPathOverride { get; set; }
 
+		// TODO NET 6 - If this is null, try and read the value from a [Display] attribute.
 		/// <summary>
 		/// Gets or sets the text for the column heading.
 		/// </summary>
@@ -118,6 +119,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		[Parameter]
 		public UmbrellaColumnFilterOptionsType? FilterOptionsType { get; set; }
 
+		// TODO NET 6: If this is null, try and read the [Display] attribute value from the enum member.
 		/// <summary>
 		/// Gets or sets the filter option display name selector used to convert a value in the <see cref="FilterOptions"/> collection to a friendly display name.
 		/// </summary>

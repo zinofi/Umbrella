@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Utilities.Mapping.AutoMapper.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Umbrella.Utilities.Mapping.AutoMapper</PackageId>
+		<Description>This package contains AutoMapper implementations of the Umbrella.Utilities.Mapping.Abstractions interfaces.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.0.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>
