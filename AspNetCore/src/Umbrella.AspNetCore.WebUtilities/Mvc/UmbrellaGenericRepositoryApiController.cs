@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +14,7 @@ using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
@@ -30,6 +30,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 		where TEntityKey : IEquatable<TEntityKey>
 	{
 		protected Lazy<TRepository> Repository { get; }
+
+		protected virtual bool SlimReadEndpointEnabled { get; } = true;
+		protected virtual bool ReadEndpointEnabled { get; } = true;
+		protected virtual bool CreateEndpointEnabled { get; } = true;
+		protected virtual bool UpdateEndpointEnabled { get; } = true;
+		protected virtual bool DeleteEndpointEnabled { get; } = true;
+
 		protected virtual bool AuthorizationSlimReadChecksEnabled { get; } = true;
 		protected virtual bool AuthorizationReadChecksEnabled { get; } = true;
 		protected virtual bool AuthorizationCreateChecksEnabled { get; } = true;
@@ -61,7 +68,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			ILogger logger,
 			IWebHostEnvironment hostingEnvironment,
 			UmbrellaDataAccessApiControllerOptions options,
-			IMapper mapper,
+			IUmbrellaMapper mapper,
 			Lazy<TRepository> repository,
 			IAuthorizationService authorizationService,
 			ISynchronizationManager synchronizationManager)
@@ -72,7 +79,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 
 		[HttpGet(nameof(SearchSlim))]
 		public virtual Task<IActionResult> SearchSlim(int pageNumber, int pageSize, [FromQuery] SortExpression<TEntity>[]? sorters = null, [FromQuery] FilterExpression<TEntity>[]? filters = null, FilterExpressionCombinator? filterCombinator = null, CancellationToken cancellationToken = default)
-			=> ReadAllAsync<TEntity, TEntity, TEntityKey, TRepositoryOptions, TSlimModel, TPaginatedResultModel>(
+			=> SlimReadEndpointEnabled
+			? ReadAllAsync<TEntity, TEntity, TEntityKey, TRepositoryOptions, TSlimModel, TPaginatedResultModel>(
 				pageNumber,
 				pageSize,
 				sorters,
@@ -84,11 +92,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				AfterCreateSearchSlimModelAsync,
 				AfterReadSlimEntityAsync,
 				SearchSlimRepoOptions,
-				AuthorizationSlimReadChecksEnabled);
+				AuthorizationSlimReadChecksEnabled)
+			: throw new NotImplementedException("Unsupported Endpoint");
 
 		[HttpGet]
 		public virtual Task<IActionResult> Get(TEntityKey id, CancellationToken cancellationToken = default)
-			=> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
+			=> ReadEndpointEnabled
+			? ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 				id,
 				Repository,
 				cancellationToken,
@@ -98,11 +108,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				GetIncludeMap,
 				GetRepoOptions,
 				AuthorizationReadChecksEnabled,
-				GetLock);
+				GetLock)
+			: throw new NotImplementedException("Unsupported Endpoint");
 
 		[HttpPost]
 		public virtual Task<IActionResult> Post(TCreateModel model, CancellationToken cancellationToken = default)
-			=> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateModel, TCreateResultModel>(
+			=> CreateEndpointEnabled
+			? CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateModel, TCreateResultModel>(
 				model,
 				Repository,
 				cancellationToken,
@@ -113,11 +125,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				PostRepoOptions,
 				AuthorizationCreateChecksEnabled,
 				PostLock,
-				EnablePostOutputMapping);
+				EnablePostOutputMapping)
+			: throw new NotImplementedException("Unsupported Endpoint");
 
 		[HttpPut]
 		public virtual Task<IActionResult> Put(TUpdateModel model, CancellationToken cancellationToken = default)
-			=> UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TUpdateModel, TUpdateResultModel>(
+			=> UpdateEndpointEnabled
+			? UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TUpdateModel, TUpdateResultModel>(
 				model,
 				Repository,
 				cancellationToken,
@@ -129,11 +143,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				PutRepoOptions,
 				AuthorizationUpdateChecksEnabled,
 				PutLock,
-				EnablePutOutputMapping);
+				EnablePutOutputMapping)
+			: throw new NotImplementedException("Unsupported Endpoint");
 
 		[HttpDelete]
 		public virtual Task<IActionResult> Delete(TEntityKey id, CancellationToken cancellationToken = default)
-			=> DeleteAsync(
+			=> DeleteEndpointEnabled
+			? DeleteAsync(
 				id,
 				Repository,
 				cancellationToken,
@@ -142,7 +158,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				DeleteIncludeMap,
 				DeleteRepoOptions,
 				AuthorizationDeleteChecksEnabled,
-				DeleteLock);
+				DeleteLock)
+			: throw new NotImplementedException("Unsupported Endpoint");
 
 		protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, CancellationToken cancellationToken, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options) => Repository.Value.FindAllAsync(pageNumber, pageSize, cancellationToken, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.Or, options);
 		protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;

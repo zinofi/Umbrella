@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
@@ -200,6 +200,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.AppCenter", "Logging\src\Umbrella.Extensions.Logging.AppCenter\Umbrella.Extensions.Logging.AppCenter.csproj", "{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AppFramework.Shared", "Core\src\Umbrella.AppFramework.Shared\Umbrella.AppFramework.Shared.csproj", "{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Mapping.AutoMapper", "Core\src\Umbrella.Utilities.Mapping.AutoMapper\Umbrella.Utilities.Mapping.AutoMapper.csproj", "{70B54969-F308-4485-9AE3-748BF783A7DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -556,6 +558,12 @@ Global
 		{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70B54969-F308-4485-9AE3-748BF783A7DD}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{70B54969-F308-4485-9AE3-748BF783A7DD}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{70B54969-F308-4485-9AE3-748BF783A7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B54969-F308-4485-9AE3-748BF783A7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70B54969-F308-4485-9AE3-748BF783A7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70B54969-F308-4485-9AE3-748BF783A7DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -644,6 +652,7 @@ Global
 		{0E352693-F77E-49F8-926C-2961BB1A194F} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 		{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D} = {84D45264-D944-4A17-A230-AAEECE889301}
+		{70B54969-F308-4485-9AE3-748BF783A7DD} = {84D45264-D944-4A17-A230-AAEECE889301}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

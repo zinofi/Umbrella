@@ -11,6 +11,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Options
 {
 	public class UmbrellaDataAccessApiControllerOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 	{
+		public string ConcurrencyErrorMessage { get; set; } = "This information has been changed elsewhere since this screen was loaded. Please try again.";
 		public Func<Exception, bool> ReadAllExceptionFilter { get; set; } = _ => false;
 		public Func<Exception, Task<IActionResult?>> HandleReadAllExceptionAsync { get; set; } = _ => Task.FromResult<IActionResult?>(null);
 		public Func<Exception, bool> ReadExceptionFilter { get; set; } = _ => false;
@@ -29,6 +30,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Options
 		/// <inheritdoc />
 		public void Sanitize()
 		{
+			ConcurrencyErrorMessage = ConcurrencyErrorMessage?.Trim()!;
 			CreatePolicyName = CreatePolicyName?.Trim()!;
 			ReadPolicyName = ReadPolicyName?.Trim()!;
 			UpdatePolicyName = UpdatePolicyName?.Trim()!;
@@ -38,6 +40,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Options
 		/// <inheritdoc />
 		public void Validate()
 		{
+			Guard.ArgumentNotNullOrEmpty(ConcurrencyErrorMessage, nameof(ConcurrencyErrorMessage));
 			Guard.ArgumentNotNullOrEmpty(CreatePolicyName, nameof(CreatePolicyName));
 			Guard.ArgumentNotNullOrEmpty(ReadPolicyName, nameof(ReadPolicyName));
 			Guard.ArgumentNotNullOrEmpty(UpdatePolicyName, nameof(UpdatePolicyName));

@@ -1,8 +1,15 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Umbrella.DataAccess.Abstractions;
+using Umbrella.Utilities.Mapping.Abstractions;
+
+// TODO NET 6: Remove this package and merge its contents into the Umbrella.DataAccess.Abstractions package.
+// Should we retain the namespace???
 
 namespace Umbrella.DataAccess.Mapping
 {
@@ -12,8 +19,8 @@ namespace Umbrella.DataAccess.Mapping
 	public interface IMappingUtility
 	{
 		/// <summary>
-		/// Used to map a collection of models onto a collection of existing entities. This leverages AutoMapper internally which means
-		/// that the appropriate mappings must be registered with the singleton instance of <see cref="IMapper" /> registered with DI.
+		/// Used to map a collection of models onto a collection of existing entities. This leverages object mapping internally which means
+		/// that the appropriate mappings must be registered with the singleton instance of <see cref="IUmbrellaMapper" /> registered with DI.
 		/// </summary>
 		/// <typeparam name="TModel">The type of the model items.</typeparam>
 		/// <typeparam name="TEntity">The type of the entity items.</typeparam>
@@ -24,9 +31,10 @@ namespace Umbrella.DataAccess.Mapping
 		/// <param name="newEntityAction">The action to be applied to new entity items that do not exist in the existing items.</param>
 		/// <param name="deletedEntityAction">The action to be applied to deleted items that do not exist in the model items.</param>
 		/// <param name="autoInclusionSelector">The automatic inclusion selector.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <param name="innerActions">The inner actions to be applied to nested objects. Nested objects need to be explicitly handled.</param>
 		/// <returns>A collection of <typeparamref name="TEntity"/> instances.</returns>
-		ValueTask<List<TEntity>> UpdateItemsListAsync<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Func<TEntity, ValueTask>? newEntityAction = null, Func<TEntity, List<TEntity>, ValueTask>? deletedEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, params Func<TModel, TEntity, ValueTask>[] innerActions)
+		ValueTask<List<TEntity>> UpdateItemsListAsync<TModel, TEntity, TEntityKey>(IEnumerable<TModel> modelItems, IEnumerable<TEntity> existingItems, Func<TModel, TEntity, bool> matchSelector, Func<TEntity, ValueTask>? newEntityAction = null, Func<TEntity, List<TEntity>, ValueTask>? deletedEntityAction = null, Func<TEntity, bool>? autoInclusionSelector = null, CancellationToken cancellationToken = default, params Func<TModel, TEntity, ValueTask>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 			where TEntityKey : IEquatable<TEntityKey>;
 	}

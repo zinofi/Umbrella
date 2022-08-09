@@ -1,23 +1,27 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
+using Umbrella.Utilities.Mapping.Abstractions;
 
 namespace Umbrella.DataAccess.Mapping
 {
 	/// <summary>
-	/// A utility class used to update a collection of existing items using an incoming items collection. This implementation leverages AutoMapper internally using
-	/// a constructor injected instance of <see cref="IMapper"/>.
+	/// A utility class used to update a collection of existing items using an incoming items collection. This implementation leverages object mapping internally using
+	/// a constructor injected instance of <see cref="IUmbrellaMapper"/>.
 	/// </summary>
 	/// <seealso cref="IMappingUtility" />
 	public class MappingUtility : IMappingUtility
 	{
 		private readonly ILogger _log;
-		private readonly IMapper _mapper;
+		private readonly IUmbrellaMapper _mapper;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MappingUtility"/> class.
@@ -26,7 +30,7 @@ namespace Umbrella.DataAccess.Mapping
 		/// <param name="mapper">The mapper.</param>
 		public MappingUtility(
 			ILogger<MappingUtility> logger,
-			IMapper mapper)
+			IUmbrellaMapper mapper)
 		{
 			_log = logger;
 			_mapper = mapper;
@@ -40,10 +44,13 @@ namespace Umbrella.DataAccess.Mapping
 			Func<TEntity, ValueTask>? newEntityAction = null,
 			Func<TEntity, List<TEntity>, ValueTask>? deletedEntityAction = null,
 			Func<TEntity, bool>? autoInclusionSelector = null,
+			CancellationToken cancellationToken = default,
 			params Func<TModel, TEntity, ValueTask>[] innerActions)
 			where TEntity : class, IEntity<TEntityKey>
 			where TEntityKey : IEquatable<TEntityKey>
 		{
+			cancellationToken.ThrowIfCancellationRequested();
+
 			try
 			{
 				// If there is nothing to process, just return an empty list for the target entity type
@@ -58,12 +65,15 @@ namespace Umbrella.DataAccess.Mapping
 
 				foreach (var item in modelItems)
 				{
+					if (item is null)
+						throw new Exception("The item is null.");
+
 					TEntity entity = existingItems.SingleOrDefault(x => matchSelector(item, x));
 
 					// No existing item with this id, so add a new one
 					if (entity is null)
 					{
-						entity = _mapper.Map<TEntity>(item);
+						entity = await _mapper.MapAsync<TEntity>(item, cancellationToken).ConfigureAwait(false);
 
 						// Make sure the mapped entity has an default id value to avoid errors with having mapped an existing item that belongs
 						// to something like a different foreign key relationship
@@ -76,7 +86,7 @@ namespace Umbrella.DataAccess.Mapping
 					}
 					else // Existing item found, so map to existing instance
 					{
-						_mapper.Map(item, entity);
+						await _mapper.MapAsync(item, entity, cancellationToken).ConfigureAwait(false);
 						updatedList.Add(entity);
 					}
 

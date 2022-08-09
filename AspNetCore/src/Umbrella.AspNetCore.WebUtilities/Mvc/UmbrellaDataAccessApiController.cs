@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +20,7 @@ using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
@@ -32,10 +32,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 	// Would be a good way of doing things for non-blazor projects where we use server page rendering.
 	public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	{
-		protected virtual string ConcurrencyErrorMessage { get; } = "This information has been changed elsewhere since this screen was loaded. Please refresh the screen and try again.";
-
 		private protected UmbrellaDataAccessApiControllerOptions Options { get; }
-		protected IMapper Mapper { get; }
+		protected IUmbrellaMapper Mapper { get; }
 		protected IAuthorizationService AuthorizationService { get; }
 		protected ISynchronizationManager SynchronizationManager { get; }
 
@@ -43,7 +41,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			ILogger logger,
 			IWebHostEnvironment hostingEnvironment,
 			UmbrellaDataAccessApiControllerOptions options,
-			IMapper mapper,
+			IUmbrellaMapper mapper,
 			IAuthorizationService authorizationService,
 			ISynchronizationManager synchronizationManager)
 			: base(logger, hostingEnvironment)
@@ -92,7 +90,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 
 				var model = new TPaginatedItemModel
 				{
-					Items = mapReadAllEntitiesDelegate is null ? Mapper.Map<TItemModel[]>(result.Items) : mapReadAllEntitiesDelegate(result.Items),
+					Items = mapReadAllEntitiesDelegate is null ? await Mapper.MapAsync<TItemModel[]>(result.Items).ConfigureAwait(false) : mapReadAllEntitiesDelegate(result.Items),
 					PageNumber = pageNumber,
 					PageSize = pageSize,
 					TotalCount = result.TotalCount,
@@ -170,7 +168,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				}
 
 				TModel model = mapperCallback is null
-					? Mapper.Map<TModel>(item)
+					? await Mapper.MapAsync<TModel>(item).ConfigureAwait(false)
 					: mapperCallback(item);
 
 				if (afterReadEntityCallback != null)
@@ -227,6 +225,9 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 
 			try
 			{
+				if (model is null)
+					return BadRequest("The request body has not been provided.");
+
 				if (synchronizeAccess)
 				{
 					(Type type, string key)? syncKey = GetCreateSynchronizationRootKey(model!);
@@ -236,7 +237,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				}
 
 				var entity = mapperInputCallback is null
-					? Mapper.Map<TEntity>(model)
+					? await Mapper.MapAsync<TEntity>(model).ConfigureAwait(false)
 					: mapperInputCallback(model);
 
 				if (beforeCreateEntityCallback != null)
@@ -265,7 +266,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 					if (enableOutputMapping)
 					{
 						result = mapperOutputCallback is null
-							? Mapper.Map<TResultModel>(entity)
+							? await Mapper.MapAsync<TResultModel>(entity).ConfigureAwait(false)
 							: mapperOutputCallback(entity);
 					}
 					else
@@ -344,10 +345,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				// Check the concurrency stamp. This is done in the repos and again when the database query is executed but good to fail on
 				// this as early as possible.
 				if (entity is IConcurrencyStamp concurrencyStamp && concurrencyStamp.ConcurrencyStamp != model.ConcurrencyStamp)
-					return ConcurrencyConflict(ConcurrencyErrorMessage);
+					return ConcurrencyConflict(Options.ConcurrencyErrorMessage);
 
 				entity = mapperInputCallback is null
-						? Mapper.Map(model, entity)
+						? await Mapper.MapAsync(model, entity).ConfigureAwait(false)
 						: mapperInputCallback(model, entity);
 
 				if (beforeUpdateEntityCallback != null)
@@ -376,7 +377,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 					if (enableOutputMapping)
 					{
 						result = mapperOutputCallback is null
-							? Mapper.Map<TResultModel>(entity)
+							? await Mapper.MapAsync<TResultModel>(entity).ConfigureAwait(false)
 							: mapperOutputCallback(entity);
 					}
 					else
@@ -400,7 +401,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 			}
 			catch (UmbrellaDataAccessConcurrencyException)
 			{
-				return ConcurrencyConflict(ConcurrencyErrorMessage);
+				return ConcurrencyConflict(Options.ConcurrencyErrorMessage);
 			}
 			catch (Exception exc) when (Options.UpdateExceptionFilter(exc))
 			{
