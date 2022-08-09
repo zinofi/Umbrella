@@ -5,6 +5,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Extensions.Logging;
+using Umbrella.Utilities;
 
 namespace Umbrella.Extensions.Logging.ApplicationInsights
 {
@@ -37,13 +38,13 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
 		}
 
 		/// <inheritdoc />
-		public IDisposable? BeginScope<TState>(TState state) => null;
+		public IDisposable BeginScope<TState>(TState state) => EmptyDisposable.Instance;
 
 		/// <inheritdoc />
 		public bool IsEnabled(LogLevel logLevel) => _telemetryClient != null && logLevel >= _minLevel && _telemetryClient.IsEnabled();
 
 		/// <inheritdoc />
-		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception?, string> formatter)
+		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 		{
 			if (IsEnabled(logLevel))
 			{
@@ -85,7 +86,7 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
 
 					if (!string.IsNullOrEmpty(eventId.Name))
 					{
-						dict["EventName"] = eventId.Name;
+						dict["EventName"] = eventId.Name!;
 					}
 				}
 

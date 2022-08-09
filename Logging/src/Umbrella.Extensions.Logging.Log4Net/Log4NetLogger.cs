@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using log4net;
 using Microsoft.Extensions.Logging;
+using Umbrella.Utilities;
 
 namespace Umbrella.Extensions.Logging.Log4Net
 {
@@ -30,7 +31,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 
 		#region ILogger Members
 		/// <inheritdoc />
-		public IDisposable? BeginScope<TState>(TState state) => null;
+		public IDisposable BeginScope<TState>(TState state) => EmptyDisposable.Instance;
 
 		/// <inheritdoc />
 		public bool IsEnabled(LogLevel logLevel) => logLevel switch
@@ -46,10 +47,10 @@ namespace Umbrella.Extensions.Logging.Log4Net
 		};
 
 		/// <inheritdoc />
-		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 			=> LogInner(logLevel, eventId, state, exception, formatter);
 
-		private void LogInner<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter, int recursiveLevel = 0)
+		private void LogInner<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter, int recursiveLevel = 0)
 		{
 			// Checking how many levels deep we are here to prevent a possible StackOverflowException.
 			if (recursiveLevel > 5)
@@ -69,7 +70,7 @@ namespace Umbrella.Extensions.Logging.Log4Net
 			// If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
 			// to this method to use the same id for correlating messages.
 			string messageId = eventId.Id is 0
-				? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name
+				? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name!
 				: eventId.Id.ToString();
 
 			var messageBuider = new StringBuilder()

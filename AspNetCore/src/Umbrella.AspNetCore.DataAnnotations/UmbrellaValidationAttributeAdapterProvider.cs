@@ -19,11 +19,11 @@ namespace Umbrella.AspNetCore.DataAnnotations
 
 		#region IValidationAttributeAdapterProvider Members
 		/// <inheritdoc />
-		public IAttributeAdapter GetAttributeAdapter(ValidationAttribute attribute, IStringLocalizer stringLocalizer)
+		public IAttributeAdapter? GetAttributeAdapter(ValidationAttribute attribute, IStringLocalizer? stringLocalizer)
 		{
-			IAttributeAdapter adapter = _mvcFrameworkImplementation.GetAttributeAdapter(attribute, stringLocalizer);
+			IAttributeAdapter? adapter = _mvcFrameworkImplementation.GetAttributeAdapter(attribute, stringLocalizer);
 
-			if (adapter == null)
+			if (adapter is null)
 			{
 				Type type = attribute.GetType();
 

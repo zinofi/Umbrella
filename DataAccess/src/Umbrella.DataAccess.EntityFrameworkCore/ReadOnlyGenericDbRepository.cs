@@ -287,7 +287,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 		/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
 		/// <returns>The paginated results.</returns>
 		protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllShapedAsync<TShapedEntity>(
-			Expression<Func<TEntity, TShapedEntity>>? shapedEntitySelector,
+			Expression<Func<TEntity, TShapedEntity>> shapedEntitySelector,
 			int pageNumber = 0,
 			int pageSize = 20,
 			CancellationToken cancellationToken = default,

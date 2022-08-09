@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.Logging;
+using Umbrella.Utilities;
 
 namespace Umbrella.Extensions.Logging.AppCenter
 {
@@ -29,13 +30,13 @@ namespace Umbrella.Extensions.Logging.AppCenter
 		}
 
 		/// <inheritdoc />
-		public IDisposable? BeginScope<TState>(TState state) => null;
+		public IDisposable BeginScope<TState>(TState state) => EmptyDisposable.Instance;
 
 		/// <inheritdoc />
 		public bool IsEnabled(LogLevel logLevel) => logLevel >= _minLevel;
 
 		/// <inheritdoc />
-		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 		{
 			if (!IsEnabled(logLevel))
 				return;
@@ -69,7 +70,7 @@ namespace Umbrella.Extensions.Logging.AppCenter
 
 				if (!string.IsNullOrEmpty(eventId.Name))
 				{
-					dicProperties["EventName"] = eventId.Name;
+					dicProperties["EventName"] = eventId.Name!;
 				}
 			}
 

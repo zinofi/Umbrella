@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities
@@ -9,27 +8,16 @@ namespace Umbrella.Utilities
 	/// </summary>
 	public static class UmbrellaStatics
 	{
-		private static readonly JsonSerializerOptions _defaultOptions = new()
-		{
-			Converters = {
-				new JsonTimeSpanConverter()
-			}
-		};
+		private static readonly JsonSerializerOptions _defaultOptions = new();
 
 		private static readonly JsonSerializerOptions _camelCaseOptions = new()
 		{
-			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-			Converters = {
-				new JsonTimeSpanConverter()
-			}
+			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
 
 		private static readonly JsonSerializerOptions _ignoreCaseOptions = new()
 		{
-			PropertyNameCaseInsensitive = true,
-			Converters = {
-				new JsonTimeSpanConverter()
-			}
+			PropertyNameCaseInsensitive = true
 		};
 
 		/// <summary>

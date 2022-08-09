@@ -13,12 +13,16 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.3" />
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>
 
 </Project>
