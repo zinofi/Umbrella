@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Http;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -13,11 +14,17 @@ namespace Umbrella.Utilities.Http
 	/// </summary>
 	public static class HttpPolicies
 	{
+		private static readonly ConcurrentDictionary<(int, int), AsyncRetryPolicy<HttpResponseMessage>> _policyDictionary = new ConcurrentDictionary<(int, int), AsyncRetryPolicy<HttpResponseMessage>>();
+
 		/// <summary>
-		/// The error and timeout policy.
+		/// Creates the error and timeout policy.
 		/// </summary>
-		public static AsyncRetryPolicy<HttpResponseMessage> ErrorAndTimeout = HttpPolicyExtensions.HandleTransientHttpError()
+		/// <param name="firstRetryDelaySeconds">The first retry delay in seconds.</param>
+		/// <param name="retryCount">The retry count.</param>
+		/// <returns>The policy.</returns>
+		public static AsyncRetryPolicy<HttpResponseMessage> CreateErrorAndTimeoutPolicy(int firstRetryDelaySeconds = 2, int retryCount = 3)
+			=> _policyDictionary.GetOrAdd((firstRetryDelaySeconds, retryCount), HttpPolicyExtensions.HandleTransientHttpError()
 				.Or<TimeoutRejectedException>()
-				.WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(2), 3));
+				.WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(firstRetryDelaySeconds), retryCount)));
 	}
 }
