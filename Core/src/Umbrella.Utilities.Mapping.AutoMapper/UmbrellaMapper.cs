@@ -25,7 +25,7 @@ namespace Umbrella.Utilities.Mapping.AutoMapper
 		/// </summary>
 		/// <param name="logger">The logger.</param>
 		/// <param name="mapper">The mapper.</param>
-		public UmbrellaMapper(ILogger logger, IMapper mapper)
+		public UmbrellaMapper(ILogger<UmbrellaMapper> logger, IMapper mapper)
 		{
 			_logger = logger;
 			_mapper = mapper;
@@ -68,7 +68,7 @@ namespace Umbrella.Utilities.Mapping.AutoMapper
 
 			try
 			{
-				return new ValueTask<TDestination>(_mapper.Map<TSource, TDestination>(source, destination));
+				return new ValueTask<TDestination>(_mapper.Map(source, destination));
 			}
 			catch (Exception exc) when (_logger.WriteError(exc, new { SourceTypeName = typeof(TSource).FullName, DestinationTypeName = typeof(TDestination).FullName }))
 			{
