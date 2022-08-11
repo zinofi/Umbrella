@@ -14,5 +14,9 @@ namespace Umbrella.AppFramework.Shared.Security
 		/// The file access token claim type.
 		/// </summary>
 		public const string FileAccessToken = ClaimPrefix + nameof(FileAccessToken);
+
+		public const string RefreshToken = ClaimPrefix + nameof(RefreshToken);
+		public const string RefreshTokenExpiration = ClaimPrefix + nameof(RefreshTokenExpiration);
+		public const string PrimaryRole = ClaimPrefix + nameof(PrimaryRole);
 	}
 }

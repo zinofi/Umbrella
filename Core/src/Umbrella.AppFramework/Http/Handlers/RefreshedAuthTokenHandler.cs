@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Net;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System.Net.Http;
-using System.Security.Claims;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.Utilities;
