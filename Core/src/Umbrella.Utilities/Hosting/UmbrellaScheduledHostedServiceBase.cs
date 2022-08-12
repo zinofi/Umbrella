@@ -8,7 +8,7 @@ using NCrontab;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Threading.Abstractions;
 
-namespace Umbrella.Utilities.Hosting.Abstractions
+namespace Umbrella.Utilities.Hosting
 {
 	/// <summary>
 	/// A base class containing core logic for hosted services.
@@ -124,5 +124,13 @@ namespace Umbrella.Utilities.Hosting.Abstractions
 		/// <param name="cancellationToken">The cancellation token.</param>
 		/// <returns>The schedule string.</returns>
 		protected abstract Task<string> GetCrontabScheduleUtcStringAsync(CancellationToken cancellationToken);
+
+		/// <summary>
+		/// Executes the internal logic for this service.
+		/// </summary>
+		/// <param name="serviceScope">The service scope.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>An awaitable <see cref="Task"/> used to await execution.</returns>
+		protected internal virtual Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken) => ExecuteAsync(serviceScope, cancellationToken);
 	}
 }

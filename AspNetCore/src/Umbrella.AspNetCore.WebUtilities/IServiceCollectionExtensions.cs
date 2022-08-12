@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
+using Umbrella.AspNetCore.WebUtilities.Hosting.Options;
 using Umbrella.AspNetCore.WebUtilities.Identity;
 using Umbrella.AspNetCore.WebUtilities.Identity.Abstractions;
 using Umbrella.AspNetCore.WebUtilities.Identity.Options;
@@ -31,17 +32,20 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="apiIntegrationCookieAuthenticationEventsOptionsBuilder">The optional <see cref="ApiIntegrationCookieAuthenticationEventsOptions"/> builder.</param>
 		/// <param name="umbrellaClaimsUserAccessorOptionsOptionsBuilder">The optional <see cref="UmbrellaClaimsUserAccessorOptions"/> builder.</param>
 		/// <param name="umbrellaDataAccessApiControllerOptionsBuilder">The optional <see cref="UmbrellaDataAccessApiControllerOptions"/> builder.</param>
+		/// <param name="umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder">The optional <see cref="UmbrellaScheduledHostedServiceWithViewSupportOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities(
 			this IServiceCollection services,
 			Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null,
 			Action<IServiceProvider, UmbrellaClaimsUserAccessorOptions>? umbrellaClaimsUserAccessorOptionsOptionsBuilder = null,
-			Action<IServiceProvider, UmbrellaDataAccessApiControllerOptions>? umbrellaDataAccessApiControllerOptionsBuilder = null)
+			Action<IServiceProvider, UmbrellaDataAccessApiControllerOptions>? umbrellaDataAccessApiControllerOptionsBuilder = null,
+			Action<IServiceProvider, UmbrellaScheduledHostedServiceWithViewSupportOptions>? umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder = null)
 			=> services.AddUmbrellaAspNetCoreWebUtilities<UmbrellaWebHostingEnvironment>(
 				apiIntegrationCookieAuthenticationEventsOptionsBuilder,
 				umbrellaClaimsUserAccessorOptionsOptionsBuilder,
-				umbrellaDataAccessApiControllerOptionsBuilder);
+				umbrellaDataAccessApiControllerOptionsBuilder,
+				umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder);
 
 		/// <summary>
 		/// Adds the <see cref="Umbrella.AspNetCore.WebUtilities"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
@@ -54,13 +58,15 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="apiIntegrationCookieAuthenticationEventsOptionsBuilder">The optional <see cref="ApiIntegrationCookieAuthenticationEventsOptions"/> builder.</param>
 		/// <param name="umbrellaClaimsUserAccessorOptionsOptionsBuilder">The optional <see cref="UmbrellaClaimsUserAccessorOptions"/> builder.</param>
 		/// <param name="umbrellaDataAccessApiControllerOptionsBuilder">The optional <see cref="UmbrellaDataAccessApiControllerOptions"/> builder.</param>
+		/// <param name="umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder">The optional <see cref="UmbrellaScheduledHostedServiceWithViewSupportOptions"/> builder.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities<TUmbrellaWebHostingEnvironment>(
 			this IServiceCollection services,
 			Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null,
 			Action<IServiceProvider, UmbrellaClaimsUserAccessorOptions>? umbrellaClaimsUserAccessorOptionsOptionsBuilder = null,
-			Action<IServiceProvider, UmbrellaDataAccessApiControllerOptions>? umbrellaDataAccessApiControllerOptionsBuilder = null)
+			Action<IServiceProvider, UmbrellaDataAccessApiControllerOptions>? umbrellaDataAccessApiControllerOptionsBuilder = null,
+			Action<IServiceProvider, UmbrellaScheduledHostedServiceWithViewSupportOptions>? umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder = null)
 			where TUmbrellaWebHostingEnvironment : class, IUmbrellaWebHostingEnvironment
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
@@ -76,6 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaClaimsUserAccessorOptionsOptionsBuilder);
 			services.ConfigureUmbrellaOptions(umbrellaDataAccessApiControllerOptionsBuilder);
+			services.ConfigureUmbrellaOptions(umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder);
 
 			return services;
 		}
