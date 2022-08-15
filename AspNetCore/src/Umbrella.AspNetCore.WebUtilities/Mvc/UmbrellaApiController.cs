@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Numerics;
 using Umbrella.Utilities.Http.Constants;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc
@@ -150,7 +152,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc
 				Instance = instance,
 				Status = statusCode,
 				Title = title,
-				Type = type
+				Type = type,
+				CorrelationId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
 			};
 
 			return new ObjectResult(problemDetails)

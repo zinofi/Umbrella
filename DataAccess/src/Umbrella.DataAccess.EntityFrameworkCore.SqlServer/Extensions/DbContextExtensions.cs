@@ -4,8 +4,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions
 {
@@ -20,7 +18,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions
 		/// <param name="dbContext">The database context.</param>
 		/// <param name="sequenceName">The sequence name.</param>
 		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns></returns>
+		/// <returns>The next integer value in the named sequence.</returns>
 		public static async Task<int> GetNextIntegerSequenceValueAsync(this DbContext dbContext, string sequenceName, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
@@ -33,6 +31,31 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions
 			await dbContext.Database.ExecuteSqlRawAsync($"SET @result = NEXT VALUE FOR {sequenceName}", new[] { parameter }, cancellationToken);
 
 			return (int)parameter.Value;
+		}
+
+		/// <summary>
+		/// Gets the database version based on the last applied migration.
+		/// </summary>
+		/// <param name="dbContext">The database context.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The current database version.</returns>
+		public static async Task<string?> GetDatabaseVersionAsync(this DbContext dbContext, CancellationToken cancellationToken = default)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			var lstMigration = await dbContext.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
+
+			string? lastMigration = lstMigration.LastOrDefault();
+
+			if (lastMigration != null)
+			{
+				int idxUnderscore = lastMigration.LastIndexOf('_');
+
+				if (idxUnderscore >= 0)
+					return lastMigration[(idxUnderscore + 1)..];
+			}
+
+			return null;
 		}
 	}
 }
