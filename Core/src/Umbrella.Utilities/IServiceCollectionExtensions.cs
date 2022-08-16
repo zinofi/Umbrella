@@ -74,7 +74,6 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="objectGraphValidatorOptionsBuilder">The optional <see cref="ObjectGraphValidatorOptions"/> builder.</param>
 		/// <param name="httpServicesBuilder">The optional builder for all Http Services.</param>
 		/// <param name="httpServicesDefaultTimeOutSeconds">The default timeout in seconds.</param>
-		/// <param name="isDevelopmentMode">Specifies if the current application is running in development mode.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
@@ -87,8 +86,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions>? umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
 			Action<IServiceProvider, ObjectGraphValidatorOptions>? objectGraphValidatorOptionsBuilder = null,
 			Action<Dictionary<Type, IHttpClientBuilder>>? httpServicesBuilder = null,
-			int httpServicesDefaultTimeOutSeconds = 20,
-			bool isDevelopmentMode = false)
+			int httpServicesDefaultTimeOutSeconds = 20)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -143,13 +141,13 @@ namespace Microsoft.Extensions.DependencyInjection
 			}
 
 			// Options
-			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder, isDevelopmentMode);
-			services.ConfigureUmbrellaOptions(emailSenderOptionsBuilder, isDevelopmentMode);
-			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder, isDevelopmentMode);
-			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder, isDevelopmentMode);
-			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder, isDevelopmentMode);
-			services.ConfigureUmbrellaOptions(umbrellaConsoleHostingEnvironmentOptionsBuilder, isDevelopmentMode);
-			services.ConfigureUmbrellaOptions(objectGraphValidatorOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
+			services.ConfigureUmbrellaOptions(emailSenderOptionsBuilder);
+			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
+			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
+			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
+			services.ConfigureUmbrellaOptions(umbrellaConsoleHostingEnvironmentOptionsBuilder);
+			services.ConfigureUmbrellaOptions(objectGraphValidatorOptionsBuilder);
 
 			return services;
 		}
