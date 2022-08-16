@@ -16,6 +16,8 @@ namespace Umbrella.Utilities.Encryption.Options
 		/// </value>
 		public IReadOnlyList<char> SpecialCharacters { get; set; } = new[] { '!', '@', '#', '$', '&', '%' };
 
+		// TODO: Enable certain character exclusions which might cause confusion with letter, e.g. o, z, etc.
+
 		/// <summary>
 		/// Validates this instance.
 		/// </summary>

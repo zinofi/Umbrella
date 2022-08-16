@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System.Reflection;
 using System.Text;
 using Umbrella.TypeScript.Exceptions;
@@ -12,7 +12,7 @@ using Umbrella.Utilities.Extensions;
 namespace Umbrella.TypeScript
 {
 	/// <summary>
-	/// 
+	/// A code generation tool that produces TypeScript files based on source C# types.
 	/// </summary>
 	/// <remarks>
 	/// This generator does not currently handle non-user types that are not marked with the TypeScriptModelAttribute
@@ -47,6 +47,8 @@ namespace Umbrella.TypeScript
 		{
 			try
 			{
+				// TODO: Need to look at the Mapster.Tool project and grab the AssemblyResolver from there.
+				// Should hopefully mean that we can avoid issues with missing runtime assemblies.
 				IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
 				if (onlyNamedAssemblies?.Length > 0)

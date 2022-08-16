@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Xml.Linq;
 using Umbrella.Utilities.Exceptions;
 
@@ -8,7 +12,7 @@ namespace Umbrella.Utilities.Extensions
 	/// Extension methods for the <see cref="XElement"/> class.
 	/// </summary>
 	public static class XElementExtensions
-    {
+	{
 		/// <summary>
 		/// Gets the attribute value with the specified <paramref name="name"/> from the <paramref name="element"/>.
 		/// </summary>
@@ -18,7 +22,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="fallback">The fallback value returned when <paramref name="required"/> is <see langword="false"/>.</param>
 		/// <returns>The attribute value.</returns>
 		public static string? GetAttributeValue(this XElement element, string name, bool required = true, string fallback = "")
-            => GetAttributeValue<string>(element, name, required, fallback);
+			=> GetAttributeValue<string>(element, name, required, fallback);
 
 		/// <summary>
 		/// Gets the attribute value with the specified <paramref name="name"/> from the <paramref name="element"/>.
@@ -30,42 +34,42 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="fallback">The fallback value returned when <paramref name="required"/> is <see langword="false"/>.</param>
 		/// <returns>The attribute value.</returns>
 		public static T GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default!)
-        {
-            Guard.ArgumentNotNull(element, nameof(element));
-            Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
+		{
+			Guard.ArgumentNotNull(element, nameof(element));
+			Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
 
-            XAttribute? attribute = element.Attribute(name);
+			XAttribute? attribute = element.Attribute(name);
 
-            if (attribute is null && required)
+			if (attribute is null && required)
 				throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
-            string? attributeValue = attribute?.Value;
+			string? attributeValue = attribute?.Value;
 
-            var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+			var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
-            if (!string.IsNullOrWhiteSpace(attributeValue))
-            {
-                if (type.IsPrimitive || type == typeof(decimal) || type == typeof(string))
-                {
-                    string cleanedAttributeValue = type.IsPrimitive || type == typeof(decimal)
-                        ? attributeValue!.Replace(" ", "")
-                        : attributeValue!;
+			if (!string.IsNullOrWhiteSpace(attributeValue))
+			{
+				if (type.IsPrimitive || type == typeof(decimal) || type == typeof(string))
+				{
+					string cleanedAttributeValue = type.IsPrimitive || type == typeof(decimal)
+						? attributeValue!.Replace(" ", "")
+						: attributeValue!;
 
-                    try
-                    {
-                        return (T)Convert.ChangeType(cleanedAttributeValue, type);
-                    }
-                    catch (Exception exc)
-                    {
-                        throw new UmbrellaException($"The {name} attribute of a {element.Name} element with value {attributeValue} could not be converted to type {type.FullName}.", exc);
-                    }
-                }
-            }
+					try
+					{
+						return (T)Convert.ChangeType(cleanedAttributeValue, type);
+					}
+					catch (Exception exc)
+					{
+						throw new UmbrellaException($"The {name} attribute of a {element.Name} element with value {attributeValue} could not be converted to type {type.FullName}.", exc);
+					}
+				}
+			}
 
-            return type == typeof(string) && fallback == null
-                ? (T)Convert.ChangeType(string.Empty, type)
-                : fallback!;
-        }
+			return type == typeof(string) && fallback == null
+				? (T)Convert.ChangeType(string.Empty, type)
+				: fallback!;
+		}
 
 		/// <summary>
 		/// Gets the value with the specified <paramref name="name"/> from the <paramref name="element"/> and converts to an enum
@@ -81,22 +85,22 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>The enum value, or the fallback if it cannot be found.</returns>
 		/// <exception cref="UmbrellaException">The {name} attribute of a {element.Name} element could not be found.</exception>
 		public static T GetAttributeEnumValue<T>(this XElement element, string name, bool required = true, T fallback = default)
-            where T : struct, Enum
-        {
-            Guard.ArgumentNotNull(element, nameof(element));
-            Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
+			where T : struct, Enum
+		{
+			Guard.ArgumentNotNull(element, nameof(element));
+			Guard.ArgumentNotNullOrWhiteSpace(name, nameof(name));
 
-            XAttribute? attribute = element.Attribute(name);
+			XAttribute? attribute = element.Attribute(name);
 
-            if (attribute is null && required)
-                throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
+			if (attribute is null && required)
+				throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
-            string? attributeValue = attribute?.Value?.Replace(" ", "");
+			string? attributeValue = attribute?.Value?.Replace(" ", "");
 
-            return !string.IsNullOrEmpty(attributeValue) && Enum.TryParse(attributeValue, true, out T output)
-                ? output
-                : fallback;
-        }
+			return !string.IsNullOrEmpty(attributeValue) && Enum.TryParse(attributeValue, true, out T output)
+				? output
+				: fallback;
+		}
 
 		/// <summary>
 		/// Tries the get the attribute value with the specified <paramref name="name"/>.
@@ -106,16 +110,16 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="fallback">The fallback if the attribute cannot be found.</param>
 		/// <returns>A tuple indicating success or failure together with the value or fallback.</returns>
 		public static (bool success, string? value) TryGetAttributeValue(this XElement element, string name, string fallback = "")
-        {
-            try
-            {
-                return (true, GetAttributeValue(element, name, true, fallback));
-            }
-            catch(Exception)
-            {
-                return (false, fallback);
-            }
-        }
+		{
+			try
+			{
+				return (true, GetAttributeValue(element, name, true, fallback));
+			}
+			catch (Exception)
+			{
+				return (false, fallback);
+			}
+		}
 
 		/// <summary>
 		/// Tries the get the attribute value with the specified <paramref name="name"/>.
@@ -126,16 +130,16 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="fallback">The fallback if the attribute cannot be found.</param>
 		/// <returns>A tuple indicating success or failure together with the value or fallback.</returns>
 		public static (bool success, T value) TryGetAttributeValue<T>(this XElement element, string name, T fallback = default!)
-        {
-            try
-            {
-                return (true, GetAttributeValue(element, name, true, fallback)!);
-            }
-            catch (Exception)
-            {
-                return (false, fallback!);
-            }
-        }
+		{
+			try
+			{
+				return (true, GetAttributeValue(element, name, true, fallback)!);
+			}
+			catch (Exception)
+			{
+				return (false, fallback!);
+			}
+		}
 
 		/// <summary>
 		/// Tries the get the attribute value as an enum of type <typeparamref name="T"/> with the specified <paramref name="name"/>.
@@ -146,16 +150,16 @@ namespace Umbrella.Utilities.Extensions
 		/// <param name="fallback">The fallback if the attribute cannot be found.</param>
 		/// <returns>A tuple indicating success or failure together with the value or fallback.</returns>
 		public static (bool success, T value) TryGetAttributeEnumValue<T>(this XElement element, string name, T fallback = default)
-            where T : struct, Enum
-        {
-            try
-            {
-                return (true, GetAttributeEnumValue(element, name, true, fallback));
-            }
-            catch (Exception)
-            {
-                return (false, fallback);
-            }
-        }
-    }
+			where T : struct, Enum
+		{
+			try
+			{
+				return (true, GetAttributeEnumValue(element, name, true, fallback));
+			}
+			catch (Exception)
+			{
+				return (false, fallback);
+			}
+		}
+	}
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.Extensions.FileProviders;
+using System.ComponentModel;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
@@ -14,14 +14,21 @@ namespace Umbrella.WebUtilities.Middleware.Options
 	/// </summary>
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
-	public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions, IDevelopmentModeUmbrellaOptions
 	{
 		private Dictionary<string, FrontEndCompressionMiddlewareMapping>? _flattenedMappings;
 
 		/// <summary>
 		/// Gets or sets the mappings.
 		/// </summary>
-		public List<FrontEndCompressionMiddlewareMapping>? Mappings { get; set; }
+		public List<FrontEndCompressionMiddlewareMapping> Mappings { get; set; } = new()
+		{
+			new FrontEndCompressionMiddlewareMapping
+			{
+				AppRelativeFolderPaths = new[] { "/dist" },
+				WatchFiles = false
+			}
+		};
 
 		/// <summary>
 		/// Gets or sets the Accept-Encoding header key. Defaults to "Accept-Encoding".
@@ -80,5 +87,7 @@ namespace Umbrella.WebUtilities.Middleware.Options
 			Guard.ArgumentNotNullOrWhiteSpace(AcceptEncodingHeaderKey, nameof(AcceptEncodingHeaderKey));
 			Guard.ArgumentInRange(BufferSizeBytes, nameof(BufferSizeBytes), 1);
 		}
+
+		void IDevelopmentModeUmbrellaOptions.SetDevelopmentMode(bool isDevelopmentMode) => Mappings.ForEach(x => x.WatchFiles = isDevelopmentMode);
 	}
 }

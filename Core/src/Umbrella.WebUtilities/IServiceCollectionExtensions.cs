@@ -31,6 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="umbrellaWebHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaWebHostingEnvironmentOptions"/> builder.</param>
 		/// <param name="queryStringParameterToHttpHeaderMiddlewareOptionsBuilder">The optional <see cref="QueryStringParameterToHttpHeaderMiddlewareOptions"/> builder.</param>
 		/// <param name="multiTenantSessionContextMiddlewareOptionsBuilder">The optional <see cref="MultiTenantSessionContextMiddlewareOptions"/> builder.</param>
+		/// <param name="isDevelopmentMode">Specifies if the current application is running in development mode.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaWebUtilities(
@@ -41,7 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, InternetExplorerCacheHeadersMiddlewareOptions>? internetExplorerCacheHeaderMiddlewareOptionsBuilder = null,
 			Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions>? umbrellaWebHostingEnvironmentOptionsBuilder = null,
 			Action<IServiceProvider, QueryStringParameterToHttpHeaderMiddlewareOptions>? queryStringParameterToHttpHeaderMiddlewareOptionsBuilder = null,
-			Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions>? multiTenantSessionContextMiddlewareOptionsBuilder = null)
+			Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions>? multiTenantSessionContextMiddlewareOptionsBuilder = null,
+			bool isDevelopmentMode = false)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -52,13 +54,13 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddScoped<NonceContext>();
 
 			// Options
-			services.ConfigureUmbrellaOptions(bundleUtilityOptionsBuilder);
-			services.ConfigureUmbrellaOptions(frontEndCompressionMiddlewareOptionsBuilder);
-			services.ConfigureUmbrellaOptions(webpackBundleUtilityOptionsBuilder);
-			services.ConfigureUmbrellaOptions(internetExplorerCacheHeaderMiddlewareOptionsBuilder);
-			services.ConfigureUmbrellaOptions(umbrellaWebHostingEnvironmentOptionsBuilder);
-			services.ConfigureUmbrellaOptions(queryStringParameterToHttpHeaderMiddlewareOptionsBuilder);
-			services.ConfigureUmbrellaOptions(multiTenantSessionContextMiddlewareOptionsBuilder);
+			services.ConfigureUmbrellaOptions(bundleUtilityOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(frontEndCompressionMiddlewareOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(webpackBundleUtilityOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(internetExplorerCacheHeaderMiddlewareOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(umbrellaWebHostingEnvironmentOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(queryStringParameterToHttpHeaderMiddlewareOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(multiTenantSessionContextMiddlewareOptionsBuilder, isDevelopmentMode);
 
 			return services;
 		}

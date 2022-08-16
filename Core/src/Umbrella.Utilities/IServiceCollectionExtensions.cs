@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
@@ -77,6 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="objectGraphValidatorOptionsBuilder">The optional <see cref="ObjectGraphValidatorOptions"/> builder.</param>
 		/// <param name="httpServicesBuilder">The optional builder for all Http Services.</param>
 		/// <param name="httpServicesDefaultTimeOutSeconds">The default timeout in seconds.</param>
+		/// <param name="isDevelopmentMode">Specifies if the current application is running in development mode.</param>
 		/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaUtilities(
@@ -89,7 +87,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, UmbrellaConsoleHostingEnvironmentOptions>? umbrellaConsoleHostingEnvironmentOptionsBuilder = null,
 			Action<IServiceProvider, ObjectGraphValidatorOptions>? objectGraphValidatorOptionsBuilder = null,
 			Action<Dictionary<Type, IHttpClientBuilder>>? httpServicesBuilder = null,
-			int httpServicesDefaultTimeOutSeconds = 20)
+			int httpServicesDefaultTimeOutSeconds = 20,
+			bool isDevelopmentMode = false)
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
 
@@ -144,13 +143,13 @@ namespace Microsoft.Extensions.DependencyInjection
 			}
 
 			// Options
-			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder);
-			services.ConfigureUmbrellaOptions(emailSenderOptionsBuilder);
-			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder);
-			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder);
-			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder);
-			services.ConfigureUmbrellaOptions(umbrellaConsoleHostingEnvironmentOptionsBuilder);
-			services.ConfigureUmbrellaOptions(objectGraphValidatorOptionsBuilder);
+			services.ConfigureUmbrellaOptions(emailFactoryOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(emailSenderOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(httpResourceInfoUtilityOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(hybridCacheOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(secureRandomStringGeneratorOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(umbrellaConsoleHostingEnvironmentOptionsBuilder, isDevelopmentMode);
+			services.ConfigureUmbrellaOptions(objectGraphValidatorOptionsBuilder, isDevelopmentMode);
 
 			return services;
 		}
@@ -161,11 +160,12 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <typeparam name="TOptions">The type of the options.</typeparam>
 		/// <param name="services">The services.</param>
 		/// <param name="optionsBuilder">The options builder.</param>
+		/// <param name="isDevelopmentMode">Specifies if the current application is running in development mode.</param>
 		/// <returns>
 		/// The same instance of <see cref="IServiceCollection"/> as passed in but with the Umbrella Options type specified by
 		/// <typeparamref name="TOptions"/> added to it.
 		/// </returns>
-		public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions>? optionsBuilder)
+		public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions>? optionsBuilder, bool isDevelopmentMode = false)
 			where TOptions : class, new()
 		{
 			Guard.ArgumentNotNull(services, nameof(services));
@@ -175,6 +175,10 @@ namespace Microsoft.Extensions.DependencyInjection
 				try
 				{
 					var options = new TOptions();
+
+					if (options is IDevelopmentModeUmbrellaOptions developmentModeOptions)
+						developmentModeOptions.SetDevelopmentMode(isDevelopmentMode);
+
 					optionsBuilder?.Invoke(serviceProvider, options);
 
 					if (options is ISanitizableUmbrellaOptions sanitizableOptions)

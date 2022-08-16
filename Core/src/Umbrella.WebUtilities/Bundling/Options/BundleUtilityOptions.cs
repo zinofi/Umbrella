@@ -11,7 +11,7 @@ namespace Umbrella.WebUtilities.Bundling.Options
 	/// <seealso cref="Umbrella.Utilities.Options.CacheableUmbrellaOptions" />
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
 	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
-	public class BundleUtilityOptions : CacheableUmbrellaOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public class BundleUtilityOptions : CacheableUmbrellaOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions, IDevelopmentModeUmbrellaOptions
 	{
 		/// <summary>
 		/// Gets or sets the default bundle folder path relative to the web root of the application.
@@ -48,5 +48,6 @@ namespace Umbrella.WebUtilities.Bundling.Options
 
 		/// <inheritdoc />
 		public virtual void Validate() => Guard.ArgumentNotNullOrWhiteSpace(DefaultBundleFolderAppRelativePath, nameof(DefaultBundleFolderAppRelativePath));
+		void IDevelopmentModeUmbrellaOptions.SetDevelopmentMode(bool isDevelopmentMode) => WatchFiles = isDevelopmentMode;
 	}
 }

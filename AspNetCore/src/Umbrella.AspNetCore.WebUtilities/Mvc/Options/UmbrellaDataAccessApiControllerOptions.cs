@@ -2,8 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
+using Umbrella.AspNetCore.WebUtilities.Security.Policies;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -22,10 +21,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Options
 		public Func<Exception, Task<IActionResult?>> HandleUpdateExceptionAsync { get; set; } = _ => Task.FromResult<IActionResult?>(null);
 		public Func<Exception, bool> DeleteExceptionFilter { get; set; } = _ => false;
 		public Func<Exception, Task<IActionResult?>> HandleDeleteExceptionAsync { get; set; } = _ => Task.FromResult<IActionResult?>(null);
-		public string CreatePolicyName { get; set; } = null!;
-		public string ReadPolicyName { get; set; } = null!;
-		public string UpdatePolicyName { get; set; } = null!;
-		public string DeletePolicyName { get; set; } = null!;
+		public string CreatePolicyName { get; set; } = CorePolicyNames.Create;
+		public string ReadPolicyName { get; set; } = CorePolicyNames.Read;
+		public string UpdatePolicyName { get; set; } = CorePolicyNames.Update;
+		public string DeletePolicyName { get; set; } = CorePolicyNames.Delete;
 
 		/// <inheritdoc />
 		public void Sanitize()
