@@ -59,14 +59,17 @@ public static class IApplicationBuilderExtensions
 	public static IApplicationBuilder UseUmbrellaFrontEndCompression(this IApplicationBuilder builder) => builder.UseMiddleware<FrontEndCompressionMiddleware>();
 
 	/// <summary>
-	/// Adds the <see cref="ApiExceptionMiddleware"/> to the pipeline.
+	/// Adds the <see cref="ApiExceptionMiddleware"/> to the pipeline for all requests
+	/// that have the specified <paramref name="pathPrefix"/>.
 	/// </summary>
 	/// <param name="builder">The builder.</param>
+	/// <param name="pathPrefix">The path prefix for API endpoints.</param>
 	/// <returns>The application builder.</returns>
-	public static IApplicationBuilder UseUmbrellaApiException(this IApplicationBuilder builder) => builder.UseMiddleware<ApiExceptionMiddleware>();
+	public static IApplicationBuilder UseUmbrellaApiException(this IApplicationBuilder builder, string pathPrefix = "/api") => builder.UseWhen(x => x.Request.Path.StartsWithSegments(pathPrefix, StringComparison.OrdinalIgnoreCase), app => app.UseMiddleware<ApiExceptionMiddleware>());
 
 	/// <summary>
-	/// Adds the <see cref="FileAccessTokenQueryStringMiddleware"/> to the pipeline.
+	/// Adds the <see cref="FileAccessTokenQueryStringMiddleware"/> to the pipeline for all requests
+	/// that have a specified QueryString parameter with name <see cref="AppQueryStringKeys.FileAccessToken"/>.
 	/// </summary>
 	/// <param name="builder">The builder.</param>
 	/// <returns>The application builder.</returns>
