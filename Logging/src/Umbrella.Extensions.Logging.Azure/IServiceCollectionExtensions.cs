@@ -5,6 +5,8 @@ using Umbrella.Extensions.Logging.Azure.Management.Options;
 using Umbrella.Utilities;
 
 [assembly: InternalsVisibleTo("Umbrella.Extensions.Logging.Azure.Test")]
+
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

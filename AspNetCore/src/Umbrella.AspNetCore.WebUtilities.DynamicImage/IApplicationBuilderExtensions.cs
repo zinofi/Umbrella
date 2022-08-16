@@ -2,6 +2,7 @@
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities;
 
+#pragma warning disable IDE0130
 namespace Microsoft.AspNetCore.Builder
 {
 	/// <summary>

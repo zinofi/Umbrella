@@ -11,6 +11,7 @@ using Umbrella.WebUtilities.Hosting;
 [assembly: InternalsVisibleTo("Umbrella.Legacy.WebUtilities.Test")]
 [assembly: InternalsVisibleTo("Umbrella.Legacy.WebUtilities.Benchmark")]
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

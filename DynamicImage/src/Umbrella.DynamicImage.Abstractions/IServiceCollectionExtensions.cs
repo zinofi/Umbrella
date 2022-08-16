@@ -3,6 +3,7 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.Utilities;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

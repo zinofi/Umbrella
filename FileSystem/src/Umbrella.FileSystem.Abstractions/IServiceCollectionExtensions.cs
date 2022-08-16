@@ -2,6 +2,7 @@
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

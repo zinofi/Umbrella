@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.Logging
 {
 	/// <summary>

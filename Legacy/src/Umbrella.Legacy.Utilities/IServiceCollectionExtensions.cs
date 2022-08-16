@@ -3,6 +3,7 @@ using Umbrella.Legacy.Utilities.Configuration;
 using Umbrella.Utilities;
 using Umbrella.Utilities.Configuration.Abstractions;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

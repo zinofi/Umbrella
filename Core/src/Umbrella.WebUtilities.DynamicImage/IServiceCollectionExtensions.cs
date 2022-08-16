@@ -2,6 +2,7 @@
 using Umbrella.Utilities;
 using Umbrella.WebUtilities.DynamicImage.Middleware.Options;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

@@ -12,6 +12,7 @@ using Umbrella.WebUtilities.Security;
 
 [assembly: InternalsVisibleTo("Umbrella.WebUtilities.Test")]
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

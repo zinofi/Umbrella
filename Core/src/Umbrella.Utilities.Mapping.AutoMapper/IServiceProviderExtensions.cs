@@ -4,6 +4,7 @@
 using AutoMapper;
 using Umbrella.Utilities.Exceptions;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

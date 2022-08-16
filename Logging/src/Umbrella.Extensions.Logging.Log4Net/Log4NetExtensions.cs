@@ -1,6 +1,7 @@
 ﻿using System;
 using Umbrella.Extensions.Logging.Log4Net;
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.Logging
 {
 	/// <summary>

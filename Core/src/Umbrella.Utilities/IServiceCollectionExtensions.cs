@@ -52,6 +52,7 @@ using Umbrella.Utilities.WeakEventManager.Abstractions;
 [assembly: InternalsVisibleTo("Umbrella.Utilities.Benchmark")]
 [assembly: InternalsVisibleTo("Umbrella.Utilities.Test")]
 
+#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection
 {
 	/// <summary>

@@ -22,6 +22,17 @@ public class FileAccessTokenQueryStringMiddlewareOptions : IValidatableUmbrellaO
 	/// <inheritdoc/>
 	public void Validate()
 	{
+		tt(1, 2);
 		Guard.ArgumentNotNull(ValidationParameters, nameof(ValidationParameters));
+	}
+
+	private static void tt(int argument1, int arg2)
+	{
+		_ = argument1 +
+			arg2;
+		if (argument1 == 1)
+			return;
+		_ = argument1 +
+			arg2;
 	}
 }
