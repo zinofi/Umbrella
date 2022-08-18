@@ -35,7 +35,7 @@ namespace Umbrella.FileSystem.Test
 				if (string.IsNullOrEmpty(s_BaseDirectory))
 				{
 					string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net5.0"));
+					int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net6.0"));
 					s_BaseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 				}
 
