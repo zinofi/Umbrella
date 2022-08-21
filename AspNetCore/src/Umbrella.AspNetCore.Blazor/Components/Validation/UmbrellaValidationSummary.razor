@@ -1,9 +1,15 @@
 ﻿@if (ValidationResults?.Count > 0)
 {
-	<ul class="u-validation-summary validation-errors">
-		@foreach (var error in ValidationResults)
-		{
-			<li class="validation-message">@error.ErrorMessage</li>
-		}
-	</ul>
+    <div class="u-validation-summary">
+        @if (!string.IsNullOrEmpty(Heading))
+        {
+            <span class="u-validation-summary__heading">@Heading</span>
+        }
+        <ul class="u-validation-summary__validation-errors">
+            @foreach (var error in ValidationResults)
+            {
+                <li class="u-validation-summary__validation-message">@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
 }
