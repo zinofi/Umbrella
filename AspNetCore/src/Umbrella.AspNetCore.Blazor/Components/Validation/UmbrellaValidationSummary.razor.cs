@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
+using Umbrella.AppFramework.Utilities.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Validation
 {
@@ -13,8 +14,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Validation
 		/// <summary>
 		/// Gets or sets the heading.
 		/// </summary>
+		/// <remarks>Defaults to <see cref="ValidationDefaults.ValidationSummaryIntroMessage"/></remarks>
 		[Parameter]
-		public string? Heading { get; set; }
+		public string Heading { get; set; } = ValidationDefaults.ValidationSummaryIntroMessage;
 
 		/// <summary>
 		/// Gets or sets the validation results.
