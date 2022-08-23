@@ -1,128 +1,124 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Security.Abstractions;
+using Umbrella.AppFramework.Security.Messages;
 using Umbrella.Utilities.Security.Abstractions;
-using Umbrella.Utilities.WeakEventManager.Abstractions;
 
-namespace Umbrella.AppFramework.Security
+namespace Umbrella.AppFramework.Security;
+
+/// <summary>
+/// A base class which application specific authentication helpers can extend.
+/// </summary>
+/// <seealso cref="IAppAuthHelper" />
+public abstract class AppAuthHelperBase : IAppAuthHelper
 {
-	/// <summary>
-	/// A base class from which application specific authentication helpers can extend.
-	/// </summary>
-	/// <seealso cref="IAppAuthHelper" />
-	public abstract class AppAuthHelperBase : IAppAuthHelper
+	private static readonly ClaimsPrincipal _emptyPrincipal = new(new ClaimsIdentity());
+
+	private readonly ILogger _logger;
+	private readonly IJwtUtility _jwtUtility;
+	private readonly IAppAuthTokenStorageService _tokenStorageService;
+
+	// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
+	// Could wrap this in a singleton service but not much point.
+	private static volatile ClaimsPrincipal? _claimsPrincipal;
+
+	/// <inheritdoc />
+	public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
 	{
-		private static readonly ClaimsPrincipal _emptyPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+		add => WeakReferenceMessenger.Default.Register<AuthenticationStateChangedMessage>(value.Target, (sender, args) => value(args.Value));
+		remove => WeakReferenceMessenger.Default.Unregister<AuthenticationStateChangedMessage>(value.Target);
+	}
 
-		private readonly ILogger _logger;
-		private readonly IJwtUtility _jwtUtility;
-		private readonly IAppAuthTokenStorageService _tokenStorageService;
-		private readonly IGlobalWeakEventManager _weakEventManager;
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AppAuthHelperBase"/> class.
+	/// </summary>
+	/// <param name="logger">The logger.</param>
+	/// <param name="jwtUtility">The JWT utility.</param>
+	/// <param name="tokenStorageService">The token storage service.</param>
+	public AppAuthHelperBase(
+		ILogger logger,
+		IJwtUtility jwtUtility,
+		IAppAuthTokenStorageService tokenStorageService)
+	{
+		_logger = logger;
+		_jwtUtility = jwtUtility;
+		_tokenStorageService = tokenStorageService;
+	}
 
-		// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
-		// Could wrap this in a singleton service but not much point.
-		private static ClaimsPrincipal? _claimsPrincipal;
-
-		/// <inheritdoc />
-		public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
+	/// <inheritdoc />
+	public async ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null)
+	{
+		try
 		{
-			add => _weakEventManager.AddEventHandler(value);
-			remove => _weakEventManager.RemoveEventHandler(value);
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AppAuthHelperBase"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		/// <param name="jwtUtility">The JWT utility.</param>
-		/// <param name="tokenStorageService">The token storage service.</param>
-		/// <param name="weakEventManager">The weak event manager.</param>
-		public AppAuthHelperBase(
-			ILogger logger,
-			IJwtUtility jwtUtility,
-			IAppAuthTokenStorageService tokenStorageService,
-			IGlobalWeakEventManager weakEventManager)
-		{
-			_logger = logger;
-			_jwtUtility = jwtUtility;
-			_tokenStorageService = tokenStorageService;
-			_weakEventManager = weakEventManager;
-		}
-
-		/// <inheritdoc />
-		public async ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null)
-		{
-			try
+			if (!string.IsNullOrEmpty(token))
 			{
-				if (!string.IsNullOrEmpty(token))
-				{
-					await _tokenStorageService.SetTokenAsync(token);
-					_claimsPrincipal = null;
-				}
-				else if (_claimsPrincipal != null)
-				{
-					return _claimsPrincipal;
-				}
-				else
-				{
-					token = await _tokenStorageService.GetTokenAsync();
-				}
-
-				if (string.IsNullOrWhiteSpace(token))
-					return _emptyPrincipal;
-
-				IReadOnlyCollection<Claim>? claims = null;
-
-				try
-				{
-					claims = _jwtUtility.ParseClaimsFromJwt(token!);
-				}
-				catch (Exception)
-				{
-					// There was a problem parsing the token. To ensure the user can get a new token,
-					// remove it from storage.
-					await _tokenStorageService.SetTokenAsync(null);
-					throw;
-				}
-
-				_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-				_weakEventManager.RaiseEvent(nameof(OnAuthenticationStateChanged), _claimsPrincipal);
-
+				await _tokenStorageService.SetTokenAsync(token);
+				_claimsPrincipal = null;
+			}
+			else if (_claimsPrincipal != null)
+			{
 				return _claimsPrincipal;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			else
 			{
-				throw new UmbrellaAppFrameworkException("There has been a problem getting the ClaimsPrincipal.", exc);
+				token = await _tokenStorageService.GetTokenAsync();
 			}
-		}
 
-		/// <inheritdoc />
-		public async ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true)
-		{
+			if (string.IsNullOrWhiteSpace(token))
+				return _emptyPrincipal;
+
+			IReadOnlyCollection<Claim>? claims = null;
+
 			try
 			{
-				await _tokenStorageService.SetTokenAsync(null);
-				_claimsPrincipal = null;
-
-				_weakEventManager.RaiseEvent(nameof(OnAuthenticationStateChanged), new ClaimsPrincipal(new ClaimsIdentity()));
-
-				if (executeDefaultPostLogoutAction)
-					await ExecutePostLogoutActionAsync();
+				claims = _jwtUtility.ParseClaimsFromJwt(token!);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }, returnValue: true))
+			catch (Exception)
 			{
-				throw new UmbrellaAppFrameworkException("There has been a problem logging out the user locally.", exc);
+				// There was a problem parsing the token. To ensure the user can get a new token,
+				// remove it from storage.
+				await _tokenStorageService.SetTokenAsync(null);
+				throw;
 			}
-		}
 
-		/// <summary>
-		/// An action to be executed after logging out the current user locally.
-		/// </summary>
-		/// <returns>A Task that can be awaited for this operation to complete.</returns>
-		protected abstract ValueTask ExecutePostLogoutActionAsync();
+			_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
+			WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(_claimsPrincipal));
+
+			return _claimsPrincipal;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+		{
+			throw new UmbrellaAppFrameworkException("There has been a problem getting the ClaimsPrincipal.", exc);
+		}
 	}
+
+	/// <inheritdoc />
+	public async ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true)
+	{
+		try
+		{
+			await _tokenStorageService.SetTokenAsync(null);
+			_claimsPrincipal = null;
+
+			WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(new ClaimsPrincipal(new ClaimsIdentity())));
+
+			if (executeDefaultPostLogoutAction)
+				await ExecutePostLogoutActionAsync();
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }, returnValue: true))
+		{
+			throw new UmbrellaAppFrameworkException("There has been a problem logging out the user locally.", exc);
+		}
+	}
+
+	/// <summary>
+	/// An action to be executed after logging out the current user locally.
+	/// </summary>
+	/// <returns>A Task that can be awaited for this operation to complete.</returns>
+	protected abstract ValueTask ExecutePostLogoutActionAsync();
 }
