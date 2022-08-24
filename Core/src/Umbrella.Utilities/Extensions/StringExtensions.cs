@@ -252,8 +252,7 @@ public static class StringExtensions
 
 		var sb = new StringBuilder(value);
 
-		// TODO: This should be using Environment.NewLine.
-		_ = sb.ConvertHtmlBrTagsToReplacement("\n");
+		_ = sb.ConvertHtmlBrTagsToReplacement(Environment.NewLine);
 
 		return sb.ToString();
 	}

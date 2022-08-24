@@ -305,9 +305,6 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 			filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);
 
-			// TODO: Look into using the AutoMapper.QueryableExtensions package here to cut down on boilerplate code
-			// that is necessary without it. Would however mean taking a dependency on AutoMapper. Hmmm...
-			// Could potentially abstract this behaviour away into another package...
 			var results = await filteredQuery
 				.Select(shapedEntitySelector)
 				.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))

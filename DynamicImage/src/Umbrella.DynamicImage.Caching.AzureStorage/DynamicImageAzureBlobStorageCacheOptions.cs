@@ -23,5 +23,5 @@ public class DynamicImageAzureBlobStorageCacheOptions : IValidatableUmbrellaOpti
 	public void Sanitize() => ContainerName = ContainerName.TrimToLowerInvariant();
 
 	/// <inheritdoc />
-	public void Validate() => Guard.IsNotNullOrWhiteSpace(ContainerName, nameof(ContainerName));
+	public void Validate() => Guard.IsNotNullOrWhiteSpace(ContainerName);
 }

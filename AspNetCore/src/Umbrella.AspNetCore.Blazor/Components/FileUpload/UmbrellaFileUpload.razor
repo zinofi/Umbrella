@@ -3,7 +3,7 @@
 }
 
 <div class="u-file-upload">
-	@if (Status == UmbrellaFileUploadStatus.None)
+	@if (Status is UmbrellaFileUploadStatus.None)
 	{
 		@if (!string.IsNullOrEmpty(Accept))
 		{
@@ -28,17 +28,17 @@
 			}
 		}
 	}
-	else if (SelectedFileInfo != null)
+	else if (SelectedFileInfo is not null)
 	{
 		<div class="form-group">
 
-			@if (Status == UmbrellaFileUploadStatus.Selected || Status == UmbrellaFileUploadStatus.Uploaded)
+			@if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
 			{
 				<div class="form-control">
 					@SelectedFileInfo.Name
 				</div>
 			}
-			else if (Status == UmbrellaFileUploadStatus.Uploading)
+			else if (Status is UmbrellaFileUploadStatus.Uploading)
 			{
 				<label>Uploading File</label>
 				<div class="progress">
@@ -51,17 +51,17 @@
 			}
 		</div>
 		<div class="form-group">
-			@if (Status == UmbrellaFileUploadStatus.Selected)
+			@if (Status is UmbrellaFileUploadStatus.Selected)
 			{
 				<button type="button" class="btn btn-primary" @onclick="UploadClick">Upload</button>
 			}
 
-			@if (Status == UmbrellaFileUploadStatus.Selected || Status == UmbrellaFileUploadStatus.Uploaded)
+			@if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
 			{
 				<button type="button" class="btn btn-danger" @onclick="ClearClick">Clear Selection</button>
 			}
 
-			@if (Status == UmbrellaFileUploadStatus.Uploading)
+			@if (Status is UmbrellaFileUploadStatus.Uploading)
 			{
 				<button type="button" class="btn btn-danger" @onclick="CancelClick">Cancel</button>
 			}
