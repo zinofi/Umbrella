@@ -23,4 +23,8 @@
 	  <ProjectReference Include="..\Umbrella.AppFramework.Shared\Umbrella.AppFramework.Shared.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="Umbrella.AppFramework.Extensions" />
+	</ItemGroup>
+	
 </Project>

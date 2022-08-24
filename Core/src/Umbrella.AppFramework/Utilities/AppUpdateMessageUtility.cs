@@ -23,7 +23,7 @@ public class AppUpdateMessageUtility : IAppUpdateMessageUtility
 	/// <inheritdoc />
 	public event Func<bool, string, Task> OnShow
 	{
-		add => WeakReferenceMessenger.Default.Register<AppUpdateStateChangedMessage>(value.Target, (_, args) => value.Invoke(args.Value.updateRequired, args.Value.message));
+		add => WeakReferenceMessenger.Default.TryRegister<AppUpdateStateChangedMessage>(value.Target, (_, args) => value.Invoke(args.Value.updateRequired, args.Value.message));
 		remove => WeakReferenceMessenger.Default.Unregister<AppUpdateStateChangedMessage>(value.Target);
 	}
 

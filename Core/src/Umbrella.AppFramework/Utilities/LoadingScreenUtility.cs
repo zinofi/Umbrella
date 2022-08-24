@@ -20,21 +20,21 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 	/// <inheritdoc />
 	public event Action OnLoading
 	{
-		add => WeakReferenceMessenger.Default.Register<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
+		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
 		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
 	}
 
 	/// <inheritdoc />
 	public event Action OnShow
 	{
-		add => WeakReferenceMessenger.Default.Register<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
+		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
 		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
 	}
 
 	/// <inheritdoc />
 	public event Action OnHide
 	{
-		add => WeakReferenceMessenger.Default.Register<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
+		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
 		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
 	}
 
