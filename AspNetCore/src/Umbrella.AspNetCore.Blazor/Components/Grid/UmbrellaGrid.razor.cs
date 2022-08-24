@@ -37,8 +37,8 @@ public enum UmbrellaGridRenderMode
 /// </summary>
 /// <typeparam name="TItem">The type of the item.</typeparam>
 /// <seealso cref="ComponentBase" />
-/// <seealso cref="IUmbrellaGrid" />
-public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
+/// <seealso cref="IUmbrellaGrid{TItem}" />
+public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 {
 	private class UmbrellaGridSelectableItem
 	{
@@ -70,7 +70,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	/// <summary>
 	/// Gets the columns.
 	/// </summary>
-	private List<UmbrellaColumnDefinition> ColumnDefinitions { get; } = new List<UmbrellaColumnDefinition>();
+	private List<UmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new List<UmbrellaColumnDefinition<TItem>>();
 
 	private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new List<UmbrellaGridSelectableItem>();
 
@@ -87,7 +87,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	/// <summary>
 	/// Gets the filterable columns.
 	/// </summary>
-	private IReadOnlyCollection<UmbrellaColumnDefinition>? FilterableColumns { get; set; }
+	private IReadOnlyCollection<UmbrellaColumnDefinition<TItem>>? FilterableColumns { get; set; }
 
 	/// <summary>
 	/// Gets the current <see cref="LayoutState"/> of the component.
@@ -111,7 +111,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
 
 	/// <summary>
-	/// Gets or sets the columns to be displayed inside this grid component. This should be a collection of <see cref="UmbrellaColumn"/> components.
+	/// Gets or sets the columns to be displayed inside this grid component. This should be a collection of columns components.
 	/// </summary>
 	[Parameter]
 	public RenderFragment<TItem>? Columns { get; set; }
@@ -293,7 +293,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
 
 	/// <inheritdoc />
-	public void AddColumnDefinition(UmbrellaColumnDefinition column) => ColumnDefinitions.Add(column);
+	public void AddColumnDefinition(UmbrellaColumnDefinition<TItem> column) => ColumnDefinitions.Add(column);
 
 	/// <inheritdoc />
 	public void SetColumnScanCompleted()
@@ -302,7 +302,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 		{
 			ColumnScanComplete = true;
 
-			var filterableColumns = new List<UmbrellaColumnDefinition>();
+			var filterableColumns = new List<UmbrellaColumnDefinition<TItem>>();
 
 			for (int i = 0; i < ColumnDefinitions.Count; i++)
 			{
@@ -352,7 +352,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	/// <param name="pageNumber">The current page number.</param>
 	/// <param name="pageSize">The current page size.</param>
 	/// <param name="callStateHasChanged">Specifies whether <see cref="ComponentBase.StateHasChanged"/> should be invoked.</param>
-	public void Update(IReadOnlyCollection<TItem> items, int? totalCount = null, int? pageNumber = null, int? pageSize = null, bool callStateHasChanged = true)
+	public async ValueTask UpdateAsync(IReadOnlyCollection<TItem> items, int? totalCount = null, int? pageNumber = null, int? pageSize = null, bool callStateHasChanged = true)
 	{
 		Items = items;
 		TotalCount = totalCount ?? TotalCount;
@@ -366,7 +366,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 
 		if (AutoScrollTop && _autoScrollEnabled)
 		{
-			_ = BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
+			await BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
 		}
 
 		// Only enable auto-scrolling after the initial page load.
@@ -422,7 +422,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 	/// </summary>
 	/// <param name="target">The column that has been clicked.</param>
 	/// <returns>A <see cref="Task"/> that completes when the grid has been updated.</returns>
-	private async Task ColumnHeadingClick(UmbrellaColumnDefinition target)
+	private async Task ColumnHeadingClick(UmbrellaColumnDefinition<TItem> target)
 	{
 		foreach (var column in ColumnDefinitions)
 		{
@@ -486,7 +486,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid
 
 			foreach (var column in ColumnDefinitions)
 			{
-				if (string.IsNullOrWhiteSpace(column.PropertyName) || column.DisplayMode == UmbrellaColumnDisplayMode.None)
+				if (string.IsNullOrEmpty(column.PropertyName) || column.DisplayMode == UmbrellaColumnDisplayMode.None)
 				{
 					continue;
 				}

@@ -46,4 +46,8 @@
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="Umbrella.Utilities.Extensions" />
+	</ItemGroup>
+
 </Project>

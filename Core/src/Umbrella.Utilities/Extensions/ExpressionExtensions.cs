@@ -24,7 +24,7 @@ public static class ExpressionExtensions
 	/// <exception cref="Exception">The body of the expression must be either a {nameof(MemberExpression)} or a {nameof(UnaryExpression)}.</exception>
 	public static string? GetMemberName(this LambdaExpression expression, bool throwException = true)
 	{
-		Guard.IsNotNull(expression, nameof(expression));
+		Guard.IsNotNull(expression);
 
 		MemberExpression? memberExpression = expression.Body switch
 		{
