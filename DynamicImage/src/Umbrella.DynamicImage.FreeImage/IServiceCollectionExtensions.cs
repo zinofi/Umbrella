@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 		public static IServiceCollection AddUmbrellaDynamicImageFreeImage(this IServiceCollection services)
 		{
-			Guard.ArgumentNotNull(services, nameof(services));
+			Guard.IsNotNull(services, nameof(services));
 
 			services.AddSingleton<IDynamicImageResizer, DynamicImageResizer>();
 

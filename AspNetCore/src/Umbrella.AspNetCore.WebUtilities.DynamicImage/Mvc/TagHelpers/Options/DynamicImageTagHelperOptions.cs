@@ -21,6 +21,6 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options
 		public void Sanitize() => DynamicImagePathPrefix = DynamicImagePathPrefix.Trim();
 
 		/// <inheritdoc />
-		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
+		public void Validate() => Guard.IsNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
 	}
 }

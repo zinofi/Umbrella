@@ -51,7 +51,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage
 		protected string? SrcSetValue { get; set; }
 
 		/// <inheritdoc />
-		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(Url, nameof(Url));
+		protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Url, nameof(Url));
 
 		/// <inheritdoc />
 		protected override void OnInitialized() => InitializeImage();

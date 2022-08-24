@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Umbrella.FileSystem.Abstractions;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 
@@ -31,7 +31,7 @@ public class FileSystemMiddlewareMapping : IValidatableUmbrellaOptions, ISanitiz
 	/// <inheritdoc />
 	public void Validate()
 	{
-		Guard.ArgumentNotNull(FileProviderMapping, nameof(FileProviderMapping));
+		Guard.IsNotNull(FileProviderMapping);
 		FileProviderMapping.Validate();
 
 		switch (Cacheability)

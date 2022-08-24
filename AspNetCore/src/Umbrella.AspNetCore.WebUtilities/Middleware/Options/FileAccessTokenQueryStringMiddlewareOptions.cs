@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Middleware.Options;
@@ -20,19 +20,5 @@ public class FileAccessTokenQueryStringMiddlewareOptions : IValidatableUmbrellaO
 	public TokenValidationParameters ValidationParameters { get; set; } = null!;
 
 	/// <inheritdoc/>
-	public void Validate()
-	{
-		tt(1, 2);
-		Guard.ArgumentNotNull(ValidationParameters, nameof(ValidationParameters));
-	}
-
-	private static void tt(int argument1, int arg2)
-	{
-		_ = argument1 +
-			arg2;
-		if (argument1 == 1)
-			return;
-		_ = argument1 +
-			arg2;
-	}
+	public void Validate() => Guard.IsNotNull(ValidationParameters, nameof(ValidationParameters));
 }

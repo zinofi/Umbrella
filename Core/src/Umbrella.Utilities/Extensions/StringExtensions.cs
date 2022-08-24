@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,10 +33,7 @@ public static class StringExtensions
 	/// </summary>
 	/// <param name="value">The value.</param>
 	/// <returns>A new string with the newlines normalized.</returns>
-	public static string NormalizeNewLines(this string value)
-	{
-		return value.Replace("\r\n", "\n").Replace("\n", "\r\n");
-	}
+	public static string NormalizeNewLines(this string value) => value.Replace("\r\n", "\n").Replace("\n", "\r\n");
 
 	/// <summary>
 	/// Reduces the whitespace in the specified <paramref name="value"/> by replacing multiple whitespace
@@ -65,7 +63,7 @@ public static class StringExtensions
 				previousIsWhitespace = false;
 			}
 
-			newString.Append(value[i]);
+			_ = newString.Append(value[i]);
 		}
 
 		return newString.ToString();
@@ -81,7 +79,7 @@ public static class StringExtensions
 	[Obsolete("Use Humanizer")]
 	public static string Truncate(this string value, int maxLength, bool stripHtml = true)
 	{
-		Guard.ArgumentNotNull(value, nameof(value));
+		Guard.IsNotNull(value, nameof(value));
 
 		// Ensure we strip out HTML tags
 		if (stripHtml && value.Length > 0)
@@ -92,10 +90,7 @@ public static class StringExtensions
 				return value;
 		}
 
-		if (value.Length < maxLength)
-			return value;
-
-		return AppendEllipsis(value.Substring(0, maxLength - 3));
+		return value.Length < maxLength ? value : AppendEllipsis(value.Substring(0, maxLength - 3));
 	}
 
 	/// <summary>
@@ -108,16 +103,15 @@ public static class StringExtensions
 	[Obsolete("Use Humanizer")]
 	public static string TruncateAtWord(this string value, int maxLength, bool stripHtml = true)
 	{
-		Guard.ArgumentNotNull(value, nameof(value));
+		Guard.IsNotNull(value, nameof(value));
 
 		// Ensure we strip out HTML tags
 		if (stripHtml && value.Length > 0)
 			value = value.StripHtml();
 
-		if (value.Length < maxLength || value.IndexOf(" ", maxLength) == -1)
-			return value;
-
-		return AppendEllipsis(value.Substring(0, value.IndexOf(" ", maxLength)));
+		return value.Length < maxLength || value.IndexOf(" ", maxLength) == -1
+			? value
+			: AppendEllipsis(value.Substring(0, value.IndexOf(" ", maxLength)));
 	}
 
 	/// <summary>
@@ -127,7 +121,7 @@ public static class StringExtensions
 	/// <returns>The result or <see langword="null"/> if the <paramref name="value"/> provided was <see langword="null"/>.</returns>
 	public static string StripNbsp(this string value)
 	{
-		Guard.ArgumentNotNull(value, nameof(value));
+		Guard.IsNotNull(value, nameof(value));
 
 		return value.Replace("&nbsp;", "");
 	}
@@ -144,13 +138,7 @@ public static class StringExtensions
 	///   or <see langword="true"/> if the <paramref name="value"/> is <see langword="null"/> or whitespace and <paramref name="allowNull"/> is <see langword="true"/>.
 	///   All other conditions will return <see langword="false"/>.
 	/// </returns>
-	public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true)
-	{
-		if (string.IsNullOrWhiteSpace(value))
-			return allowNull;
-
-		return value?.Length >= minLength && value.Length <= maxLength;
-	}
+	public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true) => string.IsNullOrWhiteSpace(value) ? allowNull : value?.Length >= minLength && value.Length <= maxLength;
 
 	/// <summary>
 	/// Strips HTML tags from the specified <paramref name="value"/>.
@@ -160,7 +148,7 @@ public static class StringExtensions
 	[Obsolete("Use the dotnet toolkit when released.")]
 	public static string StripHtml(this string value)
 	{
-		Guard.ArgumentNotNull(value, nameof(value));
+		Guard.IsNotNull(value, nameof(value));
 
 		return s_HtmlTagPatternRegex.Replace(value, string.Empty);
 	}
@@ -186,8 +174,8 @@ public static class StringExtensions
 
 	private static string ToCamelCaseInternal(string value, CultureInfo cultureInfo)
 	{
-		Guard.ArgumentNotNull(value, nameof(value));
-		Guard.ArgumentNotNull(cultureInfo, nameof(cultureInfo));
+		Guard.IsNotNull(value, nameof(value));
+		Guard.IsNotNull(cultureInfo, nameof(cultureInfo));
 
 		if (value.Length is 1)
 			return value.ToLower(cultureInfo);
@@ -245,7 +233,7 @@ public static class StringExtensions
 	[Obsolete("Use Humanizer")]
 	public static string AppendEllipsis(string value)
 	{
-		Guard.ArgumentNotNull(value, nameof(value));
+		Guard.IsNotNull(value, nameof(value));
 
 		value += "...";
 
@@ -265,7 +253,7 @@ public static class StringExtensions
 		var sb = new StringBuilder(value);
 
 		// TODO: This should be using Environment.NewLine.
-		sb.ConvertHtmlBrTagsToReplacement("\n");
+		_ = sb.ConvertHtmlBrTagsToReplacement("\n");
 
 		return sb.ToString();
 	}
@@ -336,14 +324,7 @@ public static class StringExtensions
 	/// <param name="value">The string to seek.</param>
 	/// <param name="comparisonType">The type of <see cref="StringComparison"/> to use to locate the <paramref name="value"/> in the <paramref name="target"/>.</param>
 	/// <returns>true if the value parameter occurs within this string, otherwise, false.</returns>
-	public static bool Contains(this string? target, string? value, StringComparison comparisonType)
-	{
-		if (target is null || value is null)
-			return false;
-
-		return target.IndexOf(value, comparisonType) >= 0;
-	}
-
+	public static bool Contains(this string? target, string? value, StringComparison comparisonType) => target is not null && value is not null && target.IndexOf(value, comparisonType) >= 0;
 
 	/// <summary>
 	/// Converts the specified <paramref name="value"/> to the enum type <typeparamref name="T"/>. If the conversion fails,
@@ -353,13 +334,7 @@ public static class StringExtensions
 	/// <param name="value">The value.</param>
 	/// <param name="defaultValue">The default value.</param>
 	/// <returns>The enum value or the default value.</returns>
-	public static T ToEnum<T>(this string? value, T defaultValue = default) where T : struct, Enum
-	{
-		if (Enum.TryParse(value, true, out T result))
-			return result;
-
-		return defaultValue;
-	}
+	public static T ToEnum<T>(this string? value, T defaultValue = default) where T : struct, Enum => Enum.TryParse(value, true, out T result) ? result : defaultValue;
 
 	/// <summary>
 	/// Trims the specified <paramref name="value"/> and converts it to lowercase using the specified <paramref name="culture"/>.

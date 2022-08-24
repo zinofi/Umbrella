@@ -78,7 +78,7 @@ dotnet_style_prefer_compound_assignment = true:suggestion
 dotnet_style_prefer_simplified_interpolation = true:suggestion
 dotnet_style_namespace_match_folder = true:error
 dotnet_style_allow_statement_immediately_after_block_experimental = false:error
-dotnet_style_allow_multiple_blank_lines_experimental = false:warning
+dotnet_style_allow_multiple_blank_lines_experimental = false:error
 dotnet_code_quality_unused_parameters = all:suggestion
 
 ###############################
@@ -194,3 +194,6 @@ csharp_space_around_declaration_statements = false
 csharp_indent_block_contents = true
 csharp_indent_braces = false
 csharp_space_after_semicolon_in_for_statement = true
+dotnet_diagnostic.CA2016.severity = error
+dotnet_diagnostic.CA1825.severity = error
+dotnet_diagnostic.IDE0001.severity = error

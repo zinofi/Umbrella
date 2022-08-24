@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			Action<IServiceProvider, DynamicImageCacheCoreOptions>? dynamicImageCacheCoreOptionsBuilder = null,
 			Action<IServiceProvider, DynamicImageAzureBlobStorageCacheOptions>? dynamicImageAzureBlobStorageCacheOptionsBuilder = null)
 		{
-			Guard.ArgumentNotNull(services, nameof(services));
+			Guard.IsNotNull(services, nameof(services));
 
 			services.AddUmbrellaDynamicImage();
 			services.ReplaceSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();

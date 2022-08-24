@@ -33,7 +33,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Radio
 		{
 			base.OnParametersSet();
 
-			Guard.ArgumentNotNullOrWhiteSpace(GroupName, nameof(GroupName));
+			Guard.IsNotNullOrWhiteSpace(GroupName, nameof(GroupName));
 		}
 
 		/// <summary>

@@ -1,94 +1,93 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
 
-namespace Umbrella.Utilities.Extensions
+using CommunityToolkit.Diagnostics;
+
+namespace Umbrella.Utilities.Extensions;
+
+/// <summary>
+/// A set of extension methods for the <see cref="HashSet{T}"/> type.
+/// </summary>
+public static class HashSetExtensions
 {
 	/// <summary>
-	/// A set of extension methods for the <see cref="HashSet{T}"/> type.
+	/// Adds a value to the specified <see cref="HashSet{T}"/> only if it != null.
 	/// </summary>
-	public static class HashSetExtensions
+	/// <typeparam name="T">The type of elements in the <see cref="HashSet{T}"/>.</typeparam>
+	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
+	/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
+	/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+	public static bool AddNotNull<T>(this HashSet<T> hashSet, T value)
 	{
-		/// <summary>
-		/// Adds a value to the specified <see cref="HashSet{T}"/> only if it != null.
-		/// </summary>
-		/// <typeparam name="T">The type of elements in the <see cref="HashSet{T}"/>.</typeparam>
-		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
-		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
-		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNull<T>(this HashSet<T> hashSet, T value)
+		Guard.IsNotNull(hashSet, nameof(hashSet));
+
+		return value != null && hashSet.Add(value);
+	}
+
+	/// <summary>
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// In doing so, the string is also trimmed.
+	/// </summary>
+	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
+	/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
+	/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+	public static bool AddNotNullTrim(this HashSet<string> hashSet, string value)
+		=> AddNotNull(hashSet!, value?.Trim());
+
+	/// <summary>
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// In doing do, the string value is trimmed and converted to lowercase using the rules of the current culture.
+	/// </summary>
+	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
+	/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
+	/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+	public static bool AddNotNullTrimToLower(this HashSet<string> hashSet, string value)
+		=> AddNotNull(hashSet!, value?.TrimToLower());
+
+	/// <summary>
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// In doing do, the string value is trimmed and converted to lowercase using the rules of the invariant culture.
+	/// </summary>
+	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
+	/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
+	/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+	public static bool AddNotNullTrimToLowerInvariant(this HashSet<string> hashSet, string value)
+		=> AddNotNull(hashSet!, value?.TrimToLowerInvariant());
+
+	/// <summary>
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// In doing do, the string value is trimmed and converted to uppercase using the rules of the current culture.
+	/// </summary>
+	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
+	/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
+	/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+	public static bool AddNotNullTrimToUpper(this HashSet<string> hashSet, string value)
+		=> AddNotNull(hashSet!, value?.TrimToUpper());
+
+	/// <summary>
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// In doing do, the string value is trimmed and converted to uppercase using the rules of the invariant culture.
+	/// </summary>
+	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
+	/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
+	/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
+	public static bool AddNotNullTrimToUpperInvariant(this HashSet<string> hashSet, string value)
+		=> AddNotNull(hashSet!, value?.TrimToUpperInvariant());
+
+	/// <summary>
+	/// Adds the specified <paramref name="values"/> to the <paramref name="set"/>.
+	/// </summary>
+	/// <typeparam name="T">The type of the item in the <paramref name="set"/>.</typeparam>
+	/// <param name="set">The set.</param>
+	/// <param name="values">The values to add.</param>
+	public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> values)
+	{
+		foreach (T value in values)
 		{
-			Guard.ArgumentNotNull(hashSet, nameof(hashSet));
+			if (value is null)
+				continue;
 
-			if (value != null)
-				return hashSet.Add(value);
-
-			return false;
-		}
-
-		/// <summary>
-		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
-		/// In doing so, the string is also trimmed.
-		/// </summary>
-		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
-		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
-		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNullTrim(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.Trim());
-
-		/// <summary>
-		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
-		/// In doing do, the string value is trimmed and converted to lowercase using the rules of the current culture.
-		/// </summary>
-		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
-		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
-		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNullTrimToLower(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToLower());
-
-		/// <summary>
-		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
-		/// In doing do, the string value is trimmed and converted to lowercase using the rules of the invariant culture.
-		/// </summary>
-		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
-		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
-		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNullTrimToLowerInvariant(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToLowerInvariant());
-
-		/// <summary>
-		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
-		/// In doing do, the string value is trimmed and converted to uppercase using the rules of the current culture.
-		/// </summary>
-		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
-		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
-		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNullTrimToUpper(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToUpper());
-
-		/// <summary>
-		/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
-		/// In doing do, the string value is trimmed and converted to uppercase using the rules of the invariant culture.
-		/// </summary>
-		/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
-		/// <param name="value">The value to be added to the <see cref="HashSet{T}"/>.</param>
-		/// <returns>A <see langword="bool"/> indicating whether or not the value had been added to the <paramref name="hashSet"/>.</returns>
-		public static bool AddNotNullTrimToUpperInvariant(this HashSet<string> hashSet, string value)
-			=> AddNotNull(hashSet!, value?.TrimToUpperInvariant());
-
-		/// <summary>
-		/// Adds the specified <paramref name="values"/> to the <paramref name="set"/>.
-		/// </summary>
-		/// <typeparam name="T">The type of the item in the <paramref name="set"/>.</typeparam>
-		/// <param name="set">The set.</param>
-		/// <param name="values">The values to add.</param>
-		public static void AddRange<T>(this HashSet<T> set, IEnumerable<T> values)
-		{
-			foreach (T value in values)
-			{
-				if (value is null)
-					continue;
-
-				set.Add(value);
-			}
+			_ = set.Add(value);
 		}
 	}
 }

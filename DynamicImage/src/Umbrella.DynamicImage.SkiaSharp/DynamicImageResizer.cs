@@ -34,7 +34,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
 		{
 			try
 			{
-				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+				Guard.IsNotNullOrEmpty(bytes, nameof(bytes));
 
 				using var image = LoadBitmap(bytes);
 
@@ -49,7 +49,7 @@ namespace Umbrella.DynamicImage.SkiaSharp
 		/// <inheritdoc />
 		public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
 		{
-			Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
+			Guard.IsNotNullOrEmpty(originalImage, nameof(originalImage));
 
 			try
 			{

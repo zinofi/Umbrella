@@ -37,7 +37,7 @@ namespace Umbrella.DynamicImage.FreeImage
 		{
 			try
 			{
-				Guard.ArgumentNotNullOrEmpty(bytes, nameof(bytes));
+				Guard.IsNotNullOrEmpty(bytes, nameof(bytes));
 
 				using var inputStream = new MemoryStream(bytes);
 				using var image = FreeImageBitmap.FromStream(inputStream);
@@ -53,7 +53,7 @@ namespace Umbrella.DynamicImage.FreeImage
 		/// <inheritdoc />
 		public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
 		{
-			Guard.ArgumentNotNullOrEmpty(originalImage, nameof(originalImage));
+			Guard.IsNotNullOrEmpty(originalImage, nameof(originalImage));
 
 			try
 			{

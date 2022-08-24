@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Options;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -103,8 +103,10 @@ public class FrontEndCompressionMiddlewareMapping : CacheableUmbrellaOptions, IS
 	/// </summary>
 	public void Validate()
 	{
-		Guard.ArgumentNotNullOrEmpty(AppRelativeFolderPaths, nameof(AppRelativeFolderPaths));
-		Guard.ArgumentNotNullOrEmpty(TargetFileExtensions, nameof(TargetFileExtensions));
+		Guard.IsNotNull(AppRelativeFolderPaths);
+		Guard.IsNotNull(TargetFileExtensions);
+		Guard.HasSizeGreaterThan(AppRelativeFolderPaths, 0);
+		Guard.HasSizeGreaterThan(TargetFileExtensions, 0);
 
 		if (Cacheability is MiddlewareHttpCacheability.Public)
 			throw new ArgumentException("Public is not allowed.", nameof(Cacheability));

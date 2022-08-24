@@ -37,7 +37,7 @@ namespace Umbrella.DynamicImage.Caching.Disk
 			DynamicImageDiskCacheOptions diskCacheOptions)
 			: base(logger, cache, cacheKeyUtility, cacheOptions, fileProvider)
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(diskCacheOptions.CacheFolderName, nameof(diskCacheOptions.CacheFolderName));
+			Guard.IsNotNullOrWhiteSpace(diskCacheOptions.CacheFolderName, nameof(diskCacheOptions.CacheFolderName));
 
 			DiskCacheOptions = diskCacheOptions;
 		}

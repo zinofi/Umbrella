@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using System.Collections.Concurrent;
 using System.Text;
 
@@ -28,8 +29,8 @@ public static class StringBuilderExtensions
 	/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/> is less than 0.</exception>
 	public static int IndexOf(this StringBuilder sb, char value, int startIndex = 0)
 	{
-		Guard.ArgumentNotNull(sb, nameof(sb));
-		Guard.ArgumentInRange(startIndex, nameof(startIndex), 0);
+		Guard.IsNotNull(sb, nameof(sb));
+		Guard.IsGreaterThanOrEqualTo(startIndex, 0, nameof(startIndex));
 
 		for (int i = startIndex; i < sb.Length; i++)
 		{
@@ -55,13 +56,13 @@ public static class StringBuilderExtensions
 	/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="startIndex"/> is less than 0.</exception>
 	public static int IndexOf(this StringBuilder sb, string value, int startIndex = 0, bool ignoreCase = false)
 	{
-		Guard.ArgumentNotNull(sb, nameof(sb));
-		Guard.ArgumentNotNull(value, nameof(value));
-		Guard.ArgumentInRange(startIndex, nameof(startIndex), 0);
+		Guard.IsNotNull(sb, nameof(sb));
+		Guard.IsNotNull(value, nameof(value));
+		Guard.IsGreaterThanOrEqualTo(startIndex, 0, nameof(startIndex));
 
 		int num3;
 		int length = value.Length;
-		int num2 = (sb.Length - length) + 1;
+		int num2 = sb.Length - length + 1;
 
 		if (ignoreCase == false)
 		{
@@ -74,6 +75,7 @@ public static class StringBuilderExtensions
 					{
 						num3++;
 					}
+
 					if (num3 == length)
 					{
 						return i;
@@ -92,6 +94,7 @@ public static class StringBuilderExtensions
 					{
 						num3++;
 					}
+
 					if (num3 == length)
 					{
 						return j;
@@ -99,6 +102,7 @@ public static class StringBuilderExtensions
 				}
 			}
 		}
+
 		return -1;
 	}
 
@@ -127,12 +131,11 @@ public static class StringBuilderExtensions
 	/// <returns>The same instance as specified by <paramref name="sb"/>.</returns>
 	public static StringBuilder Trim(this StringBuilder sb, params char[] chars)
 	{
-		Guard.ArgumentNotNull(sb, nameof(sb));
-		Guard.ArgumentNotNull(chars, nameof(chars));
-
+		Guard.IsNotNull(sb, nameof(sb));
+		Guard.IsNotNull(chars, nameof(chars));
 		foreach (char c in chars)
 		{
-			sb.Trim(c);
+			_ = sb.Trim(c);
 		}
 
 		return sb;
@@ -146,7 +149,7 @@ public static class StringBuilderExtensions
 	/// <returns>The same instance as specified by <paramref name="sb"/>.</returns>
 	public static StringBuilder Trim(this StringBuilder sb, char c)
 	{
-		Guard.ArgumentNotNull(sb, nameof(sb));
+		Guard.IsNotNull(sb, nameof(sb));
 
 		if (sb.Length != 0)
 		{
@@ -160,7 +163,7 @@ public static class StringBuilderExtensions
 
 			if (length > 0)
 			{
-				sb.Remove(0, length);
+				_ = sb.Remove(0, length);
 				num2 = sb.Length;
 			}
 
@@ -173,9 +176,10 @@ public static class StringBuilderExtensions
 
 			if (length < (num2 - 1))
 			{
-				sb.Remove(length + 1, num2 - length - 1);
+				_ = sb.Remove(length + 1, num2 - length - 1);
 			}
 		}
+
 		return sb;
 	}
 
@@ -254,7 +258,7 @@ public static class StringBuilderExtensions
 	public static StringBuilder ConvertHtmlBrTagsToReplacement(this StringBuilder value, string replacement)
 	{
 		// TODO: Use a Regex here to cope with multiple whitespaces better
-		value.Replace("</br>", "")
+		_ = value.Replace("</br>", "")
 			.Replace("<br>", replacement)
 			.Replace("<br/>", replacement)
 			.Replace("<br />", replacement);
@@ -289,10 +293,7 @@ public static class StringBuilderExtensions
 	/// </summary>
 	/// <param name="builder">The builder.</param>
 	/// <returns>The same instance of the <see cref="StringBuilder"/> with the newlines normalized.</returns>
-	public static StringBuilder NormalizeNewLines(this StringBuilder builder)
-	{
-		return builder.Replace("\r\n", "\n").Replace("\n", "\r\n");
-	}
+	public static StringBuilder NormalizeNewLines(this StringBuilder builder) => builder.Replace("\r\n", "\n").Replace("\n", "\r\n");
 
 	/// <summary>
 	/// Reduces the whitespace in the specified <paramref name="builder"/> by replacing multiple whitespace
@@ -322,14 +323,14 @@ public static class StringBuilderExtensions
 				previousIsWhitespace = false;
 			}
 
-			newString.Append(builder[i]);
+			_ = newString.Append(builder[i]);
 		}
 
-		builder.Clear();
+		_ = builder.Clear();
 
 		for (int i = 0; i < newString.Length; i++)
 		{
-			builder.Append(newString[i]);
+			_ = builder.Append(newString[i]);
 		}
 
 		return builder;

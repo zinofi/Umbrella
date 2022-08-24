@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.FileProviders;
 using System.ComponentModel;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -12,8 +12,8 @@ namespace Umbrella.WebUtilities.Middleware.Options;
 /// <summary>
 /// Options for implementations of the FrontEndCompressionMiddleware in the ASP.NET and ASP.NET Core projects.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
-/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
+/// <seealso cref="ISanitizableUmbrellaOptions" />
+/// <seealso cref="IValidatableUmbrellaOptions" />
 public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions, IDevelopmentModeUmbrellaOptions
 {
 	private Dictionary<string, FrontEndCompressionMiddlewareMapping>? _flattenedMappings;
@@ -60,7 +60,7 @@ public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions,
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public FrontEndCompressionMiddlewareMapping? GetMapping(string searchPath)
 	{
-		Guard.ArgumentNotNullOrWhiteSpace(searchPath, nameof(searchPath));
+		Guard.IsNotNullOrWhiteSpace(searchPath, nameof(searchPath));
 
 		return _flattenedMappings?.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
 	}
@@ -84,8 +84,8 @@ public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions,
 	/// </summary>
 	public void Validate()
 	{
-		Guard.ArgumentNotNullOrWhiteSpace(AcceptEncodingHeaderKey, nameof(AcceptEncodingHeaderKey));
-		Guard.ArgumentInRange(BufferSizeBytes, nameof(BufferSizeBytes), 1);
+		Guard.IsNotNullOrWhiteSpace(AcceptEncodingHeaderKey, nameof(AcceptEncodingHeaderKey));
+		Guard.IsGreaterThanOrEqualTo(BufferSizeBytes, 1);
 	}
 
 	void IDevelopmentModeUmbrellaOptions.SetDevelopmentMode(bool isDevelopmentMode) => Mappings.ForEach(x => x.WatchFiles = isDevelopmentMode);

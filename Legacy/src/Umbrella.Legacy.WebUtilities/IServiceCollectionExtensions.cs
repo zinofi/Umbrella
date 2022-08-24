@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		public static IServiceCollection AddUmbrellaLegacyWebUtilities<TUmbrellaWebHostingEnvironment>(this IServiceCollection services)
 			where TUmbrellaWebHostingEnvironment : class, IUmbrellaWebHostingEnvironment
 		{
-			Guard.ArgumentNotNull(services, nameof(services));
+			Guard.IsNotNull(services, nameof(services));
 
 			// Add the hosting environment as a singleton and then ensure the same instance is bound to both interfaces
 			services.AddSingleton<TUmbrellaWebHostingEnvironment>();

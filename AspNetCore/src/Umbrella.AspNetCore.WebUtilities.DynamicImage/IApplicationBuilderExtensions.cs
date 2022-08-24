@@ -22,7 +22,7 @@ namespace Microsoft.AspNetCore.Builder
 		/// </remarks>
 		public static IApplicationBuilder UseUmbrellaDynamicImage(this IApplicationBuilder builder)
 		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
+			Guard.IsNotNull(builder, nameof(builder));
 
 			builder.UseMiddleware<DynamicImageMiddleware>();
 

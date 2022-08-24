@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Utilities;
 using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
-using Umbrella.Utilities;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -23,7 +23,7 @@ public static class IServiceCollectionExtensions
 	/// <returns>The services builder.</returns>
 	public static IServiceCollection AddUmbrellaBlazor(this IServiceCollection services)
 	{
-		Guard.ArgumentNotNull(services, nameof(services));
+		Guard.IsNotNull(services, nameof(services));
 
 		_ = services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
 		_ = services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();

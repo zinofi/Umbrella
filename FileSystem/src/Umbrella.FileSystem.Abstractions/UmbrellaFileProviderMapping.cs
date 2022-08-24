@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Umbrella.Utilities;
+using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -59,7 +59,8 @@ public class UmbrellaFileProviderMapping : ISanitizableUmbrellaOptions, IValidat
 	/// </summary>
 	public void Validate()
 	{
-		Guard.ArgumentNotNull(FileProvider, nameof(FileProvider));
-		Guard.ArgumentNotNullOrEmpty(AppRelativeFolderPaths, nameof(AppRelativeFolderPaths));
+		Guard.IsNotNull(FileProvider);
+		Guard.IsNotNull(AppRelativeFolderPaths);
+		Guard.HasSizeGreaterThan(AppRelativeFolderPaths, 0);
 	}
 }

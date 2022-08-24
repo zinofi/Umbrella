@@ -20,6 +20,6 @@ namespace Umbrella.DynamicImage.Caching.Disk
 		public void Sanitize() => CacheFolderName = CacheFolderName.Trim();
 
 		/// <inheritdoc />
-		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(CacheFolderName, nameof(CacheFolderName));
+		public void Validate() => Guard.IsNotNullOrWhiteSpace(CacheFolderName, nameof(CacheFolderName));
 	}
 }

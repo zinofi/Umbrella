@@ -299,7 +299,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid
 		}
 
 		/// <inheritdoc />
-		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
+		protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
 
 		/// <inheritdoc />
 		public void AddColumnDefinition(UmbrellaColumnDefinition column) => ColumnDefinitions.Add(column);

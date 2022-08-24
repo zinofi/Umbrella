@@ -1,66 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
 using System.ComponentModel;
-using System.Linq;
-using Umbrella.Utilities;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.WebUtilities.FileSystem.Constants;
 
-namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
+namespace Umbrella.WebUtilities.FileSystem.Middleware.Options;
+
+/// <summary>
+/// Options for implementations of the FileSystemMiddleware in the ASP.NET and ASP.NET Core projects.
+/// </summary>
+/// <seealso cref="ISanitizableUmbrellaOptions" />
+/// <seealso cref="IValidatableUmbrellaOptions" />
+public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
+	private Dictionary<string, FileSystemMiddlewareMapping>? _flattenedMappings;
+
 	/// <summary>
-	/// Options for implementations of the FileSystemMiddleware in the ASP.NET and ASP.NET Core projects.
+	/// Gets or sets the mappings.
 	/// </summary>
-	/// <seealso cref="ISanitizableUmbrellaOptions" />
-	/// <seealso cref="IValidatableUmbrellaOptions" />
-	public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+	public List<FileSystemMiddlewareMapping>? Mappings { get; set; }
+
+	/// <summary>
+	/// Gets or sets the file system path prefix. Defaults to <see cref="FileSystemConstants.DefaultPathPrefix"/>.
+	/// </summary>
+	public string FileSystemPathPrefix { get; set; } = FileSystemConstants.DefaultPathPrefix;
+
+	/// <summary>
+	/// Gets the file provider for the specified <paramref name="searchPath"/>.
+	/// </summary>
+	/// <param name="searchPath">The search path.</param>
+	/// <returns></returns>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public FileSystemMiddlewareMapping GetMapping(string searchPath)
 	{
-		private Dictionary<string, FileSystemMiddlewareMapping>? _flattenedMappings;
+		Guard.IsNotNullOrWhiteSpace(searchPath, nameof(searchPath));
 
-		/// <summary>
-		/// Gets or sets the mappings.
-		/// </summary>
-		public List<FileSystemMiddlewareMapping>? Mappings { get; set; }
+		return _flattenedMappings.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
+	}
 
-		/// <summary>
-		/// Gets or sets the file system path prefix. Defaults to <see cref="FileSystemConstants.DefaultPathPrefix"/>.
-		/// </summary>
-		public string FileSystemPathPrefix { get; set; } = FileSystemConstants.DefaultPathPrefix;
-
-		/// <summary>
-		/// Gets the file provider for the specified <paramref name="searchPath"/>.
-		/// </summary>
-		/// <param name="searchPath">The search path.</param>
-		/// <returns></returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public FileSystemMiddlewareMapping GetMapping(string searchPath)
+	/// <inheritdoc />
+	public void Sanitize()
+	{
+		if (Mappings != null)
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(searchPath, nameof(searchPath));
-
-			return _flattenedMappings.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
+			Mappings.ForEach(x => x.Sanitize());
+			_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
 		}
 
-		/// <inheritdoc />
-		public void Sanitize()
-		{
-			if (Mappings != null)
-			{
-				Mappings.ForEach(x => x.Sanitize());
-				_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);
-			}
+		FileSystemPathPrefix = FileSystemPathPrefix.Trim();
+	}
 
-			FileSystemPathPrefix = FileSystemPathPrefix.Trim();
-		}
+	/// <inheritdoc />
+	public void Validate()
+	{
+		Guard.IsNotNullOrEmpty(Mappings, nameof(Mappings));
+		Guard.IsNotNullOrWhiteSpace(FileSystemPathPrefix, nameof(FileSystemPathPrefix));
+		Guard.IsNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
 
-		/// <inheritdoc />
-		public void Validate()
-		{
-			Guard.ArgumentNotNullOrEmpty(Mappings, nameof(Mappings));
-			Guard.ArgumentNotNullOrWhiteSpace(FileSystemPathPrefix, nameof(FileSystemPathPrefix));
-			Guard.ArgumentNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
-
-			Mappings?.ForEach(x => x.Validate());
-		}
+		Mappings?.ForEach(x => x.Validate());
 	}
 }

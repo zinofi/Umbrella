@@ -15,6 +15,6 @@ namespace Umbrella.AspNetCore.Blazor.Components.StateViews
 		public string? Message { get; set; }
 
 		/// <inheritdoc />
-		protected override void OnParametersSet() => Guard.ArgumentNotNullOrWhiteSpace(Message, nameof(Message));
+		protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Message, nameof(Message));
 	}
 }

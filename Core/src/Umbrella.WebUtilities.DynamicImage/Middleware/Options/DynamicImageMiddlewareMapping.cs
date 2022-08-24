@@ -46,7 +46,7 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 		/// <inheritdoc />
 		public void Validate()
 		{
-			Guard.ArgumentNotNull(FileProviderMapping, nameof(FileProviderMapping));
+			Guard.IsNotNull(FileProviderMapping, nameof(FileProviderMapping));
 			FileProviderMapping.Validate();
 
 			switch (Cacheability)
@@ -57,7 +57,7 @@ namespace Umbrella.WebUtilities.DynamicImage.Middleware.Options
 			}
 
 			if (EnableValidation)
-				Guard.ArgumentNotNullOrEmpty(ValidMappings, nameof(ValidMappings));
+				Guard.IsNotNullOrEmpty(ValidMappings, nameof(ValidMappings));
 		}
 	}
 }

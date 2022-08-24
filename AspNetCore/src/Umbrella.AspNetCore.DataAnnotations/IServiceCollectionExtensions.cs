@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Umbrella.AspNetCore.DataAnnotations;
-using Umbrella.Utilities;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -22,7 +22,7 @@ public static class IServiceCollectionExtensions
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	public static IServiceCollection AddUmbrellaAspNetCoreDataAnnotations(this IServiceCollection services)
 	{
-		Guard.ArgumentNotNull(services, nameof(services));
+		Guard.IsNotNull(services, nameof(services));
 
 		// Adding this as an additional implementation rather than replacing so the in-built provider will still be used in addition
 		// to our custom one.

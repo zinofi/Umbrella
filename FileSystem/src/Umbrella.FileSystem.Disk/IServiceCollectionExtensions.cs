@@ -58,8 +58,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			where TFileProvider : class, IUmbrellaDiskFileProvider
 			where TOptions : UmbrellaDiskFileProviderOptions, new()
 		{
-			Guard.ArgumentNotNull(services, nameof(services));
-			Guard.ArgumentNotNull(optionsBuilder, nameof(optionsBuilder));
+			Guard.IsNotNull(services, nameof(services));
+			Guard.IsNotNull(optionsBuilder, nameof(optionsBuilder));
 
 			services.AddUmbrellaFileSystemCore();
 

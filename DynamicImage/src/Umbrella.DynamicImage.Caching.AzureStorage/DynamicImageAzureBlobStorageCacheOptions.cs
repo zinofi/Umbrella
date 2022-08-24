@@ -20,6 +20,6 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage
 		public void Sanitize() => ContainerName = ContainerName.TrimToLowerInvariant();
 
 		/// <inheritdoc />
-		public void Validate() => Guard.ArgumentNotNullOrWhiteSpace(ContainerName, nameof(ContainerName));
+		public void Validate() => Guard.IsNotNullOrWhiteSpace(ContainerName, nameof(ContainerName));
 	}
 }

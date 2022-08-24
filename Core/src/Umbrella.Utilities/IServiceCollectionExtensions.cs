@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using System.Runtime.CompilerServices;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
@@ -87,7 +87,7 @@ public static class IServiceCollectionExtensions
 		Action<Dictionary<Type, IHttpClientBuilder>>? httpServicesBuilder = null,
 		int httpServicesDefaultTimeOutSeconds = 20)
 	{
-		Guard.ArgumentNotNull(services, nameof(services));
+		Guard.IsNotNull(services, nameof(services));
 
 		_ = services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
 		_ = services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
@@ -161,7 +161,7 @@ public static class IServiceCollectionExtensions
 	public static IServiceCollection ConfigureUmbrellaOptions<TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions>? optionsBuilder, bool isDevelopmentMode = false)
 		where TOptions : class, new()
 	{
-		Guard.ArgumentNotNull(services, nameof(services));
+		Guard.IsNotNull(services, nameof(services));
 
 		_ = services.ReplaceSingleton(serviceProvider =>
 		{
@@ -354,8 +354,8 @@ public static class IServiceCollectionExtensions
 	/// <returns>The services.</returns>
 	public static IServiceCollection Remove(this IServiceCollection services, Type serviceType)
 	{
-		Guard.ArgumentNotNull(services, nameof(services));
-		Guard.ArgumentNotNull(serviceType, nameof(serviceType));
+		Guard.IsNotNull(services, nameof(services));
+		Guard.IsNotNull(serviceType, nameof(serviceType));
 
 		foreach (ServiceDescriptor serviceDescriptor in services.Where(x => x.ServiceType == serviceType).ToArray())
 		{
