@@ -61,8 +61,10 @@ public class DynamicImageMiddlewareOptions : IValidatableUmbrellaOptions, ISanit
 	/// <inheritdoc />
 	public void Validate()
 	{
-		Guard.IsNotNullOrEmpty(Mappings, nameof(Mappings));
-		Guard.IsNotNullOrWhiteSpace(DynamicImagePathPrefix, nameof(DynamicImagePathPrefix));
-		Guard.IsNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
+		Guard.IsNotNull(Mappings);
+		Guard.HasSizeGreaterThan(Mappings, 0);
+		Guard.IsNotNullOrWhiteSpace(DynamicImagePathPrefix);
+		Guard.IsNotNull(_flattenedMappings);
+		Guard.IsGreaterThan(_flattenedMappings.Count, 0);
 	}
 }

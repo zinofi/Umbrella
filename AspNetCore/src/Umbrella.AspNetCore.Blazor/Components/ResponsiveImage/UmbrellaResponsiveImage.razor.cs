@@ -1,71 +1,73 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Imaging;
 
-namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage
+namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
+
+public partial class UmbrellaResponsiveImage : ComponentBase
 {
-	public partial class UmbrellaResponsiveImage : ComponentBase
+	/// <summary>
+	/// Gets or sets the responsive image helper.
+	/// </summary>
+	[Inject]
+	protected IResponsiveImageHelper ResponsiveImageHelper { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets the CSS class that is applied to the div that wraps the generated img tag.
+	/// To apply a CSS class directly to the img tag, use the "class" attribute.
+	/// </summary>
+	[Parameter]
+	public string? CssClass { get; set; }
+
+	/// <summary>
+	/// Gets or sets the maximum pixel density. Defaults to 1.
+	/// </summary>
+	[Parameter]
+	public virtual int MaxPixelDensity { get; set; } = 1;
+
+	/// <summary>
+	/// Gets or sets the URL.
+	/// </summary>
+	[Parameter]
+	[EditorRequired]
+	public virtual string Url { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether the loading="lazy" attribute will be rendered
+	/// by the img tag.
+	/// </summary>
+	[Parameter]
+	public bool LazyLoadingEnabled { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets the additional attributes.
+	/// </summary>
+	[Parameter(CaptureUnmatchedValues = true)]
+	public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets the source set value used to populate the srcset attribute.
+	/// </summary>
+	protected string? SrcSetValue { get; set; }
+
+	/// <inheritdoc />
+	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Url, nameof(Url));
+
+	/// <inheritdoc />
+	protected override void OnInitialized() => InitializeImage();
+
+	/// <summary>
+	/// Initializes the image.
+	/// </summary>
+	protected virtual void InitializeImage() => SrcSetValue = ResponsiveImageHelper.GetPixelDensitySrcSetValue(Url, MaxPixelDensity);
+
+	/// <inheritdoc />
+	protected override void OnAfterRender(bool firstRender)
 	{
-		/// <summary>
-		/// Gets or sets the responsive image helper.
-		/// </summary>
-		[Inject]
-		protected IResponsiveImageHelper ResponsiveImageHelper { get; set; } = null!;
-
-		/// <summary>
-		/// Gets or sets the CSS class that is applied to the div that wraps the generated img tag.
-		/// To apply a CSS class directly to the img tag, use the "class" attribute.
-		/// </summary>
-		[Parameter]
-		public string? CssClass { get; set; }
-
-		/// <summary>
-		/// Gets or sets the maximum pixel density. Defaults to 1.
-		/// </summary>
-		[Parameter]
-		public virtual int MaxPixelDensity { get; set; } = 1;
-
-		/// <summary>
-		/// Gets or sets the URL.
-		/// </summary>
-		[Parameter]
-		public virtual string Url { get; set; } = null!;
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the loading="lazy" attribute will be rendered
-		/// by the img tag.
-		/// </summary>
-		[Parameter]
-		public bool LazyLoadingEnabled { get; set; } = true;
-
-		/// <summary>
-		/// Gets or sets the additional attributes.
-		/// </summary>
-		[Parameter(CaptureUnmatchedValues = true)]
-		public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = null!;
-
-		/// <summary>
-		/// Gets or sets the source set value used to populate the srcset attribute.
-		/// </summary>
-		protected string? SrcSetValue { get; set; }
-
-		/// <inheritdoc />
-		protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Url, nameof(Url));
-
-		/// <inheritdoc />
-		protected override void OnInitialized() => InitializeImage();
-
-		/// <summary>
-		/// Initializes the image.
-		/// </summary>
-		protected virtual void InitializeImage() => SrcSetValue = ResponsiveImageHelper.GetPixelDensitySrcSetValue(Url, MaxPixelDensity);
-
-		/// <inheritdoc />
-		protected override void OnAfterRender(bool firstRender)
-		{
-			if (!firstRender)
-				InitializeImage();
-		}
+		if (!firstRender)
+			InitializeImage();
 	}
 }

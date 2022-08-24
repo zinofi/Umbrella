@@ -71,8 +71,8 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 	{
 		base.OnParametersSet();
 
-		Guard.ArgumentInRange(WidthRequest, nameof(WidthRequest), 1);
-		Guard.ArgumentInRange(HeightRequest, nameof(HeightRequest), 1);
+		Guard.IsGreaterThanOrEqualTo(WidthRequest, 1);
+		Guard.IsGreaterThanOrEqualTo(HeightRequest, 1);
 	}
 
 	/// <inheritdoc />

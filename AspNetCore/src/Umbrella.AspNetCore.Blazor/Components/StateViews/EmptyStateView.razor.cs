@@ -1,20 +1,23 @@
-﻿using Microsoft.AspNetCore.Components;
-using Umbrella.Utilities;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
 
-namespace Umbrella.AspNetCore.Blazor.Components.StateViews
+using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Components;
+
+namespace Umbrella.AspNetCore.Blazor.Components.StateViews;
+
+/// <summary>
+/// A state view component used to display an empty message when there is no data to display.
+/// </summary>
+public partial class EmptyStateView
 {
 	/// <summary>
-	/// A state view component used to display an empty message when there is no data to display.
+	/// Gets or sets the message.
 	/// </summary>
-	public partial class EmptyStateView
-    {
-		/// <summary>
-		/// Gets or sets the message.
-		/// </summary>
-		[Parameter]
-		public string? Message { get; set; }
+	[Parameter]
+	[EditorRequired]
+	public string? Message { get; set; }
 
-		/// <inheritdoc />
-		protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Message, nameof(Message));
-	}
+	/// <inheritdoc />
+	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Message);
 }

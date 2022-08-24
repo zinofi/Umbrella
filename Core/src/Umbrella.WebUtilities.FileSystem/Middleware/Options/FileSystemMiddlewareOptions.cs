@@ -55,9 +55,11 @@ public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidat
 	/// <inheritdoc />
 	public void Validate()
 	{
-		Guard.IsNotNullOrEmpty(Mappings, nameof(Mappings));
-		Guard.IsNotNullOrWhiteSpace(FileSystemPathPrefix, nameof(FileSystemPathPrefix));
-		Guard.IsNotNullOrEmpty(_flattenedMappings, nameof(_flattenedMappings));
+		Guard.IsNotNull(Mappings);
+		Guard.HasSizeGreaterThan(Mappings, 0);
+		Guard.IsNotNullOrWhiteSpace(FileSystemPathPrefix);
+		Guard.IsNotNull(_flattenedMappings);
+		Guard.IsGreaterThan(_flattenedMappings.Count, 0);
 
 		Mappings?.ForEach(x => x.Validate());
 	}
