@@ -38,6 +38,7 @@ public enum UmbrellaGridRenderMode
 /// <typeparam name="TItem">The type of the item.</typeparam>
 /// <seealso cref="ComponentBase" />
 /// <seealso cref="IUmbrellaGrid{TItem}" />
+[CascadingTypeParameter(nameof(TItem))]
 public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 {
 	private class UmbrellaGridSelectableItem
