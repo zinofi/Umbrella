@@ -15,6 +15,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// <summary>
 /// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
+[CascadingTypeParameter(nameof(TItem))]
 public partial class UmbrellaColumn<TItem>
 {
 	[Inject]
