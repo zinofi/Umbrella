@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Utilities.Enumerations;
 using Umbrella.AppFramework.Utilities.Messages;
 
 namespace Umbrella.AppFramework.Utilities;
@@ -18,23 +19,9 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 	private CancellationTokenSource? _cancellationTokenSource;
 
 	/// <inheritdoc />
-	public event Action OnLoading
+	public event Action<LoadingScreenState> OnStateChanged
 	{
-		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
-		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
-	}
-
-	/// <inheritdoc />
-	public event Action OnShow
-	{
-		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
-		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
-	}
-
-	/// <inheritdoc />
-	public event Action OnHide
-	{
-		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, _) => value.Invoke());
+		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, args) => value(args.Value));
 		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
 	}
 
@@ -57,14 +44,14 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 
 			_cancellationTokenSource = new CancellationTokenSource();
 
-			_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(Enumerations.LoadingScreenState.Requested));
+			_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(LoadingScreenState.Requested));
 
 			var token = _cancellationTokenSource.Token;
 
 			_ = Task.Delay(delayMilliseconds, token).ContinueWith(x =>
 			{
 				if (!token.IsCancellationRequested)
-					_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(Enumerations.LoadingScreenState.Visible));
+					_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(LoadingScreenState.Visible));
 			});
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { delayMilliseconds }, returnValue: true))
@@ -79,7 +66,7 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 		try
 		{
 			_cancellationTokenSource?.Cancel();
-			_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(Enumerations.LoadingScreenState.Hidden));
+			_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(LoadingScreenState.Hidden));
 		}
 		catch (Exception exc)
 		{

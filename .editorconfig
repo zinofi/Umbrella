@@ -197,3 +197,4 @@ csharp_space_after_semicolon_in_for_statement = true
 dotnet_diagnostic.CA2016.severity = error
 dotnet_diagnostic.CA1825.severity = error
 dotnet_diagnostic.IDE0001.severity = error
+dotnet_diagnostic.IDE0002.severity = error
