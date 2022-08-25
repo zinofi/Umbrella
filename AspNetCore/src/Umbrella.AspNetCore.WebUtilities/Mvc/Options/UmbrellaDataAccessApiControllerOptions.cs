@@ -8,8 +8,16 @@ using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.Options;
 
+/// <summary>
+/// Options for use with the <see cref="UmbrellaDataAccessApiController"/>
+/// </summary>
+/// <seealso cref="ISanitizableUmbrellaOptions" />
+/// <seealso cref="IValidatableUmbrellaOptions" />
 public class UmbrellaDataAccessApiControllerOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
+	/// <summary>
+	/// Gets or sets the concurrency error message returned in <see cref="UmbrellaApiController.ConcurrencyConflict"/> (status code 409) responses.
+	/// </summary>
 	public string ConcurrencyErrorMessage { get; set; } = "This information has been changed elsewhere since this screen was loaded. Please try again.";
 	public Func<Exception, bool> ReadAllExceptionFilter { get; set; } = _ => false;
 	public Func<Exception, Task<IActionResult?>> HandleReadAllExceptionAsync { get; set; } = _ => Task.FromResult<IActionResult?>(null);
@@ -21,9 +29,25 @@ public class UmbrellaDataAccessApiControllerOptions : ISanitizableUmbrellaOption
 	public Func<Exception, Task<IActionResult?>> HandleUpdateExceptionAsync { get; set; } = _ => Task.FromResult<IActionResult?>(null);
 	public Func<Exception, bool> DeleteExceptionFilter { get; set; } = _ => false;
 	public Func<Exception, Task<IActionResult?>> HandleDeleteExceptionAsync { get; set; } = _ => Task.FromResult<IActionResult?>(null);
+
+	/// <summary>
+	/// Gets or sets the name of the authorization policy checked when creating items.
+	/// </summary>
 	public string CreatePolicyName { get; set; } = CorePolicyNames.Create;
+
+	/// <summary>
+	/// Gets or sets the name of the authorization policy checked when reading items.
+	/// </summary>
 	public string ReadPolicyName { get; set; } = CorePolicyNames.Read;
+
+	/// <summary>
+	/// Gets or sets the name of the authorization policy checked when updating items.
+	/// </summary>
 	public string UpdatePolicyName { get; set; } = CorePolicyNames.Update;
+
+	/// <summary>
+	/// Gets or sets the name of the authorization policy checked when deleting items.
+	/// </summary>
 	public string DeletePolicyName { get; set; } = CorePolicyNames.Delete;
 
 	/// <inheritdoc />

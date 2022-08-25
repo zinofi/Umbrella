@@ -4,18 +4,32 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Form;
 
+/// <summary>
+/// Renders the value of the <see cref="Content"/> property wrapped in a <![CDATA[<span>]]> element. 
+/// If no <see cref="Content"/> has been provided, the code will attempt to find a
+/// <see cref="DisplayAttribute"/> applied to the member specified using the <see cref="ForTarget"/> property.
+/// </summary>
+/// <seealso cref="ComponentBase" />
 public class DisplayNameText : ComponentBase
 {
 	private bool _hasRendered = false;
 
+	/// <summary>
+	/// The target property.
+	/// </summary>
 	[Parameter]
 	public Expression<Func<object>> ForTarget { get; set; } = null!;
 
+	/// <summary>
+	/// Gets or sets the content to be rendered by this component. If no content has been provided,
+	/// the code will attempt to find a
+	/// <see cref="DisplayAttribute"/> applied to the member specified using the <see cref="ForTarget"/> property.
+	/// </summary>
 	[Parameter]
 	public RenderFragment? Content { get; set; }
 
@@ -41,7 +55,7 @@ public class DisplayNameText : ComponentBase
 
 		var expressionBody = ForTarget.Body;
 
-		if (expressionBody is UnaryExpression expression && expression.NodeType == ExpressionType.Convert)
+		if (expressionBody is UnaryExpression expression && expression.NodeType is ExpressionType.Convert)
 		{
 			expressionBody = expression.Operand;
 		}

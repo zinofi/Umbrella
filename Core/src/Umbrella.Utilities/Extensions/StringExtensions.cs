@@ -4,6 +4,7 @@
 using CommunityToolkit.Diagnostics;
 using System.Globalization;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using Umbrella.Utilities.Constants;
 
@@ -19,21 +20,29 @@ public static class StringExtensions
 
 	private static readonly Regex s_HtmlTagPatternRegex = new(HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 	private static readonly Regex s_EllipsisPatternRegex = new(EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-	private static readonly string _preambleString = Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble());
 
 	/// <summary>
 	/// Removes zero-width whitespace characters from the specified <paramref name="value"/>.
 	/// </summary>
 	/// <param name="value">The value.</param>
 	/// <returns>A new string with the preambles removed.</returns>
-	public static string RemovePreambles(this string value) => value.Replace(_preambleString, null);
+	public static string RemovePreambles(this string value) => value.Replace(StringEncodingConstants.PreambleString, null);
 
 	/// <summary>
 	/// Normalizes new line characters to ensure consistency between Windows and Unix platforms.
+	/// All new lines will be represented as \r\n strings.
 	/// </summary>
 	/// <param name="value">The value.</param>
-	/// <returns>A new string with the newlines normalized.</returns>
+	/// <returns>A new string with the new lines normalized.</returns>
 	public static string NormalizeNewLines(this string value) => value.Replace("\r\n", "\n").Replace("\n", "\r\n");
+
+	/// <summary>
+	/// Normalizes new line characters in a HTML encoded string to ensure consistency between Windows and Unix platforms.
+	/// All new lines will be represented as encoded \r\n strings.
+	/// </summary>
+	/// <param name="encodedValue">The encoded value.</param>
+	/// <returns>A new HTML encoded string with the new lines normalized.</returns>
+	public static string NormalizeHtmlEncodedNewLines(this string encodedValue) => encodedValue.Replace(StringEncodingConstants.HtmlEncodedCrLfToken, StringEncodingConstants.HtmlEncodedLfToken).Replace(StringEncodingConstants.HtmlEncodedLfToken, StringEncodingConstants.HtmlEncodedCrLfToken);
 
 	/// <summary>
 	/// Reduces the whitespace in the specified <paramref name="value"/> by replacing multiple whitespace

@@ -27,7 +27,7 @@ public class UmbrellaColumnDefinition<TItem>
 	/// <param name="filterControlType">Type of the filter control.</param>
 	/// <param name="filterMatchType">Type of the filter match.</param>
 	/// <param name="filterOptionsType">Type of the filter options.</param>
-	/// <param name="propertySelector">The property selector.</param>
+	/// <param name="property">The property selector.</param>
 	/// <param name="filterMemberPathOverride">The filter member override.</param>
 	/// <param name="sorterMemberPathOverride">The sorter member override.</param>
 	/// <param name="displayMode">The display mode.</param>
@@ -43,7 +43,7 @@ public class UmbrellaColumnDefinition<TItem>
 		UmbrellaColumnFilterType filterControlType,
 		FilterType filterMatchType,
 		UmbrellaColumnFilterOptionsType? filterOptionsType,
-		Expression<Func<TItem, object>>? propertySelector,
+		Expression<Func<TItem, object>>? property,
 		string? filterMemberPathOverride,
 		string? sorterMemberPathOverride,
 		UmbrellaColumnDisplayMode displayMode)
@@ -59,8 +59,8 @@ public class UmbrellaColumnDefinition<TItem>
 		FilterControlType = filterControlType;
 		FilterMatchType = filterMatchType;
 		FilterOptionsType = filterOptionsType;
-		PropertySelector = propertySelector;
-		PropertyName = propertySelector?.GetMemberName();
+		Property = property;
+		PropertyName = property?.GetMemberName();
 		FilterMemberPathOverride = filterMemberPathOverride;
 		SorterMemberPathOverride = sorterMemberPathOverride;
 		DisplayMode = displayMode;
@@ -76,12 +76,17 @@ public class UmbrellaColumnDefinition<TItem>
 			FilterMatchType = FilterType.Equal;
 			FilterOptions = new[] { "Yes", "No" };
 		}
+
+		if (Heading is null && Property is not null)
+		{
+			Heading = Property.GetDisplayText();
+		}
 	}
 
 	/// <summary>
 	/// Gets the property selector.
 	/// </summary>
-	public Expression<Func<TItem, object>>? PropertySelector { get; }
+	public Expression<Func<TItem, object>>? Property { get; }
 
 	/// <summary>
 	/// Gets or sets the name of the property.
@@ -93,7 +98,7 @@ public class UmbrellaColumnDefinition<TItem>
 	/// creating filters.
 	/// </summary>
 	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="PropertySelector"/> will be used.
+	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
 	/// </remarks>
 	public string? FilterMemberPathOverride { get; }
 
@@ -102,7 +107,7 @@ public class UmbrellaColumnDefinition<TItem>
 	/// creating sorters.
 	/// </summary>
 	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="PropertySelector"/> will be used.
+	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
 	/// </remarks>
 	public string? SorterMemberPathOverride { get; }
 
@@ -213,6 +218,10 @@ public class UmbrellaColumnDefinition<TItem>
 				}
 
 				return string.Join("", lstChar);
+			}
+			else if(option is Enum enumOption)
+			{
+				return enumOption.ToDisplayString();
 			}
 
 			string? optionDisplayName = option.ToString();

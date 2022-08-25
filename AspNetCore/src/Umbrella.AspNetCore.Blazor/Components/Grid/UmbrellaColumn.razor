@@ -4,13 +4,13 @@
 {
 	@if (IsFirstColumn)
 	{
-		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Full)
+		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Table)
 		{
 			<th scope="row" @attributes="AdditionalAttributes">
 				@ChildContent
 			</th>
 		}
-		else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Slim)
+        else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.CollectionView)
 		{
 			<div @attributes="AdditionalAttributes">
 				@ChildContent
@@ -19,13 +19,13 @@
 	}
 	else
 	{
-		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Full)
+		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Table)
 		{
 			<td class="@(IsActions ? "u-grid__actions" : "")" @attributes="AdditionalAttributes">
 				@ChildContent
 			</td>
 		}
-		else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Slim)
+		else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.CollectionView)
 		{
 			<div @attributes="AdditionalAttributes">
 				@ChildContent

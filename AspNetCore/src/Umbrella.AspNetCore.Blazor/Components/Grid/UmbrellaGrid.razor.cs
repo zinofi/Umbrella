@@ -24,12 +24,12 @@ public enum UmbrellaGridRenderMode
 	/// <summary>
 	/// Full rendering mode where the grid is rendered as a table.
 	/// </summary>
-	Full,
+	Table,
 
 	/// <summary>
 	/// Slim rendering mode the grid and its columns are rendered using divs in order to allow non-tabular layouts to be used.
 	/// </summary>
-	Slim
+	CollectionView
 }
 
 /// <summary>
@@ -179,7 +179,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 	/// <inheritdoc />
 	[Parameter]
-	public UmbrellaGridRenderMode RenderMode { get; set; } = UmbrellaGridRenderMode.Full;
+	public UmbrellaGridRenderMode RenderMode { get; set; } = UmbrellaGridRenderMode.Table;
 
 	/// <summary>
 	/// Gets or sets the name of the property which will be used to sort the data when the grid is first initialized.

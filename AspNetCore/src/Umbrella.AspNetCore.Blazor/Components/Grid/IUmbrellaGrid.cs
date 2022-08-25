@@ -9,7 +9,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 public interface IUmbrellaGrid<TItem>
 {
 	/// <summary>
-	/// Gets or sets the render mode. Defaults to <see cref="UmbrellaGridRenderMode.Full"/>.
+	/// Gets or sets the render mode. Defaults to <see cref="UmbrellaGridRenderMode.Table"/>.
 	/// </summary>
 	UmbrellaGridRenderMode RenderMode { get; }
 

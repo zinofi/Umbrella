@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
@@ -36,14 +37,14 @@ public partial class UmbrellaColumn<TItem>
 	/// Gets or sets the property selector for this column.
 	/// </summary>
 	[Parameter]
-	public Expression<Func<TItem, object>>? For { get; set; }
+	public Expression<Func<TItem, object>>? Property { get; set; }
 
 	/// <summary>
 	/// Gets or sets the property path override used as the <see cref="FilterExpressionDescriptor.MemberPath"/> property value when
 	/// creating filters.
 	/// </summary>
 	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="For"/> will be used.
+	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
 	/// </remarks>
 	[Parameter]
 	public string? FilterMemberPathOverride { get; set; }
@@ -53,15 +54,18 @@ public partial class UmbrellaColumn<TItem>
 	/// creating sorters.
 	/// </summary>
 	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="For"/> property will be used.
+	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
 	/// </remarks>
 	[Parameter]
 	public string? SorterMemberPathOverride { get; set; }
 
-	// TODO NET 6 - If this is null, try and read the value from a [Display] attribute.
 	/// <summary>
 	/// Gets or sets the text for the column heading.
 	/// </summary>
+	/// <remarks>
+	/// If not specified, i.e. it is <see langword="null"/>, the code will check for the presence of a <see cref="DisplayAttribute"/>
+	/// and use it's value. As a last resort, the member name will be used. To hide the heading, set this property to an empty string.
+	/// </remarks>
 	[Parameter]
 	public string? Heading { get; set; }
 
@@ -117,7 +121,6 @@ public partial class UmbrellaColumn<TItem>
 	[Parameter]
 	public UmbrellaColumnFilterOptionsType? FilterOptionsType { get; set; }
 
-	// TODO NET 6: If this is null, try and read the [Display] attribute value from the enum member.
 	/// <summary>
 	/// Gets or sets the filter option display name selector used to convert a value in the <see cref="FilterOptions"/> collection to a friendly display name.
 	/// </summary>
@@ -177,7 +180,7 @@ public partial class UmbrellaColumn<TItem>
 	/// <summary>
 	/// Gets a value indicating whether this is the first column in the grid.
 	/// </summary>
-	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(For?.GetMemberName()) is true;
+	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(Property?.GetMemberName()) is true;
 
 	/// <inheritdoc />
 	protected override async Task OnInitializedAsync()
@@ -191,7 +194,7 @@ public partial class UmbrellaColumn<TItem>
 		{
 			if (DisplayMode != UmbrellaColumnDisplayMode.None)
 			{
-				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, For, FilterMemberPathOverride, SorterMemberPathOverride, DisplayMode);
+				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride, SorterMemberPathOverride, DisplayMode);
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
 		}

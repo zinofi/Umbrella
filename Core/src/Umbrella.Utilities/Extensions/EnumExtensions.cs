@@ -2,6 +2,9 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Umbrella.Utilities.Extensions;
 
@@ -10,6 +13,8 @@ namespace Umbrella.Utilities.Extensions;
 /// </summary>
 public static class EnumExtensions
 {
+	private static readonly ConcurrentDictionary<Enum, string> _enumDisplayStringDictionary = new();
+
 	/// <summary>
 	/// Converts the specified enum value that uses the <see cref="FlagsAttribute"/> to encapsulate multiple values
 	/// into a string containing the names of the enum values using the specified parameters.
@@ -31,5 +36,22 @@ public static class EnumExtensions
 		}
 
 		return string.Join(separator, lstOption);
+	}
+
+	/// <summary>
+	/// Converts the specified enum value to a friendly string that can be displayed in a UI.
+	/// </summary>
+	/// <param name="value">The value.</param>
+	/// <returns>The display string.</returns>
+	/// <remarks>
+	/// This tries to read the value from a <see cref="DisplayAttribute"/> that exists on the enum member. If it cannot be found,
+	/// the enum value is converted directly to a string using <see cref="Enum.ToString()"/>
+	/// </remarks>
+	public static string ToDisplayString(this Enum value)
+	{
+		return _enumDisplayStringDictionary.GetOrAdd(value, option =>
+		{
+			return option.GetType().GetFields().Single(x => x.Name == option.ToString()).GetCustomAttribute<DisplayAttribute>()?.Name?.ToString() ?? option.ToString();
+		});
 	}
 }
