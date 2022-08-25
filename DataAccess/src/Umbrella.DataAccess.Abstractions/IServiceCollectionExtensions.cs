@@ -24,6 +24,7 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services);
 
 		_ = services.AddSingleton<IEntityValidator, EntityValidator>();
+		_ = services.AddSingleton<IEntityMappingUtility, EntityMappingUtility>();
 		_ = services.AddScoped<IUmbrellaDbContextHelper, UmbrellaDbContextHelper>();
 		_ = services.AddScoped(typeof(DbAppTenantSessionContext<>));
 
