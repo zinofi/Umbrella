@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Utilities.Mapping.Mapperly.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Umbrella.Utilities.Mapping.Mapperly</PackageId>
+		<Description>This package contains Mapperly implementations of the Umbrella.Utilities.Mapping.Abstractions interfaces.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+		<PackageReference Include="Riok.Mapperly" Version="2.3.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>

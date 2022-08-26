@@ -45,4 +45,8 @@
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="Umbrella.Utilities.Extensions" />
+	</ItemGroup>
+
 </Project>

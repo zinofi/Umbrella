@@ -13,7 +13,6 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
 // TODO: Maybe it's better to create a new CollectionView control here. This Grid adds nothing more than a loop and some basic structure for that scenario.
 // Could even have some kind of base component that encapsulates core functionality, e.g. auto-scroll.
-// TODO: Rename to Table and CollectionView
 // TODO: Create a PaginationMode option to replace ShowPagination: None, Top, Bottom, Both. Do the same for caption. Default to Bottom.
 
 /// <summary>
