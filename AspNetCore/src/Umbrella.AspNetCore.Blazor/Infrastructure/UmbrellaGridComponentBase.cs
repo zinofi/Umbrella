@@ -108,7 +108,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	/// <param name="sorters">The sorters.</param>
 	/// <param name="filters">The filters.</param>
 	/// <returns>The results from the server.</returns>
-	protected abstract Task<IHttpCallResult<TPaginatedResultModel>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null);
+	protected abstract Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null);
 
 	/// <summary>
 	/// Refreshes the data in the grid using the specified options. Internally this calls <see cref="LoadPaginatedResultModelAsync(int, int, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?)" />
@@ -125,7 +125,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		{
 			var result = await LoadPaginatedResultModelAsync(pageNumber, pageSize, sorters, filters);
 
-			if (result.Success)
+			if (result.Success && result.Result != null)
 			{
 				await GridInstance.UpdateAsync(result.Result.Items, result.Result.TotalCount, result.Result.PageNumber, result.Result.PageSize, CallGridStateHasChangedOnRefresh);
 
