@@ -85,7 +85,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 						: $"Please select a {string.Join(", ", types[..^1])} or a {types[^1]} file to upload.";
 				}
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}
@@ -115,7 +115,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 					Status = UmbrellaFileUploadStatus.Selected;
 				}
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}
@@ -140,7 +140,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 
 				ClearSelection();
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				Cleanup();
 				await DialogUtility.ShowDangerMessageAsync("There has been a problem uploading the selected file. Please try again.");
@@ -166,7 +166,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 
 				ClearSelection();
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}
@@ -186,7 +186,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileUpload
 
 				Cleanup();
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}

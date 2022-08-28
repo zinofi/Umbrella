@@ -47,7 +47,7 @@ namespace Umbrella.AppFramework.Security
 
 				return clientId!;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				// If something goes wrong just return a new id without storing it.
 				return Guid.NewGuid().ToString("N");
@@ -63,7 +63,7 @@ namespace Umbrella.AppFramework.Security
 
 				return _authToken;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				// Just return the value assigned to the local variable if we can't read it from storage.
 				// This should ensure auth at least works for the period the app is running.
@@ -89,7 +89,7 @@ namespace Umbrella.AppFramework.Security
 					await _storageService.RemoveAsync(AuthTokenStorageKey);
 				}
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				// Do nothing here. The token will still be persisted in memory
 				// which at worst means a user will have to reauthenticate the next time

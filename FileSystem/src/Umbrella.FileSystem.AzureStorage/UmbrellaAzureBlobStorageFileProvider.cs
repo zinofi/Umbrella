@@ -92,7 +92,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 		{
 			ContainerResolutionCache?.Clear();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem clearing the container resolution cache.", exc);
 		}
@@ -136,7 +136,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 				}
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem deleting the specified directory.", exc);
 		}
@@ -182,7 +182,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 			return lstResult;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem enumerating the files in the specified directory.", exc);
 		}

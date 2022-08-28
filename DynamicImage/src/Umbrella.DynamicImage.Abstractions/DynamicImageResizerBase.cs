@@ -68,7 +68,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 			return null;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { options }, returnValue: true) && (exc is DynamicImageException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && (exc is DynamicImageException) == false)
 		{
 			throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
 		}
@@ -115,7 +115,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 			return dynamicImage;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceLastModified, options }, returnValue: true) && (exc is DynamicImageException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceLastModified, options }) && (exc is DynamicImageException) == false)
 		{
 			throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
 		}

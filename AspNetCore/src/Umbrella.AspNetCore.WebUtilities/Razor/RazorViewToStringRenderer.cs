@@ -84,7 +84,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor
 
 				return output.ToString();
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }))
 			{
 				throw new UmbrellaWebException("There has been a problem rendering the view.", exc);
 			}

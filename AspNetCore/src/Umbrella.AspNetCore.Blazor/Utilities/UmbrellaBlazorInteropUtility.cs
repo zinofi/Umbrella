@@ -60,7 +60,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			{
 				await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.setPageTitle", pageTitle);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { pageTitle }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { pageTitle }))
 			{
 				// Do nothing here
 			}
@@ -73,7 +73,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			{
 				await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", scrollY, offset);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { scrollY }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { scrollY }))
 			{
 				// Do nothing here
 			}
@@ -86,7 +86,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			{
 				await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", elementSelector, offset);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { elementSelector }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { elementSelector }))
 			{
 				// Do nothing here
 			}
@@ -99,7 +99,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			{
 				await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToBottomAsync");
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				// Do nothing here
 			}

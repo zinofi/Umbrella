@@ -146,7 +146,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 				})
 				: GetValue();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }))
 		{
 			throw;
 		}
@@ -185,7 +185,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 				})
 				: GetValue();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }))
 		{
 			throw;
 		}
@@ -224,7 +224,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 				})
 				: GetValue();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, useCache, throwException }))
 		{
 			throw;
 		}

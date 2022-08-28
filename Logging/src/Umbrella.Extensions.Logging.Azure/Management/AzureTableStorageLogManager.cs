@@ -187,7 +187,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			return Task.FromResult((lstSortedFilteredItem, totalCount));
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { options }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { options }))
 		{
 			throw new AzureTableStorageLogManagementException("There was a problem accessing the log data sources.", exc);
 		}
@@ -284,7 +284,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			return (lstSortedFilteredItem, totalCount);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { tablePrefix, options }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { tablePrefix, options }))
 		{
 			throw new AzureTableStorageLogManagementException($"There was a problem accessing the log table table data for table prefix {tablePrefix}", exc);
 		}
@@ -420,7 +420,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			return (dataSource.AppenderType, items, totalCount);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { tablePrefix, tableName, options }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { tablePrefix, tableName, options }))
 		{
 			throw new AzureTableStorageLogManagementException($"There was a problem accessing the log table table data for table prefix {tablePrefix} and table name {tableName}", exc);
 		}
@@ -468,7 +468,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			return AzureTableStorageLogDeleteOperationResult.Success;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { tableName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { tableName }))
 		{
 			throw new AzureTableStorageLogManagementException($"There has been a problem deleting the table with name {tableName}", exc);
 		}
@@ -486,7 +486,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			await DistributedCache.RemoveAsync(cacheKey, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { tablePrefix }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { tablePrefix }))
 		{
 			throw new AzureTableStorageLogManagementException($"There has been a problem clearing the cache for the table prefix {tablePrefix}", exc);
 		}

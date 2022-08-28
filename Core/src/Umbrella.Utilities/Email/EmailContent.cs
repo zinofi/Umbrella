@@ -61,7 +61,7 @@ public class EmailContent
 
 			return this;
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { name, value }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { name, value }))
 		{
 			throw new UmbrellaException("There was a problem appending the data row with the specified name and value.", exc);
 		}
@@ -106,7 +106,7 @@ public class EmailContent
 
 			return this;
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { rowsTokenName, rowFormat }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { rowsTokenName, rowFormat }))
 		{
 			throw new UmbrellaException("There was a problem appending the specified data rows.", exc);
 		}
@@ -135,7 +135,7 @@ public class EmailContent
 
 			return this;
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { tokenName }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { tokenName }))
 		{
 			throw new UmbrellaException("There has been a problem replacing the specified token with the specified value.", exc);
 		}
@@ -156,7 +156,7 @@ public class EmailContent
 		{
 			return _rowsBuilder != null ? _builder.Replace("{{rows}}", _rowsBuilder.ToString()).ToString() : _builder.ToString();
 		}
-		catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc))
 		{
 			throw new UmbrellaException("There was a problem outputting this instance to a string.", exc);
 		}

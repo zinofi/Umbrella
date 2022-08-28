@@ -67,7 +67,7 @@ namespace Umbrella.Utilities.Security
 
 				return claims;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { roleClaimType }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { roleClaimType }))
 			{
 				throw new UmbrellaException("There has been a problem parsing the claims from the JWT.", exc);
 			}

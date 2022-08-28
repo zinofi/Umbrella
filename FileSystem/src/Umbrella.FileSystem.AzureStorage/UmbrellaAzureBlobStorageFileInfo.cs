@@ -133,7 +133,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			return await Blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem deleting the file.", exc);
 		}
@@ -153,7 +153,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 			// The container is in the process of being deleted which is fine and means the Blob is on its way to Blob heaven.
 			return false;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem determining if the file exists.", exc);
 		}
@@ -187,7 +187,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return bytes;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem reading the file to a byte array.", exc);
 		}
@@ -207,7 +207,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			_ = await Blob.DownloadToAsync(target, transferOptions: CreateStorageTransferOptions(bufferSizeOverride), cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem writing the file to the specified stream.", exc);
 		}
@@ -230,7 +230,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			_content = cacheContents ? bytes : null;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified bytes.", exc);
 		}
@@ -261,7 +261,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 			// Trigger a call to this to ensure property population
 			await InitializeAsync(cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified stream.", exc);
 		}
@@ -283,7 +283,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem copying the file to the specified destination path.", exc);
 		}
@@ -315,7 +315,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem copying the file to the specified destination file.", exc);
 		}
@@ -334,7 +334,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem moving the file to the specified destination path.", exc);
 		}
@@ -353,7 +353,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem moving the specified file to the specified destination file.", exc);
 		}
@@ -375,7 +375,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return response.Content;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error reading the Blob as a Stream.", exc);
 		}
@@ -399,7 +399,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 			return default!;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, fallback, customValueConverter }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error getting the metadata value for the specified key.", exc);
 		}
@@ -429,7 +429,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, value, writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error setting the metadata value for the specified key.", exc);
 		}
@@ -452,7 +452,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, writeChanges }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error removing the metadata value for the specified key.", exc);
 		}
@@ -474,7 +474,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { writeChanges }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error clearing the metadata.", exc);
 		}
@@ -491,7 +491,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 			if (_blobProperties != null)
 				_ = await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 		}
@@ -506,7 +506,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
 		}
@@ -521,7 +521,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, cancellationToken, writeChanges);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
 		}
@@ -536,7 +536,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
 		}
@@ -551,7 +551,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, cancellationToken, writeChanges);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
 		}

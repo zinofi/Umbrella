@@ -40,7 +40,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 
 				return default;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { uri, openInNewWindow }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { uri, openInNewWindow }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem opening the specified URI.", exc);
 			}

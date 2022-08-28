@@ -36,7 +36,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			{
 				return await _storageService.GetItemAsStringAsync(key);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem retrieving the item with the specified key.", exc);
 			}
@@ -49,7 +49,7 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 			{
 				await _storageService.RemoveItemAsync(key);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem removing the item with the specified key.", exc);
 			}
@@ -60,9 +60,9 @@ namespace Umbrella.AspNetCore.Blazor.Utilities
 		{
 			try
 			{
-				await _storageService.SetItemAsync(key, value);
+				await _storageService.SetItemAsStringAsync(key, value);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem setting the item with the specified key.", exc);
 			}

@@ -104,7 +104,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 
 			return updatedList;
 		}
-		catch (Exception exc) when (_log.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc))
 		{
 			throw new UmbrellaDataAccessException("There has been a problem updating the target items list.", exc);
 		}

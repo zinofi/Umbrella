@@ -73,7 +73,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 				cancellationToken)
 				.ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
 		{
 			throw new UmbrellaWebException("There has been a problem resolving the path to the Webpack bundle.", exc);
 		}
@@ -103,7 +103,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 				cancellationToken)
 				.ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
 		{
 			throw new UmbrellaWebException("There has been a problem resolving the path to the Webpack bundle.", exc);
 		}

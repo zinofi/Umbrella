@@ -179,7 +179,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			return default;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { geoLocation }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { geoLocation }))
 		{
 			throw new UmbrellaException("There was a problem lookup up the data for the specified geolocation.", exc);
 		}
@@ -238,7 +238,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			return default;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { geoLocations }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { geoLocations }))
 		{
 			throw new UmbrellaException("There was a problem lookup up the data for the specified geoLocations.", exc);
 		}
@@ -283,7 +283,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			return default;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { postcode }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { postcode }))
 		{
 			throw new UmbrellaException("There was a problem lookup up the data for the specified postcode.", exc);
 		}
@@ -330,7 +330,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			return default;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { partialPostcode }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { partialPostcode }))
 		{
 			throw new UmbrellaException("There was a problem lookup up the data for the specified partial postcode.", exc);
 		}
@@ -386,7 +386,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			return default;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { postcodes }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { postcodes }))
 		{
 			throw new UmbrellaException("There was a problem lookup up the data for the specified postcodes.", exc);
 		}

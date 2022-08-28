@@ -128,7 +128,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 
 			return randomString.ToString();
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { length, numbers, upperCaseCharacters, specialCharacters }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { length, numbers, upperCaseCharacters, specialCharacters }))
 		{
 			throw new UmbrellaException("There has been a problem generating the random string.", exc);
 		}

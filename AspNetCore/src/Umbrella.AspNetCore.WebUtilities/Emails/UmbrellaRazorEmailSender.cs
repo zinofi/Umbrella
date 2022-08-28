@@ -82,7 +82,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Emails
 
 				await EmailSender.SendEmailAsync(email, subject, content, cancellationToken);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { model, email, subject, viewNameOrPath }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { model, email, subject, viewNameOrPath }))
 			{
 				throw new UmbrellaWebException($"There has been an error sending the '{subject}' email.", exc);
 			}

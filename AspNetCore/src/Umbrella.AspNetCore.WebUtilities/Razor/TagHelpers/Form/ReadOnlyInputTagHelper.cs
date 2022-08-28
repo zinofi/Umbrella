@@ -46,7 +46,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Form
 				if (ReadOnly)
 					output.Attributes.Add(_readonlyAttribute);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaWebException("An error occurred whilst processing the readonly attribute.", exc);
 			}

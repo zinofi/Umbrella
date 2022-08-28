@@ -115,7 +115,7 @@ public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUti
 				},
 				Options);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }))
 		{
 			throw new UmbrellaWebException("There was a problem generating the script tag HTML.", exc);
 		}
@@ -148,7 +148,7 @@ public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUti
 				},
 				Options);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }))
 		{
 			throw new UmbrellaWebException("There was a problem generating the inline script HTML.", exc);
 		}
@@ -172,7 +172,7 @@ public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUti
 				},
 				Options);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }))
 		{
 			throw new UmbrellaWebException("There was a problem generating the style tag HTML.", exc);
 		}
@@ -205,7 +205,7 @@ public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUti
 				},
 				Options);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleName }))
 		{
 			throw new UmbrellaWebException("There was a problem generating the inline style HTML.", exc);
 		}

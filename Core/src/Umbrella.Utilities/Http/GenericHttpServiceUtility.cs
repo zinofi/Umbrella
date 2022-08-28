@@ -38,7 +38,7 @@ namespace Umbrella.Utilities.Http
 			{
 				return CreateSearchQueryParameters(pageNumber, pageSize, sorters?.ToSortExpressionDescriptors(), filters?.ToFilterExpressionDescriptors(), filterCombinator);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { pageNumber, pageSize, sorters = sorters?.ToSortExpressionDescriptors(), filters = filters?.ToFilterExpressionDescriptors(), filterCombinator }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { pageNumber, pageSize, sorters = sorters?.ToSortExpressionDescriptors(), filters = filters?.ToFilterExpressionDescriptors(), filterCombinator }))
 			{
 				throw new UmbrellaException("There has been a problem creating the query parameters from the search parameters.", exc);
 			}
@@ -74,7 +74,7 @@ namespace Umbrella.Utilities.Http
 
 				return parameters;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { pageNumber, pageSize, sorters, filters, filterCombinator }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { pageNumber, pageSize, sorters, filters, filterCombinator }))
 			{
 				throw new UmbrellaException("There has been a problem creating the query parameters from the search parameters.", exc);
 			}
@@ -87,7 +87,7 @@ namespace Umbrella.Utilities.Http
 			{
 				return parameters?.Count() > 0 ? QueryHelpers.AddQueryString(url, parameters) : url;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { url, parameters }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { url, parameters }))
 			{
 				throw new UmbrellaException("There has been a problem creating the url with the specified parameters appended.", exc);
 			}
@@ -120,7 +120,7 @@ namespace Umbrella.Utilities.Http
 
 				return default;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaException("There has been a problem processing the response.", exc);
 			}
@@ -141,7 +141,7 @@ namespace Umbrella.Utilities.Http
 
 				return default;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaException("There has been a problem processing the response.", exc);
 			}
@@ -169,7 +169,7 @@ namespace Umbrella.Utilities.Http
 
 				return UmbrellaStatics.DeserializeJson<HttpProblemDetails>(json);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaException("There has been a problem getting the problemdetails response.", exc);
 			}

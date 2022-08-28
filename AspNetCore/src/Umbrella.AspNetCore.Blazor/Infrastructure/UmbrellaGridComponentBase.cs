@@ -17,6 +17,7 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// <seealso cref="UmbrellaComponentBase" />
 public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel> : UmbrellaComponentBase
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
+	where TItemModel : notnull
 {
 	/// <summary>
 	/// Gets the property name used to initally sort the data in the grid.
@@ -75,7 +76,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 
 			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			await DialogUtility.ShowDangerMessageAsync();
 		}
@@ -94,7 +95,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 
 			await RefreshGridAsync(args.PageNumber, args.PageSize, args.Sorters, args.Filters);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { args }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { args }))
 		{
 			await DialogUtility.ShowDangerMessageAsync();
 		}

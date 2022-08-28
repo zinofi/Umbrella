@@ -209,7 +209,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
@@ -289,7 +289,7 @@ namespace Umbrella.DataAccess.EF6
 
 				return entity;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { id, trackChanges, map }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { id, trackChanges, map }))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the item with the specified id.", exc);
 			}
@@ -304,7 +304,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				return await Items.CountAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the count of all items.", exc);
 			}
@@ -319,7 +319,7 @@ namespace Umbrella.DataAccess.EF6
 			{
 				return await Items.AnyAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem determining if the item exists.", exc);
 			}

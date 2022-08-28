@@ -96,7 +96,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 
 			return (lstValidationResult.Count is 0, lstValidationResult);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }))
 		{
 			throw new UmbrellaException("An error has been encountered whilst validating the object graph.", exc);
 		}

@@ -48,7 +48,7 @@ public class UpperInvariantLookupNormalizer : IDataLookupNormalizer
 		{
 			return trim ? value.Normalize().TrimToUpperInvariant() : value.Normalize().ToUpperInvariant();
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { value = "Value not logged for security reasons.", trim }, "String normalization to form C failed. The source string has not been logged for security reasons.", returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { value = "Value not logged for security reasons.", trim }, "String normalization to form C failed. The source string has not been logged for security reasons."))
 		{
 			throw new UmbrellaException("There has been a problem normalizing the specified value.", exc);
 		}

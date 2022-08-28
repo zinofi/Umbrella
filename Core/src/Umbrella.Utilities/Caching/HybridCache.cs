@@ -132,7 +132,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 						return cacheItem;
 					}
-					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 					{
 						if (throwOnCacheFailure)
 							throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -169,7 +169,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 						return cacheItem;
 					}
-					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 					{
 						if (throwOnCacheFailure)
 							throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -179,7 +179,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 			return actionFunction();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
 			// If we get this far then there has definitely been a problem with the actionFunction. We need to always throw here.
 			throw new HybridCacheException("There has been a problem with the cache.", exc);
@@ -201,7 +201,7 @@ public class HybridCache : IHybridCache, IDisposable
 		{
 			return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), cancellationToken, expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
 			throw new HybridCacheException("There has been a problem with the cache.", exc);
 		}
@@ -245,7 +245,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 						return cacheItem;
 					}
-					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 					{
 						if (throwOnCacheFailure)
 							throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -292,7 +292,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 						return cacheItem;
 					}
-					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 					{
 						if (throwOnCacheFailure)
 							throw new HybridCacheException("There has been a problem getting or creating the specified item in the cache.", exc);
@@ -302,7 +302,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 			return await actionFunction();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
 			// If we get this far then there has definitely been a problem with the actionFunction. We need to throw here.
 			throw new HybridCacheException("There has been a problem with the cache.", exc);
@@ -344,7 +344,7 @@ public class HybridCache : IHybridCache, IDisposable
 				return (found, value);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode }))
 		{
 			return default;
 		}
@@ -382,7 +382,7 @@ public class HybridCache : IHybridCache, IDisposable
 				return (found, value);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode }))
 		{
 			return default;
 		}
@@ -424,7 +424,7 @@ public class HybridCache : IHybridCache, IDisposable
 					_ = MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, tsExpiration, slidingExpiration));
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
 			if (throwOnCacheFailure)
 				throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
@@ -473,7 +473,7 @@ public class HybridCache : IHybridCache, IDisposable
 					_ = MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, new HybridCacheMetaEntry(cacheKeyInternal, tsExpiration, slidingExpiration));
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, expirationTimeSpan, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
 			if (throwOnCacheFailure)
 				throw new HybridCacheException("There has been a problem setting the specified item in the cache.", exc);
@@ -496,7 +496,7 @@ public class HybridCache : IHybridCache, IDisposable
 		{
 			return MemoryCacheMetaEntryDictionary.Select(x => x.Value).ToList();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new HybridCacheException("There has been a problem reading the memory cache keys.", exc);
 		}
@@ -517,7 +517,7 @@ public class HybridCache : IHybridCache, IDisposable
 			else if (cacheMode is HybridCacheMode.Distributed)
 				await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey }))
 		{
 			throw new HybridCacheException("There has been a problem removing the item with the key: " + cacheKey, exc);
 		}
@@ -536,7 +536,7 @@ public class HybridCache : IHybridCache, IDisposable
 			// Reset things so that all future items added to the MemoryCache use a new CancellationToken.
 			_nukeTokenSource = new CancellationTokenSource();
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new HybridCacheException("There was a problem clearing all items from the memory cache.", exc);
 		}
@@ -660,7 +660,7 @@ public class HybridCache : IHybridCache, IDisposable
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new HybridCacheException("There has been a problem disposing this instance.", exc);
 		}

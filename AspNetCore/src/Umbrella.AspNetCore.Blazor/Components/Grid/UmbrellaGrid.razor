@@ -133,7 +133,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Items)
+                            @foreach (TItem item in Items)
                             {
                                 var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item))!;
                                 var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));

@@ -63,7 +63,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 
 			return _lookupNormalizer.Normalize(span.ToString()) ?? throw new Exception("The span could not be normalized.");
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { type, key }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { type, key }))
 		{
 			throw new UmbrellaException("There was a problem creating the cache key.", exc);
 		}
@@ -131,7 +131,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 			// This is the only part that allocates
 			return _lookupNormalizer.Normalize(span.ToString()) ?? throw new Exception("The span could not be normalized.");
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { type, keyParts = keyParts.ToArray(), keyPartsLength }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { type, keyParts = keyParts.ToArray(), keyPartsLength }))
 		{
 			throw new UmbrellaException("There was a problem creating the cache key.", exc);
 		}

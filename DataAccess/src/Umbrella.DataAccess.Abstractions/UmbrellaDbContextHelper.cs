@@ -44,7 +44,7 @@ namespace Umbrella.DataAccess.Abstractions
 				if (Logger.IsEnabled(LogLevel.Debug))
 					Logger.WriteDebug(message: "Post save callback registered");
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There was a problem registering the action.", exc);
 			}
@@ -87,7 +87,7 @@ namespace Umbrella.DataAccess.Abstractions
 				if (Logger.IsEnabled(LogLevel.Debug))
 					Logger.WriteDebug(new { EndPostSaveChangesActionsCount = PostSaveChangesSaveActionDictionary.Count }, "Finished executing post save callbacks");
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There was a problem executing the pending post-save actions.", exc);
 			}
@@ -113,7 +113,7 @@ namespace Umbrella.DataAccess.Abstractions
 
 				return result;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}
@@ -136,7 +136,7 @@ namespace Umbrella.DataAccess.Abstractions
 
 				return result;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 			}

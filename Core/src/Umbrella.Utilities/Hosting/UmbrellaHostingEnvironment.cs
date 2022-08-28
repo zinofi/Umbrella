@@ -81,7 +81,7 @@ public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
 		{
 			return await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, cache, watch }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, cache, watch }))
 		{
 			throw new UmbrellaException("There has been a problem reading the contents of the specified file.", exc);
 		}

@@ -77,7 +77,7 @@ public class EmailFactory : IEmailFactory
 
 			_emailTemplateDictionary = dicItems;
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { options }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { options }))
 		{
 			throw new UmbrellaException("There has been a problem initializing the email builder.", exc);
 		}
@@ -102,7 +102,7 @@ public class EmailFactory : IEmailFactory
 
 			return new EmailContent(_emailContentLog, builder, _options.DataRowFormat, _options.NewLineToken, _encodedNewLineToken);
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { source, isRawHtml }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { source, isRawHtml }))
 		{
 			throw new UmbrellaException("There was a problem initializing the builder using the specified options.", exc);
 		}

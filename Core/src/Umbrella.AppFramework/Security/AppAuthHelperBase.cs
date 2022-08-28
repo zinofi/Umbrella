@@ -91,7 +91,7 @@ public abstract class AppAuthHelperBase : IAppAuthHelper
 
 			return _claimsPrincipal;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc))
 		{
 			throw new UmbrellaAppFrameworkException("There has been a problem getting the ClaimsPrincipal.", exc);
 		}
@@ -110,7 +110,7 @@ public abstract class AppAuthHelperBase : IAppAuthHelper
 			if (executeDefaultPostLogoutAction)
 				await ExecutePostLogoutActionAsync();
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }))
 		{
 			throw new UmbrellaAppFrameworkException("There has been a problem logging out the user locally.", exc);
 		}

@@ -88,7 +88,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 					imageToSave.Dispose();
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { width, height, resizeMode, format }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { width, height, resizeMode, format }))
 		{
 			throw new DynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
 		}

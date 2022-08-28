@@ -29,7 +29,7 @@ namespace Umbrella.Utilities.TypeConverters
 			{
 				return GenericTypeConverterHelper.Convert(value, fallbackCreator, customValueConverter);
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { value, fallbackCreator, customValueConverter }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { value, fallbackCreator, customValueConverter }))
 			{
 				throw new UmbrellaException("There has been a problem converting the value.", exc);
 			}
@@ -42,7 +42,7 @@ namespace Umbrella.Utilities.TypeConverters
 			{
 				return GenericTypeConverterHelper.Convert(value, fallback, customValueConverter)!;
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { value, fallback, customValueConverter }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { value, fallback, customValueConverter }))
 			{
 				throw new UmbrellaException("There has been a problem converting the value.", exc);
 			}
@@ -56,7 +56,7 @@ namespace Umbrella.Utilities.TypeConverters
 			{
 				return GenericTypeConverterHelper.ConvertToEnum(value, fallback);
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { value }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { value }))
 			{
 				throw new UmbrellaException("There has been a problem converting the value.", exc);
 			}

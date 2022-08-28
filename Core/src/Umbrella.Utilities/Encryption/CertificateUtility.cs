@@ -42,7 +42,7 @@ public class CertificateUtility : ICertificateUtility
 
 			return col is null || col.Count is 0 ? throw new ArgumentException("The certificate was not found in the store") : col[0];
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { storeName, storeLocation, validationRequired }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { storeName, storeLocation, validationRequired }))
 		{
 			throw new UmbrellaException("There has been a problem finding the certificate.", exc);
 		}
@@ -66,7 +66,7 @@ public class CertificateUtility : ICertificateUtility
 
 			return cert.Export(X509ContentType.Pkcs12, password);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc))
 		{
 			throw new UmbrellaException("There has been a problem exporting the certificate.", exc);
 		}

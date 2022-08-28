@@ -133,7 +133,7 @@ public abstract class BundleStyleTagHelper<TBundleUtility> : TagHelper
 				output.Attributes.Add("href", path);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { Name, RenderInline }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { Name, RenderInline }))
 		{
 			throw new UmbrellaWebException($"There was a problem rendering the bundle style tag helper for named bundle: {Name}.", exc);
 		}

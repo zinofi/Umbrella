@@ -49,7 +49,7 @@ public class NonceGenerator : INonceGenerator
 
 			return Convert.ToBase64String(buffer, 0, lengthInBytes);
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { lengthInBytes }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { lengthInBytes }))
 		{
 			throw new UmbrellaException($"An error has occurred whilst generating the nonce of {lengthInBytes}.", exc);
 		}

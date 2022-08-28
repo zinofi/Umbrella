@@ -128,12 +128,12 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 
 				await Next.Invoke(context);
 			}
-			catch (UmbrellaFileAccessDeniedException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			catch (UmbrellaFileAccessDeniedException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 			{
 				// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }))
 			{
 				throw new UmbrellaWebException("An error has occurred whilst executing the request.", exc);
 			}

@@ -75,7 +75,7 @@ public class EmailSender : IEmailSender
 
 			await client.SendMailAsync(message);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress }))
 		{
 			throw new UmbrellaException("There has been a problem sending the email.", exc);
 		}

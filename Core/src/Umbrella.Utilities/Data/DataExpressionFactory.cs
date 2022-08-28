@@ -92,7 +92,7 @@ public class DataExpressionFactory : IDataExpressionFactory
 
 			throw new NotSupportedException("The specified descriptor type is not supported.");
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { elementType.FullName, descriptor }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { elementType.FullName, descriptor }))
 		{
 			throw new UmbrellaException("There has been a problem creating the data expression.", exc);
 		}

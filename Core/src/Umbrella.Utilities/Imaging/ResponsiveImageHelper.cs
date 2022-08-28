@@ -40,7 +40,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			return new HashSet<int>(items.ParseIntegers());
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { itemsString }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { itemsString }))
 		{
 			throw new UmbrellaException("There has been a problem parsing the items.", exc);
 		}
@@ -65,7 +65,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 				return densities;
 			});
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { maxPixelDensity }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { maxPixelDensity }))
 		{
 			throw new UmbrellaException("There has been a problem getting the pixel densities.", exc);
 		}
@@ -100,7 +100,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			return string.Join(", ", srcsetImagePaths);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, maxPixelDensity }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, maxPixelDensity }))
 		{
 			throw new UmbrellaException("There has been a problem creating the srcset value.", exc);
 		}
@@ -132,7 +132,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			return paths.ToArray();
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, maxPixelDensity }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, maxPixelDensity }))
 		{
 			throw new UmbrellaException("There has been a problem creating the urls.", exc);
 		}
@@ -157,7 +157,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			return (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, pixelDensity }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, pixelDensity }))
 		{
 			throw new UmbrellaException("There has been a problem creating the url.", exc);
 		}
@@ -213,7 +213,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			return string.Join(", ", lstSize.OrderBy(x => x));
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, sizeWidths, maxPixelDensity, widthRequest, heightRequest }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, sizeWidths, maxPixelDensity, widthRequest, heightRequest }))
 		{
 			throw new UmbrellaException("There has been a problem creating the srcset value.", exc);
 		}

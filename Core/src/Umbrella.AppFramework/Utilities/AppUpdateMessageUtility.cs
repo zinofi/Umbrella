@@ -73,7 +73,7 @@ public class AppUpdateMessageUtility : IAppUpdateMessageUtility
 				await _dialogUtility.ShowMessageAsync(message, title, "Close");
 			}
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { updateRequired, message }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { updateRequired, message }))
 		{
 			throw new UmbrellaAppFrameworkException("There has been a problem showing the app update message.", exc);
 		}

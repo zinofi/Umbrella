@@ -31,7 +31,7 @@ namespace Umbrella.Xamarin.Utilities
 			{
 				await Device.InvokeOnMainThreadAsync(async () => await Browser.OpenAsync(uri, openInNewWindow ? BrowserLaunchMode.External : BrowserLaunchMode.SystemPreferred));
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { uri, openInNewWindow }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { uri, openInNewWindow }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem opening the specified URI.", exc);
 			}

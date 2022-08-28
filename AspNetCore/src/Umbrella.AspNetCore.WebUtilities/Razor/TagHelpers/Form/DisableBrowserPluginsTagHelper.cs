@@ -53,7 +53,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Form
 					output.Attributes.Add("data-lpignore", "true");
 				}
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaWebException("An error occurred whilst processing the attribute.", exc);
 			}

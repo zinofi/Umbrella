@@ -64,7 +64,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirecto
 			cancellationToken,
 			() => TimeSpan.FromHours(1));
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem getting the most recent URL.", exc);
 		}
@@ -91,7 +91,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirecto
 			cancellationToken,
 			() => TimeSpan.FromHours(1));
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem getting specified file.", exc);
 		}
@@ -126,7 +126,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirecto
 
 			return FileAccessUtility.GetWebFilePath(DirectoryType, groupId, tempFileName);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, tempFileName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, tempFileName }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem creating the item.", exc);
 		}
@@ -146,7 +146,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirecto
 			string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
 			await Cache.RemoveAsync<string>(key, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem deleting the item.", exc);
 		}
@@ -166,7 +166,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirecto
 			string key = CacheKeyUtility.Create(GetType(), groupId + "");
 			await Cache.RemoveAsync<string>(key, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem deleting the files for the specified group.", exc);
 		}

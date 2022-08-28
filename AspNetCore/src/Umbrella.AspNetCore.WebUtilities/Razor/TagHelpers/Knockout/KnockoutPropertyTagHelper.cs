@@ -188,7 +188,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout
 					output.Attributes.Add("data-bind", dataBindValue);
 				}
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { PropertyName, DisabledPropertyName, Validate }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { PropertyName, DisabledPropertyName, Validate }))
 			{
 				throw new UmbrellaWebException("An error occurred whilst processing the attribute.", exc);
 			}

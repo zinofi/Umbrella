@@ -87,7 +87,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Navigation
 					_log.WriteWarning(state: new { Area, Action, Controller, Page, PageHandler }, message: "The href attribute was empty meaning this tag helper did not run.");
 				}
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { Area, Action, Controller, Page, PageHandler }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { Area, Action, Controller, Page, PageHandler }))
 			{
 				throw new UmbrellaWebException("An error has occurred whilst processing this tag.", exc);
 			}

@@ -209,7 +209,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			{
 				return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
 			}
@@ -336,7 +336,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 
 				return entity;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { id, trackChanges, map, repoOptions, childOptions }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { id, trackChanges, map, repoOptions, childOptions }))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the item with the specified id.", exc);
 			}
@@ -351,7 +351,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			{
 				return await Items.CountAsync(cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem retrieving the count of all items.", exc);
 			}
@@ -366,7 +366,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore
 			{
 				return await Items.AnyAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				throw new UmbrellaDataAccessException("There has been a problem determining if the item exists.", exc);
 			}

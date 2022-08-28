@@ -49,7 +49,7 @@ namespace Umbrella.FileSystem.Abstractions
 
 				return false;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, CurrentUserIdAccessor.CurrentUserId }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, CurrentUserIdAccessor.CurrentUserId }))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem checking the file permissions.", exc);
 			}
@@ -67,7 +67,7 @@ namespace Umbrella.FileSystem.Abstractions
 				if (writeChanges)
 					await fileInfo.WriteMetadataChangesAsync(cancellationToken);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, CurrentUserIdAccessor.CurrentUserId, writeChanges }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, CurrentUserIdAccessor.CurrentUserId, writeChanges }))
 			{
 				throw new UmbrellaFileSystemException("There has been a problem applying the required file permissions.", exc);
 			}

@@ -129,7 +129,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -153,7 +153,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -179,7 +179,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -203,7 +203,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -227,7 +227,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -244,7 +244,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return !result.Cancelled;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -261,7 +261,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return !result.Cancelled;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -278,7 +278,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return !result.Cancelled;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -295,7 +295,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return !result.Cancelled;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -312,7 +312,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return !result.Cancelled;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -339,7 +339,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return await modal.Result;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -365,7 +365,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { title }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}
@@ -415,7 +415,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog
 
 				return (TResult)await modal.Result;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }))
 			{
 				throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 			}

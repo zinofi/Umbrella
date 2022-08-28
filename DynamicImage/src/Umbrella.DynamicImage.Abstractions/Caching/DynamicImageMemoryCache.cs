@@ -51,7 +51,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 
 				return Task.CompletedTask;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))
 			{
 				throw new DynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
 			}
@@ -83,7 +83,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 
 				return cacheItem;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { options, sourceLastModified, fileExtension }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { options, sourceLastModified, fileExtension }))
 			{
 				throw new DynamicImageException("There was problem retrieving the image from the cache.", exc);
 			}
@@ -101,7 +101,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 
 				await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }))
 			{
 				throw new DynamicImageException("There was a problem removing the image from the cache.", exc);
 			}

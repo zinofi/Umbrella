@@ -152,7 +152,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 					throw new UmbrellaWebException($"The deserialized model is not of type {nameof(TDescriptor)} or {nameof(IEnumerable<TDescriptor>)}.");
 				}
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { bindingContext.ModelName, result.FirstValue }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { bindingContext.ModelName, result.FirstValue }))
 			{
 				bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, $"Cannot convert value to {underlyingOrModelType}.");
 			}

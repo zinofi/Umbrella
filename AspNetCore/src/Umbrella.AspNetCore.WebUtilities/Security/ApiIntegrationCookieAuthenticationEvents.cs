@@ -57,7 +57,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 
 				return Task.CompletedTask;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }))
 			{
 				throw new UmbrellaWebException("There was a problem handing the login redirect.", exc);
 			}
@@ -79,7 +79,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security
 
 				return Task.CompletedTask;
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { context.Request.Path, context.Response.StatusCode }))
 			{
 				throw new UmbrellaWebException("There was a problem handing the access denied redirect.", exc);
 			}

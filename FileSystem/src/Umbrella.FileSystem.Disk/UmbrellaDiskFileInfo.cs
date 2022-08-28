@@ -116,7 +116,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }))
 		{
 			throw new UmbrellaFileSystemException("There was a problem copying the current file to the specified destination.", exc);
 		}
@@ -147,7 +147,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }))
 		{
 			throw new UmbrellaFileSystemException("There was a problem copying the current file to the specified destination.", exc);
 		}
@@ -178,7 +178,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationSubpath }))
 		{
 			throw new UmbrellaFileSystemException("There was a problem moving the current file to the specified destination.", exc);
 		}
@@ -209,7 +209,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return destinationFile;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { destinationFile }))
 		{
 			throw new UmbrellaFileSystemException("There was a problem moving the current file to the specified destination.", exc);
 		}
@@ -227,7 +227,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return Task.FromResult(true);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There was a problem deleting the current file.", exc);
 		}
@@ -242,7 +242,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		{
 			return Task.FromResult(PhysicalFileInfo.Exists);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There was a problem determining if the current file exists.", exc);
 		}
@@ -273,7 +273,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return bytes;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -296,7 +296,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			using var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, true);
 			await fs.CopyToAsync(target, bufferSize, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -325,7 +325,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			m_Contents = cacheContents ? bytes : null;
 			IsNew = false;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -355,7 +355,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			IsNew = false;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -374,7 +374,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		{
 			return await Task.FromResult(new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true)).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -401,7 +401,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 			return default!;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, fallback, customValueConverter }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, fallback, customValueConverter }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error getting the metadata value for the specified key.", exc);
 		}
@@ -434,7 +434,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, value, writeChanges }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, value, writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error setting the metadata value for the specified key.", exc);
 		}
@@ -460,7 +460,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { key, writeChanges }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { key, writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error removing the metadata value for the specified key.", exc);
 		}
@@ -485,7 +485,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 					await WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { writeChanges }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been an error clearing the metadata.", exc);
 		}
@@ -517,7 +517,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 					File.Delete(_metadataFullFileName);
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 		}
@@ -532,7 +532,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		{
 			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
 		}
@@ -547,7 +547,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		{
 			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, cancellationToken, writeChanges);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
 		}
@@ -562,7 +562,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		{
 			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
 		}
@@ -577,7 +577,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		{
 			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, cancellationToken, writeChanges);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
 		}
@@ -686,12 +686,12 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			{
 				_metadataDictionary = UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { json }, "The JSON value stored in the metadata file could not be deserialized to a Dictionary. This error has been handled silently.", returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { json }, "The JSON value stored in the metadata file could not be deserialized to a Dictionary. This error has been handled silently."))
 			{
 				_metadataDictionary = new Dictionary<string, string>();
 			}
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaFileSystemException("There has been an error reloading the metadata for the file.", exc);
 		}

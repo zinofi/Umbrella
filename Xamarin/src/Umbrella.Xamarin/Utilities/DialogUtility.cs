@@ -39,7 +39,7 @@ namespace Umbrella.Xamarin.Utilities
 			{
 				return await Device.InvokeOnMainThreadAsync(() => Shell.Current.DisplayAlert(title, message, acceptButtonText, cancelButtonText));
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}
@@ -59,7 +59,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}
@@ -79,7 +79,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}
@@ -99,7 +99,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}
@@ -119,7 +119,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}
@@ -141,7 +141,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}
@@ -161,7 +161,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				_dialogTracker.Close(code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 			}

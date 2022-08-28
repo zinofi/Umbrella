@@ -54,7 +54,7 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 					_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(LoadingScreenState.Visible));
 			});
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { delayMilliseconds }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { delayMilliseconds }))
 		{
 			throw new UmbrellaAppFrameworkException("There has been a problem showing the loading screen.", exc);
 		}

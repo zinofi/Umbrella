@@ -86,7 +86,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
 
 				StateHasChanged();
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}
@@ -107,7 +107,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
 				if (OnDeleteImage.HasDelegate)
 					await OnDeleteImage.InvokeAsync(EventArgs.Empty);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc))
 			{
 				await DialogUtility.ShowDangerMessageAsync();
 			}

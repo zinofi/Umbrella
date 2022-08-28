@@ -56,7 +56,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Identity
 			{
 				return await _userManager.GenerateUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, CreatePurpose(phoneNumber));
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaWebException("There has been a problem creating the code.", exc);
 			}
@@ -69,7 +69,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Identity
 			{
 				return await _userManager.VerifyUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, CreatePurpose(phoneNumber), code);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc))
 			{
 				throw new UmbrellaWebException("There has been a problem verifying the code.", exc);
 			}

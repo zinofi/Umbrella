@@ -102,7 +102,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 
 			return fileInfo is null ? throw new UmbrellaFileNotFoundException(subpath) : fileInfo;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -118,7 +118,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		{
 			return await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -136,7 +136,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 
 			return fileInfo == null || await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -152,7 +152,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		{
 			return await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -173,7 +173,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 				? throw new UmbrellaFileNotFoundException(sourceSubpath)
 				: await sourceFile.CopyAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && (exc is UmbrellaFileNotFoundException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceSubpath, destinationSubpath }) && (exc is UmbrellaFileNotFoundException) == false)
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -194,7 +194,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 				? throw new UmbrellaFileNotFoundException(destinationSubpath)
 				: await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && (exc is UmbrellaFileNotFoundException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationSubpath }) && (exc is UmbrellaFileNotFoundException) == false)
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -211,7 +211,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		{
 			return await sourceFile.CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && (exc is UmbrellaFileNotFoundException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationFile }) && (exc is UmbrellaFileNotFoundException) == false)
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -232,7 +232,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 				? throw new UmbrellaFileNotFoundException(sourceSubpath)
 				: await sourceFile.MoveAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceSubpath, destinationSubpath }, returnValue: true) && (exc is UmbrellaFileNotFoundException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceSubpath, destinationSubpath }) && (exc is UmbrellaFileNotFoundException) == false)
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -253,7 +253,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 				? throw new UmbrellaFileNotFoundException(destinationSubpath)
 				: await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationSubpath }, returnValue: true) && (exc is UmbrellaFileNotFoundException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationSubpath }) && (exc is UmbrellaFileNotFoundException) == false)
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -270,7 +270,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		{
 			return await sourceFile.MoveAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationFile }, returnValue: true) && (exc is UmbrellaFileNotFoundException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceFile, destinationFile }) && (exc is UmbrellaFileNotFoundException) == false)
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -294,7 +294,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 
 			return file;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -318,7 +318,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 
 			return file;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath, bufferSizeOverride }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -336,7 +336,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 
 			return file != null;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}

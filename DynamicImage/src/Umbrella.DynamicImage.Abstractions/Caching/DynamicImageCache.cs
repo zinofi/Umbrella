@@ -83,7 +83,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 				},
 				CacheOptions);
 			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { options }, returnValue: true))
+			catch (Exception exc) when (Logger.WriteError(exc, new { options }))
 			{
 				throw new DynamicImageException("There was a problem generating the cache key.", exc, options);
 			}

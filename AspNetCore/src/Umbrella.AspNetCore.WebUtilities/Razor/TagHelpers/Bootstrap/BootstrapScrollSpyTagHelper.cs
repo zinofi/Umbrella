@@ -55,7 +55,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bootstrap
 						output.Attributes.Add("data-offset", ScrollSpyOffset);
 				}
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { ScrollSpyTarget }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { ScrollSpyTarget }))
 			{
 				throw new UmbrellaWebException("An error occurred whilst processing the attribute.", exc);
 			}

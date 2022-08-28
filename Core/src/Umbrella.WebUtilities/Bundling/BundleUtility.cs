@@ -115,7 +115,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 				cancellationToken)
 				.ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
 		{
 			throw new UmbrellaWebException("There has been a problem resolving the path to the bundle.", exc);
 		}
@@ -145,7 +145,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 				cancellationToken)
 				.ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
 		{
 			throw new UmbrellaWebException("There was a problem getting the script content.", exc);
 		}
@@ -173,7 +173,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 				cancellationToken)
 				.ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
 		{
 			throw new UmbrellaWebException("There has been a problem resolving the path to the bundle.", exc);
 		}
@@ -203,7 +203,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 				cancellationToken)
 				.ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
 		{
 			throw new UmbrellaWebException("There was a problem getting the stylesheet content.", exc);
 		}

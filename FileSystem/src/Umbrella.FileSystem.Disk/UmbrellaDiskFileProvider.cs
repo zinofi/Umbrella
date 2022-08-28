@@ -84,7 +84,7 @@ public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaD
 
 			return Task.CompletedTask;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem deleting the specified directory.", exc);
 		}
@@ -126,7 +126,7 @@ public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaD
 
 			return lstResult;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem enumerating the files in the specified directory.", exc);
 		}

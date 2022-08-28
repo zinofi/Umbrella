@@ -75,7 +75,7 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 		{
 			return await RemoteService.GetAsync<int>(ApiUrl + "/Count", cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			throw new UmbrellaRemoteDataAccessException("There was a problem finding the total count.", exc);
 		}
@@ -96,7 +96,7 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 
 			return await RemoteService.GetAsync<bool>(ApiUrl + "/Exists", parameters, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
 			throw new UmbrellaRemoteDataAccessException("There was a problem determining if the specified item exists.", exc);
 		}

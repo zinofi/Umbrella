@@ -63,7 +63,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 
 			return (isValid, lstError);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { page!.Title, propertyName, attachInlineValiation }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { page!.Title, propertyName, attachInlineValiation }))
 		{
 			throw new UmbrellaXamarinException("There has been a problem validating the specified model.", exc);
 		}
@@ -102,7 +102,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 
 			return (isValid, lstError);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { page!.Title, deep, attachInlineValiation }, returnValue: true))
+		catch (Exception exc) when (_logger.WriteError(exc, new { page!.Title, deep, attachInlineValiation }))
 		{
 			throw new UmbrellaXamarinException("There has been a problem validating the specified model.", exc);
 		}

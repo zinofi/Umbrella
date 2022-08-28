@@ -67,7 +67,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 				_ => DynamicImageFormat.Jpeg
 			};
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { format }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { format }))
 		{
 			throw new DynamicImageException("There has been a problem parsing the image format.", exc);
 		}
@@ -147,7 +147,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 
 			return (DynamicImageParseUrlResult.Success, imageOptions);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }))
 		{
 			return s_InvalidParseUrlResult;
 		}
@@ -162,7 +162,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 
 			return validMappings.Contains(mapping);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { imageOptions, validMappings }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { imageOptions, validMappings }))
 		{
 			throw new DynamicImageException("An error has occurred whilst validating the image options.", exc);
 		}
@@ -206,7 +206,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 
 			return virtualPath;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, options }, returnValue: true))
+		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, options }))
 		{
 			throw new DynamicImageException("An error has occurred whilst generating the virtual path.", exc);
 		}

@@ -97,7 +97,7 @@ namespace Umbrella.Utilities.FriendlyUrl
 				// Remove any excess character to meet maxlength criteria
 				return maxLength <= 0 || result.Length <= maxLength ? result : result.Substring(0, maxLength);
 			}
-			catch (Exception exc) when (_log.WriteError(exc, new { text, maxLength }, returnValue: true))
+			catch (Exception exc) when (_log.WriteError(exc, new { text, maxLength }))
 			{
 				throw new UmbrellaException("There was a problem generating the URL using the specified parameters.", exc);
 			}

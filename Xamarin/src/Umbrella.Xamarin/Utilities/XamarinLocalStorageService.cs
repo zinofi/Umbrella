@@ -39,7 +39,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				return await SecureStorage.GetAsync(key);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem retrieving the item with the specified key.", exc);
 			}
@@ -57,7 +57,7 @@ namespace Umbrella.Xamarin.Utilities
 
 				return default;
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem removing the item with the specified key.", exc);
 			}
@@ -73,7 +73,7 @@ namespace Umbrella.Xamarin.Utilities
 				else
 					await SecureStorage.SetAsync(key, value);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { key }, returnValue: true))
+			catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 			{
 				throw new UmbrellaXamarinException("There has been a problem setting the item with the specified key.", exc);
 			}

@@ -89,7 +89,7 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 				_options.CachePriority,
 				cacheEnabledOverride: _options.CacheEnabled && useCache);
 		}
-		catch (Exception exc) when (_log.WriteError(exc, new { url }, returnValue: true))
+		catch (Exception exc) when (_log.WriteError(exc, new { url }))
 		{
 			throw new UmbrellaException($"There was a problem retrieving data for the specified url: {url}", exc);
 		}
