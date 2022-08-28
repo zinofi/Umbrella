@@ -17,7 +17,6 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// <seealso cref="UmbrellaComponentBase" />
 public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel> : UmbrellaComponentBase
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TItemModel : notnull
 {
 	/// <summary>
 	/// Gets the property name used to initally sort the data in the grid.
