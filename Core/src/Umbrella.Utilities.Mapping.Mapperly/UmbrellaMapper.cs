@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Umbrella.Utilities.Exceptions;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mapping.Abstractions;
 
 namespace Umbrella.Utilities.Mapping.Mapperly;
@@ -80,7 +81,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 			//if (!targetType.IsAssignableFrom(mapperType))
 			//	throw new Exception($"The mapper type {mapperType.FullName} to map from {param1.FullName} to {param2.FullName} cannot be assigned to a the type {targetType.FullName}");
 
-			MethodInfo miOriginal = GetType().GetMethods().SingleOrDefault(x => x.Name == nameof(MapAsync) && x.GetParameters().Length is 2);
+			MethodInfo miOriginal = GetType().GetMethods().SingleOrDefault(x => x.Name == nameof(MapAsync) && x.GetParameters().Length is 2 && x.GetParameters()[0].ParameterType != typeof(object));
 			MethodInfo miGeneric = miOriginal.MakeGenericMethod(param1, param2);
 
 			// TODO: We need to cache the generic method we have created above and then use cached compiled expressions
@@ -150,5 +151,17 @@ public class UmbrellaMapper : IUmbrellaMapper
 		{
 			throw new UmbrellaMappingException("There has been a problem mapping the object.", exc);
 		}
+	}
+
+	/// <inheritdoc/>
+	public ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc/>
+	public ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
 	}
 }

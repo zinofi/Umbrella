@@ -6,5 +6,6 @@ namespace Umbrella.Utilities.Mapping.Mapperly;
 public interface IUmbrellaMapperlyMapper<TSource, TDestination>
 {
 	TDestination Map(TSource source);
+	IReadOnlyCollection<TDestination> Map(IEnumerable<TSource> source);
 	void Map(TSource source, TDestination destination);
 }

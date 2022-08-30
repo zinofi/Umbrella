@@ -105,7 +105,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 
 			var model = new TPaginatedItemModel
 			{
-				Items = mapReadAllEntitiesDelegate is null ? await Mapper.MapAsync<TItemModel[]>(result.Items, cancellationToken).ConfigureAwait(false) : mapReadAllEntitiesDelegate(result.Items),
+				Items = mapReadAllEntitiesDelegate is null ? await Mapper.MapAsync<TItemModel>(result.Items, cancellationToken).ConfigureAwait(false) : mapReadAllEntitiesDelegate(result.Items),
 				PageNumber = pageNumber,
 				PageSize = pageSize,
 				TotalCount = result.TotalCount,
