@@ -29,7 +29,7 @@ public interface IUmbrellaMapper
 	/// <param name="source">The source.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>Mapped destination object collection.</returns>
-	ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken = default);
+	ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Execute a mapping from the source object to a new destination object.
@@ -49,7 +49,7 @@ public interface IUmbrellaMapper
 	/// <param name="source">The source object to map from.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>Mapped destination object collection.</returns>
-	ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken = default);
+	ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Execute a mapping from the source object to the existing destination object.

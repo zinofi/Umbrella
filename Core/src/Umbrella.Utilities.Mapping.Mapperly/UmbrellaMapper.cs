@@ -154,13 +154,13 @@ public class UmbrellaMapper : IUmbrellaMapper
 	}
 
 	/// <inheritdoc/>
-	public ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken)
+	public ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}
 
 	/// <inheritdoc/>
-	public ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken)
+	public ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}

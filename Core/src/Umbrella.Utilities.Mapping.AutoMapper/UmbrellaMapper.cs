@@ -47,7 +47,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 	}
 
 	/// <inheritdoc />
-	public ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken = default)
+	public ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -77,7 +77,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 	}
 
 	/// <inheritdoc />
-	public ValueTask<IReadOnlyCollection<TDestination>> MapAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken = default)
+	public ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TSource, TDestination>(IEnumerable<TSource> source, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
