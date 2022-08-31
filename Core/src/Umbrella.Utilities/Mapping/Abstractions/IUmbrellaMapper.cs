@@ -7,7 +7,7 @@ namespace Umbrella.Utilities.Mapping.Abstractions;
 /// A very basic object mapper to perform property mapping between objects.
 /// </summary>
 /// <remarks>
-/// The primary motivation for creating this is to avoid taking a hard dependency on AutoMapper and to allow flexibility
+/// The primary motivation for creating this is to allow flexibility
 /// in choosing the mapping implementation used by package consumers. All methods are asynchronous which allows us
 /// to take advantage of asynchronous mapping implementation support in the future.
 /// </remarks>
