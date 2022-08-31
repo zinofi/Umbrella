@@ -42,25 +42,28 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 		foreach (Type type in assembliesToScan.SelectMany(x => x.GetExportedTypes()))
 		{
-			Type? mapperlyInterface = type.GetInterfaces().SingleOrDefault(x => x.IsAssignableToGenericType(typeof(IUmbrellaMapperlyMapper<,>)));
+			Type[] mapperlyInterfaces = type.GetInterfaces().Where(x => x.IsAssignableToGenericType(typeof(IUmbrellaMapperlyMapper<,>))).ToArray();
 
-			if (mapperlyInterface is null)
+			if (mapperlyInterfaces.Length is 0)
 				continue;
 
-			Type param1 = mapperlyInterface.GenericTypeArguments[0];
-			Type param2 = mapperlyInterface.GenericTypeArguments[1];
-
-			var key = (param1, param2);
-
-			if (dicTypeMapping.ContainsKey(key))
+			foreach (Type mapperlyType in mapperlyInterfaces)
 			{
-				Type currentlyRegisteredType = dicTypeMapping[key];
+				Type param1 = mapperlyType.GenericTypeArguments[0];
+				Type param2 = mapperlyType.GenericTypeArguments[1];
 
-				throw new Exception($"A registration already exists for the source and destination types. The type being registered is {currentlyRegisteredType.FullName} but the type named {type.FullName} has already been registered.");
+				var key = (param1, param2);
+
+				if (dicTypeMapping.ContainsKey(key))
+				{
+					Type currentlyRegisteredType = dicTypeMapping[key];
+
+					throw new Exception($"A registration already exists for the source and destination types. The type being registered is {currentlyRegisteredType.FullName} but the type named {type.FullName} has already been registered.");
+				}
+
+				dicTypeMapping.Add(key, type);
+				_mapperDictionary.Add(key, new Lazy<object>(() => Activator.CreateInstance(type)!));
 			}
-
-			dicTypeMapping.Add(key, type);
-			_mapperDictionary.Add(key, new Lazy<object>(() => Activator.CreateInstance(type)!));
 		}
 	}
 
