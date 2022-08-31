@@ -26,7 +26,10 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 // Would be a good way of doing things for non-blazor projects where we use server page rendering.
 public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 {
-	private protected UmbrellaDataAccessApiControllerOptions Options { get; }
+	/// <summary>
+	/// Gets the options.
+	/// </summary>
+	protected UmbrellaDataAccessApiControllerOptions Options { get; }
 
 	/// <summary>
 	/// Gets the mapper.
