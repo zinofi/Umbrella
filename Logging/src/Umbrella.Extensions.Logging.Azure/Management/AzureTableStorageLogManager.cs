@@ -20,7 +20,7 @@ namespace Umbrella.Extensions.Logging.Azure.Management;
 /// <summary>
 /// A utility for managing logs stored using Azure Table Storage.
 /// </summary>
-/// <seealso cref="Umbrella.Extensions.Logging.Azure.Management.IAzureTableStorageLogManager" />
+/// <seealso cref="IAzureTableStorageLogManager" />
 public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 {
 	#region Private Inner Classes
@@ -42,25 +42,25 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	#endregion
 
 	#region Private Members
-	private static readonly Dictionary<string, string> s_NormalizedDataSourceKeyDictionary = new()
+	private static readonly Dictionary<string, string> _normalizedDataSourceKeyDictionary = new()
 	{
 		[nameof(AzureTableStorageLogDataSource.AppenderType)] = Normalize(nameof(AzureTableStorageLogDataSource.AppenderType)),
 		[nameof(AzureTableStorageLogDataSource.CategoryName)] = Normalize(nameof(AzureTableStorageLogDataSource.CategoryName)),
 		[nameof(AzureTableStorageLogDataSource.TablePrefix)] = Normalize(nameof(AzureTableStorageLogDataSource.TablePrefix))
 	};
-	private static readonly Dictionary<string, string> s_NormalizedTableModelKeyDictionary = new()
+	private static readonly Dictionary<string, string> _normalizedTableModelKeyDictionary = new()
 	{
 		[nameof(AzureTableStorageLogTable.Date)] = Normalize(nameof(AzureTableStorageLogTable.Date)),
 		[nameof(AzureTableStorageLogTable.Name)] = Normalize(nameof(AzureTableStorageLogTable.Name))
 	};
-	private static readonly Dictionary<string, string> s_NormalizedLogEntryMetaDataKeyDictionary = new()
+	private static readonly Dictionary<string, string> _normalizedLogEntryMetaDataKeyDictionary = new()
 	{
 		[nameof(LogEntryMetaData.EventTimeStamp)] = Normalize(nameof(LogEntryMetaData.EventTimeStamp)),
 		[nameof(LogEntryMetaData.Level)] = Normalize(nameof(LogEntryMetaData.Level)),
 	};
-	private static readonly GenericEqualityComparer<CloudTable, string> s_CloudTableEqualityComparer = new(x => x.Name);
-	private static readonly string[] s_DateSeparatorArray = new[] { AzureTableStorageLoggingOptions.TableNameSeparator };
-	private static readonly string s_CacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
+	private static readonly GenericEqualityComparer<CloudTable, string> _cloudTableEqualityComparer = new(x => x.Name);
+	private static readonly string[] _dateSeparatorArray = new[] { AzureTableStorageLoggingOptions.TableNameSeparator };
+	private static readonly string _cacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
 	#endregion
 
 	#region Protected Properties		
@@ -145,11 +145,11 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 					if (!string.IsNullOrWhiteSpace(value))
 					{
-						if (key == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.AppenderType)])
+						if (key == _normalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.AppenderType)])
 							lstDataSource = lstDataSource.Where(x => x.AppenderType == value.ToEnum<AzureTableStorageLogAppenderType>());
-						else if (key == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.CategoryName)])
+						else if (key == _normalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.CategoryName)])
 							lstDataSource = lstDataSource.Where(x => Normalize(x.CategoryName).Contains(value));
-						else if (key == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.TablePrefix)])
+						else if (key == _normalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.TablePrefix)])
 							lstDataSource = lstDataSource.Where(x => Normalize(x.TablePrefix).Contains(value));
 					}
 				}
@@ -165,15 +165,15 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			sortBy = Normalize(sortBy!);
 
-			if (sortBy == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.AppenderType)])
+			if (sortBy == _normalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.AppenderType)])
 			{
 				lstDataSource = lstDataSource.OrderBySortDirection(x => x.AppenderType, options.SortDirection);
 			}
 			else
 			{
-				lstDataSource = sortBy == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.CategoryName)]
+				lstDataSource = sortBy == _normalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.CategoryName)]
 				? lstDataSource.OrderBySortDirection(x => x.CategoryName, options.SortDirection)
-				: sortBy == s_NormalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.TablePrefix)]
+				: sortBy == _normalizedDataSourceKeyDictionary[nameof(AzureTableStorageLogDataSource.TablePrefix)]
 				? lstDataSource.OrderBySortDirection(x => x.TablePrefix, options.SortDirection)
 				: (IEnumerable<AzureTableStorageLogDataSource>)lstDataSource.OrderByDescending(x => x.CategoryName);
 			}
@@ -212,7 +212,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				TableContinuationToken? continuationToken = null;
 				TableResultSegment? resultSegment = null;
 
-				var hsResult = new HashSet<CloudTable>(s_CloudTableEqualityComparer);
+				var hsResult = new HashSet<CloudTable>(_cloudTableEqualityComparer);
 
 				do
 				{
@@ -238,7 +238,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				hsResult.AsParallel().ForAll(x =>
 				{
 					//The date is stored as part of the table name in the format {tablePrefix}xxxxxx{yyyy}x{mm}x{dd}, e.g. CostsBudgITPortalServerxxxxxx2016-09-27
-					string[]? strDateParts = x.Name.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1)?.Split('x');
+					string[]? strDateParts = x.Name.Split(_dateSeparatorArray, StringSplitOptions.RemoveEmptyEntries).ElementAtOrDefault(1)?.Split('x');
 
 					if (strDateParts?.Length == 3)
 					{
@@ -269,9 +269,9 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			sortBy = Normalize(sortBy!);
 
-			cacheItem = sortBy == s_NormalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Date)]
+			cacheItem = sortBy == _normalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Date)]
 				? cacheItem.OrderBySortDirection(x => x.Date, options.SortDirection)
-				: sortBy == s_NormalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Name)]
+				: sortBy == _normalizedTableModelKeyDictionary[nameof(AzureTableStorageLogTable.Name)]
 				? cacheItem.OrderBySortDirection(x => x.Name, options.SortDirection)
 				: (IEnumerable<AzureTableStorageLogTable>)cacheItem.OrderByDescending(x => x.Date);
 
@@ -394,9 +394,9 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			IEnumerable<LogEntryMetaData> results = lstMetaData.ToList();
 
-			results = sortBy == s_NormalizedLogEntryMetaDataKeyDictionary[nameof(LogEntryMetaData.EventTimeStamp)]
+			results = sortBy == _normalizedLogEntryMetaDataKeyDictionary[nameof(LogEntryMetaData.EventTimeStamp)]
 				? results.OrderBySortDirection(x => x.EventTimeStamp, options.SortDirection)
-				: sortBy == s_NormalizedLogEntryMetaDataKeyDictionary[nameof(LogEntryMetaData.Level)]
+				: sortBy == _normalizedLogEntryMetaDataKeyDictionary[nameof(LogEntryMetaData.Level)]
 				? results.OrderBySortDirection(x => x.Level, options.SortDirection)
 				: (IEnumerable<LogEntryMetaData>)results.OrderByDescending(x => x.EventTimeStamp);
 
@@ -447,7 +447,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 			_ = await table.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
 
 			//Remove the table from the cached list - potential for a race condition to mess with this but should be low probability.
-			string tablePrefix = tableName.Split(s_DateSeparatorArray, StringSplitOptions.RemoveEmptyEntries)[0];
+			string tablePrefix = tableName.Split(_dateSeparatorArray, StringSplitOptions.RemoveEmptyEntries)[0];
 			string listCacheKey = GenerateCacheKey(tablePrefix);
 
 			var lstTableModel = await DistributedCache.GetAsync<List<AzureTableStorageLogTable>>(listCacheKey, cancellationToken).ConfigureAwait(false);
@@ -498,6 +498,6 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	#endregion
 
 	#region Private Methods
-	private string GenerateCacheKey(string key) => Normalize($"{s_CacheKeyPrefix}:{key}");
+	private string GenerateCacheKey(string key) => Normalize($"{_cacheKeyPrefix}:{key}");
 	#endregion
 }

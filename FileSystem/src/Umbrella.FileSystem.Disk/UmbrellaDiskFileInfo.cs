@@ -19,7 +19,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 {
 	#region Private Members
 	private readonly string _metadataFullFileName;
-	private byte[]? m_Contents;
+	private byte[]? _contents;
 	private Dictionary<string, string>? _metadataDictionary;
 	#endregion
 
@@ -259,8 +259,8 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 		try
 		{
-			if (cacheContents && m_Contents != null)
-				return m_Contents;
+			if (cacheContents && _contents != null)
+				return _contents;
 
 			byte[] bytes = new byte[PhysicalFileInfo.Length];
 
@@ -269,7 +269,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 				_ = await fs.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
 			}
 
-			m_Contents = cacheContents ? bytes : null;
+			_contents = cacheContents ? bytes : null;
 
 			return bytes;
 		}
@@ -322,7 +322,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 				await fs.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
 			}
 
-			m_Contents = cacheContents ? bytes : null;
+			_contents = cacheContents ? bytes : null;
 			IsNew = false;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))

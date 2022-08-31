@@ -13,7 +13,7 @@ namespace Umbrella.Utilities.Extensions;
 public static class StringBuilderExtensions
 {
 	#region Private Members
-	private static readonly ConcurrentDictionary<int, string> s_TabDictionary = new();
+	private static readonly ConcurrentDictionary<int, string> _tabDictionary = new();
 	private static readonly string _preambleString = Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble());
 	#endregion
 
@@ -276,7 +276,7 @@ public static class StringBuilderExtensions
 	/// <returns>The same instance as specified by <paramref name="builder"/>.</returns>
 	public static StringBuilder AppendLineWithTabIndent(this StringBuilder builder, string value, int tabCount)
 	{
-		string tabs = s_TabDictionary.GetOrAdd(tabCount, x => string.Join("", CreateTabArray(x)));
+		string tabs = _tabDictionary.GetOrAdd(tabCount, x => string.Join("", CreateTabArray(x)));
 
 		return builder.AppendLine($"{tabs}{value}");
 	}

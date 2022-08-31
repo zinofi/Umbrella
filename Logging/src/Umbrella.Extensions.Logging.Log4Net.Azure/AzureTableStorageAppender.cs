@@ -22,7 +22,7 @@ namespace Umbrella.Extensions.Logging.Log4Net.Azure;
 public class AzureTableStorageAppender : BufferingAppenderSkeleton
 {
 	#region Private Members
-	private bool m_LogErrorsToConsole;
+	private bool _logErrorsToConsole;
 	#endregion
 
 	#region Internal Properties
@@ -35,7 +35,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 	[Obsolete]
 	internal async Task SendBufferInternal(LoggingEvent[] events)
 	{
-		if (m_LogErrorsToConsole)
+		if (_logErrorsToConsole)
 			Console.WriteLine("SendBuffer started.");
 
 		try
@@ -69,7 +69,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 		}
 		catch (StorageException exc)
 		{
-			if (m_LogErrorsToConsole)
+			if (_logErrorsToConsole)
 			{
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine(exc.Message);
@@ -139,7 +139,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 		var account = CloudStorageAccount.Parse(connectionString);
 		TableClient = account.CreateCloudTableClient();
 
-		m_LogErrorsToConsole = logErrorsToConsole;
+		_logErrorsToConsole = logErrorsToConsole;
 
 		ActivateOptions();
 	}

@@ -1,28 +1,27 @@
-﻿using System;
-using System.Linq;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
 
-namespace Umbrella.Legacy.WebUtilities.Extensions
+namespace Umbrella.Legacy.WebUtilities.Extensions;
+
+/// <summary>
+/// Extensions methods for use with the <see cref="AppDomain"/> type.
+/// </summary>
+public static class AppDomainExtensions
 {
+	private static readonly bool _isOwinApplication;
+
 	/// <summary>
-	/// Extensions methods for use with the <see cref="AppDomain"/> type.
+	/// Initializes the <see cref="AppDomainExtensions"/> class.
 	/// </summary>
-	public static class AppDomainExtensions
+	static AppDomainExtensions()
 	{
-		private static readonly bool s_IsOwinApplication;
-
-		/// <summary>
-		/// Initializes the <see cref="AppDomainExtensions"/> class.
-		/// </summary>
-		static AppDomainExtensions()
-		{
-			s_IsOwinApplication = AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName.Contains("Owin"));
-		}
-
-		/// <summary>
-		/// Determines whether the current web application is an OWIN App.
-		/// </summary>
-		/// <param name="appDomain">The application domain.</param>
-		/// <returns><see langword="true"/> if it is an OWIN App; otherwise <see langword="false"/>.</returns>
-		public static bool IsOwinApp(this AppDomain appDomain) => s_IsOwinApplication;
+		_isOwinApplication = AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName.Contains("Owin"));
 	}
+
+	/// <summary>
+	/// Determines whether the current web application is an OWIN App.
+	/// </summary>
+	/// <param name="appDomain">The application domain.</param>
+	/// <returns><see langword="true"/> if it is an OWIN App; otherwise <see langword="false"/>.</returns>
+	public static bool IsOwinApp(this AppDomain appDomain) => _isOwinApplication;
 }

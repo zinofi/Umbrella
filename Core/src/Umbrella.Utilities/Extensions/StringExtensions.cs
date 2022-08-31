@@ -4,7 +4,6 @@
 using CommunityToolkit.Diagnostics;
 using System.Globalization;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using Umbrella.Utilities.Constants;
 
@@ -18,8 +17,8 @@ public static class StringExtensions
 	private const string HtmlTagPattern = @"<.*?>";
 	private const string EllipsisPattern = @"[\.]+$";
 
-	private static readonly Regex s_HtmlTagPatternRegex = new(HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-	private static readonly Regex s_EllipsisPatternRegex = new(EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+	private static readonly Regex _htmlTagPatternRegex = new(HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+	private static readonly Regex _ellipsisPatternRegex = new(EllipsisPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
 	/// <summary>
 	/// Removes zero-width whitespace characters from the specified <paramref name="value"/>.
@@ -159,7 +158,7 @@ public static class StringExtensions
 	{
 		Guard.IsNotNull(value, nameof(value));
 
-		return s_HtmlTagPatternRegex.Replace(value, string.Empty);
+		return _htmlTagPatternRegex.Replace(value, string.Empty);
 	}
 
 	/// <summary>
@@ -246,7 +245,7 @@ public static class StringExtensions
 
 		value += "...";
 
-		return s_EllipsisPatternRegex.Replace(value, "...");
+		return _ellipsisPatternRegex.Replace(value, "...");
 	}
 
 	/// <summary>

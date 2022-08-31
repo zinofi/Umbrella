@@ -19,8 +19,8 @@ namespace Umbrella.Xamarin.Utilities;
 /// </summary>
 public class XamarinValidationUtility : IXamarinValidationUtility
 {
-	private static readonly BindableProperty ValidationAttachedProperty = BindableProperty.Create("ValidationAttached", typeof(string), typeof(InputView));
 	private const string ValidationLabelSuffix = "Error";
+	private static readonly BindableProperty _validationAttachedProperty = BindableProperty.Create("ValidationAttached", typeof(string), typeof(InputView));
 
 	private readonly ILogger<XamarinValidationUtility> _logger;
 	private readonly IObjectGraphValidator _validator;
@@ -170,9 +170,9 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 				{
 					object objValidatedControl = page.FindByName(propertyName);
 
-					if (objValidatedControl is View view && view.GetValue(ValidationAttachedProperty) is null)
+					if (objValidatedControl is View view && view.GetValue(_validationAttachedProperty) is null)
 					{
-						view.SetValue(ValidationAttachedProperty, true);
+						view.SetValue(_validationAttachedProperty, true);
 
 						// TODO: This currently doesn't work for groups of items, e.g. toggle buttons. Would need to having a naming convention
 						// whereby the GroupName for a toggle button was the propertyName. We could then attach handlers to all items in that group.

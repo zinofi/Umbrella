@@ -24,10 +24,10 @@ public class CalendarGridDay<TStatus, TData> : INotifyPropertyChanged
 	where TData : class
 {
 	private TStatus _status;
-	private TData? data;
+	private TData? _data;
 
 	/// <summary>
-	/// Represents an 
+	/// Represents an empty day.
 	/// </summary>
 	public static readonly CalendarGridDay<TStatus, TData> Empty = new();
 
@@ -96,13 +96,13 @@ public class CalendarGridDay<TStatus, TData> : INotifyPropertyChanged
 	/// </summary>
 	public TData? Data
 	{
-		get => data;
+		get => _data;
 		set
 		{
 			if (this == Empty)
 				throw new InvalidOperationException("This property cannot be set for empty instances.");
 
-			data = value;
+			_data = value;
 		}
 	}
 

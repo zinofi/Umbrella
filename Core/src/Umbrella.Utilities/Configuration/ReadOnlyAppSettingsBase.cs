@@ -44,8 +44,8 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 	where TAppSettingsSource : IReadOnlyAppSettingsSource
 {
 	#region Private Static Members
-	private static readonly MemoryCacheEntryOptions s_DefaultMemoryCacheEntryOptions = new();
-	private static readonly string s_CacheKeyPrefix = typeof(ReadOnlyAppSettingsBase<TAppSettingsSource>).FullName;
+	private static readonly MemoryCacheEntryOptions _defaultMemoryCacheEntryOptions = new();
+	private static readonly string _cacheKeyPrefix = typeof(ReadOnlyAppSettingsBase<TAppSettingsSource>).FullName;
 	#endregion
 
 	#region Protected Properties		
@@ -97,7 +97,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 	/// </summary>
 	/// <param name="settingKey">The setting key.</param>
 	/// <returns>The cache key.</returns>
-	protected virtual string GenerateCacheKey(string settingKey) => $"{s_CacheKeyPrefix}:{settingKey}";
+	protected virtual string GenerateCacheKey(string settingKey) => $"{_cacheKeyPrefix}:{settingKey}";
 
 	/// <summary>
 	/// Gets the cache entry options builder. Defaults to <see langword="null" /> unless overridden in a derived type.
@@ -141,7 +141,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 			return useCache
 				? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
 				{
-					_ = entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
+					_ = entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? _defaultMemoryCacheEntryOptions);
 					return GetValue();
 				})
 				: GetValue();
@@ -180,7 +180,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 			return useCache
 				? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
 				{
-					_ = entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
+					_ = entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? _defaultMemoryCacheEntryOptions);
 					return GetValue();
 				})
 				: GetValue();
@@ -219,7 +219,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 			return useCache
 				? Cache.GetOrCreate(GenerateCacheKey(key), entry =>
 				{
-					_ = entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? s_DefaultMemoryCacheEntryOptions);
+					_ = entry.SetOptions(GetCacheEntryOptionsFunc()?.Invoke() ?? _defaultMemoryCacheEntryOptions);
 					return GetValue();
 				})
 				: GetValue();

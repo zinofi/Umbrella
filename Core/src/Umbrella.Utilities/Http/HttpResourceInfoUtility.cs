@@ -97,7 +97,7 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 	#endregion
 
 	#region IDisposable Support
-	private bool disposedValue = false; // To detect redundant calls
+	private bool _disposedValue = false; // To detect redundant calls
 
 	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
@@ -105,12 +105,12 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	protected virtual void Dispose(bool disposing)
 	{
-		if (!disposedValue)
+		if (!_disposedValue)
 		{
 			if (disposing)
 				_httpClient.Dispose();
 
-			disposedValue = true;
+			_disposedValue = true;
 		}
 	}
 

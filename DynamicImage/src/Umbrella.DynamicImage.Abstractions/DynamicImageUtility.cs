@@ -20,10 +20,10 @@ public class DynamicImageUtility : IDynamicImageUtility
 	#endregion
 
 	#region Private Static Members
-	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_InvalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
-	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) s_SkipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
-	private static readonly Regex s_DensityRegex = new("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-	private static readonly char[] s_SegmentSeparatorArray = new[] { '/' };
+	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) _invalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
+	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) _skipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
+	private static readonly Regex _densityRegex = new("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+	private static readonly char[] _segmentSeparatorArray = new[] { '/' };
 	#endregion
 
 	#region Protected Properties		
@@ -93,20 +93,20 @@ public class DynamicImageUtility : IDynamicImageUtility
 			string pathPrefix = dynamicImagePathPrefix.TrimToLowerInvariant();
 
 			if (string.IsNullOrEmpty(url) || !url.StartsWith($"/{pathPrefix}/"))
-				return s_SkipParseUrlResult;
+				return _skipParseUrlResult;
 
-			string[] prefixSegments = pathPrefix.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
-			string[] allSegments = url.Split(s_SegmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+			string[] prefixSegments = pathPrefix.Split(_segmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
+			string[] allSegments = url.Split(_segmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
 			if (allSegments.Length - prefixSegments.Length < 5)
-				return s_InvalidParseUrlResult;
+				return _invalidParseUrlResult;
 
 			//Ignore the prefix segments
 			_ = int.TryParse(allSegments[prefixSegments.Length], out int width);
 			_ = int.TryParse(allSegments[prefixSegments.Length + 1], out int height);
 
 			if (width <= 0 || height <= 0)
-				return s_InvalidParseUrlResult;
+				return _invalidParseUrlResult;
 
 			DynamicResizeMode mode = allSegments[prefixSegments.Length + 2].ToEnum<DynamicResizeMode>();
 			string originalExtension = allSegments[prefixSegments.Length + 3];
@@ -121,7 +121,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 			string pathWithoutExtension = Path.GetFileNameWithoutExtension(path);
 
 			//Check to see if the path has a density identifier at the end
-			Match densityMatch = s_DensityRegex.Match(pathWithoutExtension);
+			Match densityMatch = _densityRegex.Match(pathWithoutExtension);
 
 			if (densityMatch.Success)
 			{
@@ -149,7 +149,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, relativeUrl }))
 		{
-			return s_InvalidParseUrlResult;
+			return _invalidParseUrlResult;
 		}
 	}
 
