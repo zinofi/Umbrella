@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -141,6 +142,7 @@ public class DynamicImageResizerTest
 
 	[Theory]
 	[MemberData(nameof(OptionsList))]
+	[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "This is a unit test")]
 	public async Task GenerateImageAsync_FromFunc(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item, string base64Image)
 	{
 		byte[] bytes = Convert.FromBase64String(base64Image);

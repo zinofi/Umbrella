@@ -7,13 +7,27 @@
 		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Table)
 		{
 			<th scope="row" @attributes="AdditionalAttributes">
-				@ChildContent
+				@if(ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else if(PropertyStringValue is not null)
+                {
+                    @PropertyStringValue
+                }
 			</th>
 		}
         else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.CollectionView)
 		{
 			<div @attributes="AdditionalAttributes">
-				@ChildContent
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else if (PropertyStringValue is not null)
+                {
+                    @PropertyStringValue
+                }
 			</div>
 		}
 	}
@@ -22,13 +36,27 @@
 		@if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.Table)
 		{
 			<td class="@(IsActions ? "u-grid__actions" : "")" @attributes="AdditionalAttributes">
-				@ChildContent
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else if (PropertyStringValue is not null)
+                {
+                    @PropertyStringValue
+                }
 			</td>
 		}
 		else if (UmbrellaGridInstance.RenderMode is UmbrellaGridRenderMode.CollectionView)
 		{
 			<div @attributes="AdditionalAttributes">
-				@ChildContent
+                @if (ChildContent is not null)
+                {
+                    @ChildContent
+                }
+                else if (PropertyStringValue is not null)
+                {
+                    @PropertyStringValue
+                }
 			</div>
 		}
 	}

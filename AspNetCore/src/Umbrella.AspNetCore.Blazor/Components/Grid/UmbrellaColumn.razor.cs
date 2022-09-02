@@ -18,6 +18,9 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// </summary>
 public partial class UmbrellaColumn<TItem>
 {
+	private Expression<Func<TItem, object>>? _property;
+	private Func<TItem, object>? _propertyDelegate;
+
 	[Inject]
 	private IAuthorizationService AuthorizationService { get; set; } = null!;
 
@@ -33,11 +36,24 @@ public partial class UmbrellaColumn<TItem>
 	[CascadingParameter(Name = nameof(ScanMode))]
 	private bool ScanMode { get; set; }
 
+	[CascadingParameter]
+	private TItem? Value { get; set; }
+
+	private string? PropertyStringValue => Value is not null && _propertyDelegate is not null ? _propertyDelegate(Value).ToString() : "";
+
 	/// <summary>
 	/// Gets or sets the property selector for this column.
 	/// </summary>
 	[Parameter]
-	public Expression<Func<TItem, object>>? Property { get; set; }
+	public Expression<Func<TItem, object>>? Property
+	{ 
+		get => _property;
+		set
+		{
+			_property = value;
+			_propertyDelegate = value is not null ? value.Compile() : null;
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the property path override used as the <see cref="FilterExpressionDescriptor.MemberPath"/> property value when
@@ -140,6 +156,8 @@ public partial class UmbrellaColumn<TItem>
 
 	/// <summary>
 	/// Gets or sets the child content rendered by this column.
+	/// If no child content has been specified, the <see cref="Value"/>, in conjunction with the <see cref="Property"/> selector
+	/// is used to render the content.
 	/// </summary>
 	[Parameter]
 	public RenderFragment? ChildContent { get; set; }

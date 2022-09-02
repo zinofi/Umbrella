@@ -1,13 +1,14 @@
 ﻿@typeparam TItem
 
 @{
-    #pragma warning disable CS8625
+#pragma warning disable CS8625
     string groupName = Guid.NewGuid().ToString("N");
+    string filterContainerId = Guid.NewGuid().ToString("N");
 }
 
 <CascadingValue Value="this">
     <div class="u-grid">
-        @if (!ColumnScanComplete && RenderMode == UmbrellaGridRenderMode.Table)
+        @if (!ColumnScanComplete && RenderMode is UmbrellaGridRenderMode.Table)
         {
             <CascadingValue Name="ScanMode" Value="true">
                 @Columns?.Invoke(default!)
@@ -17,22 +18,20 @@
         @if (FilterableColumns?.Count > 0 && ShowFilters)
         {
             <div class="u-grid__filters">
-                @if (!string.IsNullOrWhiteSpace(FilterOptionsHeading))
-                {
+                <a class="u-grid__filters-heading-collapse-button" data-bs-toggle="collapse" href="#@filterContainerId" role="button">
                     <h2 class="u-grid__filters-heading text-secondary">@FilterOptionsHeading</h2>
-                }
-                <form method="get" novalidate>
+                </a>
+                <form id="@filterContainerId" class="collapse @(ExpandFiltersOnLoad ? "show" : "")" method="get" novalidate>
                     <div class="row">
                         @foreach (var column in FilterableColumns)
                         {
                             string id = Guid.NewGuid().ToString("N");
 
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="@id">@column.Heading</label>
-                                    @if (column.FilterControlType == UmbrellaColumnFilterType.Options)
+                                <div class="form-group form-floating">
+                                    @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
                                     {
-                                        <select id="@id" class="custom-select custom-select-sm" @bind="column.FilterValue">
+                                        <select id="@id" class="form-select" @bind="column.FilterValue">
                                             <option>Any</option>
                                             @foreach (object option in column.FilterOptions)
                                             {
@@ -42,8 +41,9 @@
                                     }
                                     else
                                     {
-                                        <input id="@id" class="form-control form-control-sm" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
+                                        <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" data-lpignore="true" />
                                     }
+                                    <label for="@id">@column.Heading</label>
                                 </div>
                             </div>
                         }
@@ -54,22 +54,22 @@
             </div>
         }
 
-        @if (BulkActions != null && CurrentState == LayoutState.Success)
+        @if (BulkActions is not null && CurrentState is LayoutState.Success)
         {
             <div class="u-grid__bulk-actions">
                 @BulkActions
             </div>
         }
 
-        @if (CurrentState == LayoutState.Loading)
+        @if (CurrentState is LayoutState.Loading)
         {
             <LoadingStateView Message="@LoadingMessage" />
         }
-        else if (CurrentState == LayoutState.Empty)
+        else if (CurrentState is LayoutState.Empty)
         {
             <EmptyStateView Message="@EmptyMessage" />
         }
-        else if (CurrentState == LayoutState.Success)
+        else if (CurrentState is LayoutState.Success)
         {
             @if (RenderMode is UmbrellaGridRenderMode.Table)
             {
@@ -112,7 +112,7 @@
                                 {
                                     <th></th>
                                 }
-                                @foreach (var column in ColumnDefinitions.Where(x => x.DisplayMode == UmbrellaColumnDisplayMode.Full))
+                                @foreach (var column in ColumnDefinitions.Where(x => x.DisplayMode is UmbrellaColumnDisplayMode.Full))
                                 {
                                     <th @attributes="column.AdditionalAttributes">
                                         @if (column.Sortable)
@@ -125,7 +125,7 @@
                                         else
                                         {
                                             <span title="@column.Heading">
-                                            @(column.ShortHeading ?? column.Heading)
+                                                @(column.ShortHeading ?? column.Heading)
                                             </span>
                                         }
                                     </th>
@@ -165,7 +165,9 @@
                                             </div>
                                         </th>
                                     }
-                                    @Columns?.Invoke(item)
+                                    <CascadingValue Value="item">
+                                        @Columns?.Invoke(item)
+                                    </CascadingValue>
                                 </tr>
                             }
                         </tbody>
@@ -194,7 +196,9 @@
                             {
                                 <span>TODO</span>
                             }
-                            @Columns?.Invoke(item)
+                            <CascadingValue Value="item">
+                                @Columns?.Invoke(item)
+                            </CascadingValue>
                         </div>
                     }
                 </div>

@@ -17,5 +17,8 @@ public static class StringExtensions
 	/// <param name="value">The value.</param>
 	/// <param name="replacement">The replacement.</param>
 	/// <returns>The HTML encoded output.</returns>
-	public static MarkupString ReplaceNewLine(this string? value, string replacement = "<br />") => string.IsNullOrWhiteSpace(value) ? default : (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines();
+	public static MarkupString ReplaceNewLine(this string? value, string replacement = "<br />")
+		=> string.IsNullOrWhiteSpace(value)
+		? default
+		: (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace("\r\n", replacement);
 }
