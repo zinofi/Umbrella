@@ -7,6 +7,10 @@ using Umbrella.Utilities.Imaging;
 
 namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
 
+/// <summary>
+/// A component used to render responsive images.
+/// </summary>
+/// <seealso cref="ComponentBase" />
 public partial class UmbrellaResponsiveImage : ComponentBase
 {
 	/// <summary>

@@ -153,10 +153,20 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	public bool ShowReloadButton { get; set; } = true;
 
 	/// <summary>
-	/// Gets or sets the heading displayed above the filer options.
+	/// Gets or sets the heading displayed above the filter options.
 	/// </summary>
 	[Parameter]
 	public string FilterOptionsHeading { get; set; } = "Search Options";
+
+	/// <summary>
+	/// Gets or sets a value indicating whether the filter options, if there are any and <see cref="ShowFilters"/> is <see langword="true" />,
+	/// are expanded when the grid is first loaded.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="true" />
+	/// </remarks>
+	[Parameter]
+	public bool ExpandFiltersOnLoad { get; set; } = true;
 
 	/// <summary>
 	/// Gets or sets a value indicating whether filter options should be displayed.

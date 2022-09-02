@@ -1,70 +1,70 @@
 ﻿@{
-	string? maxFileSizeMessage = MaxFileSizeMegaBytes.HasValue ? $"You can upload a file with a maximum size of {MaxFileSizeMegaBytes} MB." : null;
+    string? maxFileSizeMessage = MaxFileSizeMegaBytes.HasValue ? $"You can upload a file with a maximum size of {MaxFileSizeMegaBytes} MB." : null;
 }
 
 <div class="u-file-upload">
-	@if (Status is UmbrellaFileUploadStatus.None)
-	{
-		@if (!string.IsNullOrEmpty(Accept))
-		{
-			<div class="custom-file">
-				<input type="file" class="custom-file-input" @ref="FileUploadReference" @onchange="OnFileSelected" id="@Id" accept="@Accept" />
-				<label class="custom-file-label" for="@Id">Choose file</label>
-			</div>
-			@if (!string.IsNullOrWhiteSpace(AcceptTypesMessage))
-			{
-				<small class="form-text">@AcceptTypesMessage @maxFileSizeMessage</small>
-			}
-		}
-		else
-		{
-			<div class="custom-file">
-				<input type="file" class="custom-file-input" @ref="FileUploadReference" @onchange="OnFileSelected" id="@Id" />
-				<label class="custom-file-label" for="@Id">Choose file</label>
-			</div>
-			@if (!string.IsNullOrWhiteSpace(maxFileSizeMessage))
-			{
-				<small class="form-text">@maxFileSizeMessage</small>
-			}
-		}
-	}
-	else if (SelectedFileInfo is not null)
-	{
-		<div class="form-group">
+    @if (Status is UmbrellaFileUploadStatus.None)
+    {
+        @if (!string.IsNullOrEmpty(Accept))
+        {
+            <div class="custom-file">
+                <InputFile id="@Id" class="custom-file-input" OnChange="OnFileSelected" accept="@Accept" />
+                <label class="custom-file-label" for="@Id">Choose file</label>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(AcceptTypesMessage))
+            {
+                <small class="form-text">@AcceptTypesMessage @maxFileSizeMessage</small>
+            }
+        }
+        else
+        {
+            <div class="custom-file">
+                <InputFile id="@Id" class="custom-file-input" OnChange="OnFileSelected" />
+                <label class="custom-file-label" for="@Id">Choose file</label>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(maxFileSizeMessage))
+            {
+                <small class="form-text">@maxFileSizeMessage</small>
+            }
+        }
+    }
+    else if (SelectedFile is not null)
+    {
+        <div class="form-group">
 
-			@if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
-			{
-				<div class="form-control">
-					@SelectedFileInfo.Name
-				</div>
-			}
-			else if (Status is UmbrellaFileUploadStatus.Uploading)
-			{
-				<label>Uploading File</label>
-				<div class="progress">
-					<div class="progress-bar progress-bar--@(SelectedFileInfo.PositionInfo.Percentage.ToString("N0"))"
-						 role="progressbar"
-						 aria-valuenow="@SelectedFileInfo.PositionInfo.Percentage.ToString("N0")"
-						 aria-valuemin="0"
-						 aria-valuemax="100"></div>
-				</div>
-			}
-		</div>
-		<div class="form-group">
-			@if (Status is UmbrellaFileUploadStatus.Selected)
-			{
-				<button type="button" class="btn btn-primary" @onclick="UploadClick">Upload</button>
-			}
+            @if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
+            {
+                <div class="form-control">
+                    @SelectedFile.Name
+                </div>
+            }
+            else if (Status is UmbrellaFileUploadStatus.Uploading)
+            {
+                <label>Uploading File</label>
+                <div class="progress">
+                    <div class="progress-bar progress-bar--@(UploadPercentage.ToString("N0"))"
+                         role="progressbar"
+                         aria-valuenow="@UploadPercentage.ToString("N0")"
+                         aria-valuemin="0"
+                         aria-valuemax="100"></div>
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            @if (Status is UmbrellaFileUploadStatus.Selected)
+            {
+                <button type="button" class="btn btn-primary" @onclick="UploadClick">Upload</button>
+            }
 
-			@if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
-			{
-				<button type="button" class="btn btn-danger" @onclick="ClearClick">Clear Selection</button>
-			}
+            @if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
+            {
+                <button type="button" class="btn btn-danger" @onclick="ClearClick">Clear Selection</button>
+            }
 
-			@if (Status is UmbrellaFileUploadStatus.Uploading)
-			{
-				<button type="button" class="btn btn-danger" @onclick="CancelClick">Cancel</button>
-			}
-		</div>
-	}
+            @if (Status is UmbrellaFileUploadStatus.Uploading)
+            {
+                <button type="button" class="btn btn-danger" @onclick="CancelClick">Cancel</button>
+            }
+        </div>
+    }
 </div>

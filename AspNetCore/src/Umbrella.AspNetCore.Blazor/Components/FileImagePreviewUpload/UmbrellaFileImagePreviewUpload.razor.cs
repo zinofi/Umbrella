@@ -1,131 +1,176 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.FileUpload;
 using Umbrella.DynamicImage.Abstractions;
 
-namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload
+namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload;
+
+/// <summary>
+/// A component that can be used to upload image files that wraps the <see cref="UmbrellaFileUpload"/> component with support for
+/// displaying a preview of the upload image.
+/// </summary>
+/// <seealso cref="ComponentBase" />
+public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 {
-	public partial class UmbrellaFileImagePreviewUpload : ComponentBase
+	[Inject]
+	private ILogger<UmbrellaFileImagePreviewUpload> Logger { get; set; } = null!;
+
+	[Inject]
+	private IUmbrellaDialogUtility DialogUtility { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets the message shown when a new image has been uploaded in place of an existing one.
+	/// </summary>
+	[Parameter]
+	public string ChangesMadeMessage { get; set; } = "You have made changes to this image. These changes will be saved when this page is saved.";
+
+	/// <summary>
+	/// Gets or sets the maximum file size in bytes that can be uploaded.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to 512000 bytes.
+	/// </remarks>
+	[Parameter]
+	public int? MaxFileSizeBytes { get; set; } = 512000;
+
+	/// <summary>
+	/// Gets or sets whether a warning message should be shown to the user when they clear the current file selection.
+	/// </summary>
+	[Parameter]
+	public bool ShowClearWarning { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets whether a warning message should be shown to the user when they cancel the file upload.
+	/// </summary>
+	[Parameter]
+	public bool ShowCancelWarning { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets a comma-delimited list of file extensions and/or MIME types that this component will accept.
+	/// </summary>
+	[Parameter]
+	public string? Accept { get; set; }
+
+	/// <summary>
+	/// Gets or sets the delegate that is invoked when the Upload button is clicked.
+	/// </summary>
+	[Parameter]
+	[EditorRequired]
+	public EventCallback<UmbrellaFileUploadRequestEventArgs> OnRequestUpload { get; set; }
+
+	/// <summary>
+	/// The path prefix used when generating dynamic image paths.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix" />
+	/// </remarks>
+	[Parameter]
+	public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
+
+	/// <summary>
+	/// Gets or sets the target width of the resized image. The resized image width may be less than this value depending on the width of the uploaded source image.
+	/// </summary>
+	[Parameter]
+	public int WidthRequest { get; set; } = 1;
+
+	/// <summary>
+	/// Gets or sets the target height of the resized image. The resized image height may be less than this value depending on the height of the uploaded source image.
+	/// </summary>
+	[Parameter]
+	public int HeightRequest { get; set; } = 1;
+
+	/// <summary>
+	/// Gets or sets the mode to use when resizing images.
+	/// </summary>
+	[Parameter]
+	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
+
+	/// <summary>
+	/// Gets or sets the image format of the resized image.
+	/// </summary>
+	[Parameter]
+	public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
+
+	[Parameter]
+	public string? SizeWidths { get; set; }
+
+	[Parameter]
+	public int MaxPixelDensity { get; set; } = 1;
+
+	[Parameter]
+	public string? StripPrefix { get; set; }
+
+	[Parameter]
+	public string? Url { get; set; }
+
+	[Parameter]
+	public EventCallback OnDeleteImage { get; set; }
+
+	private string? UpdatedImageUrl { get; set; }
+	private UmbrellaFileImagePreviewUploadMode FileUploadMode { get; set; }
+
+	/// <inheritdoc />
+	protected override void OnInitialized()
 	{
-		[Inject]
-		private ILogger<UmbrellaFileImagePreviewUpload> Logger { get; set; } = null!;
-
-		[Inject]
-		private IUmbrellaDialogUtility DialogUtility { get; set; } = null!;
-
-		[Parameter]
-		public string ChangesMadeMessage { get; set; } = "You have made changes to this image. These changes will be saved when this page is saved.";
-
-		[Parameter]
-		public int? MaxFileSizeBytes { get; set; }
-
-		[Parameter]
-		public bool ShowClearWarning { get; set; } = true;
-
-		[Parameter]
-		public bool ShowCancelWarning { get; set; } = true;
-
-		[Parameter]
-		public string? Accept { get; set; }
-
-		[Parameter]
-		public EventCallback<UmbrellaFileUploadRequestEventArgs> OnRequestUpload { get; set; }
-
-		[Parameter]
-		public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
-
-		[Parameter]
-		public int WidthRequest { get; set; } = 1;
-
-		[Parameter]
-		public int HeightRequest { get; set; } = 1;
-
-		[Parameter]
-		public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
-
-		[Parameter]
-		public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
-
-		[Parameter]
-		public string? SizeWidths { get; set; }
-
-		[Parameter]
-		public int MaxPixelDensity { get; set; } = 1;
-
-		[Parameter]
-		public string? StripPrefix { get; set; }
-
-		[Parameter]
-		public string? Url { get; set; }
-
-		[Parameter]
-		public EventCallback OnDeleteImage { get; set; }
-
-		private string? UpdatedImageUrl { get; set; }
-		private UmbrellaFileImagePreviewUploadMode FileUploadMode { get; set; }
-
-		/// <inheritdoc />
-		protected override void OnInitialized()
+		if (!string.IsNullOrWhiteSpace(Url))
 		{
-			if (!string.IsNullOrWhiteSpace(Url))
-			{
-				UpdatedImageUrl = Url;
-				FileUploadMode = UmbrellaFileImagePreviewUploadMode.Current;
-			}
+			UpdatedImageUrl = Url;
+			FileUploadMode = UmbrellaFileImagePreviewUploadMode.Current;
 		}
+	}
 
-		private async Task OnRequestUploadInner(UmbrellaFileUploadRequestEventArgs args)
+	private async Task OnRequestUploadInner(UmbrellaFileUploadRequestEventArgs args)
+	{
+		try
 		{
-			try
-			{
-				if (OnRequestUpload.HasDelegate)
-					await OnRequestUpload.InvokeAsync(args);
+			if (OnRequestUpload.HasDelegate)
+				await OnRequestUpload.InvokeAsync(args);
 
-				StateHasChanged();
-			}
-			catch (Exception exc) when (Logger.WriteError(exc))
-			{
-				await DialogUtility.ShowDangerMessageAsync();
-			}
+			StateHasChanged();
 		}
-
-		private async Task DeleteImageClick()
+		catch (Exception exc) when (Logger.WriteError(exc))
 		{
-			try
-			{
-				bool delete = await DialogUtility.ShowConfirmDangerMessageAsync("Are you sure you want to delete this image? This change will not take effect until this page is saved.", "Delete Image");
-
-				if (!delete)
-					return;
-
-				UpdatedImageUrl = null;
-				FileUploadMode = UmbrellaFileImagePreviewUploadMode.Upload;
-
-				if (OnDeleteImage.HasDelegate)
-					await OnDeleteImage.InvokeAsync(EventArgs.Empty);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc))
-			{
-				await DialogUtility.ShowDangerMessageAsync();
-			}
+			await DialogUtility.ShowDangerMessageAsync();
 		}
+	}
 
-		public void Update(string? url)
+	private async Task DeleteImageClick()
+	{
+		try
 		{
-			if (string.IsNullOrWhiteSpace(url))
-			{
-				UpdatedImageUrl = null;
-				FileUploadMode = UmbrellaFileImagePreviewUploadMode.Upload;
-			}
-			else
-			{
-				string? currentImageUrl = UpdatedImageUrl;
-				UpdatedImageUrl = url;
-				FileUploadMode = currentImageUrl?.Equals(UpdatedImageUrl, StringComparison.OrdinalIgnoreCase) == true ? UmbrellaFileImagePreviewUploadMode.Current : UmbrellaFileImagePreviewUploadMode.New;
-			}
+			bool delete = await DialogUtility.ShowConfirmDangerMessageAsync("Are you sure you want to delete this image? This change will not take effect until this page is saved.", "Delete Image");
+
+			if (!delete)
+				return;
+
+			UpdatedImageUrl = null;
+			FileUploadMode = UmbrellaFileImagePreviewUploadMode.Upload;
+
+			if (OnDeleteImage.HasDelegate)
+				await OnDeleteImage.InvokeAsync(EventArgs.Empty);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			await DialogUtility.ShowDangerMessageAsync();
+		}
+	}
+
+	public void Update(string? url)
+	{
+		if (string.IsNullOrWhiteSpace(url))
+		{
+			UpdatedImageUrl = null;
+			FileUploadMode = UmbrellaFileImagePreviewUploadMode.Upload;
+		}
+		else
+		{
+			string? currentImageUrl = UpdatedImageUrl;
+			UpdatedImageUrl = url;
+			FileUploadMode = currentImageUrl?.Equals(UpdatedImageUrl, StringComparison.OrdinalIgnoreCase) == true ? UmbrellaFileImagePreviewUploadMode.Current : UmbrellaFileImagePreviewUploadMode.New;
 		}
 	}
 }

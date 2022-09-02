@@ -13,7 +13,18 @@ public enum UmbrellaFileUploadStatus
 	/// </summary>
 	None,
 
+	/// <summary>
+	/// The status when a file has been selected but has yet to be uploaded.
+	/// </summary>
 	Selected,
+
+	/// <summary>
+	/// The status when the file is in the process of being uploaded to the server.
+	/// </summary>
 	Uploading,
+
+	/// <summary>
+	/// The status when the file has been successfully upload to the server.
+	/// </summary>
 	Uploaded
 }

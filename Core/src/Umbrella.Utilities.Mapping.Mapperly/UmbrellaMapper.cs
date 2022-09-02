@@ -5,6 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Riok.Mapperly.Abstractions;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using Umbrella.Utilities.Exceptions;
@@ -166,11 +167,23 @@ public class UmbrellaMapper : IUmbrellaMapper
 	/// <inheritdoc/>
 	public ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken)
 	{
-		var param1 = source.GetType().GetElementType();
-		var param2 = typeof(TDestination);
+		var type1 = source.GetType().GetElementType();
+		var type2 = typeof(TDestination);
 
 		MethodInfo miOriginal = GetType().GetMethods().SingleOrDefault(x => x.Name is nameof(MapAllAsync) && x.GetCustomAttribute<PrimaryMappingMethodAttribute>() is not null)!;
-		MethodInfo miGeneric = miOriginal?.MakeGenericMethod(param1, param2)!;
+		MethodInfo miGeneric = miOriginal?.MakeGenericMethod(type1, type2)!;
+
+		//var param1 = Expression.Parameter(source.GetType());
+		//var param2 = Expression.Parameter(typeof(CancellationToken));
+		//var mce = Expression.Call(Expression.Constant(this), miGeneric, param1, param2);
+
+		//var func = Expression.Lambda<Func<IEnumerable<object>, CancellationToken, ValueTask<IReadOnlyCollection<TDestination>>>>(mce, param1, param2).Compile();
+
+		//return func(source, cancellationToken);
+
+		// TODO: Also need to determine if the cost of creating and caching the delegate outweighs just calling Invoke as per the below.
+		// On the server, the benefits are obvious but possibly not so much on the client. Might be a waste of time.
+		// Check the fast expression compiler Nuget package too. Might help here.
 
 		// TODO: We need to cache the generic method we have created above and then use cached compiled expressions
 		// to invoke this method instead of using the raw reflection APIs which are slow in comparison.
