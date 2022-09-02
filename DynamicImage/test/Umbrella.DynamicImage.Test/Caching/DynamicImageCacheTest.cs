@@ -17,9 +17,9 @@ namespace Umbrella.DynamicImage.Test.Caching;
 public class DynamicImageCacheTest
 {
 #if AZUREDEVOPS
-        private static readonly string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
+	private static readonly string _storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
 #else
-	private const string StorageConnectionString = "UseDevelopmentStorage=true";
+	private const string _storageConnectionString = "UseDevelopmentStorage=true";
 #endif
 	private const string TestFileName = "aspnet-mvc-logo.png";
 
@@ -200,7 +200,7 @@ public class DynamicImageCacheTest
 	{
 		var options = new UmbrellaAzureBlobStorageFileProviderOptions
 		{
-			StorageConnectionString = StorageConnectionString
+			StorageConnectionString = _storageConnectionString
 		};
 
 		var provider = new UmbrellaAzureBlobStorageFileProvider(
