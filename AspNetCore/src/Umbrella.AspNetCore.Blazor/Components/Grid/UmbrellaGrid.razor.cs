@@ -162,8 +162,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// Gets or sets a value indicating whether the filter options, if there are any and <see cref="ShowFilters"/> is <see langword="true" />,
 	/// are expanded when the grid is first loaded.
 	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="true" />
+	/// </remarks>
 	[Parameter]
-	public bool ExpandFiltersOnLoad { get; set; } = false;
+	public bool ExpandFiltersOnLoad { get; set; } = true;
 
 	/// <summary>
 	/// Gets or sets a value indicating whether filter options should be displayed.
