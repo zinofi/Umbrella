@@ -2,6 +2,8 @@
 	Define and specify values for the following variables to override the default styling.
 
 	--u-grid-heading-font-size
+	--u-grid-heading-icon-font-size
+	--u-grid-heading-icon-font-color
 	--u-grid-spacing
 */
 
@@ -9,6 +11,8 @@
 {
 	$defaultSpacing: 16px;
 	$headingFontSize: 24px;
+	$headingIconFontSize: 20px;
+	$headingIconFontColor: #000;
 
 	margin-top: var(--u-grid-spacing, $defaultSpacing);
 
@@ -16,11 +20,33 @@
 	{
 		&-heading
 		{
+			$self: &;
 			font-size: var(--u-grid-heading-font-size, $headingFontSize);
 
 			&-collapse-button
 			{
 				text-decoration: none;
+				display: inline-flex;
+				gap: rem(5px);
+				margin: rem(0 0 7px 0);
+				align-items: center;
+
+				i
+				{
+					font-size: var(--u-grid-heading-icon-font-size, $headingIconFontSize);
+					color: var(--u-grid-heading-icon-font-color, $headingIconFontColor);
+					transition: transform linear .2s;
+				}
+
+				&[aria-expanded=true] i
+				{
+					transform: rotate(-180deg);
+				}
+
+				#{$self}
+				{
+					margin: 0;
+				}
 			}
 		}
 	}

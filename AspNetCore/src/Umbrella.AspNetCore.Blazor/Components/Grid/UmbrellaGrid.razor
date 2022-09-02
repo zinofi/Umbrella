@@ -20,6 +20,7 @@
             <div class="u-grid__filters">
                 <a class="u-grid__filters-heading-collapse-button" data-bs-toggle="collapse" href="#@filterContainerId" role="button" aria-expanded="@ExpandFiltersOnLoad.ToString().ToLowerInvariant()" aria-controls="@filterContainerId">
                     <h2 class="u-grid__filters-heading text-secondary">@FilterOptionsHeading</h2>
+                    <i class="fas fa-caret-down"></i>
                 </a>
                 <form id="@filterContainerId" class="collapse @(ExpandFiltersOnLoad ? "show" : "")" method="get" novalidate>
                     <div class="row">
