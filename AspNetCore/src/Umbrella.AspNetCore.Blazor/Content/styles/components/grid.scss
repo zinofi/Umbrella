@@ -17,6 +17,11 @@
 		&-heading
 		{
 			font-size: var(--u-grid-heading-font-size, $headingFontSize);
+
+			&-collapse-button
+			{
+				text-decoration: none;
+			}
 		}
 	}
 

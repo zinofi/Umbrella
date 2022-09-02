@@ -1,5 +1,8 @@
 ﻿@if (Model.TotalCount > 0)
 {
+    string paginationSizeButtonId = "a" + Guid.NewGuid().ToString("N")[1..];
+    string paginationSizeDropdownId = "a" + Guid.NewGuid().ToString("N")[1..];
+
 	<nav class="u-pagination" aria-label="table navigation">
 		<ul class="pagination @(SmallPagination ? "pagination-sm" : "")">
 			@if (Model.PageNumbers.Count > 1)
@@ -36,11 +39,11 @@
 			}
 		</ul>
 		<div class="pagination-size">
-			<div class="dropdown">
-				<a class="btn @(SmallPagination ? "btn-sm" : "") btn-primary dropdown-toggle" href="#" role="button" id="items-per-page" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<div id="@paginationSizeDropdownId" class="dropdown" aria-role="menu">
+                <a class="btn @(SmallPagination ? "btn-sm" : "") btn-primary dropdown-toggle" href="#" role="button" id="@paginationSizeButtonId" data-bs-toggle="#@paginationSizeDropdownId" aria-haspopup="true" aria-expanded="false">
 					@PageSize
 				</a>
-				<div class="dropdown-menu" aria-labelledby="items-per-page">
+                <div class="dropdown-menu" aria-labelledby="@paginationSizeButtonId">
 					@foreach (var option in PageSizeOptions)
 					{
 						<a class="dropdown-item @(option == PageSize ? "active" : "")" href="#" @onclick="@(e => PageSizeClick(option))" @onclick:preventDefault>@option</a>

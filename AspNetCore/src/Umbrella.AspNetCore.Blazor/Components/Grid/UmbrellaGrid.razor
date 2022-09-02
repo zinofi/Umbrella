@@ -1,9 +1,9 @@
 ﻿@typeparam TItem
 
 @{
-#pragma warning disable CS8625
+    #pragma warning disable CS8625
     string groupName = Guid.NewGuid().ToString("N");
-    string filterContainerId = Guid.NewGuid().ToString("N");
+    string filterContainerId = "a" + Guid.NewGuid().ToString("N")[1..];
 }
 
 <CascadingValue Value="this">
@@ -41,7 +41,7 @@
                                     }
                                     else
                                     {
-                                        <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" data-lpignore="true" />
+                                        <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" />
                                     }
                                     <label for="@id">@column.Heading</label>
                                 </div>
