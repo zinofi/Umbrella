@@ -4,6 +4,8 @@
 	--u-grid-heading-font-size
 	--u-grid-heading-icon-font-size
 	--u-grid-heading-icon-font-color
+	--u-grid-heading-gap
+	--u-grid-heading-margin
 	--u-grid-spacing
 */
 
@@ -13,6 +15,8 @@
 	$headingFontSize: 24px;
 	$headingIconFontSize: 20px;
 	$headingIconFontColor: #000;
+	$headingGap: 5px;
+	$headingMargin: 0 0 7px 0;
 
 	margin-top: var(--u-grid-spacing, $defaultSpacing);
 
@@ -27,8 +31,8 @@
 			{
 				text-decoration: none;
 				display: inline-flex;
-				gap: rem(5px);
-				margin: rem(0 0 7px 0);
+				gap: var(--u-grid-heading-gap, $headingGap);
+				margin: var(--u-grid-heading-margin, $headingMargin);
 				align-items: center;
 
 				i
