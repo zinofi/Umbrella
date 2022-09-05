@@ -90,6 +90,7 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 
 		SrcValue = DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options).TrimStart('~').Replace("//", "/");
 
+		// TODO: Can't we just check for an empty string here or null? This parsing is done internally as well so it's a waste of time.
 		IReadOnlyCollection<int> lstSizeWidth = ResponsiveImageHelper.GetParsedIntegerItems(SizeWidths ?? "");
 
 		SrcSetValue = lstSizeWidth.Count is 0

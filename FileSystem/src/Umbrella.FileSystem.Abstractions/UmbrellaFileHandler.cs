@@ -17,11 +17,34 @@ public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirecto
 	where TFileAccessUtility : IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>
 	where TDirectoryType : struct, Enum
 {
+	/// <summary>
+	/// Gets the logger.
+	/// </summary>
 	protected ILogger Logger { get; }
+
+	/// <summary>
+	/// Gets the cache.
+	/// </summary>
 	protected IHybridCache Cache { get; }
+
+	/// <summary>
+	/// Gets the cache key utility.
+	/// </summary>
 	protected ICacheKeyUtility CacheKeyUtility { get; }
+
+	/// <summary>
+	/// Gets the file provider.
+	/// </summary>
 	protected IUmbrellaFileProvider FileProvider { get; }
+
+	/// <summary>
+	/// Gets the file access utility.
+	/// </summary>
 	protected TFileAccessUtility FileAccessUtility { get; }
+
+	/// <summary>
+	/// Gets the type of the directory.
+	/// </summary>
 	protected abstract TDirectoryType DirectoryType { get; }
 
 	/// <summary>

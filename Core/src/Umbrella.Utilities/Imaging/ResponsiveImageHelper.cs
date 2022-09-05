@@ -49,7 +49,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	/// <inheritdoc />
 	public IReadOnlyCollection<int> GetPixelDensities(int maxPixelDensity)
 	{
-		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1, nameof(maxPixelDensity));
+		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1);
 
 		try
 		{
@@ -74,8 +74,8 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	/// <inheritdoc />
 	public string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null)
 	{
-		Guard.IsNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
-		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1, nameof(maxPixelDensity));
+		Guard.IsNotNullOrWhiteSpace(imageUrl);
+		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1);
 
 		try
 		{
@@ -109,8 +109,8 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	/// <inheritdoc />
 	public IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null)
 	{
-		Guard.IsNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
-		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1, nameof(maxPixelDensity));
+		Guard.IsNotNullOrWhiteSpace(imageUrl);
+		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1);
 
 		try
 		{
@@ -141,8 +141,8 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	/// <inheritdoc />
 	public string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string>? pathResolver = null)
 	{
-		Guard.IsNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
-		Guard.IsGreaterThanOrEqualTo(pixelDensity, 1, nameof(pixelDensity));
+		Guard.IsNotNullOrWhiteSpace(imageUrl);
+		Guard.IsGreaterThanOrEqualTo(pixelDensity, 1);
 
 		try
 		{
@@ -185,18 +185,18 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	/// <inheritdoc />
 	public string GetSizeSrcSetValue(string imageUrl, string sizeWidths, int maxPixelDensity, int widthRequest, int heightRequest, Func<(string path, int imageWidth, int imageHeight), string> pathResolver)
 	{
-		Guard.IsNotNullOrWhiteSpace(imageUrl, nameof(imageUrl));
-		Guard.IsNotNullOrWhiteSpace(sizeWidths, nameof(sizeWidths));
-		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1, nameof(maxPixelDensity));
-		Guard.IsGreaterThanOrEqualTo(widthRequest, 1, nameof(widthRequest));
-		Guard.IsGreaterThanOrEqualTo(heightRequest, 1, nameof(heightRequest));
-		Guard.IsNotNull(pathResolver, nameof(pathResolver));
+		Guard.IsNotNullOrWhiteSpace(imageUrl);
+		Guard.IsNotNullOrWhiteSpace(sizeWidths);
+		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1);
+		Guard.IsGreaterThanOrEqualTo(widthRequest, 1);
+		Guard.IsGreaterThanOrEqualTo(heightRequest, 1);
+		Guard.IsNotNull(pathResolver);
 
 		try
 		{
 			var lstSize = new HashSet<string>();
 
-			float aspectRatio = widthRequest / (float)heightRequest;
+			double aspectRatio = widthRequest / (double)heightRequest;
 
 			foreach (int sizeWidth in GetParsedIntegerItems(sizeWidths))
 			{

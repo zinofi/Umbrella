@@ -19,7 +19,7 @@ public class DynamicImageCacheTest
 #if AZUREDEVOPS
 	private static readonly string _storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
 #else
-	private const string _storageConnectionString = "UseDevelopmentStorage=true";
+	private static readonly string _storageConnectionString = "UseDevelopmentStorage=true";
 #endif
 	private const string TestFileName = "aspnet-mvc-logo.png";
 
