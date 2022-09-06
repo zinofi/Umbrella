@@ -35,7 +35,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbReposi
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	public GenericDbRepository(
-		TDbContext dbContext,
+		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<int> currentUserIdAccessor,
@@ -67,7 +67,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : G
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	public GenericDbRepository(
-		TDbContext dbContext,
+		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<int> currentUserIdAccessor,
@@ -101,7 +101,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	public GenericDbRepository(
-		TDbContext dbContext,
+		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<int> currentUserIdAccessor,
@@ -149,7 +149,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	public GenericDbRepository(
-		TDbContext dbContext,
+		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
@@ -199,7 +199,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, repoOptions, childOptions));
 
 			if (pushChangesToDb)
-				_ = await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
 			return new SaveResult<TEntity>(true, entity);
 		}
@@ -249,7 +249,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			}
 
 			if (pushChangesToDb)
-				_ = await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
 			return lstSaveResult != null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 		}
@@ -294,15 +294,15 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 			await BeforeContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-			_ = Context.Set<TEntity>().Remove(entity);
-			Context.Entry(entity).State = EntityState.Deleted;
+			_ = Context.Value.Set<TEntity>().Remove(entity);
+			Context.Value.Entry(entity).State = EntityState.Deleted;
 
 			await AfterContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, cancellationToken, repoOptions, childOptions));
 
 			if (pushChangesToDb)
-				_ = await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
@@ -328,7 +328,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			}
 
 			if (pushChangesToDb)
-				_ = await Context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, "Bulk Delete Concurrency Exception"))
 		{
@@ -361,7 +361,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// </para>
 	/// </remarks>
 	protected bool IsConcurrencyTokenMismatch(TEntity entity)
-		=> !entity.Id.Equals(default!) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
+		=> !entity.Id.Equals(default!) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Value.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
 
 	/// <summary>
 	/// Throws an exception if there is a concurrency token mismatch.
@@ -404,7 +404,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		isNew = false;
 
 		// Look for the entity in the context - this action will allow us to determine it's state
-		DbEntityEntry<TEntity> dbEntity = Context.Entry(entity);
+		DbEntityEntry<TEntity> dbEntity = Context.Value.Entry(entity);
 
 		bool entityHasChanged = false;
 
@@ -421,7 +421,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 				userAuditEntity.CreatedById = CurrentUserId ?? default!;
 
 			if (addToContext)
-				_ = Context.Set<TEntity>().Add(entity);
+				_ = Context.Value.Set<TEntity>().Add(entity);
 		}
 
 		if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
@@ -641,7 +641,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		alteredColl = new List<TTargetEntity>(alteredColl);
 
 		// Ensure we have deleted the dependencies (children) we no longer need
-		foreach (TTargetEntity entity in Context.Set<TTargetEntity>().Where(predicate))
+		foreach (TTargetEntity entity in Context.Value.Set<TTargetEntity>().Where(predicate))
 		{
 			if (!alteredColl.Contains(entity))
 			{
@@ -653,7 +653,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		foreach (TTargetEntity entity in alteredColl)
 		{
 			// Look for the entity in the context - this action will allow us to determine it's state
-			DbEntityEntry<TTargetEntity> dbEntity = Context.Entry(entity);
+			DbEntityEntry<TTargetEntity> dbEntity = Context.Value.Entry(entity);
 
 			// Determine entities that have been added or modified - in these cases we need to call Save so that any custom
 			// repository logic is executed
@@ -725,7 +725,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			_ = entities.Remove(entity);
 
 			// Make sure it is removed from the Context if it has just been added - make it detached
-			DbEntityEntry<TEntity> dbEntityEntry = Context.Entry(entity);
+			DbEntityEntry<TEntity> dbEntityEntry = Context.Value.Entry(entity);
 
 			if (dbEntityEntry.State == EntityState.Added)
 				dbEntityEntry.State = EntityState.Detached;
