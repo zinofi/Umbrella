@@ -8,6 +8,16 @@ using Umbrella.Utilities.Context.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions;
 
+/// <summary>
+/// A base class which provides utilities for checking access to files, applying file permissions
+/// which can be checked before loading files, and also utility methods for generating file paths based on specified
+/// file instances and directories.
+/// </summary>
+/// <typeparam name="TUserId">The type of the user identifier.</typeparam>
+/// <typeparam name="TUserRoleType">The type of the user role type.</typeparam>
+/// <typeparam name="TDirectoryType">The type of the directory type.</typeparam>
+/// <typeparam name="TGroupId">The type of the group identifier.</typeparam>
+/// <seealso cref="IUmbrellaFileAccessUtility{TDirectoryType, TGroupId}" />
 public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirectoryType, TGroupId> : IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>
 	where TUserRoleType : struct, Enum
 	where TDirectoryType : struct, Enum
@@ -60,7 +70,8 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 		CurrentUserRolesAccessor = currentUserRolesAccessor;
 		CurrentUserClaimsPrincipalAccessor = currentUserClaimsPrincipalAccessor;
 	}
-
+	
+	/// <inheritdoc/>
 	public virtual async Task<bool> CanAccessAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -84,7 +95,8 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 		}
 	}
 
-	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, CancellationToken cancellationToken = default, bool writeChanges = true)
+	/// <inheritdoc/>
+	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId? groupId, CancellationToken cancellationToken = default, bool writeChanges = true)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -102,15 +114,43 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 		}
 	}
 
+	/// <inheritdoc/>
 	public string GetTempDirectoryName() => $"/{TempFilesDirectoryName}";
+
+	/// <inheritdoc/>
 	public string GetTempFilePath(string fileName) => $"{GetTempDirectoryName()}/{fileName}";
+
+	/// <inheritdoc/>
 	public string GetTempWebFilePath(string fileName) => $"/{WebFolderName}{GetTempFilePath(fileName)}".ToLowerInvariant();
+
+	/// <inheritdoc/>
 	public bool IsTempFilePath(string fileName) => fileName.StartsWith(GetTempDirectoryName() + "/", StringComparison.OrdinalIgnoreCase);
 
-	public string GetDirectoryName(TDirectoryType directoryType, TGroupId groupId) => $"/{GetDirectoryNameFromType(directoryType)}/{groupId}";
-	public string GetFilePath(TDirectoryType directoryType, TGroupId groupId, string fileName) => $"{GetDirectoryName(directoryType, groupId)}/{fileName}";
-	public string GetWebFilePath(TDirectoryType directoryType, TGroupId groupId, string fileName) => $"/{WebFolderName}{GetFilePath(directoryType, groupId, fileName)}".ToLowerInvariant();
+	/// <inheritdoc/>
+	public string GetDirectoryName(TDirectoryType directoryType, TGroupId? groupId = default) => $"/{GetDirectoryNameFromType(directoryType)}/{groupId}";
 
-	protected bool FileInfoIsInDirectory(IUmbrellaFileInfo fi, string directoryName) => fi.SubPath.TrimStart('/').StartsWith($"{directoryName}/", StringComparison.OrdinalIgnoreCase);
+	/// <inheritdoc/>
+	public string GetFilePath(TDirectoryType directoryType, TGroupId? groupId, string fileName) => $"{GetDirectoryName(directoryType, groupId)}/{fileName}";
+
+	/// <inheritdoc/>
+	public string GetWebFilePath(TDirectoryType directoryType, TGroupId? groupId, string fileName) => $"/{WebFolderName}{GetFilePath(directoryType, groupId, fileName)}".ToLowerInvariant();
+
+	/// <summary>
+	/// Determines if the specified file is inside the specified <paramref name="directoryName"/>.
+	/// </summary>
+	/// <param name="file">The file.</param>
+	/// <param name="directoryName">Name of the directory.</param>
+	/// <returns></returns>
+	protected bool FileInfoIsInDirectory(IUmbrellaFileInfo file, string directoryName) => file.SubPath.TrimStart('/').StartsWith($"{directoryName}/", StringComparison.OrdinalIgnoreCase);
+
+	/// <summary>
+	/// Gets the directory name from the specified enum <paramref name="directoryType"/> parameter.
+	/// </summary>
+	/// <param name="directoryType">Type of the directory.</param>
+	/// <returns>The directory name.</returns>
+	/// <remarks>
+	/// This should return a directory name for the specified enum, e.g. an enum value of
+	/// "UserDocuments" should return a value, e.g. "user-documents".
+	/// </remarks>
 	protected abstract string GetDirectoryNameFromType(TDirectoryType directoryType);
 }
