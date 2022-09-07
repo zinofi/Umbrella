@@ -172,14 +172,21 @@ public class UmbrellaMapper : IUmbrellaMapper
 	{
 		try
 		{
-			var type1 = source.GetType().GetElementType();
+			var (isEnumerable, elementType) = source.GetType().GetIEnumerableTypeData();
+
+			if (!isEnumerable)
+				throw new Exception("The source parameter does not implement IEnumerable.");
+
+			if (elementType is null)
+				throw new Exception("The elementType of the source collection could not be determined.");
+
 			var type2 = typeof(TDestination);
 
 			MethodInfo miOriginal = GetType().GetMethods().SingleOrDefault(x => x.Name is nameof(MapAllAsync) && x.GetCustomAttribute<PrimaryMappingMethodAttribute>() is not null)!;
-			MethodInfo miGeneric = miOriginal?.MakeGenericMethod(type1, type2)!;
+			MethodInfo miGeneric = miOriginal?.MakeGenericMethod(elementType, type2)!;
 
 			if (_logger.IsEnabled(LogLevel.Debug))
-				_logger.WriteDebug(new { SourceCollectionType = source.GetType().FullName, SourceType = type1.FullName, DestinationType = type2.FullName });
+				_logger.WriteDebug(new { SourceCollectionType = source.GetType().FullName, SourceType = elementType.FullName, DestinationType = type2.FullName });
 
 			//var param1 = Expression.Parameter(source.GetType());
 			//var param2 = Expression.Parameter(typeof(CancellationToken));
@@ -212,13 +219,20 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 		try
 		{
-			var param1 = source.GetType().GetElementType();
+			var (isEnumerable, elementType) = source.GetType().GetIEnumerableTypeData();
+
+			if (!isEnumerable)
+				throw new Exception("The source parameter does not implement IEnumerable.");
+
+			if (elementType is null)
+				throw new Exception("The elementType of the source collection could not be determined.");
+
 			var param2 = typeof(TDestination);
 
-			var key = (param1, param2);
+			var key = (elementType, param2);
 
 			if (!_mapperDictionary.TryGetValue(key, out var value))
-				throw new Exception($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found.");
+				throw new Exception($"A mapper implementation for the specified source type {elementType.FullName} and destination type {param2.FullName} cannot be found.");
 
 			if (value.Value is IUmbrellaMapperlyMapper<TSource, TDestination> mapper)
 				return new ValueTask<IReadOnlyCollection<TDestination>>(mapper.MapAll(source));
