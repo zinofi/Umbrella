@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Riok.Mapperly" Version="2.3.3" />
+		<PackageReference Include="Riok.Mapperly" Version="2.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
