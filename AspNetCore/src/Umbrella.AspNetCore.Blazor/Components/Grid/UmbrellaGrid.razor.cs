@@ -218,7 +218,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// Gets or sets the CSS class applied to the grid.
 	/// </summary>
 	[Parameter]
-	public string? GridCssClass { get; set; } = "table table-hover table-sm";
+	public string? GridCssClass { get; set; } = "table table-hover";
 
 	/// <summary>
 	/// Gets or sets the CSS class applied to each item in the grid.
