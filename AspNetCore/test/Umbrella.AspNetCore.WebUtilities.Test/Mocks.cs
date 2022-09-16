@@ -74,7 +74,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Test
 		{
 			var actionContext = new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
 			
-			if (requestPathBase != null)
+			if (requestPathBase is not null)
 				actionContext.HttpContext.Request.PathBase = new PathString(requestPathBase);
 
 			var metadataProvider = new EmptyModelMetadataProvider();

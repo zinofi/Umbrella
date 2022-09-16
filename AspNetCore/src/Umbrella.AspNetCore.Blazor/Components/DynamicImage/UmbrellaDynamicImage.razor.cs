@@ -8,6 +8,10 @@ using Umbrella.DynamicImage.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage;
 
+/// <summary>
+/// A component used to render images in conjunction with the <see cref="Umbrella.DynamicImage"/> infrastructure.
+/// </summary>
+/// <seealso cref="UmbrellaResponsiveImage" />
 public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 {
 	/// <summary>

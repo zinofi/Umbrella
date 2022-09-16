@@ -43,7 +43,7 @@ public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidat
 	/// <inheritdoc />
 	public void Sanitize()
 	{
-		if (Mappings != null)
+		if (Mappings is not null)
 		{
 			Mappings.ForEach(x => x.Sanitize());
 			_flattenedMappings = Mappings.SelectMany(x => x.FileProviderMapping.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);

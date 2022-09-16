@@ -113,7 +113,7 @@ public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrel
 		}
 		finally
 		{
-			if (cacheKeyParts != null)
+			if (cacheKeyParts is not null)
 				ArrayPool<string>.Shared.Return(cacheKeyParts);
 		}
 	}

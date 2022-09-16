@@ -222,13 +222,13 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 					foreach (CloudTable table in resultSegment.Results)
 					{
-						if (table != null)
+						if (table is not null)
 							_ = hsResult.Add(table);
 					}
 
 					continuationToken = resultSegment.ContinuationToken;
 				}
-				while (continuationToken != null);
+				while (continuationToken is not null);
 
 				if (hsResult.Count == 0)
 					return null;
@@ -303,7 +303,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 			//Validate the tablePrefix
 			var dataSource = LogManagementOptions.DataSources.Find(x => Normalize(x.TablePrefix) == Normalize(tablePrefix));
 
-			if (dataSource == null)
+			if (dataSource is null)
 				return (null, new List<TableEntity>(), 0);
 
 			CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
@@ -340,7 +340,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 					continuationToken = querySegment.ContinuationToken;
 				}
-				while (continuationToken != null);
+				while (continuationToken is not null);
 
 				return lstResult;
 			}).ConfigureAwait(false);
@@ -352,7 +352,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				//Get the last item in the cache
 				LogEntryMetaData? entry = lstMetaData.LastOrDefault();
 
-				if (entry != null)
+				if (entry is not null)
 				{
 					var lstNewEntries = new List<LogEntryMetaData>();
 
@@ -375,7 +375,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 						continuationToken = querySegment.ContinuationToken;
 					}
-					while (continuationToken != null);
+					while (continuationToken is not null);
 
 					//Append the new entries to the current list - these will automatically end up in the cache.
 					lstMetaData.AddRange(lstNewEntries);
@@ -452,11 +452,11 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			var lstTableModel = await DistributedCache.GetAsync<List<AzureTableStorageLogTable>>(listCacheKey, cancellationToken).ConfigureAwait(false);
 
-			if (lstTableModel != null)
+			if (lstTableModel is not null)
 			{
 				var itemToRemove = lstTableModel.Find(x => x.Name == tableName);
 
-				if (itemToRemove != null)
+				if (itemToRemove is not null)
 				{
 					_ = lstTableModel.Remove(itemToRemove);
 					await DistributedCache.SetAsync(listCacheKey, lstTableModel, TableListCacheEntryOptions, cancellationToken).ConfigureAwait(false);

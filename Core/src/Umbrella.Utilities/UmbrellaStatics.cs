@@ -59,9 +59,9 @@ public static class UmbrellaStatics
 	/// <exception cref="UmbrellaException">The JsonSerializer has not been assigned. This should be done on application startup.</exception>
 	public static string SerializeJson(object value, bool useCamelCasingRules = false)
 	{
-		Guard.IsNotNull(value, nameof(value));
+		Guard.IsNotNull(value);
 
-		return JsonSerializerImplementation == null
+		return JsonSerializerImplementation is null
 			? throw new UmbrellaException("The JsonSerializer has not been assigned. This should be done on application startup.")
 			: JsonSerializerImplementation(value, useCamelCasingRules);
 	}
@@ -75,9 +75,9 @@ public static class UmbrellaStatics
 	/// <exception cref="UmbrellaException">The JsonDeserializer has not been assigned. This should be done on application startup.</exception>
 	public static T? DeserializeJson<T>(string value)
 	{
-		Guard.IsNotNullOrWhiteSpace(value, nameof(value));
+		Guard.IsNotNullOrWhiteSpace(value);
 
-		return JsonDeserializerImplementation == null
+		return JsonDeserializerImplementation is null
 			? throw new UmbrellaException("The JsonDeserializer has not been assigned. This should be done on application startup.")
 			: (T?)JsonDeserializerImplementation(value, typeof(T));
 	}

@@ -60,7 +60,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware
 						{
 							var headers = context.Request.GetTypedHeaders();
 
-							if (_options.ValueTransformer != null)
+							if (_options.ValueTransformer is not null)
 							{
 								string newValue = _options.ValueTransformer(value);
 

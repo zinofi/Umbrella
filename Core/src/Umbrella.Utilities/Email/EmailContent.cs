@@ -99,7 +99,7 @@ public class EmailContent
 
 			foreach (T item in source)
 			{
-				_ = builder.AppendFormat(rowFormat, keySelector(item), valueSelector != null ? valueSelector(item) : string.Empty);
+				_ = builder.AppendFormat(rowFormat, keySelector(item), valueSelector is not null ? valueSelector(item) : string.Empty);
 			}
 
 			_ = ReplaceToken(rowsTokenName, builder.ToString());
@@ -154,7 +154,7 @@ public class EmailContent
 	{
 		try
 		{
-			return _rowsBuilder != null ? _builder.Replace("{{rows}}", _rowsBuilder.ToString()).ToString() : _builder.ToString();
+			return _rowsBuilder is not null ? _builder.Replace("{{rows}}", _rowsBuilder.ToString()).ToString() : _builder.ToString();
 		}
 		catch (Exception exc) when (_log.WriteError(exc))
 		{

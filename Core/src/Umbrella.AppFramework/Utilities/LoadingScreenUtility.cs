@@ -39,7 +39,7 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 	{
 		try
 		{
-			if (_cancellationTokenSource != null)
+			if (_cancellationTokenSource is not null)
 				return;
 
 			_cancellationTokenSource = new CancellationTokenSource();
@@ -74,7 +74,7 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 		}
 		finally
 		{
-			if (_cancellationTokenSource != null)
+			if (_cancellationTokenSource is not null)
 			{
 				_cancellationTokenSource.Dispose();
 				_cancellationTokenSource = null;

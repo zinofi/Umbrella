@@ -105,7 +105,7 @@ public abstract class GenericRemoteDataService
 
 			IHttpCallResult<TPaginatedResultModel?> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
 
-			if (result.Success && result.Result != null && afterAllItemsLoadedCallback != null)
+			if (result.Success && result.Result is not null && afterAllItemsLoadedCallback is not null)
 				await afterAllItemsLoadedCallback(result.Result.Items, cancellationToken).ConfigureAwait(false);
 
 			return result;
@@ -147,7 +147,7 @@ public abstract class GenericRemoteDataService
 
 			IHttpCallResult<TItem?> result = await RemoteService.GetAsync<TItem>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
 
-			if (result.Success && result.Result != null && afterItemLoadedCallback != null)
+			if (result.Success && result.Result is not null && afterItemLoadedCallback is not null)
 				await afterItemLoadedCallback(result.Result, cancellationToken).ConfigureAwait(false);
 
 			return result;
@@ -315,7 +315,7 @@ public abstract class GenericRemoteDataService
 
 			IHttpCallResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
-			if (result.Success && afterItemDeletedCallback != null)
+			if (result.Success && afterItemDeletedCallback is not null)
 				await afterItemDeletedCallback(id, cancellationToken).ConfigureAwait(false);
 
 			return result;
@@ -367,7 +367,7 @@ public abstract class GenericRemoteDataService
 		ValidationType validationType,
 		Func<TItem, TResult?, CancellationToken, Task>? afterItemSavedCallback)
 	{
-		if (item != null)
+		if (item is not null)
 		{
 			if (sanitize)
 				await SanitizeItemAsync(item, cancellationToken).ConfigureAwait(false);
@@ -391,7 +391,7 @@ public abstract class GenericRemoteDataService
 			_ => throw new NotSupportedException()
 		};
 
-		if (result.Success && item != null && afterItemSavedCallback != null)
+		if (result.Success && item is not null && afterItemSavedCallback is not null)
 			await afterItemSavedCallback(item, result.Result, cancellationToken).ConfigureAwait(false);
 
 		return (result, result.ProblemDetails?.ToValidationResults() ?? Array.Empty<ValidationResult>());

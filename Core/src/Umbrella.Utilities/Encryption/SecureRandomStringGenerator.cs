@@ -240,7 +240,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 			}
 			finally
 			{
-				if (buffer != null)
+				if (buffer is not null)
 					ArrayPool<byte>.Shared.Return(buffer);
 			}
 		}

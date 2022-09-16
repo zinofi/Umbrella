@@ -238,7 +238,7 @@ public class TypeScriptGenerator
 		{
 			TypeScriptModelAttribute modelAttribute = type.GetCustomAttribute<TypeScriptModelAttribute>();
 
-			if (modelAttribute == null)
+			if (modelAttribute is null)
 				continue;
 
 			yield return new TypeScriptModelGeneratorItem(type, modelAttribute);

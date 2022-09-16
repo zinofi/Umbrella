@@ -47,7 +47,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions
 
 			string? lastMigration = lstMigration.LastOrDefault();
 
-			if (lastMigration != null)
+			if (lastMigration is not null)
 			{
 				int idxUnderscore = lastMigration.LastIndexOf('_');
 

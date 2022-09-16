@@ -99,7 +99,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 
 				FrontEndCompressionMiddlewareMapping? mapping = _options.GetMapping(path);
 
-				if (mapping == null)
+				if (mapping is null)
 				{
 					await Next.Invoke(context);
 					return;
@@ -287,7 +287,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						}
 						finally
 						{
-							if (cacheKeyParts != null)
+							if (cacheKeyParts is not null)
 								ArrayPool<string>.Shared.Return(cacheKeyParts);
 						}
 
@@ -302,7 +302,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware
 						context.Response.Headers["Vary"] = varyHeader;
 					}
 
-					if (bytes == null)
+					if (bytes is null)
 					{
 						// Getting here means that compression is disabled or there isn't an Accept-Encoding header.
 						// Therefore, we have to just read the file as it is and return it

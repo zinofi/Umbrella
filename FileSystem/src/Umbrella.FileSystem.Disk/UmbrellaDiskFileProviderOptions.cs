@@ -22,6 +22,11 @@ public class UmbrellaDiskFileProviderOptions : IUmbrellaFileProviderOptions, ISa
 	public string RootPhysicalPath { get; set; } = null!;
 
 	/// <summary>
+	/// Gets or sets the file access checker.
+	/// </summary>
+	public Func<UmbrellaDiskFileInfo, FileInfo, CancellationToken, Task<bool>>? FileAccessChecker { get; set; }
+
+	/// <summary>
 	/// Sanitizes this instance.
 	/// </summary>
 	public void Sanitize() => RootPhysicalPath = PathHelper.PlatformNormalize(RootPhysicalPath.Trim().TrimEnd('\\'));

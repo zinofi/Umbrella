@@ -40,7 +40,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 
 		try
 		{
-			if (Config == null)
+			if (Config is null)
 				throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
 			//Get the table we need to write stuff to and create it if needed
@@ -49,7 +49,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 
 			//Create the required table entities to write to storage and group them by PartitionKey.
 			//This is because entities written in a batch must all have the same PartitionKey.
-			var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x != null).GroupBy(x => x!.PartitionKey);
+			var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x is not null).GroupBy(x => x!.PartitionKey);
 
 			foreach (var group in paritionKeyGroups)
 			{
@@ -59,7 +59,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 
 					foreach (var item in batch)
 					{
-						if (item != null)
+						if (item is not null)
 							batchOperation.Insert(item);
 					}
 
@@ -158,7 +158,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 		{
 			var config = options.Appenders.SingleOrDefault(x => x.Name == appender.Name);
 
-			if (config == null)
+			if (config is null)
 				throw new Exception($"Configuration cannot be found for appender {appender.Name}");
 
 			appender.InitializeAppender(config, connectionString, options.LogErrorsToConsole);

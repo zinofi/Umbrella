@@ -11,7 +11,7 @@ namespace Umbrella.Utilities.Extensions;
 public static class HashSetExtensions
 {
 	/// <summary>
-	/// Adds a value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// Adds a value to the specified <see cref="HashSet{T}"/> only if it is not null.
 	/// </summary>
 	/// <typeparam name="T">The type of elements in the <see cref="HashSet{T}"/>.</typeparam>
 	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
@@ -21,11 +21,11 @@ public static class HashSetExtensions
 	{
 		Guard.IsNotNull(hashSet, nameof(hashSet));
 
-		return value != null && hashSet.Add(value);
+		return value is not null && hashSet.Add(value);
 	}
 
 	/// <summary>
-	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
 	/// In doing so, the string is also trimmed.
 	/// </summary>
 	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
@@ -35,7 +35,7 @@ public static class HashSetExtensions
 		=> AddNotNull(hashSet!, value?.Trim());
 
 	/// <summary>
-	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
 	/// In doing do, the string value is trimmed and converted to lowercase using the rules of the current culture.
 	/// </summary>
 	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
@@ -45,7 +45,7 @@ public static class HashSetExtensions
 		=> AddNotNull(hashSet!, value?.TrimToLower());
 
 	/// <summary>
-	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
 	/// In doing do, the string value is trimmed and converted to lowercase using the rules of the invariant culture.
 	/// </summary>
 	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
@@ -55,7 +55,7 @@ public static class HashSetExtensions
 		=> AddNotNull(hashSet!, value?.TrimToLowerInvariant());
 
 	/// <summary>
-	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
 	/// In doing do, the string value is trimmed and converted to uppercase using the rules of the current culture.
 	/// </summary>
 	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>
@@ -65,7 +65,7 @@ public static class HashSetExtensions
 		=> AddNotNull(hashSet!, value?.TrimToUpper());
 
 	/// <summary>
-	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it != null.
+	/// Adds a string value to the specified <see cref="HashSet{T}"/> only if it is not null.
 	/// In doing do, the string value is trimmed and converted to uppercase using the rules of the invariant culture.
 	/// </summary>
 	/// <param name="hashSet">The <see cref="HashSet{T}"/> to which the <paramref name="value"/> will be added.</param>

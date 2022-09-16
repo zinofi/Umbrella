@@ -24,7 +24,7 @@ namespace Umbrella.AppFramework.Utilities
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(message);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(title);
 
-			if (subTitle != null)
+			if (subTitle is not null)
 				hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(subTitle);
 
 			foreach (string text in buttonText)

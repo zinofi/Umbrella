@@ -28,10 +28,10 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions
 			if (currentValue is null && originalValue is null)
 				return false;
 
-			if (currentValue is null && originalValue != null)
+			if (currentValue is null && originalValue is not null)
 				return true;
 
-			if (currentValue != null && originalValue is null)
+			if (currentValue is not null && originalValue is null)
 				return true;
 
 			return currentValue!.Equals(originalValue) is false;

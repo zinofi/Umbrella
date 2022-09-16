@@ -188,19 +188,19 @@ namespace Umbrella.Utilities.Encryption
 		{
 			if (disposing)
 			{
-				if (Decryptor != null)
+				if (Decryptor is not null)
 				{
 					Decryptor.Dispose();
 					Decryptor = null;
 				}
 
-				if (Encryptor != null)
+				if (Encryptor is not null)
 				{
 					Encryptor.Dispose();
 					Encryptor = null;
 				}
 
-				if (Algorithm != null)
+				if (Algorithm is not null)
 				{
 					Algorithm.Dispose();
 					Algorithm = null;

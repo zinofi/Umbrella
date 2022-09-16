@@ -18,7 +18,7 @@ public class DynamicImageItem
 	/// </summary>
 	public DateTimeOffset? LastModified
 	{
-		get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified : _lastModified;
+		get => UmbrellaFileInfo is not null ? UmbrellaFileInfo.LastModified : _lastModified;
 		set => _lastModified = value;
 	}
 
@@ -51,7 +51,7 @@ public class DynamicImageItem
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		if (Content is null && UmbrellaFileInfo != null)
+		if (Content is null && UmbrellaFileInfo is not null)
 			Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
 
 		return Content;
@@ -69,9 +69,9 @@ public class DynamicImageItem
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(target);
 
-		if (Content is null && UmbrellaFileInfo != null)
+		if (Content is null && UmbrellaFileInfo is not null)
 			return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
 
-		return Content != null ? target.WriteAsync(Content, 0, Content.Length) : Task.CompletedTask;
+		return Content is not null ? target.WriteAsync(Content, 0, Content.Length) : Task.CompletedTask;
 	}
 }

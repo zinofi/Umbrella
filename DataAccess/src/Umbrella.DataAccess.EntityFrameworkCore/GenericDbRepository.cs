@@ -167,7 +167,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(entity, nameof(entity));
+		Guard.IsNotNull(entity);
 
 		try
 		{
@@ -179,8 +179,13 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (repoOptions.SanitizeEntity)
 				await SanitizeEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
+			// Look for the entity in the context - this action will allow us to determine its state
+			EntityEntry<TEntity> dbEntity = Context.Value.Entry(entity);
+
+			bool isNew = forceAdd || (entity.Id.Equals(default!) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached)));
+
 			// Additional processing before changes have been reflected in the database context
-			await BeforeContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+			await BeforeContextSavingAsync(entity, cancellationToken, repoOptions, childOptions, isNew).ConfigureAwait(false);
 
 			if (repoOptions.ValidateEntity)
 			{
@@ -190,8 +195,39 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 					return new SaveResult<TEntity>(false, entity, lstValidationResult);
 			}
 
-			// Common work
-			PreSaveWork(entity, addToContext, forceAdd, out bool isNew);
+			bool entityHasChanged = false;
+
+			if (isNew)
+			{
+				entityHasChanged = true;
+
+				if (entity is ICreatedDateAuditEntity dateAuditEntity)
+					dateAuditEntity.CreatedDateUtc = DateTime.UtcNow;
+
+				if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
+					userAuditEntity.CreatedById = CurrentUserIdAccessor.CurrentUserId ?? default!;
+
+				if (addToContext)
+					_ = Context.Value.Set<TEntity>().Add(entity);
+			}
+
+			if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
+			{
+				entityHasChanged = true;
+
+				if (entity is IUpdatedDateAuditEntity dateAuditEntity)
+					dateAuditEntity.UpdatedDateUtc = DateTime.UtcNow;
+
+				if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
+					userAuditEntity.UpdatedById = CurrentUserIdAccessor.CurrentUserId ?? default!;
+			}
+
+			if (entityHasChanged)
+			{
+				// Set the Concurrency Stamp
+				if (entity is IConcurrencyStamp concurrencyStampEntity)
+					concurrencyStampEntity.UpdateConcurrencyStamp();
+			}
 
 			// Additional processing after changes have been reflected in the database context but not yet pushed to the database
 			await AfterContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
@@ -238,7 +274,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return lstSaveResult != null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
+			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception"))
 		{
@@ -367,58 +403,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <returns>A comma-delimited string of entity ids.</returns>
 	protected virtual string FormatEntityIds(IEnumerable<TEntity> entities) => string.Join(",", entities.Select(x => x.Id));
 
-	/// <summary>
-	/// Performs save operations common to all Save methods. 
-	/// </summary>
-	/// <param name="entity">The entity.</param>
-	/// <param name="addToContext">if set to <c>true</c>, adds the entity to the context.</param>
-	/// <param name="forceAdd">Forces the entity to be added to the context in the <see cref="EntityState.Added"/> state.</param>
-	/// <param name="isNew">if set to <c>true</c>, specifies that the entity is new.</param>
-	protected virtual void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew)
-	{
-		// Assume the entity is not new initially
-		isNew = false;
-
-		// Look for the entity in the context - this action will allow us to determine it's state
-		EntityEntry<TEntity> dbEntity = Context.Value.Entry(entity);
-
-		bool entityHasChanged = false;
-
-		// Check if this entity is in the context, i.e. is it new
-		if (forceAdd || (entity.Id.Equals(default!) && (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached))))
-		{
-			isNew = true;
-			entityHasChanged = true;
-
-			if (entity is ICreatedDateAuditEntity dateAuditEntity)
-				dateAuditEntity.CreatedDateUtc = DateTime.UtcNow;
-
-			if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
-				userAuditEntity.CreatedById = CurrentUserIdAccessor.CurrentUserId ?? default!;
-
-			if (addToContext)
-				_ = Context.Value.Set<TEntity>().Add(entity);
-		}
-
-		if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
-		{
-			entityHasChanged = true;
-
-			if (entity is IUpdatedDateAuditEntity dateAuditEntity)
-				dateAuditEntity.UpdatedDateUtc = DateTime.UtcNow;
-
-			if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
-				userAuditEntity.UpdatedById = CurrentUserIdAccessor.CurrentUserId ?? default!;
-		}
-
-		if (entityHasChanged)
-		{
-			// Set the Concurrency Stamp
-			if (entity is IConcurrencyStamp concurrencyStampEntity)
-				concurrencyStampEntity.UpdateConcurrencyStamp();
-		}
-	}
-
 	#region Events		
 	/// <summary>
 	/// Overriding this method allows you to perform custom validation on the entity before its state on the database context is affected.
@@ -451,12 +435,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="options">The options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="isNew">Specifies whether the <paramref name="entity"/> is new.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions options, IEnumerable<RepoOptions>? childOptions, bool isNew)
 	{
-		// TODO v4: Alter this method signature to allow this to be passed in by the caller for convenience.
-		// bool isNew = entityEntry.State is EntityState.Detached || entityEntry.State is EntityState.Added;
-
 		cancellationToken.ThrowIfCancellationRequested();
 
 		return Task.CompletedTask;

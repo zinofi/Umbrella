@@ -9,9 +9,9 @@ namespace Umbrella.Utilities.TypeConverters
 			Type type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
 			if (!string.IsNullOrEmpty(value))
-				return customValueConverter != null ? customValueConverter(value) : (T)System.Convert.ChangeType(value, type);
+				return customValueConverter is not null ? customValueConverter(value) : (T)System.Convert.ChangeType(value, type);
 
-			T? fallback = fallbackCreator != null ? fallbackCreator() : default;
+			T? fallback = fallbackCreator is not null ? fallbackCreator() : default;
 
 			return type == typeof(string) && fallback is null
 				? (T)System.Convert.ChangeType(string.Empty, type)

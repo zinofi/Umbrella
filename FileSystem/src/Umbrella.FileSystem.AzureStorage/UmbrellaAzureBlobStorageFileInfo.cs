@@ -113,7 +113,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		{
 			var result = await Blob.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
-			if (result != null)
+			if (result is not null)
 				_blobProperties = result.Value;
 		}
 		catch (RequestFailedException exc) when (Logger.WriteWarning(exc))
@@ -170,7 +170,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			if (cacheContents && _content != null)
+			if (cacheContents && _content is not null)
 				return _content;
 
 			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
@@ -390,7 +390,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			if (_blobProperties != null)
+			if (_blobProperties is not null)
 			{
 				_ = _blobProperties.Metadata.TryGetValue(key, out string rawValue);
 
@@ -414,7 +414,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			if (_blobProperties != null)
+			if (_blobProperties is not null)
 			{
 				if (value is null)
 				{
@@ -444,7 +444,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			if (_blobProperties != null)
+			if (_blobProperties is not null)
 			{
 				_ = _blobProperties.Metadata.Remove(key);
 
@@ -466,7 +466,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			if (_blobProperties != null)
+			if (_blobProperties is not null)
 			{
 				_blobProperties.Metadata.Clear();
 
@@ -488,7 +488,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			if (_blobProperties != null)
+			if (_blobProperties is not null)
 				_ = await Blob.SetMetadataAsync(_blobProperties.Metadata, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
@@ -598,7 +598,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		hashCode = (hashCode * -1521134295) + Length.GetHashCode();
 		hashCode = (hashCode * -1521134295) + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
 
-		if (ContentType != null)
+		if (ContentType is not null)
 			hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(ContentType);
 
 		return hashCode;

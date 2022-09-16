@@ -126,7 +126,7 @@ public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TIt
 	/// The result of the conversion.
 	/// </returns>
 	public static explicit operator FilterExpressionDescriptor?(FilterExpression<TItem> filterExpression)
-		=> filterExpression != default && filterExpression.MemberPath != null
+		=> filterExpression != default && filterExpression.MemberPath is not null
 			? new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value!.ToString(), filterExpression.Type, filterExpression.IsPrimary)
 			: null;
 

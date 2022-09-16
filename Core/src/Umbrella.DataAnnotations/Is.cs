@@ -52,7 +52,7 @@ namespace Umbrella.DataAnnotations
 		/// <inheritdoc />
 		public override bool IsValid(object value, object dependentValue, object container)
 		{
-			if (PassOnNull && (value == null || dependentValue == null))
+			if (PassOnNull && (value is null || dependentValue is null))
 				return true;
 
 			return _metadata.IsValid(value, dependentValue, ReturnTrueOnEitherNull);

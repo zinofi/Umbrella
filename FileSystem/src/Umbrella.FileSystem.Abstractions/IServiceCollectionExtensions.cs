@@ -19,11 +19,15 @@ public static class IServiceCollectionExtensions
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaFileSystemCore(this IServiceCollection services)
+	public static IServiceCollection AddUmbrellaFileSystemCore<TFileAccessUtility, TDirectoryType, TGroupId>(this IServiceCollection services)
+		where TFileAccessUtility : class, IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>
+		where TDirectoryType : struct, Enum
+		where TGroupId : IEquatable<TGroupId>
 	{
 		Guard.IsNotNull(services);
 
 		_ = services.AddSingleton<IUmbrellaFileProviderFactory, UmbrellaFileProviderFactory>();
+		_ = services.AddSingleton<IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>, TFileAccessUtility>();
 
 		return services;
 	}

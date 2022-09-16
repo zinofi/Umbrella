@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Azure.Storage.Blobs;
 using CommunityToolkit.Diagnostics;
+using System.IO;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -23,6 +25,11 @@ public class UmbrellaAzureBlobStorageFileProviderOptions : IUmbrellaFileProvider
 	/// we only need to make this call once per container. Defaults to <see langword="true" />.
 	/// </summary>
 	public bool CacheContainerResolutions { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets the file access checker.
+	/// </summary>
+	public Func<UmbrellaAzureBlobStorageFileInfo, BlobClient, CancellationToken, Task<bool>>? FileAccessChecker { get; set; }
 
 	/// <summary>
 	/// Sanitizes this instance.

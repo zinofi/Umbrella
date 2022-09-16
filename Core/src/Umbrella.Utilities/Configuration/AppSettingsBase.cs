@@ -48,7 +48,7 @@ public abstract class AppSettingsBase : ReadOnlyAppSettingsBase<IAppSettingsSour
 
 			string? valueToStore = null;
 
-			if (value != null)
+			if (value is not null)
 			{
 				Type type = typeof(T);
 

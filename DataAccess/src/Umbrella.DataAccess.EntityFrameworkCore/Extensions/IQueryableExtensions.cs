@@ -21,7 +21,7 @@ public static class IQueryableExtensions
 	public static IQueryable<TEntity> IncludeMap<TEntity>(this IQueryable<TEntity> items, IncludeMap<TEntity>? map)
 		where TEntity : class
 	{
-		if (map == null)
+		if (map is null)
 			return items;
 
 		var query = items;

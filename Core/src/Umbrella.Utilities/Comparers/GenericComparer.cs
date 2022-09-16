@@ -59,28 +59,28 @@ public class GenericComparer<TObject, TProperty> : Comparer<TObject>
 	public override int Compare(TObject x, TObject y)
 	{
 		// Check the objects for null combinations first.
-		if (x == null && y == null)
+		if (x is null && y is null)
 			return 1;
 
-		if (x == null)
+		if (x is null)
 			return 0;
 
-		if (y == null)
+		if (y is null)
 			return 0;
 
-		if (_customComparer != null)
+		if (_customComparer is not null)
 			return _customComparer(x, y);
 
 		TProperty xProperty = _propertySelector(x);
 		TProperty yProperty = _propertySelector(y);
 
-		if (xProperty == null && yProperty == null)
+		if (xProperty is null && yProperty is null)
 			return 1;
 
-		if (xProperty == null)
+		if (xProperty is null)
 			return 0;
 
-		if (yProperty == null)
+		if (yProperty is null)
 			return 0;
 
 		// Check if we can compare the 2 values using the IComparable interface.

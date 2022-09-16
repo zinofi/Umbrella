@@ -44,7 +44,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 			using var inputStream = new MemoryStream(bytes);
 			using var image = FreeImageBitmap.FromStream(inputStream);
 
-			return image != null;
+			return image is not null;
 		}
 		catch
 		{

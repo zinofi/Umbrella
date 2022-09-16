@@ -102,7 +102,7 @@ public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>
 	/// The result of the conversion.
 	/// </returns>
 	public static explicit operator SortExpressionDescriptor?(SortExpression<TItem> sortExpression)
-		=> sortExpression != default && sortExpression.MemberPath != null
+		=> sortExpression != default && sortExpression.MemberPath is not null
 			? new SortExpressionDescriptor(sortExpression.MemberPath, sortExpression.Direction)
 			: null;
 

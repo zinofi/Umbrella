@@ -222,13 +222,13 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 		BlobContainerClient container = ServiceClient.GetBlobContainerClient(containerName);
 
-		if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
+		if (ContainerResolutionCache is not null && !ContainerResolutionCache.ContainsKey(containerName))
 		{
 			await _containerCacheLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			try
 			{
-				if (ContainerResolutionCache != null && !ContainerResolutionCache.ContainsKey(containerName))
+				if (ContainerResolutionCache is not null && !ContainerResolutionCache.ContainsKey(containerName))
 				{
 					_ = await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -284,11 +284,17 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	/// <param name="blob">The BLOB.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that returns <see langword="true" /> if the file passes the check; otherwise <see langword="false" />.</returns>
-	protected virtual Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
+	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return Task.FromResult(true);
+		if (fileInfo.IsNew)
+			return true;
+
+		if (Options.FileAccessChecker is not null)
+			return await Options.FileAccessChecker(fileInfo, blob, cancellationToken);
+
+		return true;
 	}
 	#endregion
 

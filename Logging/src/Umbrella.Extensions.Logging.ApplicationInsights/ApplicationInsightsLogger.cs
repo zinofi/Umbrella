@@ -41,7 +41,7 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
 		public IDisposable BeginScope<TState>(TState state) => EmptyDisposable.Instance;
 
 		/// <inheritdoc />
-		public bool IsEnabled(LogLevel logLevel) => _telemetryClient != null && logLevel >= _minLevel && _telemetryClient.IsEnabled();
+		public bool IsEnabled(LogLevel logLevel) => _telemetryClient is not null && logLevel >= _minLevel && _telemetryClient.IsEnabled();
 
 		/// <inheritdoc />
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
@@ -50,7 +50,7 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
 			{
 				var stateDictionary = state as IReadOnlyList<KeyValuePair<string, object>>;
 
-				if (exception == null || _trackExceptionsAsExceptionTelemetry == false)
+				if (exception is null || _trackExceptionsAsExceptionTelemetry is false)
 				{
 					var traceTelemetry = new TraceTelemetry(formatter(state, exception), GetSeverityLevel(logLevel));
 					PopulateTelemetry(traceTelemetry, stateDictionary, eventId);
@@ -90,7 +90,7 @@ namespace Umbrella.Extensions.Logging.ApplicationInsights
 					}
 				}
 
-				if (stateDictionary != null)
+				if (stateDictionary is not null)
 				{
 					foreach (KeyValuePair<string, object> item in stateDictionary)
 					{

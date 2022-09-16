@@ -52,7 +52,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 		{
 			var fileInfo = await sourceFileProvider.GetAsync(options.SourcePath, cancellationToken).ConfigureAwait(false);
 
-			if (fileInfo == null)
+			if (fileInfo is null)
 				return null;
 
 			if (await fileInfo.ExistsAsync().ConfigureAwait(false))
@@ -91,7 +91,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
 
-			if (dynamicImage != null)
+			if (dynamicImage is not null)
 			{
 				if (Logger.IsEnabled(LogLevel.Debug))
 					Logger.WriteDebug(new { dynamicImage.ImageOptions, dynamicImage.LastModified }, "Image found in cache.");
@@ -242,17 +242,17 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	private (int width, int height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
 	{
 		// both width and height are specified - squash image
-		if (nRequestedWidth != null && nRequestedHeight != null)
+		if (nRequestedWidth is not null && nRequestedHeight is not null)
 		{
 			return (nRequestedWidth.Value, nRequestedHeight.Value);
 		}
-		else if (nRequestedWidth != null) // calculate height to keep aspect ratio
+		else if (nRequestedWidth is not null) // calculate height to keep aspect ratio
 		{
 			double aspectRatio = (double)nInputWidth / nInputHeight;
 
 			return (nRequestedWidth.Value, (int)(nRequestedWidth.Value / aspectRatio));
 		}
-		else if (nRequestedHeight != null) // calculate width to keep aspect ratio
+		else if (nRequestedHeight is not null) // calculate width to keep aspect ratio
 		{
 			double aspectRatio = (double)nInputHeight / nInputWidth;
 

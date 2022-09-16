@@ -64,28 +64,28 @@ public class GenericEqualityComparer<TObject, TProperty> : EqualityComparer<TObj
 	public override bool Equals(TObject x, TObject y)
 	{
 		// Check the objects for null combinations first.
-		if (x == null && y == null)
+		if (x is null && y is null)
 			return true;
 
-		if (x == null)
+		if (x is null)
 			return false;
 
-		if (y == null)
+		if (y is null)
 			return false;
 
-		if (_customComparer != null)
+		if (_customComparer is not null)
 			return _customComparer(x, y);
 
 		TProperty xProperty = _propertySelector(x);
 		TProperty yProperty = _propertySelector(y);
 
-		if (xProperty == null && yProperty == null)
+		if (xProperty is null && yProperty is null)
 			return true;
 
-		if (xProperty == null)
+		if (xProperty is null)
 			return false;
 
-		if (yProperty == null)
+		if (yProperty is null)
 			return false;
 
 		// Check if we can compare the 2 values using the more efficient IEquatable interface to avoid any unnecessary boxing.

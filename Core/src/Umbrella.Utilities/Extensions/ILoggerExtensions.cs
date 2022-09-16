@@ -185,7 +185,7 @@ public static class ILoggerExtensions
 			new KeyValuePair<string, string>(nameof(lineNumber), lineNumber.ToString(CultureInfo.InvariantCulture))
 		};
 
-		if (state != null)
+		if (state is not null)
 		{
 			// Here we will convert the stateDictionary to an IReadOnlyList<KeyValuePair<string, object>> (actual call to .AsReadOnly is further down) so that it is compatible with ApplicationInsights.
 			// It should also be compatible with other logging implementations that can perform serialization of collections.

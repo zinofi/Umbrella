@@ -259,7 +259,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 		try
 		{
-			if (cacheContents && _contents != null)
+			if (cacheContents && _contents is not null)
 				return _contents;
 
 			byte[] bytes = new byte[PhysicalFileInfo.Length];
@@ -392,7 +392,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			if (_metadataDictionary is null)
 				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-			if (_metadataDictionary != null)
+			if (_metadataDictionary is not null)
 			{
 				_ = _metadataDictionary.TryGetValue(key, out string rawValue);
 
@@ -419,7 +419,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			if (_metadataDictionary is null)
 				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-			if (_metadataDictionary != null)
+			if (_metadataDictionary is not null)
 			{
 				if (value is null)
 				{
@@ -452,7 +452,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			if (_metadataDictionary is null)
 				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-			if (_metadataDictionary != null)
+			if (_metadataDictionary is not null)
 			{
 				_ = _metadataDictionary.Remove(key);
 
@@ -477,7 +477,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			if (_metadataDictionary is null)
 				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-			if (_metadataDictionary != null)
+			if (_metadataDictionary is not null)
 			{
 				_metadataDictionary.Clear();
 
@@ -513,7 +513,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 				// Before deleting the file, reload the metadata just in case we have some on disk that hasn't be loaded into memory.
 				await ReloadMetadataAsync(cancellationToken);
 
-				if (_metadataDictionary == null || _metadataDictionary.Count == 0)
+				if (_metadataDictionary is null || _metadataDictionary.Count is 0)
 					File.Delete(_metadataFullFileName);
 			}
 		}

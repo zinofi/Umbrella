@@ -84,7 +84,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 	/// <inheritdoc />
 	public virtual void InitializeOptions(IUmbrellaFileProviderOptions options)
 	{
-		if (Options != null)
+		if (Options is not null)
 			throw new UmbrellaFileSystemException("The options have already been initialized for this instance.");
 
 		Options = (TOptions)options;
@@ -134,7 +134,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		{
 			IUmbrellaFileInfo? fileInfo = await GetAsync(subpath, cancellationToken).ConfigureAwait(false);
 
-			return fileInfo == null || await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
+			return fileInfo is null || await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{
@@ -334,7 +334,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		{
 			IUmbrellaFileInfo? file = await GetFileAsync(subpath, false, cancellationToken).ConfigureAwait(false);
 
-			return file != null;
+			return file is not null;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { subpath }))
 		{

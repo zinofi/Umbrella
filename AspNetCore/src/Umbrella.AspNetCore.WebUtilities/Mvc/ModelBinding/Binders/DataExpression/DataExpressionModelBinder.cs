@@ -93,7 +93,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 				{
 					if (descriptor?.IsValid() == true)
 					{
-						if (DescriptorTransformer != null)
+						if (DescriptorTransformer is not null)
 						{
 							TDescriptor[]? transferArray = null;
 
@@ -106,14 +106,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 							}
 							finally
 							{
-								if (transferArray != null)
+								if (transferArray is not null)
 									ArrayPool<TDescriptor>.Shared.Return(transferArray);
 							}
 						}
 
 						object? modelResult = TransformDescriptor(underlyingOrModelType, descriptor);
 
-						if (modelResult != null)
+						if (modelResult is not null)
 						{
 							bindingContext.Result = ModelBindingResult.Success(modelResult);
 						}
@@ -137,7 +137,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 
 					var (modelResult, unmatchedItems) = TransformDescriptors(underlyingOrModelType, descriptors);
 
-					if (modelResult != null)
+					if (modelResult is not null)
 					{
 						bindingContext.Result = ModelBindingResult.Success(modelResult);
 					}
@@ -195,7 +195,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 				{
 					object? instance = DataExpressionFactory.Create(elementType, descriptor);
 
-					if (instance != null)
+					if (instance is not null)
 						lstExpression[count++] = instance;
 					else
 						lstUnmatched.Add(descriptor);
@@ -203,7 +203,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 			}
 			finally
 			{
-				if (lstExpression != null)
+				if (lstExpression is not null)
 					ArrayPool<object>.Shared.Return(lstExpression);
 			}
 

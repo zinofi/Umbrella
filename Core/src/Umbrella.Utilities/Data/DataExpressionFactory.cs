@@ -59,7 +59,7 @@ public class DataExpressionFactory : IDataExpressionFactory
 
 				var memberAccess = UmbrellaDynamicExpression.CreateMemberAccess(parameter, descriptor.MemberPath!, false);
 
-				if (memberAccess == null)
+				if (memberAccess is null)
 					return default;
 
 				UnaryExpression objectMemberExpression = Expression.Convert(memberAccess, typeof(object));
@@ -79,7 +79,7 @@ public class DataExpressionFactory : IDataExpressionFactory
 				{
 					object underlyingValue = Convert.ChangeType(enumValue, result.member.Type.GetEnumUnderlyingType());
 
-					if (underlyingValue != null)
+					if (underlyingValue is not null)
 						descriptorValue = underlyingValue.ToString();
 				}
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Diagnostics;
+using System;
 using System.Web;
 using System.Web.Mvc;
 
@@ -27,8 +28,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Results
 		/// <inheritdoc />
 		public override void ExecuteResult(ControllerContext context)
 		{
-			if (context == null)
-				throw new ArgumentNullException("context");
+			Guard.IsNotNull(context);
 
 			var httpContext = HttpContext.Current;
 

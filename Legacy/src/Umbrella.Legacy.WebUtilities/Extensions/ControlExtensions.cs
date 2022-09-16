@@ -26,7 +26,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions
             foreach (Control idx in from.Controls)
             {
                 T? tmpRetVal = idx.FindFirstControl(predicate);
-                if (tmpRetVal != null)
+                if (tmpRetVal is not null)
                     return tmpRetVal;
             }
 

@@ -66,7 +66,7 @@ namespace Umbrella.Legacy.WebUtilities.FileSystem.Middleware
 
 				FileSystemMiddlewareMapping mapping = _options.GetMapping(path);
 
-				if (mapping != null)
+				if (mapping is not null)
 				{
 					using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.Request.CallCancelled);
 					CancellationToken token = cts.Token;

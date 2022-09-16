@@ -288,7 +288,7 @@ public class FrontEndCompressionMiddleware
 					}
 					finally
 					{
-						if (cacheKeyParts != null)
+						if (cacheKeyParts is not null)
 							ArrayPool<string>.Shared.Return(cacheKeyParts);
 					}
 

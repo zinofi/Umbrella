@@ -40,7 +40,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 
 			using var image = LoadBitmap(bytes);
 
-			return image != null;
+			return image is not null;
 		}
 		catch
 		{

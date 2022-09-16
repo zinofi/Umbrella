@@ -117,7 +117,7 @@ public static class IServiceCollectionExtensions
 
 		_ = services.AddSingleton<ISynchronizationManager, MemorySynchronizationManager>();
 
-		if (httpServicesBuilder != null)
+		if (httpServicesBuilder is not null)
 		{
 			var dict = new Dictionary<Type, IHttpClientBuilder>
 			{

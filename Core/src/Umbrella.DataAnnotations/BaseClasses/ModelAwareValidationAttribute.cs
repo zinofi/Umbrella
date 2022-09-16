@@ -64,7 +64,7 @@ namespace Umbrella.DataAnnotations.BaseClasses
 			object container = validationContext.ObjectInstance;
 
 			if (!IsValid(value, container))
-				return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), validationContext.MemberName == null ? null : new[] { validationContext.MemberName });
+				return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), validationContext.MemberName is null ? null : new[] { validationContext.MemberName });
 
 			return ValidationResult.Success;
 		}

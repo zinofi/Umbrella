@@ -75,7 +75,7 @@ namespace Umbrella.TypeScript.Generators
 			{
 				var typeOverrideAttribute = pi.GetCustomAttribute<TypeScriptOverrideAttribute>();
 
-				Type propertyType = typeOverrideAttribute != null
+				Type propertyType = typeOverrideAttribute is not null
 					? typeOverrideAttribute.TypeOverride
 					: pi.PropertyType;
 
@@ -85,7 +85,7 @@ namespace Umbrella.TypeScript.Generators
 
 				//We are generating the validation rules here so that this work can be done in the same step
 				//as the work to generate the property itself.
-				if (validationBuilder != null)
+				if (validationBuilder is not null)
 					WriteValidationRules(pi, tsInfo, validationBuilder);
 			}
 		}
@@ -126,6 +126,6 @@ namespace Umbrella.TypeScript.Generators
 		/// </summary>
 		/// <param name="modelType">Type of the model.</param>
 		/// <returns>The properties on the model.</returns>
-		protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() == null).OrderBy(x => x.Name);
+		protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() is null).OrderBy(x => x.Name);
 	}
 }

@@ -32,12 +32,12 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 			{
 				ValueProviderResult val = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-				if (val == null)
+				if (val is null)
 				{
 					return false;
 				}
 
-				if (!(val.RawValue is string rawValue))
+				if (val.RawValue is not string rawValue)
 				{
 					bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"Wrong value type for {nameof(SortExpressionDescriptor)}");
 					return false;

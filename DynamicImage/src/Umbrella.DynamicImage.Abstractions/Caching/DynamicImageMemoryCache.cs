@@ -69,7 +69,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 
 				var (itemFound, cacheItem) = Cache.TryGetValue<DynamicImageItem>(cacheKey);
 
-				if (cacheItem != null)
+				if (cacheItem is not null)
 				{
 					//If the file does not exist or has been modified since the IDynamicImage was generated,
 					//evict it from the cache

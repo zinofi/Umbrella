@@ -253,7 +253,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 
 		var filteredQuery = Items;
 
-		if (coreFilterExpression != null)
+		if (coreFilterExpression is not null)
 			filteredQuery = filteredQuery.Where(coreFilterExpression);
 
 		filteredQuery = filteredQuery.ApplyFilterExpressions(filterExpressions, filterExpressionCombinator, additionalFilterExpressions);

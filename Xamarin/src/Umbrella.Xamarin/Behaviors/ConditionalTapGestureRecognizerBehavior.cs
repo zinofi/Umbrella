@@ -74,7 +74,7 @@ namespace Umbrella.Xamarin.Behaviors
 
 			_view = bindable;
 
-			if (IsEnabled && Command != null)
+			if (IsEnabled && Command is not null)
 			{
 				AddGestureRecognizer(bindable);
 			}
@@ -90,7 +90,7 @@ namespace Umbrella.Xamarin.Behaviors
 
 			if (propertyName == nameof(IsEnabled))
 			{
-				if (IsEnabled && Command != null)
+				if (IsEnabled && Command is not null)
 				{
 					AddGestureRecognizer(_view);
 				}
@@ -101,7 +101,7 @@ namespace Umbrella.Xamarin.Behaviors
 			}
 			else if (propertyName == nameof(Command) || propertyName == nameof(CommandParameter))
 			{
-				if (IsEnabled && Command != null)
+				if (IsEnabled && Command is not null)
 				{
 					if (_gestureRecognizer is null)
 					{
@@ -141,7 +141,7 @@ namespace Umbrella.Xamarin.Behaviors
 
 		private void UpdateGestureRecognizer()
 		{
-			if (_gestureRecognizer != null)
+			if (_gestureRecognizer is not null)
 			{
 				_gestureRecognizer.Command = Command;
 				_gestureRecognizer.CommandParameter = CommandParameter;
@@ -152,7 +152,7 @@ namespace Umbrella.Xamarin.Behaviors
 		{
 			try
 			{
-				if (_gestureRecognizer != null)
+				if (_gestureRecognizer is not null)
 				{
 					_ = bindable.GestureRecognizers.Remove(_gestureRecognizer);
 					_gestureRecognizer = null;

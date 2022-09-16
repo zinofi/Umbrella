@@ -125,7 +125,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		{
 			var result = await LoadPaginatedResultModelAsync(pageNumber, pageSize, sorters, filters);
 
-			if (result.Success && result.Result != null)
+			if (result.Success && result.Result is not null)
 			{
 				await GridInstance.UpdateAsync(result.Result.Items, result.Result.TotalCount, result.Result.PageNumber, result.Result.PageSize, CallGridStateHasChangedOnRefresh);
 

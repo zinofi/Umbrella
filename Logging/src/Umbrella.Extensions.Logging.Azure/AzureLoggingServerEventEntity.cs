@@ -109,7 +109,7 @@ namespace Umbrella.Extensions.Logging.Azure
 			LineNumber = locationInfo.LineNumber;
 			MethodName = locationInfo.MethodName;
 
-			if (exceptionObject != null)
+			if (exceptionObject is not null)
 				Exception = exceptionObject.ToString();
 
 			PartitionKey = $"{EventTimeStamp.Hour}-Hours"; ;

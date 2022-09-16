@@ -69,7 +69,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 		}
 		finally
 		{
-			if (rentedArray != null)
+			if (rentedArray is not null)
 				ArrayPool<char>.Shared.Return(rentedArray);
 		}
 	}
@@ -99,7 +99,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 			{
 				string part = keyParts[i];
 
-				if (part != null)
+				if (part is not null)
 					partsLengthTotal += part.Length + 1;
 			}
 
@@ -116,7 +116,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 			{
 				string part = keyParts[i];
 
-				if (part != null)
+				if (part is not null)
 				{
 					currentIndex = span.Append(currentIndex, part);
 
@@ -137,7 +137,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 		}
 		finally
 		{
-			if (rentedArray != null)
+			if (rentedArray is not null)
 				ArrayPool<char>.Shared.Return(rentedArray);
 		}
 	}

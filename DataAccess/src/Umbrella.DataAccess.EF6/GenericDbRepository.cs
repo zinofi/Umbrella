@@ -251,7 +251,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return lstSaveResult != null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
+			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception"))
 		{

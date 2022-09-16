@@ -26,7 +26,7 @@ namespace Umbrella.Xamarin.Extensions
 
 				root = root.Parent;
 			}
-			while (root != null);
+			while (root is not null);
 
 			return rootLayoutContainer;
 		}
@@ -63,7 +63,7 @@ namespace Umbrella.Xamarin.Extensions
 
 				root = root.Parent;
 			}
-			while (root != null);
+			while (root is not null);
 
 			return null;
 		}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Diagnostics;
+using System;
 using System.Data;
 
 namespace Umbrella.Utilities.Extensions
@@ -15,10 +16,7 @@ namespace Umbrella.Utilities.Extensions
 		/// <returns>The database connection.</returns>
 		public static IDbConnection EnsureOpened(this IDbConnection dbConnection)
 		{
-			if (dbConnection == null)
-			{
-				throw new ArgumentNullException(nameof(dbConnection));
-			}
+			Guard.IsNotNull(dbConnection);
 
 			// There is a small possibility of a race condition here where 2 threads could attempt to open the same connection at once.
 			// Locking on the connection object to guard against this.

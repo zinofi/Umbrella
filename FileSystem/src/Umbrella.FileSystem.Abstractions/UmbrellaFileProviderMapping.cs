@@ -40,7 +40,7 @@ public class UmbrellaFileProviderMapping : ISanitizableUmbrellaOptions, IValidat
 	/// </summary>
 	public void Sanitize()
 	{
-		if (AppRelativeFolderPaths != null)
+		if (AppRelativeFolderPaths is not null)
 		{
 			// When sanitizing the paths, ensure they all have a trailing '/'.
 			// This is to avoid an issue encountered when matching paths that start with the same name,

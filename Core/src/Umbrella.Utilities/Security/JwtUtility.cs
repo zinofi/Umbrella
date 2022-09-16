@@ -41,7 +41,7 @@ namespace Umbrella.Utilities.Security
 
 				keyValuePairs.TryGetValue(roleClaimType, out object roles);
 
-				if (roles != null)
+				if (roles is not null)
 				{
 					if (roles.ToString().Trim().StartsWith("["))
 					{

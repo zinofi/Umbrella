@@ -60,7 +60,7 @@ public abstract class AppAuthHelperBase : IAppAuthHelper
 				await _tokenStorageService.SetTokenAsync(token);
 				_claimsPrincipal = null;
 			}
-			else if (_claimsPrincipal != null)
+			else if (_claimsPrincipal is not null)
 			{
 				return _claimsPrincipal;
 			}

@@ -68,7 +68,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching
 				//Read the image content to save to the underlying file store
 				byte[]? bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
 
-				if(bytes != null)
+				if(bytes is not null)
 					await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken).ConfigureAwait(false);
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))

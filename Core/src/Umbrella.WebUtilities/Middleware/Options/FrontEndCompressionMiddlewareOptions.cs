@@ -72,7 +72,7 @@ public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions,
 	{
 		AcceptEncodingHeaderKey = AcceptEncodingHeaderKey.TrimToLowerInvariant();
 
-		if (Mappings != null)
+		if (Mappings is not null)
 		{
 			Mappings.ForEach(x => x.Sanitize());
 			_flattenedMappings = Mappings.SelectMany(x => x.AppRelativeFolderPaths.ToDictionary(y => y, y => x)).ToDictionary(x => x.Key, x => x.Value);

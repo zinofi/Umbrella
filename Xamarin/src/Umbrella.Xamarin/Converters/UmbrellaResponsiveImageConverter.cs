@@ -31,7 +31,7 @@ namespace Umbrella.Xamarin.Converters
 		{
 			object? convertedValue = value;
 
-			if (InnerConverter != null)
+			if (InnerConverter is not null)
 				convertedValue = InnerConverter.Convert(value, targetType, parameter, culture);
 
 			if (convertedValue is string imageUrl)

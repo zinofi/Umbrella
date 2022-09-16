@@ -22,7 +22,7 @@ namespace Umbrella.DataAnnotations
 		public override bool IsValid(object value, object dependentValue, object container)
 		{
 			if (!string.IsNullOrWhiteSpace((dependentValue ?? string.Empty).ToString()))
-				return value != null && !string.IsNullOrWhiteSpace(value.ToString());
+				return value is not null && !string.IsNullOrWhiteSpace(value.ToString());
 
 			return true;
 		}

@@ -140,7 +140,7 @@ public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
 		}
 		finally
 		{
-			if (cacheKeyParts != null)
+			if (cacheKeyParts is not null)
 				ArrayPool<string>.Shared.Return(cacheKeyParts);
 		}
 	}

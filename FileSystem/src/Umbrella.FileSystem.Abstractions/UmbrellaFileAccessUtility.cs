@@ -21,6 +21,7 @@ namespace Umbrella.FileSystem.Abstractions;
 public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirectoryType, TGroupId> : IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>
 	where TUserRoleType : struct, Enum
 	where TDirectoryType : struct, Enum
+	where TGroupId : IEquatable<TGroupId>
 {
 	/// <summary>
 	/// Gets the logger.
@@ -83,7 +84,7 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 			{
 				TUserId createdById = await fileInfo.GetCreatedByIdAsync<TUserId>(cancellationToken);
 
-				if (createdById != null && createdById.Equals(CurrentUserIdAccessor.CurrentUserId))
+				if (createdById is not null && createdById.Equals(CurrentUserIdAccessor.CurrentUserId))
 					return true;
 			}
 
@@ -96,7 +97,7 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 	}
 
 	/// <inheritdoc/>
-	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId? groupId, CancellationToken cancellationToken = default, bool writeChanges = true)
+	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -108,7 +109,7 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 			if (writeChanges)
 				await fileInfo.WriteMetadataChangesAsync(cancellationToken);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, CurrentUserIdAccessor.CurrentUserId, writeChanges }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, CurrentUserIdAccessor.CurrentUserId, groupId, writeChanges }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem applying the required file permissions.", exc);
 		}
@@ -127,13 +128,13 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 	public bool IsTempFilePath(string fileName) => fileName.StartsWith(GetTempDirectoryName() + "/", StringComparison.OrdinalIgnoreCase);
 
 	/// <inheritdoc/>
-	public string GetDirectoryName(TDirectoryType directoryType, TGroupId? groupId = default) => $"/{GetDirectoryNameFromType(directoryType)}/{groupId}";
+	public string GetDirectoryName(TDirectoryType directoryType, TGroupId groupId) => $"/{GetDirectoryNameFromType(directoryType)}/{groupId}";
 
 	/// <inheritdoc/>
-	public string GetFilePath(TDirectoryType directoryType, TGroupId? groupId, string fileName) => $"{GetDirectoryName(directoryType, groupId)}/{fileName}";
+	public string GetFilePath(TDirectoryType directoryType, string fileName, TGroupId groupId) => $"{GetDirectoryName(directoryType, groupId)}/{fileName}";
 
 	/// <inheritdoc/>
-	public string GetWebFilePath(TDirectoryType directoryType, TGroupId? groupId, string fileName) => $"/{WebFolderName}{GetFilePath(directoryType, groupId, fileName)}".ToLowerInvariant();
+	public string GetWebFilePath(TDirectoryType directoryType, string fileName, TGroupId groupId) => $"/{WebFolderName}{GetFilePath(directoryType, fileName, groupId)}".ToLowerInvariant();
 
 	/// <summary>
 	/// Determines if the specified file is inside the specified <paramref name="directoryName"/>.

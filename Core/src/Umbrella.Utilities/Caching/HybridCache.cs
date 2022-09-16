@@ -115,7 +115,7 @@ public class HybridCache : IHybridCache, IDisposable
 					{
 						(T cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.GetOrCreate(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), false);
 
-						if (exception != null)
+						if (exception is not null)
 						{
 							if (!throwOnCacheFailure)
 							{
@@ -154,7 +154,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 							T entryToAdd = actionFunction();
 
-							if (entryToAdd != null && TrackKeys)
+							if (entryToAdd is not null && TrackKeys)
 							{
 								cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 								_ = MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
@@ -164,7 +164,7 @@ public class HybridCache : IHybridCache, IDisposable
 							return entryToAdd;
 						});
 
-						if (cacheMetaEntry != null && TrackKeysAndHits)
+						if (cacheMetaEntry is not null && TrackKeysAndHits)
 							cacheMetaEntry.AddHit();
 
 						return cacheItem;
@@ -276,7 +276,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 							T entryToAdd = await actionFunction().ConfigureAwait(false);
 
-							if (entryToAdd != null && TrackKeys)
+							if (entryToAdd is not null && TrackKeys)
 							{
 								cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 								_ = MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
@@ -287,7 +287,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 						}).ConfigureAwait(false);
 
-						if (cacheMetaEntry != null && TrackKeysAndHits)
+						if (cacheMetaEntry is not null && TrackKeysAndHits)
 							cacheMetaEntry.AddHit();
 
 						return cacheItem;
@@ -329,7 +329,7 @@ public class HybridCache : IHybridCache, IDisposable
 			{
 				(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = DistributedCache.TryGetValue<T>(cacheKeyInternal);
 
-				if (exception != null)
+				if (exception is not null)
 					_ = Logger.WriteError(exception, new { cacheKey, cacheMode });
 
 				return (itemFound, cacheItem);
@@ -367,7 +367,7 @@ public class HybridCache : IHybridCache, IDisposable
 			{
 				(bool itemFound, T? cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.TryGetValueAsync<T>(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 
-				if (exception != null)
+				if (exception is not null)
 					_ = Logger.WriteError(exception, new { cacheKey, cacheKeyInternal, cacheMode });
 
 				return (itemFound, cacheItem);
@@ -599,15 +599,15 @@ public class HybridCache : IHybridCache, IDisposable
 
 		_ = options.SetPriority(priority);
 
-		if (expirationTokensBuilder != null)
+		if (expirationTokensBuilder is not null)
 		{
 			IEnumerable<IChangeToken>? tokens = expirationTokensBuilder();
 
-			if (tokens != null)
+			if (tokens is not null)
 			{
 				foreach (IChangeToken token in tokens)
 				{
-					if (token != null)
+					if (token is not null)
 						_ = options.AddExpirationToken(token);
 				}
 			}

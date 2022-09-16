@@ -55,7 +55,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 
 			if (!isValid)
 			{
-				if (resultsModifier != null)
+				if (resultsModifier is not null)
 					lstError = resultsModifier(lstError.ToList());
 
 				ShowValidationFields(lstError, model, page!, false, resultsModifier, attachInlineValiation);
@@ -94,7 +94,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 
 			if (!isValid)
 			{
-				if (resultsModifier != null)
+				if (resultsModifier is not null)
 					lstError = resultsModifier(lstError.ToList());
 
 				ShowValidationFields(lstError, model, page!, deep, resultsModifier, attachInlineValiation);
@@ -116,7 +116,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 		string errorControlName = $"{propertyName.Replace(".", "_")}{ValidationLabelSuffix}";
 		var control = page.FindByName<Label>(errorControlName);
 
-		if (control != null)
+		if (control is not null)
 		{
 			control.IsVisible = false;
 		}
@@ -161,7 +161,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 			if (errorControl is null)
 				(errorControl, propertyName) = GetErrorControl(baseType);
 
-			if (errorControl != null)
+			if (errorControl is not null)
 			{
 				errorControl.Text = $"{error.ErrorMessage}";
 				errorControl.IsVisible = true;

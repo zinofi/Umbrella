@@ -64,7 +64,7 @@ public class Log4NetLogger : ILogger
 		if (!IsEnabled(logLevel))
 			return;
 
-		if (formatter == null)
+		if (formatter is null)
 			throw new InvalidOperationException();
 
 		// If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
@@ -124,7 +124,7 @@ public class Log4NetLogger : ILogger
 		}
 
 		// Log4Net doesn't seem to log AggregateExceptions properly so handling them manually here
-		if (exception != null)
+		if (exception is not null)
 		{
 			AggregateException? aggregate = null;
 

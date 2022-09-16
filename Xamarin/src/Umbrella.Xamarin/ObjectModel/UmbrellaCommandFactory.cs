@@ -76,6 +76,6 @@ public class UmbrellaCommandFactory : IUmbrellaCommandFactory
 			return false;
 		}
 
-		return innerCanExecute == null || innerCanExecute();
+		return innerCanExecute is null || innerCanExecute();
 	}
 }

@@ -47,7 +47,7 @@ public class ResponsiveImageTag : IHtmlString
 		Path = path;
 		MapVirtualPathFunc = mapVirtualPath;
 
-		if (htmlAttributes == null)
+		if (htmlAttributes is null)
 			HtmlAttributes = new Dictionary<string, string>();
 		else
 			HtmlAttributes = htmlAttributes.ToDictionary(x => x.Key, x => x.Value.ToString());

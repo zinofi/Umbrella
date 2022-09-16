@@ -28,7 +28,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 
 				ValueProviderResult val = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-				if (val == null)
+				if (val is null)
 				{
 					// If nothing could be found, check if we are dealing with a POST, PUT or PATCH request
 					var httpMethod = actionContext.Request.Method;
@@ -50,7 +50,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 				{
 					rawValue = val.RawValue as string;
 
-					if (rawValue == null)
+					if (rawValue is null)
 					{
 						bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"Wrong value type for {bindingContext.ModelType.FullName}");
 
@@ -85,7 +85,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 							return null;
 						});
 
-						if (underlyingType == null)
+						if (underlyingType is null)
 						{
 							bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"The underlying type of the type {bindingContext.ModelType.FullName} cannot be determined.");
 						}
@@ -101,7 +101,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding
 						}
 					}
 
-					return bindingContext.Model != null;
+					return bindingContext.Model is not null;
 				}
 				catch
 				{

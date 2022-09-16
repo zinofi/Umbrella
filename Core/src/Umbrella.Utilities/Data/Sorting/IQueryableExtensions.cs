@@ -65,8 +65,8 @@ public static class IQueryableExtensions
 
 		return direction switch
 		{
-			SortDirection.Descending => comparer == null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer),
-			_ => comparer == null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer),
+			SortDirection.Descending => comparer is null ? source.OrderByDescending(keySelector) : source.OrderByDescending(keySelector, comparer),
+			_ => comparer is null ? source.OrderBy(keySelector) : source.OrderBy(keySelector, comparer),
 		};
 	}
 }

@@ -75,7 +75,7 @@ namespace Umbrella.Xamarin.Controls
 			base.OnParentSet();
 			VisualStateManager.GoToState(this, "ToggledOff");
 
-			if (LabelledBy != null)
+			if (LabelledBy is not null)
 			{
 				VisualStateManager.GoToState(LabelledBy, "ToggledOff");
 
@@ -129,7 +129,7 @@ namespace Umbrella.Xamarin.Controls
 			// Set the visual state
 			VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 
-			if (toggleButton.LabelledBy != null)
+			if (toggleButton.LabelledBy is not null)
 				VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
 		}
 	}

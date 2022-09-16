@@ -108,7 +108,7 @@ public class DynamicImageMiddleware
 
 			DynamicImageMiddlewareMapping mapping = _options.GetMapping(imageOptions.SourcePath);
 
-			if (mapping == null || (mapping.EnableValidation && !_dynamicImageUtility.ImageOptionsValid(imageOptions, mapping.ValidMappings)))
+			if (mapping is null || (mapping.EnableValidation && !_dynamicImageUtility.ImageOptionsValid(imageOptions, mapping.ValidMappings)))
 			{
 				cts.Cancel();
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
@@ -117,7 +117,7 @@ public class DynamicImageMiddleware
 
 			DynamicImageItem? image = await _dynamicImageResizer.GenerateImageAsync(mapping.FileProviderMapping.FileProvider, imageOptions, token);
 
-			if (image == null)
+			if (image is null)
 			{
 				cts.Cancel();
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
@@ -136,7 +136,7 @@ public class DynamicImageMiddleware
 				? _headerValueUtility.CreateETagHeaderValue(image.LastModified.Value, image.Length)
 				: null;
 
-			if (eTagValue != null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
+			if (eTagValue is not null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
 			{
 				cts.Cancel();
 				context.Response.SendStatusCode(HttpStatusCode.NotModified);

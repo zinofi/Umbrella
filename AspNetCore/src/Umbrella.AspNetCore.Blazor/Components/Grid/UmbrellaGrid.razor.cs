@@ -405,7 +405,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <inheritdoc />
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		if (!firstRender && PaginationInstance != null)
+		if (!firstRender && PaginationInstance is not null)
 		{
 			await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
 		}

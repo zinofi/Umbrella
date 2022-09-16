@@ -142,7 +142,7 @@ namespace Umbrella.Utilities.Data.Filtering
 
 			object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
 
-			if (value != null)
+			if (value is not null)
 				return (true, (TFilterValue)value, updatedFilters);
 
 			return (false, default!, updatedFilters);
@@ -178,7 +178,7 @@ namespace Umbrella.Utilities.Data.Filtering
 			// It'll only work if the filter value has already been converted to a enum before this method has been called into. Check the model binders.
 			object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
 
-			if (value != null)
+			if (value is not null)
 				return (true, (TFilterValue)value);
 
 			return (false, default!);

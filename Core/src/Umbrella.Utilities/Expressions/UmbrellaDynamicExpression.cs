@@ -121,12 +121,12 @@ public static class UmbrellaDynamicExpression
 
 		var ordinalParse = underlyingType.GetMethod("Parse", new[] { typeof(string) });
 
-		if (ordinalParse != null)
+		if (ordinalParse is not null)
 			expression = Expression.Call(ordinalParse, target);
 
 		var cultureParse = underlyingType.GetMethod("Parse", new[] { typeof(string), typeof(IFormatProvider) });
 
-		if (cultureParse != null)
+		if (cultureParse is not null)
 			expression = Expression.Call(cultureParse, target, format);
 
 		return Expression.Lambda<Func<string, IFormatProvider?, object>>(

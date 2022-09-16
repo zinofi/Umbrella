@@ -85,7 +85,7 @@ public static class TypeExtensions
 
 		Type baseType = givenType.BaseType;
 
-		return baseType != null && IsAssignableToGenericType(baseType, genericType);
+		return baseType is not null && IsAssignableToGenericType(baseType, genericType);
 	}
 
 	/// <summary>

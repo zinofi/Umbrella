@@ -65,7 +65,7 @@ public static class XElementExtensions
 			}
 		}
 
-		return type == typeof(string) && fallback == null
+		return type == typeof(string) && fallback is null
 			? (T)Convert.ChangeType(string.Empty, type)
 			: fallback!;
 	}

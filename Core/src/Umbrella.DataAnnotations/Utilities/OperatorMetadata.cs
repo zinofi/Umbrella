@@ -39,7 +39,7 @@ namespace Umbrella.DataAnnotations.Utilities
 
 							if (value is null && dependentValue is null)
 								return true;
-							else if (value is null && dependentValue != null)
+							else if (value is null && dependentValue is not null)
 								return false;
 
 							return value?.Equals(dependentValue) is true;
@@ -55,7 +55,7 @@ namespace Umbrella.DataAnnotations.Utilities
 							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 								return true;
 
-							if (value is null && dependentValue != null)
+							if (value is null && dependentValue is not null)
 								return true;
 							else if (value is null && dependentValue is null)
 								return false;

@@ -200,7 +200,7 @@ namespace Umbrella.TypeScript
                 {
                     TypeScriptNullAttribute attrNull = propertyInfo.GetCustomAttribute<TypeScriptNullAttribute>();
 
-                    if (attrNull != null)
+                    if (attrNull is not null)
                     {
                         info.InitialOutputValue = "null";
                         info.IsNullable = true;
@@ -214,7 +214,7 @@ namespace Umbrella.TypeScript
 
                     if (propertyValue is null)
                     {
-                        if (info.TypeName?.EndsWith("[]") is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() != null)
+                        if (info.TypeName?.EndsWith("[]") is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() is not null)
                         {
                             info.InitialOutputValue = "[]";
                         }

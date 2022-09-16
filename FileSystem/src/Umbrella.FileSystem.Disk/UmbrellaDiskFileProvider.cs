@@ -166,11 +166,17 @@ public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaD
 	/// <param name="physicalFileInfo">The physical file information.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that returns <see langword="true" /> if the file passes the check; otherwise <see langword="false" />.</returns>
-	protected virtual Task<bool> CheckFileAccessAsync(UmbrellaDiskFileInfo fileInfo, FileInfo physicalFileInfo, CancellationToken cancellationToken)
+	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaDiskFileInfo fileInfo, FileInfo physicalFileInfo, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return Task.FromResult(true);
+		if (fileInfo.IsNew)
+			return true;
+
+		if (Options.FileAccessChecker is not null)
+			return await Options.FileAccessChecker(fileInfo, physicalFileInfo, cancellationToken);
+
+		return true;
 	}
 	#endregion
 

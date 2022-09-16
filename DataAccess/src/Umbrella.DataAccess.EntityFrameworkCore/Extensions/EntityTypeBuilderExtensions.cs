@@ -23,6 +23,12 @@ public static class EntityTypeBuilderExtensions
 		where TEntity : class, IConcurrencyStamp
 		=> builder.Property(x => x.ConcurrencyStamp).HasMaxLength(36).IsRequired().IsConcurrencyToken();
 
+	/// <summary>
+	/// Setups the CreatedDateUtc audit property.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The builder.</returns>
 	public static PropertyBuilder<DateTime> SetupCreatedDateUtcAuditProperty<TEntity>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, ICreatedDateAuditEntity
 		=> builder.Property(x => x.CreatedDateUtc).EnsureUtc();

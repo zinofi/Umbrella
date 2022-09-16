@@ -160,7 +160,7 @@ public class DynamicImageResizerTest
 
 		DynamicImageItem? result = await resizer.GenerateImageAsync(fileProviderMock.Object, options);
 
-		byte[]? resizedImageBytes = result != null ? await result.GetContentAsync() : null;
+		byte[]? resizedImageBytes = result is not null ? await result.GetContentAsync() : null;
 
 		Assert.NotNull(resizedImageBytes);
 		Assert.NotEmpty(resizedImageBytes!);
@@ -194,7 +194,7 @@ public class DynamicImageResizerTest
 
 		// Only output the images to disk when building in debug mode. This ensure that when running in release mode on the build server this doesn't waste
 		// unneccessary build resources.
-		if (DebugUtility.IsDebug && resizedImageBytes != null)
+		if (DebugUtility.IsDebug && resizedImageBytes is not null)
 		{
 			string outputDirectory = PathHelper.PlatformNormalize($@"{BaseDirectory}\Output\{resizer.GetType().Namespace}");
 			string outputPath = PathHelper.PlatformNormalize($@"{outputDirectory}\{options.Width}w-{options.Height}h-{options.ResizeMode}.{options.Format.ToFileExtensionString()}");

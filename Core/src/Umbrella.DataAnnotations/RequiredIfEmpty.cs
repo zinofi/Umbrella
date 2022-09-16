@@ -18,7 +18,7 @@ namespace Umbrella.DataAnnotations
 
 		/// <inheritdoc />
 		public override bool IsValid(object value, object dependentValue, object container)
-			=> !string.IsNullOrWhiteSpace((dependentValue ?? string.Empty).ToString()) || value != null && !string.IsNullOrWhiteSpace(value.ToString());
+			=> !string.IsNullOrWhiteSpace((dependentValue ?? string.Empty).ToString()) || value is not null && !string.IsNullOrWhiteSpace(value.ToString());
 
 		/// <inheritdoc />
 		public override string DefaultErrorMessageFormat => "{0} is required due to {1} being empty.";
