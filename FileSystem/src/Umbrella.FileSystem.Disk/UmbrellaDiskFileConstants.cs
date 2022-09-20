@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
 
-namespace Umbrella.FileSystem.Disk
+namespace Umbrella.FileSystem.Disk;
+
+/// <summary>
+/// Constants used with the Disk based Umbrella File System.
+/// </summary>
+public static class UmbrellaDiskFileConstants
 {
 	/// <summary>
-	/// Constants used with the Disk based Umbrella File System.
+	/// The metadata file extension
 	/// </summary>
-	public static class UmbrellaDiskFileConstants
-    {
-		/// <summary>
-		/// The metadata file extension
-		/// </summary>
-		public const string MetadataFileExtension = ".umfsmeta";
-    }
+	public const string MetadataFileExtension = ".umfsmeta";
 }

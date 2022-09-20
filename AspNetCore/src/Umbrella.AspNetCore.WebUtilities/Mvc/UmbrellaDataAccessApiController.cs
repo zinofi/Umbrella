@@ -521,5 +521,11 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		pageSize = Math.Clamp(pageSize, 1, 50);
 	}
 
+	/// <summary>
+	/// Gets the synchronization key to be used internally by the <see cref="CreateAsync"/> method. It is important
+	/// that this key is scoped appropriately to ensure correct locking behaviour.
+	/// </summary>
+	/// <param name="model">The incoming model passed into the action method.</param>
+	/// <returns>A tuple containing the type and the key used to performing synchronization.</returns>
 	protected virtual (Type type, string key)? GetCreateSynchronizationRootKey(object model) => null;
 }
