@@ -513,6 +513,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 					string? filterValue = column.FilterOptionsType switch
 					{
+						UmbrellaColumnFilterOptionsType.String when column.FilterControlType is UmbrellaColumnFilterType.Options && column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
 						UmbrellaColumnFilterOptionsType.String => column.FilterValue,
 						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) => "true",
 						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("no", StringComparison.OrdinalIgnoreCase) => "false",

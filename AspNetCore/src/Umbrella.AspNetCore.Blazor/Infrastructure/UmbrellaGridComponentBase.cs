@@ -26,7 +26,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	/// <summary>
 	/// Gets the sort direction used to initially sort the data in the grid.
 	/// </summary>
-	protected abstract SortDirection InitialSortDirection { get; }
+	protected virtual SortDirection InitialSortDirection { get; } = SortDirection.Descending;
 
 	/// <summary>
 	/// Gets the collection of sort expressions used to initially sort the data in the grid.
