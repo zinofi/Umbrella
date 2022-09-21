@@ -67,6 +67,9 @@ public class UmbrellaColumnDefinition<TItem>
 
 		if (FilterOptions.Count > 0)
 		{
+			// If the options type hasn't been set, default to a string.
+			FilterOptionsType ??= UmbrellaColumnFilterOptionsType.String;
+
 			FilterControlType = UmbrellaColumnFilterType.Options;
 			FilterMatchType = FilterType.Equal;
 		}
