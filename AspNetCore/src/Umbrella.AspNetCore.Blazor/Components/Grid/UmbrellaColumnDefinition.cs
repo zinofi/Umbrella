@@ -37,7 +37,7 @@ public class UmbrellaColumnDefinition<TItem>
 		int? percentageWidth,
 		bool sortable,
 		bool filterable,
-		IReadOnlyCollection<object> filterOptions,
+		IReadOnlyCollection<object>? filterOptions,
 		Func<object, string>? filterOptionDisplayNameSelector,
 		IReadOnlyDictionary<string, object> additionalAttributes,
 		UmbrellaColumnFilterType filterControlType,
@@ -65,19 +65,22 @@ public class UmbrellaColumnDefinition<TItem>
 		SorterMemberPathOverride = sorterMemberPathOverride;
 		DisplayMode = displayMode;
 
-		if (FilterOptions.Count > 0)
+		if (FilterOptionsType is UmbrellaColumnFilterOptionsType.Enum)
 		{
-			// If the options type hasn't been set, default to a string.
-			FilterOptionsType ??= UmbrellaColumnFilterOptionsType.String;
-
 			FilterControlType = UmbrellaColumnFilterType.Options;
 			FilterMatchType = FilterType.Equal;
 		}
-		else if (FilterOptionsType == UmbrellaColumnFilterOptionsType.Boolean)
+		else if (FilterOptionsType is UmbrellaColumnFilterOptionsType.Boolean)
 		{
 			FilterControlType = UmbrellaColumnFilterType.Options;
 			FilterMatchType = FilterType.Equal;
 			FilterOptions = new[] { "Yes", "No" };
+		}
+		else if (FilterControlType is UmbrellaColumnFilterType.Options || FilterOptions is not null)
+		{
+			FilterControlType = UmbrellaColumnFilterType.Options;
+			FilterOptionsType = UmbrellaColumnFilterOptionsType.String;
+			FilterMatchType = FilterType.Equal;
 		}
 
 		if (Heading is null && Property is not null)
@@ -157,7 +160,7 @@ public class UmbrellaColumnDefinition<TItem>
 	/// <summary>
 	/// Gets the filter options displayed to the user.
 	/// </summary>
-	public IReadOnlyCollection<object> FilterOptions { get; }
+	public IReadOnlyCollection<object>? FilterOptions { get; }
 
 	/// <summary>
 	/// Specifies the type of the <see cref="FilterOptions"/> displayed to the user.
@@ -222,7 +225,7 @@ public class UmbrellaColumnDefinition<TItem>
 
 				return string.Join("", lstChar);
 			}
-			else if(option is Enum enumOption)
+			else if (option is Enum enumOption)
 			{
 				return enumOption.ToDisplayString();
 			}

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace Umbrella.Utilities.Extensions;
@@ -10,7 +12,6 @@ namespace Umbrella.Utilities.Extensions;
 /// </summary>
 public static class TypeExtensions
 {
-	#region Public Static Methods		
 	/// <summary>
 	/// Gets the public or private instance properties defined on the specified <paramref name="type"/>.
 	/// </summary>
@@ -110,5 +111,4 @@ public static class TypeExtensions
 
 		return baseType is null ? ((bool isEnumerable, Type? elementType))(false, null) : baseType.GetIEnumerableTypeData();
 	}
-	#endregion
 }

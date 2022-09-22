@@ -1,7 +1,7 @@
 ﻿@typeparam TItem
 
 @{
-    #pragma warning disable CS8625
+#pragma warning disable CS8625
     string groupName = Guid.NewGuid().ToString("N");
     string filterContainerId = "a" + Guid.NewGuid().ToString("N")[1..];
 }
@@ -32,13 +32,22 @@
                                 <div class="form-group form-floating">
                                     @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
                                     {
-                                        <select id="@id" class="form-select" @bind="column.FilterValue">
-                                            <option>Any</option>
-                                            @foreach (object option in column.FilterOptions)
-                                            {
-                                                <option value="@option">@column.GetFilterOptionDisplayName(option)</option>
-                                            }
-                                        </select>
+                                        @if (column.FilterOptions is not null)
+                                        {
+                                            <select id="@id" class="form-select" @bind="column.FilterValue">
+                                                <option>Any</option>
+                                                @foreach (object option in column.FilterOptions)
+                                                {
+                                                    <option value="@option">@column.GetFilterOptionDisplayName(option)</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-danger">
+                                                The type of the filter has been specified as Options but the FilterOptions collection is null.
+                                            </div>
+                                        }
                                     }
                                     else
                                     {

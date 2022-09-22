@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
+using Humanizer;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -47,11 +48,5 @@ public static class EnumExtensions
 	/// This tries to read the value from a <see cref="DisplayAttribute"/> that exists on the enum member. If it cannot be found,
 	/// the enum value is converted directly to a string using <see cref="Enum.ToString()"/>
 	/// </remarks>
-	public static string ToDisplayString(this Enum value)
-	{
-		return _enumDisplayStringDictionary.GetOrAdd(value, option =>
-		{
-			return option.GetType().GetFields().Single(x => x.Name == option.ToString()).GetCustomAttribute<DisplayAttribute>()?.Name?.ToString() ?? option.ToString();
-		});
-	}
+	public static string ToDisplayString(this Enum value) => _enumDisplayStringDictionary.GetOrAdd(value, option => option.GetType().GetFields().Single(x => x.Name == option.ToString()).GetCustomAttribute<DisplayAttribute>()?.Name?.ToString() ?? option.ToString().Humanize(LetterCasing.Title));
 }

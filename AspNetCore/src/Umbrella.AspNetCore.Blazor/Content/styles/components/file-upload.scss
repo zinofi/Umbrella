@@ -1,0 +1,27 @@
+﻿/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-file-upload-button-spacing
+*/
+
+.u-file-upload
+{
+	&__upload-input-container
+	{
+		&--hidden
+		{
+			visibility: hidden;
+			pointer-events: none;
+			height: 0;
+			overflow: hidden;
+			position: absolute;
+			left: -9999px;
+		}
+	}
+
+	&__buttons
+	{
+		display: flex;
+		gap: var(--u-file-upload-button-spacing, 0.5rem);
+	}
+}

@@ -129,7 +129,7 @@ public partial class UmbrellaColumn<TItem>
 	/// Gets or sets the filter options that appear in the drop down when <see cref="FilterControlType"/> is set to <see cref="UmbrellaColumnFilterType.Options"/>.
 	/// </summary>
 	[Parameter]
-	public IReadOnlyCollection<object> FilterOptions { get; set; } = Array.Empty<object>();
+	public IReadOnlyCollection<object>? FilterOptions { get; set; }
 
 	/// <summary>
 	/// Gets or sets the type of the filter options.

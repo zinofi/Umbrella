@@ -3,8 +3,8 @@
 }
 
 <div class="u-file-upload">
-    @if (Status is UmbrellaFileUploadStatus.None)
-    {
+
+    <div class="u-file-upload__upload-input-container @(Status == UmbrellaFileUploadStatus.None ? "u-file-upload__upload-input-container--hidden" : "")">
         @if (!string.IsNullOrEmpty(Accept))
         {
             <div class="custom-file">
@@ -27,8 +27,9 @@
                 <small class="form-text">@maxFileSizeMessage</small>
             }
         }
-    }
-    else if (SelectedFile is not null)
+    </div>
+
+    @if (SelectedFile is not null)
     {
         <div class="form-group">
 
@@ -50,7 +51,7 @@
                 </div>
             }
         </div>
-        <div class="form-group">
+        <div class="form-group u-file-upload__buttons">
             @if (Status is UmbrellaFileUploadStatus.Selected)
             {
                 <button type="button" class="btn btn-primary" @onclick="UploadClick">Upload</button>

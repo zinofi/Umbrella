@@ -47,10 +47,9 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	{
 		try
 		{
-			Type type = typeof(TItemModel);
-			string humanizedTypeName = type.Name.Humanize(LetterCasing.Title);
+			string typeDisplayName = typeof(TItemModel).GetDisplayText();
 
-			bool confirmed = await DialogUtility.ShowConfirmDangerMessageAsync($"Are you sure you want to delete this {humanizedTypeName}? ", $"Delete {humanizedTypeName}");
+			bool confirmed = await DialogUtility.ShowConfirmDangerMessageAsync($"Are you sure you want to delete this {typeDisplayName}? ", $"Delete {typeDisplayName}");
 
 			if (confirmed)
 			{
@@ -61,12 +60,12 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 					int pageNumber = CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber;
 					int pageSize = CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize;
 
-					await DialogUtility.ShowSuccessMessageAsync($"The {humanizedTypeName} has been successfully deleted.", $"{humanizedTypeName} Deleted");
+					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
 					await RefreshGridAsync(pageNumber, pageSize, CurrentRefreshOptions?.Sorters, CurrentRefreshOptions?.Filters);
 				}
 				else
 				{
-					await ShowProblemDetailsErrorMessageAsync(result.ProblemDetails, $"Delete {humanizedTypeName}");
+					await ShowProblemDetailsErrorMessageAsync(result.ProblemDetails, $"Delete {typeDisplayName}");
 				}
 			}
 		}

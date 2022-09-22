@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
+using Humanizer;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -145,6 +146,6 @@ public static class ExpressionExtensions
 
 		var displayProperty = memberExpression.Member.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
 
-		return displayProperty?.Name ?? memberExpression.Member.Name;
+		return displayProperty?.Name ?? memberExpression.Member.Name.Humanize(LetterCasing.Title);
 	}
 }
