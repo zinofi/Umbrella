@@ -39,7 +39,7 @@ public partial class UmbrellaColumn<TItem>
 	[CascadingParameter]
 	private TItem? Value { get; set; }
 
-	private string? PropertyStringValue => Value is not null && _propertyDelegate is not null ? _propertyDelegate(Value).ToString() : "";
+	private string? PropertyStringValue => Value is not null && _propertyDelegate is not null ? (_propertyDelegate(Value)?.ToString() ?? "") : "";
 
 	/// <summary>
 	/// Gets or sets the property selector for this column.
