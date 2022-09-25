@@ -125,7 +125,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <summary>
 	/// Gets or sets the items collection displayed in the grid.
 	/// </summary>
-	protected IReadOnlyCollection<TItem> Items { get; private set; } = Array.Empty<TItem>();
+	public IReadOnlyCollection<TItem> Items { get; private set; } = Array.Empty<TItem>();
 
 	/// <summary>
 	/// Gets or sets the message displayed when the grid is loading.
