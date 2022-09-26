@@ -17,8 +17,11 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// A base component to be used with Blazor components which contain commonly used functionality.
 /// </summary>
 /// <seealso cref="ComponentBase" />
-public abstract class UmbrellaComponentBase : ComponentBase
+public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 {
+	private bool _disposedValue;
+	private readonly Lazy<CancellationTokenSource> _cancellationTokenSource = new(() => new());
+
 	[Inject]
 	private ILoggerFactory LoggerFactory { get; set; } = null!;
 
@@ -53,6 +56,11 @@ public abstract class UmbrellaComponentBase : ComponentBase
 	/// </summary>
 	protected LayoutState CurrentState { get; set; } = LayoutState.Loading;
 
+	/// <summary>
+	/// Gets the cancellation token.
+	/// </summary>
+	protected CancellationToken CancellationToken => _cancellationTokenSource.Value.Token;
+
 	/// <inheritdoc />
 	protected override void OnInitialized()
 	{
@@ -78,6 +86,35 @@ public abstract class UmbrellaComponentBase : ComponentBase
 	/// <summary>
 	/// Reloads the component primarily in response to an error during the initial loading phase.
 	/// </summary>
+	/// <remarks>Defaults to <see cref="ComponentBase.OnInitializedAsync"/></remarks>
 	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
-	protected virtual Task ReloadAsync() => throw new NotImplementedException("Reloading has not been implemented.");
+	protected virtual Task ReloadAsync() => OnInitializedAsync();
+
+	/// <summary>
+	/// Releases unmanaged and - optionally - managed resources.
+	/// </summary>
+	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!_disposedValue)
+		{
+			if (disposing)
+			{
+				if (_cancellationTokenSource.IsValueCreated)
+				{
+					_cancellationTokenSource.Value.Cancel();
+					_cancellationTokenSource.Value.Dispose();
+				}
+			}
+
+			_disposedValue = true;
+		}
+	}
+
+	/// <inheritdoc/>
+	public void Dispose()
+	{
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
 }

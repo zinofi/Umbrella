@@ -10,6 +10,7 @@ using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
@@ -39,14 +40,30 @@ public partial class UmbrellaColumn<TItem>
 	[CascadingParameter]
 	private TItem? Value { get; set; }
 
-	private string? PropertyStringValue => Value is not null && _propertyDelegate is not null ? (_propertyDelegate(Value)?.ToString() ?? "") : "";
+	private string? PropertyStringValue
+	{
+		get
+		{
+			if (Value is null || _propertyDelegate is null)
+				return null;
+
+			object? objValue = _propertyDelegate.Invoke(Value);
+
+			if (objValue is null)
+				return null;
+
+			return objValue.GetType().IsEnum
+				? ((Enum)objValue).ToDisplayString()
+				: objValue.ToString();
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the property selector for this column.
 	/// </summary>
 	[Parameter]
 	public Expression<Func<TItem, object>>? Property
-	{ 
+	{
 		get => _property;
 		set
 		{
