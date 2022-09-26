@@ -98,7 +98,7 @@
                             {
                                 <col class="u-grid__column" />
                             }
-                            @foreach (var column in ColumnDefinitions)
+                            @foreach (var column in ColumnDefinitions.Where(x => x.DisplayMode is UmbrellaColumnDisplayMode.Full))
                             {
                                 <col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
                             }
