@@ -118,7 +118,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	/// <param name="pageSize">The page size.</param>
 	/// <param name="sorters">The sorters.</param>
 	/// <param name="filters">The filters.</param>
-	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
+	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
 	protected virtual async Task RefreshGridAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null)
 	{
 		try
@@ -144,4 +144,16 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 			throw;
 		}
 	}
+
+	/// <summary>
+	/// Refreshes the grid using any existing <see cref="CurrentRefreshOptions"/> falling back to the
+	/// <see cref="UmbrellaGrid{TItem}.PageNumber"/> and <see cref="UmbrellaGrid{TItem}.PageSize"/> for the current <see cref="GridInstance"/>
+	/// where needed.
+	/// </summary>
+	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
+	protected Task RefreshGridAsyncUsingCurrentRefreshOptions()
+		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
+			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
+			CurrentRefreshOptions?.Sorters,
+			CurrentRefreshOptions?.Filters);
 }
