@@ -15,6 +15,7 @@ using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
+using Umbrella.Utilities.Primitives;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
@@ -275,9 +276,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("You do not have permission to access the specified item.");
 			}
 
-			SaveResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, cancellationToken, repoOptions: options).ConfigureAwait(false);
+			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, cancellationToken, repoOptions: options).ConfigureAwait(false);
 
-			if (saveResult.Success)
+			if (saveResult.Status is OperationResultStatus.Success)
 			{
 				TResultModel? result = default;
 
@@ -385,9 +386,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("You do not have the permissions to update the specified item.");
 			}
 
-			SaveResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, cancellationToken, repoOptions: options).ConfigureAwait(false);
+			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, cancellationToken, repoOptions: options).ConfigureAwait(false);
 
-			if (saveResult.Success)
+			if (saveResult.Status is OperationResultStatus.Success)
 			{
 				TResultModel? result = default;
 

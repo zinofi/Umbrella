@@ -13,6 +13,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
+using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.DataAccess.EF6;
 
@@ -164,7 +165,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 	#region Save
 	/// <inheritdoc />
-	public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false)
+	public virtual async Task<OperationResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entity, nameof(entity));
@@ -187,7 +188,8 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			{
 				ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
-				return new SaveResult<TEntity>(false, entity, lstValidationResult);
+				if (lstValidationResult.Length > 0)
+					return OperationResult<TEntity>.GenericFailure(entity, lstValidationResult);
 			}
 
 			// Common work
@@ -201,7 +203,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return new SaveResult<TEntity>(true, entity);
+			return OperationResult<TEntity>.Success(entity);
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
@@ -227,7 +229,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+	public virtual async Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entities);
@@ -235,15 +237,15 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			// Save all changes - do not push to the database yet
-			List<SaveResult<TEntity>>? lstSaveResult = null;
+			List<OperationResult<TEntity>>? lstSaveResult = null;
 
 			if (!bypassSaveLogic)
 			{
-				lstSaveResult = new List<SaveResult<TEntity>>();
+				lstSaveResult = new List<OperationResult<TEntity>>();
 
 				foreach (TEntity entity in entities)
 				{
-					SaveResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
+					OperationResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
 					lstSaveResult.Add(saveResult);
 				}
 			}
@@ -251,7 +253,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
+			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => OperationResult<TEntity>.Success(x)).ToArray();
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception"))
 		{
@@ -469,17 +471,16 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// </summary>
 	/// <param name="exc">The exception.</param>
 	/// <returns>The SaveResult.</returns>
-	protected virtual SaveResult<TEntity> CreateSaveResultFromDbEntityValidationException(DbEntityValidationException exc)
-				=> CreateSaveResultsFromDbEntityValidationException(exc).Single();
+	protected virtual OperationResult<TEntity> CreateSaveResultFromDbEntityValidationException(DbEntityValidationException exc) => CreateSaveResultsFromDbEntityValidationException(exc).Single();
 
 	/// <summary>
 	/// Creates the save results from the database entity validation exception.
 	/// </summary>
 	/// <param name="exc">The exception.</param>
 	/// <returns>The SaveResult collection.</returns>
-	protected virtual List<SaveResult<TEntity>> CreateSaveResultsFromDbEntityValidationException(DbEntityValidationException exc)
+	protected virtual List<OperationResult<TEntity>> CreateSaveResultsFromDbEntityValidationException(DbEntityValidationException exc)
 	{
-		var lstSaveResult = new List<SaveResult<TEntity>>();
+		var lstSaveResult = new List<OperationResult<TEntity>>();
 
 		foreach (var item in exc.EntityValidationErrors)
 		{
@@ -487,7 +488,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			{
 				var lstValidationResult = item.ValidationErrors.GroupBy(x => x.ErrorMessage).Select(x => new ValidationResult(x.Key, x.Select(y => y.PropertyName)));
 
-				var saveResult = new SaveResult<TEntity>(false, entity, lstValidationResult);
+				var saveResult = OperationResult<TEntity>.GenericFailure(entity, lstValidationResult);
 				lstSaveResult.Add(saveResult);
 			}
 		}

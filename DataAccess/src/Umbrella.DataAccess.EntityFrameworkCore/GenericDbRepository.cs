@@ -13,6 +13,7 @@ using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
+using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
@@ -164,7 +165,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 	#region Save
 	/// <inheritdoc />
-	public virtual async Task<SaveResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false)
+	public virtual async Task<OperationResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entity);
@@ -192,7 +193,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 				ICollection<ValidationResult> lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				if (lstValidationResult.Count > 0)
-					return new SaveResult<TEntity>(false, entity, lstValidationResult);
+					return OperationResult<TEntity>.GenericFailure(entity, lstValidationResult);
 			}
 
 			bool entityHasChanged = false;
@@ -237,7 +238,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return new SaveResult<TEntity>(true, entity);
+			return OperationResult<TEntity>.Success(entity);
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
@@ -250,7 +251,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IReadOnlyCollection<SaveResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+	public virtual async Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entities);
@@ -258,15 +259,15 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			// Save all changes - do not push to the database yet
-			List<SaveResult<TEntity>>? lstSaveResult = null;
+			List<OperationResult<TEntity>>? lstSaveResult = null;
 
 			if (!bypassSaveLogic)
 			{
-				lstSaveResult = new List<SaveResult<TEntity>>();
+				lstSaveResult = new List<OperationResult<TEntity>>();
 
 				foreach (TEntity entity in entities)
 				{
-					SaveResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
+					OperationResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
 					lstSaveResult.Add(saveResult);
 				}
 			}
@@ -274,7 +275,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => new SaveResult<TEntity>(true, x)).ToArray();
+			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => OperationResult<TEntity>.Success(x)).ToArray();
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception"))
 		{
