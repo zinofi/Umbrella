@@ -189,7 +189,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 				ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				if (lstValidationResult.Length > 0)
-					return OperationResult<TEntity>.GenericFailure(entity, lstValidationResult);
+					return OperationResult<TEntity>.GenericFailure(lstValidationResult, entity);
 			}
 
 			// Common work
@@ -488,7 +488,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			{
 				var lstValidationResult = item.ValidationErrors.GroupBy(x => x.ErrorMessage).Select(x => new ValidationResult(x.Key, x.Select(y => y.PropertyName)));
 
-				var saveResult = OperationResult<TEntity>.GenericFailure(entity, lstValidationResult);
+				var saveResult = OperationResult<TEntity>.GenericFailure(lstValidationResult, entity);
 				lstSaveResult.Add(saveResult);
 			}
 		}

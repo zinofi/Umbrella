@@ -67,12 +67,12 @@ public readonly struct OperationResult<T>
 		Item = item,
 	};
 
-	public static OperationResult<T> GenericFailure(T item, string errorMessage) => Failure(OperationResultStatus.GenericFailure, item, new[] { new ValidationResult(errorMessage) });
-	public static OperationResult<T> GenericFailure(T item, IEnumerable<ValidationResult> results) => Failure(OperationResultStatus.GenericFailure, item, results.ToArray());
-	public static OperationResult<T> NotFound(T item, string errorMessage) => Failure(OperationResultStatus.NotFound, item, new[] { new ValidationResult(errorMessage) });
-	public static OperationResult<T> Conflict(T item, string errorMessage) => Failure(OperationResultStatus.Conflict, item, new[] { new ValidationResult(errorMessage) });
+	public static OperationResult<T> GenericFailure(string errorMessage, T? item = default) => Failure(OperationResultStatus.GenericFailure, item, new[] { new ValidationResult(errorMessage) });
+	public static OperationResult<T> GenericFailure(IEnumerable<ValidationResult> results, T? item = default) => Failure(OperationResultStatus.GenericFailure, item, results.ToArray());
+	public static OperationResult<T> NotFound(string errorMessage, T? item = default) => Failure(OperationResultStatus.NotFound, item, new[] { new ValidationResult(errorMessage) });
+	public static OperationResult<T> Conflict(string errorMessage, T? item = default) => Failure(OperationResultStatus.Conflict, item, new[] { new ValidationResult(errorMessage) });
 
-	private static OperationResult<T> Failure(OperationResultStatus status, T item, ValidationResult[] results) => new()
+	private static OperationResult<T> Failure(OperationResultStatus status, T? item, ValidationResult[] results) => new()
 	{
 		Item = item,
 		Status = status,

@@ -193,7 +193,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 				ICollection<ValidationResult> lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
 
 				if (lstValidationResult.Count > 0)
-					return OperationResult<TEntity>.GenericFailure(entity, lstValidationResult);
+					return OperationResult<TEntity>.GenericFailure(lstValidationResult, entity);
 			}
 
 			bool entityHasChanged = false;
