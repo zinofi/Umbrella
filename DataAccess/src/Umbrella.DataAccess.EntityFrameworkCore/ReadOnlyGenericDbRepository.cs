@@ -213,6 +213,26 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		}
 	}
 
+	/// <inheritdoc />
+	public virtual async Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> entityKeys, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return await Items
+				.Where(x => entityKeys.Contains(x.Id))
+				.IncludeMap(map)
+				.TrackChanges(trackChanges)
+				.ToArrayAsync(cancellationToken)
+				.ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { entityKeys, trackChanges, map, repoOptions, childOptions }))
+		{
+			throw new UmbrellaDataAccessException("There has been a problem retrieving all items using the specified parameters.", exc);
+		}
+	}
+
 	/// <summary>
 	/// Finds all entities using the specified parameters.
 	/// </summary>

@@ -48,11 +48,11 @@ public readonly struct OperationResult
 }
 
 /// <summary>
-/// Encapsulates the result of an operation on an item of type <typeparamref name="T"/>.
+/// Encapsulates the result of an operation with a result of type <typeparamref name="TResult"/>.
 /// </summary>
-/// <typeparam name="T">The type of the item.</typeparam>
+/// <typeparam name="TResult">The type of the result.</typeparam>
 [StructLayout(LayoutKind.Auto)]
-public readonly struct OperationResult<T>
+public readonly struct OperationResult<TResult>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="OperationResult{T}"/> struct.
@@ -61,28 +61,28 @@ public readonly struct OperationResult<T>
 	{
 	}
 
-	public static OperationResult<T> Success(T item) => new()
+	public static OperationResult<TResult> Success(TResult item) => new()
 	{
 		Status = OperationResultStatus.Success,
-		Item = item,
+		Result = item,
 	};
 
-	public static OperationResult<T> GenericFailure(string errorMessage, T? item = default) => Failure(OperationResultStatus.GenericFailure, item, new[] { new ValidationResult(errorMessage) });
-	public static OperationResult<T> GenericFailure(IEnumerable<ValidationResult> results, T? item = default) => Failure(OperationResultStatus.GenericFailure, item, results.ToArray());
-	public static OperationResult<T> NotFound(string errorMessage, T? item = default) => Failure(OperationResultStatus.NotFound, item, new[] { new ValidationResult(errorMessage) });
-	public static OperationResult<T> Conflict(string errorMessage, T? item = default) => Failure(OperationResultStatus.Conflict, item, new[] { new ValidationResult(errorMessage) });
+	public static OperationResult<TResult> GenericFailure(string errorMessage, TResult? item = default) => Failure(OperationResultStatus.GenericFailure, item, new[] { new ValidationResult(errorMessage) });
+	public static OperationResult<TResult> GenericFailure(IEnumerable<ValidationResult> validationResults, TResult? result = default) => Failure(OperationResultStatus.GenericFailure, result, validationResults.ToArray());
+	public static OperationResult<TResult> NotFound(string errorMessage, TResult? result = default) => Failure(OperationResultStatus.NotFound, result, new[] { new ValidationResult(errorMessage) });
+	public static OperationResult<TResult> Conflict(string errorMessage, TResult? result = default) => Failure(OperationResultStatus.Conflict, result, new[] { new ValidationResult(errorMessage) });
 
-	private static OperationResult<T> Failure(OperationResultStatus status, T? item, ValidationResult[] results) => new()
+	private static OperationResult<TResult> Failure(OperationResultStatus status, TResult? result, ValidationResult[] validationResults) => new()
 	{
-		Item = item,
+		Result = result,
 		Status = status,
-		ValidationResults = results
+		ValidationResults = validationResults
 	};
 
 	/// <summary>
 	/// The item that the associated operation was being performed on.
 	/// </summary>
-	public T? Item { get; init; } = default;
+	public TResult? Result { get; init; } = default;
 
 	/// <summary>
 	/// Gets the status of the operation.

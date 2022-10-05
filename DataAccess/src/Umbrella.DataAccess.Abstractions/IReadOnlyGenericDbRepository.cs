@@ -83,6 +83,18 @@ namespace Umbrella.DataAccess.Abstractions
 		Task<TEntity?> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
 
 		/// <summary>
+		/// Finds all entities specified in the list of <paramref name="entityKeys"/>.
+		/// </summary>
+		/// <param name="entityKeys">The entity keys.</param>
+		/// <param name="trackChanges">if set to <c>true</c>, tracking entries are created in the database context (where supported).</param>
+		/// <param name="map">The include map to specify related entities to load at the same time</param>
+		/// <param name="repoOptions">The repo options.</param>
+		/// <param name="childOptions">The child repo options.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <returns>The entities.</returns>
+		Task<IReadOnlyCollection<TEntity>> FindAllByIdListAsync(IEnumerable<TEntityKey> entityKeys, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
+		/// <summary>
 		/// Finds the total count of all <typeparamref name="TEntity"/> entities in the database.
 		/// </summary>
 		/// <param name="cancellationToken">The cancellation token.</param>

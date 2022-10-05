@@ -1,10 +1,17 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using Umbrella.AppFramework.Shared.Constants;
+using Umbrella.AppFramework.Shared.Security;
+using Umbrella.AppFramework.Shared.Security.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.Utilities.Http.Constants;
 using Umbrella.Utilities.Primitives;
@@ -17,7 +24,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 [ApiController]
 public abstract class UmbrellaApiController : ControllerBase
 {
-	#region Protected Properties		
 	/// <summary>
 	/// Gets the logger.
 	/// </summary>
@@ -32,9 +38,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// Gets a value indicating whether the application is running in development mode.
 	/// </summary>
 	protected bool IsDevelopment => HostingEnvironment.IsDevelopment();
-	#endregion
-
-	#region Constructors		
+	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaApiController"/> class.
 	/// </summary>
@@ -48,9 +52,20 @@ public abstract class UmbrellaApiController : ControllerBase
 		HostingEnvironment = hostingEnvironment;
 
 	}
-	#endregion
 
-	#region Protected Methods		
+	/// <summary>
+	/// Appends the a file access token as a query string parameter with the key <see cref="AppQueryStringKeys.FileAccessToken" /> using the value stored
+	/// using the <see cref="UmbrellaAppClaimType.FileAccessToken "/> claim, if it exists on the current <see cref="ClaimsPrincipal"/>.
+	/// </summary>
+	/// <param name="uri">The URI to append the token to.</param>
+	/// <returns>The URI with the appended token if the <see cref="UmbrellaAppClaimType.FileAccessToken" /> claim exists; otherwise the value of the <paramref name="uri"/> parameter.</returns>
+	public string AppendFileAccessToken(string uri)
+	{
+		string? accessToken = User.GetFileAccessToken();
+
+		return string.IsNullOrWhiteSpace(accessToken) ? uri : QueryHelpers.AddQueryString(uri, AppQueryStringKeys.FileAccessToken, accessToken);
+	}
+
 	/// <summary>
 	/// Creates a failure result based on the specified <see cref="OperationResult"/>.
 	/// </summary>
@@ -191,5 +206,4 @@ public abstract class UmbrellaApiController : ControllerBase
 			StatusCode = statusCode
 		};
 	}
-	#endregion
 }
