@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Humanizer;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -129,10 +130,15 @@ public static class ExpressionExtensions
 	}
 
 	/// <summary>
-	/// Gets the display text for the given expression by attempting to find a <see cref="DisplayAttribute"/> annotation.
+	/// Gets the display text for the given expression by trying the following in order:
+	/// <list type="bullet">
+	/// <item>Use a <see cref="DisplayAttribute"/>.</item>
+	/// <item>Use a <see cref="DisplayNameAttribute"/>.</item>
+	/// <item>Use Humanizer to convert the member name to a friendly string using <see cref="LetterCasing.Title"/>.</item>
+	/// </list>
 	/// </summary>
 	/// <param name="expression">The expression.</param>
-	/// <returns>The text specified using the <see cref="DisplayAttribute"/> if it exists.</returns>
+	/// <returns>The display name according to the specified rules.</returns>
 	public static string? GetDisplayText(this LambdaExpression expression)
 	{
 		MemberExpression? memberExpression = expression.Body switch
@@ -144,8 +150,6 @@ public static class ExpressionExtensions
 		if (memberExpression is null)
 			return null;
 
-		var displayProperty = memberExpression.Member.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
-
-		return displayProperty?.Name ?? memberExpression.Member.Name.Humanize(LetterCasing.Title);
+		return memberExpression.Member.GetDisplayText();
 	}
 }

@@ -142,19 +142,22 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 
 			using Stream stream = SelectedFile.OpenReadStream(MaxFileSizeBytes ?? 512000, _cancellationTokenSource.Token);
 
-			_ = OnRequestUpload.InvokeAsync(new UmbrellaFileUploadRequestEventArgs(stream, SelectedFile.Name, SelectedFile.ContentType, _cancellationTokenSource.Token));
-
-			while (stream.Position < stream.Length)
+			await using Timer timer = new(_ => InvokeAsync(() =>
 			{
-				UploadPercentage = (int)(stream.Position / stream.Length * 100);
-				await Task.Delay(500);
-			}
+				UploadPercentage = (int)Math.Round(stream.Position / stream.Length * 100d, MidpointRounding.AwayFromZero);
+				StateHasChanged();
+			}));
 
-			ClearSelection();
+			timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+
+			await OnRequestUpload.InvokeAsync(new UmbrellaFileUploadRequestEventArgs(stream, SelectedFile.Name, SelectedFile.ContentType, _cancellationTokenSource.Token));
+
+			Cleanup(UmbrellaFileUploadStatus.Uploaded);
+			await DialogUtility.ShowSuccessMessageAsync("Your file has been uploaded successfully.");
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
-			Cleanup();
+			Cleanup(UmbrellaFileUploadStatus.Selected);
 			await DialogUtility.ShowDangerMessageAsync("There has been a problem uploading the selected file. Please try again.");
 		}
 	}
@@ -191,7 +194,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 					return;
 			}
 
-			Cleanup();
+			Cleanup(UmbrellaFileUploadStatus.Selected);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -200,9 +203,9 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	}
 
 	/// <inheritdoc />
-	public void Dispose() => Cleanup();
+	public void Dispose() => ClearSelection();
 
-	private void Cleanup()
+	private void Cleanup(UmbrellaFileUploadStatus status)
 	{
 		if (_cancellationTokenSource is not null)
 		{
@@ -211,14 +214,12 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 			_cancellationTokenSource = null;
 		}
 
-		Status = UmbrellaFileUploadStatus.Selected;
+		Status = status;
 	}
 
 	private void ClearSelection()
 	{
-		Cleanup();
-
+		Cleanup(UmbrellaFileUploadStatus.None);
 		SelectedFile = null;
-		Status = UmbrellaFileUploadStatus.None;
 	}
 }

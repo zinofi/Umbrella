@@ -4,6 +4,7 @@
 using CommunityToolkit.Diagnostics;
 using Humanizer;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -40,13 +41,14 @@ public static class EnumExtensions
 	}
 
 	/// <summary>
-	/// Converts the specified enum value to a friendly string that can be displayed in a UI.
+	/// Converts the specified enum value to a friendly string that can be displayed in a UI by trying the following in order:
+	/// <list type="bullet">
+	/// <item>Use a <see cref="DisplayAttribute"/>.</item>
+	/// <item>Use a <see cref="DisplayNameAttribute"/>.</item>
+	/// <item>Use Humanizer to convert the enum to a friendly string using <see cref="LetterCasing.Title"/>.</item>
+	/// </list>
 	/// </summary>
 	/// <param name="value">The value.</param>
-	/// <returns>The display string.</returns>
-	/// <remarks>
-	/// This tries to read the value from a <see cref="DisplayAttribute"/> that exists on the enum member. If it cannot be found,
-	/// the enum value is converted directly to a string using <see cref="Enum.ToString()"/>
-	/// </remarks>
-	public static string ToDisplayString(this Enum value) => _enumDisplayStringDictionary.GetOrAdd(value, option => option.GetType().GetFields().Single(x => x.Name == option.ToString()).GetCustomAttribute<DisplayAttribute>()?.Name?.ToString() ?? option.ToString().Humanize(LetterCasing.Title));
+	/// <returns>The display name according to the specified rules.</returns>
+	public static string ToDisplayString(this Enum value) => _enumDisplayStringDictionary.GetOrAdd(value, option => option.GetType().GetFields().Single(x => x.Name == option.ToString()).GetDisplayText());
 }

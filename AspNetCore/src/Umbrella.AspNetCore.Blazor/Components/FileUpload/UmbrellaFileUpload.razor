@@ -4,12 +4,12 @@
 
 <div class="u-file-upload">
 
-    <div class="u-file-upload__upload-input-container @(Status == UmbrellaFileUploadStatus.None ? "u-file-upload__upload-input-container--hidden" : "")">
+    <div class="u-file-upload__upload-input-container @(Status is not UmbrellaFileUploadStatus.None ? "u-file-upload__upload-input-container--hidden" : "")">
         @if (!string.IsNullOrEmpty(Accept))
         {
-            <div class="custom-file">
-                <InputFile id="@Id" class="custom-file-input" OnChange="OnFileSelected" accept="@Accept" />
-                <label class="custom-file-label" for="@Id">Choose file</label>
+            <div class="u-file-upload__upload-input">
+                <label class="form-label" for="@Id">Choose file</label>
+                <InputFile id="@Id" class="form-control" OnChange="OnFileSelected" accept="@Accept" />
             </div>
             @if (!string.IsNullOrWhiteSpace(AcceptTypesMessage))
             {
@@ -18,9 +18,9 @@
         }
         else
         {
-            <div class="custom-file">
-                <InputFile id="@Id" class="custom-file-input" OnChange="OnFileSelected" />
-                <label class="custom-file-label" for="@Id">Choose file</label>
+            <div class="u-file-upload__upload-input">
+                <label class="form-label" for="@Id">Choose file</label>
+                <InputFile id="@Id" class="form-control" OnChange="OnFileSelected" />
             </div>
             @if (!string.IsNullOrWhiteSpace(maxFileSizeMessage))
             {
