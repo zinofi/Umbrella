@@ -3,10 +3,10 @@
 
 using System;
 
-namespace Umbrella.AppFramework.Shared.Models
+namespace Umbrella.AppFramework.Shared.Models;
+
+public class NoopUpdateResultModel : IUpdateResultModel
 {
-	public class NoopUpdateResultModel : IUpdateResultModel
-	{
-		public string ConcurrencyStamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	}
+	/// <inheritdoc />
+	public string ConcurrencyStamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

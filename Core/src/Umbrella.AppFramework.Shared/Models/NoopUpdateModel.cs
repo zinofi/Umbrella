@@ -3,11 +3,14 @@
 
 using System;
 
-namespace Umbrella.AppFramework.Shared.Models
+namespace Umbrella.AppFramework.Shared.Models;
+
+public class NoopUpdateModel<TKey> : IUpdateModel<TKey>
+	where TKey : IEquatable<TKey>
 {
-	public class NoopUpdateModel<TKey> : IUpdateModel<TKey>
-	{
-		public TKey Id => throw new NotImplementedException();
-		public string ConcurrencyStamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	}
+	/// <inheritdoc />
+	public TKey Id => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public string ConcurrencyStamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

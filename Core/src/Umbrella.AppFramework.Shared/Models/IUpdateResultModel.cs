@@ -3,9 +3,8 @@
 
 using Umbrella.Utilities.Data.Concurrency;
 
-namespace Umbrella.AppFramework.Shared.Models
+namespace Umbrella.AppFramework.Shared.Models;
+
+public interface IUpdateResultModel : IConcurrencyStamp
 {
-	public interface IUpdateResultModel : IConcurrencyStamp
-	{
-	}
 }

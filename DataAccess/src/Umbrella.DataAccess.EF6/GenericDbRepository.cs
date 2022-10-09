@@ -13,6 +13,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.DataAccess.EF6;
@@ -207,7 +208,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
-			throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+			throw new UmbrellaConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 		}
 		catch (DbEntityValidationException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Data Validation Exception for Id"))
 		{
@@ -257,7 +258,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception"))
 		{
-			throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
+			throw new UmbrellaConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 		}
 		catch (DbEntityValidationException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Data Validation Exception for Ids"))
 		{
@@ -308,7 +309,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
-			throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+			throw new UmbrellaConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Failed for Id"))
 		{
@@ -334,7 +335,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }, "Bulk Delete Concurrency Exception"))
 		{
-			throw new UmbrellaDataAccessConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
+			throw new UmbrellaConcurrencyException(ErrorMessages.BulkActionConcurrencyExceptionErrorMessage, exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, repoOptions, childOptions }))
 		{
@@ -383,7 +384,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
 	{
 		if (IsConcurrencyTokenMismatch(entity))
-			throw new UmbrellaDataAccessConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
+			throw new UmbrellaConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
 	}
 
 	/// <summary>

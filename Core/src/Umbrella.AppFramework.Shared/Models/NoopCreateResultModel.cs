@@ -3,10 +3,11 @@
 
 using System;
 
-namespace Umbrella.AppFramework.Shared.Models
+namespace Umbrella.AppFramework.Shared.Models;
+
+public class NoopCreateResultModel<TKey> : ICreateResultModel<TKey>
+	where TKey : IEquatable<TKey>
 {
-	public class NoopCreateResultModel<TKey> : ICreateResultModel<TKey>
-	{
-		public TKey Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	}
+	/// <inheritdoc />
+	public TKey Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

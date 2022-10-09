@@ -106,8 +106,24 @@ public readonly struct OperationResult<TResult>
 /// </summary>
 public enum OperationResultStatus
 {
+	/// <summary>
+	/// Indicates that the operation completed successfully.
+	/// </summary>
 	Success = 0,
+
+	/// <summary>
+	/// Indicates that the operation failed with a non-specific error.
+	/// </summary>
 	GenericFailure = 1,
+
+	/// <summary>
+	/// Indicates that the operation failed because the target of the operation could not be found.
+	/// </summary>
 	NotFound = 2,
+
+	/// <summary>
+	/// Indicates that the operation failed because the target of the operation conflicts with something,
+	/// e.g, when creating a user, another user already exists with the same username.
+	/// </summary>
 	Conflict = 3
 }

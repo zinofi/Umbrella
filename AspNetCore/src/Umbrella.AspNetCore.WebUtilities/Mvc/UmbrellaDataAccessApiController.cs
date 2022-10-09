@@ -14,6 +14,7 @@ using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Primitives;
 using Umbrella.Utilities.Threading.Abstractions;
@@ -416,7 +417,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 				? ValidationProblem(saveResult.ValidationResults.ToModelStateDictionary())
 				: (IActionResult)BadRequest("There was a problem updating the item. Please try again.");
 		}
-		catch (UmbrellaDataAccessConcurrencyException)
+		catch (UmbrellaConcurrencyException)
 		{
 			return ConcurrencyConflict(Options.ConcurrencyErrorMessage);
 		}
