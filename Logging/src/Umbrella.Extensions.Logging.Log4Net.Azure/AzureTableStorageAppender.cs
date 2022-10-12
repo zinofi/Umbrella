@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Azure.Data.Tables;
 using CommunityToolkit.Diagnostics;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
-using Microsoft.Azure.Cosmos.Table;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Umbrella.Extensions.Logging.Azure;
@@ -28,7 +28,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 	#region Internal Properties
 	//Exposed as internal for unit testing purposes
 	internal AzureTableStorageLogAppenderOptions? Config { get; set; }
-	internal CloudTableClient? TableClient { get; set; }
+	internal TableServiceClient? TableClient { get; set; }
 	#endregion
 
 	#region Internal Methods
@@ -43,40 +43,41 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 			if (Config is null)
 				throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
-			//Get the table we need to write stuff to and create it if needed
-			CloudTable table = TableClient!.GetTableReference($"{Config.TablePrefix}{AzureTableStorageLoggingOptions.TableNameSeparator}{DateTime.UtcNow:yyyyxMMxdd}");
-			_ = await table.CreateIfNotExistsAsync().ConfigureAwait(false);
+			////Get the table we need to write stuff to and create it if needed
+			//CloudTable table = TableClient!.GetTableReference($"{Config.TablePrefix}{AzureTableStorageLoggingOptions.TableNameSeparator}{DateTime.UtcNow:yyyyxMMxdd}");
+			//_ = await table.CreateIfNotExistsAsync().ConfigureAwait(false);
 
-			//Create the required table entities to write to storage and group them by PartitionKey.
-			//This is because entities written in a batch must all have the same PartitionKey.
-			var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x is not null).GroupBy(x => x!.PartitionKey);
+			////Create the required table entities to write to storage and group them by PartitionKey.
+			////This is because entities written in a batch must all have the same PartitionKey.
+			//var paritionKeyGroups = events.Select(x => GetLogEntity(x)).Where(x => x is not null).GroupBy(x => x!.PartitionKey);
 
-			foreach (var group in paritionKeyGroups)
-			{
-				foreach (var batch in group.Split(100))
-				{
-					var batchOperation = new TableBatchOperation();
+			//foreach (var group in paritionKeyGroups)
+			//{
+			//	foreach (var batch in group.Split(100))
+			//	{
+			//		var batchOperation = new TableBatchOperation();
 
-					foreach (var item in batch)
-					{
-						if (item is not null)
-							batchOperation.Insert(item);
-					}
+			//		foreach (var item in batch)
+			//		{
+			//			if (item is not null)
+			//				batchOperation.Insert(item);
+			//		}
 
-					_ = await table.ExecuteBatchAsync(batchOperation).ConfigureAwait(false);
-				}
-			}
+			//		_ = await table.ExecuteBatchAsync(batchOperation).ConfigureAwait(false);
+			//	}
+			//}
 		}
-		catch (StorageException exc)
+		catch (Exception)
 		{
-			if (_logErrorsToConsole)
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine(exc.Message);
-				Console.WriteLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}");
-				Console.WriteLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
-				Console.ResetColor();
-			}
+			// TODO: Fix this
+			//if (_logErrorsToConsole)
+			//{
+			//	Console.ForegroundColor = ConsoleColor.Red;
+			//	Console.WriteLine(exc.Message);
+			//	Console.WriteLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}");
+			//	Console.WriteLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
+			//	Console.ResetColor();
+			//}
 
 			throw;
 		}
@@ -85,6 +86,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 
 	#region Overridden Methods
 	/// <inheritdoc />
+	[Obsolete]
 	protected override void SendBuffer(LoggingEvent[] events)
 	{
 		//Executing this code asynchronously on a worker thread to avoid blocking the main thread
@@ -99,19 +101,21 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 			//event logs.
 			if (logTask.IsFaulted)
 			{
-				if (logTask.Exception.GetBaseException() is StorageException exc)
-				{
-					StringBuilder sbMessage = new StringBuilder()
-						.AppendLine(exc.Message)
-						.AppendLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}")
-						.AppendLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
+				//if (logTask.Exception.GetBaseException() is StorageException exc)
+				//{
+				//	StringBuilder sbMessage = new StringBuilder()
+				//		.AppendLine(exc.Message)
+				//		.AppendLine($"HttpStatusCode: {exc.RequestInformation.HttpStatusCode}, ErrorCode: {exc.RequestInformation.ErrorCode}, ErrorMessage: {exc.RequestInformation.ExtendedErrorInformation.ErrorMessage}")
+				//		.AppendLine($"AdditionalDetails: {exc.RequestInformation.ExtendedErrorInformation.AdditionalDetails.ToJsonString()}");
 
-					throw new Exception(sbMessage.ToString(), exc);
-				}
-				else
-				{
-					throw logTask.Exception;
-				}
+				//	throw new Exception(sbMessage.ToString(), exc);
+				//}
+				//else
+				//{
+				//	throw logTask.Exception;
+				//}
+
+				throw logTask.Exception;
 			}
 		});
 	}
@@ -136,8 +140,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 		//Get both the account and create the table client here.
 		//We will get a reference to the table when we need to write to it as the name of the table needs to change
 		//to reflect the current date.
-		var account = CloudStorageAccount.Parse(connectionString);
-		TableClient = account.CreateCloudTableClient();
+		TableClient = new TableServiceClient(connectionString);
 
 		_logErrorsToConsole = logErrorsToConsole;
 

@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Azure;
+using Azure.Data.Tables;
+using Azure.Data.Tables.Models;
 using CommunityToolkit.Diagnostics;
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -24,20 +26,14 @@ namespace Umbrella.Extensions.Logging.Azure.Management;
 public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 {
 	#region Private Inner Classes
-	private class LogEntryMetaData
+	private class LogEntryMetaData : ITableEntity
 	{
-		public LogEntryMetaData(string partitionKey, string rowKey, DateTime? eventTimeStamp, string level)
-		{
-			PartitionKey = partitionKey;
-			RowKey = rowKey;
-			EventTimeStamp = eventTimeStamp;
-			Level = level;
-		}
-
-		public string PartitionKey { get; }
-		public string RowKey { get; }
-		public DateTime? EventTimeStamp { get; }
-		public string Level { get; }
+		public string PartitionKey { get; set; } = null!;
+		public string RowKey { get; set; } = null!;
+		public DateTimeOffset? Timestamp { get; set; }
+		public ETag ETag { get; set; }
+		public DateTime? EventTimeStamp { get; set; }
+		public string Level { get; set; } = null!;
 	}
 	#endregion
 
@@ -58,12 +54,13 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 		[nameof(LogEntryMetaData.EventTimeStamp)] = Normalize(nameof(LogEntryMetaData.EventTimeStamp)),
 		[nameof(LogEntryMetaData.Level)] = Normalize(nameof(LogEntryMetaData.Level)),
 	};
-	private static readonly GenericEqualityComparer<CloudTable, string> _cloudTableEqualityComparer = new(x => x.Name);
+	private static readonly GenericEqualityComparer<TableItem, string> _cloudTableEqualityComparer = new(x => x.Name);
 	private static readonly string[] _dateSeparatorArray = new[] { AzureTableStorageLoggingOptions.TableNameSeparator };
 	private static readonly string _cacheKeyPrefix = typeof(AzureTableStorageLogManager).FullName;
+	private static readonly IReadOnlyCollection<string> _metadataFilters = new[] { nameof(LogEntryMetaData.EventTimeStamp), nameof(LogEntryMetaData.Level) };
 	#endregion
 
-	#region Protected Properties		
+	#region Protected Properties
 	/// <summary>
 	/// Gets the log.
 	/// </summary>
@@ -75,9 +72,9 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	protected AzureTableStorageLogManagementOptions LogManagementOptions { get; }
 
 	/// <summary>
-	/// Gets the storage account.
+	/// Gets the table service client.
 	/// </summary>
-	protected CloudStorageAccount StorageAccount { get; }
+	protected TableServiceClient TableServiceClient { get; }
 
 	/// <summary>
 	/// Gets the memory cache.
@@ -115,7 +112,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	{
 		Logger = logger;
 		LogManagementOptions = options;
-		StorageAccount = CloudStorageAccount.Parse(options.AzureStorageConnectionString);
+		TableServiceClient = new TableServiceClient(options.AzureStorageConnectionString);
 		MemoryCache = memoryCache;
 		DistributedCache = distributedCache;
 
@@ -126,10 +123,10 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 	#region IAzureTableStorageLogManager Members
 	/// <inheritdoc />
-	public Task<(List<AzureTableStorageLogDataSource> Items, int TotalCount)> FindAllDataSourceByOptionsAsync(AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
+	public Task<(IReadOnlyCollection<AzureTableStorageLogDataSource> items, int totalCount)> FindAllDataSourceByOptionsAsync(AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(options, nameof(options));
+		Guard.IsNotNull(options);
 
 		try
 		{
@@ -181,9 +178,9 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 			//Apply pagination
 			int itemsToSkip = (options.PageNumber - 1) * options.PageSize;
 
-			List<AzureTableStorageLogDataSource> lstSortedFilteredItem = options.PageSize > 0
-				? lstDataSource.Skip(itemsToSkip).Take(options.PageSize).ToList()
-				: lstDataSource.ToList();
+			IReadOnlyCollection<AzureTableStorageLogDataSource> lstSortedFilteredItem = options.PageSize > 0
+				? lstDataSource.Skip(itemsToSkip).Take(options.PageSize).ToArray()
+				: lstDataSource.ToArray();
 
 			return Task.FromResult((lstSortedFilteredItem, totalCount));
 		}
@@ -194,11 +191,11 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	}
 
 	/// <inheritdoc />
-	public async Task<(List<AzureTableStorageLogTable> Items, int TotalCount)> FindAllLogTableByTablePrefixAndOptionsAsync(string tablePrefix, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
+	public async Task<(IReadOnlyCollection<AzureTableStorageLogTable> items, int totalCount)> FindAllLogTableByTablePrefixAndOptionsAsync(string tablePrefix, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
-		Guard.IsNotNull(options, nameof(options));
+		Guard.IsNotNullOrWhiteSpace(tablePrefix);
+		Guard.IsNotNull(options);
 
 		try
 		{
@@ -207,30 +204,15 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 
-				CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
+				var hsResult = new HashSet<TableItem>(_cloudTableEqualityComparer);
 
-				TableContinuationToken? continuationToken = null;
-				TableResultSegment? resultSegment = null;
-
-				var hsResult = new HashSet<CloudTable>(_cloudTableEqualityComparer);
-
-				do
+				await foreach (var tableItem in TableServiceClient.QueryAsync(x => x.Name.StartsWith(tablePrefix), 100, cancellationToken).ConfigureAwait(false))
 				{
-					cancellationToken.ThrowIfCancellationRequested();
-
-					resultSegment = await tableClient.ListTablesSegmentedAsync(tablePrefix, continuationToken, cancellationToken).ConfigureAwait(false);
-
-					foreach (CloudTable table in resultSegment.Results)
-					{
-						if (table is not null)
-							_ = hsResult.Add(table);
-					}
-
-					continuationToken = resultSegment.ContinuationToken;
+					if (tableItem is not null)
+						_ = hsResult.Add(tableItem);
 				}
-				while (continuationToken is not null);
 
-				if (hsResult.Count == 0)
+				if (hsResult.Count is 0)
 					return null;
 
 				var cbTableModel = new ConcurrentBag<AzureTableStorageLogTable>();
@@ -291,32 +273,26 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	}
 
 	/// <inheritdoc />
-	public async Task<(AzureTableStorageLogAppenderType? AppenderType, List<TableEntity> Items, int TotalCount)> FindAllTableEntityByOptionsAsync(string tablePrefix, string tableName, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
+	public async Task<(AzureTableStorageLogAppenderType? appenderType, IReadOnlyCollection<TEntity> items, int totalCount)> FindAllTableEntityByOptionsAsync<TEntity>(string tablePrefix, string tableName, AzureTableStorageLogSearchOptions options, CancellationToken cancellationToken = default)
+		where TEntity : class, ITableEntity, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
-		Guard.IsNotNullOrWhiteSpace(tableName, nameof(tableName));
-		Guard.IsNotNull(options, nameof(options));
+		Guard.IsNotNullOrWhiteSpace(tablePrefix);
+		Guard.IsNotNullOrWhiteSpace(tableName);
+		Guard.IsNotNull(options);
 
 		try
 		{
-			//Validate the tablePrefix
+			// Validate the tablePrefix
 			var dataSource = LogManagementOptions.DataSources.Find(x => Normalize(x.TablePrefix) == Normalize(tablePrefix));
 
 			if (dataSource is null)
-				return (null, new List<TableEntity>(), 0);
+				return (null, new List<TEntity>(), 0);
 
-			CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
-
-			CloudTable table = tableClient.GetTableReference(tableName);
-
-			//Build the query we will use to populate the metadata cache
-			TableQuery<DynamicTableEntity> cacheQuery = new TableQuery<DynamicTableEntity>().Select(new[] { nameof(LogEntryMetaData.EventTimeStamp), nameof(LogEntryMetaData.Level) });
+			TableClient table = TableServiceClient.GetTableClient(tableName);
 
 			bool cacheFirstBuild = false;
 			string cacheKey = GenerateCacheKey(tableName);
-			TableContinuationToken? continuationToken = null;
-			TableQuerySegment<DynamicTableEntity>? querySegment = null;
 
 			//Try and get existing cache items - if there are none build the cache
 			List<LogEntryMetaData> lstMetaData = await MemoryCache.GetOrCreateAsync(cacheKey, async cacheEntry =>
@@ -327,55 +303,29 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 				var lstResult = new List<LogEntryMetaData>();
 
-				do
+				await foreach (var item in table.QueryAsync<LogEntryMetaData>(maxPerPage: 100, select: _metadataFilters, cancellationToken: cancellationToken).ConfigureAwait(false))
 				{
-					querySegment = await table.ExecuteQuerySegmentedAsync(cacheQuery, continuationToken, cancellationToken).ConfigureAwait(false);
-
-					foreach (DynamicTableEntity entity in querySegment.Results)
-					{
-						var result = new LogEntryMetaData(entity.PartitionKey, entity.RowKey, entity[nameof(LogEntryMetaData.EventTimeStamp)].DateTime, entity[nameof(LogEntryMetaData.Level)].StringValue);
-
-						lstResult.Add(result);
-					}
-
-					continuationToken = querySegment.ContinuationToken;
+					lstResult.Add(item);
 				}
-				while (continuationToken is not null);
 
 				return lstResult;
 			}).ConfigureAwait(false);
 
 			if (!cacheFirstBuild)
 			{
-				//Check ATS for any new rows added since the cache was populated but only if
-				//we haven't just populated the cache in this request.
-				//Get the last item in the cache
+				// Check ATS for any new rows added since the cache was populated but only if
+				// we haven't just populated the cache in this request.
+				// Get the last item in the cache
 				LogEntryMetaData? entry = lstMetaData.LastOrDefault();
 
 				if (entry is not null)
 				{
 					var lstNewEntries = new List<LogEntryMetaData>();
 
-					cacheQuery = cacheQuery.Where(
-						TableQuery.CombineFilters(
-							TableQuery.GenerateFilterCondition(nameof(entry.PartitionKey), QueryComparisons.GreaterThanOrEqual, entry.PartitionKey),
-							TableOperators.And,
-							TableQuery.GenerateFilterCondition(nameof(entry.RowKey), QueryComparisons.GreaterThan, entry.RowKey)));
-
-					do
+					await foreach (var item in table.QueryAsync<LogEntryMetaData>(filter: x => x.PartitionKey.CompareTo(entry.PartitionKey) > 0 && x.RowKey.CompareTo(entry.RowKey) > 0, maxPerPage: 100, select: _metadataFilters, cancellationToken: cancellationToken).ConfigureAwait(false))
 					{
-						querySegment = await table.ExecuteQuerySegmentedAsync(cacheQuery, continuationToken, cancellationToken).ConfigureAwait(false);
-
-						foreach (var entity in querySegment.Results)
-						{
-							var result = new LogEntryMetaData(entity.PartitionKey, entity.RowKey, entity[nameof(LogEntryMetaData.EventTimeStamp)].DateTime, entity[nameof(LogEntryMetaData.Level)].StringValue);
-
-							lstNewEntries.Add(result);
-						}
-
-						continuationToken = querySegment.ContinuationToken;
+						lstNewEntries.Add(item);
 					}
-					while (continuationToken is not null);
 
 					//Append the new entries to the current list - these will automatically end up in the cache.
 					lstMetaData.AddRange(lstNewEntries);
@@ -384,7 +334,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 			int totalCount = lstMetaData.Count();
 
-			//Apply sorting - always default
+			// Apply sorting - always default
 			string? sortBy = options.SortProperty;
 
 			if (string.IsNullOrWhiteSpace(sortBy))
@@ -400,23 +350,21 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				? results.OrderBySortDirection(x => x.Level, options.SortDirection)
 				: (IEnumerable<LogEntryMetaData>)results.OrderByDescending(x => x.EventTimeStamp);
 
-			//Apply pagination
+			// Apply pagination
 			if (options.PageSize > 0)
 			{
 				int itemsToSkip = (options.PageNumber - 1) * options.PageSize;
 				results = results.Skip(itemsToSkip).Take(options.PageSize);
 			}
 
-			//Now we have the paginated / sorted / filtered metadata from the cache
-			//we need to retrieve the full items from ATS. Seemingly you can't do multiple
-			//point lookups in a batch so each item will have to be retrieved manually.
-			var tableOperation = dataSource.AppenderType == AzureTableStorageLogAppenderType.Client
-				? TableOperation.Retrieve<AzureLoggingClientEventEntity>
-				: (Func<string, string, List<string>?, TableOperation>)TableOperation.Retrieve<AzureLoggingServerEventEntity>;
+			// Now we have the paginated / sorted / filtered metadata from the cache
+			// we need to retrieve the full items from ATS. Seemingly you can't do multiple
+			// point lookups in a batch so each item will have to be retrieved manually.
+			IReadOnlyCollection<Task<Response<TEntity>>> lstResponse = results.Select(x => table.GetEntityAsync<TEntity>(x.PartitionKey, x.RowKey, cancellationToken: cancellationToken)).ToArray();
 
-			var opResults = await Task.WhenAll(results.Select(x => table.ExecuteAsync(tableOperation(x.PartitionKey, x.RowKey, null)))).ConfigureAwait(false);
+			_ = await Task.WhenAll(lstResponse).ConfigureAwait(false);
 
-			var items = opResults.Select(x => x.Result).Cast<TableEntity>().ToList();
+			var items = lstResponse.Select(x => x.Result.Value).Where(x => x is not null).ToArray();
 
 			return (dataSource.AppenderType, items, totalCount);
 		}
@@ -434,19 +382,14 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 		try
 		{
-			CloudTableClient tableClient = StorageAccount.CreateCloudTableClient();
+			TableClient table = TableServiceClient.GetTableClient(tableName);
 
-			CloudTable table = tableClient.GetTableReference(tableName);
+			using Response response = await table.DeleteAsync(cancellationToken).ConfigureAwait(false);
 
-			bool exists = await table.ExistsAsync(cancellationToken).ConfigureAwait(false);
-
-			if (!exists)
+			if (response.Status is 404)
 				return AzureTableStorageLogDeleteOperationResult.NotFound;
 
-			//Using the IfExists variant here in case a race condition has resulted in the table already having been deleted by another user.
-			_ = await table.DeleteIfExistsAsync(cancellationToken).ConfigureAwait(false);
-
-			//Remove the table from the cached list - potential for a race condition to mess with this but should be low probability.
+			// Remove the table from the cached list - potential for a race condition to mess with this but should be low probability.
 			string tablePrefix = tableName.Split(_dateSeparatorArray, StringSplitOptions.RemoveEmptyEntries)[0];
 			string listCacheKey = GenerateCacheKey(tablePrefix);
 
@@ -463,7 +406,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				}
 			}
 
-			//Also need to remove the log entries from the Memory Cache
+			// Also need to remove the log entries from the Memory Cache
 			MemoryCache.Remove(GenerateCacheKey(tableName));
 
 			return AzureTableStorageLogDeleteOperationResult.Success;
