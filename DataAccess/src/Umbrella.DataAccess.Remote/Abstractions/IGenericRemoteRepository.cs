@@ -32,7 +32,7 @@ public interface IReadOnlyPaginatedSlimItemGenericRemoteRepository<TSlimItem, TI
 	/// <param name="filters">The filters.</param>
 	/// <param name="filterCombinator">The filter combinator.</param>
 	/// <returns>The result of the remote operation.</returns>
-	Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
+	Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And);
 }
 
 /// <summary>

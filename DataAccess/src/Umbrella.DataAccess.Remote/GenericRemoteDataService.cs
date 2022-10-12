@@ -91,7 +91,7 @@ public abstract class GenericRemoteDataService
 		CancellationToken cancellationToken = default,
 		IEnumerable<SortExpressionDescriptor>? sorters = null,
 		IEnumerable<FilterExpressionDescriptor>? filters = null,
-		FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or,
+		FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And,
 		Func<IEnumerable<TSlimItem>, CancellationToken, Task>? afterAllItemsLoadedCallback = null)
 		where TIdentifier : IEquatable<TIdentifier>
 		where TSlimItem : class, IKeyedItem<TIdentifier>

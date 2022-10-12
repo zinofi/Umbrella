@@ -256,7 +256,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			DeleteLock)
 		: throw new NotImplementedException("Unsupported Endpoint");
 
-	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, CancellationToken cancellationToken, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options) => Repository.Value.FindAllAsync(pageNumber, pageSize, cancellationToken, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.Or, options);
+	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, CancellationToken cancellationToken, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options) => Repository.Value.FindAllAsync(pageNumber, pageSize, cancellationToken, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options);
 	protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
 	protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 	protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);

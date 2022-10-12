@@ -21,7 +21,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterCombinator">The filter combinator.</param>
 		/// <returns>The query parameters.</returns>
-		IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
+		IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And);
 
 		/// <summary>
 		/// Creates the search query parameters.
@@ -33,7 +33,7 @@ namespace Umbrella.Utilities.Http.Abstractions
 		/// <param name="filters">The filters.</param>
 		/// <param name="filterCombinator">The filter combinator.</param>
 		/// <returns>The query parameters.</returns>
-		IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>>? sorters = null, IEnumerable<FilterExpression<TItem>>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or);
+		IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>>? sorters = null, IEnumerable<FilterExpression<TItem>>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And);
 
 		/// <summary>
 		/// Gets the problem details from the response if available.

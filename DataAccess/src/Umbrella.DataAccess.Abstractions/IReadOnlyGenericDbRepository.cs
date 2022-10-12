@@ -64,7 +64,7 @@ namespace Umbrella.DataAccess.Abstractions
 			IncludeMap<TEntity>? map = null,
 			IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
 			IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
-			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.Or,
+			FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.And,
 			TRepoOptions? repoOptions = null,
 			IEnumerable<RepoOptions>? childOptions = null,
 			Expression<Func<TEntity, bool>>? coreFilterExpression = null,

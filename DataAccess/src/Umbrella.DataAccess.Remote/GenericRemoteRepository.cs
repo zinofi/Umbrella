@@ -63,7 +63,7 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 		=> GetByIdAsync<TItem, TIdentifier>(id, cancellationToken, AfterItemLoadedAsync);
 
 	/// <inheritdoc />
-	public virtual Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+	public virtual Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And)
 		=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync);
 
 	/// <inheritdoc />

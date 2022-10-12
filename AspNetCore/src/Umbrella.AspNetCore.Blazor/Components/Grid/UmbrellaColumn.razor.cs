@@ -77,7 +77,7 @@ public partial class UmbrellaColumn<TItem>
 	/// creating filters.
 	/// </summary>
 	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
+	/// If this value is <see langword="null"/>, the <see cref="MemberPathOverride"/> will be used.
 	/// </remarks>
 	[Parameter]
 	public string? FilterMemberPathOverride { get; set; }
@@ -87,10 +87,19 @@ public partial class UmbrellaColumn<TItem>
 	/// creating sorters.
 	/// </summary>
 	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
+	/// If this value is <see langword="null"/>, the <see cref="MemberPathOverride"/> will be used.
 	/// </remarks>
 	[Parameter]
 	public string? SorterMemberPathOverride { get; set; }
+
+	/// <summary>
+	/// Gets or sets the property path override used as the <see cref="FilterExpressionDescriptor.MemberPath"/> and <see cref="SortExpressionDescriptor.MemberPath"/>
+	/// property values when creating filters and sorters.
+	/// </summary>
+	/// <remarks>
+	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
+	/// </remarks>
+	public string? MemberPathOverride { get; set; }
 
 	/// <summary>
 	/// Gets or sets the text for the column heading.
@@ -229,7 +238,7 @@ public partial class UmbrellaColumn<TItem>
 		{
 			if (DisplayMode != UmbrellaColumnDisplayMode.None)
 			{
-				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride, SorterMemberPathOverride, DisplayMode);
+				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode);
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
 		}

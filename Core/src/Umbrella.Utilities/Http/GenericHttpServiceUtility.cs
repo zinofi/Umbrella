@@ -32,7 +32,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>>? sorters = null, IEnumerable<FilterExpression<TItem>>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public IDictionary<string, string> CreateSearchQueryParameters<TItem>(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpression<TItem>>? sorters = null, IEnumerable<FilterExpression<TItem>>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And)
 		{
 			try
 			{
@@ -45,7 +45,7 @@ namespace Umbrella.Utilities.Http
 		}
 
 		/// <inheritdoc />
-		public IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.Or)
+		public IDictionary<string, string> CreateSearchQueryParameters(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And)
 		{
 			try
 			{
