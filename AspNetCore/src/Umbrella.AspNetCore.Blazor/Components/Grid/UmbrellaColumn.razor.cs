@@ -99,6 +99,7 @@ public partial class UmbrellaColumn<TItem>
 	/// <remarks>
 	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
 	/// </remarks>
+	[Parameter]
 	public string? MemberPathOverride { get; set; }
 
 	/// <summary>
