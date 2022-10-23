@@ -205,8 +205,10 @@ public static class ILoggerExtensions
 
 		_ = messageBuilder.Append($" on Line: {lineNumber}, Path: {filePath}");
 
-		// We are passing the state to logger. It is up to the logging implementation to then process it.
-		log.Log(level, eventId, stateDictionary.AsReadOnly(), exc, (stateObject, exceptionObject) => messageBuilder.ToString());
+		stateDictionary.Insert(0, new("LoggerMessage", messageBuilder.ToString()));
+
+		// We are passing the state to the logger. It is up to the logging implementation to then process it.
+		log.Log(level, eventId, stateDictionary.AsReadOnly(), exc, (stateObject, exceptionObject) => string.Join(" ", stateObject.Select(x => $"{{{x.Key}}}")));
 	}
 	#endregion
 }
