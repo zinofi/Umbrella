@@ -15,6 +15,7 @@ using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Primitives;
+using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
@@ -552,38 +553,35 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		// Find the RepoOptions for this repository if provided in the options collection
 		TTargetEntityRepoOptions? targetOptions = repoOptions?.OfType<TTargetEntityRepoOptions>().FirstOrDefault();
 
-		//Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
-		//but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
-		//any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
-		//to a new List first to stop this from happening.
+		// Copy the incoming list here - this is because the code in foreach declaration below finds all the entities matching the where clause
+		// but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
+		// any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
+		// to a new List first to stop this from happening.
 		alteredColl = new List<TTargetEntity>(alteredColl);
 
-		//Ensure we have deleted the dependencies (children) we no longer need
+		// Ensure we have deleted the dependencies (children) we no longer need
 		foreach (TTargetEntity entity in Context.Value.Set<TTargetEntity>().Where(predicate))
 		{
 			if (!alteredColl.Contains(entity))
 			{
-				//Delete the dependency, but do not push changes to the database
+				// Delete the dependency, but do not push changes to the database
 				await repository.DeleteAsync(entity, cancellationToken, false, targetOptions, repoOptions).ConfigureAwait(false);
 			}
 		}
 
 		foreach (TTargetEntity entity in alteredColl)
 		{
-			//Look for the entity in the context - this action will allow us to determine it's state
+			// Look for the entity in the context - this action will allow us to determine it's state
 			EntityEntry<TTargetEntity> dbEntity = Context.Value.Entry(entity);
 
-			//Determine entities that have been added or modified - in these cases we need to call Save so that any custom
-			//repository logic is executed
-			if (dbEntity.State.HasFlag(EntityState.Detached)
-				|| dbEntity.State.HasFlag(EntityState.Added)
-				|| dbEntity.State.HasFlag(EntityState.Modified)
-				|| dbEntity.State.HasFlag(EntityState.Unchanged))
+			// Determine entities that have been added or modified - in these cases we need to call Save so that any custom
+			// repository logic is executed
+			if(dbEntity.State is EntityState.Detached or EntityState.Added or EntityState.Modified or EntityState.Unchanged)
 			{
-				//Do not add children to the context at this point. This still allows us to perform our save
-				//logic on the entity, but it also means that should something go wrong that means
-				//persisting the parent entity is not valid, we don't end up in a situation where we have
-				//child objects as part of the context that shouldn't be saved.
+				// Do not add children to the context at this point. This still allows us to perform our save
+				// logic on the entity, but it also means that should something go wrong that means
+				// persisting the parent entity is not valid, we don't end up in a situation where we have
+				// child objects as part of the context that shouldn't be saved.
 				_ = await repository.SaveAsync(entity, cancellationToken, false, false, targetOptions, repoOptions).ConfigureAwait(false);
 			}
 		}
