@@ -149,6 +149,12 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual TRepositoryOptions? PutRepoOptions { get; }
 	protected virtual TRepositoryOptions? DeleteRepoOptions { get; }
 
+	protected virtual RepoOptions[] SearchSlimChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual RepoOptions[] GetChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual RepoOptions[] PostChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual RepoOptions[] PutChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual RepoOptions[] DeleteChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaGenericRepositoryApiController{TSlimModel, TPaginatedResultModel, TModel, TCreateModel, TCreateResultModel, TUpdateModel, TUpdateResultModel, TRepository, TEntity, TRepositoryOptions, TEntityKey}"/> class.
 	/// </summary>
@@ -187,8 +193,9 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			AfterCreateSearchSlimModelAsync,
 			AfterReadSlimEntityAsync,
 			SearchSlimRepoOptions,
+			SearchSlimChildRepoOptions,
 			AuthorizationSlimReadChecksEnabled)
-		: throw new NotImplementedException("Unsupported Endpoint");
+		: throw new NotSupportedException("Unsupported Endpoint");
 
 	[HttpGet]
 	public virtual Task<IActionResult> Get(TEntityKey id, CancellationToken cancellationToken = default)
@@ -202,9 +209,10 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			GetTrackChanges,
 			GetIncludeMap,
 			GetRepoOptions,
+			GetChildRepoOptions,
 			AuthorizationReadChecksEnabled,
 			GetLock)
-		: throw new NotImplementedException("Unsupported Endpoint");
+		: throw new NotSupportedException("Unsupported Endpoint");
 
 	[HttpPost]
 	public virtual Task<IActionResult> Post(TCreateModel model, CancellationToken cancellationToken = default)
@@ -218,10 +226,11 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			null,
 			(entity, result) => AfterCreateEntityAsync(entity, model, result, cancellationToken),
 			PostRepoOptions,
+			PostChildRepoOptions,
 			AuthorizationCreateChecksEnabled,
 			PostLock,
 			EnablePostOutputMapping)
-		: throw new NotImplementedException("Unsupported Endpoint");
+		: throw new NotSupportedException("Unsupported Endpoint");
 
 	[HttpPut]
 	public virtual Task<IActionResult> Put(TUpdateModel model, CancellationToken cancellationToken = default)
@@ -236,10 +245,11 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			(entity, result) => AfterUpdateEntityAsync(entity, model, result, cancellationToken),
 			PutIncludeMap,
 			PutRepoOptions,
+			PutChildRepoOptions,
 			AuthorizationUpdateChecksEnabled,
 			PutLock,
 			EnablePutOutputMapping)
-		: throw new NotImplementedException("Unsupported Endpoint");
+		: throw new NotSupportedException("Unsupported Endpoint");
 
 	[HttpDelete]
 	public virtual Task<IActionResult> Delete(TEntityKey id, CancellationToken cancellationToken = default)
@@ -252,11 +262,12 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			AfterDeleteEntityAsync,
 			DeleteIncludeMap,
 			DeleteRepoOptions,
+			DeleteChildRepoOptions,
 			AuthorizationDeleteChecksEnabled,
 			DeleteLock)
-		: throw new NotImplementedException("Unsupported Endpoint");
+		: throw new NotSupportedException("Unsupported Endpoint");
 
-	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, CancellationToken cancellationToken, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options) => Repository.Value.FindAllAsync(pageNumber, pageSize, cancellationToken, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options);
+	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, CancellationToken cancellationToken, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions) => Repository.Value.FindAllAsync(pageNumber, pageSize, cancellationToken, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions);
 	protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
 	protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 	protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
