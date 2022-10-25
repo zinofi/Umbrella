@@ -207,8 +207,10 @@ public static class ILoggerExtensions
 
 		stateDictionary.Insert(0, new("LoggerMessage", messageBuilder.ToString()));
 
-		// We are passing the state to the logger. It is up to the logging implementation to then process it.
-		log.Log(level, eventId, stateDictionary.AsReadOnly(), exc, (stateObject, exceptionObject) => string.Join(" ", stateObject.Select(x => $"{{{x.Key}}}")));
+		string logTemplate = string.Join(", ", stateDictionary.Select(x => $"{x.Key}: {{{x.Key}}}"));
+		object[] logArgs = stateDictionary.Select(x => x.Value).ToArray();
+
+		log.Log(level, logTemplate, logArgs);
 	}
 	#endregion
 }
