@@ -210,7 +210,7 @@ public static class ILoggerExtensions
 		string logTemplate = string.Join(", ", stateDictionary.Select(x => $"{x.Key}: {{{x.Key}}}"));
 		object[] logArgs = stateDictionary.Select(x => x.Value).ToArray();
 
-		log.Log(level, logTemplate, logArgs);
+		log.Log(level, eventId, exc, logTemplate, logArgs);
 	}
 	#endregion
 }
