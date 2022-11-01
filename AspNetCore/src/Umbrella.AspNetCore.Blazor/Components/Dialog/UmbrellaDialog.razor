@@ -23,7 +23,7 @@
 					}
 					@if (!string.IsNullOrWhiteSpace(Message))
 					{
-						<p>@Message.ReplaceNewLine()</p>
+						<p>@Message.ReplaceNewLines()</p>
 					}
 				</div>
 				@if (Buttons?.Count > 0)
