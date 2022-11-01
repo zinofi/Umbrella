@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Components;
 using System.Text.Encodings.Web;
+using Umbrella.Utilities.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Extensions;
 
@@ -20,5 +21,5 @@ public static class StringExtensions
 	public static MarkupString ReplaceNewLine(this string? value, string replacement = "<br />")
 		=> string.IsNullOrWhiteSpace(value)
 		? default
-		: (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace("\r\n", replacement);
+		: (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace(StringEncodingConstants.HtmlEncodedCrLfToken, replacement);
 }
