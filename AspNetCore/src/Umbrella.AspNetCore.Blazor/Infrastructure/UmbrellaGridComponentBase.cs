@@ -98,7 +98,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 			if (!firstRender || !AutoRenderOnPageLoad)
 				return;
 
-			await InitializeGridAsync();
+			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
