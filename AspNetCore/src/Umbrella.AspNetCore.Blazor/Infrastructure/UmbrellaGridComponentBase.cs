@@ -58,6 +58,13 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	protected virtual bool CallGridStateHasChangedOnRefresh { get; } = true;
 
 	/// <summary>
+	/// Gets a value specifying whether or not the grid will automatically render when the page loads. If this is set to <see langword="false" />
+	/// the <see cref="InitializeGridAsync"/> method should be manually called.
+	/// </summary>
+	/// <remarks>Defaults to <see langword="true"/>.</remarks>
+	protected virtual bool AutoRenderOnPageLoad { get; } = true;
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaGridComponentBase{TItemModel, TPaginatedResultModel}"/> class.
 	/// </summary>
 	public UmbrellaGridComponentBase()
@@ -65,15 +72,33 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		InitialSortExpressions = new Lazy<IReadOnlyCollection<SortExpressionDescriptor>>(() => new[] { new SortExpressionDescriptor(InitialSortPropertyName, InitialSortDirection) });
 	}
 
+	/// <summary>
+	/// Initializes the grid.
+	/// </summary>
+	protected async Task InitializeGridAsync()
+	{
+		try
+		{
+			if (AutoRenderOnPageLoad)
+				throw new Exception("Auto rendering has been enabled. This method should not be manually called.");
+
+			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			await DialogUtility.ShowDangerMessageAsync();
+		}
+	}
+
 	/// <inheritdoc />
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		try
 		{
-			if (!firstRender)
+			if (!firstRender || !AutoRenderOnPageLoad)
 				return;
 
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
+			await InitializeGridAsync();
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
