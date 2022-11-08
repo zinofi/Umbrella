@@ -26,7 +26,8 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	/// <summary>
 	/// Gets the sort direction used to initially sort the data in the grid.
 	/// </summary>
-	protected virtual SortDirection InitialSortDirection { get; } = SortDirection.Descending;
+	/// <remarks>Defaults to <see cref="SortDirection.Descending"/>.</remarks>
+	protected virtual SortDirection InitialSortDirection => SortDirection.Descending;
 
 	/// <summary>
 	/// Gets the collection of sort expressions used to initially sort the data in the grid.
@@ -179,6 +180,6 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	protected Task RefreshGridAsyncUsingCurrentRefreshOptions()
 		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
 			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
-			CurrentRefreshOptions?.Sorters,
+			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
 			CurrentRefreshOptions?.Filters);
 }

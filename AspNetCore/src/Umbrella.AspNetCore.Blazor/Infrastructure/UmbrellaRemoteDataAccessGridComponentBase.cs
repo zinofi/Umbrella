@@ -57,11 +57,8 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 
 				if (result.Success)
 				{
-					int pageNumber = CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber;
-					int pageSize = CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize;
-
 					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
-					await RefreshGridAsync(pageNumber, pageSize, CurrentRefreshOptions?.Sorters, CurrentRefreshOptions?.Filters);
+					await RefreshGridAsyncUsingCurrentRefreshOptions();
 				}
 				else
 				{
