@@ -24,9 +24,31 @@ public readonly struct OperationResult
 	{
 	}
 
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.Success"/>.
+	/// </summary>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult Success() => new();
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.GenericFailure"/>.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult GenericFailure(string errorMessage) => Failure(OperationResultStatus.GenericFailure, errorMessage);
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.NotFound"/>.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult NotFound(string errorMessage) => Failure(OperationResultStatus.NotFound, errorMessage);
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.Conflict"/>.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult Conflict(string errorMessage) => Failure(OperationResultStatus.Conflict, errorMessage);
 
 	private static OperationResult Failure(OperationResultStatus status, string errorMessage) => new()
@@ -61,15 +83,47 @@ public readonly struct OperationResult<TResult>
 	{
 	}
 
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.NotFound"/> for the specified <paramref name="item"/>.
+	/// </summary>
+	/// <param name="item">The item.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult<TResult> Success(TResult item) => new()
 	{
 		Status = OperationResultStatus.Success,
 		Result = item,
 	};
 
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.GenericFailure"/> for the specified <paramref name="item"/>.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <param name="item">The item.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult<TResult> GenericFailure(string errorMessage, TResult? item = default) => Failure(OperationResultStatus.GenericFailure, item, new[] { new ValidationResult(errorMessage) });
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.GenericFailure"/> for the specified <paramref name="result"/>.
+	/// </summary>
+	/// <param name="validationResults">The validation results.</param>
+	/// <param name="result">The result.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult<TResult> GenericFailure(IEnumerable<ValidationResult> validationResults, TResult? result = default) => Failure(OperationResultStatus.GenericFailure, result, validationResults.ToArray());
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.NotFound"/> for the specified <paramref name="result"/>.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <param name="result">The result.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult<TResult> NotFound(string errorMessage, TResult? result = default) => Failure(OperationResultStatus.NotFound, result, new[] { new ValidationResult(errorMessage) });
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.Conflict"/> for the specified <paramref name="result"/>.
+	/// </summary>
+	/// <param name="errorMessage">The error message.</param>
+	/// <param name="result">The result.</param>
+	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult<TResult> Conflict(string errorMessage, TResult? result = default) => Failure(OperationResultStatus.Conflict, result, new[] { new ValidationResult(errorMessage) });
 
 	private static OperationResult<TResult> Failure(OperationResultStatus status, TResult? result, ValidationResult[] validationResults) => new()
