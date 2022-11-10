@@ -1,58 +1,63 @@
-﻿using System;
-using System.Linq;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Umbrella.AppFramework.Http.Handlers.Options;
 using Umbrella.AppFramework.Utilities.Abstractions;
 
-namespace Umbrella.AppFramework.Http.Handlers
+namespace Umbrella.AppFramework.Http.Handlers;
+
+/// <summary>
+/// A <see cref="DelegatingHandler"/> for use with the <see cref="IHttpClientFactory"/> infrastructure which notifies users
+/// that there is a request in progress by displaying and hiding a loading indicator.
+/// </summary>
+/// <seealso cref="DelegatingHandler" />
+public class RequestNotificationHandler : DelegatingHandler
 {
+	private readonly RequestNotificationHandlerOptions _options;
+	private readonly ILoadingScreenUtility _loadingScreenUtility;
+
 	/// <summary>
-	/// A <see cref="DelegatingHandler"/> for use with the <see cref="IHttpClientFactory"/> infrastructure which notifies users
-	/// that there is a request in progress by displaying and hiding a loading indicator.
+	/// Initializes a new instance of the <see cref="RequestNotificationHandler"/> class.
 	/// </summary>
-	/// <seealso cref="System.Net.Http.DelegatingHandler" />
-	public class RequestNotificationHandler : DelegatingHandler
+	/// <param name="options">The options.</param>
+	/// <param name="loadingScreenUtility">The loading screen utility.</param>
+	public RequestNotificationHandler(
+		RequestNotificationHandlerOptions options,
+		ILoadingScreenUtility loadingScreenUtility)
 	{
-		private readonly RequestNotificationHandlerOptions _options;
-		private readonly ILoadingScreenUtility _loadingScreenUtility;
+		_options = options;
+		_loadingScreenUtility = loadingScreenUtility;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RequestNotificationHandler"/> class.
-		/// </summary>
-		/// <param name="options">The options.</param>
-		/// <param name="loadingScreenUtility">The loading screen utility.</param>
-		public RequestNotificationHandler(
-			RequestNotificationHandlerOptions options,
-			ILoadingScreenUtility loadingScreenUtility)
+	/// <inheritdoc />
+	protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		bool isMatch = _options.Exclusions.Any(x => x.PathMatchType switch
 		{
-			_options = options;
-			_loadingScreenUtility = loadingScreenUtility;
+			RequestNotificationHandlerPathMatchType.Exact => request.RequestUri.AbsolutePath.Equals(x.Path, StringComparison.InvariantCultureIgnoreCase) && request.Method == x.Method,
+			RequestNotificationHandlerPathMatchType.StartsWith => request.RequestUri.AbsolutePath.StartsWith(x.Path, StringComparison.InvariantCultureIgnoreCase) && request.Method == x.Method,
+			_ => throw new NotSupportedException($"The type {x.PathMatchType} is not supported.")
+		});
+
+		if (isMatch)
+			return await base.SendAsync(request, cancellationToken);
+
+		try
+		{
+			_loadingScreenUtility.Show();
+
+			HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+			return response;
 		}
-
-		/// <inheritdoc />
-		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+		finally
 		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			if (_options.Exclusions.Any(x => request.RequestUri.AbsolutePath.Equals(x.Path, StringComparison.InvariantCultureIgnoreCase) && request.Method == x.Method))
-				return await base.SendAsync(request, cancellationToken);
-
-			try
-			{
-				_loadingScreenUtility.Show();
-				
-				HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-
-				return response;
-			}
-			finally
-			{
-				// TODO: Potential issue somewhere here where the loading screen sometimes gets stuck and never disappears.
-				// Need to figure out if we can set a timeout on the request or loading screen so it auto-hides after a few minutes.
-				_loadingScreenUtility.Hide();
-			}
+			// TODO: Potential issue somewhere here where the loading screen sometimes gets stuck and never disappears.
+			// Need to figure out if we can set a timeout on the request or loading screen so it auto-hides after a few minutes.
+			_loadingScreenUtility.Hide();
 		}
 	}
 }
