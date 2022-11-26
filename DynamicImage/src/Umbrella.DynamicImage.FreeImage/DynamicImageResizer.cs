@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Drawing;
 using CommunityToolkit.Diagnostics;
 using FreeImageAPI;
 using Microsoft.Extensions.Logging;
-using System.Drawing;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
 

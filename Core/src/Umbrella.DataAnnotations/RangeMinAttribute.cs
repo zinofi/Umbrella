@@ -1,30 +1,29 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Umbrella.DataAnnotations
+namespace Umbrella.DataAnnotations;
+
+/// <summary>
+/// Extends the <see cref="RangeAttribute" /> using either <see cref="double.MaxValue" /> or <see cref="int.MaxValue" /> as the default for convenience.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public class RangeMinAttribute : RangeAttribute
 {
 	/// <summary>
-	/// Extends the <see cref="RangeAttribute" /> using either <see cref="double.MaxValue" /> or <see cref="int.MaxValue" /> as the default for convenience.
+	/// Create a new instance.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property)]
-	public class RangeMinAttribute : RangeAttribute
+	/// <param name="minimum">The minimum value.</param>
+	public RangeMinAttribute(double minimum)
+		: base(minimum, double.MaxValue)
 	{
-		/// <summary>
-		/// Create a new instance.
-		/// </summary>
-		/// <param name="minimum">The minimum value.</param>
-		public RangeMinAttribute(double minimum)
-			: base(minimum, double.MaxValue)
-		{
-		}
+	}
 
-		/// <summary>
-		/// Create a new instance.
-		/// </summary>
-		/// <param name="minimum">The minimum value.</param>
-		public RangeMinAttribute(int minimum)
-			: base(minimum, int.MaxValue)
-		{
-		}
+	/// <summary>
+	/// Create a new instance.
+	/// </summary>
+	/// <param name="minimum">The minimum value.</param>
+	public RangeMinAttribute(int minimum)
+		: base(minimum, int.MaxValue)
+	{
 	}
 }

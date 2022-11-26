@@ -1,18 +1,17 @@
-﻿namespace Umbrella.Utilities.Data.Filtering
+﻿namespace Umbrella.Utilities.Data.Filtering;
+
+/// <summary>
+/// The combinator applied to multiple <see cref="FilterExpression{TItem}"/>.
+/// </summary>
+public enum FilterExpressionCombinator
 {
 	/// <summary>
-	/// The combinator applied to multiple <see cref="FilterExpression{TItem}"/>.
+	/// Uses OR logic
 	/// </summary>
-	public enum FilterExpressionCombinator
-	{
-		/// <summary>
-		/// Uses OR logic
-		/// </summary>
-		Or,
+	Or,
 
-		/// <summary>
-		/// Uses AND logic
-		/// </summary>
-		And
-	}
+	/// <summary>
+	/// Uses AND logic
+	/// </summary>
+	And
 }

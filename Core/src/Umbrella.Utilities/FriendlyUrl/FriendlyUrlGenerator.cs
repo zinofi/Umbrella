@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.FriendlyUrl.Abstractions;
 

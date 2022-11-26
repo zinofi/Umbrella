@@ -11,15 +11,15 @@ namespace Microsoft.AspNetCore.Authorization;
 /// </summary>
 public static class AuthorizationOptionsExtensions
 {
-    /// <summary>
-    /// Adds the core policies.
-    /// </summary>
-    /// <param name="options">The options.</param>
-    public static void AddCorePolicies(this AuthorizationOptions options)
-    {
-        options.AddPolicy(CorePolicyNames.Create, x => x.Requirements.Add(CoreItemOperations.Create));
-        options.AddPolicy(CorePolicyNames.Read, x => x.Requirements.Add(CoreItemOperations.Read));
-        options.AddPolicy(CorePolicyNames.Update, x => x.Requirements.Add(CoreItemOperations.Update));
-        options.AddPolicy(CorePolicyNames.Delete, x => x.Requirements.Add(CoreItemOperations.Delete));
-    }
+	/// <summary>
+	/// Adds the core policies.
+	/// </summary>
+	/// <param name="options">The options.</param>
+	public static void AddCorePolicies(this AuthorizationOptions options)
+	{
+		options.AddPolicy(CorePolicyNames.Create, x => x.Requirements.Add(CoreItemOperations.Create));
+		options.AddPolicy(CorePolicyNames.Read, x => x.Requirements.Add(CoreItemOperations.Read));
+		options.AddPolicy(CorePolicyNames.Update, x => x.Requirements.Add(CoreItemOperations.Update));
+		options.AddPolicy(CorePolicyNames.Delete, x => x.Requirements.Add(CoreItemOperations.Delete));
+	}
 }

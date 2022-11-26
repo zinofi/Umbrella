@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Buffers;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
-using System.Buffers;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
@@ -22,8 +22,8 @@ namespace Umbrella.AspNetCore.WebUtilities.Hosting;
 /// <summary>
 /// An implementation of the <see cref="IUmbrellaWebHostingEnvironment" /> for use with ASP.NET Core applications.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Hosting.UmbrellaHostingEnvironment" />
-/// <seealso cref="Umbrella.WebUtilities.Hosting.IUmbrellaWebHostingEnvironment" />
+/// <seealso cref="UmbrellaHostingEnvironment" />
+/// <seealso cref="IUmbrellaWebHostingEnvironment" />
 public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrellaWebHostingEnvironment
 {
 	#region Private Static Members

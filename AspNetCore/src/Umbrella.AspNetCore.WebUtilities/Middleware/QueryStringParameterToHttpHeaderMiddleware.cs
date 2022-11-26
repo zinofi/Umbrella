@@ -6,82 +6,81 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Umbrella.WebUtilities.Middleware.Options;
 
-namespace Umbrella.AspNetCore.WebUtilities.Middleware
+namespace Umbrella.AspNetCore.WebUtilities.Middleware;
+
+/// <summary>
+/// Middleware that intercepts incoming HTTP requests and adds HTTP Headers with the same keys and values
+/// as those found on the querystring.
+/// </summary>
+public class QueryStringParameterToHttpHeaderMiddleware
 {
+	#region Private Members
+	private readonly RequestDelegate _next;
+	private readonly ILogger _logger;
+	private readonly QueryStringParameterToHttpHeaderMiddlewareOptions _options;
+	#endregion
+
+	#region Constructors		
 	/// <summary>
-	/// Middleware that intercepts incoming HTTP requests and adds HTTP Headers with the same keys and values
-	/// as those found on the querystring.
+	/// Initializes a new instance of the <see cref="QueryStringParameterToHttpHeaderMiddleware" /> class.
 	/// </summary>
-	public class QueryStringParameterToHttpHeaderMiddleware
+	/// <param name="next">The next.</param>
+	/// <param name="logger">The logger.</param>
+	/// <param name="options">The options.</param>
+	public QueryStringParameterToHttpHeaderMiddleware(
+		RequestDelegate next,
+		ILogger<QueryStringParameterToHttpHeaderMiddleware> logger,
+		QueryStringParameterToHttpHeaderMiddlewareOptions options)
 	{
-		#region Private Members
-		private readonly RequestDelegate _next;
-		private readonly ILogger _logger;
-		private readonly QueryStringParameterToHttpHeaderMiddlewareOptions _options;
-		#endregion
+		_next = next;
+		_logger = logger;
+		_options = options;
+	}
+	#endregion
 
-		#region Constructors		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="QueryStringParameterToHttpHeaderMiddleware" /> class.
-		/// </summary>
-		/// <param name="next">The next.</param>
-		/// <param name="logger">The logger.</param>
-		/// <param name="options">The options.</param>
-		public QueryStringParameterToHttpHeaderMiddleware(
-			RequestDelegate next,
-			ILogger<QueryStringParameterToHttpHeaderMiddleware> logger,
-			QueryStringParameterToHttpHeaderMiddlewareOptions options)
+	#region Middleware Members
+	/// <summary>
+	/// Invokes the middleware for the specified <see cref="HttpContext" />.
+	/// </summary>
+	/// <param name="context">The <see cref="HttpContext" />.</param>
+	/// <returns>An awaitable <see cref="Task" />.</returns>
+	public async Task Invoke(HttpContext context)
+	{
+		try
 		{
-			_next = next;
-			_logger = logger;
-			_options = options;
-		}
-		#endregion
-
-		#region Middleware Members
-		/// <summary>
-		/// Invokes the middleware for the specified <see cref="HttpContext" />.
-		/// </summary>
-		/// <param name="context">The <see cref="HttpContext" />.</param>
-		/// <returns>An awaitable <see cref="Task" />.</returns>
-		public async Task Invoke(HttpContext context)
-		{
-			try
+			foreach (var kvp in _options.Mappings)
 			{
-				foreach (var kvp in _options.Mappings)
+				StringValues values = context.Request.Query[kvp.Key];
+
+				if (!StringValues.IsNullOrEmpty(values))
 				{
-					StringValues values = context.Request.Query[kvp.Key];
+					string? value = values.FirstOrDefault();
 
-					if (!StringValues.IsNullOrEmpty(values))
+					if (!string.IsNullOrWhiteSpace(value))
 					{
-						string? value = values.FirstOrDefault();
+						var headers = context.Request.GetTypedHeaders();
 
-						if (!string.IsNullOrWhiteSpace(value))
+						if (_options.ValueTransformer is not null)
 						{
-							var headers = context.Request.GetTypedHeaders();
+							string newValue = _options.ValueTransformer(value);
 
-							if (_options.ValueTransformer is not null)
-							{
-								string newValue = _options.ValueTransformer(value);
+							if (string.IsNullOrWhiteSpace(newValue))
+								_logger.LogWarning($"The {nameof(QueryStringParameterToHttpHeaderMiddleware)} executed a value transformer which converted '{value}' to an empty string.");
 
-								if (string.IsNullOrWhiteSpace(newValue))
-									_logger.LogWarning($"The {nameof(QueryStringParameterToHttpHeaderMiddleware)} executed a value transformer which converted '{value}' to an empty string.");
-
-								value = newValue;
-							}
-
-							headers.Set(kvp.Value, value);
+							value = newValue;
 						}
+
+						headers.Set(kvp.Value, value);
 					}
 				}
+			}
 
-				await _next.Invoke(context);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc))
-			{
-				throw;
-			}
+			await _next.Invoke(context);
 		}
-		#endregion
+		catch (Exception exc) when (_logger.WriteError(exc))
+		{
+			throw;
+		}
 	}
+	#endregion
 }

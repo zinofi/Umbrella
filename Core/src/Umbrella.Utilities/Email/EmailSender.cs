@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Net.Mail;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
-using System.Net.Mail;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Email.Options;
 using Umbrella.Utilities.Exceptions;

@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
 using System.Reflection;
+using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.Utilities.Mapping.Mapperly;

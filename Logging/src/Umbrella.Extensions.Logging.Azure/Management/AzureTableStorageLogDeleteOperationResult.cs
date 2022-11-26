@@ -1,18 +1,17 @@
-﻿namespace Umbrella.Extensions.Logging.Azure.Management
+﻿namespace Umbrella.Extensions.Logging.Azure.Management;
+
+/// <summary>
+/// The result of an operation to delete a log table.
+/// </summary>
+public enum AzureTableStorageLogDeleteOperationResult
 {
 	/// <summary>
-	/// The result of an operation to delete a log table.
+	/// Indicates that the operation was a success.
 	/// </summary>
-	public enum AzureTableStorageLogDeleteOperationResult
-    {
-		/// <summary>
-		/// Indicates that the operation was a success.
-		/// </summary>
-		Success,
+	Success,
 
-		/// <summary>
-		/// Indicates that the target table could not be deleted as it it does not exist.
-		/// </summary>
-		NotFound
-	}
+	/// <summary>
+	/// Indicates that the target table could not be deleted as it it does not exist.
+	/// </summary>
+	NotFound
 }

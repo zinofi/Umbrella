@@ -1,20 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Umbrella.DataAnnotations.RegularExpressions;
 
-namespace Umbrella.DataAnnotations
+namespace Umbrella.DataAnnotations;
+
+/// <summary>
+/// A <see cref="RegularExpressionAttribute"/> used to validate a UK mobile phone number.
+/// </summary>
+/// <seealso cref="RegularExpressionAttribute" />
+public class UmbrellaMobilePhoneAttribute : RegularExpressionAttribute
 {
 	/// <summary>
-	/// A <see cref="RegularExpressionAttribute"/> used to validate a UK mobile phone number.
+	/// Initializes a new instance of the <see cref="UmbrellaMobilePhoneAttribute"/> class.
 	/// </summary>
-	/// <seealso cref="System.ComponentModel.DataAnnotations.RegularExpressionAttribute" />
-	public class UmbrellaMobilePhoneAttribute : RegularExpressionAttribute
+	public UmbrellaMobilePhoneAttribute()
+		: base(PhoneRegularExpressions.UKMobileRegexString)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaMobilePhoneAttribute"/> class.
-		/// </summary>
-		public UmbrellaMobilePhoneAttribute()
-			: base(PhoneRegularExpressions.UKMobileRegexString)
-		{
-		}
 	}
 }

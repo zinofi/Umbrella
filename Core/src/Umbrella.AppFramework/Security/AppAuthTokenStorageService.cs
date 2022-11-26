@@ -4,97 +4,96 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 
-namespace Umbrella.AppFramework.Security
+namespace Umbrella.AppFramework.Security;
+
+/// <summary>
+/// A storage service for application auth tokens.
+/// </summary>
+/// <seealso cref="IAppAuthTokenStorageService" />
+public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 {
+	private const string AuthTokenStorageKey = "App.AuthToken";
+	private const string ClientIdStorageKey = "App.ClientId";
+
+	private readonly ILogger _logger;
+	private readonly IAppLocalStorageService _storageService;
+	private string? _authToken;
+
 	/// <summary>
-	/// A storage service for application auth tokens.
+	/// Initializes a new instance of the <see cref="AppAuthTokenStorageService"/> class.
 	/// </summary>
-	/// <seealso cref="IAppAuthTokenStorageService" />
-	public class AppAuthTokenStorageService : IAppAuthTokenStorageService
+	/// <param name="logger">The logger.</param>
+	/// <param name="storageService">The storage service.</param>
+	public AppAuthTokenStorageService(
+		ILogger<AppAuthTokenStorageService> logger,
+		IAppLocalStorageService storageService)
 	{
-		private const string AuthTokenStorageKey = "App.AuthToken";
-		private const string ClientIdStorageKey = "App.ClientId";
+		_logger = logger;
+		_storageService = storageService;
+	}
 
-		private readonly ILogger _logger;
-		private readonly IAppLocalStorageService _storageService;
-		private string? _authToken;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AppAuthTokenStorageService"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		/// <param name="storageService">The storage service.</param>
-		public AppAuthTokenStorageService(
-			ILogger<AppAuthTokenStorageService> logger,
-			IAppLocalStorageService storageService)
+	/// <inheritdoc />
+	public async ValueTask<string> GetClientIdAsync()
+	{
+		try
 		{
-			_logger = logger;
-			_storageService = storageService;
+			string? clientId = await _storageService.GetAsync(ClientIdStorageKey);
+
+			if (string.IsNullOrEmpty(clientId))
+			{
+				clientId = Guid.NewGuid().ToString("N");
+				await _storageService.SetAsync(ClientIdStorageKey, clientId);
+			}
+
+			return clientId!;
 		}
-
-		/// <inheritdoc />
-		public async ValueTask<string> GetClientIdAsync()
+		catch (Exception exc) when (_logger.WriteError(exc))
 		{
-			try
+			// If something goes wrong just return a new id without storing it.
+			return Guid.NewGuid().ToString("N");
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask<string?> GetTokenAsync()
+	{
+		try
+		{
+			_authToken = await _storageService.GetAsync(AuthTokenStorageKey);
+
+			return _authToken;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc))
+		{
+			// Just return the value assigned to the local variable if we can't read it from storage.
+			// This should ensure auth at least works for the period the app is running.
+			return _authToken;
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask SetTokenAsync(string? token)
+	{
+		try
+		{
+			// Mirror the token in a local variable to ensure that if secure storage isn't available that the app
+			// will still work even though it means the user will have to login again when they next run it.
+			if (!string.IsNullOrEmpty(token))
 			{
-				string? clientId = await _storageService.GetAsync(ClientIdStorageKey);
-
-				if (string.IsNullOrEmpty(clientId))
-				{
-					clientId = Guid.NewGuid().ToString("N");
-					await _storageService.SetAsync(ClientIdStorageKey, clientId);
-				}
-
-				return clientId!;
+				_authToken = token;
+				await _storageService.SetAsync(AuthTokenStorageKey, token!);
 			}
-			catch (Exception exc) when (_logger.WriteError(exc))
+			else
 			{
-				// If something goes wrong just return a new id without storing it.
-				return Guid.NewGuid().ToString("N");
+				_authToken = null;
+				await _storageService.RemoveAsync(AuthTokenStorageKey);
 			}
 		}
-
-		/// <inheritdoc />
-		public async ValueTask<string?> GetTokenAsync()
+		catch (Exception exc) when (_logger.WriteError(exc))
 		{
-			try
-			{
-				_authToken = await _storageService.GetAsync(AuthTokenStorageKey);
-
-				return _authToken;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc))
-			{
-				// Just return the value assigned to the local variable if we can't read it from storage.
-				// This should ensure auth at least works for the period the app is running.
-				return _authToken;
-			}
-		}
-
-		/// <inheritdoc />
-		public async ValueTask SetTokenAsync(string? token)
-		{
-			try
-			{
-				// Mirror the token in a local variable to ensure that if secure storage isn't available that the app
-				// will still work even though it means the user will have to login again when they next run it.
-				if (!string.IsNullOrEmpty(token))
-				{
-					_authToken = token;
-					await _storageService.SetAsync(AuthTokenStorageKey, token!);
-				}
-				else
-				{
-					_authToken = null;
-					await _storageService.RemoveAsync(AuthTokenStorageKey);
-				}
-			}
-			catch (Exception exc) when (_logger.WriteError(exc))
-			{
-				// Do nothing here. The token will still be persisted in memory
-				// which at worst means a user will have to reauthenticate the next time
-				// they use the application.
-			}
+			// Do nothing here. The token will still be persisted in memory
+			// which at worst means a user will have to reauthenticate the next time
+			// they use the application.
 		}
 	}
 }

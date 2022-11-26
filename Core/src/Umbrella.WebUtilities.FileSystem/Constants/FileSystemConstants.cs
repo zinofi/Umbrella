@@ -1,13 +1,12 @@
-﻿namespace Umbrella.WebUtilities.FileSystem.Constants
+﻿namespace Umbrella.WebUtilities.FileSystem.Constants;
+
+/// <summary>
+/// Constants used by the ASP.NET and ASP.NET Core FileSystemMiddleware.
+/// </summary>
+public static class FileSystemConstants
 {
 	/// <summary>
-	/// Constants used by the ASP.NET and ASP.NET Core FileSystemMiddleware.
+	/// The default path prefix.
 	/// </summary>
-	public static class FileSystemConstants
-	{
-		/// <summary>
-		/// The default path prefix.
-		/// </summary>
-		public const string DefaultPathPrefix = "files";
-	}
+	public const string DefaultPathPrefix = "files";
 }

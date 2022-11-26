@@ -1,10 +1,9 @@
-﻿namespace Umbrella.DataAnnotations
+﻿namespace Umbrella.DataAnnotations;
+
+public class RequiredIfNotAttribute : RequiredIfAttribute
 {
-	public class RequiredIfNotAttribute : RequiredIfAttribute
+	public RequiredIfNotAttribute(string dependentProperty, object dependentValue)
+		: base(dependentProperty, Operator.NotEqualTo, dependentValue)
 	{
-		public RequiredIfNotAttribute(string dependentProperty, object dependentValue)
-			: base(dependentProperty, Operator.NotEqualTo, dependentValue)
-		{
-		}
 	}
 }

@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Context.Abstractions;
@@ -14,8 +14,8 @@ using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.Exceptions;
-using Umbrella.Utilities.Primitives;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
@@ -576,7 +576,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 			// Determine entities that have been added or modified - in these cases we need to call Save so that any custom
 			// repository logic is executed
-			if(dbEntity.State is EntityState.Detached or EntityState.Added or EntityState.Modified or EntityState.Unchanged)
+			if (dbEntity.State is EntityState.Detached or EntityState.Added or EntityState.Modified or EntityState.Unchanged)
 			{
 				// Do not add children to the context at this point. This still allows us to perform our save
 				// logic on the entity, but it also means that should something go wrong that means

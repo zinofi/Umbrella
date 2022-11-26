@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Security.Claims;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;

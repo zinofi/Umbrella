@@ -8,48 +8,47 @@ using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Hosting.Options;
 using Xunit;
 
-namespace Umbrella.Legacy.WebUtilities.Test.Hosting
+namespace Umbrella.Legacy.WebUtilities.Test.Hosting;
+
+public class UmbrellaWebHostingEnvironmentTest
 {
-	public class UmbrellaWebHostingEnvironmentTest
+	public static List<object[]> UrlsToTest = new List<object[]>
 	{
-		public static List<object[]> UrlsToTest = new List<object[]>
-		{
-			new object[] { "/path/to/a/resource.jpg" },
-			new object[] { "path/to/a/resource.jpg" },
-			new object[] { "~/path/to/a/resource.jpg" },
-			new object[] { "//path////to/a/resource.jpg" }
-		};
+		new object[] { "/path/to/a/resource.jpg" },
+		new object[] { "path/to/a/resource.jpg" },
+		new object[] { "~/path/to/a/resource.jpg" },
+		new object[] { "//path////to/a/resource.jpg" }
+	};
 
-		[Theory]
-		[MemberData(nameof(UrlsToTest))]
-		public void TransformPath_EnsureStartsWithTildeSlash(string path)
-		{
-			var env = CreateHostingEnvironment();
+	[Theory]
+	[MemberData(nameof(UrlsToTest))]
+	public void TransformPath_EnsureStartsWithTildeSlash(string path)
+	{
+		var env = CreateHostingEnvironment();
 
-			string transformedPath = env.TransformPath(path, true, false, false);
+		string transformedPath = env.TransformPath(path, true, false, false);
 
-			Assert.Equal("~/path/to/a/resource.jpg", transformedPath);
-		}
+		Assert.Equal("~/path/to/a/resource.jpg", transformedPath);
+	}
 
-		[Theory]
-		[MemberData(nameof(UrlsToTest))]
-		public void TransformPath_VirtualPath_EnsureNoTilde_EnsureLeadingSlash(string path)
-		{
-			var env = CreateHostingEnvironment();
+	[Theory]
+	[MemberData(nameof(UrlsToTest))]
+	public void TransformPath_VirtualPath_EnsureNoTilde_EnsureLeadingSlash(string path)
+	{
+		var env = CreateHostingEnvironment();
 
-			string transformedPath = env.TransformPath(path, false, true, true);
+		string transformedPath = env.TransformPath(path, false, true, true);
 
-			Assert.Equal("/path/to/a/resource.jpg", transformedPath);
-		}
+		Assert.Equal("/path/to/a/resource.jpg", transformedPath);
+	}
 
-		private UmbrellaWebHostingEnvironment CreateHostingEnvironment()
-		{
-			var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
-			var memoryCache = CoreUtilitiesMocks.CreateHybridCache();
-			IDataLookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
-			var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
+	private UmbrellaWebHostingEnvironment CreateHostingEnvironment()
+	{
+		var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
+		var memoryCache = CoreUtilitiesMocks.CreateHybridCache();
+		IDataLookupNormalizer lookupNormalizer = CoreUtilitiesMocks.CreateILookupNormalizer();
+		var cacheKeyUtility = new CacheKeyUtility(new Mock<ILogger<CacheKeyUtility>>().Object, lookupNormalizer);
 
-			return new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
-		}
+		return new UmbrellaWebHostingEnvironment(logger.Object, new UmbrellaHostingEnvironmentOptions(), memoryCache, cacheKeyUtility);
 	}
 }

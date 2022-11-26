@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.CommandLineUtils;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace Umbrella.TypeScript.Tools;
 

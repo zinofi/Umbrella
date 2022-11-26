@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
 using System.ComponentModel;
+using CommunityToolkit.Diagnostics;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Options.Abstractions;
 

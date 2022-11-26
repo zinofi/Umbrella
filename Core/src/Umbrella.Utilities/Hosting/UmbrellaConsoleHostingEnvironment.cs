@@ -16,7 +16,7 @@ namespace Umbrella.Utilities.Hosting;
 /// <summary>
 /// An implementation of the <see cref="UmbrellaHostingEnvironment" /> type for use with console applications.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Hosting.UmbrellaHostingEnvironment" />
+/// <seealso cref="UmbrellaHostingEnvironment" />
 public class UmbrellaConsoleHostingEnvironment : UmbrellaHostingEnvironment
 {
 	/// <summary>

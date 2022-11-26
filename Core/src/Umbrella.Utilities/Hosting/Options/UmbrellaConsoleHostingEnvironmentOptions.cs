@@ -9,7 +9,7 @@ namespace Umbrella.Utilities.Hosting.Options;
 /// <summary>
 /// Options for the <see cref="UmbrellaHostingEnvironment"/> and derived types.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Hosting.Options.UmbrellaHostingEnvironmentOptions" />
+/// <seealso cref="UmbrellaHostingEnvironmentOptions" />
 public class UmbrellaConsoleHostingEnvironmentOptions : UmbrellaHostingEnvironmentOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>

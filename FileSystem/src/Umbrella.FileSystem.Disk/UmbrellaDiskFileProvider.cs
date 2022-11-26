@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 using System.Text;
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Helpers;
 using Umbrella.Utilities.Mime.Abstractions;

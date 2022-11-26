@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using CommunityToolkit.Diagnostics;
 
 namespace Umbrella.Utilities.Extensions;
 

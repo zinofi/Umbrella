@@ -4,66 +4,65 @@ using System.Security.Principal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.Filters
+namespace Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
+
+/// <summary>
+/// Allows rate limiting to be applied to the target controller or action method, scoped to the current
+/// authenticated user using their <see cref="IIdentity.Name"/>. Rate limiting will not be applied to anonymous users.
+/// </summary>
+/// <seealso cref="Attribute" />
+/// <seealso cref="IResourceFilter" />
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+public class AuthenticatedUserRateLimitAttribute : Attribute, IResourceFilter
 {
+	private readonly ConcurrentDictionary<string, DateTime> _rateLimitTrackingDictionary = new ConcurrentDictionary<string, DateTime>();
+
 	/// <summary>
-	/// Allows rate limiting to be applied to the target controller or action method, scoped to the current
-	/// authenticated user using their <see cref="IIdentity.Name"/>. Rate limiting will not be applied to anonymous users.
+	/// Gets or sets the limit per minute per authenticated user.
 	/// </summary>
-	/// <seealso cref="Attribute" />
-	/// <seealso cref="IResourceFilter" />
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-	public class AuthenticatedUserRateLimitAttribute : Attribute, IResourceFilter
+	public double LimitPerMinute { get; set; }
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AuthenticatedUserRateLimitAttribute"/> class.
+	/// </summary>
+	/// <param name="limitPerMinute">The limit per minute.</param>
+	public AuthenticatedUserRateLimitAttribute(double limitPerMinute)
 	{
-		private readonly ConcurrentDictionary<string, DateTime> _rateLimitTrackingDictionary = new ConcurrentDictionary<string, DateTime>();
+		LimitPerMinute = limitPerMinute;
+	}
 
-		/// <summary>
-		/// Gets or sets the limit per minute per authenticated user.
-		/// </summary>
-		public double LimitPerMinute { get; set; }
+	/// <inheritdoc />
+	public void OnResourceExecuted(ResourceExecutedContext context)
+	{
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AuthenticatedUserRateLimitAttribute"/> class.
-		/// </summary>
-		/// <param name="limitPerMinute">The limit per minute.</param>
-		public AuthenticatedUserRateLimitAttribute(double limitPerMinute)
+	/// <inheritdoc />
+	public void OnResourceExecuting(ResourceExecutingContext context)
+	{
+		if (context.HttpContext.User.Identity?.IsAuthenticated is true)
 		{
-			LimitPerMinute = limitPerMinute;
-		}
+			string? userName = context.HttpContext.User.Identity.Name;
 
-		/// <inheritdoc />
-		public void OnResourceExecuted(ResourceExecutedContext context)
-		{
-		}
+			if (userName is null)
+				return;
 
-		/// <inheritdoc />
-		public void OnResourceExecuting(ResourceExecutingContext context)
-		{
-			if (context.HttpContext.User.Identity?.IsAuthenticated is true)
+			DateTime utcNow = DateTime.UtcNow;
+
+			if (_rateLimitTrackingDictionary.TryGetValue(userName, out DateTime nextRetryAllowed) && utcNow < nextRetryAllowed)
 			{
-				string? userName = context.HttpContext.User.Identity.Name;
+				int secondsRemaining = (int)Math.Ceiling(nextRetryAllowed.Subtract(utcNow).TotalSeconds);
+				string secondsRemainingDescriptor = secondsRemaining is 1 ? "second" : "seconds";
 
-				if (userName is null)
-					return;
+				string message = $"Please wait for another {secondsRemaining} {secondsRemainingDescriptor} before retrying.";
 
-				DateTime utcNow = DateTime.UtcNow;
-
-				if (_rateLimitTrackingDictionary.TryGetValue(userName, out DateTime nextRetryAllowed) && utcNow < nextRetryAllowed)
+				context.Result = new ObjectResult(message)
 				{
-					int secondsRemaining = (int)Math.Ceiling(nextRetryAllowed.Subtract(utcNow).TotalSeconds);
-					string secondsRemainingDescriptor = secondsRemaining is 1 ? "second" : "seconds";
-
-					string message = $"Please wait for another {secondsRemaining} {secondsRemainingDescriptor} before retrying.";
-
-					context.Result = new ObjectResult(message)
-					{
-						StatusCode = 429
-					};
-				}
-				else
-				{
-					_rateLimitTrackingDictionary[userName] = DateTime.UtcNow.AddSeconds(60 / LimitPerMinute);
-				}
+					StatusCode = 429
+				};
+			}
+			else
+			{
+				_rateLimitTrackingDictionary[userName] = DateTime.UtcNow.AddSeconds(60 / LimitPerMinute);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ namespace Umbrella.WebUtilities.Middleware.Options;
 /// <summary>
 /// Options for implementations of the QueryStringParameterToHttpHeaderMiddleware in the ASP.NET and ASP.NET Core projects.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
+/// <seealso cref="IValidatableUmbrellaOptions" />
 public class QueryStringParameterToHttpHeaderMiddlewareOptions : IValidatableUmbrellaOptions
 {
 	/// <summary>

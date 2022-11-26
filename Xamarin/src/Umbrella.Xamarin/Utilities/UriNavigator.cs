@@ -6,35 +6,34 @@ using Umbrella.Xamarin.Exceptions;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace Umbrella.Xamarin.Utilities
+namespace Umbrella.Xamarin.Utilities;
+
+/// <summary>
+/// A utility used to perform navigation to a specific URI.
+/// </summary>
+public class UriNavigator : IUriNavigator
 {
+	private readonly ILogger _logger;
+
 	/// <summary>
-	/// A utility used to perform navigation to a specific URI.
+	/// Initializes a new instance of the <see cref="UriNavigator"/> class.
 	/// </summary>
-	public class UriNavigator : IUriNavigator
+	/// <param name="logger">The logger.</param>
+	public UriNavigator(ILogger<UriNavigator> logger)
 	{
-		private readonly ILogger _logger;
+		_logger = logger;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UriNavigator"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		public UriNavigator(ILogger<UriNavigator> logger)
+	/// <inheritdoc />
+	public async ValueTask OpenAsync(string uri, bool openInNewWindow)
+	{
+		try
 		{
-			_logger = logger;
+			await Device.InvokeOnMainThreadAsync(async () => await Browser.OpenAsync(uri, openInNewWindow ? BrowserLaunchMode.External : BrowserLaunchMode.SystemPreferred));
 		}
-
-		/// <inheritdoc />
-		public async ValueTask OpenAsync(string uri, bool openInNewWindow)
+		catch (Exception exc) when (_logger.WriteError(exc, new { uri, openInNewWindow }))
 		{
-			try
-			{
-				await Device.InvokeOnMainThreadAsync(async () => await Browser.OpenAsync(uri, openInNewWindow ? BrowserLaunchMode.External : BrowserLaunchMode.SystemPreferred));
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { uri, openInNewWindow }))
-			{
-				throw new UmbrellaXamarinException("There has been a problem opening the specified URI.", exc);
-			}
+			throw new UmbrellaXamarinException("There has been a problem opening the specified URI.", exc);
 		}
 	}
 }

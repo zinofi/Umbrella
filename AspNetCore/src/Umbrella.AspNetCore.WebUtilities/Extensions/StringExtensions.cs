@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
-using System.Text.Encodings.Web;
 using Umbrella.Utilities.Constants;
 using Umbrella.WebUtilities.Exceptions;
 

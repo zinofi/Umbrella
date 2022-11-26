@@ -10,7 +10,7 @@ namespace Umbrella.Utilities.Comparers;
 /// of the same type.
 /// </summary>
 /// <typeparam name="TObject">The type of the object.</typeparam>
-/// <seealso cref="Umbrella.Utilities.Comparers.GenericEqualityComparer{TObject, TObject}" />
+/// <seealso cref="GenericEqualityComparer{TObject, TObject}" />
 public class GenericEqualityComparer<TObject> : GenericEqualityComparer<TObject, TObject>
 {
 	/// <summary>

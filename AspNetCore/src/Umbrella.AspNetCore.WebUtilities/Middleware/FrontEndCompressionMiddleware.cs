@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.IO.Compression;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Extensions;

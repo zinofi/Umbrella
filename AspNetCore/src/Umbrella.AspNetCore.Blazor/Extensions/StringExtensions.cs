@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.AspNetCore.Components;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Components;
 using Umbrella.Utilities.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Extensions;

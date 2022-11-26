@@ -16,99 +16,99 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
 using Umbrella.WebUtilities.Exceptions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Razor
+namespace Umbrella.AspNetCore.WebUtilities.Razor;
+
+/// <summary>
+/// A utility used to render a view to a string.
+/// </summary>
+/// <seealso cref="IRazorViewToStringRenderer" />
+public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 {
+	private readonly ILogger<RazorViewToStringRenderer> _logger;
+	private readonly IRazorViewEngine _viewEngine;
+	private readonly ITempDataProvider _tempDataProvider;
+	private readonly IHttpContextAccessor _httpContextAccessor;
+
 	/// <summary>
-	/// A utility used to render a view to a string.
+	/// Initializes a new instance of the <see cref="RazorViewToStringRenderer"/> class.
 	/// </summary>
-	/// <seealso cref="IRazorViewToStringRenderer" />
-	public class RazorViewToStringRenderer : IRazorViewToStringRenderer
+	/// <param name="logger">The logger.</param>
+	/// <param name="viewEngine">The view engine.</param>
+	/// <param name="tempDataProvider">The temp data provider.</param>
+	/// <param name="httpContextAccessor">The HTTP context accessor.</param>
+	public RazorViewToStringRenderer(
+		ILogger<RazorViewToStringRenderer> logger,
+		IRazorViewEngine viewEngine,
+		ITempDataProvider tempDataProvider,
+		IHttpContextAccessor httpContextAccessor)
 	{
-		private readonly ILogger<RazorViewToStringRenderer> _logger;
-		private readonly IRazorViewEngine _viewEngine;
-		private readonly ITempDataProvider _tempDataProvider;
-		private readonly IHttpContextAccessor _httpContextAccessor;
+		_logger = logger;
+		_viewEngine = viewEngine;
+		_tempDataProvider = tempDataProvider;
+		_httpContextAccessor = httpContextAccessor;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RazorViewToStringRenderer"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		/// <param name="viewEngine">The view engine.</param>
-		/// <param name="tempDataProvider">The temp data provider.</param>
-		/// <param name="httpContextAccessor">The HTTP context accessor.</param>
-		public RazorViewToStringRenderer(
-			ILogger<RazorViewToStringRenderer> logger,
-			IRazorViewEngine viewEngine,
-			ITempDataProvider tempDataProvider,
-			IHttpContextAccessor httpContextAccessor)
+	/// <inheritdoc />
+	public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken cancellationToken = default, HttpContext? httpContext = null)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
 		{
-			_logger = logger;
-			_viewEngine = viewEngine;
-			_tempDataProvider = tempDataProvider;
-			_httpContextAccessor = httpContextAccessor;
-		}
+			httpContext ??= _httpContextAccessor.HttpContext;
 
-		/// <inheritdoc />
-		public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken cancellationToken = default, HttpContext? httpContext = null)
+			if (httpContext is null)
+				throw new UmbrellaWebException("The current httpContext is not available.");
+
+			var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+			var view = FindView(actionContext, viewName);
+
+			using var output = new StringWriter();
+
+			var viewContext = new ViewContext(
+				actionContext,
+				view,
+				new ViewDataDictionary<TModel>(
+					metadataProvider: new EmptyModelMetadataProvider(),
+					modelState: new ModelStateDictionary())
+				{
+					Model = model
+				},
+				new TempDataDictionary(
+					actionContext.HttpContext,
+					_tempDataProvider),
+				output,
+				new HtmlHelperOptions());
+
+			await view.RenderAsync(viewContext);
+
+			return output.ToString();
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }))
 		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				httpContext ??= _httpContextAccessor.HttpContext;
-
-				if (httpContext is null)
-					throw new UmbrellaWebException("The current httpContext is not available.");
-
-				var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
-				var view = FindView(actionContext, viewName);
-
-				using var output = new StringWriter();
-
-				var viewContext = new ViewContext(
-					actionContext,
-					view,
-					new ViewDataDictionary<TModel>(
-						metadataProvider: new EmptyModelMetadataProvider(),
-						modelState: new ModelStateDictionary())
-					{
-						Model = model
-					},
-					new TempDataDictionary(
-						actionContext.HttpContext,
-						_tempDataProvider),
-					output,
-					new HtmlHelperOptions());
-
-				await view.RenderAsync(viewContext);
-
-				return output.ToString();
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { viewName, model }))
-			{
-				throw new UmbrellaWebException("There has been a problem rendering the view.", exc);
-			}
+			throw new UmbrellaWebException("There has been a problem rendering the view.", exc);
 		}
+	}
 
-		private IView FindView(ActionContext actionContext, string viewName)
-		{
-			var getViewResult = _viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
+	private IView FindView(ActionContext actionContext, string viewName)
+	{
+		var getViewResult = _viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
 
-			if (getViewResult.Success)
-				return getViewResult.View;
+		if (getViewResult.Success)
+			return getViewResult.View;
 
-			var findViewResult = _viewEngine.FindView(actionContext, viewName, isMainPage: true);
+		var findViewResult = _viewEngine.FindView(actionContext, viewName, isMainPage: true);
 
-			if (findViewResult.Success)
-				return findViewResult.View;
+		if (findViewResult.Success)
+			return findViewResult.View;
 
-			var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
+		var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
 
-			string? errorMessage = string.Join(
-				Environment.NewLine,
-				new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations)); ;
+		string? errorMessage = string.Join(
+			Environment.NewLine,
+			new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations));
+		;
 
-			throw new InvalidOperationException(errorMessage);
-		}
+		throw new InvalidOperationException(errorMessage);
 	}
 }

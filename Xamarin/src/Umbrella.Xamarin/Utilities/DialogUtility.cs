@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.Utilities.Extensions;

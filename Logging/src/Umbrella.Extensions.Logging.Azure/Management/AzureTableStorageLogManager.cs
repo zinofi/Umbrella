@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Concurrent;
 using Azure;
 using Azure.Data.Tables;
 using Azure.Data.Tables.Models;
@@ -8,7 +9,6 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
 using Umbrella.Extensions.Logging.Azure.Configuration;
 using Umbrella.Extensions.Logging.Azure.Management.Configuration;
 using Umbrella.Extensions.Logging.Azure.Management.Options;

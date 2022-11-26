@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Azure;
-using Azure.Data.Tables;
 using System.Collections;
 using System.Text;
+using Azure;
+using Azure.Data.Tables;
 
 namespace Umbrella.Extensions.Logging.Azure;
 

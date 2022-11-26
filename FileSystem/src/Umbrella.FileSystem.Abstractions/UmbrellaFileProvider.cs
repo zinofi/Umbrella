@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.RegularExpressions;
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;

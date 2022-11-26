@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Text;
 using log4net;
 using Microsoft.Extensions.Logging;
-using System.Text;
 using Umbrella.Utilities;
 
 namespace Umbrella.Extensions.Logging.Log4Net;

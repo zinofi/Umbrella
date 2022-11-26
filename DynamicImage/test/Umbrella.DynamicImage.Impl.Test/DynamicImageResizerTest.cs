@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Logging;
-using Moq;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.FileSystem.Abstractions;

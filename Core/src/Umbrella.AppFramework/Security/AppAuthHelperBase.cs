@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Security.Claims;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Security.Messages;

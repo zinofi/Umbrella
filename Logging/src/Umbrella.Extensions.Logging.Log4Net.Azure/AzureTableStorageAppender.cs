@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Runtime.CompilerServices;
+using System.Text;
 using Azure.Data.Tables;
 using CommunityToolkit.Diagnostics;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Umbrella.Extensions.Logging.Azure;
 using Umbrella.Extensions.Logging.Azure.Configuration;
 using Umbrella.Utilities.Extensions;

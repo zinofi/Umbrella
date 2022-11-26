@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.Logging;
 using System.Buffers;
 using System.ComponentModel;
 using System.Security.Cryptography;
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Encryption.Options;
@@ -16,8 +16,8 @@ namespace Umbrella.Utilities.Encryption;
 /// <summary>
 /// A utility to generate random strings using the default cryptographically strong <see cref="RandomNumberGenerator"/> class internally.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Encryption.Abstractions.ISecureRandomStringGenerator" />
-/// <seealso cref="System.IDisposable" />
+/// <seealso cref="ISecureRandomStringGenerator" />
+/// <seealso cref="IDisposable" />
 public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 {
 	#region Private Static Members

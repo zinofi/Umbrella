@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbrella.Xamarin.Utilities.Enumerations
+namespace Umbrella.Xamarin.Utilities.Enumerations;
+
+public enum PermissionType
 {
-    public enum PermissionType
-    {
-		SavedPhoto,
-		SavedVideo,
-		NewPhoto,
-		NewVideo,
-		File
-    }
+	SavedPhoto,
+	SavedVideo,
+	NewPhoto,
+	NewVideo,
+	File
 }

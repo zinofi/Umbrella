@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Email.Options;
@@ -17,7 +17,7 @@ namespace Umbrella.Utilities.Email;
 /// <summary>
 /// A generic class to aid in building emails based on HTML generated templates stored as static files on disk.
 /// </summary>
-/// <seealso cref="Umbrella.Utilities.Email.Abstractions.IEmailFactory" />
+/// <seealso cref="IEmailFactory" />
 public class EmailFactory : IEmailFactory
 {
 	#region Private Static Members

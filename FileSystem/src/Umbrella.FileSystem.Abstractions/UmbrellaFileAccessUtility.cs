@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Context.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions;
@@ -71,7 +71,7 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 		CurrentUserRolesAccessor = currentUserRolesAccessor;
 		CurrentUserClaimsPrincipalAccessor = currentUserClaimsPrincipalAccessor;
 	}
-	
+
 	/// <inheritdoc/>
 	public virtual async Task<bool> CanAccessAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
 	{

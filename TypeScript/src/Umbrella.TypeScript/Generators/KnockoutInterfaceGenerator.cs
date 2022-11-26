@@ -1,51 +1,50 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace Umbrella.TypeScript.Generators
+namespace Umbrella.TypeScript.Generators;
+
+/// <summary>
+/// A TypeScript generator implementation for generating Knockout interfaces.
+/// </summary>
+/// <seealso cref="BaseInterfaceGenerator" />
+public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
 {
+	private readonly bool _useDecorators;
+
+	/// <inheritdoc />
+	public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutInterface;
+
 	/// <summary>
-	/// A TypeScript generator implementation for generating Knockout interfaces.
+	/// Initializes a new instance of the <see cref="KnockoutInterfaceGenerator"/> class.
 	/// </summary>
-	/// <seealso cref="Umbrella.TypeScript.Generators.BaseInterfaceGenerator" />
-	public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
+	/// <param name="useDecorators">if set to <c>true</c>, uses TypeScript decorators.</param>
+	public KnockoutInterfaceGenerator(bool useDecorators)
 	{
-		private readonly bool _useDecorators;
+		_useDecorators = useDecorators;
+	}
 
-		/// <inheritdoc />
-		public override TypeScriptOutputModelType OutputModelType => TypeScriptOutputModelType.KnockoutInterface;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KnockoutInterfaceGenerator"/> class.
-		/// </summary>
-		/// <param name="useDecorators">if set to <c>true</c>, uses TypeScript decorators.</param>
-		public KnockoutInterfaceGenerator(bool useDecorators)
+	/// <inheritdoc />
+	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
+	{
+		if (!string.IsNullOrEmpty(tsInfo.TypeName))
 		{
-			_useDecorators = useDecorators;
-		}
+			string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
-		/// <inheritdoc />
-		protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
-		{
-			if (!string.IsNullOrEmpty(tsInfo.TypeName))
+			string formatString = "\t\t{0}: ";
+
+			if (tsInfo.TypeName!.EndsWith("[]"))
 			{
-				string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
+				formatString += _useDecorators ? "{1}" : "KnockoutObservableArray<{1}>;";
 
-				string formatString = "\t\t{0}: ";
-
-				if (tsInfo.TypeName!.EndsWith("[]"))
-				{
-					formatString += _useDecorators ? "{1}" : "KnockoutObservableArray<{1}>;";
-
-					if (!_useDecorators)
-						tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
-				}
-				else
-				{
-					formatString += _useDecorators ? "{1}" : "KnockoutObservable<{1}>;";
-				}
-
-				builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}"));
+				if (!_useDecorators)
+					tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
 			}
+			else
+			{
+				formatString += _useDecorators ? "{1}" : "KnockoutObservable<{1}>;";
+			}
+
+			builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}"));
 		}
 	}
 }

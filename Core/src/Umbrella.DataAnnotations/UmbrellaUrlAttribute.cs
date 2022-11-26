@@ -1,20 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Umbrella.DataAnnotations.RegularExpressions;
 
-namespace Umbrella.DataAnnotations
+namespace Umbrella.DataAnnotations;
+
+/// <summary>
+/// Specifies that a data field must be a valid URL.
+/// </summary>
+/// <seealso cref="RegularExpressionAttribute" />
+public class UmbrellaUrlAttribute : RegularExpressionAttribute
 {
 	/// <summary>
-	/// Specifies that a data field must be a valid URL.
+	/// Initializes a new instance of the <see cref="UmbrellaUrlAttribute"/> class.
 	/// </summary>
-	/// <seealso cref="RegularExpressionAttribute" />
-	public class UmbrellaUrlAttribute : RegularExpressionAttribute
+	public UmbrellaUrlAttribute()
+		: base(UrlRegularExpressions.UrlRegexString)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaUrlAttribute"/> class.
-		/// </summary>
-		public UmbrellaUrlAttribute()
-			: base(UrlRegularExpressions.UrlRegexString)
-		{
-		}
 	}
 }

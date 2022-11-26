@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Moq;
-using System.Text;
 using Umbrella.Internal.Mocks;
 using Umbrella.Legacy.WebUtilities.Middleware;
 using Umbrella.Utilities.Caching.Abstractions;

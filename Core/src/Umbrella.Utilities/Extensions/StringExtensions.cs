@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using CommunityToolkit.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Constants;
 
 namespace Umbrella.Utilities.Extensions;

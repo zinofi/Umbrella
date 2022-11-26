@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Security.Claims;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AppFramework.Shared.Security;
 using Umbrella.AppFramework.Shared.Security.Extensions;
@@ -38,7 +38,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// Gets a value indicating whether the application is running in development mode.
 	/// </summary>
 	protected bool IsDevelopment => HostingEnvironment.IsDevelopment();
-	
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaApiController"/> class.
 	/// </summary>
@@ -73,7 +73,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// <returns>The action result.</returns>
 	protected IActionResult OperationResultFailure(in OperationResult operationResult)
 	{
-		switch(operationResult.Status)
+		switch (operationResult.Status)
 		{
 			case OperationResultStatus.GenericFailure:
 				Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);

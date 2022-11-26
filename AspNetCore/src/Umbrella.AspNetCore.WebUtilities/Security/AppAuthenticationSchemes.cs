@@ -1,21 +1,20 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-namespace Umbrella.AspNetCore.WebUtilities.Security
+namespace Umbrella.AspNetCore.WebUtilities.Security;
+
+/// <summary>
+/// Specifies the names of custom app authentication schemes.
+/// </summary>
+public static class AppAuthenticationSchemes
 {
 	/// <summary>
-	/// Specifies the names of custom app authentication schemes.
+	/// The scheme for bearer tokens used for two-factor authentication.
 	/// </summary>
-	public static class AppAuthenticationSchemes
-	{
-		/// <summary>
-		/// The scheme for bearer tokens used for two-factor authentication.
-		/// </summary>
-		public const string Bearer2FA = nameof(Bearer2FA);
+	public const string Bearer2FA = nameof(Bearer2FA);
 
-		/// <summary>
-		/// The scheme for bearer tokens used for file access.
-		/// </summary>
-		public const string BearerFAT = nameof(BearerFAT);
-	}
+	/// <summary>
+	/// The scheme for bearer tokens used for file access.
+	/// </summary>
+	public const string BearerFAT = nameof(BearerFAT);
 }

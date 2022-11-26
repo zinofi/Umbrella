@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Net.Http;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Http.Abstractions;

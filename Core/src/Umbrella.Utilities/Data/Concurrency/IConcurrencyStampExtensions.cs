@@ -3,17 +3,16 @@
 
 using System;
 
-namespace Umbrella.Utilities.Data.Concurrency
+namespace Umbrella.Utilities.Data.Concurrency;
+
+/// <summary>
+/// Extensions for the <see cref="IConcurrencyStamp"/> type.
+/// </summary>
+public static class IConcurrencyStampExtensions
 {
 	/// <summary>
-	/// Extensions for the <see cref="IConcurrencyStamp"/> type.
+	/// Updated the <see cref="IConcurrencyStamp.ConcurrencyStamp" /> value.
 	/// </summary>
-	public static class IConcurrencyStampExtensions
-	{
-		/// <summary>
-		/// Updated the <see cref="IConcurrencyStamp.ConcurrencyStamp" /> value.
-		/// </summary>
-		/// <param name="target">The item whose concurrency stamp will be updated.</param>
-		public static void UpdateConcurrencyStamp(this IConcurrencyStamp target) => target.ConcurrencyStamp = Guid.NewGuid().ToString();
-	}
+	/// <param name="target">The item whose concurrency stamp will be updated.</param>
+	public static void UpdateConcurrencyStamp(this IConcurrencyStamp target) => target.ConcurrencyStamp = Guid.NewGuid().ToString();
 }

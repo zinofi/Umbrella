@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Data.Filtering;

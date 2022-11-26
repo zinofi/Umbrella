@@ -6,106 +6,105 @@ using System.Threading.Tasks;
 using Umbrella.Utilities.Extensions;
 using Xunit;
 
-namespace Umbrella.Utilities.Test.Extensions
+namespace Umbrella.Utilities.Test.Extensions;
+
+public class SpanExtensionsTest
 {
-    public class SpanExtensionsTest
-    {
-        [Fact]
-        public void Char_AppendStringToEmpty_Valid()
-        {
-            Span<char> span = stackalloc char[10];
+	[Fact]
+	public void Char_AppendStringToEmpty_Valid()
+	{
+		Span<char> span = stackalloc char[10];
 
-            int currentIndex = span.Append(0, "1234567890");
+		int currentIndex = span.Append(0, "1234567890");
 
-            Assert.Equal(10, currentIndex);
-            Assert.Equal("1234567890", span.ToString());
-        }
+		Assert.Equal(10, currentIndex);
+		Assert.Equal("1234567890", span.ToString());
+	}
 
-        [Fact]
-        public void Char_AppendStringToExisting_Valid()
-        {
-            Span<char> span = stackalloc char[10];
-            span[0] = '1';
-            span[1] = '2';
-            span[2] = '3';
-            span[3] = '4';
-            span[4] = '5';
+	[Fact]
+	public void Char_AppendStringToExisting_Valid()
+	{
+		Span<char> span = stackalloc char[10];
+		span[0] = '1';
+		span[1] = '2';
+		span[2] = '3';
+		span[3] = '4';
+		span[4] = '5';
 
-            int currentIndex = span.Append(5, "67890");
+		int currentIndex = span.Append(5, "67890");
 
-            Assert.Equal(10, currentIndex);
-            Assert.Equal("1234567890", span.ToString());
-        }
+		Assert.Equal(10, currentIndex);
+		Assert.Equal("1234567890", span.ToString());
+	}
 
-        [Fact]
-        public void Char_AppendReadOnlySpanToEmpty_Valid()
-        {
-            Span<char> span = stackalloc char[10];
+	[Fact]
+	public void Char_AppendReadOnlySpanToEmpty_Valid()
+	{
+		Span<char> span = stackalloc char[10];
 
-            int currentIndex = span.Append(0, "1234567890".AsSpan());
+		int currentIndex = span.Append(0, "1234567890".AsSpan());
 
-            Assert.Equal(10, currentIndex);
-            Assert.Equal("1234567890", span.ToString());
-        }
+		Assert.Equal(10, currentIndex);
+		Assert.Equal("1234567890", span.ToString());
+	}
 
-        [Fact]
-        public void Char_AppendReadOnlySpanToExisting_Valid()
-        {
-            Span<char> span = stackalloc char[10];
-            span[0] = '1';
-            span[1] = '2';
-            span[2] = '3';
-            span[3] = '4';
-            span[4] = '5';
+	[Fact]
+	public void Char_AppendReadOnlySpanToExisting_Valid()
+	{
+		Span<char> span = stackalloc char[10];
+		span[0] = '1';
+		span[1] = '2';
+		span[2] = '3';
+		span[3] = '4';
+		span[4] = '5';
 
-            int currentIndex = span.Append(5, "67890".AsSpan());
+		int currentIndex = span.Append(5, "67890".AsSpan());
 
-            Assert.Equal(10, currentIndex);
-            Assert.Equal("1234567890", span.ToString());
-        }
+		Assert.Equal(10, currentIndex);
+		Assert.Equal("1234567890", span.ToString());
+	}
 
-        [Fact]
-        public void Char_ToLower_Valid()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('A');
+	[Fact]
+	public void Char_ToLower_Valid()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('A');
 
-            span.ToLower();
+		span.ToLower();
 
-            Assert.Equal("aaaaaaaaaa", span.ToString());
-        }
+		Assert.Equal("aaaaaaaaaa", span.ToString());
+	}
 
-        [Fact]
-        public void Char_ToLowerInvariant_Valid()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('A');
+	[Fact]
+	public void Char_ToLowerInvariant_Valid()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('A');
 
-            span.ToLowerInvariant();
+		span.ToLowerInvariant();
 
-            Assert.Equal("aaaaaaaaaa", span.ToString());
-        }
+		Assert.Equal("aaaaaaaaaa", span.ToString());
+	}
 
-        [Fact]
-        public void Char_ToUpper_Valid()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('a');
+	[Fact]
+	public void Char_ToUpper_Valid()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('a');
 
-            span.ToUpper();
+		span.ToUpper();
 
-            Assert.Equal("AAAAAAAAAA", span.ToString());
-        }
+		Assert.Equal("AAAAAAAAAA", span.ToString());
+	}
 
-        [Fact]
-        public void Char_ToUpperInvariant_Valid()
-        {
-            Span<char> span = stackalloc char[10];
-            span.Fill('a');
+	[Fact]
+	public void Char_ToUpperInvariant_Valid()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('a');
 
-            span.ToUpperInvariant();
+		span.ToUpperInvariant();
 
-            Assert.Equal("AAAAAAAAAA", span.ToString());
-        }
-    }
+		Assert.Equal("AAAAAAAAAA", span.ToString());
+	}
 }
