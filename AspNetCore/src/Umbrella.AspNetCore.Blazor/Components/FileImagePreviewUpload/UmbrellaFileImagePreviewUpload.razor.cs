@@ -98,6 +98,12 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	[Parameter]
 	public string? SizeWidths { get; set; }
 
+	/// <summary>
+	/// Gets or sets the maximum pixel density image that should be rendered for the preview thumbnail.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to 1.
+	/// </remarks>
 	[Parameter]
 	public int MaxPixelDensity { get; set; } = 1;
 

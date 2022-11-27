@@ -16,6 +16,21 @@ using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 
+/// <summary>
+/// A generic API Controller that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
+/// </summary>
+/// <typeparam name="TSlimModel">The type of the slim model.</typeparam>
+/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
+/// <typeparam name="TModel">The type of the model.</typeparam>
+/// <typeparam name="TCreateModel">The type of the create model.</typeparam>
+/// <typeparam name="TCreateResultModel">The type of the create result model.</typeparam>
+/// <typeparam name="TUpdateModel">The type of the update model.</typeparam>
+/// <typeparam name="TUpdateResultModel">The type of the update result model.</typeparam>
+/// <typeparam name="TRepository">The type of the repository.</typeparam>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+/// <seealso cref="UmbrellaDataAccessApiController" />
 public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPaginatedResultModel, TModel, TCreateModel, TCreateResultModel, TUpdateModel, TUpdateResultModel, TRepository, TEntity, TRepositoryOptions, TEntityKey> : UmbrellaDataAccessApiController
 	where TPaginatedResultModel : PaginatedResultModel<TSlimModel>, new()
 	where TCreateResultModel : ICreateResultModel<TEntityKey>, new()
@@ -130,12 +145,68 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	protected virtual bool GetTrackChanges { get; }
 
+	/// <summary>
+	/// Gets a value indicating whether calls to the <see cref="Get(TEntityKey, CancellationToken)"/> endpoint should be synchronized
+	/// using the <see cref="IEntity{TEntityKey}.Id"/> of the entity being loaded.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="false"/>.
+	/// </remarks>
 	protected virtual bool GetLock { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether calls to the <see cref="Post(TCreateModel, CancellationToken)"/> endpoint should be synchronized
+	/// using a synchronization key created by a call to the <see cref="UmbrellaDataAccessApiController.GetCreateSynchronizationRootKey(object)"/> method.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="false"/>.
+	/// </remarks>
 	protected virtual bool PostLock { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether calls to the <see cref="Put(TUpdateModel, CancellationToken)"/> endpoint should be synchronized
+	/// using the <see cref="IEntity{TEntityKey}.Id"/> of the entity being updated.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="false"/>.
+	/// </remarks>
 	protected virtual bool PutLock { get; }
+
+	/// <summary>
+	/// Gets a value indicating whether calls to the <see cref="Delete(TEntityKey, CancellationToken)"/> endpoint should be synchronized
+	/// using the <see cref="IEntity{TEntityKey}.Id"/> of the entity being deleted.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="false"/>.
+	/// </remarks>
 	protected virtual bool DeleteLock { get; }
 
+	/// <summary>
+	/// Gets a value indicating whether result models created when the <see cref="Post(TCreateModel, CancellationToken)"/> endpoint is called
+	/// should be automatically mapped from the created entity using the <see cref="UmbrellaDataAccessApiController.Mapper"/>.
+	/// </summary>
+	/// <remarks>
+	/// <para>Defaults to <see langword="true"/>.</para>
+	/// <para>
+	/// This should normally always be set to <see langword="true"/>.
+	/// It exists because output mapping was not supported by previous versions of this code.
+	/// In future versions, this property will be removed with output mapping always being enabled.
+	/// </para>
+	/// </remarks>
 	protected virtual bool EnablePostOutputMapping { get; } = true;
+
+	/// <summary>
+	/// Gets a value indicating whether result models created when the <see cref="Put(TUpdateModel, CancellationToken)"/> endpoint is called
+	/// should be automatically mapped from the updated entity using the <see cref="UmbrellaDataAccessApiController.Mapper"/>.
+	/// </summary>
+	/// <remarks>
+	/// <para>Defaults to <see langword="true"/>.</para>
+	/// <para>
+	/// This should normally always be set to <see langword="true"/>.
+	/// It exists because output mapping was not supported by previous versions of this code.
+	/// In future versions, this property will be removed with output mapping always being enabled.
+	/// </para>
+	/// </remarks>
 	protected virtual bool EnablePutOutputMapping { get; } = true;
 
 	protected virtual IncludeMap<TEntity>? SearchSlimIncludeMap { get; }

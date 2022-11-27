@@ -9,7 +9,6 @@ using Umbrella.AppFramework.Shared.Models;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Mvc.Options;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
@@ -72,6 +71,29 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		SynchronizationManager = synchronizationManager;
 	}
 
+	/// <summary>
+	/// Reads all items from a repository.
+	/// </summary>
+	/// <typeparam name="TEntityResult">The type of the entity result.</typeparam>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+	/// <typeparam name="TItemModel">The type of the item model.</typeparam>
+	/// <typeparam name="TPaginatedItemModel">The type of the paginated item model.</typeparam>
+	/// <param name="pageNumber">The page number.</param>
+	/// <param name="pageSize">Size of the page.</param>
+	/// <param name="sorters">The sorters.</param>
+	/// <param name="filters">The filters.</param>
+	/// <param name="filterCombinator">The filter combinator.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="loadReadAllDataAsyncDelegate">The delegate used to load the data.</param>
+	/// <param name="mapReadAllEntitiesDelegate">The delegate used to map the results loaded from the repository.</param>
+	/// <param name="afterCreateSearchSlimPaginatedModelAsyncDelegate">The delegate that is invoked after the paginated result model has been created.</param>
+	/// <param name="afterCreateSlimModelAsyncDelegate">The delegate that is invoked when result models have been created.</param>
+	/// <param name="options">The repository options.</param>
+	/// <param name="childOptions">The child repository options.</param>
+	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
+	/// <returns>An action result with the result of the operation.</returns>
 	protected virtual async Task<IActionResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedItemModel>(
 		int pageNumber,
 		int pageSize,
