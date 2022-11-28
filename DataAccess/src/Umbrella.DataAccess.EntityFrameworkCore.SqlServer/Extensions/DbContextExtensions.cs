@@ -2,8 +2,11 @@
 // Licensed under the MIT License.
 
 using System.Data;
+using System.Linq.Expressions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Umbrella.DataAccess.Abstractions;
+using Umbrella.DataAccess.EntityFrameworkCore.Extensions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions;
 
@@ -12,6 +15,8 @@ namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions;
 /// </summary>
 public static class DbContextExtensions
 {
+	private const string PeriodEndPropertyName = "PeriodEnd";
+
 	/// <summary>
 	/// Gets the next integer value in the named sequence.
 	/// </summary>
@@ -56,5 +61,48 @@ public static class DbContextExtensions
 		}
 
 		return null;
+	}
+
+	public static async Task<TEntity?> FindMostRecentHistoryEntityByIdAsync<TEntity, TEntityKey>(this DbContext dbContext, TEntityKey id, bool trackChanges = false, Expression<Func<TEntity, bool>>? filter = null, CancellationToken cancellationToken = default)
+		where TEntity : class, IEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		var query = dbContext.Set<TEntity>()
+			.TemporalAll()
+			.TrackChanges(trackChanges)
+			.OrderByDescending(x => EF.Property<DateTime>(x, PeriodEndPropertyName))
+			.Where(x => x.Id.Equals(id));
+
+		if (filter is not null)
+		{
+			query = query.Where(filter);
+		}
+		else
+		{
+			query = query.Skip(1);
+		}
+
+		return await query.FirstOrDefaultAsync(cancellationToken);
+	}
+
+	public static async Task<IReadOnlyCollection<IdEntityPairResult<TEntity, TEntityKey>>> FindAllMostRecentHistoryEntityByIdListAsync<TEntity, TEntityKey>(this DbContext dbContext, IEnumerable<TEntityKey> idList, bool trackChanges = false, CancellationToken cancellationToken = default)
+		where TEntity : class, IEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		var lstId = idList.Distinct().ToArray();
+
+		var lstEntityHistory = await dbContext.Set<TEntity>()
+				.TemporalAll()
+				.TrackChanges(trackChanges)
+				.Where(x => lstId.Distinct().Contains(x.Id))
+				.GroupBy(x => x.Id)
+				.Select(x => new IdEntityPairResult<TEntity, TEntityKey> { Id = x.Key, Entity = x.OrderByDescending(x => EF.Property<DateTime>(x, PeriodEndPropertyName)).Skip(1).FirstOrDefault() })
+				.ToArrayAsync(cancellationToken);
+
+		return lstEntityHistory.UnionBy(lstId.Select(x => new IdEntityPairResult<TEntity, TEntityKey> { Id = x }), x => x.Id).ToArray();
 	}
 }

@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Security.Claims;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Security.Messages;
+using Umbrella.AppFramework.Security.Options;
 using Umbrella.Utilities.Security.Abstractions;
 
 namespace Umbrella.AppFramework.Security;
@@ -15,13 +16,14 @@ namespace Umbrella.AppFramework.Security;
 /// A base class which application specific authentication helpers can extend.
 /// </summary>
 /// <seealso cref="IAppAuthHelper" />
-public abstract class AppAuthHelperBase : IAppAuthHelper
+public class AppAuthHelper : IAppAuthHelper
 {
 	private static readonly ClaimsPrincipal _emptyPrincipal = new(new ClaimsIdentity());
 
 	private readonly ILogger _logger;
 	private readonly IJwtUtility _jwtUtility;
 	private readonly IAppAuthTokenStorageService _tokenStorageService;
+	private readonly AppAuthHelperOptions _options;
 
 	// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
 	// Could wrap this in a singleton service but not much point.
@@ -35,19 +37,22 @@ public abstract class AppAuthHelperBase : IAppAuthHelper
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AppAuthHelperBase"/> class.
+	/// Initializes a new instance of the <see cref="AppAuthHelper"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="jwtUtility">The JWT utility.</param>
 	/// <param name="tokenStorageService">The token storage service.</param>
-	public AppAuthHelperBase(
+	/// <param name="options">The app auth helper options.</param>
+	public AppAuthHelper(
 		ILogger logger,
 		IJwtUtility jwtUtility,
-		IAppAuthTokenStorageService tokenStorageService)
+		IAppAuthTokenStorageService tokenStorageService,
+		AppAuthHelperOptions options)
 	{
 		_logger = logger;
 		_jwtUtility = jwtUtility;
 		_tokenStorageService = tokenStorageService;
+		_options = options;
 	}
 
 	/// <inheritdoc />
@@ -87,7 +92,7 @@ public abstract class AppAuthHelperBase : IAppAuthHelper
 			}
 
 			_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-			WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(_claimsPrincipal));
+			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(_claimsPrincipal));
 
 			return _claimsPrincipal;
 		}
@@ -105,20 +110,14 @@ public abstract class AppAuthHelperBase : IAppAuthHelper
 			await _tokenStorageService.SetTokenAsync(null);
 			_claimsPrincipal = null;
 
-			WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(new ClaimsPrincipal(new ClaimsIdentity())));
+			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(new ClaimsPrincipal(new ClaimsIdentity())));
 
-			if (executeDefaultPostLogoutAction)
-				await ExecutePostLogoutActionAsync();
+			if (executeDefaultPostLogoutAction && _options.PostLogoutAction is not null)
+				await _options.PostLogoutAction();
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }))
 		{
 			throw new UmbrellaAppFrameworkException("There has been a problem logging out the user locally.", exc);
 		}
 	}
-
-	/// <summary>
-	/// An action to be executed after logging out the current user locally.
-	/// </summary>
-	/// <returns>A Task that can be awaited for this operation to complete.</returns>
-	protected abstract ValueTask ExecutePostLogoutActionAsync();
 }

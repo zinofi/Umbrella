@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
+	  <ProjectReference Include="..\Umbrella.DataAccess.EntityFrameworkCore\Umbrella.DataAccess.EntityFrameworkCore.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -47,6 +47,7 @@ using Umbrella.Utilities.Threading.Abstractions;
 using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
+[assembly: InternalsVisibleTo("Umbrella.DataAccess.Abstractions")]
 [assembly: InternalsVisibleTo("Umbrella.Utilities.Benchmark")]
 [assembly: InternalsVisibleTo("Umbrella.Utilities.Test")]
 

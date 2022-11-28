@@ -2,11 +2,15 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Components.Authorization;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Security.Abstractions;
+using Umbrella.AspNetCore.Blazor.Security;
 using Umbrella.AspNetCore.Blazor.Utilities;
 using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
+using Umbrella.AspNetCore.Blazor.Security.Options;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -21,7 +25,9 @@ public static class IServiceCollectionExtensions
 	/// Adds the <see cref="Umbrella.AspNetCore.Blazor"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	/// <returns>The services builder.</returns>
-	public static IServiceCollection AddUmbrellaBlazor(this IServiceCollection services)
+	public static IServiceCollection AddUmbrellaBlazor(
+		this IServiceCollection services,
+		Action<IServiceProvider, JwtAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services, nameof(services));
 
@@ -30,6 +36,11 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUriNavigator, UriNavigator>();
 		_ = services.AddTransient<IDialogUtility>(x => x.GetRequiredService<IUmbrellaDialogUtility>());
 		_ = services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
+
+		// Security
+		services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
+		services.AddScoped<IJwtAuthenticationStateProvider>(x => (JwtAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
+		services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
 
 		return services;
 	}

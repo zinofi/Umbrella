@@ -6,6 +6,7 @@ using Umbrella.AppFramework.Http.Handlers;
 using Umbrella.AppFramework.Http.Handlers.Options;
 using Umbrella.AppFramework.Security;
 using Umbrella.AppFramework.Security.Abstractions;
+using Umbrella.AppFramework.Security.Options;
 using Umbrella.AppFramework.Utilities;
 using Umbrella.AppFramework.Utilities.Abstractions;
 
@@ -21,17 +22,17 @@ public static class IServiceCollectionExtensions
 	/// <summary>
 	/// Adds the <see cref="Umbrella.AppFramework"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
-	/// <typeparam name="TAuthHelper">The type of the authentication helper.</typeparam>
 	/// <param name="services">The services.</param>
+	/// <param name="appAuthHelperOptionsBuilder">The app auth helper options builder.</param>
 	/// <returns>The services.</returns>
-	public static IServiceCollection AddUmbrellaAppFramework<TAuthHelper>(this IServiceCollection services)
-		where TAuthHelper : class, IAppAuthHelper
+	public static IServiceCollection AddUmbrellaAppFramework(
+		this IServiceCollection services,
+		Action<IServiceProvider, AppAuthHelperOptions> appAuthHelperOptionsBuilder)
 	{
 		Guard.IsNotNull(services);
 
-		_ = services.AddScoped<IAppAuthHelper, TAuthHelper>();
-
 		// NB: These needs to be scoped for use with Blazor.
+		_ = services.AddScoped<IAppAuthHelper, AppAuthHelper>();
 		_ = services.AddScoped<IAppUpdateMessageUtility, AppUpdateMessageUtility>();
 		_ = services.AddScoped<IAppAuthTokenStorageService, AppAuthTokenStorageService>();
 
@@ -43,6 +44,9 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<RefreshedAuthTokenHandler>();
 		_ = services.AddScoped<RequestNotificationHandler>();
 
+		// Options
+		_ = services.ConfigureUmbrellaOptions(appAuthHelperOptionsBuilder);
+
 		return services;
 	}
 
@@ -51,7 +55,7 @@ public static class IServiceCollectionExtensions
 	/// </summary>
 	/// <param name="services">The services.</param>
 	/// <param name="requestNotificationHandlerOptionsBuilder">The request notification handler options builder.</param>
-	/// <returns></returns>
+	/// <returns>The services.</returns>
 	public static IServiceCollection ConfigureUmbrellaAppFramework(
 		this IServiceCollection services,
 		Action<IServiceProvider, RequestNotificationHandlerOptions>? requestNotificationHandlerOptionsBuilder = null)

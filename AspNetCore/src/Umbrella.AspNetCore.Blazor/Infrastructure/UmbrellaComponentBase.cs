@@ -14,6 +14,7 @@ using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Mapping.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 
@@ -49,6 +50,12 @@ public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 	/// </summary>
 	[Inject]
 	protected IAppAuthHelper AuthHelper { get; private set; } = null!;
+
+	/// <summary>
+	/// Gets the mapper.
+	/// </summary>
+	[Inject]
+	protected IUmbrellaMapper Mapper { get; private set; } = null!;
 
 	/// <summary>
 	/// Gets the logger.
