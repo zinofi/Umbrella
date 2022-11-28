@@ -15,7 +15,7 @@ public class AppAuthHelperOptions : IValidatableUmbrellaOptions
 	/// <summary>
 	/// Gets the post logout action.
 	/// </summary>
-	public Func<ValueTask>? PostLogoutAction { get; }
+	public Func<ValueTask>? PostLogoutAction { get; set; }
 
 	/// <inheritdoc />
 	public void Validate() => Guard.IsNotNull(PostLogoutAction);
