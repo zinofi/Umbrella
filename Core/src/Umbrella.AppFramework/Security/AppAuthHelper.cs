@@ -44,7 +44,7 @@ public class AppAuthHelper : IAppAuthHelper
 	/// <param name="tokenStorageService">The token storage service.</param>
 	/// <param name="options">The app auth helper options.</param>
 	public AppAuthHelper(
-		ILogger logger,
+		ILogger<AppAuthHelper> logger,
 		IJwtUtility jwtUtility,
 		IAppAuthTokenStorageService tokenStorageService,
 		AppAuthHelperOptions options)
