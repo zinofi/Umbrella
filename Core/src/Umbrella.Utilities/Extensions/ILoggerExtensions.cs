@@ -79,14 +79,7 @@ public static class ILoggerExtensions
 	/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
 	/// </remarks>
 	public static bool WriteWarning(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool ignoreCancellationExceptions = true)
-	{
-		if (exc is TaskCanceledException or OperationCanceledException)
-			return false;
-
-		LogDetails(log, LogLevel.Warning, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions);
-
-		return returnValue;
-	}
+		=> LogDetails(log, LogLevel.Warning, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions) ?? returnValue;
 
 	/// <summary>
 	/// Writes a <see cref="LogLevel.Error"/> message to the specified <paramref name="log"/>.
@@ -110,14 +103,7 @@ public static class ILoggerExtensions
 	/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
 	/// </remarks>
 	public static bool WriteError(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool ignoreCancellationExceptions = true)
-	{
-		if (exc is TaskCanceledException or OperationCanceledException)
-			return false;
-
-		LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions);
-
-		return returnValue;
-	}
+		=> LogDetails(log, LogLevel.Error, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions) ?? returnValue;
 
 	/// <summary>
 	/// Writes a <see cref="LogLevel.Critical"/> message to the specified <paramref name="log"/>.
@@ -141,14 +127,7 @@ public static class ILoggerExtensions
 	/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
 	/// </remarks>
 	public static bool WriteCritical(this ILogger log, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool ignoreCancellationExceptions = true)
-	{
-		if (exc is TaskCanceledException or OperationCanceledException)
-			return false;
-
-		LogDetails(log, LogLevel.Critical, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions);
-
-		return returnValue;
-	}
+		=> LogDetails(log, LogLevel.Critical, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions) ?? returnValue;
 
 	/// <summary>
 	/// Writes a message to the specified <paramref name="log"/> with the specified <paramref name="level"/>.
@@ -173,19 +152,12 @@ public static class ILoggerExtensions
 	/// When using this method with a try...catch block, this method should be called as side-effect of exception filters.
 	/// </remarks>
 	public static bool Write(this ILogger log, LogLevel level, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool ignoreCancellationExceptions = true)
-	{
-		if (exc is TaskCanceledException or OperationCanceledException)
-			return false;
+		=> LogDetails(log, level, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions) ?? returnValue;
 
-		LogDetails(log, level, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions);
-
-		return returnValue;
-	}
-
-	private static void LogDetails(ILogger log, LogLevel level, Exception? exc, object? state, string? message, in EventId eventId, string methodName, string filePath, int lineNumber, bool ignoreCancellationExceptions)
+	private static bool? LogDetails(ILogger log, LogLevel level, Exception? exc, object? state, string? message, in EventId eventId, string methodName, string filePath, int lineNumber, bool ignoreCancellationExceptions)
 	{
 		if (!log.IsEnabled(level))
-			return;
+			return null;
 
 		var messageBuilder = new StringBuilder(methodName);
 
@@ -222,5 +194,7 @@ public static class ILoggerExtensions
 		object[] logArgs = stateDictionary.Select(x => x.Value).ToArray();
 
 		log.Log(level, eventId, exc, logTemplate, logArgs);
+
+		return exc is TaskCanceledException or OperationCanceledException && ignoreCancellationExceptions ? false : null;
 	}
 }
