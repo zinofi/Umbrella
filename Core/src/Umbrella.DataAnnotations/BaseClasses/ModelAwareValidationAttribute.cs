@@ -49,7 +49,7 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// are output by HTML Helpers (MVC 5) or Tag Helpers (ASP.NET Core) as data-* attributes.
 	/// </summary>
 	/// <returns>An enumerable key/value pair of the parameters.</returns>
-	protected virtual IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters() => new KeyValuePair<string, object>[0];
+	protected virtual IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters() => Array.Empty<KeyValuePair<string, object>>();
 
 	/// <summary>
 	/// Gets the client validation parameters. Useful for web projects, e.g. jQuery Unobtrusive Validation, where these parameters

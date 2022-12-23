@@ -72,6 +72,6 @@ public class DynamicImageItem
 		if (Content is null && UmbrellaFileInfo is not null)
 			return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
 
-		return Content is not null ? target.WriteAsync(Content, 0, Content.Length) : Task.CompletedTask;
+		return Content is not null ? target.WriteAsync(Content, 0, Content.Length, cancellationToken) : Task.CompletedTask;
 	}
 }

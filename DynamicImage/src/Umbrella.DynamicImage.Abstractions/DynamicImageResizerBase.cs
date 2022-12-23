@@ -55,10 +55,10 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			if (fileInfo is null)
 				return null;
 
-			if (await fileInfo.ExistsAsync().ConfigureAwait(false))
+			if (await fileInfo.ExistsAsync(cancellationToken).ConfigureAwait(false))
 			{
 				return !fileInfo.LastModified.HasValue
-					? throw new Exception("The fileInfo must have a last modified value.")
+					? throw new DynamicImageException("The fileInfo must have a last modified value.")
 					: await GenerateImageAsync(() => fileInfo.ReadAsByteArrayAsync(cancellationToken),
 					fileInfo.LastModified.Value,
 					options,
@@ -68,7 +68,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 			return null;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && (exc is DynamicImageException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && exc is not DynamicImageException)
 		{
 			throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
 		}
@@ -86,7 +86,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 				Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
 
 			//Check if the image exists in the cache
-			DynamicImageItem? dynamicImage = await Cache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString()).ConfigureAwait(false);
+			DynamicImageItem? dynamicImage = await Cache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString(), cancellationToken).ConfigureAwait(false);
 
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { options, sourceLastModified, options.Format }, "Searched the image cache using the supplied state.");
@@ -111,7 +111,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			};
 
 			//Now add to the cache
-			await Cache.AddAsync(dynamicImage).ConfigureAwait(false);
+			await Cache.AddAsync(dynamicImage, cancellationToken).ConfigureAwait(false);
 
 			return dynamicImage;
 		}

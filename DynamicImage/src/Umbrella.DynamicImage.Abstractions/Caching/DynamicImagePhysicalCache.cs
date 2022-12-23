@@ -122,14 +122,14 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 	/// <inheritdoc />
 	public virtual async Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		
 		try
 		{
-			cancellationToken.ThrowIfCancellationRequested();
-
 			string cacheKey = GenerateCacheKey(options);
 
 			string subPath = GetSubPath(cacheKey, fileExtension);
-			await FileProvider.DeleteAsync(subPath).ConfigureAwait(false);
+			await FileProvider.DeleteAsync(subPath, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }))
 		{
