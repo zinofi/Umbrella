@@ -48,6 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Components\Breadcrumb\" />
 	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
