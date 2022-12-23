@@ -11,6 +11,8 @@ using Riok.Mapperly.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mapping.Abstractions;
+using Umbrella.Utilities.Mapping.Mapperly.Abstractions;
+using Umbrella.Utilities.Mapping.Mapperly.Options;
 
 namespace Umbrella.Utilities.Mapping.Mapperly;
 
@@ -26,7 +28,10 @@ public class UmbrellaMapper : IUmbrellaMapper
 	}
 
 	private readonly ILogger _logger;
-	private readonly Dictionary<(Type, Type), Lazy<object>> _mapperDictionary = new();
+	private readonly UmbrellaMapperOptions _options;
+	private readonly Dictionary<(Type, Type), Lazy<object>> _newInstanceMapperDictionary = new();
+	private readonly Dictionary<(Type, Type), Lazy<object>> _newCollectionmapperDictionary = new();
+	private readonly Dictionary<(Type, Type), Lazy<object>> _existingInstanceMapperDictionary = new();
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaMapper"/> class.
@@ -36,35 +41,42 @@ public class UmbrellaMapper : IUmbrellaMapper
 	public UmbrellaMapper(ILogger<UmbrellaMapper> logger, UmbrellaMapperOptions options)
 	{
 		_logger = logger;
+		_options = options;
 
 		IReadOnlyCollection<Assembly> assembliesToScan = options.TargetAssemblies;
 
-		Dictionary<(Type, Type), Type> dicTypeMapping = new();
-
 		foreach (Type type in assembliesToScan.SelectMany(x => x.GetExportedTypes()))
 		{
-			Type[] mapperlyInterfaces = type.GetInterfaces().Where(x => x.IsAssignableToGenericType(typeof(IUmbrellaMapperlyMapper<,>))).ToArray();
-
-			if (mapperlyInterfaces.Length is 0)
-				continue;
-
-			foreach (Type mapperlyType in mapperlyInterfaces)
+			static void PopulateMapperCache(Type type, Type interfaceType, Dictionary<(Type, Type), Lazy<object>> cache)
 			{
-				Type param1 = mapperlyType.GenericTypeArguments[0];
-				Type param2 = mapperlyType.GenericTypeArguments[1];
+				Type[] mapperlyInterfaces = type.GetInterfaces().Where(x => x.IsAssignableToGenericType(interfaceType)).ToArray();
 
-				var key = (param1, param2);
+				if (mapperlyInterfaces.Length is 0)
+					return;
 
-				if (dicTypeMapping.ContainsKey(key))
+				foreach (Type mapperlyType in mapperlyInterfaces)
 				{
-					Type currentlyRegisteredType = dicTypeMapping[key];
+					Type param1 = mapperlyType.GenericTypeArguments[0];
+					Type param2 = mapperlyType.GenericTypeArguments[1];
 
-					throw new Exception($"A registration already exists for the source and destination types. The type being registered is {currentlyRegisteredType.FullName} but the type named {type.FullName} has already been registered.");
+					var key = (param1, param2);
+
+					if (cache.ContainsKey(key))
+					{
+						Lazy<object> currentlyRegisteredType = cache[key];
+
+						Type existingType = currentlyRegisteredType.GetType().GenericTypeArguments[0];
+
+						throw new Exception($"A registration already exists for the source and destination types. The type being registered is {existingType.FullName} but the type named {type.FullName} has already been registered.");
+					}
+
+					cache.Add(key, new Lazy<object>(() => Activator.CreateInstance(type)!));
 				}
-
-				dicTypeMapping.Add(key, type);
-				_mapperDictionary.Add(key, new Lazy<object>(() => Activator.CreateInstance(type)!));
 			}
+
+			PopulateMapperCache(type, typeof(IUmbrellaMapperlyNewInstanceMapper<,>), _newInstanceMapperDictionary);
+			PopulateMapperCache(type, typeof(IUmbrellaMapperlyNewCollectionMapper<,>), _newCollectionmapperDictionary);
+			PopulateMapperCache(type, typeof(IUmbrellaMapperlyExistingInstanceMapper<,>), _existingInstanceMapperDictionary);
 		}
 	}
 
@@ -84,7 +96,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			if (_logger.IsEnabled(LogLevel.Debug))
 				_logger.WriteDebug(new { SourceType = param1.FullName, DestinationType = param2.FullName });
-
+			
 			// TODO: We need to cache the generic method we have created above and then use cached compiled expressions
 			// to invoke this method instead of using the raw reflection APIs which are slow in comparison.
 			return (ValueTask<TDestination>)miGeneric.Invoke(this, new object[] { source, cancellationToken })!;
@@ -109,7 +121,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			var key = (param1, param2);
 
-			if (!_mapperDictionary.TryGetValue(key, out var value))
+			if (!_newInstanceMapperDictionary.TryGetValue(key, out var value))
 			{
 				var (isEnumerable, _) = param1.GetIEnumerableTypeData();
 
@@ -124,7 +136,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 				throw new Exception($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found.");
 			}
 
-			if (value.Value is IUmbrellaMapperlyMapper<TSource, TDestination> mapper)
+			if (value.Value is IUmbrellaMapperlyNewInstanceMapper<TSource, TDestination> mapper)
 				return new ValueTask<TDestination>(mapper.Map(source));
 
 			throw new Exception("A mapper for the specified source and destination types could not be found.");
@@ -149,10 +161,10 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			var key = (param1, param2);
 
-			if (!_mapperDictionary.TryGetValue(key, out var value))
+			if (!_existingInstanceMapperDictionary.TryGetValue(key, out var value))
 				throw new Exception($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found.");
 
-			if (value.Value is IUmbrellaMapperlyMapper<TSource, TDestination> mapper)
+			if (value.Value is IUmbrellaMapperlyExistingInstanceMapper<TSource, TDestination> mapper)
 			{
 				mapper.Map(source, destination);
 
@@ -231,10 +243,10 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			var key = (elementType, param2);
 
-			if (!_mapperDictionary.TryGetValue(key, out var value))
+			if (!_newCollectionmapperDictionary.TryGetValue(key, out var value))
 				throw new Exception($"A mapper implementation for the specified source type {elementType.FullName} and destination type {param2.FullName} cannot be found.");
 
-			if (value.Value is IUmbrellaMapperlyMapper<TSource, TDestination> mapper)
+			if (value.Value is IUmbrellaMapperlyNewCollectionMapper<TSource, TDestination> mapper)
 				return new ValueTask<IReadOnlyCollection<TDestination>>(mapper.MapAll(source));
 
 			throw new Exception("A mapper for the specified source and destination types could not be found.");
