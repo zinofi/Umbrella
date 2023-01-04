@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Microsoft.Extensions.Logging;
+using Moq;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.FileSystem.Abstractions;
@@ -33,7 +33,7 @@ public class DynamicImageResizerTest
 			if (string.IsNullOrEmpty(_baseDirectory))
 			{
 				string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net6.0"));
+				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net6.0"), StringComparison.Ordinal);
 				_baseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 			}
 
@@ -148,7 +148,7 @@ public class DynamicImageResizerTest
 		byte[] bytes = Convert.FromBase64String(base64Image);
 
 		var fileMock = new Mock<IUmbrellaFileInfo>();
-		_ = fileMock.Setup(x => x.ReadAsByteArrayAsync(default, true, null)).Returns(Task.FromResult(bytes));
+		_ = fileMock.Setup(x => x.ReadAsByteArrayAsync(true, null, default)).Returns(Task.FromResult(bytes));
 		_ = fileMock.Setup(x => x.LastModified).Returns(DateTimeOffset.UtcNow);
 		_ = fileMock.Setup(x => x.ExistsAsync(default)).Returns(Task.FromResult(true));
 		_ = fileMock.Setup(x => x.Length).Returns(bytes.LongLength);
@@ -212,7 +212,7 @@ public class DynamicImageResizerTest
 	{
 		byte[] pdfBytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\IkeaManual.pdf"));
 
-		_ = Assert.Throws<DynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
+		_ = Assert.Throws<UmbrellaDynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
 	}
 
 	[Theory]

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using Umbrella.TypeScript.Generators.Abstractions;
 
@@ -32,6 +29,7 @@ public abstract class BaseGenerator : IGenerator
 	protected TypeScriptPropertyMode PropertyMode { get; set; }
 
 	/// <inheritdoc />
+	[Obsolete("Obsolete for some reason.")]
 	public virtual string Generate(Type modelType, bool generateValidationRules, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
 	{
 		StrictNullChecks = strictNullChecks;
@@ -69,6 +67,7 @@ public abstract class BaseGenerator : IGenerator
 	/// <param name="properties">The properties.</param>
 	/// <param name="typeBuilder">The type builder.</param>
 	/// <param name="validationBuilder">The validation builder.</param>
+	[Obsolete("Obsolete for some reason.")]
 	protected virtual void WriteAllProperties(Type modelType, IEnumerable<PropertyInfo> properties, StringBuilder typeBuilder, StringBuilder? validationBuilder)
 	{
 		foreach (PropertyInfo pi in properties)
@@ -126,5 +125,5 @@ public abstract class BaseGenerator : IGenerator
 	/// </summary>
 	/// <param name="modelType">Type of the model.</param>
 	/// <returns>The properties on the model.</returns>
-	protected IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() is null).OrderBy(x => x.Name);
+	protected static IEnumerable<PropertyInfo> GetModelProperties(Type modelType) => modelType.GetProperties().Where(x => x.GetCustomAttribute<TypeScriptIgnoreAttribute>() is null).OrderBy(x => x.Name);
 }

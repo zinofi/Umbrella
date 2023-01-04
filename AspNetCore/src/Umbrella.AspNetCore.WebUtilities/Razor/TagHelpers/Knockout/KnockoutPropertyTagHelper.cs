@@ -130,9 +130,9 @@ public class KnockoutPropertyTagHelper : TagHelper
 
 				ReadOnlySpan<char> propertyNameSpan = PropertyName;
 				Span<char> span = stackalloc char[PropertyName.Length + 1];
-				int idx = span.Append(0, propertyNameSpan.Slice(0, sliceLength));
-				idx = span.Append(idx, "_");
-				span.Append(idx, propertyNameSpan.Slice(sliceLength));
+				int idx = span.Write(0, propertyNameSpan.Slice(0, sliceLength));
+				idx = span.Write(idx, "_");
+				span.Write(idx, propertyNameSpan.Slice(sliceLength));
 
 				exposedPropertyName = span.ToString();
 			}

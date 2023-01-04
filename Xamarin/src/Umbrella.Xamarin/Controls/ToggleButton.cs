@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Umbrella.Utilities.Extensions;
+﻿using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Extensions;
 using Xamarin.Forms;
 
@@ -12,6 +9,7 @@ namespace Umbrella.Xamarin.Controls;
 /// A control that extends the <see cref="Button"/> control to provide checkbox and radiobutton behaviour.
 /// </summary>
 /// <seealso cref="Button" />
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
 public class ToggleButton : Button
 {
 	/// <summary>
@@ -74,11 +72,11 @@ public class ToggleButton : Button
 	{
 		base.OnParentSet();
 
-		VisualStateManager.GoToState(this, "ToggledOff");
+		_ = VisualStateManager.GoToState(this, "ToggledOff");
 
 		if (LabelledBy is not null)
 		{
-			VisualStateManager.GoToState(LabelledBy, "ToggledOff");
+			_ = VisualStateManager.GoToState(LabelledBy, "ToggledOff");
 
 			var grTap = new TapGestureRecognizer
 			{
@@ -101,7 +99,7 @@ public class ToggleButton : Button
 			if (newValue)
 			{
 				// Ensure others in the group are deselected
-				lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
+				_ = lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
 				IsToggled = newValue;
 			}
 			else
@@ -125,9 +123,9 @@ public class ToggleButton : Button
 		toggleButton.Toggled?.Invoke(toggleButton, new ToggledEventArgs(isToggled));
 
 		// Set the visual state
-		VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
+		_ = VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 
 		if (toggleButton.LabelledBy is not null)
-			VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
+			_ = VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
 	}
 }

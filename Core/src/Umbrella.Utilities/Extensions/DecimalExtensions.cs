@@ -1,33 +1,5 @@
-﻿
-/* Unmerged change from project 'Umbrella.Utilities(net461)'
-Before:
-namespace Umbrella.Utilities.Extensions
-{
-	/// <summary>
-	/// Extension methods for use with <see cref="decimal"/> instances.
-	/// </summary>
-	public static class DecimalExtensions
-	{
-		/// <summary>
-		/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is zero, the string specified by <paramref name="valueIfZero"/> is returned.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="format">The format.</param>
-		/// <param name="valueIfZero">The value if zero.</param>
-		/// <returns>The result.</returns>
-		public static string ToFriendlyString(this decimal value, string format, string valueIfZero = "") => value != 0 ? value.ToString(format) : valueIfZero;
+﻿using System.Globalization;
 
-		/// <summary>
-		/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is null, the string specified by <paramref name="valueIfNull"/> is returned.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="format">The format.</param>
-		/// <param name="valueIfNull">The value if null.</param>
-		/// <returns>The result.</returns>
-		public static string ToFriendlyString(this decimal? value, string format, string valueIfNull = "") => value.HasValue ? ToFriendlyString(value.Value, format, valueIfNull) : valueIfNull;
-    }
-}
-After:
 namespace Umbrella.Utilities.Extensions;
 
 /// <summary>
@@ -36,46 +8,26 @@ namespace Umbrella.Utilities.Extensions;
 public static class DecimalExtensions
 {
 	/// <summary>
-	/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is zero, the string specified by <paramref name="valueIfZero"/> is returned.
+	/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>.
+	/// If the value is zero, the string specified by <paramref name="valueIfZero"/> is returned.
 	/// </summary>
 	/// <param name="value">The value.</param>
 	/// <param name="format">The format.</param>
 	/// <param name="valueIfZero">The value if zero.</param>
+	/// <param name="cultureInfo">The culture info.</param>
 	/// <returns>The result.</returns>
-	public static string ToFriendlyString(this decimal value, string format, string valueIfZero = "") => value != 0 ? value.ToString(format) : valueIfZero;
+	/// <remarks>If <paramref name="cultureInfo"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> will be used.</remarks>
+	public static string ToFriendlyString(this decimal value, string format, string valueIfZero = "", CultureInfo? cultureInfo = null) => value != 0 ? value.ToString(format, cultureInfo ?? CultureInfo.CurrentCulture) : valueIfZero;
 
 	/// <summary>
-	/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is null, the string specified by <paramref name="valueIfNull"/> is returned.
+	/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>.
+	/// If the value is null, the string specified by <paramref name="valueIfNull"/> is returned.
 	/// </summary>
 	/// <param name="value">The value.</param>
 	/// <param name="format">The format.</param>
 	/// <param name="valueIfNull">The value if null.</param>
+	/// <param name="cultureInfo"></param>
 	/// <returns>The result.</returns>
-	public static string ToFriendlyString(this decimal? value, string format, string valueIfNull = "") => value.HasValue ? ToFriendlyString(value.Value, format, valueIfNull) : valueIfNull;
-    }
-*/
-namespace Umbrella.Utilities.Extensions;
-
-/// <summary>
-/// Extension methods for use with <see cref="decimal"/> instances.
-/// </summary>
-public static class DecimalExtensions
-{
-	/// <summary>
-	/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is zero, the string specified by <paramref name="valueIfZero"/> is returned.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="format">The format.</param>
-	/// <param name="valueIfZero">The value if zero.</param>
-	/// <returns>The result.</returns>
-	public static string ToFriendlyString(this decimal value, string format, string valueIfZero = "") => value != 0 ? value.ToString(format) : valueIfZero;
-
-	/// <summary>
-	/// Converts the specified <paramref name="value"/> to a string using the specified <paramref name="format"/>. If the value is null, the string specified by <paramref name="valueIfNull"/> is returned.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="format">The format.</param>
-	/// <param name="valueIfNull">The value if null.</param>
-	/// <returns>The result.</returns>
-	public static string ToFriendlyString(this decimal? value, string format, string valueIfNull = "") => value.HasValue ? ToFriendlyString(value.Value, format, valueIfNull) : valueIfNull;
+	/// <remarks>If <paramref name="cultureInfo"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> will be used.</remarks>
+	public static string ToFriendlyString(this decimal? value, string format, string valueIfNull = "", CultureInfo? cultureInfo = null) => value.HasValue ? ToFriendlyString(value.Value, format, valueIfNull, cultureInfo) : valueIfNull;
 }

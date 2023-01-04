@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.WebUtilities.Middleware.Options;
 
@@ -51,8 +48,8 @@ public class InternetExplorerCacheHeadersMiddleware
 			string? userAgent = context.Request.Headers["User-Agent"].FirstOrDefault();
 
 			bool addHeaders = !string.IsNullOrWhiteSpace(userAgent)
-				&& (_options.UserAgentKeywords.Count == 0 || _options.UserAgentKeywords.Any(x => userAgent.Contains(x)))
-				&& (_options.Methods.Count == 0 || _options.Methods.Any(x => method.Contains(x)));
+				&& (_options.UserAgentKeywords.Count == 0 || _options.UserAgentKeywords.Any(userAgent.Contains))
+				&& (_options.Methods.Count == 0 || _options.Methods.Any(method.Contains));
 
 			if (addHeaders)
 			{
@@ -65,7 +62,7 @@ public class InternetExplorerCacheHeadersMiddleware
 					// Apply the headers when no response content type - this may be the case when a 204 code is sent for a GET request that issues no content
 					// If no content types have been specified in the options apply the headers to all response for the configured HTTP methods
 					// If content types have been specified to filter on then only apply the headers for those responses
-					if (string.IsNullOrWhiteSpace(contentType) || _options.ContentTypes.Count == 0 || _options.ContentTypes.Any(x => contentType.Contains(x)))
+					if (string.IsNullOrWhiteSpace(contentType) || _options.ContentTypes.Count == 0 || _options.ContentTypes.Any(x => contentType.Contains(x, StringComparison.OrdinalIgnoreCase)))
 					{
 						// Set standard HTTP/1.0 no-cache header (no-store, no-cache, must-revalidate)
 						// Set IE extended HTTP/1.1 no-cache headers (post-check, pre-check)

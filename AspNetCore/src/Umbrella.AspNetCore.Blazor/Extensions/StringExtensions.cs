@@ -21,5 +21,5 @@ public static class StringExtensions
 	public static MarkupString ReplaceNewLines(this string? value, string replacement = "<br />")
 		=> string.IsNullOrWhiteSpace(value)
 		? default
-		: (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace(StringEncodingConstants.HtmlEncodedCrLfToken, replacement);
+		: (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace(StringEncodingConstants.HtmlEncodedCrLfToken, replacement, StringComparison.Ordinal);
 }

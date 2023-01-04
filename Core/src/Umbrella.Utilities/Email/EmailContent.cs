@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Text;
 using System.Text.Encodings.Web;
 using CommunityToolkit.Diagnostics;
@@ -57,7 +58,7 @@ public class EmailContent
 		{
 			_rowsBuilder ??= new StringBuilder();
 
-			_ = _rowsBuilder.AppendFormat(_dataRowFormat, name, SanitizeValue(value, htmlEncode, replaceNewLines));
+			_ = _rowsBuilder.AppendFormat(CultureInfo.InvariantCulture, _dataRowFormat, name, SanitizeValue(value, htmlEncode, replaceNewLines));
 
 			return this;
 		}
@@ -99,7 +100,7 @@ public class EmailContent
 
 			foreach (T item in source)
 			{
-				_ = builder.AppendFormat(rowFormat, keySelector(item), valueSelector is not null ? valueSelector(item) : string.Empty);
+				_ = builder.AppendFormat(CultureInfo.InvariantCulture, rowFormat, keySelector(item), valueSelector is not null ? valueSelector(item) : string.Empty);
 			}
 
 			_ = ReplaceToken(rowsTokenName, builder.ToString());

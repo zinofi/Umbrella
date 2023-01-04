@@ -33,7 +33,7 @@ public static class UmbrellaDynamicExpression
 		if (!Enum.IsDefined(typeof(UmbrellaDynamicCompare), comparer))
 			throw new ArgumentOutOfRangeException(nameof(comparer));
 
-		var memberAccess = CreateMemberAccess(target, selector) ?? throw new Exception("The memberAccess is null.");
+		var memberAccess = CreateMemberAccess(target, selector) ?? throw new InvalidOperationException("The memberAccess is null.");
 		var actualValue = CreateConstant(target, memberAccess, value, provider);
 
 		return comparer switch
@@ -63,7 +63,7 @@ public static class UmbrellaDynamicExpression
 		Guard.IsNotNullOrWhiteSpace(selector, nameof(selector));
 		Guard.IsNotNullOrWhiteSpace(comparer, nameof(comparer));
 
-		var memberAccess = CreateMemberAccess(target, selector) ?? throw new Exception("The memberAccess is null.");
+		var memberAccess = CreateMemberAccess(target, selector) ?? throw new InvalidOperationException("The memberAccess is null.");
 		var actualValue = CreateConstant(target, memberAccess, value, provider);
 
 		return Expression.Call(memberAccess, comparer, null, actualValue);

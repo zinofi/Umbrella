@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Encodings.Web;
@@ -146,8 +147,8 @@ public class PostcodesIOGeocodingService : IGeocodingService
 		{
 			var queryParameters = new Dictionary<string, string>
 			{
-				["lat"] = geoLocation.Latitude.ToString(),
-				["lon"] = geoLocation.Longitude.ToString(),
+				["lat"] = geoLocation.Latitude.ToString(CultureInfo.InvariantCulture),
+				["lon"] = geoLocation.Longitude.ToString(CultureInfo.InvariantCulture),
 				["limit"] = "1",
 				["radius"] = "1000"
 			};
@@ -156,7 +157,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json"))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
 				var resultWrapper = await response.Content.ReadFromJsonAsync<ReverseGeocodingResultWrapper>(cancellationToken: cancellationToken);
 
@@ -205,7 +206,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"{_apiUrl}/postcodes", bulkRequest, cancellationToken: cancellationToken);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json"))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
 				var result = await response.Content.ReadFromJsonAsync<BulkReverseGeocodingResult>(cancellationToken: cancellationToken);
 
@@ -260,7 +261,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json"))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
 				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupResultWrapper>(cancellationToken: cancellationToken);
 
@@ -305,7 +306,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json"))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
 				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupPartialMapResultsWrapper>(cancellationToken: cancellationToken);
 
@@ -355,7 +356,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/postcodes", JsonContent.Create(model), cancellationToken);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json"))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
 				var result = await response.Content.ReadFromJsonAsync<BulkPostcodeLookupResult>(cancellationToken: cancellationToken);
 

@@ -1,10 +1,14 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using Umbrella.DataAnnotations.Utilities;
 
 namespace Umbrella.DataAnnotations;
 
+/// Specifies that a data field is required to match a specified regular expression contingent on whether another property
+/// on the same object as the property this attribute is being used on matches conditions specified
+/// using the constructor.
 public class RegularExpressionIfAttribute : RequiredIfAttribute
 {
 	/// <summary>
@@ -19,7 +23,7 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 	/// <param name="dependentProperty">The dependent property.</param>
 	/// <param name="operator">The operator.</param>
 	/// <param name="dependentValue">The dependent value.</param>
-	public RegularExpressionIfAttribute(string pattern, string dependentProperty, Operator @operator, object dependentValue)
+	public RegularExpressionIfAttribute(string pattern, string dependentProperty, EqualityOperator @operator, object dependentValue)
 		: base(dependentProperty, @operator, dependentValue)
 	{
 		Pattern = pattern;
@@ -32,13 +36,13 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 	/// <param name="dependentProperty">The dependent property.</param>
 	/// <param name="dependentValue">The dependent value.</param>
 	public RegularExpressionIfAttribute(string pattern, string dependentProperty, object dependentValue)
-		: this(pattern, dependentProperty, Operator.EqualTo, dependentValue)
+		: this(pattern, dependentProperty, EqualityOperator.EqualTo, dependentValue)
 	{
 	}
 
 	/// <inheritdoc />
 	public override bool IsValid(object value, object dependentValue, object container)
-		=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(Operator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
+		=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
 
 	/// <inheritdoc />
 	protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
@@ -54,7 +58,7 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(ErrorMessageString, name, DependentProperty, DependentValue, Pattern);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty, DependentValue, Pattern);
 	}
 
 	/// <inheritdoc />

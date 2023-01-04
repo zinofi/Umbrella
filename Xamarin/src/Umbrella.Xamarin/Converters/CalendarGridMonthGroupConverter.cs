@@ -18,7 +18,6 @@ public class CalendarGridMonthGroupConverter<TStatus, TData> : IValueConverter
 	where TData : class
 {
 	/// <inheritdoc />
-	[Obsolete]
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		=> value is CalendarGridMonth<TStatus, TData> month && month.Count > 0
 		? month.Split(7)

@@ -50,10 +50,10 @@ public static class ClaimPrincipalExtensions
 		string? value = principal.FindFirst(UmbrellaAppClaimType.PrimaryRole)?.Value;
 
 		if (string.IsNullOrWhiteSpace(value))
-			throw new Exception("The current principal has no primary role.");
+			throw new UmbrellaAppFrameworkSharedException("The current principal has no primary role.");
 
 		return !Enum.TryParse(value, out TAppRole roleType)
-			? throw new Exception($"The current principal does not have a valid primary role: {value}")
+			? throw new UmbrellaAppFrameworkSharedException($"The current principal does not have a valid primary role: {value}")
 			: roleType;
 	}
 }

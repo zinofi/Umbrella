@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Identity.Abstractions;
@@ -54,7 +52,7 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 	{
 		try
 		{
-			return await _userManager.GenerateUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, CreatePurpose(phoneNumber));
+			return await _userManager.GenerateUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, TUserKey>.CreatePurpose(phoneNumber));
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -67,7 +65,7 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 	{
 		try
 		{
-			return await _userManager.VerifyUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, CreatePurpose(phoneNumber), code);
+			return await _userManager.VerifyUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, TUserKey>.CreatePurpose(phoneNumber), code);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -75,5 +73,5 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 		}
 	}
 
-	private string CreatePurpose(string phoneNumber) => $"VerifyPhoneNumber:{phoneNumber}";
+	private static string CreatePurpose(string phoneNumber) => $"VerifyPhoneNumber:{phoneNumber}";
 }

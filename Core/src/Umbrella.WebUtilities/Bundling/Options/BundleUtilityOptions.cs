@@ -45,7 +45,7 @@ public class BundleUtilityOptions : CacheableUmbrellaOptions, ISanitizableUmbrel
 	public virtual void Sanitize()
 	{
 		// Ensure the path ends with a slash
-		if (!DefaultBundleFolderAppRelativePath?.EndsWith("/") == true)
+		if (!DefaultBundleFolderAppRelativePath?.EndsWith("/", StringComparison.Ordinal) is true)
 			DefaultBundleFolderAppRelativePath += "/";
 	}
 

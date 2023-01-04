@@ -54,14 +54,14 @@ public class CacheKeyUtility : ICacheKeyUtility
 			bool isStack = length <= StackAllocConstants.MaxCharSize;
 
 			Span<char> span = isStack ? stackalloc char[length] : rentedArray = ArrayPool<char>.Shared.Rent(length);
-			_ = span.Append(0, typeName);
-			_ = span.Append(typeName.Length, ":");
-			_ = span.Append(typeName.Length + 1, key);
+			_ = span.Write(0, typeName);
+			_ = span.Write(typeName.Length, ":");
+			_ = span.Write(typeName.Length + 1, key);
 
 			if (!isStack)
 				span = span.Slice(0, length);
 
-			return _lookupNormalizer.Normalize(span.ToString()) ?? throw new Exception("The span could not be normalized.");
+			return _lookupNormalizer.Normalize(span.ToString()) ?? throw new UmbrellaException("The span could not be normalized.");
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { type, key }))
 		{
@@ -109,7 +109,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 
 			Span<char> span = isStack ? stackalloc char[length] : rentedArray = ArrayPool<char>.Shared.Rent(length);
 
-			int currentIndex = span.Append(0, typeName);
+			int currentIndex = span.Write(0, typeName);
 			span[currentIndex++] = ':';
 
 			for (int i = 0; i < partsCount; i++)
@@ -118,7 +118,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 
 				if (part is not null)
 				{
-					currentIndex = span.Append(currentIndex, part);
+					currentIndex = span.Write(currentIndex, part);
 
 					if (i < partsCount - 1)
 						span[currentIndex++] = ':';
@@ -129,7 +129,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 				span = span.Slice(0, length);
 
 			// This is the only part that allocates
-			return _lookupNormalizer.Normalize(span.ToString()) ?? throw new Exception("The span could not be normalized.");
+			return _lookupNormalizer.Normalize(span.ToString()) ?? throw new UmbrellaException("The span could not be normalized.");
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { type, keyParts = keyParts.ToArray(), keyPartsLength }))
 		{

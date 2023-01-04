@@ -17,7 +17,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Form;
 /// <seealso cref="ComponentBase" />
 public class DisplayNameText : ComponentBase
 {
-	private bool _hasRendered = false;
+	private bool _hasRendered;
 
 	/// <summary>
 	/// The target property.

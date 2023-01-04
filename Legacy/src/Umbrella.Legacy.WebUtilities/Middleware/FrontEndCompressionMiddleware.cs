@@ -1,22 +1,14 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using Brotli;
+﻿using Brotli;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
+using System.Buffers;
+using System.Collections.Concurrent;
+using System.IO.Compression;
+using System.Text;
+using System.Web;
 using Umbrella.Legacy.WebUtilities.Extensions;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.WebUtilities.Http.Abstractions;
@@ -32,7 +24,7 @@ public class FrontEndCompressionMiddleware : OwinMiddleware
 {
 	#region Private Static Members
 	private static readonly char[] _headerValueSplitters = new[] { ',' };
-	private static readonly ConcurrentDictionary<string, IFileInfo?> _fileInfoDictionary = new ConcurrentDictionary<string, IFileInfo?>();
+	private static readonly ConcurrentDictionary<string, IFileInfo?> _fileInfoDictionary = new();
 	#endregion
 
 	#region Private Members
@@ -159,10 +151,10 @@ public class FrontEndCompressionMiddleware : OwinMiddleware
 							var sbCacheControl = new StringBuilder(mapping.Cacheability.ToCacheControlString());
 
 							if (mapping.MaxAgeSeconds.HasValue)
-								sbCacheControl.Append(", max-age=" + mapping.MaxAgeSeconds);
+								_ = sbCacheControl.Append(", max-age=" + mapping.MaxAgeSeconds);
 
 							if (mapping.MustRevalidate)
-								sbCacheControl.Append(", must-revalidate");
+								_ = sbCacheControl.Append(", must-revalidate");
 
 							context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
 						}
@@ -193,7 +185,7 @@ public class FrontEndCompressionMiddleware : OwinMiddleware
 
 						foreach (string part in parts)
 						{
-							lstEncodingValue.AddNotNullTrimToLowerInvariant(part);
+							_ = lstEncodingValue.AddNotNullTrimToLowerInvariant(part);
 						}
 					}
 
@@ -258,8 +250,8 @@ public class FrontEndCompressionMiddleware : OwinMiddleware
 							return (contentEncoding, ms.ToArray());
 						},
 						mapping,
-						context.Request.CallCancelled,
-						() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+						() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
+						context.Request.CallCancelled);
 
 						if (_log.IsEnabled(LogLevel.Debug))
 						{
@@ -319,8 +311,8 @@ public class FrontEndCompressionMiddleware : OwinMiddleware
 						return ms.ToArray();
 					},
 					mapping,
-					context.Request.CallCancelled,
-					() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+					() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
+					context.Request.CallCancelled);
 				}
 
 				// Common headers

@@ -1,7 +1,6 @@
 ﻿using System;
 using BenchmarkDotNet.Running;
 
-
 /* Unmerged change from project 'Umbrella.DynamicImage.Benchmark(net461)'
 Before:
 namespace Umbrella.DynamicImage.Benchmark

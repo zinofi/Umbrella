@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
-using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security;
+using Umbrella.AspNetCore.Blazor.Security.Abstractions;
+using Umbrella.AspNetCore.Blazor.Security.Options;
 using Umbrella.AspNetCore.Blazor.Utilities;
 using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
-using Umbrella.AspNetCore.Blazor.Security.Options;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;

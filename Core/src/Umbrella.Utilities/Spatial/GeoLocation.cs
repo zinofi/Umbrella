@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Spatial;
+﻿namespace Umbrella.Utilities.Spatial;
 
 // TODO PR: Make readonly when JsonConstructor becomes a thing in .NET 5.	
 /// <summary>
@@ -41,8 +39,8 @@ public struct GeoLocation : IEquatable<GeoLocation>
 	public override readonly int GetHashCode()
 	{
 		int hashCode = -1416534245;
-		hashCode = hashCode * -1521134295 + Latitude.GetHashCode();
-		hashCode = hashCode * -1521134295 + Longitude.GetHashCode();
+		hashCode = (hashCode * -1521134295) + Latitude.GetHashCode();
+		hashCode = (hashCode * -1521134295) + Longitude.GetHashCode();
 		return hashCode;
 	}
 
@@ -59,8 +57,8 @@ public struct GeoLocation : IEquatable<GeoLocation>
 		double d1 = Latitude * piDeg180;
 		double num1 = Longitude * piDeg180;
 		double d2 = other.Latitude * piDeg180;
-		double num2 = other.Longitude * piDeg180 - num1;
-		double d3 = Math.Pow(Math.Sin((d2 - d1) / 2.0), 2.0) + Math.Cos(d1) * Math.Cos(d2) * Math.Pow(Math.Sin(num2 / 2.0), 2.0);
+		double num2 = (other.Longitude * piDeg180) - num1;
+		double d3 = Math.Pow(Math.Sin((d2 - d1) / 2.0), 2.0) + (Math.Cos(d1) * Math.Cos(d2) * Math.Pow(Math.Sin(num2 / 2.0), 2.0));
 
 		double distanceMeters = 6376500.0 * (2.0 * Math.Atan2(Math.Sqrt(d3), Math.Sqrt(1.0 - d3)));
 

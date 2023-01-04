@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 using System.Reflection;
 using System.Text;
 
@@ -29,17 +28,17 @@ public abstract class BaseClassGenerator : BaseGenerator
 			generatedName = generatedName.TrimStart('I');
 		}
 
-		builder.Append($"\texport class {generatedName}");
+		_ = builder.Append($"\texport class {generatedName}");
 
 		if (lstInterface.Count > 0)
-			builder.Append(string.Format(" implements {0}", string.Join(", ", lstInterface)));
+			_ = builder.Append(string.Format(CultureInfo.InvariantCulture, " implements {0}", string.Join(", ", lstInterface)));
 
-		builder.AppendLine();
-		builder.AppendLine("\t{");
+		_ = builder.AppendLine();
+		_ = builder.AppendLine("\t{");
 	}
 
 	/// <inheritdoc />
-	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
+	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder)
 	{
 		if (!string.IsNullOrEmpty(tsInfo.TypeName))
 		{
@@ -52,7 +51,7 @@ public abstract class BaseClassGenerator : BaseGenerator
 
 			string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
-			builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck}{strInitialOutputValue};");
+			_ = typeBuilder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck}{strInitialOutputValue};");
 		}
 	}
 }

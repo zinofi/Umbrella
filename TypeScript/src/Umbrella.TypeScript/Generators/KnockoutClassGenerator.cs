@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Humanizer;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using Umbrella.DataAnnotations;
@@ -48,7 +45,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 
 	#region Overridden Methods
 	/// <inheritdoc />
-	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
+	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder)
 	{
 		if (!string.IsNullOrEmpty(tsInfo.TypeName))
 		{
@@ -65,40 +62,39 @@ public class KnockoutClassGenerator : BaseClassGenerator
 
 			if (_useDecorators)
 			{
-				formatString.AppendLineWithTabIndent("@observable({ expose: true })", 2);
+				_ = formatString.AppendLineWithTabIndent("@observable({ expose: true })", 2);
 
 				StringBuilder? coreValidationBuilder = CreateValidationExtendItems(pi, 3);
 
 				if (coreValidationBuilder?.Length > 0)
 				{
-					formatString.AppendLineWithTabIndent("@extend({", 2);
-					formatString.Append(coreValidationBuilder);
-					formatString.AppendLineWithTabIndent("})", 2);
+					_ = formatString.AppendLineWithTabIndent("@extend({", 2);
+					_ = formatString.Append(coreValidationBuilder);
+					_ = formatString.AppendLineWithTabIndent("})", 2);
 				}
 
-				formatString.AppendLineWithTabIndent($"public {tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck} = {strInitialOutputValue};", 2);
+				_ = formatString.AppendLineWithTabIndent($"public {tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck} = {strInitialOutputValue};", 2);
 			}
 			else
 			{
-				formatString.Append($"\t\t{tsInfo.Name}: ");
+				_ = formatString.Append($"\t\t{tsInfo.Name}: ");
 
-				if (tsInfo.TypeName?.EndsWith("[]") is true)
+				if (tsInfo.TypeName?.EndsWith("[]", StringComparison.Ordinal) is true)
 				{
 					tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
-					formatString.Append($"KnockoutObservableArray<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observableArray<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
+					_ = formatString.Append($"KnockoutObservableArray<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observableArray<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
 				}
 				else
 				{
-					formatString.Append($"KnockoutObservable<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observable<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
+					_ = formatString.Append($"KnockoutObservable<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observable<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
 				}
 			}
 
-			builder.AppendLine(formatString.ToString());
+			_ = typeBuilder.AppendLine(formatString.ToString());
 		}
 	}
 
 	/// <inheritdoc />
-	[Obsolete]
 	protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder? validationBuilder)
 	{
 		StringBuilder? ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
@@ -113,16 +109,16 @@ public class KnockoutClassGenerator : BaseClassGenerator
 		{
 			if (_useDecorators)
 			{
-				validationBuilder
-					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
+				_ = validationBuilder
+					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.Camelize()}.extend({{", 3);
 			}
 			else
 			{
-				validationBuilder
-					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()} = {thisVariable}.{exposePrefix}{tsInfo.Name.ToCamelCaseInvariant()}.extend({{", 3);
+				_ = validationBuilder
+					.AppendLineWithTabIndent($"{thisVariable}.{exposePrefix}{tsInfo.Name.Camelize()} = {thisVariable}.{exposePrefix}{tsInfo.Name.Camelize()}.extend({{", 3);
 			}
 
-			validationBuilder
+			_ = validationBuilder
 				.Append(coreBuilder)
 				.Append(ctorExtendBuilder)
 				.AppendLineWithTabIndent("});", 3)
@@ -130,8 +126,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 		}
 	}
 
-	[Obsolete]
-	private StringBuilder? CreateValidationExtendItems(PropertyInfo propertyInfo, int indent = 4)
+	private static StringBuilder? CreateValidationExtendItems(PropertyInfo propertyInfo, int indent = 4)
 	{
 		//Get all types that are either of type ValidationAttribute or derive from it
 		//However, specifically exclude instances of type DataTypeAttribute
@@ -152,36 +147,36 @@ public class KnockoutClassGenerator : BaseClassGenerator
 			{
 				case RequiredAttribute attr:
 				case RequiredNonEmptyCollectionAttribute attrCol:
-					validationBuilder.AppendLineWithTabIndent($"required: {{ params: true, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"required: {{ params: true, message: {message} }},", indent);
 					break;
 				case CompareAttribute attr:
-					string otherPropertyName = attr.OtherProperty.ToCamelCaseInvariant();
-					validationBuilder.AppendLineWithTabIndent($"equal: {{ params: this.{otherPropertyName}, message: {message} }},", indent);
+					string otherPropertyName = attr.OtherProperty.Camelize();
+					_ = validationBuilder.AppendLineWithTabIndent($"equal: {{ params: this.{otherPropertyName}, message: {message} }},", indent);
 					break;
 				case EmailAddressAttribute attr:
-					validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {RegexEmail}, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: {RegexEmail}, message: {message} }},", indent);
 					break;
 				case MinLengthAttribute attr:
-					validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.Length}, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.Length}, message: {message} }},", indent);
 					break;
 				case MaxLengthAttribute attr:
-					validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.Length}, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.Length}, message: {message} }},", indent);
 					break;
 				case RangeAttribute attr:
-					validationBuilder.AppendLineWithTabIndent($"min: {{ params: {attr.Minimum}, message: {message} }},", indent);
-					validationBuilder.AppendLineWithTabIndent($"max: {{ params: {attr.Maximum}, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"min: {{ params: {attr.Minimum}, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"max: {{ params: {attr.Maximum}, message: {message} }},", indent);
 					break;
 				case RegularExpressionAttribute attr:
-					validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: /{attr.Pattern}/, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"pattern: {{ params: /{attr.Pattern}/, message: {message} }},", indent);
 					break;
 				case StringLengthAttribute attr:
 					if (attr.MinimumLength > 0)
-						validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.MinimumLength}, message: {message} }},", indent);
+						_ = validationBuilder.AppendLineWithTabIndent($"minLength: {{ params: {attr.MinimumLength}, message: {message} }},", indent);
 
-					validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.MaximumLength}, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"maxLength: {{ params: {attr.MaximumLength}, message: {message} }},", indent);
 					break;
 				case RequiredTrueAttribute attr:
-					validationBuilder.AppendLineWithTabIndent($"validation: {{ params: true, validator: (val, otherVal) => val === otherVal, message: {message} }},", indent);
+					_ = validationBuilder.AppendLineWithTabIndent($"validation: {{ params: true, validator: (val, otherVal) => val === otherVal, message: {message} }},", indent);
 					break;
 			}
 		}
@@ -189,14 +184,13 @@ public class KnockoutClassGenerator : BaseClassGenerator
 		return validationBuilder;
 	}
 
-	[Obsolete]
 	private StringBuilder? CreateConstructorValidationRules(PropertyInfo propertyInfo, int indent = 4)
 	{
 		string GetDependentPropertyName(string dependentProperty)
 		{
 			string propertyName = dependentProperty.Contains(".")
-				? string.Join("?.", dependentProperty.Split('.').Select(x => x.ToCamelCaseInvariant()))
-				: dependentProperty.ToCamelCaseInvariant();
+				? string.Join("?.", dependentProperty.Split('.').Select(x => x.Camelize()))
+				: dependentProperty.Camelize();
 
 			// If we are not using decorators we need to access the value using a method call.
 			if (!_useDecorators)
@@ -205,27 +199,33 @@ public class KnockoutClassGenerator : BaseClassGenerator
 			return propertyName;
 		}
 
-		static string GetOperatorTranslation(Operator @operator) => @operator switch
+		static string GetOperatorTranslation(EqualityOperator @operator)
 		{
-			Operator.EqualTo => "===",
-			Operator.GreaterThan => ">",
-			Operator.GreaterThanOrEqualTo => ">=",
-			Operator.LessThan => "<",
-			Operator.LessThanOrEqualTo => "<=",
-			Operator.NotEqualTo => "!==",
-			Operator.NotRegExMatch => throw new NotImplementedException(),
-			Operator.RegExMatch => throw new NotImplementedException(),
-			_ => throw new NotSupportedException()
-		};
+			return @operator switch
+			{
+				EqualityOperator.EqualTo => "===",
+				EqualityOperator.GreaterThan => ">",
+				EqualityOperator.GreaterThanOrEqualTo => ">=",
+				EqualityOperator.LessThan => "<",
+				EqualityOperator.LessThanOrEqualTo => "<=",
+				EqualityOperator.NotEqualTo => "!==",
+				EqualityOperator.NotRegExMatch => throw new NotImplementedException(),
+				EqualityOperator.RegExMatch => throw new NotImplementedException(),
+				_ => throw new NotSupportedException()
+			};
+		}
 
-		static string GetDependentValueTranslation(object dependentValue) => dependentValue switch
+		static string GetDependentValueTranslation(object dependentValue)
 		{
-			bool b when b => "true",
-			bool b when !b => "false",
-			string s => $"'{s}'",
-			Enum e => $"{e.GetType().FullName}.{e}",
-			_ => dependentValue.ToString()
-		};
+			return dependentValue switch
+			{
+				bool b when b => "true",
+				bool b when !b => "false",
+				string s => $"'{s}'",
+				Enum e => $"{e.GetType().FullName}.{e}",
+				_ => dependentValue.ToString()
+			};
+		}
 
 		// Get all types that are either of type ValidationAttribute or derive from it
 		// However, specifically exclude instances of type DataTypeAttribute
@@ -256,16 +256,16 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					var attr = (RequiredIfAttribute)lstValidationAttribute[i];
 
 					if (i > 0)
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 
 					string @operator = GetOperatorTranslation(attr.Operator);
 					string otherValue = GetDependentValueTranslation(attr.DependentValue);
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(this.{dependentPropertyName} {@operator} {otherValue})");
+					_ = sbRule.Append($"(this.{dependentPropertyName} {@operator} {otherValue})");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 			}
 			else if (typeof(RequiredIfEmptyAttribute).IsAssignableFrom(group.Key))
 			{
@@ -274,14 +274,14 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					var attr = (RequiredIfEmptyAttribute)lstValidationAttribute[i];
 
 					if (i > 0)
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0))");
+					_ = sbRule.Append($"(this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0))");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 			}
 			else if (typeof(RequiredIfNotEmptyAttribute).IsAssignableFrom(group.Key))
 			{
@@ -290,14 +290,14 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					var attr = (RequiredIfNotEmptyAttribute)lstValidationAttribute[i];
 
 					if (i > 0)
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)))");
+					_ = sbRule.Append($"(this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)))");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 			}
 			else if (typeof(IsAttribute).IsAssignableFrom(group.Key))
 			{
@@ -322,16 +322,16 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					}
 					else
 					{
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 					}
 
 					string @operator = GetOperatorTranslation(attr.Operator);
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
+					_ = sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => {sbRule}, message: {message} }},", indent);
 			}
 		}
 
@@ -345,10 +345,10 @@ public class KnockoutClassGenerator : BaseClassGenerator
 		// and we are not using decorators
 		if (validationBuilder?.Length > 0)
 		{
-			typeBuilder.AppendLine();
+			_ = typeBuilder.AppendLine();
 
 			//Write out the constructor
-			typeBuilder.AppendLineWithTabIndent("constructor()", 2)
+			_ = typeBuilder.AppendLineWithTabIndent("constructor()", 2)
 				.AppendLineWithTabIndent("{", 2)
 				.Append(validationBuilder.ToString())
 				.AppendLineWithTabIndent("}", 2)

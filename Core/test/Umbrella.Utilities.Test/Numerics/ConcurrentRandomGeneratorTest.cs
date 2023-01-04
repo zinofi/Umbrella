@@ -20,29 +20,29 @@ public class ConcurrentRandomGeneratorTest
 	[Fact]
 	public void Next_Valid()
 	{
-		int num = _concurrentRandomGenerator.Next();
+		int num = _concurrentRandomGenerator.GetNext();
 
 		Assert.True(num > -1);
 	}
 
 	[Fact]
 	public void Next_InvalidMin()
-		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.Next(-1));
+		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.GetNext(-1));
 
 	[Fact]
 	public void Next_InvalidMax()
-		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.Next(0, -1));
+		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.GetNext(0, -1));
 
 	[Fact]
 	public void Next_InvalidMinMax()
-		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.Next(4, 3));
+		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.GetNext(4, 3));
 
 	[Theory]
 	[InlineData(0, 0)]
 	[InlineData(10, 10)]
 	public void Next_EqMinMax_Valid(int min, int max)
 	{
-		int num = _concurrentRandomGenerator.Next(min, max);
+		int num = _concurrentRandomGenerator.GetNext(min, max);
 
 		Assert.Equal(min, num);
 	}
@@ -56,7 +56,7 @@ public class ConcurrentRandomGeneratorTest
 	[InlineData(100, 300)]
 	public void Next_NEqMinMax_Valid(int min, int max)
 	{
-		int num = _concurrentRandomGenerator.Next(min, max);
+		int num = _concurrentRandomGenerator.GetNext(min, max);
 
 		Assert.True(num >= min && num < max);
 	}

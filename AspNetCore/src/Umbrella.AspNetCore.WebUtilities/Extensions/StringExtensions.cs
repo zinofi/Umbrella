@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -45,7 +46,7 @@ public static class StringExtensions
 		int? currentPort = currentRequest.Host.Port;
 		string? port = portOverride > 0 ? portOverride.ToString() : (currentPort.HasValue && currentPort.Value != 80 ? (":" + currentPort) : string.Empty);
 
-		return string.Format("{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride ?? currentRequest.Host.Value, port, absoluteVirtualPath);
+		return string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride ?? currentRequest.Host.Value, port, absoluteVirtualPath);
 	}
 
 	/// <summary>
@@ -55,5 +56,5 @@ public static class StringExtensions
 	/// <param name="replacement">The replacement.</param>
 	/// <returns>The HTML encoded output.</returns>
 	public static IHtmlContent? ReplaceNewLine(this string? value, string replacement = "<br />")
-		=> string.IsNullOrWhiteSpace(value) ? null : (IHtmlContent)new HtmlString(HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace(StringEncodingConstants.HtmlEncodedCrLfToken, replacement));
+		=> string.IsNullOrWhiteSpace(value) ? null : (IHtmlContent)new HtmlString(HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace(StringEncodingConstants.HtmlEncodedCrLfToken, replacement, StringComparison.Ordinal));
 }

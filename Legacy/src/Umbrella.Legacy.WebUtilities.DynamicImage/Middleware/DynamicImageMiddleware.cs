@@ -183,7 +183,7 @@ public class DynamicImageMiddleware : OwinMiddleware
 			cts.Cancel();
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
-		catch (DynamicImageException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
+		catch (UmbrellaDynamicImageException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
 			// Just return a 404 NotFound.
 			cts.Cancel();

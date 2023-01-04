@@ -40,7 +40,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	/// </summary>
 	/// <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="int.MaxValue"/>.</returns>
 	/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
-	public int Next()
+	public int GetNext()
 	{
 		try
 		{
@@ -63,7 +63,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	/// equals <paramref name="max"/>, <paramref name="min"/> is returned.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.</exception>
 	/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
-	public int Next(int min = 0, int max = 0)
+	public int GetNext(int min = 0, int max = 0)
 	{
 		Guard.IsGreaterThanOrEqualTo(min, 0, nameof(min));
 		Guard.IsGreaterThanOrEqualTo(max, 0, nameof(max));
@@ -116,7 +116,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 
 			while (candidates.Count < count)
 			{
-				_ = candidates.Add(Next(min, max));
+				_ = candidates.Add(GetNext(min, max));
 			}
 
 			if (!shuffle)
@@ -130,7 +130,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 
 			while (i > 1)
 			{
-				int k = Next(max: i--);
+				int k = GetNext(max: i--);
 				(results[i], results[k]) = (results[k], results[i]);
 			}
 
@@ -197,7 +197,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	#endregion
 
 	#region IDisposable Support
-	private bool _isDisposed = false;
+	private bool _isDisposed;
 
 	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
@@ -225,6 +225,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 		{
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 		catch (Exception exc) when (_log.WriteError(exc))
 		{

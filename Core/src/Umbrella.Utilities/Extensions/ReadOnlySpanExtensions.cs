@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
+using CommunityToolkit.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
@@ -12,7 +12,14 @@ namespace Umbrella.Utilities.Extensions;
 /// </summary>
 public static class ReadOnlySpanExtensions
 {
-	#region ToLower
+	#region ToLower	
+	/// <summary>
+	/// Converts all characters in the specified <paramref name="source"/> to lowercase using the rules of the specified <paramref name="culture"/> and writes them to the specified <paramref name="destination"/>.
+	/// </summary>
+	/// <param name="source">The source.</param>
+	/// <param name="destination">The destination.</param>
+	/// <param name="culture">The culture.</param>
+	/// <remarks>If the <paramref name="culture"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> is used.</remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToLowerSlim(this in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo? culture = null) =>
 #if NET461 || DEBUG
@@ -24,6 +31,8 @@ public static class ReadOnlySpanExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void ToLowerSlimNetClr(in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo culture)
 	{
+		Guard.IsNotEqualTo(source.Length, destination.Length);
+
 		for (int i = 0; i < source.Length; i++)
 		{
 			destination[i] = char.ToLower(source[i], culture);
@@ -33,11 +42,23 @@ public static class ReadOnlySpanExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void ToLowerSlimCoreClr(in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo culture) => source.ToLower(destination, culture);
 
+	/// <summary>
+	/// Converts all characters in the specified <paramref name="source"/> to lowercase using the rules of the invariant culture and writes them to the specified <paramref name="destination"/>.
+	/// </summary>
+	/// <param name="source">The source.</param>
+	/// <param name="destination">The destination.</param>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToLowerInvariantSlim(this in ReadOnlySpan<char> source, in Span<char> destination) => ToLowerSlim(source, destination, CultureInfo.InvariantCulture);
 	#endregion
 
 	#region ToUpper
+	/// <summary>
+	/// Converts all characters in the specified <paramref name="source"/> to uppercase using the rules of the specified <paramref name="culture"/> and writes them to the specified <paramref name="destination"/>.
+	/// </summary>
+	/// <param name="source">The source.</param>
+	/// <param name="destination">The destination.</param>
+	/// <param name="culture">The culture.</param>
+	/// <remarks>If the <paramref name="culture"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> is used.</remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToUpperSlim(this in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo? culture = null) =>
 #if NET461 || DEBUG
@@ -49,6 +70,8 @@ public static class ReadOnlySpanExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void ToUpperSlimNetClr(in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo culture)
 	{
+		Guard.IsNotEqualTo(source.Length, destination.Length);
+
 		for (int i = 0; i < source.Length; i++)
 		{
 			destination[i] = char.ToUpper(source[i], culture);
@@ -58,6 +81,11 @@ public static class ReadOnlySpanExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void ToUpperSlimCoreClr(in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo culture) => source.ToUpper(destination, culture);
 
+	/// <summary>
+	/// Converts all characters in the specified <paramref name="source"/> to uppercase using the rules of the invariant culture and writes them to the specified <paramref name="destination"/>.
+	/// </summary>
+	/// <param name="source">The source.</param>
+	/// <param name="destination">The destination.</param>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToUpperInvariantSlim(this in ReadOnlySpan<char> source, in Span<char> destination) => ToUpperSlim(source, destination, CultureInfo.InvariantCulture);
 	#endregion

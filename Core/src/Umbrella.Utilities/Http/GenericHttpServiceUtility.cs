@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -58,8 +59,8 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 			{
 				if (pageNumber > 0 && pageSize > 0)
 				{
-					parameters.Add("pageNumber", pageNumber.ToString());
-					parameters.Add("pageSize", pageSize.ToString());
+					parameters.Add("pageNumber", pageNumber.ToString(CultureInfo.InvariantCulture));
+					parameters.Add("pageSize", pageSize.ToString(CultureInfo.InvariantCulture));
 				}
 
 				if (sorterCount > 0)
@@ -162,7 +163,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 
 			HttpContentHeaders headers = response.Content.Headers;
 
-			if (headers.Count() == 0 || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
+			if (!headers.Any() || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 
 			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

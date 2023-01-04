@@ -14,7 +14,9 @@ namespace Umbrella.Utilities.Extensions;
 /// </summary>
 public static class StringExtensions
 {
+	// lang=regex
 	private const string HtmlTagPattern = @"<.*?>";
+	// lang=regex
 	private const string EllipsisPattern = @"[\.]+$";
 
 	private static readonly Regex _htmlTagPatternRegex = new(HtmlTagPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -78,51 +80,6 @@ public static class StringExtensions
 	}
 
 	/// <summary>
-	/// Truncates the specified <paramref name="value"/> to the <paramref name="maxLength"/> inclusive.
-	/// </summary>
-	/// <param name="value">The text.</param>
-	/// <param name="maxLength">The maximum length.</param>
-	/// <param name="stripHtml">Specifies if the <paramref name="value"/> should be stripped of HTML.</param>
-	/// <returns>The truncated <paramref name="value"/>.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string Truncate(this string value, int maxLength, bool stripHtml = true)
-	{
-		Guard.IsNotNull(value, nameof(value));
-
-		// Ensure we strip out HTML tags
-		if (stripHtml && value.Length > 0)
-		{
-			value = value.StripHtml();
-
-			if (string.IsNullOrEmpty(value))
-				return value;
-		}
-
-		return value.Length < maxLength ? value : AppendEllipsis(value.Substring(0, maxLength - 3));
-	}
-
-	/// <summary>
-	/// Truncates the specified <paramref name="value"/> to the nearest word.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="maxLength">The maximum length.</param>
-	/// <param name="stripHtml">Specifies if the <paramref name="value"/> should be stripped of HTML.</param>
-	/// <returns>The truncated <paramref name="value"/>.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string TruncateAtWord(this string value, int maxLength, bool stripHtml = true)
-	{
-		Guard.IsNotNull(value, nameof(value));
-
-		// Ensure we strip out HTML tags
-		if (stripHtml && value.Length > 0)
-			value = value.StripHtml();
-
-		return value.Length < maxLength || value.IndexOf(" ", maxLength) == -1
-			? value
-			: AppendEllipsis(value.Substring(0, value.IndexOf(" ", maxLength)));
-	}
-
-	/// <summary>
 	/// Strips HTML non-breaking space values from the <paramref name="value"/> and replaces them with empty strings.
 	/// </summary>
 	/// <param name="value">The value.</param>
@@ -162,93 +119,6 @@ public static class StringExtensions
 	}
 
 	/// <summary>
-	/// Converts to the specified <paramref name="value"/> to CamelCase using the conversion rules of the
-	/// specified <paramref name="cultureInfo"/> or <see cref="CultureInfo.CurrentCulture"/> if not specified.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="cultureInfo">The culture used for the conversion. If not specified <see cref="CultureInfo.CurrentCulture"/> is used.</param>
-	/// <returns>The <paramref name="value"/> converted to CamelCase.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string ToCamelCase(this string value, CultureInfo? cultureInfo = null) => ToCamelCaseInternal(value, cultureInfo ?? CultureInfo.CurrentCulture);
-
-	/// <summary>
-	/// Converts to the specified <paramref name="value"/> to CamelCase using the conversion rules of the
-	/// invariant culture.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <returns>The <paramref name="value"/> converted to CamelCase.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string ToCamelCaseInvariant(this string value) => ToCamelCaseInternal(value, CultureInfo.InvariantCulture);
-
-	private static string ToCamelCaseInternal(string value, CultureInfo cultureInfo)
-	{
-		Guard.IsNotNull(value, nameof(value));
-		Guard.IsNotNull(cultureInfo, nameof(cultureInfo));
-
-		if (value.Length is 1)
-			return value.ToLower(cultureInfo);
-
-		// If 1st char is already in lowercase, return the value untouched
-		if (char.IsLower(value[0]))
-			return value;
-
-		Span<char> buffer = value.Length <= StackAllocConstants.MaxCharSize
-			? stackalloc char[value.Length]
-			: new char[value.Length];
-
-		bool stop = false;
-
-		for (int i = 0; i < value.Length; i++)
-		{
-			if (!stop)
-			{
-				if (char.IsUpper(value[i]))
-				{
-					if (i > 1 && char.IsLower(value[i - 1]))
-					{
-						stop = true;
-					}
-					else
-					{
-						buffer[i] = char.ToLower(value[i], cultureInfo);
-						continue;
-					}
-				}
-				else if (i > 1)
-				{
-					// Encountered first lowercase char
-					// Check previous char and see if that was uppercase before we made it lowercase
-					char previous = value[i - 1];
-					if (char.IsUpper(previous))
-					{
-						buffer[i - 1] = previous;
-						stop = true;
-					}
-				}
-			}
-
-			buffer[i] = value[i];
-		}
-
-		return buffer.ToString();
-	}
-
-	/// <summary>
-	/// Appends an ellipsis to the specified <paramref name="value"/>.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <returns>The value with an ellipsis appended.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string AppendEllipsis(string value)
-	{
-		Guard.IsNotNull(value, nameof(value));
-
-		value += "...";
-
-		return _ellipsisPatternRegex.Replace(value, "...");
-	}
-
-	/// <summary>
 	/// Converts the any HTML br tags to line breaks.
 	/// </summary>
 	/// <param name="value">The value.</param>
@@ -263,65 +133,6 @@ public static class StringExtensions
 		_ = sb.ConvertHtmlBrTagsToReplacement(Environment.NewLine);
 
 		return sb.ToString();
-	}
-
-	/// <summary>
-	/// Converts to the specified <paramref name="value"/> to SnakeCase using the conversion rules of the
-	/// specified <paramref name="cultureInfo"/> or <see cref="CultureInfo.CurrentCulture"/> if not specified.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="lowerCase">if set to <see langword="true"/> converts the output to lowercase.</param>
-	/// <param name="removeWhiteSpace">if set to <see langword="true"/> removes all whitespace.</param>
-	/// <param name="cultureInfo">The culture used for the conversion. If not specified <see cref="CultureInfo.CurrentCulture"/> is used.</param>
-	/// <returns>The <paramref name="value"/> converted to SnakeCase.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string ToSnakeCase(this string value, bool lowerCase = true, bool removeWhiteSpace = true, CultureInfo? cultureInfo = null)
-		=> ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, cultureInfo ?? CultureInfo.CurrentCulture);
-
-	/// <summary>
-	/// Converts to the specified <paramref name="value"/> to SnakeCase using the conversion rules of the
-	/// invariant culture.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="lowerCase">if set to <see langword="true"/> converts the output to lowercase.</param>
-	/// <param name="removeWhiteSpace">if set to <see langword="true"/> removes all whitespace.</param>
-	/// <returns>The <paramref name="value"/> converted to SnakeCase.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string ToSnakeCaseInvariant(this string value, bool lowerCase = true, bool removeWhiteSpace = true)
-		=> ToSnakeCaseInternal(value, lowerCase, removeWhiteSpace, CultureInfo.InvariantCulture);
-
-	private static string ToSnakeCaseInternal(string value, bool lowerCase, bool removeWhiteSpace, CultureInfo cultureInfo)
-	{
-		if (string.IsNullOrWhiteSpace(value))
-			return value;
-
-		if (value.Length is 1)
-			return lowerCase ? value.ToLower(cultureInfo) : value;
-
-		var buffer = new List<char>(value.Length)
-		{
-			lowerCase ? char.ToLower(value[0], cultureInfo) : value[0]
-		};
-
-		for (int i = 1; i < value.Length; i++)
-		{
-			char current = value[i];
-
-			if (removeWhiteSpace && char.IsWhiteSpace(current))
-				continue;
-
-			if (char.IsUpper(value[i]))
-			{
-				if (lowerCase)
-					current = char.ToLower(current, cultureInfo);
-
-				buffer.Add('_');
-			}
-
-			buffer.Add(current);
-		}
-
-		return new string(buffer.ToArray());
 	}
 
 	/// <summary>
@@ -418,16 +229,16 @@ public static class StringExtensions
 			// First letter should always be uppercase
 			if (i == 0)
 			{
-				span[i] = char.ToUpper(currentChar);
+				span[i] = char.ToUpper(currentChar, CultureInfo.InvariantCulture);
 				continue;
 			}
 
-			span[i] = char.ToLower(currentChar);
+			span[i] = char.ToLower(currentChar, CultureInfo.InvariantCulture);
 
 			if (currentChar == '-' && i < name.Length - 1)
 			{
 				// Ensure the next letter is in uppercase as we are most likely dealing with a double barrelled name
-				span[i + 1] = char.ToUpper(name[i + 1]);
+				span[i + 1] = char.ToUpper(name[i + 1], CultureInfo.InvariantCulture);
 				i++;
 				continue;
 			}
@@ -435,25 +246,4 @@ public static class StringExtensions
 
 		return span.ToString();
 	}
-
-	/// <summary>
-	/// Converts to the specified <paramref name="value"/> to title case using the rules of the specified
-	/// <paramref name="cultureInfo"/>. If <paramref name="cultureInfo"/> is <see langword="null"/>, it defaults
-	/// to <see cref="CultureInfo.CurrentCulture"/>.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <param name="cultureInfo">The optional culture information. Defaults to <see cref="CultureInfo.CurrentCulture"/>.</param>
-	/// <returns>The <paramref name="value"/> converted to title case.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string? ToTitleCase(this string? value, CultureInfo? cultureInfo = null)
-		=> string.IsNullOrWhiteSpace(value) ? value : (cultureInfo ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(value);
-
-	/// <summary>
-	/// Converts to the specified <paramref name="value"/> to title case using the rules of the invariant culture.
-	/// </summary>
-	/// <param name="value">The value.</param>
-	/// <returns>The <paramref name="value"/> converted to title case.</returns>
-	[Obsolete("Use Humanizer")]
-	public static string? ToTitleCaseInvariant(this string? value)
-		=> ToTitleCase(value, CultureInfo.InvariantCulture);
 }

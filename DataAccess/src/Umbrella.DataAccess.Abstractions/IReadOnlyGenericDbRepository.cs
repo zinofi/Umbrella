@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
@@ -45,7 +41,6 @@ public interface IReadOnlyGenericDbRepository<TEntity, in TRepoOptions, TEntityK
 	/// </summary>
 	/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
 	/// <param name="pageSize">Size of the page.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="trackChanges">if set to <c>true</c>, tracking entries are created in the database context (where supported).</param>
 	/// <param name="map">The include map to specify related entities to load at the same time.</param>
 	/// <param name="sortExpressions">The sort expressions.</param>
@@ -55,11 +50,11 @@ public interface IReadOnlyGenericDbRepository<TEntity, in TRepoOptions, TEntityK
 	/// <param name="childOptions">The child repo options.</param>
 	/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
 	/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The paginated results.</returns>
 	Task<PaginatedResultModel<TEntity>> FindAllAsync(
 		int pageNumber = 0,
 		int pageSize = 20,
-		CancellationToken cancellationToken = default,
 		bool trackChanges = false,
 		IncludeMap<TEntity>? map = null,
 		IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
@@ -68,19 +63,20 @@ public interface IReadOnlyGenericDbRepository<TEntity, in TRepoOptions, TEntityK
 		TRepoOptions? repoOptions = null,
 		IEnumerable<RepoOptions>? childOptions = null,
 		Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null);
+		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null,
+		CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Finds an entity in the database using its id.
 	/// </summary>
 	/// <param name="id">The identifier.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="trackChanges">if set to <c>true</c>, tracking entries are created in the database context (where supported).</param>
 	/// <param name="map">The include map to specify related entities to load at the same time</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child repo options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The entity.</returns>
-	Task<TEntity?> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
+	Task<TEntity?> FindByIdAsync(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Finds all entities specified in the list of <paramref name="entityKeys"/>.

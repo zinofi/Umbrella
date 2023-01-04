@@ -56,7 +56,7 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// are output by HTML Helpers (MVC 5) or Tag Helpers (ASP.NET Core) as data-* attributes.
 	/// </summary>
 	/// <returns>A Dictionary containing the parameters.</returns>
-	public Dictionary<string, object> ClientValidationParameters => GetClientValidationParameters().ToDictionary(kv => kv.Key.ToLower(), kv => kv.Value);
+	public Dictionary<string, object> ClientValidationParameters => GetClientValidationParameters().ToDictionary(kv => kv.Key.ToLowerInvariant(), kv => kv.Value);
 
 	/// <inheritdoc />
 	protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)

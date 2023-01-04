@@ -1,17 +1,16 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Buffers;
-using System.Collections.Concurrent;
-using System.IO.Compression;
-using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using System.Buffers;
+using System.Collections.Concurrent;
+using System.IO.Compression;
+using System.Text;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 using Umbrella.WebUtilities.Http.Abstractions;
@@ -160,10 +159,10 @@ public class FrontEndCompressionMiddleware
 							var sbCacheControl = new StringBuilder(mapping.Cacheability.ToCacheControlString());
 
 							if (mapping.MaxAgeSeconds.HasValue)
-								sbCacheControl.Append(", max-age=" + mapping.MaxAgeSeconds);
+								_ = sbCacheControl.Append(", max-age=" + mapping.MaxAgeSeconds);
 
 							if (mapping.MustRevalidate)
-								sbCacheControl.Append(", must-revalidate");
+								_ = sbCacheControl.Append(", must-revalidate");
 
 							context.Response.Headers["Cache-Control"] = sbCacheControl.ToString();
 						}
@@ -194,7 +193,7 @@ public class FrontEndCompressionMiddleware
 
 						foreach (string part in parts)
 						{
-							lstEncodingValue.AddNotNullTrimToLowerInvariant(part);
+							_ = lstEncodingValue.AddNotNullTrimToLowerInvariant(part);
 						}
 					}
 
@@ -259,8 +258,8 @@ public class FrontEndCompressionMiddleware
 							return (contentEncoding, ms.ToArray());
 						},
 						mapping,
-						context.RequestAborted,
-						() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+						() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
+						context.RequestAborted);
 
 						if (_log.IsEnabled(LogLevel.Debug))
 						{
@@ -320,8 +319,8 @@ public class FrontEndCompressionMiddleware
 						return ms.ToArray();
 					},
 					mapping,
-					context.RequestAborted,
-					() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null);
+					() => mapping.WatchFiles ? new[] { FileProvider.Watch(path) } : null,
+					context.RequestAborted);
 				}
 
 				// Common headers

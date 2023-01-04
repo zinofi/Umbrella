@@ -35,7 +35,7 @@ public class EmailSender : IEmailSender
 	}
 
 	/// <inheritdoc />
-	public async Task SendEmailAsync(string email, string subject, string body, CancellationToken cancellationToken = default, string? fromAddress = null)
+	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(email, nameof(email));

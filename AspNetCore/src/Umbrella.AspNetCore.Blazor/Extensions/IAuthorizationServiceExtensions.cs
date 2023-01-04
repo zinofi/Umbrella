@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Umbrella.AspNetCore.Blazor.Extensions;
 
@@ -39,7 +39,7 @@ public static class IAuthorizationServiceExtensions
 				string[] lstRole = roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
 				if (lstRole.Length > 0)
-					rolesAuthorized = lstRole.Any(x => user.IsInRole(x));
+					rolesAuthorized = lstRole.Any(user.IsInRole);
 			}
 
 			if (!string.IsNullOrEmpty(policyName))

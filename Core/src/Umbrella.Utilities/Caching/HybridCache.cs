@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Concurrent;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using System.Collections.Concurrent;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
@@ -99,8 +99,8 @@ public class HybridCache : IHybridCache, IDisposable
 	/// <inheritdoc />
 	public T GetOrCreate<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan>? expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
 	{
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
-		Guard.IsNotNull(actionFunction, nameof(actionFunction));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
+		Guard.IsNotNull(actionFunction);
 
 		try
 		{
@@ -191,15 +191,15 @@ public class HybridCache : IHybridCache, IDisposable
 		=> GetOrCreate(cacheKey, actionFunction, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 	/// <inheritdoc />
-	public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan>? expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
+	public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, Func<TimeSpan>? expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
-		Guard.IsNotNull(actionFunction, nameof(actionFunction));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
+		Guard.IsNotNull(actionFunction);
 
 		try
 		{
-			return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), cancellationToken, expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder);
+			return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder, cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
@@ -208,15 +208,15 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
-		=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheThrowOnFailure, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+	public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<T> actionFunction, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null, CancellationToken cancellationToken = default)
+		=> GetOrCreateAsync(cacheKey, actionFunction, () => options.CacheTimeout, options.CacheMode, options.CacheThrowOnFailure, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder, cancellationToken);
 
 	/// <inheritdoc />
-	public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CancellationToken cancellationToken = default, Func<TimeSpan>? expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
+	public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, Func<TimeSpan>? expirationTimeSpanBuilder = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
-		Guard.IsNotNull(actionFunction, nameof(actionFunction));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
+		Guard.IsNotNull(actionFunction);
 
 		try
 		{
@@ -229,7 +229,7 @@ public class HybridCache : IHybridCache, IDisposable
 				{
 					try
 					{
-						(T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), cancellationToken, false).ConfigureAwait(false);
+						(T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), false, cancellationToken).ConfigureAwait(false);
 
 						if (!throwOnCacheFailure)
 						{
@@ -310,13 +310,13 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
-		=> GetOrCreateAsync(cacheKey, actionFunction, cancellationToken, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+	public Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> actionFunction, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null, CancellationToken cancellationToken = default)
+		=> GetOrCreateAsync(cacheKey, actionFunction, () => options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder, cancellationToken);
 
 	/// <inheritdoc />
 	public (bool itemFound, T? cacheItem) TryGetValue<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
 	{
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
 
 		try
 		{
@@ -351,10 +351,10 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public async Task<(bool itemFound, T? cacheItem)> TryGetValueAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null)
+	public async Task<(bool itemFound, T? cacheItem)> TryGetValueAsync<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool? cacheEnabledOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
 
 		try
 		{
@@ -389,10 +389,10 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public T Set<T>(string cacheKey, T value, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
+	public T SetValue<T>(string cacheKey, T value, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
 	{
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
-		Guard.IsNotNull(value, nameof(value));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
+		Guard.IsNotNull(value);
 
 		try
 		{
@@ -434,14 +434,14 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public T Set<T>(string cacheKey, T value, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
-		=> Set(cacheKey, value, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+	public T SetValue<T>(string cacheKey, T value, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
+		=> SetValue(cacheKey, value, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
 
 	/// <inheritdoc />
-	public async Task<T> SetAsync<T>(string cacheKey, T value, CancellationToken cancellationToken = default, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
+	public async Task<T> SetValueAsync<T>(string cacheKey, T value, TimeSpan? expirationTimeSpan = null, HybridCacheMode cacheMode = HybridCacheMode.Memory, bool slidingExpiration = false, bool throwOnCacheFailure = true, CacheItemPriority priority = CacheItemPriority.Normal, bool? cacheEnabledOverride = null, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
 
 		try
 		{
@@ -483,8 +483,8 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public Task<T> SetAsync<T>(string cacheKey, T value, CacheableUmbrellaOptions options, CancellationToken cancellationToken = default, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null)
-		=> SetAsync(cacheKey, value, cancellationToken, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder);
+	public Task<T> SetValueAsync<T>(string cacheKey, T value, CacheableUmbrellaOptions options, Func<IEnumerable<IChangeToken>?>? expirationTokensBuilder = null, CancellationToken cancellationToken = default)
+		=> SetValueAsync(cacheKey, value, options.CacheTimeout, options.CacheMode, options.CacheSlidingExpiration, options.CacheThrowOnFailure, options.CachePriority, options.CacheEnabled, expirationTokensBuilder, cancellationToken);
 
 	/// <inheritdoc />
 	public IReadOnlyCollection<HybridCacheMetaEntry> GetAllMemoryCacheMetaEntries()
@@ -503,10 +503,10 @@ public class HybridCache : IHybridCache, IDisposable
 	}
 
 	/// <inheritdoc />
-	public async Task RemoveAsync<T>(string cacheKey, CancellationToken cancellationToken = default, HybridCacheMode cacheMode = HybridCacheMode.Memory)
+	public async Task RemoveAsync<T>(string cacheKey, HybridCacheMode cacheMode = HybridCacheMode.Memory, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(cacheKey, nameof(cacheKey));
+		Guard.IsNotNullOrWhiteSpace(cacheKey);
 
 		try
 		{
@@ -568,7 +568,7 @@ public class HybridCache : IHybridCache, IDisposable
 	private TimeSpan DetermineExpirationTimeSpan(TimeSpan? expirationTimeSpan, CacheItemPriority cacheItemPriority)
 		=> cacheItemPriority is CacheItemPriority.NeverRemove ? TimeSpan.MaxValue : expirationTimeSpan ?? Options.DefaultCacheTimeout;
 
-	private DistributedCacheEntryOptions BuildDistributedCacheEntryOptions(in TimeSpan expirationTimeSpan, bool slidingExpiration)
+	private static DistributedCacheEntryOptions BuildDistributedCacheEntryOptions(in TimeSpan expirationTimeSpan, bool slidingExpiration)
 	{
 		var options = new DistributedCacheEntryOptions();
 
@@ -629,7 +629,7 @@ public class HybridCache : IHybridCache, IDisposable
 	#endregion
 
 	#region IDisposable Support
-	private bool _isDisposed = false; // To detect redundant calls
+	private bool _isDisposed; // To detect redundant calls
 
 	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
@@ -650,15 +650,14 @@ public class HybridCache : IHybridCache, IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-	/// </summary>
+	/// <inheritdoc />
 	public void Dispose()
 	{
 		try
 		{
 			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
 			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{

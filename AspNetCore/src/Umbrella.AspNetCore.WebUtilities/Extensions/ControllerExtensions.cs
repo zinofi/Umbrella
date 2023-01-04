@@ -19,11 +19,11 @@ public static class ControllerExtensions
 	/// Renders the specified view to a string.
 	/// </summary>
 	/// <param name="controller">The controller.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="model">The model.</param>
 	/// <param name="viewNameOrPath">The view name or path.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task" /> whose result will contain the rendered string upon completion.</returns>
-	public static async Task<string> RenderViewToStringAsync(this Controller controller, CancellationToken cancellationToken = default, object? model = null, string? viewNameOrPath = null)
+	public static async Task<string> RenderViewToStringAsync(this Controller controller, object? model = null, string? viewNameOrPath = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(controller);
@@ -36,7 +36,7 @@ public static class ControllerExtensions
 
 		ICompositeViewEngine viewEngine = controller.HttpContext.RequestServices.GetRequiredService<ICompositeViewEngine>();
 
-		ViewEngineResult viewResult = viewNameOrPath.EndsWith(".cshtml")
+		ViewEngineResult viewResult = viewNameOrPath.EndsWith(".cshtml", StringComparison.Ordinal)
 			? viewEngine.GetView(viewNameOrPath, viewNameOrPath, false)
 			: viewEngine.FindView(controller.ControllerContext, viewNameOrPath, false);
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Umbrella.DataAnnotations;
+﻿namespace Umbrella.DataAnnotations;
 
 /// <summary>
 /// Specifies that a data field value is both required and that it must have a value of <see langword="true" />.

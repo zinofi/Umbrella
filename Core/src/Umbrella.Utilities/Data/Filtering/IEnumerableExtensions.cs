@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Linq.Expressions;
 using Umbrella.Utilities.Data.Abstractions;
-using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.TypeConverters;
 
@@ -127,8 +124,10 @@ public static class IEnumerableExtensions
 	/// <typeparam name="TFilterValue">The type of the filter value.</typeparam>
 	/// <param name="filters">The filters.</param>
 	/// <param name="filterPath">The filter path.</param>
+	/// <param name="cultureInfo">The optional culture.</param>
 	/// <returns>A tuple containing details of whether the filter exists, its value, and the updated filters without the popped filter.</returns>
-	public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath)
+	/// <remarks>If the <paramref name="cultureInfo"/> is not specified, <see cref="CultureInfo.InvariantCulture"/> is used.</remarks>
+	public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath, CultureInfo? cultureInfo = null)
 	{
 		FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
 
@@ -140,7 +139,7 @@ public static class IEnumerableExtensions
 		if (filter.Value.Value is null)
 			return (true, default!, updatedFilters);
 
-		object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
+		object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue), cultureInfo ?? CultureInfo.InvariantCulture);
 
 		if (value is not null)
 			return (true, (TFilterValue)value, updatedFilters);
@@ -166,8 +165,10 @@ public static class IEnumerableExtensions
 	/// <typeparam name="TFilterValue">The type of the filter value.</typeparam>
 	/// <param name="filters">The filters.</param>
 	/// <param name="filterPath">The filter path.</param>
+	/// <param name="cultureInfo">The optional culture.</param>
 	/// <returns>A tuple containing details of whether the filter exists and its value.</returns>
-	public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath)
+	/// <remarks>If the <paramref name="cultureInfo"/> is not specified, <see cref="CultureInfo.InvariantCulture"/> is used.</remarks>
+	public static (bool found, TFilterValue filterValue) PeekFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath, CultureInfo? cultureInfo = null)
 	{
 		FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
 
@@ -176,7 +177,7 @@ public static class IEnumerableExtensions
 
 		// TODO: Will this work for enums?? Should do but can't remember.
 		// It'll only work if the filter value has already been converted to a enum before this method has been called into. Check the model binders.
-		object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue));
+		object? value = Convert.ChangeType(filter.Value.Value, Nullable.GetUnderlyingType(typeof(TFilterValue)) ?? typeof(TFilterValue), cultureInfo ?? CultureInfo.InvariantCulture);
 
 		if (value is not null)
 			return (true, (TFilterValue)value);

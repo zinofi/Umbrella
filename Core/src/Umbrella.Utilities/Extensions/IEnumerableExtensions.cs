@@ -117,7 +117,7 @@ public static class IEnumerableExtensions
 				.Create(source)
 				.GetPartitions(degreeOfParallelism)
 				.AsParallel()
-				.Select(p => AwaitPartition(p)));
+				.Select(AwaitPartition));
 	}
 
 	/// <summary>
@@ -141,56 +141,4 @@ public static class IEnumerableExtensions
 	/// <param name="items">The items.</param>
 	/// <returns>The shuffled items.</returns>
 	public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> items) => items.OrderBy(x => Guid.NewGuid());
-
-	// TODO: Add documentation and unit tests.
-	// These methods return collections of the same length with each item set to the sum of the current item, plus the previous item,
-	// e.g. 1, 2, 3,  4,  5,  6,  7,  8,  9, 10
-	// ret. 1, 3, 6, 10, 15, 21, 28, 36, 45, 55
-	// Same logic as used to generate Fibonacci sequence.
-	// No idea why these exist though. CostsBudgIT maybe??? Check.
-	public static IEnumerable<int> CumulativeSum(this IEnumerable<int> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<int?> CumulativeSum(this IEnumerable<int?> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<float> CumulativeSum(this IEnumerable<float> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<float?> CumulativeSum(this IEnumerable<float?> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<double> CumulativeSum(this IEnumerable<double> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<double?> CumulativeSum(this IEnumerable<double?> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<decimal> CumulativeSum(this IEnumerable<decimal> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<decimal?> CumulativeSum(this IEnumerable<decimal?> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<long> CumulativeSum(this IEnumerable<long> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	public static IEnumerable<long?> CumulativeSum(this IEnumerable<long?> source)
-		=> CumulativeSum(source, (x, y) => x + y);
-
-	private static IEnumerable<T> CumulativeSum<T>(this IEnumerable<T> source, Func<T, T, T> addSelector)
-	{
-		Guard.IsNotNull(source, nameof(source));
-		Guard.IsNotNull(addSelector, nameof(addSelector));
-
-		T sum = source.FirstOrDefault();
-
-		yield return sum;
-
-		foreach (T item in source.Skip(1))
-		{
-			sum = addSelector(sum, item);
-			yield return sum;
-		}
-	}
 }

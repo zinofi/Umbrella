@@ -134,8 +134,8 @@ public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
 				return null;
 			},
 			Options,
-			cancellationToken,
-			() => watch ? new[] { FileProvider.Value.Watch(cleanedPath) } : null)
+			() => watch ? new[] { FileProvider.Value.Watch(cleanedPath) } : null,
+			cancellationToken)
 				.ConfigureAwait(false);
 		}
 		finally

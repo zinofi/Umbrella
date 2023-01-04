@@ -3,7 +3,7 @@
 /// <summary>
 /// Specifies the type of comparision operation to perform during contingent validation operations.
 /// </summary>
-public enum Operator
+public enum EqualityOperator
 {
 	/// <summary>
 	/// Checks for equality.

@@ -81,7 +81,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		try
 		{
 			if (AutoRenderOnPageLoad)
-				throw new Exception("Auto rendering has been enabled. This method should not be manually called.");
+				throw new InvalidOperationException("Auto rendering has been enabled. This method should not be manually called.");
 
 			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
 		}

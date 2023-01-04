@@ -18,6 +18,7 @@ public class CollectionViewHeightBehavior : Behavior<CollectionView>
 	/// <summary>
 	/// The bindable property for the <see cref="ParentLayout"/> property.
 	/// </summary>
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin")]
 	public static BindableProperty ParentLayoutProperty = BindableProperty.Create(nameof(ParentLayout), typeof(Layout), typeof(CollectionViewHeightBehavior), null, BindingMode.OneTime);
 
 	private bool _hasHeightChanged;

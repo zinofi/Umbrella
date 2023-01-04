@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Umbrella.Utilities.Extensions;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Form;
 
@@ -18,7 +17,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Form;
 /// <seealso cref="ComponentBase" />
 public class LabelText : ComponentBase
 {
-	private bool _hasRendered = false;
+	private bool _hasRendered;
 
 	/// <summary>
 	/// Gets or sets the target model property.

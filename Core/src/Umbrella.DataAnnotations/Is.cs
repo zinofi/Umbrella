@@ -18,7 +18,7 @@ public class IsAttribute : ContingentValidationAttribute
 	/// <summary>
 	/// Gets the operator.
 	/// </summary>
-	public Operator Operator { get; private set; }
+	public EqualityOperator Operator { get; private set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether to pass on null.
@@ -30,7 +30,7 @@ public class IsAttribute : ContingentValidationAttribute
 	/// </summary>
 	/// <param name="operator">The operator.</param>
 	/// <param name="dependentProperty">The dependent property.</param>
-	public IsAttribute(Operator @operator, string dependentProperty)
+	public IsAttribute(EqualityOperator @operator, string dependentProperty)
 		: base(dependentProperty)
 	{
 		Operator = @operator;

@@ -7,6 +7,7 @@ using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Utilities.Networking.Abstractions;
 using Umbrella.Xamarin.ObjectModel.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.ObjectModel;
@@ -71,7 +72,7 @@ public class UmbrellaCommandFactory : IUmbrellaCommandFactory
 		if (checkNetworkConnection && !NetworkConnectionStatusUtility.IsConnected)
 		{
 			// TODO: Create an options class to allow this to be configurable.
-			_ = DialogUtility.ShowDangerMessageAsync("Your device is not connected to the internet. Please check your connection and try again.");
+			MainThread.InvokeOnMainThreadAsync(() => DialogUtility.ShowDangerMessageAsync("Your device is not connected to the internet. Please check your connection and try again."));
 
 			return false;
 		}

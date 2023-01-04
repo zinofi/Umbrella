@@ -32,7 +32,6 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 	#endregion
 
 	#region Internal Methods
-	[Obsolete]
 	internal async Task SendBufferInternal(LoggingEvent[] events)
 	{
 		if (_logErrorsToConsole)
@@ -41,7 +40,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 		try
 		{
 			if (Config is null)
-				throw new Exception($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
+				throw new InvalidOperationException($"The log4net {nameof(AzureTableStorageAppender)} with name: {Name} has not been initialized. The {nameof(InitializeAppender)} must be called from your code before the log appender is first used.");
 
 			////Get the table we need to write stuff to and create it if needed
 			//CloudTable table = TableClient!.GetTableReference($"{Config.TablePrefix}{AzureTableStorageLoggingOptions.TableNameSeparator}{DateTime.UtcNow:yyyyxMMxdd}");
@@ -86,7 +85,6 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 
 	#region Overridden Methods
 	/// <inheritdoc />
-	[Obsolete]
 	protected override void SendBuffer(LoggingEvent[] events)
 	{
 		//Executing this code asynchronously on a worker thread to avoid blocking the main thread
@@ -162,7 +160,7 @@ public class AzureTableStorageAppender : BufferingAppenderSkeleton
 			var config = options.Appenders.SingleOrDefault(x => x.Name == appender.Name);
 
 			if (config is null)
-				throw new Exception($"Configuration cannot be found for appender {appender.Name}");
+				throw new InvalidOperationException($"Configuration cannot be found for appender {appender.Name}");
 
 			appender.InitializeAppender(config, connectionString, options.LogErrorsToConsole);
 		}

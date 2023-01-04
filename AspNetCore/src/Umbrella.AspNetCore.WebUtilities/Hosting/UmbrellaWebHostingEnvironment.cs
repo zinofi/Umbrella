@@ -1,17 +1,16 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Buffers;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using System.Buffers;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
@@ -177,7 +176,7 @@ public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrel
 					long versionHash = fileInfo.LastModified.UtcDateTime.ToFileTimeUtc() ^ fileInfo.Length;
 					string version = Convert.ToString(versionHash, 16);
 
-					string qsStart = url.Contains("?") ? "&" : "?";
+					string qsStart = url.Contains('?', StringComparison.Ordinal) ? "&" : "?";
 
 					url = $"{url}{qsStart}{versionParameterName}={version}";
 				}
@@ -225,7 +224,7 @@ public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrel
 	#endregion
 
 	#region Internal Methods
-	internal string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
+	internal static string TransformPath(string virtualPath, bool removeLeadingSlash, bool ensureLeadingSlash, bool convertForwardSlashesToBackSlashes)
 	{
 		StringBuilder sb = new StringBuilder(virtualPath)
 			.Trim()
@@ -244,7 +243,7 @@ public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrel
 
 		// Only do this on Windows. Not required for Linux and macOS.
 		if (convertForwardSlashesToBackSlashes && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			path = path.Replace("/", @"\");
+			path = path.Replace("/", @"\", StringComparison.Ordinal);
 
 		return path;
 	}

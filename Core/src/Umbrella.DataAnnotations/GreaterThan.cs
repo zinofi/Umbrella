@@ -11,7 +11,7 @@ public class GreaterThanAttribute : IsAttribute
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	public GreaterThanAttribute(string dependentProperty)
-		: base(Operator.GreaterThan, dependentProperty)
+		: base(EqualityOperator.GreaterThan, dependentProperty)
 	{
 	}
 }

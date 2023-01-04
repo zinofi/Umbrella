@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-
 /* Unmerged change from project 'Umbrella.Utilities(net461)'
 Before:
 namespace Umbrella.Utilities.Encryption.Abstractions

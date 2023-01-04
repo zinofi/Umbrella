@@ -58,8 +58,8 @@ public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TIt
 		Type = type;
 		IsPrimary = isPrimary;
 
-		_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
-		_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
+		_lazyFunc = new Lazy<Func<TItem, object>>(expression.Compile);
+		_lazyMemberPath = new Lazy<string>(expression.GetMemberPath);
 	}
 
 	/// <summary>

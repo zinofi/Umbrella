@@ -35,7 +35,7 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 {
 	/// <summary>
-	/// The endpoint called by the <see cref="FindAllSlimAsync(int, int, CancellationToken, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?, FilterExpressionCombinator)"/>
+	/// The endpoint called by the <see cref="FindAllSlimAsync(int, int, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?, FilterExpressionCombinator, CancellationToken)"/>
 	/// method.
 	/// </summary>
 	/// <remarks>
@@ -63,8 +63,8 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 		=> GetByIdAsync<TItem, TIdentifier>(id, cancellationToken, AfterItemLoadedAsync);
 
 	/// <inheritdoc />
-	public virtual Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And)
-		=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync);
+	public virtual Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default)
+		=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync, cancellationToken);
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
@@ -103,16 +103,16 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 	}
 
 	/// <inheritdoc />
-	public virtual Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
-		=> PostAsync<TCreateItem, TCreateResult>(item, cancellationToken, sanitize, validationType, AfterItemCreatedAsync);
+	public virtual Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
+		=> PostAsync<TCreateItem, TCreateResult>(item, sanitize, validationType, AfterItemCreatedAsync, cancellationToken: cancellationToken);
 
 	/// <inheritdoc />
-	public virtual Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow)
-		=> PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, cancellationToken, sanitize, validationType, AfterItemUpdatedAsync);
+	public virtual Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
+		=> PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, sanitize, validationType, AfterItemUpdatedAsync, cancellationToken: cancellationToken);
 
 	/// <inheritdoc />
 	public virtual Task<IHttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
-		=> DeleteAsync(id, cancellationToken, AfterItemDeletedAsync);
+		=> DeleteAsync(id, AfterItemDeletedAsync, cancellationToken: cancellationToken);
 
 	/// <summary>
 	/// Override this in a derived type to perform an operation on the item after it has been loaded.

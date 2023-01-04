@@ -49,11 +49,11 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 	/// Gets the <see cref="HttpResourceInfo"/> for the specified <paramref name="url"/>. Returns null where the resource cannot be found.
 	/// </summary>
 	/// <param name="url">The URL.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="useCache">Determines whether to cache the resource info.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The <see cref="HttpResourceInfo"/>.</returns>
 	/// <exception cref="UmbrellaException">There was a problem retrieving data for the specified url: {url}</exception>
-	public async Task<HttpResourceInfo?> GetAsync(string url, CancellationToken cancellationToken = default, bool useCache = true)
+	public async Task<HttpResourceInfo?> GetAsync(string url, bool useCache = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -81,13 +81,13 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 
 					return null;
 				},
-				cancellationToken,
 				() => _options.CacheTimeout,
 				_options.CacheMode,
 				_options.CacheSlidingExpiration,
 				_options.CacheThrowOnFailure,
 				_options.CachePriority,
-				cacheEnabledOverride: _options.CacheEnabled && useCache);
+				cacheEnabledOverride: _options.CacheEnabled && useCache,
+				cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { url }))
 		{
@@ -97,7 +97,7 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 	#endregion
 
 	#region IDisposable Support
-	private bool _disposedValue = false; // To detect redundant calls
+	private bool _disposedValue; // To detect redundant calls
 
 	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
@@ -117,6 +117,10 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 	/// </summary>
-	public void Dispose() => Dispose(true); // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+	public void Dispose()
+	{
+		Dispose(true); // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+		GC.SuppressFinalize(this);
+	}
 	#endregion
 }

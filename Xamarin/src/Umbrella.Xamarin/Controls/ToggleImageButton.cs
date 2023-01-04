@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Extensions;
+﻿using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Extensions;
 using Xamarin.Forms;
 
@@ -12,6 +8,7 @@ namespace Umbrella.Xamarin.Controls;
 /// A control that extends the <see cref="ImageButton"/> control to provide checkbox and radiobutton behaviour.
 /// </summary>
 /// <seealso cref="ImageButton" />
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
 public class ToggleImageButton : ImageButton
 {
 	/// <summary>
@@ -73,11 +70,11 @@ public class ToggleImageButton : ImageButton
 	protected override void OnParentSet()
 	{
 		base.OnParentSet();
-		VisualStateManager.GoToState(this, "ToggledOff");
+		_ = VisualStateManager.GoToState(this, "ToggledOff");
 
 		if (LabelledBy is not null)
 		{
-			VisualStateManager.GoToState(LabelledBy, "ToggledOff");
+			_ = VisualStateManager.GoToState(LabelledBy, "ToggledOff");
 
 			var grTap = new TapGestureRecognizer
 			{
@@ -100,7 +97,7 @@ public class ToggleImageButton : ImageButton
 			if (newValue)
 			{
 				// Ensure others in the group are deselected
-				lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
+				_ = lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
 				IsToggled = newValue;
 			}
 			else
@@ -127,9 +124,9 @@ public class ToggleImageButton : ImageButton
 		await Task.Delay(50);
 
 		// Set the visual state
-		VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
+		_ = VisualStateManager.GoToState(toggleButton, isToggled ? "ToggledOn" : "ToggledOff");
 
 		if (toggleButton.LabelledBy is not null)
-			VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
+			_ = VisualStateManager.GoToState(toggleButton.LabelledBy, isToggled ? "ToggledOn" : "ToggledOff");
 	}
 }

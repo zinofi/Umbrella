@@ -52,7 +52,7 @@ public class DynamicImageItem
 		cancellationToken.ThrowIfCancellationRequested();
 
 		if (Content is null && UmbrellaFileInfo is not null)
-			Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
+			Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return Content;
 	}
@@ -63,15 +63,20 @@ public class DynamicImageItem
 	/// <param name="target">The target.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/>.</returns>
-	/// <remarks>This is just a convenience wrapper around the <see cref="IUmbrellaFileInfo.WriteToStreamAsync(Stream, CancellationToken, int?)"/> method.</remarks>
-	public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
+	/// <remarks>This is just a convenience wrapper around the <see cref="IUmbrellaFileInfo.WriteToStreamAsync(Stream, int?, CancellationToken)"/> method.</remarks>
+	public async Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(target);
 
 		if (Content is null && UmbrellaFileInfo is not null)
-			return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
+		{
+			await UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		return Content is not null ? target.WriteAsync(Content, 0, Content.Length, cancellationToken) : Task.CompletedTask;
+			return;
+		}
+
+		if (Content is not null)
+			await target.WriteAsync(Content, 0, Content.Length, cancellationToken).ConfigureAwait(false);
 	}
 }

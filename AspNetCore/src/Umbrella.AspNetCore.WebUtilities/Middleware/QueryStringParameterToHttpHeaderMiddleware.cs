@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Umbrella.WebUtilities.Middleware.Options;
@@ -65,7 +62,7 @@ public class QueryStringParameterToHttpHeaderMiddleware
 							string newValue = _options.ValueTransformer(value);
 
 							if (string.IsNullOrWhiteSpace(newValue))
-								_logger.LogWarning($"The {nameof(QueryStringParameterToHttpHeaderMiddleware)} executed a value transformer which converted '{value}' to an empty string.");
+								_logger.LogWarning($"The {nameof(QueryStringParameterToHttpHeaderMiddleware)} executed a value transformer which converted '{{Value}}' to an empty string.", value);
 
 							value = newValue;
 						}

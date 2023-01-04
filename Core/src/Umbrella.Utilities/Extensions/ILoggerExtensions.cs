@@ -154,6 +154,8 @@ public static class ILoggerExtensions
 	public static bool Write(this ILogger log, LogLevel level, Exception? exc = null, object? state = null, string? message = null, in EventId eventId = default, bool returnValue = true, [CallerMemberName] string methodName = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, bool ignoreCancellationExceptions = true)
 		=> LogDetails(log, level, exc, state, message, in eventId, methodName, filePath, lineNumber, ignoreCancellationExceptions) ?? returnValue;
 
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Logging is dynamic here so creating and caching delegates would be cumbersome.")]
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Logging is dynamic here so creating and caching these expressions would be cumbersome.")]
 	private static bool? LogDetails(ILogger log, LogLevel level, Exception? exc, object? state, string? message, in EventId eventId, string methodName, string filePath, int lineNumber, bool ignoreCancellationExceptions)
 	{
 		if (!log.IsEnabled(level))
@@ -170,8 +172,6 @@ public static class ILoggerExtensions
 
 		if (state is not null)
 		{
-			// Here we will convert the stateDictionary to an IReadOnlyList<KeyValuePair<string, object>> (actual call to .AsReadOnly is further down) so that it is compatible with ApplicationInsights.
-			// It should also be compatible with other logging implementations that can perform serialization of collections.
 			PropertyInfo[] propertyInfos = _typePropertyInfoDictionary.GetOrAdd(state.GetType(), x => x.GetProperties());
 
 			foreach (var pi in propertyInfos)

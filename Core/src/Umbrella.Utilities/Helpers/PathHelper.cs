@@ -1,6 +1,5 @@
 ﻿using System.IO;
 
-
 /* Unmerged change from project 'Umbrella.Utilities(net461)'
 Before:
 namespace Umbrella.Utilities.Helpers

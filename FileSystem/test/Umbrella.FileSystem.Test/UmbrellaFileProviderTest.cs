@@ -35,7 +35,7 @@ public class UmbrellaFileProviderTest
 			if (string.IsNullOrEmpty(_baseDirectory))
 			{
 				string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net6.0"));
+				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net6.0"), StringComparison.Ordinal);
 				_baseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 			}
 
@@ -45,8 +45,8 @@ public class UmbrellaFileProviderTest
 
 	public static List<Func<IUmbrellaFileProvider>> Providers = new()
 	{
-		() => CreateAzureBlobFileProvider(),
-		() => CreateDiskFileProvider()
+		CreateAzureBlobFileProvider,
+		CreateDiskFileProvider
 	};
 
 	public static List<string> PathsToTest = new()
@@ -1335,16 +1335,11 @@ public class UmbrellaFileProviderTest
 
 	private static void CheckPOCOFileType(IUmbrellaFileProvider provider, IUmbrellaFileInfo file)
 	{
-		switch (provider)
+		object _ = provider switch
 		{
-			case UmbrellaAzureBlobStorageFileProvider _:
-				_ = Assert.IsType<UmbrellaAzureBlobStorageFileInfo>(file);
-				break;
-			case UmbrellaDiskFileProvider _:
-				_ = Assert.IsType<UmbrellaDiskFileInfo>(file);
-				break;
-			default:
-				throw new Exception("Unsupported provider.");
-		}
+			UmbrellaAzureBlobStorageFileProvider => Assert.IsType<UmbrellaAzureBlobStorageFileInfo>(file),
+			UmbrellaDiskFileProvider => Assert.IsType<UmbrellaDiskFileInfo>(file),
+			_ => throw new InvalidOperationException("Unsupported provider."),
+		};
 	}
 }

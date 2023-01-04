@@ -6,7 +6,6 @@ using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Data.Abstractions;
 
-
 /* Unmerged change from project 'Umbrella.Utilities.Benchmark(net461)'
 Before:
 namespace Umbrella.Utilities.Benchmark.Caching

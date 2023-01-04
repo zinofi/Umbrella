@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Umbrella.Utilities.Comparers;
 using Xunit;
 
@@ -29,7 +25,7 @@ public class EntityValidatorTest
 
 		ValidationResult expected = shouldPass
 			? ValidationResult.Success!
-			: new ValidationResult(string.Format(ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
+			: new ValidationResult(string.Format(CultureInfo.InvariantCulture, ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
 
 		Assert.Equal(expected, result, _validationResultComparer);
 	}
@@ -45,10 +41,10 @@ public class EntityValidatorTest
 
 		ValidationResult expected = shouldPass
 			? ValidationResult.Success!
-			: new ValidationResult(string.Format(ErrorMessages.InvalidPropertyNumberRangeErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
+			: new ValidationResult(string.Format(CultureInfo.InvariantCulture, ErrorMessages.InvalidPropertyNumberRangeErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
 
 		Assert.Equal(expected, result, _validationResultComparer);
 	}
 
-	private EntityValidator CreateEntityValidator() => new EntityValidator();
+	private static EntityValidator CreateEntityValidator() => new();
 }

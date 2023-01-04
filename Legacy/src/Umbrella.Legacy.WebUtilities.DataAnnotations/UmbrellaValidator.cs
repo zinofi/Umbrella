@@ -33,7 +33,7 @@ public class UmbrellaValidator : DataAnnotationsModelValidator<ModelAwareValidat
 	{
 		var result = new ModelClientValidationRule()
 		{
-			ValidationType = Attribute.ClientTypeName.ToLower(),
+			ValidationType = Attribute.ClientTypeName.ToLowerInvariant(),
 			ErrorMessage = ErrorMessage
 		};
 

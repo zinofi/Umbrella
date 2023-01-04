@@ -75,7 +75,7 @@ public class ActiveTagHelper : AnchorTagHelper
 				bool isActive = MatchType switch
 				{
 					ActiveTagMatchType.Exact => currentUrl == targetUrl,
-					ActiveTagMatchType.Hierarchical => currentUrl.StartsWith(targetUrl),
+					ActiveTagMatchType.Hierarchical => currentUrl.StartsWith(targetUrl, StringComparison.Ordinal),
 					_ => false
 				};
 

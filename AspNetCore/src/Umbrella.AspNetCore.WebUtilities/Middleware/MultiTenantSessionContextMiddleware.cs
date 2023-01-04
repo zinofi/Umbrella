@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 
@@ -52,7 +50,7 @@ public class MultiTenantSessionContextMiddleware<TAppTenantKey>
 
 				if (!string.IsNullOrWhiteSpace(strAppTenantId))
 				{
-					var id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey));
+					var id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey), CultureInfo.InvariantCulture);
 
 					dbAppAuthSessionContext.AppTenantId = id;
 				}
@@ -114,7 +112,7 @@ public class MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTena
 
 				if (!string.IsNullOrWhiteSpace(strAppTenantId))
 				{
-					var id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey));
+					var id = (TAppTenantKey)Convert.ChangeType(strAppTenantId, typeof(TAppTenantKey), CultureInfo.InvariantCulture);
 
 					dbAppAuthSessionContext.AppTenantId = id;
 

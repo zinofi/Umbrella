@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.Internal.Mocks;
 using Xunit;
@@ -20,7 +18,7 @@ public class ResponsiveImageTagHelperTest
 	[InlineData("/path/to/imagepng", 2, "Invalid image path")]
 	[InlineData("http://www.google.com/path/to/image.png", 2, "http://www.google.com/path/to/image.png 1x, http://www.google.com/path/to/image@2x.png 2x")]
 	[InlineData("https://www.google.com/path/to/image.png", 2, "https://www.google.com/path/to/image.png 1x, https://www.google.com/path/to/image@2x.png 2x")]
-	public async Task Generate_Success(string path, int maxPixelDensity, string expectedOutput)
+	public async Task GenerateSuccess(string path, int maxPixelDensity, string expectedOutput)
 	{
 		var tagHelper = CreateTagHelper();
 		tagHelper.MaxPixelDensity = maxPixelDensity;
@@ -61,8 +59,8 @@ public class ResponsiveImageTagHelperTest
 		}
 	}
 
-	private ResponsiveImageTagHelper CreateTagHelper()
-		=> new ResponsiveImageTagHelper(
+	private static ResponsiveImageTagHelper CreateTagHelper()
+		=> new(
 			CoreUtilitiesMocks.CreateLogger<ResponsiveImageTagHelper>(),
 			Mocks.CreateUmbrellaWebHostingEnvironment(),
 			CoreUtilitiesMocks.CreateHybridCache(),

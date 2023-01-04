@@ -100,8 +100,8 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		SortExpression<TEntityResult>[]? sorters,
 		FilterExpression<TEntity>[]? filters,
 		FilterExpressionCombinator? filterCombinator,
+		Func<int, int, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<PaginatedResultModel<TEntityResult>>> loadReadAllDataAsyncDelegate,
 		CancellationToken cancellationToken,
-		Func<int, int, CancellationToken, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, TRepositoryOptions?, IEnumerable<RepoOptions>?, Task<PaginatedResultModel<TEntityResult>>> loadReadAllDataAsyncDelegate,
 		Func<IReadOnlyCollection<TEntityResult>, TItemModel[]>? mapReadAllEntitiesDelegate = null,
 		Func<PaginatedResultModel<TEntityResult>, TPaginatedItemModel, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, CancellationToken, Task>? afterCreateSearchSlimPaginatedModelAsyncDelegate = null,
 		Func<TEntityResult, TItemModel, CancellationToken, Task<IActionResult?>>? afterCreateSlimModelAsyncDelegate = null,
@@ -120,7 +120,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		{
 			ClampPaginationParameters(ref pageNumber, ref pageSize);
 
-			PaginatedResultModel<TEntityResult> result = await loadReadAllDataAsyncDelegate(pageNumber, pageSize, cancellationToken, sorters, filters, filterCombinator, options, childOptions).ConfigureAwait(false);
+			PaginatedResultModel<TEntityResult> result = await loadReadAllDataAsyncDelegate(pageNumber, pageSize, sorters, filters, filterCombinator, options, childOptions, cancellationToken).ConfigureAwait(false);
 
 			// Authorization Checks
 			if (enableAuthorizationChecks)
@@ -197,7 +197,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (synchronizeAccess && id.ToString() is string syncKey)
 				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
 
-			TEntity? item = await repository.Value.FindByIdAsync(id, cancellationToken, trackChanges, map, options, childOptions).ConfigureAwait(false);
+			TEntity? item = await repository.Value.FindByIdAsync(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
 
 			if (item is null)
 				return NotFound("The item could not be found. Please go back to the listing screen and try again.");
@@ -302,7 +302,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("You do not have permission to access the specified item.");
 			}
 
-			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, cancellationToken, repoOptions: options, childOptions: childOptions).ConfigureAwait(false);
+			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (saveResult.Status is OperationResultStatus.Success)
 			{
@@ -382,7 +382,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (synchronizeAccess && model.Id.ToString() is string syncKey)
 				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
 
-			var entity = await repository.Value.FindByIdAsync(model.Id, cancellationToken, true, map, options).ConfigureAwait(false);
+			var entity = await repository.Value.FindByIdAsync(model.Id, true, map, options, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (entity is null)
 				return NotFound("The specified item could not be found.");
@@ -413,7 +413,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("You do not have the permissions to update the specified item.");
 			}
 
-			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, cancellationToken, repoOptions: options, childOptions: childOptions).ConfigureAwait(false);
+			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (saveResult.Status is OperationResultStatus.Success)
 			{
@@ -470,9 +470,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	protected async Task<IActionResult> DeleteAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
 		TEntityKey id,
 		Lazy<TRepository> repository,
-		CancellationToken cancellationToken,
 		Func<TEntity, CancellationToken, Task<IActionResult?>> beforeDeleteEntityAsyncCallback,
 		Func<TEntity, CancellationToken, Task> afterDeleteEntityAsyncCallback,
+		CancellationToken cancellationToken,
 		IncludeMap<TEntity>? map = null,
 		TRepositoryOptions? options = null,
 		IEnumerable<RepoOptions>? childOptions = null,
@@ -492,7 +492,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (synchronizeAccess && id.ToString() is string syncKey)
 				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
 
-			var entity = await repository.Value.FindByIdAsync(id, cancellationToken, true, map, options, childOptions).ConfigureAwait(false);
+			var entity = await repository.Value.FindByIdAsync(id, true, map, options, childOptions, cancellationToken).ConfigureAwait(false);
 
 			if (entity is null)
 				return NotFound("The specified item could not be found.");
@@ -510,7 +510,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (result is not null)
 				return result;
 
-			await repository.Value.DeleteAsync(entity, cancellationToken, repoOptions: options, childOptions: childOptions).ConfigureAwait(false);
+			await repository.Value.DeleteAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 			await afterDeleteEntityAsyncCallback(entity, cancellationToken).ConfigureAwait(false);
 
 			return NoContent();

@@ -27,12 +27,12 @@ public interface IReadOnlyPaginatedSlimItemGenericRemoteRepository<TSlimItem, TI
 	/// </summary>
 	/// <param name="pageNumber">The page number.</param>
 	/// <param name="pageSize">Size of the page.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sorters">The sorters.</param>
 	/// <param name="filters">The filters.</param>
 	/// <param name="filterCombinator">The filter combinator.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, CancellationToken cancellationToken = default, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And);
+	Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -106,19 +106,19 @@ public interface IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPagina
 	/// Creates the specified resource on the remote server.
 	/// </summary>
 	/// <param name="item">The item.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
+	Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Updates the specified resource on the remote server.
 	/// </summary>
 	/// <param name="item">The item.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default, bool sanitize = true, ValidationType validationType = ValidationType.Shallow);
+	Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default);
 }

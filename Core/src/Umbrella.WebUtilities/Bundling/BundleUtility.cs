@@ -112,7 +112,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundlePathAsync(bundleNameOrPath, "js", true, cancellationToken).ConfigureAwait(false),
 				Options,
-				cancellationToken)
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -142,7 +142,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundleContentAsync(bundleNameOrPath, "js", cancellationToken).ConfigureAwait(false),
 				Options,
-				cancellationToken)
+                cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -170,7 +170,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundlePathAsync(bundleNameOrPath, "css", true, cancellationToken).ConfigureAwait(false),
 				Options,
-				cancellationToken)
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -200,7 +200,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundleContentAsync(bundleNameOrPath, "css", cancellationToken).ConfigureAwait(false),
 				Options,
-				cancellationToken)
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -246,7 +246,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 
 		bundleNameOrPath += "." + bundleType;
 
-		return bundleNameOrPath.StartsWith("~") || bundleNameOrPath.StartsWith("/")
+		return bundleNameOrPath.StartsWith("~", StringComparison.Ordinal) || bundleNameOrPath.StartsWith("/", StringComparison.Ordinal)
 			? Task.FromResult(bundleNameOrPath.ToLowerInvariant())
 			: Task.FromResult(Path.Combine(Options.DefaultBundleFolderAppRelativePath, bundleNameOrPath).ToLowerInvariant());
 	}

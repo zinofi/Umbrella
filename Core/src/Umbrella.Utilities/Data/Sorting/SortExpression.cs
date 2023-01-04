@@ -42,8 +42,8 @@ public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>
 		Direction = direction;
 		Expression = expression;
 
-		_lazyFunc = new Lazy<Func<TItem, object>>(() => expression.Compile());
-		_lazyMemberPath = new Lazy<string>(() => expression.GetMemberPath());
+		_lazyFunc = new Lazy<Func<TItem, object>>(expression.Compile);
+		_lazyMemberPath = new Lazy<string>(expression.GetMemberPath);
 	}
 
 	/// <summary>

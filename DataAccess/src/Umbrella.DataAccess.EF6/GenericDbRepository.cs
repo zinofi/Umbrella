@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.Globalization;
 using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -166,10 +167,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 	#region Save
 	/// <inheritdoc />
-	public virtual async Task<OperationResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false)
+	public virtual async Task<OperationResult<TEntity>> SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(entity, nameof(entity));
+		Guard.IsNotNull(entity);
 
 		try
 		{
@@ -180,14 +181,14 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			repoOptions ??= DefaultRepoOptions;
 
 			if (repoOptions.SanitizeEntity)
-				await SanitizeEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+				await SanitizeEntityAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			// Additional processing before changes have been reflected in the database context
-			await BeforeContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+			await BeforeContextSavingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			if (repoOptions.ValidateEntity)
 			{
-				ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+				ValidationResult[] lstValidationResult = await ValidateEntityAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 				if (lstValidationResult.Length > 0)
 					return OperationResult<TEntity>.GenericFailure(lstValidationResult, entity);
@@ -197,9 +198,9 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			PreSaveWork(entity, addToContext, forceAdd, out bool isNew);
 
 			// Additional processing after changes have been reflected in the database context but not yet pushed to the database
-			await AfterContextSavingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+			await AfterContextSavingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
-			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, cancellationToken, repoOptions, childOptions));
+			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, repoOptions, childOptions, cancellationToken));
 
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -208,7 +209,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
-			throw new UmbrellaConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+			throw new UmbrellaConcurrencyException(string.Format(CultureInfo.CurrentCulture, ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 		}
 		catch (DbEntityValidationException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, addToContext, repoOptions, childOptions }, "Data Validation Exception for Id"))
 		{
@@ -230,7 +231,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+	public virtual async Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entities);
@@ -246,7 +247,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 				foreach (TEntity entity in entities)
 				{
-					OperationResult<TEntity> saveResult = await SaveAsync(entity, cancellationToken, false, true, repoOptions, childOptions).ConfigureAwait(false);
+					OperationResult<TEntity> saveResult = await SaveAsync(entity, false, true, repoOptions, childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 					lstSaveResult.Add(saveResult);
 				}
 			}
@@ -254,7 +255,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-			return lstSaveResult is not null ? lstSaveResult : entities.Select(x => OperationResult<TEntity>.Success(x)).ToArray();
+			return lstSaveResult is not null ? lstSaveResult : entities.Select(OperationResult<TEntity>.Success).ToArray();
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { ids = FormatEntityIds(entities), pushChangesToDb, bypassSaveLogic, repoOptions, childOptions }, "Bulk Save Concurrency Exception"))
 		{
@@ -282,10 +283,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 	#region Delete
 	/// <inheritdoc />
-	public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+	public virtual async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(entity, nameof(entity));
+		Guard.IsNotNull(entity);
 
 		try
 		{
@@ -295,21 +296,21 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			// Ensure the default options are used when not explicitly provided.
 			repoOptions ??= DefaultRepoOptions;
 
-			await BeforeContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+			await BeforeContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			_ = Context.Value.Set<TEntity>().Remove(entity);
 			Context.Value.Entry(entity).State = EntityState.Deleted;
 
-			await AfterContextDeletingAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+			await AfterContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
-			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, cancellationToken, repoOptions, childOptions));
+			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, repoOptions, childOptions, cancellationToken));
 
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 		}
 		catch (DbUpdateConcurrencyException exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Concurrency Exception for Id"))
 		{
-			throw new UmbrellaConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
+			throw new UmbrellaConcurrencyException(string.Format(CultureInfo.CurrentCulture, ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id), exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { entity.Id, pushChangesToDb, repoOptions, childOptions }, "Failed for Id"))
 		{
@@ -318,7 +319,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
-	public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+	public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entities);
@@ -327,7 +328,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		{
 			foreach (TEntity entity in entities)
 			{
-				await DeleteAsync(entity, cancellationToken, false, repoOptions, childOptions).ConfigureAwait(false);
+				await DeleteAsync(entity, false, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (pushChangesToDb)
@@ -384,7 +385,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	protected void ThrowIfConcurrencyTokenMismatch(TEntity entity)
 	{
 		if (IsConcurrencyTokenMismatch(entity))
-			throw new UmbrellaConcurrencyException(string.Format(ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
+			throw new UmbrellaConcurrencyException(string.Format(CultureInfo.CurrentCulture, ErrorMessages.ConcurrencyExceptionErrorMessageFormat, entity.Id));
 	}
 
 	/// <summary>
@@ -456,12 +457,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		{
 			string entityType = item.Entry.Entity.GetType().BaseType.FullName;
 
-			var currentValues = item.Entry.CurrentValues.PropertyNames.ToDictionary(x => x, x => item.Entry.CurrentValues.GetValue<object>(x));
+			var currentValues = item.Entry.CurrentValues.PropertyNames.ToDictionary(x => x, item.Entry.CurrentValues.GetValue<object>);
 			Dictionary<string, object>? originalValues = null;
 
 			// Can only get the OriginalValues if the entity has been modified from a previously persisted version.
 			if (item.Entry.State.HasFlag(EntityState.Modified))
-				originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, x => item.Entry.OriginalValues.GetValue<object>(x));
+				originalValues = item.Entry.OriginalValues.PropertyNames.ToDictionary(x => x, item.Entry.OriginalValues.GetValue<object>);
 
 			_ = Logger.WriteError(exc, new { entityType, item.IsValid, item.ValidationErrors, originalValues, currentValues, state = item.Entry.State.ToString() });
 		}
@@ -502,11 +503,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Overriding this method allows you to perform custom validation on the entity before its state on the database context is affected.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task<ValidationResult[]> ValidateEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task<ValidationResult[]> ValidateEntityAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -517,11 +518,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Overriding this method allows you to perform work before the state of the entity on the database context is affected.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task BeforeContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task BeforeContextSavingAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -533,11 +534,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// the changes have been pushed to the database.
 	/// </summary>
 	/// <param name="entity">The entity</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task AfterContextSavingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task AfterContextSavingAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -549,11 +550,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// </summary>
 	/// <param name="entity">The entity.</param>
 	/// <param name="isNew">Specifies if the entity is new.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task AfterContextSavedChangesAsync(TEntity entity, bool isNew, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -564,11 +565,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Overriding this method allows you to perform work before the state of the entity on the database context is affected.
 	/// </summary>
 	/// <param name="entity">The entity</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task BeforeContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task BeforeContextDeletingAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -579,11 +580,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Overriding this method allows you to perform work after the state of the entity on the database context is affected.
 	/// </summary>
 	/// <param name="entity">The entity</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task AfterContextDeletingAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task AfterContextDeletingAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -595,11 +596,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Overriding this method allows you to perform any work after the call to either <see cref="UmbrellaDbContext.SaveChangesAsync"/> or <see cref="UmbrellaDbContext.SaveChangesAsync(CancellationToken)"/> has taken place.
 	/// </summary>
 	/// <param name="entity">The entity</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options. If not overridden with a different generic type parameter, the default of <see cref="RepoOptions"/> is used. This parameter will never be null.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task AfterContextDeletedChangesAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task AfterContextDeletedChangesAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 #pragma warning restore CS0419 // Ambiguous reference in cref attribute
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -622,10 +623,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="alteredColl">The altered collection.</param>
 	/// <param name="repository">The target repository.</param>
 	/// <param name="predicate">The predicate used to filter .</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="options">The collection of repo options. This can be used by this method to determine if the synchronization logic should be executed.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task" /> which will complete once all work has been completed.</returns>
-	protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, CancellationToken cancellationToken, IEnumerable<RepoOptions>? options)
+	protected virtual async Task SyncDependenciesAsync<TTargetEntity, TTargetEntityRepoOptions, TTargetEntityKey, TTargetRepository>(ICollection<TTargetEntity> alteredColl, TTargetRepository repository, Expression<Func<TTargetEntity, bool>> predicate, IEnumerable<RepoOptions>? options, CancellationToken cancellationToken)
 		where TTargetEntity : class, IEntity<TTargetEntityKey>
 		where TTargetEntityKey : IEquatable<TTargetEntityKey>
 		where TTargetEntityRepoOptions : RepoOptions, new()
@@ -648,7 +649,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			if (!alteredColl.Contains(entity))
 			{
 				// Delete the dependency, but do not push changes to the database
-				await repository.DeleteAsync(entity, cancellationToken, false, targetOptions, options).ConfigureAwait(false);
+				await repository.DeleteAsync(entity, false, targetOptions, options, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -668,7 +669,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 				// logic on the entity, but it also means that should something go wrong that means
 				// persisting the parent entity is not valid, we don't end up in a situation where we have
 				// child objects as part of the context that shouldn't be saved.
-				_ = await repository.SaveAsync(entity, cancellationToken, false, false, targetOptions, options).ConfigureAwait(false);
+				_ = await repository.SaveAsync(entity, false, false, targetOptions, options, cancellationToken: cancellationToken).ConfigureAwait(false);
 			}
 		}
 	}
@@ -679,11 +680,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Determines whether the specified entity is empty.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns><see langword="true" /> if it is empty, otherwise <see langword="false" /></returns>
-	protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task<bool> IsEmptyEntityAsync(TEntity entity, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -694,11 +695,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Sanitizes the entity.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A task to await sanitization of the entity.</returns>
-	protected virtual Task SanitizeEntityAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task SanitizeEntityAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -718,7 +719,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 		foreach (TEntity entity in entities)
 		{
-			if (await IsEmptyEntityAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false))
+			if (await IsEmptyEntityAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false))
 				lstToRemove.Add(entity);
 		}
 

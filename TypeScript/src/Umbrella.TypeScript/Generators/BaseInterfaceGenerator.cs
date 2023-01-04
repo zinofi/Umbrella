@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 using System.Reflection;
 using System.Text;
 
@@ -21,23 +20,23 @@ public abstract class BaseInterfaceGenerator : BaseGenerator
 
 		List<string> lstInterface = TypeScriptUtility.GetInterfaceNames(modelType, OutputModelType, false);
 
-		builder.Append($"\texport interface {generatedName}");
+		_ = builder.Append($"\texport interface {generatedName}");
 
 		if (lstInterface.Count > 0)
-			builder.Append(string.Format(" extends {0}", string.Join(", ", lstInterface)));
+			_ = builder.Append(string.Format(CultureInfo.InvariantCulture, " extends {0}", string.Join(", ", lstInterface)));
 
-		builder.AppendLine();
-		builder.AppendLine("\t{");
+		_ = builder.AppendLine();
+		_ = builder.AppendLine("\t{");
 	}
 
 	/// <inheritdoc />
-	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
+	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder)
 	{
 		if (!string.IsNullOrEmpty(tsInfo.TypeName))
 		{
 			string strStrictNullCheck = StrictNullChecks && (tsInfo.IsNullable || PropertyMode == TypeScriptPropertyMode.Null) ? " | null" : "";
 
-			builder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck};");
+			_ = typeBuilder.AppendLine($"\t\t{tsInfo.Name}: {tsInfo.TypeName}{strStrictNullCheck};");
 		}
 	}
 }

@@ -123,7 +123,7 @@ public class DynamicImageUtilityTest
 		Assert.Equal($"~/{DynamicImageConstants.DefaultPathPrefix}/100/200/UniformFill/png/images/test.jpg?key=value.test.onEX&stuff=xxx", url);
 	}
 
-	private DynamicImageUtility CreateDynamicImageUtility()
+	private static DynamicImageUtility CreateDynamicImageUtility()
 	{
 		var logger = new Mock<ILogger<DynamicImageUtility>>();
 

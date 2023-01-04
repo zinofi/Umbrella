@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -60,7 +61,7 @@ public abstract class DynamicImageCache
 	/// </summary>
 	/// <param name="options">The image options used to generate the key.</param>
 	/// <returns>The generated cache key.</returns>
-	/// <exception cref="DynamicImageException">There was a problem generating the cache key.</exception>
+	/// <exception cref="UmbrellaDynamicImageException">There was a problem generating the cache key.</exception>
 	protected virtual string GenerateCacheKey(DynamicImageOptions options)
 	{
 		try
@@ -69,7 +70,7 @@ public abstract class DynamicImageCache
 
 			return Cache.GetOrCreate(cacheKey, () =>
 			{
-				string rawKey = string.Format("{0}-W-{1}-H-{2}-M-{3}-F-{4}-P", options.Width, options.Height, options.ResizeMode, options.Format, options.SourcePath);
+				string rawKey = string.Format(CultureInfo.InvariantCulture, "{0}-W-{1}-H-{2}-M-{3}-F-{4}-P", options.Width, options.Height, options.ResizeMode, options.Format, options.SourcePath);
 
 				using var hasher = SHA256.Create();
 				byte[] bytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(rawKey));
@@ -77,7 +78,7 @@ public abstract class DynamicImageCache
 				var stringBuilder = new StringBuilder(bytes.Length * 2);
 
 				foreach (byte num in bytes)
-					stringBuilder.Append(num.ToString("x").PadLeft(2, '0'));
+					stringBuilder.Append(num.ToString("x", CultureInfo.InvariantCulture).PadLeft(2, '0'));
 
 				return stringBuilder.ToString();
 			},
@@ -85,17 +86,17 @@ public abstract class DynamicImageCache
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options }))
 		{
-			throw new DynamicImageException("There was a problem generating the cache key.", exc, options);
+			throw new UmbrellaDynamicImageException("There was a problem generating the cache key.", exc, options);
 		}
 	}
 
 	/// <summary>
 	/// Gets the sub path.
 	/// </summary>
-	/// <param name="cackeKey">The cacke key.</param>
+	/// <param name="cacheKey">The cacke key.</param>
 	/// <param name="fileExtension">The file extension.</param>
 	/// <returns>The sub path.</returns>
 	/// <exception cref="NotImplementedException"></exception>
-	protected virtual string GetSubPath(string cackeKey, string fileExtension) => throw new NotImplementedException();
+	protected virtual string GetSubPath(string cacheKey, string fileExtension) => throw new NotImplementedException();
 	#endregion
 }

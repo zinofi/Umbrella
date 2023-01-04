@@ -60,7 +60,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 			foreach (var item in modelItems)
 			{
 				if (item is null)
-					throw new Exception("The item is null.");
+					throw new InvalidOperationException("The item is null.");
 
 				TEntity entity = existingItems.SingleOrDefault(x => matchSelector(item, x));
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace Umbrella.Legacy.WebUtilities.Bundling;
 

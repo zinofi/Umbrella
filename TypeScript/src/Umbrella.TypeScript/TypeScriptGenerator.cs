@@ -158,9 +158,9 @@ public class TypeScriptGenerator
 				.AppendLine("{");
 
 			//Generate enum definitions for this namespace if any exist
-			if (enumGroups.ContainsKey(nsName))
+			if (enumGroups.TryGetValue(nsName, out List<Type> value))
 			{
-				List<Type> lstEnumToGenerate = enumGroups[nsName];
+				List<Type> lstEnumToGenerate = value;
 
 				foreach (Type enumType in lstEnumToGenerate)
 				{
@@ -217,7 +217,7 @@ public class TypeScriptGenerator
 	#endregion
 
 	#region Private Methods
-	private string GenerateEnumDefinition(Type enumType)
+	private static string GenerateEnumDefinition(Type enumType)
 	{
 		var builder = new StringBuilder();
 		_ = builder.AppendLine($"\texport enum {enumType.Name}");

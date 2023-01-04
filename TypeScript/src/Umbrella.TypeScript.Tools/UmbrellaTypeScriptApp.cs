@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.CommandLineUtils;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.CommandLineUtils;
 
 namespace Umbrella.TypeScript.Tools;
 
@@ -181,10 +181,7 @@ public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
 
 	protected virtual TOptions GetToolOptions()
 	{
-		if (OptionDictionary is null)
-		{
-			throw new Exception($"{nameof(OptionDictionary)} is null.");
-		}
+		Guard.IsNotNull(OptionDictionary);
 
 		string propertyMode = UmbrellaTypeScriptApp<TOptions>.CleanInput(OptionDictionary["property-mode"].Value());
 
@@ -193,7 +190,8 @@ public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
 			string message = $"The value for the --property-mode|-p argument {propertyMode} is invalid.";
 
 			WriteConsoleErrorMessage(message);
-			throw new Exception(message);
+
+			throw new InvalidOperationException(message);
 		}
 
 		var toolOptions = new TOptions

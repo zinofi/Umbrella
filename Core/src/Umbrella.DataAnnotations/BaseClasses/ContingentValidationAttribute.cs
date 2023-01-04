@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Umbrella.DataAnnotations.BaseClasses;
@@ -38,7 +39,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(ErrorMessageString, name, DependentProperty);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty);
 	}
 
 	/// <inheritdoc />

@@ -79,20 +79,20 @@ public interface IUmbrellaFileProvider
 	/// <param name="subpath">The subpath.</param>
 	/// <param name="bytes">The bytes.</param>
 	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The saved file.</returns>
-	Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+	Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Saves the file content from the Stream to the specified <paramref name="subpath"/>.
 	/// </summary>
 	/// <param name="subpath">The subpath.</param>
 	/// <param name="stream">The stream.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The saved file.</returns>
-	Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+	Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Check if the file at the specified <paramref name="subpath"/> exists.

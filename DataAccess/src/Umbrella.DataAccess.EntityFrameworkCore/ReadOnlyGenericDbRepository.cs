@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EntityFrameworkCore.Extensions;
@@ -112,6 +112,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 /// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 /// <typeparam name="TUserAuditKey">The type of the user audit key.</typeparam>
 /// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
+/// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
 public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey> : IReadOnlyGenericDbRepository<TEntity, TRepoOptions, TEntityKey>
 	where TEntity : class, IEntity<TEntityKey>
 	where TDbContext : DbContext
@@ -190,7 +191,6 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	public virtual async Task<PaginatedResultModel<TEntity>> FindAllAsync(
 		int pageNumber = 0,
 		int pageSize = 20,
-		CancellationToken cancellationToken = default,
 		bool trackChanges = false,
 		IncludeMap<TEntity>? map = null!,
 		IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
@@ -199,13 +199,14 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		TRepoOptions? repoOptions = null,
 		IEnumerable<RepoOptions>? childOptions = null,
 		Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
+		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null,
+		CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
 		try
 		{
-			return await FindAllCoreAsync(pageNumber, pageSize, cancellationToken, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions).ConfigureAwait(false);
+			return await FindAllCoreAsync(pageNumber, pageSize, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }))
 		{
@@ -238,7 +239,6 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// </summary>
 	/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
 	/// <param name="pageSize">Size of the page.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="trackChanges">if set to <c>true</c>, tracking entries are created in the database context (where supported).</param>
 	/// <param name="map">The include map to specify related entities to load at the same time.</param>
 	/// <param name="sortExpressions">The sort expressions.</param>
@@ -248,11 +248,11 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="childOptions">The child repo options.</param>
 	/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
 	/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The paginated results.</returns>
 	protected virtual async Task<PaginatedResultModel<TEntity>> FindAllCoreAsync(
 		int pageNumber = 0,
 		int pageSize = 20,
-		CancellationToken cancellationToken = default,
 		bool trackChanges = false,
 		IncludeMap<TEntity>? map = null!,
 		IEnumerable<SortExpression<TEntity>>? sortExpressions = null,
@@ -261,7 +261,8 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		TRepoOptions? repoOptions = null,
 		IEnumerable<RepoOptions>? childOptions = null,
 		Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
+		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null,
+		CancellationToken cancellationToken = default)
 	{
 		repoOptions ??= DefaultRepoOptions;
 		ThrowIfFiltersInvalid(filterExpressions);
@@ -285,7 +286,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		var entities = results.Select(x => x.Entity).ToList();
 
 		await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
-		await AfterAllItemsLoadedAsync(entities, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+		await AfterAllItemsLoadedAsync(entities, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 		return new PaginatedResultModel<TEntity>(entities, pageNumber, pageSize, totalCount);
 	}
@@ -297,23 +298,23 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="shapedEntitySelector">The shaped entity selector.</param>
 	/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
 	/// <param name="pageSize">Size of the page.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sortExpressions">The sort expressions.</param>
 	/// <param name="filterExpressions">The filter expressions.</param>
 	/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
 	/// <param name="coreFilterExpression">An additional filter expression to be applied to the query before the <paramref name="filterExpressions"/> and any additional <paramref name="additionalFilterExpressions"/> are applied.</param>
 	/// <param name="additionalFilterExpressions">Optional additional filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The paginated results.</returns>
 	protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllShapedAsync<TShapedEntity>(
 		Expression<Func<TEntity, TShapedEntity>> shapedEntitySelector,
 		int pageNumber = 0,
 		int pageSize = 20,
-		CancellationToken cancellationToken = default,
 		IEnumerable<SortExpression<TShapedEntity>>? sortExpressions = null,
 		IEnumerable<FilterExpression<TEntity>>? filterExpressions = null,
 		FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.And,
 		Expression<Func<TEntity, bool>>? coreFilterExpression = null,
-		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null)
+		IEnumerable<Expression<Func<TEntity, bool>>>? additionalFilterExpressions = null,
+		CancellationToken cancellationToken = default)
 		where TShapedEntity : IEntity<TEntityKey>
 	{
 		var filteredQuery = Items;
@@ -337,7 +338,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<TEntity?> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
+	public virtual async Task<TEntity?> FindByIdAsync(TEntityKey id, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		repoOptions ??= DefaultRepoOptions;
@@ -350,7 +351,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 				return null;
 
 			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-			await AfterItemLoadedAsync(entity, cancellationToken, repoOptions, childOptions).ConfigureAwait(false);
+			await AfterItemLoadedAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			return entity;
 		}
@@ -431,7 +432,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	protected void ThrowIfFiltersInvalid(IEnumerable<FilterExpression<TEntity>>? filters)
 	{
 		if (!ValidateFilters(filters))
-			throw new Exception("One or more of the specified filters is invalid.");
+			throw new UmbrellaDataAccessException("One or more of the specified filters is invalid.");
 	}
 
 	/// <summary>
@@ -504,11 +505,11 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// Override this in a derived type to perform an operation on the entity after it has been loaded from the database.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-	protected virtual Task AfterItemLoadedAsync(TEntity entity, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected virtual Task AfterItemLoadedAsync(TEntity entity, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -519,15 +520,15 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// Override this in a derived type to perform an operation on the entities after they have been loaded from the database.
 	/// </summary>
 	/// <param name="entities">The entities.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-	protected async Task AfterAllItemsLoadedAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions)
+	protected async Task AfterAllItemsLoadedAsync(IEnumerable<TEntity> entities, TRepoOptions? repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		IEnumerable<Task> tasks = entities.Select(x => AfterItemLoadedAsync(x, cancellationToken, repoOptions, childOptions));
+		IEnumerable<Task> tasks = entities.Select(x => AfterItemLoadedAsync(x, repoOptions, childOptions, cancellationToken));
 
 		await Task.WhenAll(tasks).ConfigureAwait(false);
 	}

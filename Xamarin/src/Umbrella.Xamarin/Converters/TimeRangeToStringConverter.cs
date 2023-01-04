@@ -26,7 +26,7 @@ public class TimeRangeToStringConverter : IMultiValueConverter
 	/// <inheritdoc />
 	public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) => throw new NotImplementedException();
 
-	private string FormatTime(in TimeSpan time)
+	private static string FormatTime(in TimeSpan time)
 	{
 		string period = time.Hours < 12 ? "AM" : "PM";
 		int periodHours = time.Hours > 12 ? time.Hours - 12 : time.Hours;

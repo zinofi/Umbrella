@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using Umbrella.Utilities.Exceptions;
@@ -75,10 +73,10 @@ public static class ClaimsPrincipalExtensions
 		var sbInitials = new StringBuilder();
 
 		if (!string.IsNullOrWhiteSpace(firstName))
-			sbInitials.Append(firstName![0]);
+			_ = sbInitials.Append(firstName![0]);
 
 		if (!string.IsNullOrWhiteSpace(lastName))
-			sbInitials.Append(lastName![0]);
+			_ = sbInitials.Append(lastName![0]);
 
 		return sbInitials.ToString();
 	}
@@ -118,7 +116,7 @@ public static class ClaimsPrincipalExtensions
 		if (userIdType.IsNullableType())
 			targetType = userIdType.GetGenericArguments()[0];
 
-		return (TUserId)Convert.ChangeType(idClaim.Value, targetType);
+		return (TUserId)Convert.ChangeType(idClaim.Value, targetType, CultureInfo.InvariantCulture);
 	}
 
 	/// <summary>

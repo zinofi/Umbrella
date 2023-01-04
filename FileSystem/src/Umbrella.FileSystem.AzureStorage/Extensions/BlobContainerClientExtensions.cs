@@ -17,11 +17,11 @@ public static class BlobContainerClientExtensions
 	/// </summary>
 	/// <param name="container">The container.</param>
 	/// <param name="directoryName">Name of the directory.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="topLevelOnly">Specifies whether to get the top level only or to get all blobs in nested folders.</param>
 	/// <param name="directorySeparator">The directory separator.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A list of all blobs inside the directory.</returns>
-	public static async Task<List<BlobClient>> GetBlobsByDirectoryAsync(this BlobContainerClient container, string directoryName, CancellationToken cancellationToken = default, bool topLevelOnly = true, char directorySeparator = '/')
+	public static async Task<List<BlobClient>> GetBlobsByDirectoryAsync(this BlobContainerClient container, string directoryName, bool topLevelOnly = true, char directorySeparator = '/', CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -35,7 +35,7 @@ public static class BlobContainerClientExtensions
 			if (!item.IsBlob)
 			{
 				if (!topLevelOnly)
-					lstBlob.AddRange(await container.GetBlobsByDirectoryAsync(item.Prefix, cancellationToken, topLevelOnly, directorySeparator));
+					lstBlob.AddRange(await container.GetBlobsByDirectoryAsync(item.Prefix, topLevelOnly, directorySeparator, cancellationToken));
 
 				continue;
 			}

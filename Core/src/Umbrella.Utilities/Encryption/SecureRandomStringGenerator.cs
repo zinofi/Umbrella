@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Buffers;
-using System.ComponentModel;
-using System.Security.Cryptography;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.Buffers;
+using System.ComponentModel;
+using System.Globalization;
+using System.Security.Cryptography;
 using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Encryption.Options;
@@ -25,7 +26,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 	{
 		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 	};
-	private static readonly char[] _upperCaseLettersArray = _lowerCaseLettersArray.Select(x => char.ToUpperInvariant(x)).ToArray();
+	private static readonly char[] _upperCaseLettersArray = _lowerCaseLettersArray.Select(char.ToUpperInvariant).ToArray();
 	#endregion
 
 	#region Private Members
@@ -88,7 +89,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 			{
 				int number = GenerateRandomInteger(0, 10);
 
-				randomString[idx++] = number.ToString()[0];
+				randomString[idx++] = number.ToString(CultureInfo.InvariantCulture)[0];
 			}
 
 			// Uppercase
@@ -168,7 +169,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 			{
 				int number = GenerateRandomInteger(0, 10);
 
-				password[idx++] = number.ToString()[0];
+				password[idx++] = number.ToString(CultureInfo.InvariantCulture)[0];
 			}
 
 			// Uppercase
@@ -217,7 +218,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 	#endregion
 
 	#region Private Members
-	private int GenerateRandomInteger(int min, int max)
+	private static int GenerateRandomInteger(int min, int max)
 	{
 		if (min == max)
 			return min;

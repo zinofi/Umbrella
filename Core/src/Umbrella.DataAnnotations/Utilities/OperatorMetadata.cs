@@ -9,7 +9,7 @@ namespace Umbrella.DataAnnotations.Utilities;
 /// </summary>
 public class OperatorMetadata
 {
-	private static readonly Dictionary<Operator, OperatorMetadata> _operatorMetadata;
+	private static readonly Dictionary<EqualityOperator, OperatorMetadata> _operatorMetadata;
 
 	/// <summary>
 	/// Gets the error message.
@@ -26,10 +26,10 @@ public class OperatorMetadata
 	/// </summary>
 	static OperatorMetadata()
 	{
-		_operatorMetadata = new Dictionary<Operator, OperatorMetadata>()
+		_operatorMetadata = new Dictionary<EqualityOperator, OperatorMetadata>()
 		{
 			{
-				Operator.EqualTo, new OperatorMetadata()
+				EqualityOperator.EqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "equal to",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -47,7 +47,7 @@ public class OperatorMetadata
 				}
 			},
 			{
-				Operator.NotEqualTo, new OperatorMetadata()
+				EqualityOperator.NotEqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "not equal to",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -65,7 +65,7 @@ public class OperatorMetadata
 				}
 			},
 			{
-				Operator.GreaterThan, new OperatorMetadata()
+				EqualityOperator.GreaterThan, new OperatorMetadata()
 				{
 					ErrorMessage = "greater than",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -81,7 +81,7 @@ public class OperatorMetadata
 				}
 			},
 			{
-				Operator.LessThan, new OperatorMetadata()
+				EqualityOperator.LessThan, new OperatorMetadata()
 				{
 					ErrorMessage = "less than",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -97,7 +97,7 @@ public class OperatorMetadata
 				}
 			},
 			{
-				Operator.GreaterThanOrEqualTo, new OperatorMetadata()
+				EqualityOperator.GreaterThanOrEqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "greater than or equal to",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -111,12 +111,12 @@ public class OperatorMetadata
 						if (value is null || dependentValue is null)
 							return false;
 
-						return Get(Operator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) >= 1;
+						return Get(EqualityOperator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) >= 1;
 					}
 				}
 			},
 			{
-				Operator.LessThanOrEqualTo, new OperatorMetadata()
+				EqualityOperator.LessThanOrEqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "less than or equal to",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -130,12 +130,12 @@ public class OperatorMetadata
 						if (value is null || dependentValue is null)
 							return false;
 
-						return Get(Operator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) <= -1;
+						return Get(EqualityOperator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) <= -1;
 					}
 				}
 			},
 			{
-				Operator.RegExMatch, new OperatorMetadata()
+				EqualityOperator.RegExMatch, new OperatorMetadata()
 				{
 					ErrorMessage = "a match to",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -148,7 +148,7 @@ public class OperatorMetadata
 				}
 			},
 			{
-				Operator.NotRegExMatch, new OperatorMetadata()
+				EqualityOperator.NotRegExMatch, new OperatorMetadata()
 				{
 					ErrorMessage = "not a match to",
 					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
@@ -168,5 +168,5 @@ public class OperatorMetadata
 	/// </summary>
 	/// <param name="operator">The operator.</param>
 	/// <returns>The <see cref="OperatorMetadata"/>.</returns>
-	public static OperatorMetadata Get(Operator @operator) => _operatorMetadata[@operator];
+	public static OperatorMetadata Get(EqualityOperator @operator) => _operatorMetadata[@operator];
 }

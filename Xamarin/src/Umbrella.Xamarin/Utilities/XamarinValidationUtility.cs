@@ -108,7 +108,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 		}
 	}
 
-	private void HideValidationField(string propertyName, Page page)
+	private static void HideValidationField(string propertyName, Page page)
 	{
 		// TODO: Need to extend this to allow visual indicator controls. The best way might to have a ContentView
 		// e.g. with an Entry and then a label. Can have an enum mode property to toggle between 3 states.
@@ -240,7 +240,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 	protected virtual void AttachViewChangedEventHandler(string propertyName, View view, object model, Page page, bool deep, Func<List<ValidationResult>, IReadOnlyCollection<ValidationResult>>? resultsModifier)
 		=> throw new NotSupportedException($"The specified view cannot be handled by the Xamarin Validation Utility. Please override the {nameof(AttachViewChangedEventHandler)} method and handle explicitly.");
 
-	private IEnumerable<string> GetValidatablePropertyNames(object model)
+	private static IEnumerable<string> GetValidatablePropertyNames(object model)
 	{
 		var validatableProperties = new List<string>();
 

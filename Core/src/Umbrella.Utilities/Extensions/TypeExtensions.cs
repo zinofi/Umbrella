@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using CommunityToolkit.Diagnostics;
+using System.Globalization;
+using System.Reflection;
 
 namespace Umbrella.Utilities.Extensions;
 
@@ -57,11 +57,16 @@ public static class TypeExtensions
 	/// <param name="enumType">Type of the enum.</param>
 	/// <returns>A dictionary of value / name pairs.</returns>
 	/// <exception cref="ArgumentException"></exception>
-	public static Dictionary<int, string> GetEnumDictionary(this Type enumType) => !enumType.IsEnum
+	public static Dictionary<int, string> GetEnumDictionary(this Type enumType)
+	{
+		Guard.IsNotNull(enumType);
+
+		return !enumType.IsEnum
 			? throw new ArgumentException($"{nameof(enumType)} is not an Enum.")
 			: Enum.GetValues(enumType)
 			.OfType<object>()
-			.ToDictionary(x => Convert.ToInt32(x), x => Enum.GetName(enumType, x));
+			.ToDictionary(x => Convert.ToInt32(x, CultureInfo.InvariantCulture), x => Enum.GetName(enumType, x));
+	}
 
 	/// <summary>
 	/// Determines whether the specified <paramref name="givenType"/> is assignable to the specified <paramref name="genericType"/>.
@@ -73,6 +78,9 @@ public static class TypeExtensions
 	/// </returns>
 	public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
 	{
+		Guard.IsNotNull(givenType);
+		Guard.IsNotNull(genericType);
+
 		var interfaceTypes = givenType.GetInterfaces();
 
 		foreach (var it in interfaceTypes)
@@ -96,6 +104,8 @@ public static class TypeExtensions
 	/// <returns>A tuple specifying if the <paramref name="givenType"/> implements <see cref="IEnumerable{T}"/> and if so, the type of its elements.</returns>
 	public static (bool isEnumerable, Type? elementType) GetIEnumerableTypeData(this Type givenType)
 	{
+		Guard.IsNotNull(givenType);
+
 		if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
 			return (true, givenType.GetGenericArguments()[0]);
 

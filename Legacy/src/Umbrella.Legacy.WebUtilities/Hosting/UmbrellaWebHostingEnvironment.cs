@@ -370,13 +370,13 @@ public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrel
 		StringBuilder sb = new StringBuilder(virtualPath)
 			.Trim();
 
-		if (ensureNoTilde && sb.StartsWith("~"))
+		if (ensureNoTilde && sb.StartsWith("~", StringComparison.Ordinal))
 			_ = sb.Remove(0, 1);
 
 		if (ensureLeadingSlash && !sb.StartsWith('/'))
 			_ = sb.Insert(0, '/');
 
-		if (ensureStartsWithTildeSlash && !sb.StartsWith("~/"))
+		if (ensureStartsWithTildeSlash && !sb.StartsWith("~/", StringComparison.Ordinal))
 		{
 			if (sb.StartsWith('/'))
 				_ = sb.Insert(0, '~');

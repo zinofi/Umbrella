@@ -2,7 +2,6 @@
 using System.IO;
 using Microsoft.Extensions.Primitives;
 
-
 /* Unmerged change from project 'Umbrella.Utilities(net461)'
 Before:
 namespace Umbrella.Utilities.Primitives

@@ -3,6 +3,10 @@ using System.Web.Optimization;
 
 namespace Umbrella.Legacy.WebUtilities.Bundling;
 
+/// <summary>
+/// An <see cref="IItemTransform"/> implementation that rewrites virtual paths inside CSS files to absolute paths relative to the application.
+/// </summary>
+/// <seealso cref="IItemTransform" />
 public class CssRewriteUrlVirtualPathTransform : IItemTransform
 {
 	/// <inheritdoc />

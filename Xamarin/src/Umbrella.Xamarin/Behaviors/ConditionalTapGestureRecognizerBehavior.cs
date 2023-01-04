@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Behaviors;
@@ -11,6 +9,7 @@ namespace Umbrella.Xamarin.Behaviors;
 /// A behaviour that can be applied to any <see cref="View"/> to conditionally add or remove a <see cref="TapGestureRecognizer"/> at runtime.
 /// </summary>
 /// <seealso cref="Behavior{View}" />
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
 public class ConditionalTapGestureRecognizerBehavior : Behavior<View>
 {
 	/// <summary>
@@ -99,7 +98,7 @@ public class ConditionalTapGestureRecognizerBehavior : Behavior<View>
 				RemoveGestureRecognizer(_view);
 			}
 		}
-		else if (propertyName == nameof(Command) || propertyName == nameof(CommandParameter))
+		else if (propertyName is (nameof(Command)) or (nameof(CommandParameter)))
 		{
 			if (IsEnabled && Command is not null)
 			{

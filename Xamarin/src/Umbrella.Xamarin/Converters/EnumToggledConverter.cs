@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Umbrella.Xamarin.Exceptions;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Converters;
@@ -26,22 +27,22 @@ public class EnumToggledConverter<T> : IValueConverter
 		if (value is null)
 			return false;
 
-		return value.Equals(GetParameterValue(parameter));
+		return value.Equals(EnumToggledConverter<T>.GetParameterValue(parameter));
 	}
 
 	/// <inheritdoc />
 	public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is bool selected && selected)
-			return GetParameterValue(parameter);
+			return EnumToggledConverter<T>.GetParameterValue(parameter);
 
 		return null;
 	}
 
-	private T GetParameterValue(object parameter) => parameter switch
+	private static T GetParameterValue(object parameter) => parameter switch
 	{
 		T typedParameter => typedParameter,
 		BindableObject bindable when bindable.BindingContext is T t => t,
-		_ => throw new Exception("The parameter cannot be converted to the specified enum type.")
+		_ => throw new UmbrellaXamarinException("The parameter cannot be converted to the specified enum type.")
 	};
 }

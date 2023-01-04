@@ -98,5 +98,6 @@ public abstract class UmbrellaAuthCheckId<TAuthCheckId, TValue> : IDisposable
 			throw new UmbrellaException($"The object is not of type: {typeof(TAuthCheckId).FullName}.");
 
 		Pool = null;
+		GC.SuppressFinalize(this);
 	}
 }

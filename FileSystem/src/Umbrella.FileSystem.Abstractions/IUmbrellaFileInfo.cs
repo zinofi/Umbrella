@@ -49,47 +49,47 @@ public interface IUmbrellaFileInfo
 	/// <summary>
 	/// Reads the file content as a byte array.
 	/// </summary>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The file content as byte array.</returns>
-	Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null);
+	Task<byte[]> ReadAsByteArrayAsync(bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Writes the content of the file to the specified target stream.
 	/// </summary>
 	/// <param name="target">The target stream to write the file's content to.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+	Task WriteToStreamAsync(Stream target, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Writes to the file using the specified byte array.
 	/// </summary>
 	/// <param name="bytes">The bytes.</param>
 	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+	Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Writes to the file by reading from the specified stream.
 	/// </summary>
 	/// <param name="stream">The stream.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+	Task WriteFromStreamAsync(Stream stream, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Reads the file content as a <see cref="Stream"/>.
 	/// </summary>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The stream used to read the file content.</returns>
-	Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null);
+	Task<Stream> ReadAsStreamAsync(int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes the file.
@@ -135,11 +135,11 @@ public interface IUmbrellaFileInfo
 	/// </summary>
 	/// <typeparam name="T">The type of the value being retrieved.</typeparam>
 	/// <param name="key">The key.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="fallback">The fallback value where the metadata <paramref name="key"/> does not exist.</param>
 	/// <param name="customValueConverter">The custom value converter to transform the value before returning it.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The metadata value for the specified <paramref name="key"/>.</returns>
-	Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default!, Func<string?, T>? customValueConverter = null);
+	Task<T> GetMetadataValueAsync<T>(string key, T fallback = default!, Func<string?, T>? customValueConverter = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Sets the metadata value with the specified <paramref name="key"/>.
@@ -147,27 +147,27 @@ public interface IUmbrellaFileInfo
 	/// <typeparam name="T">The type of the value being set.</typeparam>
 	/// <param name="key">The key.</param>
 	/// <param name="value">The value.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true);
+	Task SetMetadataValueAsync<T>(string key, T value, bool writeChanges = true, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Removes the metadata value with the specified <paramref name="key"/>.
 	/// </summary>
 	/// <param name="key">The key.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task RemoveMetadataValueAsync(string key, CancellationToken cancellationToken = default, bool writeChanges = true);
+	Task RemoveMetadataValueAsync(string key, bool writeChanges = true, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes all metadata for the file and optionally persists the changes to the underlying data store.
 	/// </summary>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task ClearMetadataAsync(CancellationToken cancellationToken = default, bool writeChanges = true);
+	Task ClearMetadataAsync(bool writeChanges = true, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Persists the changes made to the file's metadata.
@@ -189,10 +189,10 @@ public interface IUmbrellaFileInfo
 	/// </summary>
 	/// <typeparam name="TUserId">The type of the user id.</typeparam>
 	/// <param name="value">The user id.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task SetCreatedByIdAsync<TUserId>(TUserId value, CancellationToken cancellationToken = default, bool writeChanges = true);
+	Task SetCreatedByIdAsync<TUserId>(TUserId value, bool writeChanges = true, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Get the file name, if the file name exists.
@@ -205,8 +205,8 @@ public interface IUmbrellaFileInfo
 	/// Sets the file name.
 	/// </summary>
 	/// <param name="value">The file name.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="writeChanges">if set to <see langword="true" />, the changes will be persisted.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task SetFileNameAsync(string value, CancellationToken cancellationToken = default, bool writeChanges = true);
+	Task SetFileNameAsync(string value, bool writeChanges = true, CancellationToken cancellationToken = default);
 }

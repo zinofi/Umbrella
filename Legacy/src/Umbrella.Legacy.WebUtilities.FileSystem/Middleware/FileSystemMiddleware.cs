@@ -120,7 +120,7 @@ public class FileSystemMiddleware : OwinMiddleware
 					context.Response.Headers["Cache-Control"] = "no-store";
 				}
 
-				await fileInfo.WriteToStreamAsync(context.Response.Body, token);
+				await fileInfo.WriteToStreamAsync(context.Response.Body, cancellationToken: token);
 				await context.Response.Body.FlushAsync();
 
 				return;

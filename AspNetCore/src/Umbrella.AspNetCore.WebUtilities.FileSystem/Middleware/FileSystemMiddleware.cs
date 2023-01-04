@@ -132,7 +132,7 @@ public class FileSystemMiddleware
 				// Probably best to copy this middleware into the target project first to do the initial work
 				// before altering the file system.
 
-				await fileInfo.WriteToStreamAsync(context.Response.Body, token);
+				await fileInfo.WriteToStreamAsync(context.Response.Body, cancellationToken: token);
 				await context.Response.Body.FlushAsync();
 
 				return;

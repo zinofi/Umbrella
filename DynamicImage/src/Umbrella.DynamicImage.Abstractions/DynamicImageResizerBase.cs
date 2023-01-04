@@ -58,8 +58,8 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			if (await fileInfo.ExistsAsync(cancellationToken).ConfigureAwait(false))
 			{
 				return !fileInfo.LastModified.HasValue
-					? throw new DynamicImageException("The fileInfo must have a last modified value.")
-					: await GenerateImageAsync(() => fileInfo.ReadAsByteArrayAsync(cancellationToken),
+					? throw new UmbrellaDynamicImageException("The fileInfo must have a last modified value.")
+					: await GenerateImageAsync(async () => await fileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false),
 					fileInfo.LastModified.Value,
 					options,
 					cancellationToken)
@@ -68,9 +68,9 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 			return null;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && exc is not DynamicImageException)
+		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && exc is not UmbrellaDynamicImageException)
 		{
-			throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
+			throw new UmbrellaDynamicImageException("An error has occurred during image resizing.", exc, options);
 		}
 	}
 
@@ -115,9 +115,9 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 			return dynamicImage;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { sourceLastModified, options }) && (exc is DynamicImageException) == false)
+		catch (Exception exc) when (Logger.WriteError(exc, new { sourceLastModified, options }) && (exc is UmbrellaDynamicImageException) == false)
 		{
-			throw new DynamicImageException("An error has occurred during image resizing.", exc, options);
+			throw new UmbrellaDynamicImageException("An error has occurred during image resizing.", exc, options);
 		}
 	}
 
@@ -142,7 +142,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	/// <param name="targetHeight">Height of the target.</param>
 	/// <param name="mode">The mode.</param>
 	/// <returns>A tuple containing the destination dimensions.</returns>
-	protected (int width, int height, int offsetX, int offsetY, int cropWidth, int cropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
+	protected static (int width, int height, int offsetX, int offsetY, int cropWidth, int cropHeight) GetDestinationDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight, DynamicResizeMode mode)
 	{
 		int? requestedWidth = null;
 		int? requestedHeight = null;
@@ -239,7 +239,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	#endregion
 
 	#region Private Methods
-	private (int width, int height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
+	private static (int width, int height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
 	{
 		// both width and height are specified - squash image
 		if (nRequestedWidth is not null && nRequestedHeight is not null)
@@ -260,7 +260,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 		}
 		else
 		{
-			throw new Exception("Width or height, or both, must be specified");
+			throw new UmbrellaDynamicImageException("Width or height, or both, must be specified");
 		}
 	}
 	#endregion

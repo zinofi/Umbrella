@@ -47,13 +47,13 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 			string rawKey = GenerateCacheKey(dynamicImage.ImageOptions);
 			string cacheKey = GenerateMemoryCacheKey(rawKey);
 
-			Cache.Set(cacheKey, dynamicImage, _memoryCacheOptions);
+			Cache.SetValue(cacheKey, dynamicImage, _memoryCacheOptions);
 
 			return Task.CompletedTask;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))
 		{
-			throw new DynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
+			throw new UmbrellaDynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 				//evict it from the cache
 				if (sourceLastModified > cacheItem.LastModified)
 				{
-					await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken);
+					await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken);
 
 					return null;
 				}
@@ -85,7 +85,7 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, sourceLastModified, fileExtension }))
 		{
-			throw new DynamicImageException("There was problem retrieving the image from the cache.", exc);
+			throw new UmbrellaDynamicImageException("There was problem retrieving the image from the cache.", exc);
 		}
 	}
 
@@ -99,11 +99,11 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 			string key = GenerateCacheKey(options);
 			string cacheKey = GenerateMemoryCacheKey(key);
 
-			await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken);
+			await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }))
 		{
-			throw new DynamicImageException("There was a problem removing the image from the cache.", exc);
+			throw new UmbrellaDynamicImageException("There was a problem removing the image from the cache.", exc);
 		}
 	}
 	#endregion

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text;
 using CommunityToolkit.Diagnostics;
 
@@ -87,10 +88,10 @@ public static class StringBuilderExtensions
 		{
 			for (int j = startIndex; j < num2; j++)
 			{
-				if (char.ToLower(sb[j]) == char.ToLower(value[0]))
+				if (char.ToLower(sb[j], CultureInfo.CurrentCulture) == char.ToLower(value[0], CultureInfo.CurrentCulture))
 				{
 					num3 = 1;
-					while ((num3 < length) && (char.ToLower(sb[j + num3]) == char.ToLower(value[num3])))
+					while ((num3 < length) && (char.ToLower(sb[j + num3], CultureInfo.CurrentCulture) == char.ToLower(value[num3], CultureInfo.CurrentCulture)))
 					{
 						num3++;
 					}

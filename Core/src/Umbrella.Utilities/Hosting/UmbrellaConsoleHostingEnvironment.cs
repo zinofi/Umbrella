@@ -74,7 +74,7 @@ public class UmbrellaConsoleHostingEnvironment : UmbrellaHostingEnvironment
 			int newLength = span.Length + 1;
 			Span<char> newSpan = newLength <= StackAllocConstants.MaxCharSize ? stackalloc char[newLength] : new char[newLength];
 			newSpan[0] = '/';
-			_ = newSpan.Append(1, span);
+			_ = newSpan.Write(1, span);
 
 			return newSpan.ToString();
 		}

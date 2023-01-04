@@ -11,7 +11,7 @@ public class EqualToAttribute : IsAttribute
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	public EqualToAttribute(string dependentProperty)
-		: base(Operator.EqualTo, dependentProperty)
+		: base(EqualityOperator.EqualTo, dependentProperty)
 	{
 	}
 }

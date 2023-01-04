@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Umbrella.Utilities.Encryption;
 using Umbrella.Utilities.Encryption.Abstractions;
@@ -12,7 +9,7 @@ namespace Umbrella.Utilities.Test.Encryption;
 
 public class SecureStringGeneratorTest
 {
-	public static List<object[]> OptionsList = new List<object[]>
+	public static List<object[]> OptionsList = new()
 	{
 		new object[] { 8, 3, 2, 0 },
 		new object[] { 16, 5, 3, 0 },
@@ -30,7 +27,7 @@ public class SecureStringGeneratorTest
 		new object[] { 8, 0, 3, 3 }
 	};
 
-	private static readonly SecureRandomStringGeneratorOptions _options = new SecureRandomStringGeneratorOptions();
+	private static readonly SecureRandomStringGeneratorOptions _options = new();
 
 	[Theory]
 	[MemberData(nameof(OptionsList))]
@@ -44,9 +41,9 @@ public class SecureStringGeneratorTest
 
 		Assert.Equal(length, password.Length);
 
-		int lowerCaseCount = password.Count(x => char.IsLower(x));
-		int numbersCount = password.Count(x => char.IsNumber(x));
-		int upperCaseCount = password.Count(x => char.IsUpper(x));
+		int lowerCaseCount = password.Count(char.IsLower);
+		int numbersCount = password.Count(char.IsNumber);
+		int upperCaseCount = password.Count(char.IsUpper);
 		int specialCount = password.Count(x => _options.SpecialCharacters.Contains(x));
 
 		Assert.Equal(lowerCaseLetters, lowerCaseCount);
@@ -60,7 +57,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(0));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(0));
 	}
 
 	[Fact]
@@ -68,7 +65,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(numbers: -1));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(numbers: -1));
 	}
 
 	[Fact]
@@ -76,7 +73,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 6));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 6));
 	}
 
 	[Fact]
@@ -84,7 +81,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(upperCaseCharacters: -1));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(upperCaseCharacters: -1));
 	}
 
 	[Fact]
@@ -92,7 +89,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 1, 10));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 1, 10));
 	}
 
 	[Fact]
@@ -100,7 +97,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(specialCharacters: -1));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(specialCharacters: -1));
 	}
 
 	[Fact]
@@ -108,7 +105,7 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 1, 1, 10));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(5, 1, 1, 10));
 	}
 
 	[Fact]
@@ -116,10 +113,10 @@ public class SecureStringGeneratorTest
 	{
 		var generator = CreateSecureStringGenerator();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(10, 6, 6, 6));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(10, 6, 6, 6));
 	}
 
-	private ISecureRandomStringGenerator CreateSecureStringGenerator()
+	private static ISecureRandomStringGenerator CreateSecureStringGenerator()
 	{
 		var logger = new Mock<ILogger<SecureRandomStringGenerator>>();
 

@@ -25,6 +25,10 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="System.ComponentModel.DataAnnotations" />
+	</ItemGroup>
 
 </Project>

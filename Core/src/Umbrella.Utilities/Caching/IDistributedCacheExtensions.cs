@@ -91,17 +91,17 @@ public static class IDistributedCacheExtensions
 	/// <param name="key">The key.</param>
 	/// <param name="factory">The factory.</param>
 	/// <param name="optionsBuilder">The options builder.</param>
-	/// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
 	/// <param name="throwOnCacheFailure">
 	/// <para>Specifies whether or not to throw an exception if the operation to get or set the cache item in the underlying cache fails.</para>
 	/// <para>Setting this as false means that the failure is handled silently allowing the new cache item to be built with any cache failures being masked.
 	/// Any exceptions are then returned by the method as an <see cref="UmbrellaDistributedCacheException"/> which has an inner exception of type <see cref="AggregateException"/> to be handled manually by the caller.
 	/// </para>
 	/// </param>
+	/// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
 	/// <returns>The string that has either been retrieved or added to the cache together with any exception information</returns>
 	/// <exception cref="ArgumentNullException">Thrown when the <paramref name="cache"/>, <paramref name="key"/>,<paramref name="factory"/> or <paramref name="optionsBuilder"/> are null.</exception>
 	/// <exception cref="ArgumentException">Thrown when the <paramref name="key"/> is either an empty string or whitespace.</exception>
-	public static async Task<(string? item, UmbrellaDistributedCacheException? exception)> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+	public static async Task<(string? item, UmbrellaDistributedCacheException? exception)> GetOrCreateStringAsync(this IDistributedCache cache, string key, Func<Task<string>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(cache, nameof(cache));
@@ -178,7 +178,7 @@ public static class IDistributedCacheExtensions
 	/// <returns>An awaitable <see cref="Task"/> containing a tuple containing a success status, the item if present and any exception thrown internally when trying to get the item.</returns>
 	public static async Task<(bool itemFound, TItem? cacheItem, UmbrellaDistributedCacheException? exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken = default)
 	{
-		var (itemFound, cacheItem, exception) = await TryGetValueAsync<TItem>(cache, key, cancellationToken, false).ConfigureAwait(false);
+		var (itemFound, cacheItem, exception) = await TryGetValueAsync<TItem>(cache, key, false, cancellationToken).ConfigureAwait(false);
 
 		return (itemFound, cacheItem, exception is not null ? new UmbrellaDistributedCacheException($"{nameof(TryGetValueAsync)} failed.", exception) : null);
 	}
@@ -218,7 +218,7 @@ public static class IDistributedCacheExtensions
 	{
 		try
 		{
-			var (itemFound, cacheItem, exception) = await TryGetValueAsync<TItem>(cache, key, cancellationToken, true).ConfigureAwait(false);
+			var (itemFound, cacheItem, exception) = await TryGetValueAsync<TItem>(cache, key, true, cancellationToken).ConfigureAwait(false);
 
 			return cacheItem;
 		}
@@ -355,18 +355,18 @@ public static class IDistributedCacheExtensions
 	/// <param name="key">The key.</param>
 	/// <param name="factory">The factory.</param>
 	/// <param name="optionsBuilder">The options builder.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="throwOnCacheFailure">
 	/// if set to <c>true</c> throws any internal exceptions. If this is <see langword="false"/>, the exception will be returned
 	/// in the method result.
 	/// </param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>
 	/// A tuple containing the cached item together with any exception thrown internally when accessing the cache.
 	/// If the <paramref name="throwOnCacheFailure"/> parameter is <see langword="true"/>, this method will throw this exception
 	/// instead of returning.
 	/// </returns>
 	/// <exception cref="UmbrellaDistributedCacheException">GetOrCreateAsync failed.</exception>
-	public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException? exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, CancellationToken cancellationToken = default, bool throwOnCacheFailure = true)
+	public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException? exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(cache, nameof(cache));
@@ -443,7 +443,7 @@ public static class IDistributedCacheExtensions
 		return (false, default, null);
 	}
 
-	private static async Task<(bool itemFound, TItem? cacheItem, Exception? exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, CancellationToken cancellationToken, bool throwError)
+	private static async Task<(bool itemFound, TItem? cacheItem, Exception? exception)> TryGetValueAsync<TItem>(this IDistributedCache cache, string key, bool throwError, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(cache, nameof(cache));

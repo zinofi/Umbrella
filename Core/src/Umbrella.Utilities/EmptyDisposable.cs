@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities;
+﻿namespace Umbrella.Utilities;
 
 /// <summary>
 /// A dummy <see cref="IDisposable"/> that does nothing.
@@ -17,8 +15,6 @@ public class EmptyDisposable : IDisposable
 
 	#region IDisposable Members
 	/// <inheritdoc />
-	public void Dispose()
-	{
-	}
+	public void Dispose() => GC.SuppressFinalize(this);
 	#endregion
 }

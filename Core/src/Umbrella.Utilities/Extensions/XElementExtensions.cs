@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Xml.Linq;
 using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Exceptions;
@@ -31,8 +32,10 @@ public static class XElementExtensions
 	/// <param name="name">The name.</param>
 	/// <param name="required">if set to <see langword="true"/>, an exception will be thrown if the attribute cannot be found.</param>
 	/// <param name="fallback">The fallback value returned when <paramref name="required"/> is <see langword="false"/>.</param>
+	/// <param name="cultureInfo">The culture info.</param>
 	/// <returns>The attribute value.</returns>
-	public static T GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default!)
+	/// <remarks>If <paramref name="cultureInfo"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> will be used.</remarks>
+	public static T GetAttributeValue<T>(this XElement element, string name, bool required = true, T fallback = default!, CultureInfo? cultureInfo = null)
 	{
 		Guard.IsNotNull(element, nameof(element));
 		Guard.IsNotNullOrWhiteSpace(name, nameof(name));
@@ -56,7 +59,7 @@ public static class XElementExtensions
 
 				try
 				{
-					return (T)Convert.ChangeType(cleanedAttributeValue, type);
+					return (T)Convert.ChangeType(cleanedAttributeValue, type, cultureInfo ?? CultureInfo.CurrentCulture);
 				}
 				catch (Exception exc)
 				{
@@ -66,7 +69,7 @@ public static class XElementExtensions
 		}
 
 		return type == typeof(string) && fallback is null
-			? (T)Convert.ChangeType(string.Empty, type)
+			? (T)Convert.ChangeType(string.Empty, type, cultureInfo ?? CultureInfo.CurrentCulture)
 			: fallback!;
 	}
 

@@ -1,17 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common;
 using Umbrella.Utilities.Data.Abstractions;
-using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression;
@@ -24,13 +19,13 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpressi
 public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 	where TDescriptor : IDataExpressionDescriptor
 {
-	private static readonly ConcurrentDictionary<Type, (bool isEnumerable, Type? elementType)> _enumerableTypeDataCache = new ConcurrentDictionary<Type, (bool, Type?)>();
-	private static readonly ConcurrentDictionary<Type, Type> _genericListTypeCache = new ConcurrentDictionary<Type, Type>();
+	private static readonly ConcurrentDictionary<Type, (bool isEnumerable, Type? elementType)> _enumerableTypeDataCache = new();
+	private static readonly ConcurrentDictionary<Type, Type> _genericListTypeCache = new();
 
 	/// <summary>
 	/// Gets or sets the optional descriptor transformer which is applied to deserialized descriptors.
 	/// </summary>
-	protected internal static DataExpressionTransformer<TDescriptor>? DescriptorTransformer { get; set; } = null;
+	protected internal static DataExpressionTransformer<TDescriptor>? DescriptorTransformer { get; set; }
 
 	/// <summary>
 	/// Gets the logger.
@@ -154,7 +149,7 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bindingContext.ModelName, result.FirstValue }))
 		{
-			bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, $"Cannot convert value to {underlyingOrModelType}.");
+			_ = bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, $"Cannot convert value to {underlyingOrModelType}.");
 		}
 
 		return Task.CompletedTask;
@@ -223,7 +218,7 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 
 		if (Activator.CreateInstance(genericListType) is IList targetList)
 		{
-			lstExpression.ForEach(x => targetList.Add(x));
+			_ = lstExpression.ForEach(x => targetList.Add(x));
 
 			return (targetList, lstUnmatched);
 		}

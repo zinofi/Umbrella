@@ -3,7 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.Owin;
-using Umbrella.Utilities.Extensions;
+using System.Globalization;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions;
 
@@ -20,13 +20,13 @@ public static class IOwinRequestExtensions
 	/// <returns><see langword="true"/> if it matches; otherwise <see langword="false"/>.</returns>
 	public static bool IfModifiedSinceHeaderMatched(this IOwinRequest request, DateTimeOffset valueToMatch)
 	{
-		Guard.IsNotNull(request, nameof(request));
+		Guard.IsNotNull(request);
 
 		string ifModifiedSince = request.Headers["If-Modified-Since"];
 
 		if (!string.IsNullOrWhiteSpace(ifModifiedSince))
 		{
-			DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
+			DateTime lastModified = DateTime.Parse(ifModifiedSince, CultureInfo.InvariantCulture).ToUniversalTime();
 
 			return lastModified == valueToMatch;
 		}
@@ -42,12 +42,12 @@ public static class IOwinRequestExtensions
 	/// <returns><see langword="true"/> if it matches; otherwise <see langword="false"/>.</returns>
 	public static bool IfNoneMatchHeaderMatched(this IOwinRequest request, string valueToMatch)
 	{
-		Guard.IsNotNull(request, nameof(request));
-		Guard.IsNotNullOrWhiteSpace(valueToMatch, nameof(valueToMatch));
+		Guard.IsNotNull(request);
+		Guard.IsNotNullOrWhiteSpace(valueToMatch);
 
 		string ifNoneMatch = request.Headers["If-None-Match"];
 
-		return !string.IsNullOrWhiteSpace(ifNoneMatch) && string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0;
+		return !string.IsNullOrWhiteSpace(ifNoneMatch) && string.Equals(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase);
 	}
 
 	/// <summary>
@@ -67,7 +67,6 @@ public static class IOwinRequestExtensions
 	{
 		string userAgent = request.Headers["User-Agent"];
 
-		return !string.IsNullOrWhiteSpace(userAgent)
-&& (userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase));
+		return !string.IsNullOrWhiteSpace(userAgent) && (userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase));
 	}
 }

@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Globalization;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Globalization;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Radio;
 
@@ -52,21 +52,21 @@ public abstract class UmbrellaRadioBase<TValue> : InputBase<TValue>
 	protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value?.ToString();
 
 	/// <inheritdoc />
-	protected override bool TryParseValueFromString(string? value, out TValue result, out string errorMessage)
+	protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
 	{
 		bool success = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsedValue);
 
 		if (success && parsedValue is not null)
 		{
 			result = parsedValue;
-			errorMessage = null!;
+			validationErrorMessage = null!;
 
 			return true;
 		}
 		else
 		{
 			result = default!;
-			errorMessage = $"{FieldIdentifier.FieldName} field isn't valid.";
+			validationErrorMessage = $"{FieldIdentifier.FieldName} field isn't valid.";
 
 			return false;
 		}

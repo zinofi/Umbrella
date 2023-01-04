@@ -225,7 +225,7 @@ public partial class UmbrellaColumn<TItem>
 	/// <summary>
 	/// Gets a value indicating whether this is the first column in the grid.
 	/// </summary>
-	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(Property?.GetMemberName()) is true;
+	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(Property?.GetMemberName(), StringComparison.Ordinal) is true;
 
 	/// <inheritdoc />
 	protected override async Task OnInitializedAsync()

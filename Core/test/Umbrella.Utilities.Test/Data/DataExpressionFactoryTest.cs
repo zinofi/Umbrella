@@ -69,5 +69,5 @@ public class DataExpressionFactoryTest
 		Assert.Equal(result, filterExpression.GetDelegate()?.Invoke(new DataItem()));
 	}
 
-	private DataExpressionFactory CreateDataExpressionFactory() => new DataExpressionFactory(CoreUtilitiesMocks.CreateLogger<DataExpressionFactory>());
+	private static DataExpressionFactory CreateDataExpressionFactory() => new DataExpressionFactory(CoreUtilitiesMocks.CreateLogger<DataExpressionFactory>());
 }

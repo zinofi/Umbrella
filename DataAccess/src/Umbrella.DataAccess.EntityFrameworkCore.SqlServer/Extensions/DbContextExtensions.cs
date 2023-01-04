@@ -63,6 +63,17 @@ public static class DbContextExtensions
 		return null;
 	}
 
+	/// <summary>
+	/// Finds the most recent history entity by id.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <param name="dbContext">The database context.</param>
+	/// <param name="id">The identifier.</param>
+	/// <param name="trackChanges">if set to <c>true</c>, tracks the entity on the context.</param>
+	/// <param name="filter">The filter.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The history entity.</returns>
 	public static async Task<TEntity?> FindMostRecentHistoryEntityByIdAsync<TEntity, TEntityKey>(this DbContext dbContext, TEntityKey id, bool trackChanges = false, Expression<Func<TEntity, bool>>? filter = null, CancellationToken cancellationToken = default)
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
@@ -87,6 +98,16 @@ public static class DbContextExtensions
 		return await query.FirstOrDefaultAsync(cancellationToken);
 	}
 
+	/// <summary>
+	/// Finds all most recent history entities by a list of ids.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <param name="dbContext">The database context.</param>
+	/// <param name="idList">The identifier list.</param>
+	/// <param name="trackChanges">if set to <c>true</c>, tracks the entities on the context.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A collection of pairs of Ids and entities.</returns>
 	public static async Task<IReadOnlyCollection<IdEntityPairResult<TEntity, TEntityKey>>> FindAllMostRecentHistoryEntityByIdListAsync<TEntity, TEntityKey>(this DbContext dbContext, IEnumerable<TEntityKey> idList, bool trackChanges = false, CancellationToken cancellationToken = default)
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>

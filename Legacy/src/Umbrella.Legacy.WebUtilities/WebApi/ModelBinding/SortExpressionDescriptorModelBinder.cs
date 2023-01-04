@@ -45,7 +45,7 @@ public class SortExpressionDescriptorModelBinder : IModelBinder
 
 			try
 			{
-				if (_enumerableDescriptorType.IsAssignableFrom(bindingContext.ModelType) && !rawValue.StartsWith("[") && !rawValue.EndsWith("]"))
+				if (_enumerableDescriptorType.IsAssignableFrom(bindingContext.ModelType) && !rawValue.StartsWith("[", StringComparison.Ordinal) && !rawValue.EndsWith("]", StringComparison.Ordinal))
 					rawValue = $"[{rawValue}]";
 
 				bindingContext.Model = JsonConvert.DeserializeObject(rawValue, bindingContext.ModelType);

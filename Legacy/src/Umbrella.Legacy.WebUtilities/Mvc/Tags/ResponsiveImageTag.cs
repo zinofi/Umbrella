@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Web;
 using System.Web.Mvc;
 
@@ -95,7 +96,7 @@ public class ResponsiveImageTag : IHtmlString
 	/// <returns>The current <see cref="ResponsiveImageTag"/> instance.</returns>
 	public ResponsiveImageTag WithFixedSize(int size)
 	{
-		string strSize = size.ToString();
+		string strSize = size.ToString(CultureInfo.InvariantCulture);
 
 		HtmlAttributes["width"] = strSize;
 		HtmlAttributes["height"] = strSize;
@@ -111,8 +112,8 @@ public class ResponsiveImageTag : IHtmlString
 	/// <returns>The current <see cref="ResponsiveImageTag"/> instance.</returns>
 	public ResponsiveImageTag WithFixedSize(int width, int height)
 	{
-		HtmlAttributes["width"] = width.ToString();
-		HtmlAttributes["height"] = height.ToString();
+		HtmlAttributes["width"] = width.ToString(CultureInfo.InvariantCulture);
+		HtmlAttributes["height"] = height.ToString(CultureInfo.InvariantCulture);
 
 		return this;
 	}

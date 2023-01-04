@@ -100,7 +100,7 @@ public class ApplicationInsightsLogger : ILogger
 		}
 	}
 
-	private SeverityLevel GetSeverityLevel(LogLevel logLevel) => logLevel switch
+	private static SeverityLevel GetSeverityLevel(LogLevel logLevel) => logLevel switch
 	{
 		LogLevel.Critical => SeverityLevel.Critical,
 		LogLevel.Error => SeverityLevel.Error,

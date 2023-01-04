@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 
-
 /* Unmerged change from project 'Umbrella.Utilities(net461)'
 Before:
 namespace Umbrella.Utilities.Encryption.Abstractions

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -128,7 +129,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 		}
 		else
 		{
-			convertedValue = value == "-1" ? null : Convert.ChangeType(value, typeof(TValue));
+			convertedValue = value == "-1" ? null : Convert.ChangeType(value, typeof(TValue), CultureInfo.InvariantCulture);
 		}
 
 		if (convertedValue is null or default(object?))

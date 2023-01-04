@@ -11,7 +11,7 @@ public class LessThanOrEqualToAttribute : IsAttribute
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	public LessThanOrEqualToAttribute(string dependentProperty)
-		: base(Operator.LessThanOrEqualTo, dependentProperty)
+		: base(EqualityOperator.LessThanOrEqualTo, dependentProperty)
 	{
 	}
 }

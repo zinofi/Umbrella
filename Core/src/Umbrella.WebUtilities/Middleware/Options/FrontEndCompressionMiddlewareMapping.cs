@@ -85,10 +85,10 @@ public class FrontEndCompressionMiddlewareMapping : CacheableUmbrellaOptions, IS
 
 				path = path.Trim();
 
-				if (path.StartsWith("~"))
+				if (path.StartsWith("~", StringComparison.Ordinal))
 					path = path.Remove(0, 1);
 
-				if (!path.StartsWith("/"))
+				if (!path.StartsWith("/", StringComparison.Ordinal))
 					path = "/" + path;
 
 				_ = lstCleanedPath.Add(path);

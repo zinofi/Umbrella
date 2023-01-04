@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-
 /* Unmerged change from project 'Umbrella.Utilities(net461)'
 Before:
 namespace Umbrella.Utilities.Helpers

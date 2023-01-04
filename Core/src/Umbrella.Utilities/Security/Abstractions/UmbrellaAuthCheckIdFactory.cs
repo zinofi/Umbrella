@@ -87,7 +87,7 @@ public abstract class UmbrellaAuthCheckIdFactory
 	/// <param name="id">The id value.</param>
 	/// <returns>A new auth check id instance that derives from <typeparamref name="TAuthCheckId"/>.</returns>
 	/// <exception cref="UmbrellaException">Thrown if an <see cref="ObjectPool"/> cannot be found for the specified <typeparamref name="TAuthCheckId"/>.</exception>
-	protected TAuthCheckId GetAuthCheckId<TAuthCheckId, TValue>(TValue id)
+	protected static TAuthCheckId GetAuthCheckId<TAuthCheckId, TValue>(TValue id)
 		where TAuthCheckId : UmbrellaAuthCheckId<TAuthCheckId, TValue>, new()
 	{
 		if (_objectPoolDictionary.GetOrAdd(typeof(TAuthCheckId), type => ObjectPool.Create<TAuthCheckId>()) is not ObjectPool<TAuthCheckId> objectPool)

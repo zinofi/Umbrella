@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
@@ -14,16 +9,10 @@ namespace Umbrella.Utilities.Test.Mime;
 public class MimeTypeUtilityTest
 {
 	[Fact]
-	public void GetMimeType_Empty()
-	{
-		Assert.Throws<ArgumentException>(() => CreateMimeTypeUtility().GetMimeType(""));
-	}
+	public void GetMimeType_Empty() => Assert.Throws<ArgumentException>(() => CreateMimeTypeUtility().GetMimeType(""));
 
 	[Fact]
-	public void GetMimeType_Whitespace()
-	{
-		Assert.Throws<ArgumentException>(() => CreateMimeTypeUtility().GetMimeType("    "));
-	}
+	public void GetMimeType_Whitespace() => Assert.Throws<ArgumentException>(() => CreateMimeTypeUtility().GetMimeType("    "));
 
 	[Fact]
 	public void GetMimeType_Dot()
@@ -81,6 +70,5 @@ public class MimeTypeUtilityTest
 		Assert.Equal("image/png", mimeType);
 	}
 
-	private IMimeTypeUtility CreateMimeTypeUtility()
-		=> new MimeTypeUtility(new Mock<ILogger<MimeTypeUtility>>().Object);
+	private static IMimeTypeUtility CreateMimeTypeUtility() => new MimeTypeUtility(new Mock<ILogger<MimeTypeUtility>>().Object);
 }

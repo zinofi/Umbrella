@@ -61,7 +61,6 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	public EventCallback<UmbrellaFileUploadRequestEventArgs> OnRequestUpload { get; set; }
 
 	private string Id { get; } = Guid.NewGuid().ToString();
-	private ElementReference FileUploadReference { get; set; }
 	private IBrowserFile? SelectedFile { get; set; }
 	private UmbrellaFileUploadStatus Status { get; set; }
 	private string? AcceptTypesMessage { get; set; }
@@ -132,10 +131,10 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 			UploadPercentage = 0;
 
 			if (SelectedFile is null)
-				throw new Exception("File Info should not be null here.");
+				throw new InvalidOperationException("File Info should not be null here.");
 
 			if (!OnRequestUpload.HasDelegate)
-				throw new Exception($"The {OnRequestUpload} property must have an assigned delegate.");
+				throw new InvalidOperationException($"The {OnRequestUpload} property must have an assigned delegate.");
 
 			_cancellationTokenSource = new CancellationTokenSource();
 			Status = UmbrellaFileUploadStatus.Uploading;
@@ -203,7 +202,11 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	}
 
 	/// <inheritdoc />
-	public void Dispose() => ClearSelection();
+	public void Dispose()
+	{
+		ClearSelection();
+		GC.SuppressFinalize(this);
+	}
 
 	private void Cleanup(UmbrellaFileUploadStatus status)
 	{

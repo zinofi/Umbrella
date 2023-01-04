@@ -15,7 +15,7 @@ public class SpanExtensionsTest
 	{
 		Span<char> span = stackalloc char[10];
 
-		int currentIndex = span.Append(0, "1234567890");
+		int currentIndex = span.Write(0, "1234567890");
 
 		Assert.Equal(10, currentIndex);
 		Assert.Equal("1234567890", span.ToString());
@@ -31,7 +31,7 @@ public class SpanExtensionsTest
 		span[3] = '4';
 		span[4] = '5';
 
-		int currentIndex = span.Append(5, "67890");
+		int currentIndex = span.Write(5, "67890");
 
 		Assert.Equal(10, currentIndex);
 		Assert.Equal("1234567890", span.ToString());
@@ -42,7 +42,7 @@ public class SpanExtensionsTest
 	{
 		Span<char> span = stackalloc char[10];
 
-		int currentIndex = span.Append(0, "1234567890".AsSpan());
+		int currentIndex = span.Write(0, "1234567890".AsSpan());
 
 		Assert.Equal(10, currentIndex);
 		Assert.Equal("1234567890", span.ToString());
@@ -58,7 +58,7 @@ public class SpanExtensionsTest
 		span[3] = '4';
 		span[4] = '5';
 
-		int currentIndex = span.Append(5, "67890".AsSpan());
+		int currentIndex = span.Write(5, "67890".AsSpan());
 
 		Assert.Equal(10, currentIndex);
 		Assert.Equal("1234567890", span.ToString());

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Umbrella.Internal.Mocks;
 using Umbrella.Legacy.WebUtilities.Hosting;
@@ -12,7 +11,7 @@ namespace Umbrella.Legacy.WebUtilities.Test.Hosting;
 
 public class UmbrellaWebHostingEnvironmentTest
 {
-	public static List<object[]> UrlsToTest = new List<object[]>
+	public static List<object[]> UrlsToTest = new()
 	{
 		new object[] { "/path/to/a/resource.jpg" },
 		new object[] { "path/to/a/resource.jpg" },
@@ -42,7 +41,7 @@ public class UmbrellaWebHostingEnvironmentTest
 		Assert.Equal("/path/to/a/resource.jpg", transformedPath);
 	}
 
-	private UmbrellaWebHostingEnvironment CreateHostingEnvironment()
+	private static UmbrellaWebHostingEnvironment CreateHostingEnvironment()
 	{
 		var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 		var memoryCache = CoreUtilitiesMocks.CreateHybridCache();

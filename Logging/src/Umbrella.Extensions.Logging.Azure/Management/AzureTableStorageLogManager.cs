@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
+using System.Globalization;
 using Azure;
 using Azure.Data.Tables;
 using Azure.Data.Tables.Models;
@@ -224,9 +225,9 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 
 					if (strDateParts?.Length == 3)
 					{
-						int year = int.Parse(strDateParts[0]);
-						int month = int.Parse(strDateParts[1]);
-						int day = int.Parse(strDateParts[2]);
+						int year = int.Parse(strDateParts[0], CultureInfo.InvariantCulture);
+						int month = int.Parse(strDateParts[1], CultureInfo.InvariantCulture);
+						int day = int.Parse(strDateParts[2], CultureInfo.InvariantCulture);
 
 						var dtDate = new DateTime(year, month, day);
 						var tableModel = new AzureTableStorageLogTable(dtDate, x.Name);
@@ -236,7 +237,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				});
 
 				return cbTableModel.ToList();
-			}, () => TableListCacheEntryOptions).ConfigureAwait(false);
+			}, () => TableListCacheEntryOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			int totalCount = cacheItem?.Count() ?? 0;
 
@@ -332,7 +333,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 				}
 			}
 
-			int totalCount = lstMetaData.Count();
+			int totalCount = lstMetaData.Count;
 
 			// Apply sorting - always default
 			string? sortBy = options.SortProperty;
@@ -421,7 +422,7 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	public async Task ClearTableNameCacheAsync(string tablePrefix, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(tablePrefix, nameof(tablePrefix));
+		Guard.IsNotNullOrWhiteSpace(tablePrefix);
 
 		try
 		{
@@ -441,6 +442,6 @@ public class AzureTableStorageLogManager : IAzureTableStorageLogManager
 	#endregion
 
 	#region Private Methods
-	private string GenerateCacheKey(string key) => Normalize($"{_cacheKeyPrefix}:{key}");
+	private static string GenerateCacheKey(string key) => Normalize($"{_cacheKeyPrefix}:{key}");
 	#endregion
 }

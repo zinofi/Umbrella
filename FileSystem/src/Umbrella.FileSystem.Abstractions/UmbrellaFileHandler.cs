@@ -83,8 +83,8 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 
 				return fileInfo is null ? null : FileAccessUtility.GetWebFilePath(DirectoryType, fileInfo.Name, groupId);
 			},
-			cancellationToken,
-			() => TimeSpan.FromHours(1));
+			() => TimeSpan.FromHours(1),
+			cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
@@ -110,8 +110,9 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 
 				return fileInfo is null ? null : FileAccessUtility.GetWebFilePath(DirectoryType, fileInfo.Name, groupId);
 			},
-			cancellationToken,
-			() => TimeSpan.FromHours(1));
+			() => TimeSpan.FromHours(1),
+			cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
 		{
@@ -166,7 +167,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 			_ = await FileProvider.DeleteAsync(permPath, cancellationToken);
 
 			string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
-			await Cache.RemoveAsync<string>(key, cancellationToken);
+			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
 		{
@@ -186,7 +187,7 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 
 			// Remove from the cache
 			string key = CacheKeyUtility.Create(GetType(), groupId + "");
-			await Cache.RemoveAsync<string>(key, cancellationToken);
+			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{

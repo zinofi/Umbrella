@@ -84,7 +84,7 @@ dotnet_naming_style.first_word_upper_case_style.capitalization = first_word_uppe
 # symbol group to the 'public symbols' symbol group,
 dotnet_naming_rule.public_members_must_be_capitalized.symbols  = public_symbols
 # setting the naming style to the 'first_word_upper_case_style' naming style,
-dotnet_naming_rule.public_members_must_be_capitalized.style    = first_word_upper_case_style
+dotnet_naming_rule.public_members_must_be_capitalized.style = first_word_upper_case_style
 # and setting the severity.
 dotnet_naming_rule.public_members_must_be_capitalized.severity = error
 
@@ -120,6 +120,28 @@ dotnet_style_namespace_match_folder = true:error
 dotnet_style_allow_statement_immediately_after_block_experimental = false:error
 dotnet_style_allow_multiple_blank_lines_experimental = false:error
 dotnet_code_quality_unused_parameters = all:suggestion
+dotnet_diagnostic.CA1068.severity = error
+dotnet_diagnostic.CA1822.severity = error
+dotnet_diagnostic.CA1305.severity = error
+dotnet_diagnostic.CA2201.severity = error
+dotnet_diagnostic.CA2211.severity = error
+dotnet_diagnostic.CA1827.severity = error
+dotnet_diagnostic.CA1716.severity = silent
+dotnet_diagnostic.CA1307.severity = error
+dotnet_diagnostic.CA1816.severity = error
+dotnet_diagnostic.CA1310.severity = error
+dotnet_diagnostic.CA1041.severity = error
+dotnet_diagnostic.CA1854.severity = error
+dotnet_diagnostic.CA1725.severity = error
+dotnet_diagnostic.CA1304.severity = error
+dotnet_diagnostic.CA1707.severity = error
+dotnet_diagnostic.CA1711.severity = suggestion
+dotnet_diagnostic.CA1829.severity = error
+dotnet_diagnostic.CA1847.severity = error
+dotnet_diagnostic.CA2251.severity = error
+dotnet_diagnostic.CA1000.severity = silent
+dotnet_diagnostic.CA1828.severity = error
+dotnet_diagnostic.CA1848.severity = silent
 
 ###############################
 # C# Code Style Rules         #
@@ -198,7 +220,6 @@ csharp_preserve_single_line_blocks = true
 trim_trailing_whitespace = true:error
 insert_final_newline = false
 
-file_header_template = Copyright (c) Zinofi Digital Ltd. All Rights Reserved.\nLicensed under the MIT License.
 csharp_using_directive_placement = outside_namespace:error
 csharp_prefer_simple_using_statement = true:suggestion
 csharp_style_namespace_declarations = file_scoped:error
@@ -239,4 +260,9 @@ dotnet_diagnostic.CA1825.severity = error
 dotnet_diagnostic.IDE0001.severity = error
 dotnet_diagnostic.IDE0002.severity = error
 dotnet_diagnostic.IDE1006.severity = error
-#dotnet_diagnostic.IDE0161.severity = error
+dotnet_diagnostic.IDE0161.severity = error
+dotnet_diagnostic.CA1309.severity = suggestion
+dotnet_diagnostic.CA1805.severity = error
+dotnet_diagnostic.IDE0200.severity = error
+dotnet_diagnostic.CA1200.severity = suggestion
+dotnet_diagnostic.CA1311.severity = error

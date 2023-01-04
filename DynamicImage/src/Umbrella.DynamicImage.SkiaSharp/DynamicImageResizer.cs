@@ -91,13 +91,13 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { width, height, resizeMode, format }))
 		{
-			throw new DynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
+			throw new UmbrellaDynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
 		}
 	}
 	#endregion
 
 	#region Private Methods
-	private SKBitmap LoadBitmap(byte[] bytes)
+	private static SKBitmap LoadBitmap(byte[] bytes)
 	{
 		using var ms = new MemoryStream(bytes);
 
@@ -122,7 +122,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		};
 	}
 
-	private SKEncodedImageFormat GetImageFormat(DynamicImageFormat format) => format switch
+	private static SKEncodedImageFormat GetImageFormat(DynamicImageFormat format) => format switch
 	{
 		DynamicImageFormat.Bmp => SKEncodedImageFormat.Bmp,
 		DynamicImageFormat.Gif => SKEncodedImageFormat.Gif,

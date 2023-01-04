@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Web.Mvc;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Filters;
@@ -55,7 +56,7 @@ public class EnableCorsAttribute : ActionFilterAttribute
 			response.AddHeader("Access-Control-Allow-Credentials", "true");
 
 		if (MaxAgeSeconds > 0)
-			response.AddHeader("Access-Control-Max-Age", MaxAgeSeconds.ToString());
+			response.AddHeader("Access-Control-Max-Age", MaxAgeSeconds.ToString(CultureInfo.InvariantCulture));
 
 		TryAddStringHeader("Access-Control-Allow-Origin", AllowOrigin);
 		TryAddStringHeader("Access-Control-Allow-Headers", AllowHeaders);

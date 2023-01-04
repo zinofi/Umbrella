@@ -258,8 +258,8 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			sorters,
 			filters,
 			filterCombinator,
-			cancellationToken,
 			LoadSearchSlimDataAsync,
+			cancellationToken,
 			null,
 			AfterCreateSearchSlimModelAsync,
 			AfterReadSlimEntityAsync,
@@ -328,9 +328,9 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		? DeleteAsync(
 			id,
 			Repository,
-			cancellationToken,
 			BeforeDeleteEntityAsync,
 			AfterDeleteEntityAsync,
+			cancellationToken,
 			DeleteIncludeMap,
 			DeleteRepoOptions,
 			DeleteChildRepoOptions,
@@ -338,7 +338,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			DeleteLock)
 		: throw new NotSupportedException("Unsupported Endpoint");
 
-	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, CancellationToken cancellationToken, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions) => Repository.Value.FindAllAsync(pageNumber, pageSize, cancellationToken, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions);
+	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
 	protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
 	protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 	protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);

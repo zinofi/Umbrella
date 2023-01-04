@@ -11,7 +11,7 @@ public class NotEqualToAttribute : IsAttribute
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	public NotEqualToAttribute(string dependentProperty)
-		: base(Operator.NotEqualTo, dependentProperty)
+		: base(EqualityOperator.NotEqualTo, dependentProperty)
 	{
 	}
 }

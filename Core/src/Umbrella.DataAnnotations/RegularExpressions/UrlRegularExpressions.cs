@@ -13,10 +13,11 @@ public static class UrlRegularExpressions
 	/// <summary>
 	/// A regular expression used to validate URLs.
 	/// </summary>
+	/*lang=regex*/
 	public const string UrlRegexString = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
 
 	/// <summary>
 	/// A regular expression used to validate URLs.
 	/// </summary>
-	public static Regex UrlRegex = new Regex(UrlRegexString, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+	public static Regex UrlRegex { get; } = new(UrlRegexString, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 }

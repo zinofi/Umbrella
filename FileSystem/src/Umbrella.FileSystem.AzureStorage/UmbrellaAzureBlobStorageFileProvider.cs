@@ -9,6 +9,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage.Extensions;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
@@ -111,7 +112,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-			string containerName = NormalizeContainerName(parts[0]);
+			string containerName = UmbrellaAzureBlobStorageFileProvider<TOptions>.NormalizeContainerName(parts[0]);
 
 			BlobContainerClient container = ServiceClient.GetBlobContainerClient(containerName);
 
@@ -128,7 +129,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 			}
 			else
 			{
-				List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), cancellationToken, false).ConfigureAwait(false);
+				List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), false, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				foreach (BlobClient blob in lstBlob)
 				{
@@ -157,14 +158,14 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 			string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-			string containerName = NormalizeContainerName(parts[0]);
+			string containerName = UmbrellaAzureBlobStorageFileProvider<TOptions>.NormalizeContainerName(parts[0]);
 
 			BlobContainerClient container = ServiceClient.GetBlobContainerClient(containerName);
 
 			if (!await container.ExistsAsync(cancellationToken).ConfigureAwait(false))
 				return Array.Empty<IUmbrellaFileInfo>();
 
-			List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), cancellationToken).ConfigureAwait(false);
+			List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			UmbrellaAzureBlobStorageFileInfo[] files = lstBlob.Select(x => new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
 
@@ -213,7 +214,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 		string[] parts = cleanedPath.Split(_directorySeparatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-		string containerName = NormalizeContainerName(parts[0]);
+		string containerName = UmbrellaAzureBlobStorageFileProvider<TOptions>.NormalizeContainerName(parts[0]);
 		string blobName = string.Join("/", parts.Skip(1));
 
 		// TODO - vFuture: This validator is being migrated by Microsoft and will be available in a future version. Uncomment when available.
@@ -273,7 +274,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	#endregion
 
 	#region Private Methods
-	private string NormalizeContainerName(string containerName) => containerName.Trim().ToLowerInvariant();
+	private static string NormalizeContainerName(string containerName) => containerName.TrimToLowerInvariant();
 	#endregion
 
 	#region Protected Methods
@@ -299,7 +300,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	#endregion
 
 	#region IDisposable Support
-	private bool _isDisposed = false; // To detect redundant calls
+	private bool _isDisposed; // To detect redundant calls
 
 	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
@@ -317,6 +318,10 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	}
 
 	/// <inheritdoc />
-	public void Dispose() => Dispose(true); //Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+	public void Dispose()
+	{
+		Dispose(true); //Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+		GC.SuppressFinalize(this);
+	}
 	#endregion
 }

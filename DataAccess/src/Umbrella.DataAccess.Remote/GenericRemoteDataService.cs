@@ -77,22 +77,22 @@ public abstract class GenericRemoteDataService
 	/// <param name="endpointPath">The relative API endpoint to call.</param>
 	/// <param name="pageNumber">The page number.</param>
 	/// <param name="pageSize">Size of the page.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sorters">The sorters.</param>
 	/// <param name="filters">The filters.</param>
 	/// <param name="filterCombinator">The filter combinator.</param>
 	/// <param name="afterAllItemsLoadedCallback">The optional callback to invoke on the results.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
 	/// <exception cref="UmbrellaRemoteDataAccessException" />
 	protected virtual async Task<IHttpCallResult<TPaginatedResultModel?>> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(
 		string endpointPath,
 		int pageNumber = 0,
 		int pageSize = 20,
-		CancellationToken cancellationToken = default,
 		IEnumerable<SortExpressionDescriptor>? sorters = null,
 		IEnumerable<FilterExpressionDescriptor>? filters = null,
 		FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And,
-		Func<IEnumerable<TSlimItem>, CancellationToken, Task>? afterAllItemsLoadedCallback = null)
+		Func<IEnumerable<TSlimItem>, CancellationToken, Task>? afterAllItemsLoadedCallback = null,
+		CancellationToken cancellationToken = default)
 		where TIdentifier : IEquatable<TIdentifier>
 		where TSlimItem : class, IKeyedItem<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
@@ -164,28 +164,28 @@ public abstract class GenericRemoteDataService
 	/// <typeparam name="TItem">The type of the item.</typeparam>
 	/// <typeparam name="TPostResult">The type of the post result.</typeparam>
 	/// <param name="item">The item.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 	/// <param name="afterItemSavedCallback">An optional callback to be invoked after the item has been successfully POSTed.</param>
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
 	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 	/// <exception cref="UmbrellaRemoteDataAccessException" />
 	protected virtual async Task<(IHttpCallResult<TPostResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PostAsync<TItem, TPostResult>(
 		TItem item,
-		CancellationToken cancellationToken = default,
 		bool sanitize = true,
 		ValidationType validationType = ValidationType.Shallow,
 		Func<TItem, TPostResult?, CancellationToken, Task>? afterItemSavedCallback = null,
-		string endpointPath = "")
+		string endpointPath = "",
+		CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(item, nameof(item));
 
 		try
 		{
-			return await SaveCoreAsync(HttpMethod.Post, endpointPath, item, cancellationToken, sanitize, validationType, afterItemSavedCallback).ConfigureAwait(false);
+			return await SaveCoreAsync(HttpMethod.Post, endpointPath, item, sanitize, validationType, afterItemSavedCallback, cancellationToken).ConfigureAwait(false);
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
@@ -204,21 +204,21 @@ public abstract class GenericRemoteDataService
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 	/// <typeparam name="TPutResult">The type of the PUT result.</typeparam>
 	/// <param name="item">The item.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 	/// <param name="afterItemSavedCallback">An optional callback to be invoked after the item has been successfully PUTed.</param>
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
 	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 	/// <exception cref="UmbrellaRemoteDataAccessException" />
 	protected virtual async Task<(IHttpCallResult<TPutResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PutAsync<TItem, TIdentifier, TPutResult>(
 		TItem item,
-		CancellationToken cancellationToken = default,
 		bool sanitize = true,
 		ValidationType validationType = ValidationType.Shallow,
 		Func<TItem, TPutResult?, CancellationToken, Task>? afterItemSavedCallback = null,
-		string endpointPath = "")
+		string endpointPath = "",
+		CancellationToken cancellationToken = default)
 		where TItem : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 	{
@@ -228,8 +228,8 @@ public abstract class GenericRemoteDataService
 		try
 		{
 			return item.Id.Equals(default!)
-				? throw new Exception("The item being patched must have an Id.")
-				: await SaveCoreAsync(HttpMethod.Put, endpointPath, item, cancellationToken, sanitize, validationType, afterItemSavedCallback).ConfigureAwait(false);
+				? throw new InvalidOperationException("The item being patched must have an Id.")
+				: await SaveCoreAsync(HttpMethod.Put, endpointPath, item, sanitize, validationType, afterItemSavedCallback, cancellationToken).ConfigureAwait(false);
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
@@ -248,21 +248,21 @@ public abstract class GenericRemoteDataService
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 	/// <typeparam name="TPatchResult">The type of the PATCH result.</typeparam>
 	/// <param name="item">The item.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
 	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 	/// <param name="afterItemSavedCallback">An optional callback to be invoked after the item has been successfully PATCHed.</param>
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
 	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 	/// <exception cref="UmbrellaRemoteDataAccessException" />
 	protected virtual async Task<(IHttpCallResult<TPatchResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PatchAsync<TItem, TIdentifier, TPatchResult>(
 		TItem item,
-		CancellationToken cancellationToken = default,
 		bool sanitize = true,
 		ValidationType validationType = ValidationType.Shallow,
 		Func<TItem, TPatchResult?, CancellationToken, Task>? afterItemSavedCallback = null,
-		string endpointPath = "")
+		string endpointPath = "",
+		CancellationToken cancellationToken = default)
 		where TItem : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 	{
@@ -272,8 +272,8 @@ public abstract class GenericRemoteDataService
 		try
 		{
 			return item.Id.Equals(default!)
-				? throw new Exception("The item being patched must have an Id.")
-				: await SaveCoreAsync(HttpMethodExtras.Patch, endpointPath, item, cancellationToken, sanitize, validationType, afterItemSavedCallback).ConfigureAwait(false);
+				? throw new InvalidOperationException("The item being patched must have an Id.")
+				: await SaveCoreAsync(HttpMethodExtras.Patch, endpointPath, item, sanitize, validationType, afterItemSavedCallback, cancellationToken).ConfigureAwait(false);
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
@@ -290,17 +290,17 @@ public abstract class GenericRemoteDataService
 	/// </summary>
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 	/// <param name="id">The identifier.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="afterItemDeletedCallback">The optional operation to be invoked after the item has been deleted successfully.</param>
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
 	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
 	/// <exception cref="UmbrellaRemoteDataAccessException" />
 	protected virtual async Task<IHttpCallResult> DeleteAsync<TIdentifier>(
 		TIdentifier id,
-		CancellationToken cancellationToken = default,
 		Func<TIdentifier, CancellationToken, Task>? afterItemDeletedCallback = null,
-		string endpointPath = "")
+		string endpointPath = "",
+		CancellationToken cancellationToken = default)
 		where TIdentifier : IEquatable<TIdentifier>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -362,10 +362,10 @@ public abstract class GenericRemoteDataService
 		HttpMethod method,
 		string endpointPath,
 		TItem item,
-		CancellationToken cancellationToken,
 		bool sanitize,
 		ValidationType validationType,
-		Func<TItem, TResult?, CancellationToken, Task>? afterItemSavedCallback)
+		Func<TItem, TResult?, CancellationToken, Task>? afterItemSavedCallback,
+		CancellationToken cancellationToken)
 	{
 		if (item is not null)
 		{

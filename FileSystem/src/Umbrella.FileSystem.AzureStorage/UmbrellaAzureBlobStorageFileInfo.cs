@@ -160,7 +160,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<byte[]> ReadAsByteArrayAsync(CancellationToken cancellationToken = default, bool cacheContents = true, int? bufferSizeOverride = null)
+	public virtual async Task<byte[]> ReadAsByteArrayAsync(bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -176,10 +176,10 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
-			using Stream stream = await ReadAsStreamAsync(cancellationToken, bufferSizeOverride).ConfigureAwait(false);
+			using Stream stream = await ReadAsStreamAsync(bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 			using var ms = new MemoryStream();
 
-			await stream.CopyToAsync(ms, bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize).ConfigureAwait(false);
+			await stream.CopyToAsync(ms, bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize, cancellationToken).ConfigureAwait(false);
 
 			byte[] bytes = ms.ToArray();
 
@@ -194,7 +194,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task WriteToStreamAsync(Stream target, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
+	public async Task WriteToStreamAsync(Stream target, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -214,7 +214,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
+	public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(bytes);
@@ -226,7 +226,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		try
 		{
 			using var ms = new MemoryStream(bytes);
-			await WriteFromStreamAsync(ms, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
+			await WriteFromStreamAsync(ms, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 
 			_content = cacheContents ? bytes : null;
 		}
@@ -237,7 +237,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task WriteFromStreamAsync(Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
+	public async Task WriteFromStreamAsync(Stream stream, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(stream, nameof(stream));
@@ -360,7 +360,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task<Stream> ReadAsStreamAsync(CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
+	public async Task<Stream> ReadAsStreamAsync(int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -382,7 +382,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task<T> GetMetadataValueAsync<T>(string key, CancellationToken cancellationToken = default, T fallback = default!, Func<string?, T>? customValueConverter = null)
+	public async Task<T> GetMetadataValueAsync<T>(string key, T fallback = default!, Func<string?, T>? customValueConverter = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -406,7 +406,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task SetMetadataValueAsync<T>(string key, T value, CancellationToken cancellationToken = default, bool writeChanges = true)
+	public async Task SetMetadataValueAsync<T>(string key, T value, bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -436,7 +436,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task RemoveMetadataValueAsync(string key, CancellationToken cancellationToken = default, bool writeChanges = true)
+	public async Task RemoveMetadataValueAsync(string key, bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -459,7 +459,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task ClearMetadataAsync(CancellationToken cancellationToken = default, bool writeChanges = true)
+	public async Task ClearMetadataAsync(bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -504,7 +504,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken);
+			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -513,13 +513,13 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task SetCreatedByIdAsync<TUserId>(TUserId value, CancellationToken cancellationToken = default, bool writeChanges = true)
+	public async Task SetCreatedByIdAsync<TUserId>(TUserId value, bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
 		try
 		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, cancellationToken, writeChanges);
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -534,7 +534,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 
 		try
 		{
-			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken);
+			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -543,13 +543,13 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	}
 
 	/// <inheritdoc />
-	public async Task SetFileNameAsync(string value, CancellationToken cancellationToken = default, bool writeChanges = true)
+	public async Task SetFileNameAsync(string value, bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
 		try
 		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, cancellationToken, writeChanges);
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -559,7 +559,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	#endregion
 
 	#region Private Methods
-	private StorageTransferOptions CreateStorageTransferOptions(int? bufferSizeOverride = null)
+	private static StorageTransferOptions CreateStorageTransferOptions(int? bufferSizeOverride = null)
 		=> new()
 		{
 			MaximumTransferLength = bufferSizeOverride ?? UmbrellaFileSystemConstants.LargeBufferSize

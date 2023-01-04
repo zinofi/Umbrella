@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -77,7 +78,7 @@ public class DataExpressionFactory : IDataExpressionFactory
 
 				if (result.member.Type.IsEnum && EnumHelper.TryParseEnum(result.member.Type, descriptorValue, true, out object? enumValue))
 				{
-					object underlyingValue = Convert.ChangeType(enumValue, result.member.Type.GetEnumUnderlyingType());
+					object underlyingValue = Convert.ChangeType(enumValue, result.member.Type.GetEnumUnderlyingType(), CultureInfo.CurrentCulture);
 
 					if (underlyingValue is not null)
 						descriptorValue = underlyingValue.ToString();

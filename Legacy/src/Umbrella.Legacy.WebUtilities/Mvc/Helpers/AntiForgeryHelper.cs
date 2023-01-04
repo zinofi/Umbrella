@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Globalization;
+using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using Microsoft.Owin;
@@ -20,7 +21,7 @@ public static class AntiForgeryHelper
 	{
 		IOwinContext context = HttpContext.Current.GetOwinContext();
 
-		return new HtmlString(string.Format("data-request-verification-token=\"{0}\"", GetAntiForgeryTokenValue(context)));
+		return new HtmlString(string.Format(CultureInfo.InvariantCulture, "data-request-verification-token=\"{0}\"", GetAntiForgeryTokenValue(context)));
 	}
 
 	/// <summary>

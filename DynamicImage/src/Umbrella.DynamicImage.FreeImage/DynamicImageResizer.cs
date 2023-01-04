@@ -90,13 +90,13 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { width, height, resizeMode, format }))
 		{
-			throw new DynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
+			throw new UmbrellaDynamicImageException("An error has occurred during image resizing.", exc, width, height, resizeMode, format);
 		}
 	}
 	#endregion
 
 	#region Private Methods
-	private FREE_IMAGE_FORMAT GetImageFormat(DynamicImageFormat format) => format switch
+	private static FREE_IMAGE_FORMAT GetImageFormat(DynamicImageFormat format) => format switch
 	{
 		DynamicImageFormat.Bmp => FREE_IMAGE_FORMAT.FIF_BMP,
 		DynamicImageFormat.Gif => FREE_IMAGE_FORMAT.FIF_GIF,
@@ -106,7 +106,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		_ => default,
 	};
 
-	private FREE_IMAGE_SAVE_FLAGS GetSaveFlags(DynamicImageFormat format) => format switch
+	private static FREE_IMAGE_SAVE_FLAGS GetSaveFlags(DynamicImageFormat format) => format switch
 	{
 		DynamicImageFormat.Jpeg => FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYGOOD | FREE_IMAGE_SAVE_FLAGS.JPEG_BASELINE,
 		DynamicImageFormat.Png => FREE_IMAGE_SAVE_FLAGS.PNG_Z_BEST_COMPRESSION,

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.UI;
@@ -55,7 +56,7 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 	/// <exception cref="Exception">The CurrentPage property has not been set.</exception>
 	public Page? CurrentPage
 	{
-		get => _currentPage ?? throw new Exception("The CurrentPage property has not been set.");
+		get => _currentPage ?? throw new InvalidOperationException("The CurrentPage property has not been set.");
 		set => _currentPage = value;
 	}
 
@@ -151,11 +152,10 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 	/// <returns>An awaitable Task that completes when the operation completes.</returns>
 	protected async Task OpenUrlAsync(string? url, bool openInsideApp)
 	{
+		Guard.IsNotNullOrWhiteSpace(url);
+
 		try
 		{
-			if (string.IsNullOrWhiteSpace(url))
-				throw new Exception("The url is null or empty");
-
 			await Browser.OpenAsync(url, openInsideApp ? BrowserLaunchMode.SystemPreferred : BrowserLaunchMode.External);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { url, openInsideApp }))
@@ -171,11 +171,10 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 	/// <returns>An awaitable Task that completes when the operation completes.</returns>
 	protected async Task NavigateToAppPathAsync(string? path)
 	{
+		Guard.IsNotNullOrWhiteSpace(path);
+
 		try
 		{
-			if (string.IsNullOrWhiteSpace(path))
-				throw new Exception("The path is null or empty");
-
 			await Shell.Current.GoToAsync(path);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { path }))

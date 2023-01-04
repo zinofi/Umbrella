@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Text;
 using log4net;
 using Microsoft.Extensions.Logging;
@@ -70,8 +71,8 @@ public class Log4NetLogger : ILogger
 		// If the eventId is 0 check if the Name has a value as we have hijacked this to allow for recursive calls
 		// to this method to use the same id for correlating messages.
 		string messageId = eventId.Id is 0
-			? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString() : eventId.Name!
-			: eventId.Id.ToString();
+			? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture) : eventId.Name!
+			: eventId.Id.ToString(CultureInfo.InvariantCulture);
 
 		var messageBuider = new StringBuilder()
 			.AppendLine(messageId)

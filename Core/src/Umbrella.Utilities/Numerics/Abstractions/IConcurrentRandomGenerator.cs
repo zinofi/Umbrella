@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Umbrella.Utilities.Exceptions;
+﻿using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Numerics.Abstractions;
 
@@ -37,14 +35,14 @@ public interface IConcurrentRandomGenerator
 	/// equals <paramref name="max"/>, <paramref name="min"/> is returned.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown if either parameter value is less than zero, or if <paramref name="max"/> is less than <paramref name="min"/>.</exception>
 	/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
-	int Next(int min = 0, int max = 0);
+	int GetNext(int min = 0, int max = 0);
 
 	/// <summary>
 	/// Returns a non-negative random integer.
 	/// </summary>
 	/// <returns>A 32-bit signed integer that is greater than or equal to 0 and less than <see cref="int.MaxValue"/>.</returns>
 	/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
-	int Next();
+	int GetNext();
 
 	/// <summary>
 	/// Returns a specified number of random elements from a sequence.

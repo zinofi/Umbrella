@@ -1,5 +1,7 @@
 ﻿namespace Umbrella.DynamicImage.Abstractions;
 
+// TODO: Add support for AVIF and prefer to WebP when supported by clients.
+
 /// <summary>
 /// The formats supported by the Dynamic Image infrastructure.
 /// </summary>

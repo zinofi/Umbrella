@@ -27,7 +27,5 @@ public class AppCenterLoggerProvider : ILoggerProvider
 	public ILogger CreateLogger(string categoryName) => new AppCenterLogger(categoryName, _minLevel, _includeEventId);
 
 	/// <inheritdoc />
-	public void Dispose()
-	{
-	}
+	public void Dispose() => GC.SuppressFinalize(this);
 }

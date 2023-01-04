@@ -11,7 +11,7 @@ public class RequiredIfTrueAttribute : RequiredIfAttribute
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	public RequiredIfTrueAttribute(string dependentProperty)
-		: base(dependentProperty, Operator.EqualTo, true)
+		: base(dependentProperty, EqualityOperator.EqualTo, true)
 	{
 	}
 }

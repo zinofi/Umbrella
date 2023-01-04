@@ -45,5 +45,9 @@ public class UmbrellaLoadingScreen : ComponentBase, IDisposable
 	}
 
 	/// <inheritdoc />
-	public void Dispose() => LoadingScreenUtility.OnStateChanged -= LoadingScreenUtility_OnStateChanged;
+	public void Dispose()
+	{
+		LoadingScreenUtility.OnStateChanged -= LoadingScreenUtility_OnStateChanged;
+		GC.SuppressFinalize(this);
+	}
 }

@@ -69,11 +69,11 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 			byte[]? bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
 
 			if (bytes is not null)
-				await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken).ConfigureAwait(false);
+				await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))
 		{
-			throw new DynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
+			throw new UmbrellaDynamicImageException($"There was a problem adding the {nameof(DynamicImageItem)} to the cache.", exc, dynamicImage.ImageOptions);
 		}
 	}
 
@@ -115,7 +115,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, sourceLastModified, fileExtension }))
 		{
-			throw new DynamicImageException("There was problem retrieving the image from the cache.", exc);
+			throw new UmbrellaDynamicImageException("There was problem retrieving the image from the cache.", exc);
 		}
 	}
 
@@ -123,7 +123,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 	public virtual async Task RemoveAsync(DynamicImageOptions options, string fileExtension, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		
+
 		try
 		{
 			string cacheKey = GenerateCacheKey(options);
@@ -133,7 +133,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }))
 		{
-			throw new DynamicImageException("There was problem removing the image from the cache.", exc);
+			throw new UmbrellaDynamicImageException("There was problem removing the image from the cache.", exc);
 		}
 	}
 	#endregion

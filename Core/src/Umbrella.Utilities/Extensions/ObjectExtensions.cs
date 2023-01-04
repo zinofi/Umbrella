@@ -10,7 +10,6 @@ namespace Umbrella.Utilities.Extensions;
 /// </summary>
 public static class ObjectExtensions
 {
-	#region Public Static Methods		
 	/// <summary>
 	/// Converts to the specified <paramref name="value"/> to a JSON string.
 	/// </summary>
@@ -23,5 +22,4 @@ public static class ObjectExtensions
 
 		return UmbrellaStatics.SerializeJson(value, useCamelCasingRules);
 	}
-	#endregion
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Web;
 using CommunityToolkit.Diagnostics;
 
@@ -26,13 +27,13 @@ public static class StringExtensions
 		Guard.IsNotNullOrWhiteSpace(relativeUrl, nameof(relativeUrl));
 		Guard.IsNotNull(requestUri, nameof(requestUri));
 
-		if (relativeUrl.StartsWith("/"))
+		if (relativeUrl.StartsWith("/", StringComparison.Ordinal))
 			relativeUrl = relativeUrl.Insert(0, "~");
-		if (!relativeUrl.StartsWith("~/"))
+		if (!relativeUrl.StartsWith("~/", StringComparison.Ordinal))
 			relativeUrl = relativeUrl.Insert(0, "~/");
 
-		string port = portOverride > 0 ? portOverride.ToString() : (requestUri.Port != 80 ? (":" + requestUri.Port) : string.Empty);
+		string port = portOverride > 0 ? portOverride.ToString(CultureInfo.InvariantCulture) : (requestUri.Port != 80 ? (":" + requestUri.Port) : string.Empty);
 
-		return string.Format("{0}://{1}{2}{3}", schemeOverride ?? requestUri.Scheme, hostOverride ?? requestUri.Host, port, VirtualPathUtility.ToAbsolute(relativeUrl));
+		return string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", schemeOverride ?? requestUri.Scheme, hostOverride ?? requestUri.Host, port, VirtualPathUtility.ToAbsolute(relativeUrl));
 	}
 }

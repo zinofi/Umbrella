@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -46,7 +43,7 @@ public class ApiIntegrationCookieAuthenticationEvents : CookieAuthenticationEven
 	{
 		try
 		{
-			if (Options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x)) && context.Response.StatusCode == StatusCodes.Status200OK)
+			if (Options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x, StringComparison.OrdinalIgnoreCase)) && context.Response.StatusCode is StatusCodes.Status200OK)
 			{
 				context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 			}
@@ -68,7 +65,7 @@ public class ApiIntegrationCookieAuthenticationEvents : CookieAuthenticationEven
 	{
 		try
 		{
-			if (Options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x)) && context.Response.StatusCode == StatusCodes.Status200OK)
+			if (Options.ApiPathPrefixes.Any(x => context.Request.Path.StartsWithSegments(x, StringComparison.OrdinalIgnoreCase)) && context.Response.StatusCode is StatusCodes.Status200OK)
 			{
 				context.Response.StatusCode = StatusCodes.Status403Forbidden;
 			}

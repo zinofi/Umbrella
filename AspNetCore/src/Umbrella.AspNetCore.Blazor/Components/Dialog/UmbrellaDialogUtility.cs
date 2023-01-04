@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Security.Claims;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
@@ -423,7 +423,7 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 		}
 	}
 
-	private IReadOnlyCollection<UmbrellaDialogButton> GetConfirmButtons(UmbrellaDialogButtonType acceptButtonType, IReadOnlyCollection<UmbrellaDialogButton> defaultButtons, string acceptButtonText, string cancelButtonText)
+	private static IReadOnlyCollection<UmbrellaDialogButton> GetConfirmButtons(UmbrellaDialogButtonType acceptButtonType, IReadOnlyCollection<UmbrellaDialogButton> defaultButtons, string acceptButtonText, string cancelButtonText)
 		=> acceptButtonText is DialogDefaults.DefaultConfirmButtonText && cancelButtonText is DialogDefaults.DefaultCancelButtonText
 			? defaultButtons
 			: new[]

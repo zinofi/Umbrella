@@ -1,10 +1,9 @@
-﻿using System.Collections.Concurrent;
-using System.IO;
-using System.Reflection;
-using log4net;
+﻿using log4net;
 using log4net.Config;
 using log4net.Repository;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace Umbrella.Extensions.Logging.Log4Net;
 
@@ -15,7 +14,7 @@ namespace Umbrella.Extensions.Logging.Log4Net;
 [ProviderAlias("log4net")]
 public class Log4NetProvider : ILoggerProvider
 {
-	private readonly ConcurrentDictionary<string, ILogger> _loggerDictionary = new ConcurrentDictionary<string, ILogger>();
+	private readonly ConcurrentDictionary<string, ILogger> _loggerDictionary = new();
 	private readonly ILoggerRepository _loggerRepository;
 
 	/// <summary>
@@ -28,18 +27,18 @@ public class Log4NetProvider : ILoggerProvider
 		_loggerRepository = LogManager.CreateRepository(Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
 
 		GlobalContext.Properties["appRoot"] = contentRootPath;
-		XmlConfigurator.ConfigureAndWatch(_loggerRepository, new FileInfo(Path.Combine(contentRootPath, configFileRelativePath.TrimStart('/'))));
+		_ = XmlConfigurator.ConfigureAndWatch(_loggerRepository, new FileInfo(Path.Combine(contentRootPath, configFileRelativePath.TrimStart('/'))));
 	}
 
 	/// <summary>
 	/// Creates the logger.
 	/// </summary>
-	/// <param name="name">The name.</param>
+	/// <param name="categoryName">The name.</param>
 	/// <returns>The logger.</returns>
-	public ILogger CreateLogger(string name) => _loggerDictionary.GetOrAdd(name, (x) => new Log4NetLogger(_loggerRepository.Name, x));
+	public ILogger CreateLogger(string categoryName) => _loggerDictionary.GetOrAdd(categoryName, (x) => new Log4NetLogger(_loggerRepository.Name, x));
 
 	#region IDisposable Support
-	private bool _disposedValue = false; // To detect redundant calls
+	private bool _disposedValue; // To detect redundant calls
 
 	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
@@ -62,6 +61,10 @@ public class Log4NetProvider : ILoggerProvider
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 	/// </summary>
-	public void Dispose() => Dispose(true);
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
 	#endregion
 }

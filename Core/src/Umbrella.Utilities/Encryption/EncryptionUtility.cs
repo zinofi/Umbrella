@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Encryption.Abstractions;
 
 namespace Umbrella.Utilities.Encryption;
@@ -57,7 +55,7 @@ public abstract class EncryptionUtility<TSymmetricAlgorithm> : IEncryptionUtilit
 			using var msEncrypt = new MemoryStream();
 			using var csEncrypt = new CryptoStream(msEncrypt, Encryptor, CryptoStreamMode.Write);
 
-			byte[] converted = ConvertStringToByteArray(value);
+			byte[] converted = EncryptionUtility<TSymmetricAlgorithm>.ConvertStringToByteArray(value);
 
 			csEncrypt.Write(converted, 0, converted.Length);
 			csEncrypt.FlushFinalBlock();
@@ -80,7 +78,7 @@ public abstract class EncryptionUtility<TSymmetricAlgorithm> : IEncryptionUtilit
 			csDecrypt.Write(value, 0, value.Length);
 			csDecrypt.Close();
 
-			return ConvertByteArrayToString(msDecrypt.ToArray());
+			return EncryptionUtility<TSymmetricAlgorithm>.ConvertByteArrayToString(msDecrypt.ToArray());
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -104,8 +102,8 @@ public abstract class EncryptionUtility<TSymmetricAlgorithm> : IEncryptionUtilit
 			{
 				// Assign key and iv
 				Mode = CipherMode.CBC,
-				Key = ConvertStringToByteArray(encryptionKey),
-				IV = ConvertStringToByteArray(initializationVector)
+				Key = EncryptionUtility<TSymmetricAlgorithm>.ConvertStringToByteArray(encryptionKey),
+				IV = EncryptionUtility<TSymmetricAlgorithm>.ConvertStringToByteArray(initializationVector)
 			};
 
 			byte[] key = Algorithm.Key;
@@ -217,14 +215,14 @@ public abstract class EncryptionUtility<TSymmetricAlgorithm> : IEncryptionUtilit
 	/// </summary>
 	/// <param name="str">The string to convert.</param>
 	/// <returns>The converted byte array.</returns>
-	private byte[] ConvertStringToByteArray(string str) => Encoding.Default.GetBytes(str);
+	private static byte[] ConvertStringToByteArray(string str) => Encoding.Default.GetBytes(str);
 
 	/// <summary>
 	/// Method to convert a byte array to a unicode string.
 	/// </summary>
 	/// <param name="bytes">The byte array to convert.</param>
 	/// <returns>The converted string.</returns>
-	private string ConvertByteArrayToString(byte[] bytes) => Encoding.Default.GetString(bytes);
+	private static string ConvertByteArrayToString(byte[] bytes) => Encoding.Default.GetString(bytes);
 
 	#endregion
 }

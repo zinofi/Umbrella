@@ -53,7 +53,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 	/// Gets the path to the named script bundle or path.
 	/// </summary>
 	/// <param name="bundleNameOrPath">The bundle name or path.</param>
-	/// <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" />.</param>
+	/// <param name="cancellationToken">The <see cref="CancellationToken" />.</param>
 	/// <returns>
 	/// The application relative path to the bundle.
 	/// </returns>
@@ -61,7 +61,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 	public override async Task<string> GetScriptPathAsync(string bundleNameOrPath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(bundleNameOrPath, nameof(bundleNameOrPath));
+		Guard.IsNotNullOrWhiteSpace(bundleNameOrPath);
 
 		try
 		{
@@ -70,7 +70,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundlePathAsync(bundleNameOrPath, "js", false, cancellationToken).ConfigureAwait(false),
 				Options,
-				cancellationToken)
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -83,7 +83,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 	/// Gets the path to the named css bundle or path.
 	/// </summary>
 	/// <param name="bundleNameOrPath">The bundle name or path.</param>
-	/// <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken" />.</param>
+	/// <param name="cancellationToken">The <see cref="CancellationToken" />.</param>
 	/// <returns>
 	/// The application relative path to the bundle.
 	/// </returns>
@@ -91,7 +91,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 	public override async Task<string> GetStyleSheetPathAsync(string bundleNameOrPath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(bundleNameOrPath, nameof(bundleNameOrPath));
+		Guard.IsNotNullOrWhiteSpace(bundleNameOrPath);
 
 		try
 		{
@@ -100,7 +100,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundlePathAsync(bundleNameOrPath, "css", false, cancellationToken).ConfigureAwait(false),
 				Options,
-				cancellationToken)
+                cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -122,7 +122,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		if (bundleNameOrPath.StartsWith("~") || bundleNameOrPath.StartsWith("/"))
+		if (bundleNameOrPath.StartsWith("~", StringComparison.Ordinal) || bundleNameOrPath.StartsWith("/", StringComparison.Ordinal))
 			throw new ArgumentException("The path must not be app relative. It should just be the webpack bundle name.");
 
 		if (Path.HasExtension(bundleNameOrPath))
@@ -134,7 +134,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 
 		return dicManifest.TryGetValue(bundleNameKey, out string bundlePath)
 			? bundlePath
-			: throw new Exception("The specified Webpack bundle cannot be found.");
+			: throw new InvalidOperationException("The specified Webpack bundle cannot be found.");
 	}
 	#endregion
 
@@ -151,7 +151,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 				IFileInfo fileInfo = FileProvider.GetFileInfo(Options.ManifestJsonFileSubPath);
 
 				if (!fileInfo.Exists)
-					throw new Exception("The specified Webpack Manifest JSON file does not exist.");
+					throw new InvalidOperationException("The specified Webpack Manifest JSON file does not exist.");
 
 				using Stream stream = fileInfo.CreateReadStream();
 				using var sr = new StreamReader(stream);
@@ -169,8 +169,8 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 					return Path.Combine(Options.DefaultBundleFolderAppRelativePath, loweredPath);
 				});
 			},
-			Options,
-			expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(Options.ManifestJsonFileSubPath) } : null)
+			Options, expirationTokensBuilder: () => Options.WatchFiles ? new[] { FileProvider.Watch(Options.ManifestJsonFileSubPath) } : null,
+			cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc)

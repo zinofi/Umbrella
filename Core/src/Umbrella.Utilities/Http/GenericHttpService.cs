@@ -253,7 +253,7 @@ public class GenericHttpService : IGenericHttpService
 	/// a <see cref="HttpProblemCodes.ConcurrencyStampMismatch"/> code in the problem details response.
 	/// </summary>
 	/// <param name="result">The result of the Http server call.</param>
-	protected void ThrowIfConcurrencyStampMismatchResponse(IHttpCallResult result)
+	protected static void ThrowIfConcurrencyStampMismatchResponse(IHttpCallResult result)
 	{
 		if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
 			throw new UmbrellaHttpServiceConcurrencyException("The server has reported a concurrency stamp mismatch.");
@@ -264,7 +264,7 @@ public class GenericHttpService : IGenericHttpService
 	/// </summary>
 	/// <param name="exception">The exception.</param>
 	/// <returns>The exception instance.</returns>
-	protected UmbrellaHttpServiceAccessException CreateServiceAccessException(Exception exception)
+	protected static UmbrellaHttpServiceAccessException CreateServiceAccessException(Exception exception)
 		=> exception is UmbrellaHttpServiceAccessException serviceAccessException
 			? serviceAccessException
 			: new UmbrellaHttpServiceAccessException(HttpServiceMessages.DefaultUnknownErrorMessage, exception);
@@ -275,5 +275,5 @@ public class GenericHttpService : IGenericHttpService
 	/// <param name="url">The URL.</param>
 	/// <param name="errorMessage">The error message.</param>
 	protected void LogUnknownError(string url, string errorMessage)
-		=> Logger.LogError($"There was a problem accessing the {url} endpoint. The error from the server was: {errorMessage}");
+		=> Logger.WriteError(state: new { url, errorMessage });
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Abstractions;
@@ -23,7 +23,7 @@ public class EntityValidator : IEntityValidator
 	/// </returns>
 	public ValidationResult ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true)
 		=> !value.IsValidLength(minLength, maxLength, !required)
-			? new ValidationResult(string.Format(ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName })
+			? new ValidationResult(string.Format(CultureInfo.CurrentCulture, ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName })
 			: ValidationResult.Success;
 
 	/// <summary>
@@ -41,6 +41,6 @@ public class EntityValidator : IEntityValidator
 	public ValidationResult ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true)
 		where TProperty : struct, IComparable<TProperty>
 		=> !value.IsValidRange(min, max, !required)
-			? new ValidationResult(string.Format(ErrorMessages.InvalidPropertyNumberRangeErrorMessageFormat, propertyName, min, max), new[] { propertyName })
+			? new ValidationResult(string.Format(CultureInfo.CurrentCulture, ErrorMessages.InvalidPropertyNumberRangeErrorMessageFormat, propertyName, min, max), new[] { propertyName })
 			: ValidationResult.Success;
 }

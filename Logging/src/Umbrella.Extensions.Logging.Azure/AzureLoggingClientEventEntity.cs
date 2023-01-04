@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections;
+using System.Globalization;
 using System.Text;
 using Azure;
 using Azure.Data.Tables;
@@ -84,7 +85,7 @@ public class AzureLoggingClientEventEntity : ITableEntity
 
 		//The row key will be the current date and time in a format that will ensure items are ordered
 		//in ascending date order. GUID on the end is to ensure the RowKey is unique where the datetime string clashes with another RowKey.
-		RowKey = EventTimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffffff") + "-" + Guid.NewGuid().ToString();
+		RowKey = EventTimeStamp.ToString("yyyy-MM-dd hh:mm:ss.ffffff", CultureInfo.InvariantCulture) + "-" + Guid.NewGuid().ToString();
 	}
 	#endregion
 }

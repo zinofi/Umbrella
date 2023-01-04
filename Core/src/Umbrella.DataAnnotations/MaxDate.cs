@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using Umbrella.DataAnnotations.BaseClasses;
 
@@ -51,7 +52,7 @@ public class MaxDateAttribute : ModelAwareValidationAttribute
 	/// </summary>
 	/// <returns>A collection of validation parameters.</returns>
 	protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters() => base.GetClientValidationParameters()
-			.Union(new[] { new KeyValuePair<string, object>("Max", GetMaxDate().ToString("d")) });
+			.Union(new[] { new KeyValuePair<string, object>("Max", GetMaxDate().ToString("d", CultureInfo.CurrentCulture)) });
 
 	/// <summary>
 	/// Returns true if property is valid.

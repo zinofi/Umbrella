@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
 using Umbrella.Utilities.Email.Abstractions;
@@ -78,9 +75,9 @@ public abstract class UmbrellaRazorEmailSender
 		{
 			string viewPath = viewNameOrPath.StartsWith('~') ? viewNameOrPath : GetFullViewPath(viewNameOrPath);
 
-			string content = await ViewToStringRenderer.RenderViewToStringAsync(viewPath, model);
+			string content = await ViewToStringRenderer.RenderViewToStringAsync(viewPath, model, cancellationToken: cancellationToken);
 
-			await EmailSender.SendEmailAsync(email, subject, content, cancellationToken);
+			await EmailSender.SendEmailAsync(email, subject, content, cancellationToken: cancellationToken);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { model, email, subject, viewNameOrPath }))
 		{

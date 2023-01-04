@@ -108,7 +108,11 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	}
 
 	/// <inheritdoc />
-	public void Dispose() => _cancellationTokenSource?.Dispose();
+	public void Dispose()
+	{
+		_cancellationTokenSource?.Dispose();
+		GC.SuppressFinalize(this);
+	}
 
 	/// <summary>
 	/// Executes the core logic for this service.

@@ -49,7 +49,7 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 	}
 
 	/// <inheritdoc />
-	public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken cancellationToken = default, HttpContext? httpContext = null)
+	public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, HttpContext? httpContext = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

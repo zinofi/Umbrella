@@ -121,7 +121,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 			int densityIndex = sanitizedImageUrl.LastIndexOf('.');
 
 			if (densityIndex is -1)
-				throw new Exception("The image URL must contain a '.'");
+				throw new UmbrellaException("The image URL must contain a '.'");
 
 			IEnumerable<string> paths =
 				from density in lstPixelDensity
@@ -151,7 +151,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 			int densityIndex = sanitizedImageUrl.LastIndexOf('.');
 
 			if (densityIndex is -1)
-				throw new Exception("The image URL must contain a '.'");
+				throw new UmbrellaException("The image URL must contain a '.'");
 
 			string highResImagePath = pixelDensity > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{pixelDensity}x") : sanitizedImageUrl;
 
@@ -173,7 +173,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 			string[] parts = imageUrl.Split('?');
 
 			if (parts.Length != 2)
-				throw new Exception("The path contains more than one '?'.");
+				throw new UmbrellaException("The path contains more than one '?'.");
 
 			sanitizedImageUrl = parts[0];
 			qs = parts[1];

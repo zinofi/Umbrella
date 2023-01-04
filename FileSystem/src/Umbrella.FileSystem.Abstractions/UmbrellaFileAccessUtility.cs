@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Security.Claims;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Context.Abstractions;
 
@@ -104,7 +102,7 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 		try
 		{
 			if (FileInfoIsInDirectory(fileInfo, TempFilesDirectoryName))
-				await fileInfo.SetCreatedByIdAsync(CurrentUserIdAccessor.CurrentUserId, cancellationToken, false);
+				await fileInfo.SetCreatedByIdAsync(CurrentUserIdAccessor.CurrentUserId, false, cancellationToken);
 
 			if (writeChanges)
 				await fileInfo.WriteMetadataChangesAsync(cancellationToken);
@@ -125,7 +123,7 @@ public abstract class UmbrellaFileAccessUtility<TUserId, TUserRoleType, TDirecto
 	public string GetTempWebFilePath(string fileName) => $"/{WebFolderName}{GetTempFilePath(fileName)}".ToLowerInvariant();
 
 	/// <inheritdoc/>
-	public bool IsTempFilePath(string fileName) => fileName.StartsWith(GetTempDirectoryName() + "/", StringComparison.OrdinalIgnoreCase);
+	public bool IsTempFilePath(string filePath) => filePath.StartsWith(GetTempDirectoryName() + "/", StringComparison.OrdinalIgnoreCase);
 
 	/// <inheritdoc/>
 	public string GetDirectoryName(TDirectoryType directoryType, TGroupId groupId) => $"/{GetDirectoryNameFromType(directoryType)}/{groupId}";

@@ -4,6 +4,7 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using System.Globalization;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions;
 
@@ -26,7 +27,7 @@ public static class HttpRequestExtensions
 
 		if (!string.IsNullOrWhiteSpace(ifModifiedSince))
 		{
-			DateTime lastModified = DateTime.Parse(ifModifiedSince).ToUniversalTime();
+			DateTime lastModified = DateTime.Parse(ifModifiedSince, CultureInfo.InvariantCulture).ToUniversalTime();
 
 			return lastModified == valueToMatch;
 		}
@@ -47,7 +48,7 @@ public static class HttpRequestExtensions
 
 		string ifNoneMatch = request.Headers["If-None-Match"];
 
-		return !string.IsNullOrWhiteSpace(ifNoneMatch) && string.Compare(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase) == 0;
+		return !string.IsNullOrWhiteSpace(ifNoneMatch) && string.Equals(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase);
 	}
 
 	/// <summary>

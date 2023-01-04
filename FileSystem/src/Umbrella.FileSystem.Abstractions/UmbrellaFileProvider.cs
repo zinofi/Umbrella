@@ -277,7 +277,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
+	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(subpath);
@@ -290,7 +290,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 			if (file is null)
 				throw new UmbrellaFileNotFoundException(subpath);
 
-			await file.WriteFromByteArrayAsync(bytes, cacheContents, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
+			await file.WriteFromByteArrayAsync(bytes, cacheContents, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 
 			return file;
 		}
@@ -301,7 +301,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, CancellationToken cancellationToken = default, int? bufferSizeOverride = null)
+	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
@@ -314,7 +314,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 			if (file is null)
 				throw new UmbrellaFileNotFoundException(subpath);
 
-			await file.WriteFromStreamAsync(stream, cancellationToken, bufferSizeOverride).ConfigureAwait(false);
+			await file.WriteFromStreamAsync(stream, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 
 			return file;
 		}
@@ -359,7 +359,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 		// and Linux which both use case-sensitive file systems.
 		string cleanedName = _multipleSlashSelector.Replace(pathBuilder.ToString(), "/").ToLowerInvariant();
 
-		if (!cleanedName.StartsWith("/"))
+		if (!cleanedName.StartsWith("/", StringComparison.Ordinal))
 			cleanedName = "/" + cleanedName;
 
 		return cleanedName;

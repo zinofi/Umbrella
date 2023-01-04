@@ -31,7 +31,7 @@ public class XElementExtensionsTest
 		Assert.Null(element.GetAttributeValue<double?>("nullable-double-whitespace"));
 	}
 
-	private XElement CreateXElement()
+	private static XElement CreateXElement()
 		=> new XElement("test",
 			new XAttribute("bool", true),
 			new XAttribute("byte", 10),

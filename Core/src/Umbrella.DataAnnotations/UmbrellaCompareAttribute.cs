@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-
-namespace Umbrella.DataAnnotations;
+﻿namespace Umbrella.DataAnnotations;
 
 /// <summary>
 /// An extension of the <see cref="CompareAttribute"/> with a fix to ensure that the <see cref="ValidationResult"/> that is

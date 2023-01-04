@@ -25,7 +25,7 @@ public readonly struct RequestNotificationHandlerExclusion : IEquatable<RequestN
 	{
 		Path = path.TrimToLowerInvariant();
 
-		if (!Path.StartsWith("/"))
+		if (!Path.StartsWith("/", StringComparison.Ordinal))
 			Path = "/" + Path;
 
 		Method = method;

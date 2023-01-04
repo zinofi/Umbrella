@@ -15,8 +15,8 @@ public class SpanExtensionsBenchmark
 	{
 		Span<char> span = stackalloc char[10];
 
-		int currentIndex = span.Append(0, "12345");
-		currentIndex = span.Append(currentIndex, "67890");
+		int currentIndex = span.Write(0, "12345");
+		currentIndex = span.Write(currentIndex, "67890");
 
 		return span.Length;
 	}
@@ -26,8 +26,8 @@ public class SpanExtensionsBenchmark
 	{
 		Span<char> span = stackalloc char[10];
 
-		int currentIndex = span.Append(0, "12345".AsSpan());
-		currentIndex = span.Append(currentIndex, "67890".AsSpan());
+		int currentIndex = span.Write(0, "12345".AsSpan());
+		currentIndex = span.Write(currentIndex, "67890".AsSpan());
 
 		return span.Length;
 	}

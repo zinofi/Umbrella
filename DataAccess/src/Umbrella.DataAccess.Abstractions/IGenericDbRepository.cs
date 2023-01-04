@@ -53,46 +53,46 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// Saves the entity.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="pushChangesToDb">if set to <c>true</c> pushes the changes to the database.</param>
 	/// <param name="addToContext">if set to <c>true</c> adds the entity to the database context.</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child options.</param>
 	/// <param name="forceAdd">if set to <c>true</c> forces the entity to be added to the database. This is useful when the repository cannot determine if the item is new or not.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the save operation.</returns>
-	Task<OperationResult<TEntity>> SaveAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false);
+	Task<OperationResult<TEntity>> SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Saves all entities in the specified collection.
 	/// </summary>
 	/// <param name="entities">The entities.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="pushChangesToDb">if set to <c>true</c> pushes the changes to the database.</param>
 	/// <param name="bypassSaveLogic">if set to <c>true</c> bypasses the default save logic.</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the save operation.</returns>
-	Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
+	Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes the entity.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="pushChangesToDb">if set to <c>true</c> pushes the changes to the database.</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-	Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
+	Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes all of the entities in the specified collection.
 	/// </summary>
 	/// <param name="entities">The entities.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="pushChangesToDb">if set to <c>true</c> pushes the changes to the database.</param>
 	/// <param name="repoOptions">The repo options.</param>
 	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-	Task DeleteAllAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null);
+	Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 }

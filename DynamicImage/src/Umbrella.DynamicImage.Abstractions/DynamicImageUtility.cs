@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
@@ -69,7 +70,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { format }))
 		{
-			throw new DynamicImageException("There has been a problem parsing the image format.", exc);
+			throw new UmbrellaDynamicImageException("There has been a problem parsing the image format.", exc);
 		}
 	}
 
@@ -92,7 +93,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 
 			string pathPrefix = dynamicImagePathPrefix.TrimToLowerInvariant();
 
-			if (string.IsNullOrEmpty(url) || !url.StartsWith($"/{pathPrefix}/"))
+			if (string.IsNullOrEmpty(url) || !url.StartsWith($"/{pathPrefix}/", StringComparison.Ordinal))
 				return _skipParseUrlResult;
 
 			string[] prefixSegments = pathPrefix.Split(_segmentSeparatorArray, StringSplitOptions.RemoveEmptyEntries);
@@ -126,9 +127,8 @@ public class DynamicImageUtility : IDynamicImageUtility
 			if (densityMatch.Success)
 			{
 				//Get the density from the 2nd group
-				if (densityMatch.Groups.Count == 2)
+				if (densityMatch.Groups.Count is 2 && int.TryParse(densityMatch.Groups[1].Value, NumberStyles.None, CultureInfo.InvariantCulture, out int density))
 				{
-					int density = int.Parse(densityMatch.Groups[1].Value);
 					int densityIdentifierLength = densityMatch.Value.Length;
 
 					//Remove the density identifier from the path
@@ -164,7 +164,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { imageOptions, validMappings }))
 		{
-			throw new DynamicImageException("An error has occurred whilst validating the image options.", exc);
+			throw new UmbrellaDynamicImageException("An error has occurred whilst validating the image options.", exc);
 		}
 	}
 
@@ -185,15 +185,16 @@ public class DynamicImageUtility : IDynamicImageUtility
 				string[] parts = path.Split('?');
 
 				if (parts.Length != 2)
-					throw new Exception("The path contains more than one '?'.");
+					throw new InvalidOperationException("The path contains more than one '?'.");
 
 				path = parts[0];
 				qs = parts[1];
 			}
 
-			string originalExtension = Path.GetExtension(path).ToLower().Remove(0, 1);
+			string originalExtension = Path.GetExtension(path).ToLowerInvariant().Remove(0, 1);
 
-			string virtualPath = string.Format(VirtualPathFormat,
+			string virtualPath = string.Format(CultureInfo.InvariantCulture,
+				VirtualPathFormat,
 				dynamicImagePathPrefix,
 				options.Width,
 				options.Height,
@@ -208,7 +209,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImagePathPrefix, options }))
 		{
-			throw new DynamicImageException("An error has occurred whilst generating the virtual path.", exc);
+			throw new UmbrellaDynamicImageException("An error has occurred whilst generating the virtual path.", exc);
 		}
 	}
 	#endregion

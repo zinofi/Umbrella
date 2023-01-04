@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Security.Abstractions;
 
@@ -37,18 +34,18 @@ public class JwtUtility : IJwtUtility
 			var keyValuePairs = UmbrellaStatics.DeserializeJson<Dictionary<string, object>>(json);
 
 			if (keyValuePairs is null)
-				throw new Exception("The json could not be converted to a dictionary of key/value pairs.");
+				throw new InvalidOperationException("The json could not be converted to a dictionary of key/value pairs.");
 
-			keyValuePairs.TryGetValue(roleClaimType, out object roles);
+			_ = keyValuePairs.TryGetValue(roleClaimType, out object roles);
 
 			if (roles is not null)
 			{
-				if (roles.ToString().Trim().StartsWith("["))
+				if (roles.ToString().Trim().StartsWith("[", StringComparison.Ordinal))
 				{
 					string[]? parsedRoles = UmbrellaStatics.DeserializeJson<string[]>(roles.ToString());
 
 					if (parsedRoles is null)
-						throw new Exception("The roles could not be parsed.");
+						throw new InvalidOperationException("The roles could not be parsed.");
 
 					foreach (string parsedRole in parsedRoles)
 					{
@@ -60,7 +57,7 @@ public class JwtUtility : IJwtUtility
 					claims.Add(new Claim(roleClaimType, roles.ToString()));
 				}
 
-				keyValuePairs.Remove(roleClaimType);
+				_ = keyValuePairs.Remove(roleClaimType);
 			}
 
 			claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
@@ -73,7 +70,7 @@ public class JwtUtility : IJwtUtility
 		}
 	}
 
-	private byte[] ParseBase64WithoutPadding(string base64)
+	private static byte[] ParseBase64WithoutPadding(string base64)
 	{
 		base64 = (base64.Length % 4) switch
 		{

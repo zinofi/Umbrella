@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 namespace Umbrella.TypeScript.Generators;
@@ -24,7 +25,7 @@ public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
 	}
 
 	/// <inheritdoc />
-	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder builder)
+	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder)
 	{
 		if (!string.IsNullOrEmpty(tsInfo.TypeName))
 		{
@@ -32,7 +33,7 @@ public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
 
 			string formatString = "\t\t{0}: ";
 
-			if (tsInfo.TypeName!.EndsWith("[]"))
+			if (tsInfo.TypeName!.EndsWith("[]", StringComparison.Ordinal))
 			{
 				formatString += _useDecorators ? "{1}" : "KnockoutObservableArray<{1}>;";
 
@@ -44,7 +45,7 @@ public class KnockoutInterfaceGenerator : BaseInterfaceGenerator
 				formatString += _useDecorators ? "{1}" : "KnockoutObservable<{1}>;";
 			}
 
-			builder.AppendLine(string.Format(formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}"));
+			_ = typeBuilder.AppendLine(string.Format(CultureInfo.InvariantCulture, formatString, tsInfo.Name, $"{tsInfo.TypeName}{strStrictNullCheck}"));
 		}
 	}
 }

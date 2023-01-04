@@ -22,4 +22,8 @@
 		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="Umbrella.AppFramework.Shared.Exceptions" />
+	</ItemGroup>
+
 </Project>

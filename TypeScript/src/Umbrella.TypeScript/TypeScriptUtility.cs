@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Humanizer;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Umbrella.Utilities.Extensions;
 
@@ -31,9 +29,9 @@ public static class TypeScriptUtility
 			generatedName = "I" + generatedName;
 		}
 
-		if (outputModelType == TypeScriptOutputModelType.KnockoutClass || outputModelType == TypeScriptOutputModelType.KnockoutInterface)
+		if (outputModelType is TypeScriptOutputModelType.KnockoutClass or TypeScriptOutputModelType.KnockoutInterface)
 		{
-			int idxModelString = generatedName.LastIndexOf("Model");
+			int idxModelString = generatedName.LastIndexOf("Model", StringComparison.Ordinal);
 
 			generatedName = idxModelString > -1
 				? generatedName.Insert(idxModelString, "Knockout")
@@ -53,10 +51,10 @@ public static class TypeScriptUtility
 	/// <param name="strictNullChecks">if set to <c>true</c> [strict null checks].</param>
 	/// <param name="propertyMode">The property mode.</param>
 	/// <returns>The <see cref="TypeScriptMemberInfo"/>.</returns>
-	[Obsolete]
+	[Obsolete("This is obsolete for some reason.")]
 	public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type modelType, Type memberType, PropertyInfo propertyInfo, TypeScriptOutputModelType outputType, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
 	{
-		string memberName = propertyInfo.Name.ToCamelCaseInvariant();
+		string memberName = propertyInfo.Name.Camelize();
 
 		var info = new TypeScriptMemberInfo(memberName, memberType);
 
@@ -215,7 +213,7 @@ public static class TypeScriptUtility
 
 				if (propertyValue is null)
 				{
-					if (info.TypeName?.EndsWith("[]") is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() is not null)
+					if (info.TypeName?.EndsWith("[]", StringComparison.Ordinal) is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() is not null)
 					{
 						info.InitialOutputValue = "[]";
 					}
@@ -258,11 +256,11 @@ public static class TypeScriptUtility
 				{
 					info.InitialOutputValue = propertyValue.ToString().ToLowerInvariant();
 				}
-				else if (info.TypeName?.EndsWith("[]") is true)
+				else if (info.TypeName?.EndsWith("[]", StringComparison.Ordinal) is true)
 				{
 					info.InitialOutputValue = "[]";
 				}
-				else if (info.TypeName?.StartsWith("Map<") is true)
+				else if (info.TypeName?.StartsWith("Map<", StringComparison.Ordinal) is true)
 				{
 					// Maps are used to represent a Dictionary on the server. We can only support the default
 					// empty Dictionary which can be done by instantiating a new Map.

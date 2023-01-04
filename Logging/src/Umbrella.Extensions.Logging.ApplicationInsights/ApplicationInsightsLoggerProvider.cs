@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.ApplicationInsights;
+﻿using Microsoft.ApplicationInsights;
 using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Extensions.Logging.ApplicationInsights;
@@ -31,13 +26,8 @@ public class ApplicationInsightsLoggerProvider : ILoggerProvider
 	}
 
 	/// <inheritdoc />
-	public ILogger CreateLogger(string categoryName)
-	{
-		return new ApplicationInsightsLogger(categoryName, _telemetryClient, _minLevel, _trackExceptionsAsExceptionTelemetry, _includeEventId);
-	}
+	public ILogger CreateLogger(string categoryName) => new ApplicationInsightsLogger(categoryName, _telemetryClient, _minLevel, _trackExceptionsAsExceptionTelemetry, _includeEventId);
 
 	/// <inheritdoc />
-	public void Dispose()
-	{
-	}
+	public void Dispose() => GC.SuppressFinalize(this);
 }
