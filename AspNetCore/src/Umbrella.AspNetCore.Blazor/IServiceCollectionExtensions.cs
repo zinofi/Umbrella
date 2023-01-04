@@ -27,7 +27,7 @@ public static class IServiceCollectionExtensions
 	/// <returns>The services builder.</returns>
 	public static IServiceCollection AddUmbrellaBlazor(
 		this IServiceCollection services,
-		Action<IServiceProvider, JwtAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null)
+		Action<IServiceProvider, ClaimsPrincipalAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services, nameof(services));
 
@@ -38,8 +38,8 @@ public static class IServiceCollectionExtensions
 		_ = services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
 
 		// Security
-		services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
-		services.AddScoped<IJwtAuthenticationStateProvider>(x => (JwtAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
+		services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();
+		services.AddScoped<IClaimsPrincipalAuthenticationStateProvider>(x => (ClaimsPrincipalAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
 		services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
 
 		return services;
