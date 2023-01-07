@@ -31,7 +31,7 @@ public static class ReadOnlySpanExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void ToLowerSlimNetClr(in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo culture)
 	{
-		Guard.IsNotEqualTo(source.Length, destination.Length);
+		Guard.IsEqualTo(source.Length, destination.Length);
 
 		for (int i = 0; i < source.Length; i++)
 		{
@@ -70,7 +70,7 @@ public static class ReadOnlySpanExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void ToUpperSlimNetClr(in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo culture)
 	{
-		Guard.IsNotEqualTo(source.Length, destination.Length);
+		Guard.IsEqualTo(source.Length, destination.Length);
 
 		for (int i = 0; i < source.Length; i++)
 		{

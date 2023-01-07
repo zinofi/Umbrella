@@ -53,17 +53,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 		try
 		{
-			return _pixelDensityDictionary.GetOrAdd(maxPixelDensity, key =>
-			{
-				int[] densities = new int[maxPixelDensity];
-
-				for (int i = maxPixelDensity; i >= 1; i--)
-				{
-					densities[maxPixelDensity - i] = maxPixelDensity - i + 1;
-				}
-
-				return densities;
-			});
+			return _pixelDensityDictionary.GetOrAdd(maxPixelDensity, key => Enumerable.Range(1, maxPixelDensity).ToArray());
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { maxPixelDensity }))
 		{

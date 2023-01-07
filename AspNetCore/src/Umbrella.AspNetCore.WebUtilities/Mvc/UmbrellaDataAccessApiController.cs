@@ -25,6 +25,15 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 // We could encapsulate all of the core logic into a utility class of some kind and pass in a enum to change the behaviour, e.g. Mode = Api, Mvc, RazorPage
 // and that would then determine if we returned, e.g. Page(model) - RazorPages, View(model) - Mvc, Ok(model) - Api.
 // Would be a good way of doing things for non-blazor projects where we use server page rendering.
+
+/// <summary>
+/// A generic API Controller that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
+/// </summary>
+/// <remarks>
+/// This controller is the basis for the <see cref="UmbrellaGenericRepositoryApiController{TSlimModel, TPaginatedResultModel, TModel, TCreateModel, TCreateResultModel, TUpdateModel, TUpdateResultModel, TRepository, TEntity, TRepositoryOptions, TEntityKey}"/>
+/// which is easier to use and maintain so consider using that in the first instance instead of this controller.
+/// </remarks>
+/// <seealso cref="UmbrellaApiController" />
 public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 {
 	/// <summary>
@@ -72,14 +81,15 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	}
 
 	/// <summary>
-	/// Reads all items from a repository.
+	/// Used to load paginated entities in bulk from the repository based on the specified <paramref name="sorters"/> and <paramref name="filters"/>
+	/// with each result mapped to a collection of <typeparamref name="TItemModel"/> wrapped in a <typeparamref name="TPaginatedResultModel"/>.
 	/// </summary>
 	/// <typeparam name="TEntityResult">The type of the entity result.</typeparam>
 	/// <typeparam name="TEntity">The type of the entity.</typeparam>
 	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
 	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
 	/// <typeparam name="TItemModel">The type of the item model.</typeparam>
-	/// <typeparam name="TPaginatedItemModel">The type of the paginated item model.</typeparam>
+	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 	/// <param name="pageNumber">The page number.</param>
 	/// <param name="pageSize">Size of the page.</param>
 	/// <param name="sorters">The sorters.</param>
@@ -93,8 +103,11 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <param name="options">The repository options.</param>
 	/// <param name="childOptions">The child repository options.</param>
 	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
-	/// <returns>An action result with the result of the operation.</returns>
-	protected virtual async Task<IActionResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedItemModel>(
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TPaginatedResultModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+	protected virtual async Task<IActionResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(
 		int pageNumber,
 		int pageSize,
 		SortExpression<TEntityResult>[]? sorters,
@@ -103,7 +116,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		Func<int, int, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<PaginatedResultModel<TEntityResult>>> loadReadAllDataAsyncDelegate,
 		CancellationToken cancellationToken,
 		Func<IReadOnlyCollection<TEntityResult>, TItemModel[]>? mapReadAllEntitiesDelegate = null,
-		Func<PaginatedResultModel<TEntityResult>, TPaginatedItemModel, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, CancellationToken, Task>? afterCreateSearchSlimPaginatedModelAsyncDelegate = null,
+		Func<PaginatedResultModel<TEntityResult>, TPaginatedResultModel, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, CancellationToken, Task>? afterCreateSearchSlimPaginatedModelAsyncDelegate = null,
 		Func<TEntityResult, TItemModel, CancellationToken, Task<IActionResult?>>? afterCreateSlimModelAsyncDelegate = null,
 		TRepositoryOptions? options = null,
 		IEnumerable<RepoOptions>? childOptions = null,
@@ -112,7 +125,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
-		where TPaginatedItemModel : PaginatedResultModel<TItemModel>, new()
+		where TPaginatedResultModel : PaginatedResultModel<TItemModel>, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -131,7 +144,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("There are items that are forbidden from being accessed in the results.");
 			}
 
-			var model = new TPaginatedItemModel
+			var model = new TPaginatedResultModel
 			{
 				Items = mapReadAllEntitiesDelegate is null ? await Mapper.MapAllAsync<TItemModel>(result.Items, cancellationToken).ConfigureAwait(false) : mapReadAllEntitiesDelegate(result.Items),
 				PageNumber = pageNumber,
@@ -171,6 +184,30 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 	}
 
+	/// <summary>
+	/// Used to load a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/> and return a
+	/// mapped <typeparamref name="TModel"/>. 
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TRepository">The type of the repository.</typeparam>
+	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+	/// <typeparam name="TModel">The type of the model.</typeparam>
+	/// <param name="id">The identifier.</param>
+	/// <param name="repository">The repository.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="mapperCallback">The mapper callback.</param>
+	/// <param name="afterReadEntityCallback">The after read entity callback.</param>
+	/// <param name="trackChanges">if set to <see langword="true"/> enable change tracking on the database context.</param>
+	/// <param name="map">The map.</param>
+	/// <param name="options">The options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
+	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <paramref name="id"/> and type name of the entity.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
 	protected async Task<IActionResult> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 		TEntityKey id,
 		Lazy<TRepository> repository,
@@ -245,6 +282,35 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 	}
 
+	/// <summary>
+	/// Used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns
+	/// a <typeparamref name="TResultModel"/> if successful.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+	/// <typeparam name="TRepository">The type of the repository.</typeparam>
+	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+	/// <typeparam name="TModel">The type of the model.</typeparam>
+	/// <typeparam name="TResultModel">The type of the result model.</typeparam>
+	/// <param name="model">The model.</param>
+	/// <param name="repository">The repository.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="mapperInputCallback">The mapper input callback.</param>
+	/// <param name="beforeCreateEntityCallback">The before create entity callback.</param>
+	/// <param name="mapperOutputCallback">The mapper output callback.</param>
+	/// <param name="afterCreateEntityCallback">The after create entity callback.</param>
+	/// <param name="options">The options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
+	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using a key generated using the <see cref="GetCreateSynchronizationRootKey"/> method. This method must be overridden on the controller to make this work.</param>
+	/// <param name="enableOutputMapping">
+	/// Specifices whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
+	/// or if this is done by this method internally using basic assignment. NB: The latter only assigns some basic properties.
+	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TResultModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
 	protected async Task<IActionResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
 		TModel model,
 		Lazy<TRepository> repository,

@@ -19,6 +19,12 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 /// <summary>
 /// A generic API Controller that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
 /// </summary>
+/// <remarks>
+/// This controller extends the <see cref="UmbrellaDataAccessApiController" /> by exposing public API endpoints which call into the base methods
+/// that do the processing using the generic type parameters specified on this controller type. It also simplifies usage by using commonly used default values
+/// for method parameters. <see cref="UmbrellaDataAccessApiController"/> can be used instead of this controller and provides more flexibility, however, this comes at the
+/// expense of simplicity and maintainability of controller that extend that base controller instead of this one.
+/// </remarks>
 /// <typeparam name="TSlimModel">The type of the slim model.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 /// <typeparam name="TModel">The type of the model.</typeparam>
@@ -47,7 +53,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected Lazy<TRepository> Repository { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether the <see cref="SearchSlim"/> endpoint is enabled.
+	/// Gets a value indicating whether the <c>SearchSlim</c> endpoint is enabled.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -56,7 +62,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool SlimReadEndpointEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether the <see cref="Get"/> endpoint is enabled.
+	/// Gets a value indicating whether the <c>Get</c> endpoint is enabled.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -65,7 +71,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool ReadEndpointEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether the <see cref="Post"/> endpoint is enabled.
+	/// Gets a value indicating whether the <c>Post</c> endpoint is enabled.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -74,7 +80,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool CreateEndpointEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether the <see cref="Put"/> endpoint is enabled.
+	/// Gets a value indicating whether the <c>Put</c> endpoint is enabled.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -83,7 +89,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool UpdateEndpointEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether the <see cref="Delete"/> endpoint is enabled.
+	/// Gets a value indicating whether the <c>Delete</c> endpoint is enabled.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -92,7 +98,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool DeleteEndpointEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether imperative authorization checks are performed when the <see cref="SearchSlim"/> endpoint is executed.
+	/// Gets a value indicating whether imperative authorization checks are performed when the <c>SearchSlim</c> endpoint is executed.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -101,7 +107,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool AuthorizationSlimReadChecksEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether imperative authorization checks are performed when the <see cref="Get"/> endpoint is executed.
+	/// Gets a value indicating whether imperative authorization checks are performed when the <c>Get</c> endpoint is executed.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -110,7 +116,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool AuthorizationReadChecksEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether imperative authorization checks are performed when the <see cref="Post"/> endpoint is executed.
+	/// Gets a value indicating whether imperative authorization checks are performed when the <c>Post</c> endpoint is executed.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -119,7 +125,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool AuthorizationCreateChecksEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether imperative authorization checks are performed when the <see cref="Put"/> endpoint is executed.
+	/// Gets a value indicating whether imperative authorization checks are performed when the <c>Put</c> endpoint is executed.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -128,7 +134,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool AuthorizationUpdateChecksEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether imperative authorization checks are performed when the <see cref="Delete"/> endpoint is executed.
+	/// Gets a value indicating whether imperative authorization checks are performed when the <c>Delete</c> endpoint is executed.
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
@@ -137,7 +143,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool AuthorizationDeleteChecksEnabled { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether or not entities loaded during calls to the <see cref="Get"/> endpoint
+	/// Gets a value indicating whether or not entities loaded during calls to the <c>Get</c> endpoint
 	/// are loaded with change tracking enabled.
 	/// </summary>
 	/// <remarks>
@@ -146,7 +152,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool GetTrackChanges { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether calls to the <see cref="Get(TEntityKey, CancellationToken)"/> endpoint should be synchronized
+	/// Gets a value indicating whether calls to the <c>Get</c> endpoint should be synchronized
 	/// using the <see cref="IEntity{TEntityKey}.Id"/> of the entity being loaded.
 	/// </summary>
 	/// <remarks>
@@ -155,8 +161,8 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool GetLock { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether calls to the <see cref="Post(TCreateModel, CancellationToken)"/> endpoint should be synchronized
-	/// using a synchronization key created by a call to the <see cref="UmbrellaDataAccessApiController.GetCreateSynchronizationRootKey(object)"/> method.
+	/// Gets a value indicating whether calls to the <c>Post</c> endpoint should be synchronized
+	/// using a synchronization key created by a call to the <see cref="UmbrellaDataAccessApiController.GetCreateSynchronizationRootKey"/> method.
 	/// </summary>
 	/// <remarks>
 	/// Defaults to <see langword="false"/>.
@@ -164,7 +170,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool PostLock { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether calls to the <see cref="Put(TUpdateModel, CancellationToken)"/> endpoint should be synchronized
+	/// Gets a value indicating whether calls to the <c>Put</c> endpoint should be synchronized
 	/// using the <see cref="IEntity{TEntityKey}.Id"/> of the entity being updated.
 	/// </summary>
 	/// <remarks>
@@ -173,7 +179,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool PutLock { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether calls to the <see cref="Delete(TEntityKey, CancellationToken)"/> endpoint should be synchronized
+	/// Gets a value indicating whether calls to the <c>Delete</c> endpoint should be synchronized
 	/// using the <see cref="IEntity{TEntityKey}.Id"/> of the entity being deleted.
 	/// </summary>
 	/// <remarks>
@@ -182,7 +188,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool DeleteLock { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether result models created when the <see cref="Post(TCreateModel, CancellationToken)"/> endpoint is called
+	/// Gets a value indicating whether result models created when the <c>Post</c> endpoint is called
 	/// should be automatically mapped from the created entity using the <see cref="UmbrellaDataAccessApiController.Mapper"/>.
 	/// </summary>
 	/// <remarks>
@@ -196,7 +202,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual bool EnablePostOutputMapping { get; } = true;
 
 	/// <summary>
-	/// Gets a value indicating whether result models created when the <see cref="Put(TUpdateModel, CancellationToken)"/> endpoint is called
+	/// Gets a value indicating whether result models created when the <c>Put</c> endpoint is called
 	/// should be automatically mapped from the updated entity using the <see cref="UmbrellaDataAccessApiController.Mapper"/>.
 	/// </summary>
 	/// <remarks>
@@ -209,21 +215,170 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	protected virtual bool EnablePutOutputMapping { get; } = true;
 
+	/// <summary>
+	/// Gets the <see cref="IncludeMap{TEntity}"/> used by the <c>SearchSlim</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but should be specified when entities associated using navigation properties need to be loaded in addition
+	/// to the primary entity of type <typeparamref name="TEntity"/>.
+	/// </remarks>
 	protected virtual IncludeMap<TEntity>? SearchSlimIncludeMap { get; }
+
+	/// <summary>
+	/// Gets the <see cref="IncludeMap{TEntity}"/> used by the <c>Get</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but should be specified when entities associated using navigation properties need to be loaded in addition
+	/// to the primary entity of type <typeparamref name="TEntity"/>.
+	/// </remarks>
 	protected virtual IncludeMap<TEntity>? GetIncludeMap { get; }
+
+	/// <summary>
+	/// Gets the <see cref="IncludeMap{TEntity}"/> used by the <c>Put</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but should be specified when entities associated using navigation properties need to be loaded in addition
+	/// to the primary entity of type <typeparamref name="TEntity"/>.
+	/// </remarks>
 	protected virtual IncludeMap<TEntity>? PutIncludeMap { get; }
+
+	/// <summary>
+	/// Gets the <see cref="IncludeMap{TEntity}"/> used by the <c>Delete</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but should be specified when entities associated using navigation properties need to be loaded in addition
+	/// to the primary entity of type <typeparamref name="TEntity"/>.
+	/// </remarks>
 	protected virtual IncludeMap<TEntity>? DeleteIncludeMap { get; }
 
+	/// <summary>
+	/// Gets the <typeparamref name="TRepositoryOptions"/> used by the <c>SearchSlim</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but can be provided in order to pass options into the repository calls that can be
+	/// used by them internally to customise data processing based on these options.
+	/// </remarks>
 	protected virtual TRepositoryOptions? SearchSlimRepoOptions { get; }
+
+	/// <summary>
+	/// Gets the <typeparamref name="TRepositoryOptions"/> used by the <c>Get</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but can be provided in order to pass options into the repository calls that can be
+	/// used by them internally to customise data processing based on these options.
+	/// </remarks>
 	protected virtual TRepositoryOptions? GetRepoOptions { get; }
+
+	/// <summary>
+	/// Gets the <typeparamref name="TRepositoryOptions"/> used by the <c>Post</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but can be provided in order to pass options into the repository calls that can be
+	/// used by them internally to customise data processing based on these options.
+	/// </remarks>
 	protected virtual TRepositoryOptions? PostRepoOptions { get; }
+
+	/// <summary>
+	/// Gets the <typeparamref name="TRepositoryOptions"/> used by the <c>Put</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but can be provided in order to pass options into the repository calls that can be
+	/// used by them internally to customise data processing based on these options.
+	/// </remarks>
 	protected virtual TRepositoryOptions? PutRepoOptions { get; }
+
+	/// <summary>
+	/// Gets the <typeparamref name="TRepositoryOptions"/> used by the <c>Delete</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// This is initially <see langword="null"/> but can be provided in order to pass options into the repository calls that can be
+	/// used by them internally to customise data processing based on these options.
+	/// </remarks>
 	protected virtual TRepositoryOptions? DeleteRepoOptions { get; }
 
+	/// <summary>
+	/// Gets the child <see cref="RepoOptions"/> used by the <c>SearchSlim</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This is initially <see langword="null"/> but can be provided in order to pass child options into the repository calls that can be
+	/// used by them internally to pass down to depedent repositories.
+	/// </para>
+	/// <para>
+	/// e.g. A Person may have a collection of Pet entities which means
+	/// that there would be a PersonRepository and a PetRepository. If the PersonRepository performs some processing on the Pet entity collection,
+	/// it might do this by calling into the PetRepository. Specifying these child options means that they will be passed down to child repositories
+	/// such as the PetRepository automatically.
+	/// </para>
+	/// </remarks>
 	protected virtual RepoOptions[] SearchSlimChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+
+	/// <summary>
+	/// Gets the child <see cref="RepoOptions"/> used by the <see cref="Get"/> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This is initially <see langword="null"/> but can be provided in order to pass child options into the repository calls that can be
+	/// used by them internally to pass down to depedent repositories.
+	/// </para>
+	/// <para>
+	/// e.g. A Person may have a collection of Pet entities which means
+	/// that there would be a PersonRepository and a PetRepository. If the PersonRepository performs some processing on the Pet entity collection,
+	/// it might do this by calling into the PetRepository. Specifying these child options means that they will be passed down to child repositories
+	/// such as the PetRepository automatically.
+	/// </para>
+	/// </remarks>
 	protected virtual RepoOptions[] GetChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+
+	/// <summary>
+	/// Gets the child <see cref="RepoOptions"/> used by the <c>Post</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This is initially <see langword="null"/> but can be provided in order to pass child options into the repository calls that can be
+	/// used by them internally to pass down to depedent repositories.
+	/// </para>
+	/// <para>
+	/// e.g. A Person may have a collection of Pet entities which means
+	/// that there would be a PersonRepository and a PetRepository. If the PersonRepository performs some processing on the Pet entity collection,
+	/// it might do this by calling into the PetRepository. Specifying these child options means that they will be passed down to child repositories
+	/// such as the PetRepository automatically.
+	/// </para>
+	/// </remarks>
 	protected virtual RepoOptions[] PostChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+
+	/// <summary>
+	/// Gets the child <see cref="RepoOptions"/> used by the <c>Put</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This is initially <see langword="null"/> but can be provided in order to pass child options into the repository calls that can be
+	/// used by them internally to pass down to depedent repositories.
+	/// </para>
+	/// <para>
+	/// e.g. A Person may have a collection of Pet entities which means
+	/// that there would be a PersonRepository and a PetRepository. If the PersonRepository performs some processing on the Pet entity collection,
+	/// it might do this by calling into the PetRepository. Specifying these child options means that they will be passed down to child repositories
+	/// such as the PetRepository automatically.
+	/// </para>
+	/// </remarks>
 	protected virtual RepoOptions[] PutChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+
+	/// <summary>
+	/// Gets the child <see cref="RepoOptions"/> used by the <c>Delete</c> endpoint when loading entities from the repository.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This is initially <see langword="null"/> but can be provided in order to pass child options into the repository calls that can be
+	/// used by them internally to pass down to depedent repositories.
+	/// </para>
+	/// <para>
+	/// e.g. A Person may have a collection of Pet entities which means
+	/// that there would be a PersonRepository and a PetRepository. If the PersonRepository performs some processing on the Pet entity collection,
+	/// it might do this by calling into the PetRepository. Specifying these child options means that they will be passed down to child repositories
+	/// such as the PetRepository automatically.
+	/// </para>
+	/// </remarks>
 	protected virtual RepoOptions[] DeleteChildRepoOptions { get; } = Array.Empty<RepoOptions>();
 
 	/// <summary>
@@ -249,6 +404,26 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		Repository = repository;
 	}
 
+	/// <summary>
+	/// An API endpoint used to load paginated entities in bulk from the repository based on the specified <paramref name="sorters"/> and <paramref name="filters"/>
+	/// with each result mapped to a collection of <typeparamref name="TSlimModel"/> wrapped in a <typeparamref name="TPaginatedResultModel"/>.
+	/// </summary>
+	/// <param name="pageNumber">The page number.</param>
+	/// <param name="pageSize">Size of the page.</param>
+	/// <param name="sorters">The sorters.</param>
+	/// <param name="filters">The filters.</param>
+	/// <param name="filterCombinator">The filter combinator.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TPaginatedResultModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
+	/// <remarks>
+	/// This endpoint calls into the <c>ReadAllAsync</c> base controller method.
+	/// Please see this for further details regarding behaviour.
+	/// </remarks>
+	/// <seealso cref="UmbrellaDataAccessApiController.ReadAllAsync"/>
 	[HttpGet(nameof(SearchSlim))]
 	public virtual Task<IActionResult> SearchSlim(int pageNumber, int pageSize, [FromQuery] SortExpression<TEntity>[]? sorters = null, [FromQuery] FilterExpression<TEntity>[]? filters = null, FilterExpressionCombinator? filterCombinator = null, CancellationToken cancellationToken = default)
 		=> SlimReadEndpointEnabled
@@ -268,6 +443,22 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			AuthorizationSlimReadChecksEnabled)
 		: throw new NotSupportedException("Unsupported Endpoint");
 
+	/// <summary>
+	/// An API endpoint used to load a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/> and return a
+	/// mapped <typeparamref name="TModel"/>.
+	/// </summary>
+	/// <param name="id">The identifier.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
+	/// <remarks>
+	/// This endpoint calls into the <c>ReadAsync</c> base controller method.
+	/// Please see this for further details regarding behaviour.
+	/// </remarks>
+	/// <seealso cref="UmbrellaDataAccessApiController.ReadAsync"/>
 	[HttpGet]
 	public virtual Task<IActionResult> Get(TEntityKey id, CancellationToken cancellationToken = default)
 		=> ReadEndpointEnabled
@@ -285,6 +476,22 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			GetLock)
 		: throw new NotSupportedException("Unsupported Endpoint");
 
+	/// <summary>
+	/// An API endpoint used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TCreateModel"/> which returns
+	/// a <typeparamref name="TCreateResultModel"/> if successful.
+	/// </summary>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TCreateResultModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
+	/// <remarks>
+	/// This endpoint calls into the <c>CreateAsync</c> base controller method.
+	/// Please see this for further details regarding behaviour.
+	/// </remarks>
+	/// <seealso cref="UmbrellaDataAccessApiController.CreateAsync"/>
 	[HttpPost]
 	public virtual Task<IActionResult> Post(TCreateModel model, CancellationToken cancellationToken = default)
 		=> CreateEndpointEnabled
@@ -303,6 +510,22 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			EnablePostOutputMapping)
 		: throw new NotSupportedException("Unsupported Endpoint");
 
+	/// <summary>
+	/// An API endpoint used to update an existing <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TUpdateModel"/> which returns
+	/// a <typeparamref name="TUpdateResultModel"/> if successful.
+	/// </summary>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TUpdateResultModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
+	/// <remarks>
+	/// This endpoint calls into the <c>UpdateAsync</c> base controller method.
+	/// Please see this for further details regarding behaviour.
+	/// </remarks>
+	/// <seealso cref="UmbrellaDataAccessApiController.UpdateAsync"/>
 	[HttpPut]
 	public virtual Task<IActionResult> Put(TUpdateModel model, CancellationToken cancellationToken = default)
 		=> UpdateEndpointEnabled
@@ -322,6 +545,21 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			EnablePutOutputMapping)
 		: throw new NotSupportedException("Unsupported Endpoint");
 
+	/// <summary>
+	/// An API endpoint used to delete a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/>.
+	/// </summary>
+	/// <param name="id">The identifier.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>
+	/// The action result containing the endpoint response which either be a <c>204</c> status code when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
+	/// <remarks>
+	/// This endpoint calls into the <c>DeleteAsync</c> base controller method.
+	/// Please see this for further details regarding behaviour.
+	/// </remarks>
+	/// <seealso cref="UmbrellaDataAccessApiController.DeleteAsync"/>
 	[HttpDelete]
 	public virtual Task<IActionResult> Delete(TEntityKey id, CancellationToken cancellationToken = default)
 		=> DeleteEndpointEnabled

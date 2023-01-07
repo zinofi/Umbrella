@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.FileUpload;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Utilities.Imaging;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload;
 
@@ -95,6 +96,18 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	[Parameter]
 	public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
 
+	/// <summary>
+	/// Gets or sets the size widths.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// If specified, these are used in combination with the values of <see cref="MaxPixelDensity"/>,
+	/// <see cref="WidthRequest"/> and <see cref="HeightRequest"/> to set the value of the srcset attribute on the rendered img tag.
+	/// </para>
+	/// <para>
+	/// Please see the unit tests for <see cref="ResponsiveImageHelper.GetSizeSrcSetValue"/> for sample data.
+	/// </para>
+	/// </remarks>
 	[Parameter]
 	public string? SizeWidths { get; set; }
 
@@ -102,17 +115,26 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// Gets or sets the maximum pixel density image that should be rendered for the preview thumbnail.
 	/// </summary>
 	/// <remarks>
-	/// Defaults to 1.
+	/// Defaults to 4.
 	/// </remarks>
 	[Parameter]
-	public int MaxPixelDensity { get; set; } = 1;
+	public int MaxPixelDensity { get; set; } = 4;
 
+	/// <summary>
+	/// Gets or sets the prefix to be stripped from the <see cref="Url"/>.
+	/// </summary>
 	[Parameter]
 	public string? StripPrefix { get; set; }
 
+	/// <summary>
+	/// Gets or sets the URL.
+	/// </summary>
 	[Parameter]
 	public string? Url { get; set; }
 
+	/// <summary>
+	/// Gets or sets the delegate that is invoked when the Delete button is clicked when there is an existing image.
+	/// </summary>
 	[Parameter]
 	public EventCallback OnDeleteImage { get; set; }
 
@@ -165,6 +187,10 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 		}
 	}
 
+	/// <summary>
+	/// Updates the thumbnail <see cref="Url"/>. This should be called manually by the component consumer after uploading a new image.
+	/// </summary>
+	/// <param name="url">The new thumbnail URL.</param>
 	public void Update(string? url)
 	{
 		if (string.IsNullOrWhiteSpace(url))
@@ -176,7 +202,7 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 		{
 			string? currentImageUrl = UpdatedImageUrl;
 			UpdatedImageUrl = url;
-			FileUploadMode = currentImageUrl?.Equals(UpdatedImageUrl, StringComparison.OrdinalIgnoreCase) == true ? UmbrellaFileImagePreviewUploadMode.Current : UmbrellaFileImagePreviewUploadMode.New;
+			FileUploadMode = currentImageUrl?.Equals(UpdatedImageUrl, StringComparison.OrdinalIgnoreCase) is true ? UmbrellaFileImagePreviewUploadMode.Current : UmbrellaFileImagePreviewUploadMode.New;
 		}
 	}
 }

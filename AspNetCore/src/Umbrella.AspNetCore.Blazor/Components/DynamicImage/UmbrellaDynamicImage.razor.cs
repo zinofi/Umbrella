@@ -5,6 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Utilities.Imaging;
 
 namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage;
 
@@ -56,6 +57,15 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 	/// <summary>
 	/// Gets or sets the size widths.
 	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// If specified, these are used in combination with the values of <see cref="UmbrellaResponsiveImage.MaxPixelDensity"/>,
+	/// <see cref="WidthRequest"/> and <see cref="HeightRequest"/> to set the value of the srcset attribute on the rendered img tag.
+	/// </para>
+	/// <para>
+	/// Please see the unit tests for <see cref="ResponsiveImageHelper.GetSizeSrcSetValue"/> for sample data.
+	/// </para>
+	/// </remarks>
 	[Parameter]
 	public string? SizeWidths { get; set; }
 

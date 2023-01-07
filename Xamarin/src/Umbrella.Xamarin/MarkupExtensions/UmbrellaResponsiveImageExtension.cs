@@ -48,9 +48,9 @@ public class UmbrellaResponsiveImageExtension : BindableObject, IMarkupExtension
 	public object? Source { get; set; }
 
 	/// <summary>
-	/// Gets or sets the maximum pixel density. Defaults to 1.
+	/// Gets or sets the maximum pixel density. Defaults to 4.
 	/// </summary>
-	public int MaxPixelDensity { get; set; } = 1;
+	public int MaxPixelDensity { get; set; } = 4;
 
 	/// <inheritdoc />
 	public virtual BindingBase ProvideValue(IServiceProvider serviceProvider)

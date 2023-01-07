@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags;
@@ -62,6 +61,24 @@ public static class ImageHelpers
 		return new ResponsiveDynamicImageTag(utility, dynamicImagePathPrefix, path, altText, width, height, resizeMode, htmlAttributes, format, urlHelper.Content, toAbsolutePath, helper.ViewContext.RequestContext.HttpContext.Request, schemeOverride, hostOverride, portOverride);
 	}
 
+	/// <summary>
+	/// Create a new <see cref="ResponsiveDynamicImagePictureSourceTag"/> using the specified parameters.
+	/// </summary>
+	/// <param name="helper">The helper.</param>
+	/// <param name="utility">The utility.</param>
+	/// <param name="path">The path.</param>
+	/// <param name="width">The width.</param>
+	/// <param name="height">The height.</param>
+	/// <param name="resizeMode">The resize mode.</param>
+	/// <param name="mediaAttributeValue">The media attribute value.</param>
+	/// <param name="htmlAttributes">The HTML attributes.</param>
+	/// <param name="format">The format.</param>
+	/// <param name="toAbsolutePath">if set to <see langword="true"/>, ensures all generated URLs are absolute.</param>
+	/// <param name="schemeOverride">The scheme override.</param>
+	/// <param name="hostOverride">The host override.</param>
+	/// <param name="portOverride">The port override.</param>
+	/// <param name="dynamicImagePathPrefix">The dynamic image path prefix.</param>
+	/// <returns>The generated <see cref="ResponsiveDynamicImagePictureSourceTag"/>.</returns>
 	public static ResponsiveDynamicImagePictureSourceTag ResponsiveDynamicImagePictureSource(this HtmlHelper helper, IDynamicImageUtility utility, string path, int width, int height, DynamicResizeMode resizeMode, string mediaAttributeValue, object? htmlAttributes = null, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false, string? schemeOverride = null, string? hostOverride = null, int portOverride = 0, string dynamicImagePathPrefix = DynamicImageConstants.DefaultPathPrefix)
 	{
 		RouteValueDictionary attributesDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
@@ -69,6 +86,24 @@ public static class ImageHelpers
 		return helper.ResponsiveDynamicImagePictureSource(utility, path, width, height, resizeMode, mediaAttributeValue, attributesDictionary, format, toAbsolutePath, schemeOverride, hostOverride, portOverride, dynamicImagePathPrefix);
 	}
 
+	/// <summary>
+	/// Create a new <see cref="ResponsiveDynamicImagePictureSourceTag"/> using the specified parameters.
+	/// </summary>
+	/// <param name="helper">The helper.</param>
+	/// <param name="utility">The utility.</param>
+	/// <param name="path">The path.</param>
+	/// <param name="width">The width.</param>
+	/// <param name="height">The height.</param>
+	/// <param name="resizeMode">The resize mode.</param>
+	/// <param name="mediaAttributeValue">The media attribute value.</param>
+	/// <param name="htmlAttributes">The HTML attributes.</param>
+	/// <param name="format">The format.</param>
+	/// <param name="toAbsolutePath">if set to <see langword="true"/>, ensures all generated URLs are absolute.</param>
+	/// <param name="schemeOverride">The scheme override.</param>
+	/// <param name="hostOverride">The host override.</param>
+	/// <param name="portOverride">The port override.</param>
+	/// <param name="dynamicImagePathPrefix">The dynamic image path prefix.</param>
+	/// <returns>The generated <see cref="ResponsiveDynamicImagePictureSourceTag"/>.</returns>
 	public static ResponsiveDynamicImagePictureSourceTag ResponsiveDynamicImagePictureSource(this HtmlHelper helper, IDynamicImageUtility utility, string path, int width, int height, DynamicResizeMode resizeMode, string mediaAttributeValue, IDictionary<string, object> htmlAttributes, DynamicImageFormat format = DynamicImageFormat.Jpeg, bool toAbsolutePath = false, string? schemeOverride = null, string? hostOverride = null, int portOverride = 0, string dynamicImagePathPrefix = DynamicImageConstants.DefaultPathPrefix)
 	{
 		var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);

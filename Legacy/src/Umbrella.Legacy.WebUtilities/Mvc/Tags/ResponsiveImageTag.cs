@@ -8,8 +8,17 @@ using System.Web.Mvc;
 namespace Umbrella.Legacy.WebUtilities.Mvc.Tags;
 
 /// <summary>
-/// 
+/// A tag that can be used to render an <![CDATA[<img>]]> tag with a srcset attribute that has URLs using different pixel density values
+/// using a well-known naming convention.
 /// </summary>
+/// <remarks>
+/// <para>
+/// e.g. if the path is specified as /image/pic.png, calling <see cref="WithDensities(int[])"/> with values of 1, 2, 3 will result in the following:
+/// </para>
+/// <para>
+/// srcset="/image/pic.png 1x, /image/pic@2x.png 2x, /image/pic@3x.png"
+/// </para>
+/// </remarks>
 /// <seealso cref="IHtmlString" />
 public class ResponsiveImageTag : IHtmlString
 {

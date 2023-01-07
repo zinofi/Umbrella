@@ -9,6 +9,14 @@ using Umbrella.Legacy.WebUtilities.Mvc.Tags;
 
 namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags;
 
+/// <summary>
+/// A tag that can be used to render an <![CDATA[<img>]]> tag with a srcset attribute that has URLs using different pixel density values
+/// using a well-known naming convention. Additionally, a series of widths can be specified using the <see cref="WithSizes(int[])"/> method to
+/// generate URLs that will dynamically resize the image at the specified <see cref="ResponsiveImageTag.Path"/> taking these sizes and any specified
+/// <see cref="ResponsiveImageTag.PixelDensities"/> into account.
+/// </summary>
+/// <remarks>See the documentation for <see cref="ResponsiveImageTag"/> for additional details.</remarks>
+/// <seealso cref="ResponsiveImageTag" />
 public class ResponsiveDynamicImageTag : ResponsiveImageTag
 {
 	#region Private Members
@@ -86,6 +94,7 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 	#endregion
 
 	#region Overridden Methods
+	/// <inheritdoc/>
 	public override string ToHtmlString()
 	{
 		var imgTag = new TagBuilder("img");
@@ -97,6 +106,7 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 		return imgTag.ToString(TagRenderMode.SelfClosing);
 	}
 
+	/// <inheritdoc/>
 	protected override void AddSrcsetAttribute(TagBuilder imgTag)
 	{
 		//If we don't have any size information just call into the base method
@@ -115,7 +125,13 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 	}
 	#endregion
 
-	#region Public Methods
+	#region Public Methods	
+	/// <summary>
+	/// Specifies with widths that dynamic image widths should be generated for based on 1x pixel density. If additional pixel densities
+	/// are required, any that are specified using <see cref="ResponsiveImageTag.WithDensities(int[])"/> will be used to scale up the widths as needed.
+	/// </summary>
+	/// <param name="x1Widths">The x1 widths.</param>
+	/// <returns>The current <see cref="ResponsiveDynamicImageTag"/> instance.</returns>
 	public ResponsiveDynamicImageTag WithSizes(params int[] x1Widths)
 	{
 		foreach (int size in x1Widths)
@@ -124,6 +140,11 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 		return this;
 	}
 
+	/// <summary>
+	/// Allows the <c>sizes</c> attribute of the rendered <![CDATA[<img>]]> tag to be specified.
+	/// </summary>
+	/// <param name="value">The value.</param>
+	/// <returns>The current <see cref="ResponsiveDynamicImageTag"/> instance.</returns>
 	public ResponsiveDynamicImageTag WithSizesAttributeValue(string value)
 	{
 		_sizeAttributeValue = value;
