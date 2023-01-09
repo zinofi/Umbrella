@@ -33,6 +33,14 @@ public readonly record struct DynamicImageOptions
 	/// This represents the source path and could be a physical path or URL.
 	/// </summary>
 	public string SourcePath { get; }
+
+	/// <summary>
+	/// Get the quality request.
+	/// </summary>
+	/// <remarks>
+	/// This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <c>75</c>.
+	/// </remarks>
+	public int QualityRequest { get; } = 75;
 	#endregion
 
 	#region Constructors		
@@ -56,6 +64,9 @@ public readonly record struct DynamicImageOptions
 		Height = height;
 		ResizeMode = resizeMode;
 		Format = format;
+
+		// TODO: Wire up the QualityRequest property. Guard.
+		// Will take considerable work to make all the upstream changes to utilise correctly!!
 	}
 	#endregion
 

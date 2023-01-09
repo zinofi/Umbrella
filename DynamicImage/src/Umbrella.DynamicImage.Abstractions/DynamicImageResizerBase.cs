@@ -126,10 +126,10 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 	/// <inheritdoc />
 	public byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
-		=> ResizeImage(originalImage, options.Width, options.Height, options.ResizeMode, options.Format);
+		=> ResizeImage(originalImage, options.Width, options.Height, options.ResizeMode, options.Format, options.QualityRequest);
 
 	/// <inheritdoc />
-	public abstract byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format);
+	public abstract byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75);
 	#endregion
 
 	#region Protected Methods		

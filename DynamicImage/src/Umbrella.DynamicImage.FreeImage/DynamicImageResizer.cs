@@ -53,12 +53,13 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	}
 
 	/// <inheritdoc />
-	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
+	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
 	{
 		Guard.IsNotNull(originalImage);
 		Guard.HasSizeGreaterThan(originalImage, 0);
 		Guard.IsGreaterThan(width, 0);
 		Guard.IsGreaterThan(height, 0);
+		Guard.IsInRange(qualityRequest, 1, 101);
 
 		try
 		{
@@ -73,7 +74,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 			{
 				if (result.offsetX > 0 || result.offsetY > 0)
 					imageToSave = image.Copy(new Rectangle(result.offsetX, result.offsetY, result.cropWidth, result.cropHeight));
-
+				
 				_ = imageToSave.Rescale(result.width, result.height, FREE_IMAGE_FILTER.FILTER_LANCZOS3);
 
 				using var outputStream = new MemoryStream();

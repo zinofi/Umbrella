@@ -49,12 +49,13 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	}
 
 	/// <inheritdoc />
-	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format)
+	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
 	{
 		Guard.IsNotNull(originalImage);
 		Guard.HasSizeGreaterThan(originalImage, 0);
 		Guard.IsGreaterThan(width, 0);
 		Guard.IsGreaterThan(height, 0);
+		Guard.IsInRange(qualityRequest, 1, 101);
 
 		try
 		{
@@ -80,8 +81,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 				using var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKFilterQuality.High);
 				using var outputImage = SKImage.FromBitmap(resizedImage);
 
-				// TODO: Allow the quality to be passed in as a parameter.
-				return outputImage.Encode(GetImageFormat(format), 75).ToArray();
+				return outputImage.Encode(GetImageFormat(format), qualityRequest).ToArray();
 			}
 			finally
 			{
