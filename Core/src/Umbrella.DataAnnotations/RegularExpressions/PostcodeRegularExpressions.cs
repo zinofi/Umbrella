@@ -25,10 +25,10 @@ public static class PostcodeRegularExpressions
 	/// <summary>
 	/// A regular expression used to validate UK postcodes.
 	/// </summary>
-	public static readonly Regex UKPostcodeRegex = new Regex(UKPostcodeRegexString, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+	public static readonly Regex UKPostcodeRegex = new(UKPostcodeRegexString, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
 	/// <summary>
 	/// A regular expression used to partially validate UK postcodes, i.e. just the first part.
 	/// </summary>
-	public static readonly Regex UKPartialPostcodeRegex = new Regex(UKPartialPostcodeRegexString, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+	public static readonly Regex UKPartialPostcodeRegex = new(UKPartialPostcodeRegexString, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 }

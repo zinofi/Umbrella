@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Threading.Abstractions;
 
@@ -15,7 +12,7 @@ namespace Umbrella.Utilities.Threading;
 /// <seealso cref="ISynchronizationManager" />
 public class MemorySynchronizationManager : ISynchronizationManager
 {
-	private readonly ConditionalWeakTable<string, SemaphoreSlim> _items = new ConditionalWeakTable<string, SemaphoreSlim>();
+	private readonly ConditionalWeakTable<string, SemaphoreSlim> _items = new();
 	private readonly ILogger<MemorySynchronizationManager> _logger;
 
 	/// <summary>
@@ -36,7 +33,7 @@ public class MemorySynchronizationManager : ISynchronizationManager
 		{
 			var syncRoot = GetSynchronizationRoot(type, key);
 
-			await syncRoot.WaitAsync(cancellationToken).ConfigureAwait(false);
+			_ = await syncRoot.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			return syncRoot;
 		}

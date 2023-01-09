@@ -39,7 +39,7 @@ public class DataExpressionFactoryTest
 
 		Assert.NotNull(dataExpression);
 		Assert.Equal(memberPath, dataExpression!.MemberPath);
-		Assert.IsType<SortExpression<DataItem>>(dataExpression);
+		_ = Assert.IsType<SortExpression<DataItem>>(dataExpression);
 
 		var sortExpression = (SortExpression<DataItem>)dataExpression;
 
@@ -60,7 +60,7 @@ public class DataExpressionFactoryTest
 
 		Assert.NotNull(dataExpression);
 		Assert.Equal(memberPath, dataExpression!.MemberPath);
-		Assert.IsType<FilterExpression<DataItem>>(dataExpression);
+		_ = Assert.IsType<FilterExpression<DataItem>>(dataExpression);
 
 		var filterExpression = (FilterExpression<DataItem>)dataExpression;
 
@@ -69,5 +69,5 @@ public class DataExpressionFactoryTest
 		Assert.Equal(result, filterExpression.GetDelegate()?.Invoke(new DataItem()));
 	}
 
-	private static DataExpressionFactory CreateDataExpressionFactory() => new DataExpressionFactory(CoreUtilitiesMocks.CreateLogger<DataExpressionFactory>());
+	private static DataExpressionFactory CreateDataExpressionFactory() => new(CoreUtilitiesMocks.CreateLogger<DataExpressionFactory>());
 }

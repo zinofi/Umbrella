@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Net.Http;
-using Polly;
+﻿using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using Polly.Retry;
 using Polly.Timeout;
+using System.Collections.Concurrent;
+using System.Net.Http;
 
 namespace Umbrella.Utilities.Http;
 
@@ -14,7 +13,7 @@ namespace Umbrella.Utilities.Http;
 /// </summary>
 public static class HttpPolicies
 {
-	private static readonly ConcurrentDictionary<(int, int), AsyncRetryPolicy<HttpResponseMessage>> _policyDictionary = new ConcurrentDictionary<(int, int), AsyncRetryPolicy<HttpResponseMessage>>();
+	private static readonly ConcurrentDictionary<(int, int), AsyncRetryPolicy<HttpResponseMessage>> _policyDictionary = new();
 
 	/// <summary>
 	/// Creates the error and timeout policy.

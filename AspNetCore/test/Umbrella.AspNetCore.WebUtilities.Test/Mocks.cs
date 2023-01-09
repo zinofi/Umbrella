@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -30,15 +26,15 @@ public static class Mocks
 		var logger = new Mock<ILogger<UmbrellaWebHostingEnvironment>>();
 
 		var hostingEnvironment = new Mock<IWebHostEnvironment>();
-		hostingEnvironment.Setup(x => x.ContentRootPath).Returns(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\"));
-		hostingEnvironment.Setup(x => x.WebRootPath).Returns(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\wwwroot\"));
+		_ = hostingEnvironment.Setup(x => x.ContentRootPath).Returns(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\"));
+		_ = hostingEnvironment.Setup(x => x.WebRootPath).Returns(PathHelper.PlatformNormalize(@"C:\MockedWebApp\src\wwwroot\"));
 
 		var httpContextAccessor = new Mock<IHttpContextAccessor>();
 
 		var context = new DefaultHttpContext();
 		context.Request.Host = new HostString("www.test.com");
 
-		httpContextAccessor.Setup(x => x.HttpContext).Returns(context);
+		_ = httpContextAccessor.Setup(x => x.HttpContext).Returns(context);
 
 		return new UmbrellaWebHostingEnvironment(logger.Object,
 			hostingEnvironment.Object,
@@ -50,7 +46,7 @@ public static class Mocks
 
 	public static IMemoryCache CreateMemoryCache() => new MemoryCache(Options.Create(new MemoryCacheOptions()));
 
-	public static TagHelperContext CreateTagHelperContext(TagHelperAttributeList attributes) => new TagHelperContext(
+	public static TagHelperContext CreateTagHelperContext(TagHelperAttributeList attributes) => new(
 			attributes,
 			items: new Dictionary<object, object>(),
 			uniqueId: Guid.NewGuid().ToString("N"));
@@ -65,7 +61,7 @@ public static class Mocks
 			getChildContentAsync: (useCachedResult, encoder) =>
 			{
 				var tagHelperContent = new DefaultTagHelperContent();
-				tagHelperContent.SetContent(default);
+				_ = tagHelperContent.SetContent(default);
 				return Task.FromResult<TagHelperContent>(tagHelperContent);
 			});
 	}

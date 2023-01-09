@@ -576,8 +576,34 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			DeleteLock)
 		: throw new NotSupportedException("Unsupported Endpoint");
 
-	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
-	protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
+    /// <summary>
+    /// Loads the paginated results from the <typeparamref name="TRepository"/> using the specified parameters. This method is called internally by the <c>SearchSlim</c> method.
+    /// </summary>
+	/// <remarks>
+	/// This calls the <c>FindAllAsync</c> method on the <typeparamref name="TRepository"/> by default. Override this method to change this behaviour.
+	/// </remarks>
+    /// <param name="pageNumber">The page number.</param>
+    /// <param name="pageSize">Size of the page.</param>
+    /// <param name="sorters">The sorters.</param>
+    /// <param name="filters">The filters.</param>
+    /// <param name="filterCombinator">The filter combinator.</param>
+    /// <param name="options">The options.</param>
+    /// <param name="childOptions">The child options.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The paginated collection of entities from the <typeparamref name="TRepository"/>.</returns>
+    protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="results">The results.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="sorters">The sorters.</param>
+    /// <param name="filters">The filters.</param>
+    /// <param name="filterCombinator">The filter combinator.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
 	protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 	protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 	protected virtual Task<IActionResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);

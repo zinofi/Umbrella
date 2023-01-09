@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Concurrent;
 using System.Security.Principal;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 
@@ -15,7 +14,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class AuthenticatedUserRateLimitAttribute : Attribute, IResourceFilter
 {
-	private readonly ConcurrentDictionary<string, DateTime> _rateLimitTrackingDictionary = new ConcurrentDictionary<string, DateTime>();
+	private readonly ConcurrentDictionary<string, DateTime> _rateLimitTrackingDictionary = new();
 
 	/// <summary>
 	/// Gets or sets the limit per minute per authenticated user.

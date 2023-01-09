@@ -266,3 +266,4 @@ dotnet_diagnostic.CA1805.severity = error
 dotnet_diagnostic.IDE0200.severity = error
 dotnet_diagnostic.CA1200.severity = suggestion
 dotnet_diagnostic.CA1311.severity = error
+dotnet_diagnostic.IDE0090.severity = error

@@ -11,4 +11,5 @@ namespace Umbrella.AppFramework.Shared.Models;
 /// <seealso cref="IConcurrencyStamp" />
 public interface IUpdateResultModel : IConcurrencyStamp
 {
+	// TODO: Consider adding an Id property for convenience.
 }

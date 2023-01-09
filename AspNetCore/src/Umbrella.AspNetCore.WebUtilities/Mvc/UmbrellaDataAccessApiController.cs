@@ -20,6 +20,12 @@ using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 
+// TODO: Maybe we could allow shaped queries for the ReadAsync method too?
+// Also, could look into creating an overload of the Generic controller that allows specifying shaped entities to avoid having to create
+// custom endpoints? Would need a generic solution to this though somehow so we don't need to create a new method on the generic repository.
+// Hmmmm... Maybe just do the changes for ReadAsync for now to make doing that a bit easier.
+// Will need a GetEndpoint property on GenericRemoteRepository and pass this down to the call as per FindAllSlimEndpoint.
+
 // TODO: We could expand on this approach with an UmbrellaDataAccessPageModel and UmbrellaGenericRepositoryPageModel
 // Also, an UmbrellaDataAccessController and UmbrellaGenericRepositoryController.
 // We could encapsulate all of the core logic into a utility class of some kind and pass in a enum to change the behaviour, e.g. Mode = Api, Mvc, RazorPage
@@ -80,34 +86,44 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		SynchronizationManager = synchronizationManager;
 	}
 
-	/// <summary>
-	/// Used to load paginated entities in bulk from the repository based on the specified <paramref name="sorters"/> and <paramref name="filters"/>
-	/// with each result mapped to a collection of <typeparamref name="TItemModel"/> wrapped in a <typeparamref name="TPaginatedResultModel"/>.
-	/// </summary>
-	/// <typeparam name="TEntityResult">The type of the entity result.</typeparam>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
-	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
-	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
-	/// <typeparam name="TItemModel">The type of the item model.</typeparam>
-	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
-	/// <param name="pageNumber">The page number.</param>
-	/// <param name="pageSize">Size of the page.</param>
-	/// <param name="sorters">The sorters.</param>
-	/// <param name="filters">The filters.</param>
-	/// <param name="filterCombinator">The filter combinator.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <param name="loadReadAllDataAsyncDelegate">The delegate used to load the data.</param>
-	/// <param name="mapReadAllEntitiesDelegate">The delegate used to map the results loaded from the repository.</param>
-	/// <param name="afterCreateSearchSlimPaginatedModelAsyncDelegate">The delegate that is invoked after the paginated result model has been created.</param>
-	/// <param name="afterCreateSlimModelAsyncDelegate">The delegate that is invoked when result models have been created.</param>
-	/// <param name="options">The repository options.</param>
-	/// <param name="childOptions">The child repository options.</param>
-	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TPaginatedResultModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	protected virtual async Task<IActionResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(
+    /// <summary>
+    /// Used to load paginated entities in bulk from the repository based on the specified <paramref name="sorters"/> and <paramref name="filters"/>
+    /// with each result mapped to a collection of <typeparamref name="TItemModel"/> wrapped in a <typeparamref name="TPaginatedResultModel"/>.
+    /// </summary>
+    /// <remarks>
+    /// The lifecycle of this method internally is as follows:
+    /// <list type="number">
+    /// <item>Invokes the <paramref name="loadReadAllDataAsyncDelegate"/> to load all <typeparamref name="TEntityResult"/> instances from the repository.</item>
+    /// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on all loaded entities.</item>
+    /// <item>Creates the <typeparamref name="TPaginatedResultModel"/> and maps the <typeparamref name="TEntityResult"/> instances to <typeparamref name="TItemModel"/> instances using the the <paramref name="mapReadAllEntitiesDelegate"/>, falling back to using the <see cref="Mapper"/> if not specified.</item>
+    /// <item>Invokes the <paramref name="afterCreateSearchSlimPaginatedModelAsyncDelegate"/> to allow the <typeparamref name="TPaginatedResultModel"/> to be augmented.</item>
+    /// <item>Invokes the <paramref name="afterCreateSlimModelAsyncDelegate"/> on each instance of <typeparamref name="TItemModel"/> on the <typeparamref name="TPaginatedResultModel"/> to allow each instance to be augmented.</item>
+    /// </list>
+    /// </remarks>
+    /// <typeparam name="TEntityResult">The type of the entity result.</typeparam>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+    /// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+    /// <typeparam name="TItemModel">The type of the item model.</typeparam>
+    /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
+    /// <param name="pageNumber">The page number.</param>
+    /// <param name="pageSize">Size of the page.</param>
+    /// <param name="sorters">The sorters.</param>
+    /// <param name="filters">The filters.</param>
+    /// <param name="filterCombinator">The filter combinator.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="loadReadAllDataAsyncDelegate">The delegate used to load the data.</param>
+    /// <param name="mapReadAllEntitiesDelegate">The delegate used to map the results loaded from the repository. If not specified, the <see cref="Mapper"/> is used.</param>
+    /// <param name="afterCreateSearchSlimPaginatedModelAsyncDelegate">The delegate that is invoked after the paginated result model has been created.</param>
+    /// <param name="afterCreateSlimModelAsyncDelegate">The delegate that is invoked when result models have been created.</param>
+    /// <param name="options">The repository options.</param>
+    /// <param name="childOptions">The child repository options.</param>
+    /// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
+    /// <returns>
+    /// The action result containing the endpoint response which either be a <typeparamref name="TPaginatedResultModel"/> when successful or
+    /// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+    /// </returns>
+    protected virtual async Task<IActionResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(
 		int pageNumber,
 		int pageSize,
 		SortExpression<TEntityResult>[]? sorters,
@@ -184,31 +200,41 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 	}
 
-	/// <summary>
-	/// Used to load a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/> and return a
-	/// mapped <typeparamref name="TModel"/>. 
-	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
-	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
-	/// <typeparam name="TRepository">The type of the repository.</typeparam>
-	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
-	/// <typeparam name="TModel">The type of the model.</typeparam>
-	/// <param name="id">The identifier.</param>
-	/// <param name="repository">The repository.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <param name="mapperCallback">The mapper callback.</param>
-	/// <param name="afterReadEntityCallback">The after read entity callback.</param>
-	/// <param name="trackChanges">if set to <see langword="true"/> enable change tracking on the database context.</param>
-	/// <param name="map">The map.</param>
-	/// <param name="options">The options.</param>
-	/// <param name="childOptions">The child options.</param>
-	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
-	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <paramref name="id"/> and type name of the entity.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	protected async Task<IActionResult> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
+    /// <summary>
+    /// Used to load a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/> and return a
+    /// mapped <typeparamref name="TModel"/>. 
+    /// </summary>
+    /// <remarks>
+    /// The lifecycle of this method internally is as follows:
+    /// <list type="number">
+	/// <item>Synchronize execution of this method if enabled using <paramref name="synchronizeAccess"/>.</item>
+    /// <item>Load the <typeparamref name="TEntity"/> from the <typeparamref name="TRepository"/>.</item>
+    /// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on the entity.</item>
+	/// <item>Maps the <typeparamref name="TEntity"/> to the <typeparamref name="TModel"/> using the <paramref name="mapperCallback"/> falling back to use the <see cref="Mapper"/> if not specified.</item>
+	/// <item>Invokes the <paramref name="afterReadEntityCallback"/> to augment the <typeparamref name="TModel"/>.</item>
+    /// </list>
+    /// </remarks>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+    /// <typeparam name="TRepository">The type of the repository.</typeparam>
+    /// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <param name="id">The identifier.</param>
+    /// <param name="repository">The repository.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="mapperCallback">The mapper callback. If not specified, <see cref="Mapper"/> is used to perform the mapping.</param>
+    /// <param name="afterReadEntityCallback">The after read entity callback.</param>
+    /// <param name="trackChanges">if set to <see langword="true"/> enable change tracking on the database context.</param>
+    /// <param name="map">The map.</param>
+    /// <param name="options">The options.</param>
+    /// <param name="childOptions">The child options.</param>
+    /// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
+    /// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <paramref name="id"/> and type name of the entity.</param>
+    /// <returns>
+    /// The action result containing the endpoint response which either be a <typeparamref name="TModel"/> when successful or
+    /// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+    /// </returns>
+    protected async Task<IActionResult> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 		TEntityKey id,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
@@ -282,36 +308,54 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 	}
 
-	/// <summary>
-	/// Used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns
-	/// a <typeparamref name="TResultModel"/> if successful.
-	/// </summary>
-	/// <typeparam name="TEntity">The type of the entity.</typeparam>
-	/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
-	/// <typeparam name="TRepository">The type of the repository.</typeparam>
-	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
-	/// <typeparam name="TModel">The type of the model.</typeparam>
-	/// <typeparam name="TResultModel">The type of the result model.</typeparam>
-	/// <param name="model">The model.</param>
-	/// <param name="repository">The repository.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <param name="mapperInputCallback">The mapper input callback.</param>
-	/// <param name="beforeCreateEntityCallback">The before create entity callback.</param>
-	/// <param name="mapperOutputCallback">The mapper output callback.</param>
-	/// <param name="afterCreateEntityCallback">The after create entity callback.</param>
-	/// <param name="options">The options.</param>
-	/// <param name="childOptions">The child options.</param>
-	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
-	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using a key generated using the <see cref="GetCreateSynchronizationRootKey"/> method. This method must be overridden on the controller to make this work.</param>
-	/// <param name="enableOutputMapping">
-	/// Specifices whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
-	/// or if this is done by this method internally using basic assignment. NB: The latter only assigns some basic properties.
-	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TResultModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	protected async Task<IActionResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
+    /// <summary>
+    /// Used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns
+    /// a <typeparamref name="TResultModel"/> if successful.
+    /// </summary>
+    /// <remarks>
+    /// The lifecycle of this method internally is as follows:
+    /// <list type="number">
+	/// <item>Synchronize execution of this method if enabled using <paramref name="synchronizeAccess"/>.</item>
+	/// <item>Maps the <typeparamref name="TModel"/> to a new instance of <typeparamref name="TEntity"/> using the <paramref name="mapperInputCallback"/> falling back to use the <see cref="Mapper"/> if not specified.</item>
+	/// <item>Invokes the <paramref name="beforeCreateEntityCallback"/> to augment the newly created <typeparamref name="TEntity"/>.</item>
+	/// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on the entity.</item>
+	/// <item>Saves the new entity to the <typeparamref name="TRepository"/>.</item>
+	/// <item>
+	/// Creates the <typeparamref name="TResultModel"/> by mapping the entity, if <paramref name="enableOutputMapping"/> is <see langword="true"/>, using the <paramref name="mapperOutputCallback"/> if specified falling back to using the <see cref="Mapper"/>.
+	/// If <paramref name="enableOutputMapping"/> is <see langword="true"/>, a new instance of <typeparamref name="TResultModel"/> and only assigning the <c>Id</c> and <c>ConcurrencyStamp</c> properties.
+	/// </item>
+	/// <item>
+	/// Invokes the <paramref name="afterCreateEntityCallback"/> that can be specified to augment the <typeparamref name="TResultModel"/>.
+	/// </item>
+	/// </list>
+    /// </remarks>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+    /// <typeparam name="TRepository">The type of the repository.</typeparam>
+    /// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TResultModel">The type of the result model.</typeparam>
+    /// <param name="model">The model.</param>
+    /// <param name="repository">The repository.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="mapperInputCallback">The mapper input callback.</param>
+    /// <param name="beforeCreateEntityCallback">The before create entity callback.</param>
+    /// <param name="mapperOutputCallback">The mapper output callback.</param>
+    /// <param name="afterCreateEntityCallback">The after create entity callback.</param>
+    /// <param name="options">The options.</param>
+    /// <param name="childOptions">The child options.</param>
+    /// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
+    /// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using a key generated using the <see cref="GetCreateSynchronizationRootKey"/> method. This method must be overridden on the controller to make this work.</param>
+    /// <param name="enableOutputMapping">
+    /// Specifices whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
+    /// or if this is done by this method internally by creating a new instance of <typeparamref name="TResultModel"/> and only assigning the <c>Id</c> and <c>ConcurrencyStamp</c> properties.
+    /// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.
+    /// </param>
+    /// <returns>
+    /// The action result containing the endpoint response which either be a <typeparamref name="TResultModel"/> when successful or
+    /// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+    /// </returns>
+    protected async Task<IActionResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
@@ -418,7 +462,57 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 	}
 
-	protected async Task<IActionResult> UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
+    /// <summary>
+	/// Used to update an existing <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns
+	/// a <typeparamref name="TResultModel"/> if successful.
+	/// </summary>
+	/// <remarks>
+    /// The lifecycle of this method internally is as follows:
+    /// <list type="number">
+	/// <item>Synchronize execution of this method if enabled using <paramref name="synchronizeAccess"/>.</item>
+	/// <item>Loads the existing <typeparamref name="TEntity"/> from the <typeparamref name="TRepository"/>.</item>
+	/// <item>Checks for mismatches between <c>ConcurrencyStamp</c> property values.</item>
+	/// <item>Maps the <typeparamref name="TModel"/> to an existing instance of <typeparamref name="TEntity"/> using the <paramref name="mapperInputCallback"/> falling back to use the <see cref="Mapper"/> if not specified.</item>
+	/// <item>Invokes the <paramref name="beforeUpdateEntityCallback"/> to augment the updated <typeparamref name="TEntity"/>.</item>
+	/// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on the entity.</item>
+	/// <item>Saves the updated entity to the <typeparamref name="TRepository"/>.</item>
+	/// <item>
+	/// Creates the <typeparamref name="TResultModel"/> by mapping the entity, if <paramref name="enableOutputMapping"/> is <see langword="true"/>, using the <paramref name="mapperOutputCallback"/> if specified falling back to using the <see cref="Mapper"/>.
+	/// If <paramref name="enableOutputMapping"/> is <see langword="true"/>, a new instance of <typeparamref name="TResultModel"/> and only assigning the <c>Id</c> and <c>ConcurrencyStamp</c> properties.
+	/// </item>
+	/// <item>
+	/// Invokes the <paramref name="afterUpdateEntityCallback"/> that can be specified to augment the <typeparamref name="TResultModel"/>.
+	/// </item>
+	/// </list>
+    /// </remarks>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+    /// <typeparam name="TRepository">The type of the repository.</typeparam>
+    /// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TResultModel">The type of the result model.</typeparam>
+    /// <param name="model">The model.</param>
+    /// <param name="repository">The repository.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="mapperInputCallback">The mapper input callback.</param>
+    /// <param name="beforeUpdateEntityCallback">The before update entity callback.</param>
+    /// <param name="mapperOutputCallback">The mapper output callback.</param>
+    /// <param name="afterUpdateEntityCallback">The after update entity callback.</param>
+    /// <param name="map">The map.</param>
+    /// <param name="options">The options.</param>
+    /// <param name="childOptions">The child options.</param>
+    /// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
+    /// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <c>Id</c> and type name of the entity.</param>
+    /// <param name="enableOutputMapping">
+	/// Specifices whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
+	/// or if this is done by this method by creating a new instance of <typeparamref name="TResultModel"/> and only assigning the <c>ConcurrencyStamp</c> property.
+	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.
+	/// </param>
+    /// <returns>
+	/// The action result containing the endpoint response which either be a <typeparamref name="TResultModel"/> when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+    protected async Task<IActionResult> UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
@@ -533,7 +627,40 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 	}
 
-	protected async Task<IActionResult> DeleteAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
+    /// <summary>
+	/// Used to delete an existing <typeparamref name="TEntity"/> in the repository based on the provided <paramref name="id"/> which returns
+	/// a <c>204 - No Content</c> status code if successful.
+	/// </summary>
+	/// <remarks>
+	/// The lifecycle of this method internally is as follows:
+    /// <list type="number">
+	/// <item>Synchronize execution of this method if enabled using <paramref name="synchronizeAccess"/>.</item>
+	/// <item>Loads the existing <typeparamref name="TEntity"/> from the <typeparamref name="TRepository"/>.</item>
+	/// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on the entity.</item>
+	/// <item>Invokes the <paramref name="beforeDeleteEntityAsyncCallback"/> to perform work before deleting the entity.</item>
+	/// <item>Deletes the entity from the repository.</item>
+	/// <item>Invokes the <paramref name="afterDeleteEntityAsyncCallback"/> to perform work after the entity has been deleted.</item>
+	/// </list>
+	/// </remarks>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
+    /// <typeparam name="TRepository">The type of the repository.</typeparam>
+    /// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
+    /// <param name="id">The identifier.</param>
+    /// <param name="repository">The repository.</param>
+    /// <param name="beforeDeleteEntityAsyncCallback">The before delete entity asynchronous callback.</param>
+    /// <param name="afterDeleteEntityAsyncCallback">The after delete entity asynchronous callback.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="map">The map.</param>
+    /// <param name="options">The options.</param>
+    /// <param name="childOptions">The child options.</param>
+    /// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
+    /// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <paramref name="id"/> and type name of the entity.</param>
+    /// <returns>
+	/// The action result containing the endpoint response which either be a <c>204 - No Content</c> status code when successful or
+	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
+	/// </returns>
+    protected async Task<IActionResult> DeleteAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
 		TEntityKey id,
 		Lazy<TRepository> repository,
 		Func<TEntity, CancellationToken, Task<IActionResult?>> beforeDeleteEntityAsyncCallback,

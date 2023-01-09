@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
 using Umbrella.WebUtilities.Exceptions;
 
@@ -18,7 +17,7 @@ public class ReadOnlyInputTagHelper : TagHelper
 	/// </summary>
 	protected const string ReadOnlyAttributeName = "asp-readonly";
 
-	private static readonly TagHelperAttribute _readonlyAttribute = new TagHelperAttribute("readonly");
+	private static readonly TagHelperAttribute _readonlyAttribute = new("readonly");
 
 	private readonly ILogger _logger;
 

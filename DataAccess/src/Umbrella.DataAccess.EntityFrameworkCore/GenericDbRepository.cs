@@ -19,6 +19,8 @@ using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
+// TODO: Improve the documentation, especially around method lifecycles and the virtual methods.
+
 /// <summary>
 /// Serves as the base class for repositories which provide CRUD access to entities stored in a database accessed using Entity Framework Core.
 /// </summary>

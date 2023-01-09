@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Xamarin.Exceptions;
@@ -26,7 +23,7 @@ public class PermissionsUtility : IPermissionsUtility
 	private readonly IDialogUtility _dialogUtility;
 	private readonly PermissionsUtilityOptions _options;
 
-	private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _androidMappings = new Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>>
+	private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _androidMappings = new()
 	{
 		[PermissionType.NewPhoto] = new Permissions.BasePermission[] { new Permissions.Camera(), new Permissions.StorageWrite() },
 		[PermissionType.NewVideo] = new Permissions.BasePermission[] { new Permissions.Camera(), new Permissions.StorageWrite() },
@@ -35,7 +32,7 @@ public class PermissionsUtility : IPermissionsUtility
 		[PermissionType.File] = new Permissions.BasePermission[] { new Permissions.StorageRead() },
 	};
 
-	private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _iOSMappings = new Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>>
+	private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _iOSMappings = new()
 	{
 		[PermissionType.NewPhoto] = new Permissions.BasePermission[] { new Permissions.Camera() },
 		[PermissionType.NewVideo] = new Permissions.BasePermission[] { new Permissions.Camera(), new Permissions.Microphone() },
@@ -44,7 +41,7 @@ public class PermissionsUtility : IPermissionsUtility
 		[PermissionType.File] = Array.Empty<Permissions.BasePermission>()
 	};
 
-	private readonly HashSet<Type> _previousFailuresMappings = new HashSet<Type>();
+	private readonly HashSet<Type> _previousFailuresMappings = new();
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PermissionsUtility"/> type.
@@ -117,7 +114,7 @@ public class PermissionsUtility : IPermissionsUtility
 						await _dialogUtility.ShowDangerMessageAsync("You have not granted the required permissions. Please try again.");
 
 						// Track this so that the next time we get a failure for this permission we don't try again.
-						_previousFailuresMappings.Add(permission.GetType());
+						_ = _previousFailuresMappings.Add(permission.GetType());
 
 						return false;
 					}

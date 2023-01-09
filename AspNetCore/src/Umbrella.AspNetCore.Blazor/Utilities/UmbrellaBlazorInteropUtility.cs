@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
 
@@ -18,7 +14,7 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	private readonly ILogger _logger;
 	private readonly IJSRuntime _jsRuntime;
 	private readonly DotNetObjectReference<UmbrellaBlazorInteropUtility> _interopReference;
-	private readonly List<AwaitableBlazorEventHandler> _windowScrolledTopEventHandlerList = new List<AwaitableBlazorEventHandler>();
+	private readonly List<AwaitableBlazorEventHandler> _windowScrolledTopEventHandlerList = new();
 
 	/// <inheritdoc />
 	public event AwaitableBlazorEventHandler OnWindowScrolledTop
@@ -28,14 +24,14 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 			_windowScrolledTopEventHandlerList.Add(value);
 
 			if (_windowScrolledTopEventHandlerList.Count is 1)
-				InitializeWindowScrolledTop();
+				_ = InitializeWindowScrolledTopAsync();
 		}
 		remove
 		{
-			_windowScrolledTopEventHandlerList.Remove(value);
+			_ = _windowScrolledTopEventHandlerList.Remove(value);
 
 			if (_windowScrolledTopEventHandlerList.Count is 0)
-				DestroyWindowScrolledTop();
+				_ = DestroyWindowScrolledTopAsync();
 		}
 	}
 
@@ -109,7 +105,7 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	[JSInvokable]
 	public async ValueTask OnWindowScrolledTopAsync() => await Task.WhenAll(_windowScrolledTopEventHandlerList.Select(x => x.Invoke()));
 
-	private void InitializeWindowScrolledTop() => _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.initializeWindowScrolledTopAsync", _interopReference, 10);
+	private async Task InitializeWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.initializeWindowScrolledTopAsync", _interopReference, 10);
 
-	private void DestroyWindowScrolledTop() => _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.destroyWindowScrolledTopAsync");
+	private async Task DestroyWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.destroyWindowScrolledTopAsync");
 }

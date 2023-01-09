@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Umbrella.AppFramework.Utilities.Abstractions;
+﻿using Umbrella.AppFramework.Utilities.Abstractions;
 
 namespace Umbrella.AppFramework.Utilities;
 
@@ -8,7 +7,7 @@ namespace Umbrella.AppFramework.Utilities;
 /// </summary>
 public class DialogTracker : IDialogTracker
 {
-	private readonly HashSet<int> _dialogList = new HashSet<int>();
+	private readonly HashSet<int> _dialogList = new();
 
 	/// <inheritdoc />
 	public bool TrackOpen(int code) => _dialogList.Add(code);
@@ -21,15 +20,15 @@ public class DialogTracker : IDialogTracker
 	{
 		int hashCode = -281079646;
 
-		hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(message);
-		hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(title);
+		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(message);
+		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(title);
 
 		if (subTitle is not null)
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(subTitle);
+			hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(subTitle);
 
 		foreach (string text in buttonText)
 		{
-			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(text);
+			hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(text);
 		}
 
 		return hashCode;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Umbrella.Legacy.WebUtilities.Mvc.Bundles.Abstractions;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc;
@@ -11,8 +10,8 @@ namespace Umbrella.Legacy.WebUtilities.Mvc;
 /// <seealso cref="WebViewPage" />
 public abstract class UmbrellaViewPage : WebViewPage
 {
-	private readonly Lazy<IMvcBundleUtility> _bundleUtilityLazy = new Lazy<IMvcBundleUtility>(() => DependencyResolver.Current.GetService<IMvcBundleUtility>());
-	private readonly Lazy<IMvcWebpackBundleUtility> _webpackBundleUtilityLazy = new Lazy<IMvcWebpackBundleUtility>(() => DependencyResolver.Current.GetService<IMvcWebpackBundleUtility>());
+	private readonly Lazy<IMvcBundleUtility> _bundleUtilityLazy = new(() => DependencyResolver.Current.GetService<IMvcBundleUtility>());
+	private readonly Lazy<IMvcWebpackBundleUtility> _webpackBundleUtilityLazy = new(() => DependencyResolver.Current.GetService<IMvcWebpackBundleUtility>());
 
 	/// <summary>
 	/// Gets the bundles.
@@ -33,8 +32,8 @@ public abstract class UmbrellaViewPage : WebViewPage
 /// <seealso cref="WebViewPage" />
 public abstract class UmbrellaViewPage<T> : WebViewPage<T>
 {
-	private readonly Lazy<IMvcBundleUtility> _bundleUtilityLazy = new Lazy<IMvcBundleUtility>(() => DependencyResolver.Current.GetService<IMvcBundleUtility>());
-	private readonly Lazy<IMvcWebpackBundleUtility> _webpackBundleUtilityLazy = new Lazy<IMvcWebpackBundleUtility>(() => DependencyResolver.Current.GetService<IMvcWebpackBundleUtility>());
+	private readonly Lazy<IMvcBundleUtility> _bundleUtilityLazy = new(() => DependencyResolver.Current.GetService<IMvcBundleUtility>());
+	private readonly Lazy<IMvcWebpackBundleUtility> _webpackBundleUtilityLazy = new(() => DependencyResolver.Current.GetService<IMvcWebpackBundleUtility>());
 
 	/// <summary>
 	/// Gets the bundles.

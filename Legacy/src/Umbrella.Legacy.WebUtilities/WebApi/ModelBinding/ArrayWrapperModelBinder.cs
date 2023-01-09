@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.ValueProviders;
-using Newtonsoft.Json.Linq;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding;
 
@@ -17,7 +14,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding;
 /// <seealso cref="IModelBinder" />
 public class ArrayWrapperModelBinder : IModelBinder
 {
-	private readonly ConcurrentDictionary<Type, Type?> _modelTypeMappingDictionary = new ConcurrentDictionary<Type, Type?>();
+	private readonly ConcurrentDictionary<Type, Type?> _modelTypeMappingDictionary = new();
 
 	/// <inheritdoc />
 	public bool BindModel(HttpActionContext actionContext, ModelBindingContext bindingContext)

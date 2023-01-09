@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
 using Umbrella.WebUtilities.Exceptions;
 
@@ -18,7 +17,7 @@ public class DisabledInputTagHelper : TagHelper
 	/// </summary>
 	protected const string DisabledAttributeName = "asp-disabled";
 
-	private static readonly TagHelperAttribute _disabledAttribute = new TagHelperAttribute("disabled");
+	private static readonly TagHelperAttribute _disabledAttribute = new("disabled");
 
 	private readonly ILogger<DisabledInputTagHelper> _logger;
 

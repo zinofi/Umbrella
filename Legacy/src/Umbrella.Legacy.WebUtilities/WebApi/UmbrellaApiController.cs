@@ -1,9 +1,8 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
-using Microsoft.Extensions.Logging;
 using Umbrella.Legacy.WebUtilities.WebApi.Filters;
 
 namespace Umbrella.Legacy.WebUtilities.WebApi;
@@ -38,7 +37,7 @@ public abstract class UmbrellaApiController : ApiController
 	/// Creates a 201 Created <see cref="StatusCodeResult"/>.
 	/// </summary>
 	/// <returns>A <see cref="StatusCodeResult"/> of 201.</returns>
-	protected virtual StatusCodeResult Created() => new StatusCodeResult(HttpStatusCode.Created, this);
+	protected virtual StatusCodeResult Created() => new(HttpStatusCode.Created, this);
 
 	/// <summary>
 	/// Creates a 201 Created <see cref="CreatedNegotiatedContentResult{T}"/> with the specified content.
@@ -93,7 +92,7 @@ public abstract class UmbrellaApiController : ApiController
 	/// Creates a 204 NoContent <see cref="StatusCodeResult"/>.
 	/// </summary>
 	/// <returns>A <see cref="StatusCodeResult"/> of 204.</returns>
-	protected virtual StatusCodeResult NoContent() => new StatusCodeResult(HttpStatusCode.NoContent, this);
+	protected virtual StatusCodeResult NoContent() => new(HttpStatusCode.NoContent, this);
 
 	/// <summary>
 	/// Creates a 429 TooManyRequests <see cref="ResponseMessageResult"/> with the specified reason.
@@ -108,7 +107,7 @@ public abstract class UmbrellaApiController : ApiController
 	/// <param name="statusCode">The reason.</param>
 	/// <param name="reason">The reason.</param>
 	/// <returns>A <see cref="ResponseMessageResult"/>.</returns>
-	protected virtual ResponseMessageResult CreateStringContentResult(HttpStatusCode statusCode, string reason) => new ResponseMessageResult(new HttpResponseMessage(statusCode)
+	protected virtual ResponseMessageResult CreateStringContentResult(HttpStatusCode statusCode, string reason) => new(new HttpResponseMessage(statusCode)
 	{
 		Content = new StringContent(reason, Encoding.UTF8, "text/plain")
 	});

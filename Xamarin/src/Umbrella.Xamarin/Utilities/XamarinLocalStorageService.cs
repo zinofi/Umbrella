@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Essentials;
@@ -15,7 +12,7 @@ namespace Umbrella.Xamarin.Utilities;
 public class XamarinLocalStorageService : IAppLocalStorageService
 {
 	private readonly ILogger _logger;
-	private readonly Dictionary<string, string> _virtualStorage = new Dictionary<string, string>();
+	private readonly Dictionary<string, string> _virtualStorage = new();
 	private readonly bool _useVirtualStorage = DeviceInfo.DeviceType == DeviceType.Virtual && DeviceInfo.Platform == DevicePlatform.iOS;
 
 	/// <summary>
@@ -51,9 +48,9 @@ public class XamarinLocalStorageService : IAppLocalStorageService
 		try
 		{
 			if (_useVirtualStorage)
-				_virtualStorage.Remove(key);
+				_ = _virtualStorage.Remove(key);
 			else
-				SecureStorage.Remove(key);
+				_ = SecureStorage.Remove(key);
 
 			return default;
 		}

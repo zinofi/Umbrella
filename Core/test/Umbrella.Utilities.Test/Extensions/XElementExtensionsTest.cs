@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using Umbrella.Utilities.Extensions;
 using Xunit;
 
@@ -32,7 +27,7 @@ public class XElementExtensionsTest
 	}
 
 	private static XElement CreateXElement()
-		=> new XElement("test",
+		=> new("test",
 			new XAttribute("bool", true),
 			new XAttribute("byte", 10),
 			new XAttribute("short", 20),
