@@ -594,22 +594,119 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
     protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
 
     /// <summary>
-    /// 
+    /// This is called by the <c>SearchSlim</c> endpoint immediately after the <typeparamref name="TPaginatedResultModel"/> has been created containing the mapped
+	/// entity instances onto <typeparamref name="TSlimModel"/> instances.
     /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output model.
+	/// </remarks>
     /// <param name="results">The results.</param>
     /// <param name="model">The model.</param>
     /// <param name="sorters">The sorters.</param>
     /// <param name="filters">The filters.</param>
     /// <param name="filterCombinator">The filter combinator.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>An Task that completes when the operation has completed.</returns>
     protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
-	protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
-	protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
-	protected virtual Task<IActionResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
-	protected virtual Task<IActionResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
-	protected virtual Task<IActionResult?> BeforeDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
-	protected virtual Task AfterCreateEntityAsync(TEntity entity, TCreateModel model, TCreateResultModel result, CancellationToken cancellationToken) => Task.CompletedTask;
-	protected virtual Task AfterUpdateEntityAsync(TEntity entity, TUpdateModel model, TUpdateResultModel result, CancellationToken cancellationToken) => Task.CompletedTask;
-	protected virtual Task AfterDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.CompletedTask;
+
+    /// <summary>
+    /// This is called by the <c>SearchSlim</c> endpoint immediately after the <see cref="AfterCreateSearchSlimModelAsync"/> has been called and is called for each entity / model pair.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+    protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+
+    /// <summary>
+    /// This is called by the <c>Get</c> endpoint after the entity has been read, auth checks have been completed, and the entity has been mapped to an <typeparamref name="TModel"/>.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output model.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+    protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+
+    /// <summary>
+    /// This is called by the <c>Post</c> endpoint after the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>
+	/// but before auth checks are performed.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+    protected virtual Task<IActionResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+
+    /// <summary>
+    /// This is called by the <c>Put</c> endpoint after the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>
+	/// but before auth checks are performed.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+    protected virtual Task<IActionResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+
+    /// <summary>
+    /// This is called by the <c>Delete</c> endpoint before the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
+	/// It is called immediately after loading and performing auth checks.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+    protected virtual Task<IActionResult?> BeforeDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+
+    /// <summary>
+    /// This is called by the <c>Post</c> endpoint after the <typeparamref name="TCreateModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>,
+	/// saved to the database and the <typeparamref name="TCreateResultModel"/> has been created.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="result">The result.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An Task that completes when the operation has completed.</returns>
+    protected virtual Task AfterCreateEntityAsync(TEntity entity, TCreateModel model, TCreateResultModel result, CancellationToken cancellationToken) => Task.CompletedTask;
+
+    /// <summary>
+    /// This is called by the <c>Put</c> endpoint after the <typeparamref name="TUpdateModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>,
+	/// saved to the database and the <typeparamref name="TUpdateResultModel"/> has been created.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="result">The result.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An Task that completes when the operation has completed.</returns>
+    protected virtual Task AfterUpdateEntityAsync(TEntity entity, TUpdateModel model, TUpdateResultModel result, CancellationToken cancellationToken) => Task.CompletedTask;
+
+    /// <summary>
+    /// This is called by the <c>Delete</c> endpoint after the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
+    /// </summary>
+	/// <remarks>
+	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
+	/// </remarks>
+    /// <param name="entity">The entity.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An Task that completes when the operation has completed.</returns>
+    protected virtual Task AfterDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.CompletedTask;
 }
