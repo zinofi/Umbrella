@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Hosting.Options;
+using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Threading.Abstractions;
 
@@ -28,13 +29,15 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 	/// <param name="logger">The logger.</param>
 	/// <param name="serviceScopeFactory">The service scope factory.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	/// <param name="options">The options.</param>
 	protected UmbrellaScheduledHostedServiceWithViewSupportBase(
 		ILogger<UmbrellaScheduledHostedServiceWithViewSupportBase> logger,
 		IServiceScopeFactory serviceScopeFactory,
 		ISynchronizationManager synchronizationManager,
+		IDateTimeProvider dateTimeProvider,
 		UmbrellaScheduledHostedServiceWithViewSupportOptions options)
-		: base(logger, serviceScopeFactory, synchronizationManager)
+		: base(logger, serviceScopeFactory, synchronizationManager, dateTimeProvider)
 	{
 		Options = options;
 	}
@@ -45,7 +48,7 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 	protected UmbrellaScheduledHostedServiceWithViewSupportOptions Options { get; }
 
 	/// <inheritdoc/>
-	protected internal override Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
+	private protected override async Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -64,6 +67,6 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 
 		serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext = httpContext;
 
-		return ExecuteAsync(serviceScope, cancellationToken);
+		await ExecuteAsync(serviceScope, cancellationToken);
 	}
 }

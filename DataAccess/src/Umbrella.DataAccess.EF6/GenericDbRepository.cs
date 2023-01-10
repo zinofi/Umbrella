@@ -14,6 +14,7 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
+using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Primitives;
 
@@ -37,14 +38,16 @@ public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbReposi
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	public GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<int> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
-		IEntityValidator entityValidator)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
+		IEntityValidator entityValidator,
+		IDateTimeProvider dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 	}
 }
@@ -69,14 +72,16 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : G
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	public GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<int> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
-		IEntityValidator entityValidator)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
+		IEntityValidator entityValidator,
+		IDateTimeProvider dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 	}
 }
@@ -103,14 +108,16 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	public GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<int> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
-		IEntityValidator entityValidator)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator)
+		IEntityValidator entityValidator,
+		IDateTimeProvider dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 	}
 }
@@ -139,9 +146,14 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// Gets the entity validator.
 	/// </summary>
 	protected IEntityValidator EntityValidator { get; }
+
+	/// <summary>
+	/// Gets the date time provider.
+	/// </summary>
+	protected IDateTimeProvider DateTimeProvider { get; }
 	#endregion
 
-	#region Constructors		
+	#region Constructors			
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
 	/// </summary>
@@ -151,17 +163,20 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	public GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
-		IEntityValidator entityValidator)
+		IEntityValidator entityValidator,
+		IDateTimeProvider dateTimeProvider)
 		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
 	{
 		DbContextHelper = dbContextHelper;
 		EntityValidator = entityValidator;
+		DateTimeProvider = dateTimeProvider;
 	}
 	#endregion
 
@@ -419,7 +434,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			entityHasChanged = true;
 
 			if (entity is ICreatedDateAuditEntity dateAuditEntity)
-				dateAuditEntity.CreatedDateUtc = DateTime.UtcNow;
+				dateAuditEntity.CreatedDateUtc = DateTimeProvider.UtcNow;
 
 			if (entity is ICreatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 				userAuditEntity.CreatedById = CurrentUserId ?? default!;
@@ -433,7 +448,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			entityHasChanged = true;
 
 			if (entity is IUpdatedDateAuditEntity dateAuditEntity)
-				dateAuditEntity.UpdatedDateUtc = DateTime.UtcNow;
+				dateAuditEntity.UpdatedDateUtc = DateTimeProvider.UtcNow;
 
 			if (entity is IUpdatedUserAuditEntity<TUserAuditKey> userAuditEntity)
 				userAuditEntity.UpdatedById = CurrentUserId ?? default!;

@@ -10,6 +10,7 @@ using Umbrella.AppFramework.Shared.Security.Extensions;
 using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security.Options;
+using Umbrella.Utilities.Dating.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Security;
 
@@ -24,6 +25,7 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 	private readonly ILogger _logger;
 	private readonly IAppAuthHelper _authHelper;
 	private readonly IApplicationInsights _applicationInsights;
+	private readonly IDateTimeProvider _dateTimeProvider;
 	private readonly ClaimsPrincipalAuthenticationStateProviderOptions _options;
 
 	/// <inheritdoc />
@@ -35,16 +37,19 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 	/// <param name="logger">The logger.</param>
 	/// <param name="authHelper">The authentication helper.</param>
 	/// <param name="applicationInsights">The application insights.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	/// <param name="options">The options.</param>
 	public ClaimsPrincipalAuthenticationStateProvider(
 		ILogger<ClaimsPrincipalAuthenticationStateProvider> logger,
 		IAppAuthHelper authHelper,
 		IApplicationInsights applicationInsights,
+		IDateTimeProvider dateTimeProvider,
 		ClaimsPrincipalAuthenticationStateProviderOptions options)
 	{
 		_logger = logger;
 		_authHelper = authHelper;
 		_applicationInsights = applicationInsights;
+		_dateTimeProvider = dateTimeProvider;
 		_options = options;
 		_authHelper.OnAuthenticationStateChanged += MarkUserAsAuthenticatedAsync;
 	}
@@ -59,7 +64,7 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 			// Check the refresh token for expiration
 			DateTime? refreshTokenExpiration = principal.GetRefreshTokenExpiration();
 
-			if (refreshTokenExpiration > DateTime.UtcNow)
+			if (refreshTokenExpiration > _dateTimeProvider.UtcNow)
 			{
 				if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
 					await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);

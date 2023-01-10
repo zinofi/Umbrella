@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NCrontab;
+using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Threading.Abstractions;
 
@@ -35,19 +36,27 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	protected ISynchronizationManager SynchronizationManager { get; }
 
 	/// <summary>
+	/// Gets the date time provider.
+	/// </summary>
+	protected IDateTimeProvider DateTimeProvider { get; }
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaScheduledHostedServiceBase"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="serviceScopeFactory">The service scope factory.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	public UmbrellaScheduledHostedServiceBase(
 		ILogger logger,
 		IServiceScopeFactory serviceScopeFactory,
-		ISynchronizationManager synchronizationManager)
+		ISynchronizationManager synchronizationManager,
+		IDateTimeProvider dateTimeProvider)
 	{
 		Logger = logger;
 		ServiceScopeFactory = serviceScopeFactory;
 		SynchronizationManager = synchronizationManager;
+		DateTimeProvider = dateTimeProvider;
 	}
 
 	/// <inheritdoc />
@@ -61,7 +70,7 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 
 			string scheduleString = await GetCrontabScheduleUtcStringAsync(cancellationToken);
 			var crontabSchedule = CrontabSchedule.Parse(scheduleString, new CrontabSchedule.ParseOptions { IncludingSeconds = true });
-			DateTime nextRun = crontabSchedule.GetNextOccurrence(DateTime.UtcNow);
+			DateTime nextRun = crontabSchedule.GetNextOccurrence(DateTimeProvider.UtcNow);
 
 			Logger.WriteInformation(new { nextRun }, "First run is scheduled.");
 
@@ -69,22 +78,22 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 			{
 				while (!cancellationToken.IsCancellationRequested)
 				{
-					await Task.Delay(Math.Max(0, (int)nextRun.Subtract(DateTime.UtcNow).TotalMilliseconds));
+					await Task.Delay(Math.Max(0, (int)nextRun.Subtract(DateTimeProvider.UtcNow).TotalMilliseconds));
 
-					Logger.WriteInformation(new { Date = DateTime.UtcNow }, "Running.");
+					Logger.WriteInformation(new { Date = DateTimeProvider.UtcNow }, "Running.");
 
 					try
 					{
 						using var serviceScope = ServiceScopeFactory.CreateScope();
 
-						await ExecuteAsync(serviceScope, cancellationToken);
+						await ExecuteInternalAsync(serviceScope, cancellationToken);
 					}
 					catch (Exception exc) when (exc is not OperationCanceledException && Logger.WriteError(exc))
 					{
 						// Mask the exception to allow the job to retry on the next run
 					}
 
-					nextRun = crontabSchedule.GetNextOccurrence(DateTime.UtcNow);
+					nextRun = crontabSchedule.GetNextOccurrence(DateTimeProvider.UtcNow);
 
 					Logger.WriteInformation(new { nextRun }, "Next run is scheduled.");
 				}
@@ -135,5 +144,5 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	/// <param name="serviceScope">The service scope.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> used to await execution.</returns>
-	protected internal virtual Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken) => ExecuteAsync(serviceScope, cancellationToken);
+	private protected virtual Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken) => ExecuteAsync(serviceScope, cancellationToken);
 }

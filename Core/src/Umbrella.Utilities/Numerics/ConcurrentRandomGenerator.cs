@@ -65,8 +65,8 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	/// <exception cref="UmbrellaException">An error has occurred while generating the random number.</exception>
 	public int GetNext(int min = 0, int max = 0)
 	{
-		Guard.IsGreaterThanOrEqualTo(min, 0, nameof(min));
-		Guard.IsGreaterThanOrEqualTo(max, 0, nameof(max));
+		Guard.IsGreaterThanOrEqualTo(min, 0);
+		Guard.IsGreaterThanOrEqualTo(max, 0);
 
 		if (min == max)
 			return min;
@@ -100,8 +100,8 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	/// <exception cref="UmbrellaException">An error has occurred while generating the collection.</exception>
 	public IReadOnlyCollection<int> GenerateDistinctCollection(int min, int max, int count, bool shuffle = false)
 	{
-		Guard.IsGreaterThanOrEqualTo(min, 0, nameof(min));
-		Guard.IsGreaterThanOrEqualTo(max, 0, nameof(max));
+		Guard.IsGreaterThanOrEqualTo(min, 0);
+		Guard.IsGreaterThanOrEqualTo(max, 0);
 
 		if (min == max)
 			return new int[] { min };
@@ -154,7 +154,7 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="count"/> is less than one.</exception>
 	public IEnumerable<T> TakeRandom<T>(IEnumerable<T> source, int count, bool shuffle = false)
 	{
-		Guard.IsNotNull(source, nameof(source));
+		Guard.IsNotNull(source);
 
 		int sourceCount = source.Count();
 

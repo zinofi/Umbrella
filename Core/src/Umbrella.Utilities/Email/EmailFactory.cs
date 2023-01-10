@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Data.Abstractions;
+using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Email.Options;
 using Umbrella.Utilities.Exceptions;
@@ -27,6 +28,7 @@ public class EmailFactory : IEmailFactory
 
 	#region Private Members
 	private readonly ILogger _log;
+	private readonly IDateTimeProvider _dateTimeProvider;
 	private readonly ILogger<EmailContent> _emailContentLog;
 	private readonly IDataLookupNormalizer _lookupNormalizer;
 	private readonly EmailFactoryOptions _options;
@@ -34,25 +36,28 @@ public class EmailFactory : IEmailFactory
 	private readonly string _encodedNewLineToken;
 	#endregion
 
-	#region Constructors				
+	#region Constructors					
 	/// <summary>
 	/// Initializes a new instance of the <see cref="EmailFactory"/> class.
 	/// </summary>
 	/// <param name="loggerFactory">The logger factory.</param>
 	/// <param name="logger">The logger.</param>
+	/// <param name="dateTimeProvider">The date time provider.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="options">The options.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
-	/// <exception cref="UmbrellaException">There has been a problem initializing the email builder instance.</exception>
+	/// <exception cref="UmbrellaException">There has been a problem initializing the email builder.</exception>
 	public EmailFactory(
 		ILoggerFactory loggerFactory,
 		ILogger<EmailFactory> logger,
+		IDateTimeProvider dateTimeProvider,
 		IDataLookupNormalizer lookupNormalizer,
 		EmailFactoryOptions options,
 		IUmbrellaHostingEnvironment hostingEnvironment)
 	{
 		_emailContentLog = loggerFactory.CreateLogger<EmailContent>();
 		_log = logger;
+		_dateTimeProvider = dateTimeProvider;
 		_lookupNormalizer = lookupNormalizer;
 		_options = options;
 		_hostingEnvironment = hostingEnvironment;
@@ -98,7 +103,7 @@ public class EmailFactory : IEmailFactory
 					: new StringBuilder(_emailTemplateDictionary![_lookupNormalizer.Normalize(source)]);
 
 			// Make sure the date is shown in the correct format for the current user
-			_ = builder.Replace("{datetime}", DateTime.Now.ToString(_cultureInfo));
+			_ = builder.Replace("{datetime}", _dateTimeProvider.Now.ToString(_cultureInfo));
 
 			return new EmailContent(_emailContentLog, builder, _options.DataRowFormat, _options.NewLineToken, _encodedNewLineToken);
 		}
