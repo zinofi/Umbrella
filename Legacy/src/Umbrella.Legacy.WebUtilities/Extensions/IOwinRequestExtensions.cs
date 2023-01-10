@@ -59,6 +59,14 @@ public static class IOwinRequestExtensions
 		=> request.Headers.TryGetValue("Accept", out string[] values) && values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/webp", StringComparison.OrdinalIgnoreCase));
 
 	/// <summary>
+	/// Determines if the requesting client supports rendering images encoded using the image/avif format.
+	/// </summary>
+	/// <param name="request">The request.</param>
+	/// <returns><see langword="true"/> if it does; otherwise <see langword="false"/>.</returns>
+	public static bool AcceptsAvif(this IOwinRequest request)
+		=> request.Headers.TryGetValue("Accept", out string[] values) && values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/avif", StringComparison.OrdinalIgnoreCase));
+
+	/// <summary>
 	/// Determines whether the requesting client is IE by checking the User-Agent header to see if it contains
 	/// the strings "MSIE" or "Trident" using ordinal case-insensitive comparison rules.
 	/// </summary>

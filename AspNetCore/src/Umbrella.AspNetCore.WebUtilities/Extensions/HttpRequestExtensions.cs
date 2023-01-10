@@ -60,6 +60,14 @@ public static class HttpRequestExtensions
 		&& values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/webp", StringComparison.OrdinalIgnoreCase));
 
 	/// <summary>
+	/// Determines if the client will accept avif image types.
+	/// </summary>
+	/// <param name="request">The request.</param>
+	/// <returns><see langword="true" /> if they are supported, otherwise <see langword="false" /></returns>
+	public static bool AcceptsAvif(this HttpRequest request) => request.Headers.TryGetValue("Accept", out StringValues values)
+		&& values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/avif", StringComparison.OrdinalIgnoreCase));
+
+	/// <summary>
 	/// Determines whether the requesting client is IE by checking the User-Agent header to see if it contains
 	/// the strings "MSIE" or "Trident" using ordinal case-insensitive comparison rules.
 	/// </summary>

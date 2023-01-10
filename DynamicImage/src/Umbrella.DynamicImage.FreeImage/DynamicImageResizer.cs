@@ -103,7 +103,8 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		DynamicImageFormat.Gif => FREE_IMAGE_FORMAT.FIF_GIF,
 		DynamicImageFormat.Jpeg => FREE_IMAGE_FORMAT.FIF_JPEG,
 		DynamicImageFormat.Png => FREE_IMAGE_FORMAT.FIF_PNG,
-		DynamicImageFormat.WebP => throw new NotSupportedException("WebP is not supported."),
+		DynamicImageFormat.WebP => FREE_IMAGE_FORMAT.FIF_WEBP,
+		// TODO AVIF: DynamicImageFormat.Avif => throw new NotSupportedException("Avif is not supported."),
 		_ => default,
 	};
 
@@ -111,7 +112,8 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	{
 		DynamicImageFormat.Jpeg => FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYGOOD | FREE_IMAGE_SAVE_FLAGS.JPEG_BASELINE,
 		DynamicImageFormat.Png => FREE_IMAGE_SAVE_FLAGS.PNG_Z_BEST_COMPRESSION,
-		DynamicImageFormat.WebP => throw new NotSupportedException("WebP is not supported."),
+		DynamicImageFormat.WebP => FREE_IMAGE_SAVE_FLAGS.WEBP_DEFAULT,
+		// TODO AVIF: DynamicImageFormat.Avif => throw new NotSupportedException("Avif is not supported."),
 		_ => default
 	};
 	#endregion

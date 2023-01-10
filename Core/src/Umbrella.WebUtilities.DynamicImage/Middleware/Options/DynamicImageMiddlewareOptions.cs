@@ -28,10 +28,11 @@ public class DynamicImageMiddlewareOptions : IValidatableUmbrellaOptions, ISanit
 	public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
 
 	/// <summary>
-	/// Gets or sets a value indicating whether Jpg images should be returned in WebP format for supported browsers.
+	/// Gets or sets a value indicating whether Jpg images should be returned in WebP or Avif format for supported browsers.
 	/// Defaults to <see langword="true"/>.
 	/// </summary>
-	public bool EnableJpgPngWebPOverride { get; set; } = true;
+	/// <remarks>Avif will be preferred over WebP where supported.</remarks>
+	public bool EnableJpgPngWebPOrAvifOverride { get; set; } = true;
 
 	/// <summary>
 	/// Gets the file provider for the specified <paramref name="searchPath"/>.

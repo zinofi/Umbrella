@@ -1,7 +1,5 @@
 ﻿namespace Umbrella.DynamicImage.Abstractions;
 
-// TODO: Add support for AVIF and prefer to WebP when supported by clients.
-
 /// <summary>
 /// The formats supported by the Dynamic Image infrastructure.
 /// </summary>
@@ -30,7 +28,14 @@ public enum DynamicImageFormat
 	/// <summary>
 	/// A webp file.
 	/// </summary>
-	WebP = 4
+	WebP = 4,
+
+	///// <summary>
+	///// An avif file.
+	///// </summary>
+	// TODO AVIF: Avif = 5
+	// Some weird issue where SkiaSharp return null when changing the file encoding from PNG to AVIF. Works for WebP though.
+	// Needs more investigation so can't support for now.
 }
 
 /// <summary>
@@ -46,6 +51,11 @@ public static class DynamicImageFormatExtensions
 	public static string ToFileExtensionString(this DynamicImageFormat value) => value switch
 	{
 		DynamicImageFormat.Jpeg => "jpg",
-		_ => value.ToString().ToLowerInvariant(),
+		DynamicImageFormat.Bmp => "bmp",
+		DynamicImageFormat.Gif => "gif",
+		DynamicImageFormat.Png => "png",
+		DynamicImageFormat.WebP => "webp",
+		// TODO AVIF: DynamicImageFormat.Avif => "avif",
+		_ => throw new NotSupportedException($"The specified format: {value} is not supported.")
 	};
 }

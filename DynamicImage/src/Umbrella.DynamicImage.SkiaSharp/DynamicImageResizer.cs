@@ -129,6 +129,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		DynamicImageFormat.Jpeg => SKEncodedImageFormat.Jpeg,
 		DynamicImageFormat.Png => SKEncodedImageFormat.Png,
 		DynamicImageFormat.WebP => SKEncodedImageFormat.Webp,
+		// TODO AVIF: DynamicImageFormat.Avif => SKEncodedImageFormat.Avif,
 		_ => default,
 	};
 	#endregion

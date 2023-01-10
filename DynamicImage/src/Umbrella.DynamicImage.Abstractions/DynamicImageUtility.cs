@@ -65,6 +65,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 				var _ when target.SequenceEqual("jpeg".AsSpan()) => DynamicImageFormat.Jpeg,
 				var _ when target.SequenceEqual("gif".AsSpan()) => DynamicImageFormat.Gif,
 				var _ when target.SequenceEqual("webp".AsSpan()) => DynamicImageFormat.WebP,
+				// TODO AVIF: var _ when target.SequenceEqual("avif".AsSpan()) => DynamicImageFormat.Avif,
 				_ => DynamicImageFormat.Jpeg
 			};
 		}

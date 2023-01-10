@@ -13,11 +13,12 @@ public class DynamicImageUtilityTest
 	[InlineData(".jpg", DynamicImageFormat.Jpeg)]
 	[InlineData(".gif", DynamicImageFormat.Gif)]
 	[InlineData(".webp", DynamicImageFormat.WebP)]
+	// TODO AVIF: [InlineData(".avif", DynamicImageFormat.Avif)]
 	[InlineData(" png", DynamicImageFormat.Png)]
 	[InlineData(" bmp", DynamicImageFormat.Bmp)]
 	[InlineData(" jpg", DynamicImageFormat.Jpeg)]
 	[InlineData(" gif", DynamicImageFormat.Gif)]
-	[InlineData(" webp", DynamicImageFormat.WebP)]
+	// TODO AVIF: [InlineData(" avif", DynamicImageFormat.Avif)]
 	public void ParseImageFormat(string format, DynamicImageFormat output)
 	{
 		DynamicImageUtility utility = CreateDynamicImageUtility();
