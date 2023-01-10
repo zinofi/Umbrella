@@ -18,7 +18,7 @@ namespace Umbrella.FileSystem.AzureStorage;
 /// <summary>
 /// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
 /// </summary>
-/// <seealso cref="T:Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProvider{Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProviderOptions}" />
+/// <seealso cref="UmbrellaAzureBlobStorageFileProvider{UmbrellaAzureBlobStorageFileProviderOptions}" />
 public class UmbrellaAzureBlobStorageFileProvider : UmbrellaAzureBlobStorageFileProvider<UmbrellaAzureBlobStorageFileProviderOptions>
 {
 	/// <summary>
@@ -40,7 +40,7 @@ public class UmbrellaAzureBlobStorageFileProvider : UmbrellaAzureBlobStorageFile
 /// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
 /// </summary>
 /// <typeparam name="TOptions">The type of the provider options.</typeparam>
-/// <seealso cref="T:Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProvider{Umbrella.FileSystem.AzureStorage.UmbrellaAzureBlobStorageFileProviderOptions}" />
+/// <seealso cref="UmbrellaAzureBlobStorageFileProvider{UmbrellaAzureBlobStorageFileProviderOptions}" />
 public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider, IDisposable
 	where TOptions : UmbrellaAzureBlobStorageFileProviderOptions
 {
@@ -288,6 +288,9 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+
+		// Instead of using the FileAccessChecker, we need to find a handler registered with the DI container
+		// for the current directory.
 
 		if (fileInfo.IsNew)
 			return true;

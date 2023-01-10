@@ -4,6 +4,7 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Context.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions;
 
@@ -32,6 +33,11 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 	protected ICacheKeyUtility CacheKeyUtility { get; }
 
 	/// <summary>
+	/// Gets the current user claims principal accessor.
+	/// </summary>
+	public ICurrentUserClaimsPrincipalAccessor CurrentUserClaimsPrincipalAccessor { get; }
+
+	/// <summary>
 	/// Gets the file provider.
 	/// </summary>
 	protected IUmbrellaFileProvider FileProvider { get; }
@@ -52,18 +58,21 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 	/// <param name="logger">The logger.</param>
 	/// <param name="cache">The cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
+	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
 	/// <param name="fileProvider">The file provider.</param>
 	/// <param name="fileAccessUtility">The file access utility.</param>
 	public UmbrellaFileHandler(
 		ILogger logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
+		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
 		IUmbrellaFileProvider fileProvider,
 		IUmbrellaFileAccessUtility<TDirectoryType, TGroupId> fileAccessUtility)
 	{
 		Logger = logger;
 		Cache = cache;
 		CacheKeyUtility = cacheKeyUtility;
+		CurrentUserClaimsPrincipalAccessor = currentUserClaimsPrincipalAccessor;
 		FileProvider = fileProvider;
 		FileAccessUtility = fileAccessUtility;
 	}
@@ -192,6 +201,35 @@ public abstract class UmbrellaFileHandler<TGroupId, TDirectoryType> : IUmbrellaF
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem deleting the files for the specified group.", exc);
+		}
+	}
+
+	public virtual Task<bool> CanAccessAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return Task.FromResult(true);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem checking the file permissions.", exc);
+		}
+	}
+
+	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, bool writeChanges = true, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			if (writeChanges)
+				await fileInfo.WriteMetadataChangesAsync(cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, groupId, writeChanges }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem applying the required file permissions.", exc);
 		}
 	}
 
