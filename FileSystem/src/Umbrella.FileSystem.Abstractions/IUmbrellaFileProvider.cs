@@ -12,7 +12,7 @@ public interface IUmbrellaFileProvider
 	/// Initializes the options of the provider.
 	/// </summary>
 	/// <param name="options">The options.</param>
-	void InitializeOptions(IUmbrellaFileProviderOptions options);
+	void InitializeOptions(UmbrellaFileProviderOptionsBase options);
 
 	/// <summary>
 	/// Creates a new file at the specified <paramref name="subpath"/>.

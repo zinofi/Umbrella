@@ -11,20 +11,15 @@ namespace Umbrella.FileSystem.Disk;
 /// <summary>
 /// Options for the <see cref="UmbrellaDiskFileProvider"/>.
 /// </summary>
-/// <seealso cref="IUmbrellaFileProviderOptions" />
+/// <seealso cref="UmbrellaFileProviderOptionsBase" />
 /// <seealso cref="ISanitizableUmbrellaOptions" />
 /// <seealso cref="IValidatableUmbrellaOptions" />
-public class UmbrellaDiskFileProviderOptions : IUmbrellaFileProviderOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaDiskFileProviderOptions : UmbrellaFileProviderOptionsBase, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
 	/// Gets or sets the physical root path on disk for the file provider.
 	/// </summary>
 	public string RootPhysicalPath { get; set; } = null!;
-
-	/// <summary>
-	/// Gets or sets the file access checker.
-	/// </summary>
-	public Func<UmbrellaDiskFileInfo, FileInfo, CancellationToken, Task<bool>>? FileAccessChecker { get; set; }
 
 	/// <summary>
 	/// Sanitizes this instance.

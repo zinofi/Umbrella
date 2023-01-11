@@ -61,6 +61,8 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services);
 		Guard.IsNotNull(optionsBuilder);
 
+		services.AddUmbrellaFileSystemCore();
+
 		_ = services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider>(x =>
 		{
 			var factory = x.GetRequiredService<IUmbrellaFileProviderFactory>();

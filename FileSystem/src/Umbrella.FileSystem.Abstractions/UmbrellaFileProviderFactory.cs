@@ -56,7 +56,7 @@ public class UmbrellaFileProviderFactory : IUmbrellaFileProviderFactory
 	/// <inheritdoc />
 	public TProvider CreateProvider<TProvider, TOptions>(TOptions options)
 		where TProvider : IUmbrellaFileProvider
-		where TOptions : IUmbrellaFileProviderOptions
+		where TOptions : UmbrellaFileProviderOptionsBase
 	{
 		var provider = ActivatorUtilities.CreateInstance<TProvider>(Services);
 		provider.InitializeOptions(options);

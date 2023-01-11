@@ -191,7 +191,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 	#region Overridden Methods
 	/// <inheritdoc />
-	public override void InitializeOptions(IUmbrellaFileProviderOptions options)
+	public override void InitializeOptions(UmbrellaFileProviderOptionsBase options)
 	{
 		base.InitializeOptions(options);
 
@@ -289,16 +289,14 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		// Instead of using the FileAccessChecker, we need to find a handler registered with the DI container
-		// for the current directory.
-
 		if (fileInfo.IsNew)
 			return true;
 
-		if (Options.FileAccessChecker is not null)
-			return await Options.FileAccessChecker(fileInfo, blob, cancellationToken);
+		IUmbrellaFileAuthorizationHandler? authorizationHandler = Options.GetAuthorizationHandler(fileInfo);
 
-		return true;
+		return authorizationHandler is not null
+			? await authorizationHandler.CanAccessAsync(fileInfo, cancellationToken)
+			: Options.AllowUnhandledFileAuthorizationChecks;
 	}
 	#endregion
 

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Umbrella.Utilities.Options.Abstractions;
 
 /// <summary>
@@ -12,4 +14,9 @@ public interface IValidatableUmbrellaOptions
 	/// Validates this instance.
 	/// </summary>
 	void Validate();
+}
+
+public interface IServicesResolverUmbrellaOptions
+{
+	void ResolveServices(IServiceCollection services, IServiceProvider serviceProvider);
 }

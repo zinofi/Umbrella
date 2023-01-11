@@ -179,6 +179,9 @@ public static class IServiceCollectionExtensions
 				if (options is IDevelopmentModeUmbrellaOptions developmentModeOptions)
 					developmentModeOptions.SetDevelopmentMode(isDevelopmentMode);
 
+				if (options is IServicesResolverUmbrellaOptions servicesResolverOptions)
+					servicesResolverOptions.ResolveServices(services, serviceProvider);
+
 				optionsBuilder?.Invoke(serviceProvider, options);
 
 				if (options is ISanitizableUmbrellaOptions sanitizableOptions)

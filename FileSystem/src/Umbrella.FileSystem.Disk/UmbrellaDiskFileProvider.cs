@@ -37,7 +37,7 @@ public class UmbrellaDiskFileProvider : UmbrellaDiskFileProvider<UmbrellaDiskFil
 /// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses the physical disk as the underlying storage mechanism.
 /// </summary>
 /// <typeparam name="TOptions">The type of the options.</typeparam>
-/// <seealso cref="T:Umbrella.FileSystem.Disk.UmbrellaDiskFileProvider{Umbrella.FileSystem.Disk.UmbrellaDiskFileProviderOptions}" />
+/// <seealso cref="UmbrellaDiskFileProvider{UmbrellaDiskFileProviderOptions}" />
 public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
 	where TOptions : UmbrellaDiskFileProviderOptions
 {
@@ -173,10 +173,11 @@ public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaD
 		if (fileInfo.IsNew)
 			return true;
 
-		if (Options.FileAccessChecker is not null)
-			return await Options.FileAccessChecker(fileInfo, physicalFileInfo, cancellationToken);
+		IUmbrellaFileAuthorizationHandler? authorizationHandler = Options.GetAuthorizationHandler(fileInfo);
 
-		return true;
+		return authorizationHandler is not null
+			? await authorizationHandler.CanAccessAsync(fileInfo, cancellationToken)
+			: Options.AllowUnhandledFileAuthorizationChecks;
 	}
 	#endregion
 

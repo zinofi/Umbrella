@@ -18,11 +18,11 @@ namespace Umbrella.FileSystem.Abstractions;
 /// <typeparam name="TOptions">The type of the options.</typeparam>
 public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 	where TFileInfo : IUmbrellaFileInfo
-	where TOptions : class, IUmbrellaFileProviderOptions
+	where TOptions : UmbrellaFileProviderOptionsBase
 {
 	#region Private Static Members
 	private static readonly char[] _subpathTrimCharacters = new[] { ' ', '\\', '/', '~', ' ' };
-	private static readonly Regex _multipleSlashSelector = new("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+	private static readonly Regex _multipleSlashSelector = new("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 	#endregion
 
 	#region Protected Properties
@@ -82,7 +82,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 	#region Public Methods
 
 	/// <inheritdoc />
-	public virtual void InitializeOptions(IUmbrellaFileProviderOptions options)
+	public virtual void InitializeOptions(UmbrellaFileProviderOptionsBase options)
 	{
 		if (Options is not null)
 			throw new UmbrellaFileSystemException("The options have already been initialized for this instance.");

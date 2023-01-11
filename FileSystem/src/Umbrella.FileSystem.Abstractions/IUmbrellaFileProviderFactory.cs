@@ -17,5 +17,5 @@ public interface IUmbrellaFileProviderFactory
 	/// <returns>The file provider.</returns>
 	TProvider CreateProvider<TProvider, TOptions>(TOptions options)
 		where TProvider : IUmbrellaFileProvider
-		where TOptions : IUmbrellaFileProviderOptions;
+		where TOptions : UmbrellaFileProviderOptionsBase;
 }

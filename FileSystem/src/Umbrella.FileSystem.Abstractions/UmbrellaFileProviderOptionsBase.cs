@@ -1,0 +1,74 @@
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
+using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Options.Abstractions;
+
+namespace Umbrella.FileSystem.Abstractions;
+
+/// <summary>
+/// This is a base class for more specific options types.
+/// It is used by the <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> type as a way of generically specifying options without having to resort to generics.
+/// </summary>
+public abstract class UmbrellaFileProviderOptionsBase : IServicesResolverUmbrellaOptions
+{
+	private readonly object _syncRoot = new();
+	private IServiceCollection? _services;
+	private IServiceProvider? _serviceProvider;
+	private IReadOnlyDictionary<string, IUmbrellaFileAuthorizationHandler>? _authorizationHandlerMappings;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether access to files that do not have a registered <see cref="IUmbrellaFileAuthorizationHandler"/> should be permitted.
+	/// </summary>
+	/// <remarks>Defaults to <see langword="false"/>.</remarks>
+	public bool AllowUnhandledFileAuthorizationChecks { get; set; }
+
+	void IServicesResolverUmbrellaOptions.ResolveServices(IServiceCollection services, IServiceProvider serviceProvider)
+	{
+		Guard.IsNotNull(services);
+		Guard.IsNotNull(serviceProvider);
+
+		_services = services;
+		_serviceProvider = serviceProvider;
+	}
+
+	/// <summary>
+	/// Gets the authorization handler for the specified <paramref name="fileInfo"/>.
+	/// </summary>
+	/// <param name="fileInfo">The file.</param>
+	/// <returns>The handler.</returns>
+	/// <exception cref="UmbrellaFileSystemException">An {nameof(IUmbrellaFileAuthorizationHandler)} could not be found for the specified directory name '{directoryNameLowered}'. Please ensure it has been registered with the application's DI container.</exception>
+	public IUmbrellaFileAuthorizationHandler? GetAuthorizationHandler(IUmbrellaFileInfo fileInfo)
+	{
+		Guard.IsNotNull(fileInfo);
+		Guard.IsNotNull(_services);
+		Guard.IsNotNull(_serviceProvider);
+
+		ReadOnlySpan<char> fileSubPathSpan = fileInfo.SubPath.AsSpan();
+		fileSubPathSpan = fileSubPathSpan.TrimStart('/');
+
+		int idxFirstSlash = fileSubPathSpan.IndexOf('/');
+		fileSubPathSpan = fileSubPathSpan.Slice(0, idxFirstSlash);
+
+		Span<char> directoryNameSpanLowered = stackalloc char[fileSubPathSpan.Length];
+		fileSubPathSpan.ToLowerInvariantSlim(directoryNameSpanLowered);
+
+		string directoryNameLowered = directoryNameSpanLowered.ToString();
+
+		if (_authorizationHandlerMappings is null)
+		{
+			lock (_syncRoot)
+			{
+				_authorizationHandlerMappings ??= _services
+					.Where(x => typeof(IUmbrellaFileAuthorizationHandler).IsAssignableFrom(x.ServiceType) && x.ImplementationType is not null)
+					.Select(x => _serviceProvider.GetRequiredService(x.ImplementationType!))
+					.Cast<IUmbrellaFileAuthorizationHandler>()
+					.ToDictionary(x => x.DirectoryName.ToLowerInvariant(), x => x);
+			}
+		}
+
+		return _authorizationHandlerMappings.TryGetValue(directoryNameLowered, out IUmbrellaFileAuthorizationHandler handler) ? handler : null;
+	}
+}

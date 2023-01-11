@@ -12,7 +12,7 @@ namespace Umbrella.FileSystem.AzureStorage;
 /// <summary>
 /// The options for the UmbrellaAzureBlobStorageFileProvider.
 /// </summary>
-public class UmbrellaAzureBlobStorageFileProviderOptions : IUmbrellaFileProviderOptions, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaAzureBlobStorageFileProviderOptions : UmbrellaFileProviderOptionsBase, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
 	/// The connection string for the Azure storage account in which the blobs will be stored.
@@ -27,11 +27,6 @@ public class UmbrellaAzureBlobStorageFileProviderOptions : IUmbrellaFileProvider
 	public bool CacheContainerResolutions { get; set; } = true;
 
 	/// <summary>
-	/// Gets or sets the file access checker.
-	/// </summary>
-	public Func<UmbrellaAzureBlobStorageFileInfo, BlobClient, CancellationToken, Task<bool>>? FileAccessChecker { get; set; }
-
-	/// <summary>
 	/// Sanitizes this instance.
 	/// </summary>
 	public void Sanitize() => StorageConnectionString = StorageConnectionString.Trim();
@@ -39,5 +34,5 @@ public class UmbrellaAzureBlobStorageFileProviderOptions : IUmbrellaFileProvider
 	/// <summary>
 	/// Validates this instance.
 	/// </summary>
-	public void Validate() => Guard.IsNotNullOrWhiteSpace(StorageConnectionString, nameof(StorageConnectionString));
+	public void Validate() => Guard.IsNotNullOrWhiteSpace(StorageConnectionString);
 }
