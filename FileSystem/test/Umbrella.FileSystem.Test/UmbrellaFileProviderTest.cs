@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Microsoft.Extensions.DependencyInjection;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage;
 using Umbrella.FileSystem.Disk;
 using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Helpers;
+using Umbrella.Utilities.Options.Abstractions;
 using Xunit;
 using Xunit.Extensions.Ordering;
 
@@ -1293,8 +1295,12 @@ public class UmbrellaFileProviderTest
 	{
 		var options = new UmbrellaAzureBlobStorageFileProviderOptions
 		{
-			StorageConnectionString = _storageConnectionString
+			StorageConnectionString = _storageConnectionString,
+			AllowUnhandledFileAuthorizationChecks = true
 		};
+
+		if (options is IServicesResolverUmbrellaOptions servicesOptions)
+			servicesOptions.ResolveServices(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 		var provider = new UmbrellaAzureBlobStorageFileProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaAzureBlobStorageFileProvider>(),
@@ -1310,8 +1316,12 @@ public class UmbrellaFileProviderTest
 	{
 		var options = new UmbrellaDiskFileProviderOptions
 		{
-			RootPhysicalPath = BaseDirectory
+			RootPhysicalPath = BaseDirectory,
+			AllowUnhandledFileAuthorizationChecks= true
 		};
+
+		if (options is IServicesResolverUmbrellaOptions servicesOptions)
+			servicesOptions.ResolveServices(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 		var provider = new UmbrellaDiskFileProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileProvider>(),
