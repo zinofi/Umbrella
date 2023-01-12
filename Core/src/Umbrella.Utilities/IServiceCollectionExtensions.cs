@@ -180,7 +180,7 @@ public static class IServiceCollectionExtensions
 					developmentModeOptions.SetDevelopmentMode(isDevelopmentMode);
 
 				if (options is IServicesResolverUmbrellaOptions servicesResolverOptions)
-					servicesResolverOptions.ResolveServices(services, serviceProvider);
+					servicesResolverOptions.Initialize(services, serviceProvider);
 
 				optionsBuilder?.Invoke(serviceProvider, options);
 

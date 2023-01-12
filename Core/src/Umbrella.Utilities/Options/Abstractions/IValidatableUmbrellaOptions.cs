@@ -15,8 +15,3 @@ public interface IValidatableUmbrellaOptions
 	/// </summary>
 	void Validate();
 }
-
-public interface IServicesResolverUmbrellaOptions
-{
-	void ResolveServices(IServiceCollection services, IServiceProvider serviceProvider);
-}

@@ -177,7 +177,7 @@ public class DynamicImageCacheTest
 		};
 
 		if (options is IServicesResolverUmbrellaOptions servicesOptions)
-			servicesOptions.ResolveServices(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
+			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 		var provider = new UmbrellaDiskFileProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileProvider>(),
@@ -211,7 +211,7 @@ public class DynamicImageCacheTest
 		};
 
 		if (options is IServicesResolverUmbrellaOptions servicesOptions)
-			servicesOptions.ResolveServices(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
+			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 		var provider = new UmbrellaAzureBlobStorageFileProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaAzureBlobStorageFileProvider>(),

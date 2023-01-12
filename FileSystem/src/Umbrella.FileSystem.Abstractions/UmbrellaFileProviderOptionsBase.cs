@@ -25,7 +25,7 @@ public abstract class UmbrellaFileProviderOptionsBase : IServicesResolverUmbrell
 	/// <remarks>Defaults to <see langword="false"/>.</remarks>
 	public bool AllowUnhandledFileAuthorizationChecks { get; set; }
 
-	void IServicesResolverUmbrellaOptions.ResolveServices(IServiceCollection services, IServiceProvider serviceProvider)
+	void IServicesResolverUmbrellaOptions.Initialize(IServiceCollection services, IServiceProvider serviceProvider)
 	{
 		Guard.IsNotNull(services);
 		Guard.IsNotNull(serviceProvider);
