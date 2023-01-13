@@ -9,6 +9,8 @@ using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security.Options;
+using Umbrella.AspNetCore.Blazor.Services.Grid;
+using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.AspNetCore.Blazor.Utilities;
 using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
 
@@ -36,11 +38,12 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUriNavigator, UriNavigator>();
 		_ = services.AddTransient<IDialogUtility>(x => x.GetRequiredService<IUmbrellaDialogUtility>());
 		_ = services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
+		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 
 		// Security
-		services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();
-		services.AddScoped<IClaimsPrincipalAuthenticationStateProvider>(x => (ClaimsPrincipalAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
-		services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
+		_ = services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();
+		_ = services.AddScoped<IClaimsPrincipalAuthenticationStateProvider>(x => (ClaimsPrincipalAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
+		_ = services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
 
 		return services;
 	}

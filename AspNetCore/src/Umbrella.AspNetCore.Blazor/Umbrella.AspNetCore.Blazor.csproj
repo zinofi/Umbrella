@@ -54,6 +54,7 @@
 
 	<ItemGroup>
 		<Using Include="Umbrella.Utilities.Extensions" />
+		<Using Include="Umbrella.AspNetCore.Blazor.Exceptions" />
 	</ItemGroup>
 
 </Project>

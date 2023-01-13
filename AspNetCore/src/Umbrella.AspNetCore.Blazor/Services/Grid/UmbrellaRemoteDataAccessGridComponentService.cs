@@ -1,48 +1,52 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
+using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
-using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Exceptions;
-using Umbrella.Utilities.Http.Abstractions;
 
-namespace Umbrella.AspNetCore.Blazor.Infrastructure;
+namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 
 /// <summary>
-/// A base component to be used with Blazor components that contain a single <see cref="UmbrellaGrid{TItem}"/> component in conjunction
-/// with the <see cref="DataAccess.Remote"/> infrastructure.
+/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component in conjunction with the <see cref="DataAccess.Remote"/> infrastructure.
+/// Multiple instances of this service can be used to power multiple grids contained within a single Blazor component.
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
 /// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 /// <typeparam name="TRepository">The type of the repository.</typeparam>
-/// <seealso cref="UmbrellaGridComponentBase{TItemModel, TPaginatedResultModel}" />
-public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel>
-	where TItemModel : class, IKeyedItem<TIdentifier>
+/// <seealso cref="UmbrellaGridComponentService{TItemModel, TPaginatedResultModel}" />
+public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>, IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TIdentifier, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
 {
 	/// <summary>
-	/// Gets or sets the repository.
+	/// Initializes a new instance of the <see cref="UmbrellaRemoteDataAccessGridComponentService{TItemModel, TIdentifier, TPaginatedResultModel, TRepository}"/> class.
 	/// </summary>
-	[Inject]
-	protected TRepository Repository { get; set; } = null!;
+	/// <param name="logger">The logger.</param>
+	/// <param name="dialogUtility">The dialog utility.</param>
+	/// <param name="repository">The repository.</param>
+	internal UmbrellaRemoteDataAccessGridComponentService(
+		ILogger<UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>> logger,
+		IUmbrellaDialogUtility dialogUtility,
+		TRepository repository)
+		: base(logger, dialogUtility)
+	{
+		Repository = repository;
+		LoadPaginatedResultModelDelegate = (pageNumber, pageSize, sorters, filters) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters);
+	}
 
-	/// <inheritdoc/>
-	protected override Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters);
+	/// <inheritdoc />
+	public TRepository Repository { get; }
 
-	/// <summary>
-	/// The event handler invoked when an item in the grid is to be deleted.
-	/// </summary>
-	/// <param name="item">The item.</param>
-	public virtual async Task DeleteItemClick(TItemModel item)
+	/// <inheritdoc />
+	public async Task DeleteItemClick(TItemModel item)
 	{
 		try
 		{
