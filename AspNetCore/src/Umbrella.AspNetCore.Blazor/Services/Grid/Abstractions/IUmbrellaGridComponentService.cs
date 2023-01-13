@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
@@ -65,7 +62,7 @@ public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel
 	/// <summary>
 	/// Gets the delegate used to load the paginated results.
 	/// </summary>
-	Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; init; }
+	Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; }
 
 	/// <summary>
 	/// Gets the StateHasChanged delegate. This should always be initialized to <see cref="ComponentBase.StateHasChanged"/>.
@@ -85,6 +82,13 @@ public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel
 	/// has been invoked on the component instance; otherwise <see langword="false"/>.</param>
 	/// <returns>A <see cref="Task"/> representing any asynchronous operation.</returns>
 	Task OnAfterRenderAsync(bool firstRender);
+
+	/// <summary>
+	/// The event handler invoked by the <see cref="GridInstance"/> as a result of filtering, sorting or pagination.
+	/// </summary>
+	/// <param name="args">The event args containing details of the current filtering, sorting and pagination options.</param>
+	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
+	Task OnGridOptionsChangedAsync(UmbrellaGridRefreshEventArgs args);
 
 	/// <summary>
 	/// Refreshes the data in the grid using the specified options. Internally this calls <see cref="LoadPaginatedResultModelDelegate" />

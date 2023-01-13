@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
@@ -42,7 +39,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 	public IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(
 		string initialSortPropertyName,
 		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate,
-		Action StateHasChangedDelegate,
+		Action stateHasChangedDelegate,
 		bool autoRenderOnPageLoad = true,
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
@@ -61,7 +58,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 				InitialSortDirection = initialSortDirection,
 				InitialSortPropertyName = initialSortPropertyName,
 				LoadPaginatedResultModelDelegate = loadPaginatedResultModelDelegate,
-				StateHasChangedDelegate = StateHasChangedDelegate
+				StateHasChangedDelegate = stateHasChangedDelegate
 			};
 
 			if (initialSortExpressions is not null)
@@ -78,8 +75,8 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 	/// <inheritdoc/>
 	public IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(
 		string initialSortPropertyName,
-		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate,
-		Action StateHasChangedDelegate,
+		Action stateHasChangedDelegate,
+		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null,
 		bool autoRenderOnPageLoad = true,
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
@@ -101,12 +98,14 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 				CallGridStateHasChangedOnRefresh = callGridStateHasChangedOnRefresh,
 				InitialSortDirection = initialSortDirection,
 				InitialSortPropertyName = initialSortPropertyName,
-				LoadPaginatedResultModelDelegate = loadPaginatedResultModelDelegate,
-				StateHasChangedDelegate = StateHasChangedDelegate
+				StateHasChangedDelegate = stateHasChangedDelegate
 			};
 
 			if (initialSortExpressions is not null)
 				service.InitialSortExpressions = initialSortExpressions;
+
+			if (loadPaginatedResultModelDelegate is not null)
+				service.LoadPaginatedResultModelDelegate = loadPaginatedResultModelDelegate;
 
 			return service;
 		}

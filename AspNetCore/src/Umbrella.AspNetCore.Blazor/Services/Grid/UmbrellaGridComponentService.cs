@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
@@ -71,7 +68,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	public required Action StateHasChangedDelegate { get; init; }
 
 	/// <inheritdoc />
-	public Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; init; } = null!;
+	public Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; internal set; } = null!;
 
 	/// <inheritdoc />
 	public async Task InitializeGridAsync()
@@ -105,12 +102,8 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 		}
 	}
 
-	/// <summary>
-	/// The event handler invoked by the <see cref="GridInstance"/> as a result of filtering, sorting or pagination.
-	/// </summary>
-	/// <param name="args">The event args containing details of the current filtering, sorting and pagination options.</param>
-	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
-	protected async Task OnGridOptionsChangedAsync(UmbrellaGridRefreshEventArgs args)
+	/// <inheritdoc />
+	public async Task OnGridOptionsChangedAsync(UmbrellaGridRefreshEventArgs args)
 	{
 		try
 		{
