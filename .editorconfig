@@ -142,6 +142,7 @@ dotnet_diagnostic.CA2251.severity = error
 dotnet_diagnostic.CA1000.severity = silent
 dotnet_diagnostic.CA1828.severity = error
 dotnet_diagnostic.CA1848.severity = silent
+dotnet_diagnostic.CA1051.severity = error
 
 ###############################
 # C# Code Style Rules         #
