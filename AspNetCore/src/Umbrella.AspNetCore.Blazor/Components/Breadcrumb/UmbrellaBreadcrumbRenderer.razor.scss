@@ -1,0 +1,42 @@
+﻿/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-breadcrumb-color
+	--u-breadcrumb-color-hover
+	--u-breadcrumb-color-active
+	--u-breadcrumb-gap
+*/
+
+.u-breadcrumb
+{
+	$color: red;
+	$color-hover: green;
+	$color-active: blue;
+	$gap: 8px;
+
+	gap: var(--u-breadcrumb-gap, $gap);
+
+	&-item
+	{
+		display: flex;
+		gap: var(--u-breadcrumb-gap, $gap);
+		color: var(--u-breadcrumb-color, $color);
+
+		&__link
+		{
+			color: var(--u-breadcrumb-color, $color);
+			text-decoration: none;
+
+			&:hover
+			{
+				color: var(--u-breadcrumb-color-hover, $color-hover);
+				text-decoration: underline;
+			}
+		}
+
+		&.active
+		{
+			color: var(--u-breadcrumb-color-active, $color-active);
+		}
+	}
+}

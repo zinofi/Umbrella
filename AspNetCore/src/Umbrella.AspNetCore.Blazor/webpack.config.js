@@ -5,6 +5,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserJsPlugin = require("terser-webpack-plugin");
 const CssMinimizerWebpackPlugin = require("css-minimizer-webpack-plugin");
+const autoprefixer = require('autoprefixer');
+const pseudoelements = require('postcss-pseudoelements');
 
 module.exports = (env, argv) =>
 {
@@ -55,7 +57,14 @@ module.exports = (env, argv) =>
 						// Use the postcss-loader to add vendor prefixes via autoprefixer.
 						loader: 'postcss-loader',
 						options: {
-							postcssOptions: { config: paths.postcssConfig },
+							postcssOptions: {
+								plugins: [
+									autoprefixer({
+										overrideBrowserslist: ['> 1%', 'last 2 versions', 'not dead']
+									}),
+									pseudoelements()
+								]
+							},
 							sourceMap: true
 						}
 					},
