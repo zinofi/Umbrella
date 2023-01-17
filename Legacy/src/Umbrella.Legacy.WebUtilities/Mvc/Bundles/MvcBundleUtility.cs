@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -46,6 +47,7 @@ public class MvcBundleUtility : MvcBundleUtility<IBundleUtility, BundleUtilityOp
 /// <typeparam name="TBundleUtility">The type of the bundle utility.</typeparam>
 /// <typeparam name="TOptions">The type of the options.</typeparam>
 /// <seealso cref="MvcBundleUtility{IBundleUtility, BundleUtilityOptions}" />
+[SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "Unavoidable here because support for await within MVC views does not exist.")]
 public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUtility
 	where TBundleUtility : IBundleUtility
 	where TOptions : BundleUtilityOptions

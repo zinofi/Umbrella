@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 
 namespace Umbrella.DataAccess.Abstractions;
@@ -92,6 +93,7 @@ public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 	}
 
 	/// <inheritdoc />
+	[SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "Unavoidable here but this method should never be being called anyway!")]
 	public int SaveChanges(Func<int> baseSaveChanges)
 	{
 		try

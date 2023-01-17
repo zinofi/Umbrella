@@ -13,10 +13,11 @@ namespace Umbrella.AppFramework.Utilities;
 /// <summary>
 /// A utility used to show and hide an application loading screen.
 /// </summary>
-public class LoadingScreenUtility : ILoadingScreenUtility
+public class LoadingScreenUtility : ILoadingScreenUtility, IDisposable
 {
 	private readonly ILogger<LoadingScreenUtility> _logger;
 	private CancellationTokenSource? _cancellationTokenSource;
+	private bool _disposedValue;
 
 	/// <inheritdoc />
 	public event Action<LoadingScreenState> OnStateChanged
@@ -80,5 +81,30 @@ public class LoadingScreenUtility : ILoadingScreenUtility
 				_cancellationTokenSource = null;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Releases unmanaged and - optionally - managed resources.
+	/// </summary>
+	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!_disposedValue)
+		{
+			if (disposing)
+			{
+				_cancellationTokenSource?.Dispose();
+				_cancellationTokenSource = null;
+			}
+
+			_disposedValue = true;
+		}
+	}
+
+	/// <inheritdoc />
+	public void Dispose()
+	{
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
 	}
 }

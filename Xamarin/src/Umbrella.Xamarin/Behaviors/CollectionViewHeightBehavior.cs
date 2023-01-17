@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Behaviors;
@@ -18,7 +17,7 @@ public class CollectionViewHeightBehavior : Behavior<CollectionView>
 	/// <summary>
 	/// The bindable property for the <see cref="ParentLayout"/> property.
 	/// </summary>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin")]
+	[SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin")]
 	public static BindableProperty ParentLayoutProperty = BindableProperty.Create(nameof(ParentLayout), typeof(Layout), typeof(CollectionViewHeightBehavior), null, BindingMode.OneTime);
 
 	private bool _hasHeightChanged;
@@ -46,6 +45,7 @@ public class CollectionViewHeightBehavior : Behavior<CollectionView>
 		bindable.SizeChanged += Bindable_SizeChanged;
 	}
 
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "This is an event handler.")]
 	private async void Bindable_SizeChanged(object sender, EventArgs e)
 	{
 		if (CollectionViewObject is null)
@@ -62,7 +62,7 @@ public class CollectionViewHeightBehavior : Behavior<CollectionView>
 			{
 				await Task.Delay(50);
 
-				double newHeight = collectionHeight / 2 + 20;
+				double newHeight = (collectionHeight / 2) + 20;
 
 				CollectionViewObject.HeightRequest = Math.Max(newHeight, ParentLayout.Height);
 

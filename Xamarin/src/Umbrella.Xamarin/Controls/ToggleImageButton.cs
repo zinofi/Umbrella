@@ -1,4 +1,5 @@
-﻿using Umbrella.Utilities.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Extensions;
 using Xamarin.Forms;
 
@@ -8,7 +9,7 @@ namespace Umbrella.Xamarin.Controls;
 /// A control that extends the <see cref="ImageButton"/> control to provide checkbox and radiobutton behaviour.
 /// </summary>
 /// <seealso cref="ImageButton" />
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
+[SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
 public class ToggleImageButton : ImageButton
 {
 	/// <summary>
@@ -112,6 +113,7 @@ public class ToggleImageButton : ImageButton
 		}
 	}
 
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "This is an event handler.")]
 	private static async void OnIsToggledChanged(BindableObject bindable, object oldValue, object newValue)
 	{
 		var toggleButton = (ToggleImageButton)bindable;

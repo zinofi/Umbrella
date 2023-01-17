@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System.Diagnostics.CodeAnalysis;
+using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Behaviors;
 
@@ -8,7 +9,7 @@ namespace Umbrella.Xamarin.Behaviors;
 /// on iOS where the control only fills half the screen and gets cut off.
 /// </summary>
 /// <seealso cref="Behavior{ScrollView}" />
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
+[SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
 public class ScrollViewHeightBehavior : Behavior<ScrollView>
 {
     /// <summary>
@@ -61,7 +62,8 @@ public class ScrollViewHeightBehavior : Behavior<ScrollView>
         bindable.SizeChanged -= Bindable_SizeChanged;
     }
 
-    private async void Bindable_SizeChanged(object sender, EventArgs e)
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "This is an event handler.")]
+	private async void Bindable_SizeChanged(object sender, EventArgs e)
     {
         if (ScrollViewObject is null)
             return;

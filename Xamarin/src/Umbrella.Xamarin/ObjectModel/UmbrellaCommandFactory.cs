@@ -71,8 +71,8 @@ public class UmbrellaCommandFactory : IUmbrellaCommandFactory
 	{
 		if (checkNetworkConnection && !NetworkConnectionStatusUtility.IsConnected)
 		{
-			// TODO: Create an options class to allow this to be configurable.
-			MainThread.InvokeOnMainThreadAsync(() => DialogUtility.ShowDangerMessageAsync("Your device is not connected to the internet. Please check your connection and try again."));
+			// TODO: Create an options class to allow this message to be configurable.
+			_ = MainThread.InvokeOnMainThreadAsync(() => DialogUtility.ShowDangerMessageAsync("Your device is not connected to the internet. Please check your connection and try again."));
 
 			return false;
 		}
