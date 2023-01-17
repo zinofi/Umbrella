@@ -73,7 +73,7 @@ public partial class UmbrellaDialog
 	/// </summary>
 	protected async Task BackgroundClick()
 	{
-		if (ModalInstance.Options.DisableBackgroundCancel != true)
+		if (ModalInstance.Options.DisableBackgroundCancel is not true)
 			await ModalInstance.CancelAsync();
 	}
 

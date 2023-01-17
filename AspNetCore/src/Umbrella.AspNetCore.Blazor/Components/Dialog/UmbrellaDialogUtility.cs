@@ -322,10 +322,12 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	{
 		try
 		{
-			var parameters = new ModalParameters();
-			parameters.Add(nameof(UmbrellaDialog.SubTitle), subTitle);
-			parameters.Add(nameof(UmbrellaDialog.Message), message);
-			parameters.Add(nameof(UmbrellaDialog.Buttons), buttons);
+			var parameters = new ModalParameters
+			{
+				{ nameof(UmbrellaDialog.SubTitle), subTitle ?? "" },
+				{ nameof(UmbrellaDialog.Message), message },
+				{ nameof(UmbrellaDialog.Buttons), buttons }
+			};
 
 			var options = new ModalOptions
 			{
@@ -409,11 +411,12 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 			{
 				Class = cssClass,
 				DisableBackgroundCancel = true,
-				UseCustomLayout = true,
-				ContentScrollable = true
+				UseCustomLayout = true
 			};
 
-			IModalReference modal = _modalService.Show<T>(title, modalParameters, options);
+			IModalReference modal = modalParameters is not null
+				? _modalService.Show<T>(title, modalParameters, options)
+				: _modalService.Show<T>(title, options);
 
 			return (TResult)await modal.Result;
 		}

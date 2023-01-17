@@ -163,7 +163,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 
 			HttpContentHeaders headers = response.Content.Headers;
 
-			if (!headers.Any() || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) != true)
+			if (!headers.Any() || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) is not true)
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 
 			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

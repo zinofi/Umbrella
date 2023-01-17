@@ -26,7 +26,7 @@
 	<ItemGroup>
 		<PackageReference Include="BlazorApplicationInsights" Version="2.1.0" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-		<PackageReference Include="Blazored.Modal" Version="6.0.1" />
+		<PackageReference Include="Blazored.Modal" Version="7.1.0" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.13" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
