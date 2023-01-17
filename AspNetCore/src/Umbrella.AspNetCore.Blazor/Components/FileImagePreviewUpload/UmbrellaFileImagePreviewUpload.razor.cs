@@ -151,7 +151,7 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 		}
 	}
 
-	private async Task OnRequestUploadInner(UmbrellaFileUploadRequestEventArgs args)
+	private async Task OnRequestUploadInnerAsync(UmbrellaFileUploadRequestEventArgs args)
 	{
 		try
 		{
@@ -166,7 +166,7 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 		}
 	}
 
-	private async Task DeleteImageClick()
+	private async Task DeleteImageClickAsync()
 	{
 		try
 		{

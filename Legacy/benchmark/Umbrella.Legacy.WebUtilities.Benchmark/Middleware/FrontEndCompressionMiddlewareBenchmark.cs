@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -57,7 +55,7 @@ public class FrontEndCompressionMiddlewareBenchmark
 	}
 
 	[Benchmark]
-	public async Task RunMiddleware()
+	public async Task RunMiddlewareAsync()
 	{
 		var context = new Mock<IOwinContext>();
 

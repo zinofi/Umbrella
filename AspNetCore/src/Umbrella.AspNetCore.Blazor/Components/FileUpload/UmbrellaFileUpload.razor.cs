@@ -97,7 +97,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 		}
 	}
 
-	private async Task OnFileSelected(InputFileChangeEventArgs args)
+	private async Task OnFileSelectedAsync(InputFileChangeEventArgs args)
 	{
 		try
 		{
@@ -124,7 +124,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 		}
 	}
 
-	private async Task UploadClick()
+	private async Task UploadClickAsync()
 	{
 		try
 		{
@@ -161,7 +161,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 		}
 	}
 
-	private async Task ClearClick()
+	private async Task ClearClickAsync()
 	{
 		try
 		{
@@ -181,7 +181,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 		}
 	}
 
-	private async Task CancelClick()
+	private async Task CancelClickAsync()
 	{
 		try
 		{

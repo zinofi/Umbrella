@@ -145,7 +145,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	}
 
 	/// <inheritdoc />
-	public Task RefreshGridAsyncUsingCurrentRefreshOptions()
+	public Task RefreshGridAsyncUsingCurrentRefreshOptionsAsync()
 		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
 			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
 			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,

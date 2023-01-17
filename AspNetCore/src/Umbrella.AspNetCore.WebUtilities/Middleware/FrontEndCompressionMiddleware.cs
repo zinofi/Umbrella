@@ -21,6 +21,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware;
 /// <summary>
 /// Middleware that is used to provide caching and compression of front-end assets.
 /// </summary>
+[Obsolete("This will be removed in a future version.")]
 public class FrontEndCompressionMiddleware
 {
 	#region Private Static Members

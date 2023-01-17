@@ -1,7 +1,7 @@
 ﻿<div class="u-file-image-preview-upload">
 	@if (FileUploadMode == UmbrellaFileImagePreviewUploadMode.Upload)
 	{
-		<UmbrellaFileUpload OnRequestUpload="OnRequestUploadInner"
+		<UmbrellaFileUpload OnRequestUpload="OnRequestUploadInnerAsync"
 							Accept="@Accept"
 							MaxFileSizeBytes="@MaxFileSizeBytes"
 							ShowCancelWarning="@ShowCancelWarning"
@@ -28,7 +28,7 @@
 		}
 
 		<div class="form-group">
-			<button class="btn btn-danger" type="button" @onclick="DeleteImageClick">Delete</button>
+			<button class="btn btn-danger" type="button" @onclick="DeleteImageClickAsync">Delete</button>
 		</div>
 	}
 </div>

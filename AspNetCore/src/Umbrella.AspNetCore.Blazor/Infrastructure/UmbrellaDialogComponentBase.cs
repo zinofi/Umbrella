@@ -23,7 +23,7 @@ public abstract class UmbrellaDialogComponentBase : UmbrellaComponentBase
 	/// Handles the close button click event for the dialog.
 	/// </summary>
 	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
-	protected async Task CloseClick()
+	protected async Task CloseClickAsync()
 	{
 		try
 		{

@@ -56,6 +56,7 @@ public static class IApplicationBuilderExtensions
 	/// </summary>
 	/// <param name="builder">The builder.</param>
 	/// <returns>The application builder.</returns>
+	[Obsolete("This will be removed in a future version.")]
 	public static IApplicationBuilder UseUmbrellaFrontEndCompression(this IApplicationBuilder builder) => builder.UseMiddleware<FrontEndCompressionMiddleware>();
 
 	/// <summary>

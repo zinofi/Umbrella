@@ -53,7 +53,7 @@ public class DynamicImageCacheTest
 
 	[Theory]
 	[MemberData(nameof(CacheListMemberData))]
-	public async Task AddAsync_RemoveAsync_Bytes(IDynamicImageCache cache)
+	public async Task AddAsync_RemoveAsync_BytesAsync(IDynamicImageCache cache)
 	{
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
@@ -89,7 +89,7 @@ public class DynamicImageCacheTest
 
 	[Theory]
 	[MemberData(nameof(CacheListMemberData))]
-	public async Task AddAsync_RemoveAsync_Stream(IDynamicImageCache cache)
+	public async Task AddAsync_RemoveAsync_StreamAsync(IDynamicImageCache cache)
 	{
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
@@ -130,7 +130,7 @@ public class DynamicImageCacheTest
 
 	[Theory]
 	[MemberData(nameof(CacheListMemberData))]
-	public async Task GetAsync_NotExists(IDynamicImageCache cache)
+	public async Task GetAsync_NotExistsAsync(IDynamicImageCache cache)
 	{
 		string path = PathHelper.PlatformNormalize($@"{BaseDirectory}\doesnotexist.png");
 
@@ -147,7 +147,7 @@ public class DynamicImageCacheTest
 
 	[Theory]
 	[MemberData(nameof(CacheListMemberData))]
-	public async Task AddAsync_GetAsync_Expired(IDynamicImageCache cache)
+	public async Task AddAsync_GetAsync_ExpiredAsync(IDynamicImageCache cache)
 	{
 		string path = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 

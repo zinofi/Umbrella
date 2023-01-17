@@ -29,5 +29,5 @@ public interface IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIden
 	/// The event handler invoked when an item in the grid is to be deleted.
 	/// </summary>
 	/// <param name="item">The item.</param>
-	Task DeleteItemClick(TItemModel item);
+	Task DeleteItemClickAsync(TItemModel item);
 }

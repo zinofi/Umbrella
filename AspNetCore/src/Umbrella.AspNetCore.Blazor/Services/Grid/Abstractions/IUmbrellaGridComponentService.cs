@@ -107,5 +107,5 @@ public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel
 	/// where needed.
 	/// </summary>
 	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
-	Task RefreshGridAsyncUsingCurrentRefreshOptions();
+	Task RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
 }

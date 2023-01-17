@@ -43,7 +43,7 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 	public TRepository Repository { get; }
 
 	/// <inheritdoc />
-	public async Task DeleteItemClick(TItemModel item)
+	public async Task DeleteItemClickAsync(TItemModel item)
 	{
 		try
 		{
@@ -58,7 +58,7 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 				if (result.Success)
 				{
 					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
-					await RefreshGridAsyncUsingCurrentRefreshOptions();
+					await RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
 				}
 				else
 				{

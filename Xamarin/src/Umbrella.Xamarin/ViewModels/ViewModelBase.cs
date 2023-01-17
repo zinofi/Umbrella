@@ -124,7 +124,7 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 
 		NavigateBackButtonCommand = commandFactory.CreateAsyncCommand(NavigateBackAsync);
 		NavigateToAppPathButtonCommand = commandFactory.CreateAsyncCommand<string?>(NavigateToAppPathAsync);
-		ReloadButtonCommand = commandFactory.CreateAsyncCommand(OnReloadButtonClicked, CheckNetworkConnectionOnReload);
+		ReloadButtonCommand = commandFactory.CreateAsyncCommand(OnReloadButtonClickedAsync, CheckNetworkConnectionOnReload);
 		OpenUrlInternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, true), true);
 		OpenUrlExternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, false), true);
 	}
@@ -139,7 +139,7 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 	/// just returns <see cref="Task.CompletedTask"/>.
 	/// </summary>
 	/// <returns>An awaitable Task that completes when the operation completes.</returns>
-	protected virtual Task OnReloadButtonClicked() => Task.CompletedTask;
+	protected virtual Task OnReloadButtonClickedAsync() => Task.CompletedTask;
 
 	/// <summary>
 	/// Opens the specified <paramref name="url"/>.

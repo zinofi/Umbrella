@@ -71,7 +71,7 @@ public partial class UmbrellaDialog
 	/// <summary>
 	/// Handles clicks on the modal background.
 	/// </summary>
-	protected async Task BackgroundClick()
+	protected async Task BackgroundClickAsync()
 	{
 		if (ModalInstance.Options.DisableBackgroundCancel is not true)
 			await ModalInstance.CancelAsync();
@@ -80,13 +80,13 @@ public partial class UmbrellaDialog
 	/// <summary>
 	/// Handles close button clicks and closes the current dialog.
 	/// </summary>
-	protected async Task CloseClick() => await ModalInstance.CancelAsync();
+	protected async Task CloseClickAsync() => await ModalInstance.CancelAsync();
 
 	/// <summary>
 	/// Handles a button click of one of the specified <see cref="Buttons"/>.
 	/// </summary>
 	/// <param name="button">The clicked button.</param>
-	protected async Task ButtonClick(UmbrellaDialogButton button)
+	protected async Task ButtonClickAsync(UmbrellaDialogButton button)
 	{
 		if (!string.IsNullOrWhiteSpace(button.NavigateUrl))
 		{

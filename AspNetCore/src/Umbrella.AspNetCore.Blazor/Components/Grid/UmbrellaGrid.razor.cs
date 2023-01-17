@@ -415,13 +415,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// The click event handler for the apply filters button.
 	/// </summary>
 	/// <returns>An awaitable Task that completes when the operation has completed.</returns>
-	private async Task ApplyFiltersClick() => await UpdateGridAsync();
+	private async Task ApplyFiltersClickAsync() => await UpdateGridAsync();
 
 	/// <summary>
 	/// The click event handler for the reset filters button.
 	/// </summary>
 	/// <returns></returns>
-	private async Task ResetFiltersClick()
+	private async Task ResetFiltersClickAsync()
 	{
 		ResetFiltersAndSorters();
 		await UpdateGridAsync();
@@ -432,7 +432,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// </summary>
 	/// <param name="target">The column that has been clicked.</param>
 	/// <returns>A <see cref="Task"/> that completes when the grid has been updated.</returns>
-	private async Task ColumnHeadingClick(UmbrellaColumnDefinition<TItem> target)
+	private async Task ColumnHeadingClickAsync(UmbrellaColumnDefinition<TItem> target)
 	{
 		foreach (var column in ColumnDefinitions)
 		{
@@ -453,7 +453,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// The click event handler for the reload button.
 	/// </summary>
 	/// <returns>A <see cref="Task"/> that completes when the grid has been reloaded.</returns>
-	private async Task ReloadButtonClick()
+	private async Task ReloadButtonClickAsync()
 	{
 		ResetFiltersAndSorters();
 		await UpdateGridAsync(PageNumber, PageSize);

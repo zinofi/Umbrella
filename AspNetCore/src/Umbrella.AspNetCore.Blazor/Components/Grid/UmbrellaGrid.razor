@@ -58,8 +58,8 @@
                             </div>
                         }
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm" @onclick="ApplyFiltersClick" @onclick:preventDefault>Search <i class="fas fa-search"></i></button>
-                    <button type="reset" class="btn btn-secondary btn-sm" @onclick="ResetFiltersClick">Reset <i class="fas fa-times-circle"></i></button>
+                    <button type="submit" class="btn btn-primary btn-sm" @onclick="ApplyFiltersClickAsync" @onclick:preventDefault>Search <i class="fas fa-search"></i></button>
+                    <button type="reset" class="btn btn-secondary btn-sm" @onclick="ResetFiltersClickAsync">Reset <i class="fas fa-times-circle"></i></button>
                 </form>
             </div>
         }
@@ -127,7 +127,7 @@
                                     <th @attributes="column.AdditionalAttributes">
                                         @if (column.Sortable)
                                         {
-                                            <a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault title="@column.Heading">
+                                            <a href="#" @onclick="@(e => ColumnHeadingClickAsync(column))" @onclick:preventDefault title="@column.Heading">
                                                 @(column.ShortHeading ?? column.Heading)
                                                 <i class="@column.DirectionCssClass"></i>
                                             </a>
@@ -226,7 +226,7 @@
         }
         else
         {
-            <ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClick" ShowReloadButton="ShowReloadButton" />
+            <ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClickAsync" ShowReloadButton="ShowReloadButton" />
         }
     </div>
 </CascadingValue>

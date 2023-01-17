@@ -18,7 +18,7 @@ public class ResponsiveImageTagHelperTest
 	[InlineData("/path/to/imagepng", 2, "Invalid image path")]
 	[InlineData("http://www.google.com/path/to/image.png", 2, "http://www.google.com/path/to/image.png 1x, http://www.google.com/path/to/image@2x.png 2x")]
 	[InlineData("https://www.google.com/path/to/image.png", 2, "https://www.google.com/path/to/image.png 1x, https://www.google.com/path/to/image@2x.png 2x")]
-	public async Task GenerateSuccess(string path, int maxPixelDensity, string expectedOutput)
+	public async Task GenerateSuccessAsync(string path, int maxPixelDensity, string expectedOutput)
 	{
 		var tagHelper = CreateTagHelper();
 		tagHelper.MaxPixelDensity = maxPixelDensity;

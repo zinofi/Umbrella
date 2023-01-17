@@ -87,7 +87,7 @@ public partial class UmbrellaPagination
 	/// The event handler invoked when a pagination size has been clicked.
 	/// </summary>
 	/// <param name="pageSize">Size of the page.</param>
-	protected async Task PageSizeClick(int pageSize)
+	protected async Task PageSizeClickAsync(int pageSize)
 	{
 		PageSize = pageSize;
 		PageNumber = 1;
@@ -98,7 +98,7 @@ public partial class UmbrellaPagination
 	/// The event handler invoked when a pagination number has been clicked.
 	/// </summary>
 	/// <param name="pageNumber">The page number.</param>
-	protected async Task ItemClick(int pageNumber)
+	protected async Task ItemClickAsync(int pageNumber)
 	{
 		PageNumber = pageNumber;
 		await RefreshAsync();
@@ -107,7 +107,7 @@ public partial class UmbrellaPagination
 	/// <summary>
 	/// The event handler invoked when the "previous" pagination button has been clicked.
 	/// </summary>
-	protected async Task PreviousClick()
+	protected async Task PreviousClickAsync()
 	{
 		if (Model.PreviousPageNumber.HasValue)
 		{
@@ -119,7 +119,7 @@ public partial class UmbrellaPagination
 	/// <summary>
 	/// The event handler invoked when the "next" pagination button has been clicked.
 	/// </summary>
-	protected async Task NextClick()
+	protected async Task NextClickAsync()
 	{
 		if (Model.NextPageNumber.HasValue)
 		{
@@ -131,7 +131,7 @@ public partial class UmbrellaPagination
 	/// <summary>
 	/// The event handler invoked when the "first" pagination button has been clicked.
 	/// </summary>
-	protected async Task FirstClick()
+	protected async Task FirstClickAsync()
 	{
 		if (Model.FirstPageNumber.HasValue)
 		{
@@ -143,7 +143,7 @@ public partial class UmbrellaPagination
 	/// <summary>
 	/// The event handler invoked when the "last" pagination button has been clicked.
 	/// </summary>
-	protected async Task LastClick()
+	protected async Task LastClickAsync()
 	{
 		if (Model.LastPageNumber.HasValue)
 		{

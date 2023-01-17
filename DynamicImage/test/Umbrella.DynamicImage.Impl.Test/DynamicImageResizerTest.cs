@@ -159,7 +159,7 @@ public class DynamicImageResizerTest
 	[Theory]
 	[MemberData(nameof(OptionsList))]
 	[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "This is a unit test")]
-	public async Task GenerateImageAsync_FromFunc(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item, string base64Image)
+	public async Task GenerateImageAsync_FromFuncAsync(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item, string base64Image)
 	{
 		byte[] bytes = Convert.FromBase64String(base64Image);
 
@@ -220,7 +220,7 @@ public class DynamicImageResizerTest
 			_ = Directory.CreateDirectory(outputDirectory);
 
 			using var fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
-			fs.Write(resizedImageBytes, 0, resizedImageBytes.Length);
+			await fs.WriteAsync(resizedImageBytes, 0, resizedImageBytes.Length);
 		}
 	}
 

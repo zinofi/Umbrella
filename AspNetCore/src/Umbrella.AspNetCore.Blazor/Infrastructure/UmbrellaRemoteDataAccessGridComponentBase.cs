@@ -42,7 +42,7 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	/// The event handler invoked when an item in the grid is to be deleted.
 	/// </summary>
 	/// <param name="item">The item.</param>
-	public virtual async Task DeleteItemClick(TItemModel item)
+	public virtual async Task DeleteItemClickAsync(TItemModel item)
 	{
 		try
 		{
@@ -57,7 +57,7 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 				if (result.Success)
 				{
 					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
-					await RefreshGridAsyncUsingCurrentRefreshOptions();
+					await RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
 				}
 				else
 				{

@@ -40,7 +40,7 @@ public class InternetExplorerCacheHeadersMiddleware
 	/// </summary>
 	/// <param name="context">The <see cref="HttpContext" />.</param>
 	/// <returns>An awaitable <see cref="Task" />.</returns>
-	public async Task Invoke(HttpContext context)
+	public async Task InvokeAsync(HttpContext context)
 	{
 		try
 		{

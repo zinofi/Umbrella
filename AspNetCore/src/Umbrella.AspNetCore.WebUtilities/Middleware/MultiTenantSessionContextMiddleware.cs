@@ -102,7 +102,7 @@ public class MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTena
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	/// <param name="dbAppAuthSessionContext">The database application authentication session context.</param>
 	/// <param name="dbNullableAppAuthSessionContext">The nullable database application authentication session context.</param>
-	public async Task Invoke(HttpContext context, DbAppTenantSessionContext<TAppTenantKey> dbAppAuthSessionContext, DbAppTenantSessionContext<TNullableAppTenantKey> dbNullableAppAuthSessionContext)
+	public async Task InvokeAsync(HttpContext context, DbAppTenantSessionContext<TAppTenantKey> dbAppAuthSessionContext, DbAppTenantSessionContext<TNullableAppTenantKey> dbNullableAppAuthSessionContext)
 	{
 		try
 		{

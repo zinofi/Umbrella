@@ -9,7 +9,7 @@
         {
             <div class="u-file-upload__upload-input">
                 <label class="form-label" for="@Id">Choose file</label>
-                <InputFile id="@Id" class="form-control" OnChange="OnFileSelected" accept="@Accept" />
+                <InputFile id="@Id" class="form-control" OnChange="OnFileSelectedAsync" accept="@Accept" />
             </div>
             @if (!string.IsNullOrWhiteSpace(AcceptTypesMessage))
             {
@@ -20,7 +20,7 @@
         {
             <div class="u-file-upload__upload-input">
                 <label class="form-label" for="@Id">Choose file</label>
-                <InputFile id="@Id" class="form-control" OnChange="OnFileSelected" />
+                <InputFile id="@Id" class="form-control" OnChange="OnFileSelectedAsync" />
             </div>
             @if (!string.IsNullOrWhiteSpace(maxFileSizeMessage))
             {
@@ -54,17 +54,17 @@
         <div class="form-group u-file-upload__buttons">
             @if (Status is UmbrellaFileUploadStatus.Selected)
             {
-                <button type="button" class="btn btn-primary" @onclick="UploadClick">Upload</button>
+                <button type="button" class="btn btn-primary" @onclick="UploadClickAsync">Upload</button>
             }
 
             @if (Status is UmbrellaFileUploadStatus.Selected or UmbrellaFileUploadStatus.Uploaded)
             {
-                <button type="button" class="btn btn-danger" @onclick="ClearClick">Clear Selection</button>
+                <button type="button" class="btn btn-danger" @onclick="ClearClickAsync">Clear Selection</button>
             }
 
             @if (Status is UmbrellaFileUploadStatus.Uploading)
             {
-                <button type="button" class="btn btn-danger" @onclick="CancelClick">Cancel</button>
+                <button type="button" class="btn btn-danger" @onclick="CancelClickAsync">Cancel</button>
             }
         </div>
     }

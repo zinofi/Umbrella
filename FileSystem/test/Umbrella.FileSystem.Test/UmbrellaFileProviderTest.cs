@@ -82,7 +82,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersAndPathsMemberData))]
-	public async Task CreateAsync_FromPath(Func<IUmbrellaFileProvider> providerFunc, string path)
+	public async Task CreateAsync_FromPathAsync(Func<IUmbrellaFileProvider> providerFunc, string path)
 	{
 		var provider = providerFunc();
 
@@ -97,7 +97,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_FromVirtualPath_Write_DeleteFile(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_FromVirtualPath_Write_DeleteFileAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -119,7 +119,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersAndPathsMemberData))]
-	public async Task CreateAsync_Write_ReadBytes_DeleteFile(Func<IUmbrellaFileProvider> providerFunc, string path)
+	public async Task CreateAsync_Write_ReadBytes_DeleteFileAsync(Func<IUmbrellaFileProvider> providerFunc, string path)
 	{
 		var provider = providerFunc();
 
@@ -146,7 +146,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFileAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -178,7 +178,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile_CasingMismatch(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_GetAsync_ReadBytes_DeleteFile_CasingMismatchAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -210,7 +210,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersAndPathsMemberData))]
-	public async Task CreateAsync_Write_ReadStream_DeleteFile(Func<IUmbrellaFileProvider> providerFunc, string path)
+	public async Task CreateAsync_Write_ReadStream_DeleteFileAsync(Func<IUmbrellaFileProvider> providerFunc, string path)
 	{
 		var provider = providerFunc();
 
@@ -241,7 +241,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_GetAsync_ReadStream_DeleteFile(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_GetAsync_ReadStream_DeleteFileAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -280,7 +280,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task GetAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task GetAsync_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -325,7 +325,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_ExistsAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_ExistsAsync_DeletePathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -355,7 +355,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task SaveAsyncBytes_GetAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task SaveAsyncBytes_GetAsync_DeletePathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -383,7 +383,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task SaveAsyncStream_GetAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task SaveAsyncStream_GetAsync_DeletePathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -412,7 +412,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task SaveAsyncBytes_ExistsAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task SaveAsyncBytes_ExistsAsync_DeletePathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -438,7 +438,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task SaveAsyncStream_ExistsAsync_DeletePath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task SaveAsyncStream_ExistsAsync_DeletePathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -466,7 +466,7 @@ public class UmbrellaFileProviderTest
 	#region Copy
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CopyAsync_FromPath_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CopyAsync_FromPath_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
 			var provider = providerFunc();
@@ -476,7 +476,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CopyAsync_FromFileBytes_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
+	public async Task CopyAsync_FromFileBytes_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
 		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
@@ -498,7 +498,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CopyAsync_FromFileStream_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
+	public async Task CopyAsync_FromFileStream_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
 		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
@@ -521,7 +521,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_CopyAsync_FromPath_ToPathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -558,7 +558,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_CopyAsync_FromFile_ToPath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_CopyAsync_FromFile_ToPathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -595,7 +595,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_CopyAsync_FromFile_ToFile(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_CopyAsync_FromFile_ToFileAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -635,7 +635,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_CopyAsync_FromPath_ToPath_WithMetadataAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -679,7 +679,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_CopyAsync_FromFile_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_CopyAsync_FromFile_ToPath_WithMetadataAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -723,7 +723,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_CopyAsync_FromFile_ToFile_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_CopyAsync_FromFile_ToFile_WithMetadataAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -770,7 +770,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_CopyAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_CopyAsync_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
 			var provider = providerFunc();
@@ -785,7 +785,7 @@ public class UmbrellaFileProviderTest
 	#region Move
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task MoveAsync_FromPath_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task MoveAsync_FromPath_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
 			var provider = providerFunc();
@@ -795,7 +795,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task MoveAsync_FromFileBytes_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
+	public async Task MoveAsync_FromFileBytes_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
 		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
@@ -817,7 +817,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task MoveAsync_FromFileStream_NotExists(Func<IUmbrellaFileProvider> providerFunc) =>
+	public async Task MoveAsync_FromFileStream_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
 		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
@@ -840,7 +840,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_MoveAsync_FromPath_ToPath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_MoveAsync_FromPath_ToPathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -877,7 +877,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_MoveAsync_FromFile_ToPath(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_MoveAsync_FromFile_ToPathAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -914,7 +914,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_MoveAsync_FromFile_ToFile(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_MoveAsync_FromFile_ToFileAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -954,7 +954,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_MoveAsync_FromPath_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_MoveAsync_FromPath_ToPath_WithMetadataAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -998,7 +998,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_MoveAsync_FromFile_ToPath_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_MoveAsync_FromFile_ToPath_WithMetadataAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1042,7 +1042,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_Write_MoveAsync_FromFile_ToFile_WithMetadata(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_Write_MoveAsync_FromFile_ToFile_WithMetadataAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1089,7 +1089,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task CreateAsync_MoveAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task CreateAsync_MoveAsync_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
 		{
 			var provider = providerFunc();
@@ -1103,7 +1103,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task DeleteAsync_NotExists(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task DeleteAsync_NotExistsAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1153,7 +1153,7 @@ public class UmbrellaFileProviderTest
 	[Theory]
 	[Order(100)]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task Create_DeleteDirectory_TopLevel(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task Create_DeleteDirectory_TopLevelAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1173,7 +1173,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task Create_DeleteDirectory_DownLevel(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task Create_DeleteDirectory_DownLevelAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1215,7 +1215,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task Create_EnumerateDirectory(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task Create_EnumerateDirectoryAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1254,7 +1254,7 @@ public class UmbrellaFileProviderTest
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
-	public async Task Create_WriteMetaDataValue_Reload_WriteMetaDataWithoutLoading(Func<IUmbrellaFileProvider> providerFunc)
+	public async Task Create_WriteMetaDataValue_Reload_WriteMetaDataWithoutLoadingAsync(Func<IUmbrellaFileProvider> providerFunc)
 	{
 		var provider = providerFunc();
 
@@ -1317,7 +1317,7 @@ public class UmbrellaFileProviderTest
 		var options = new UmbrellaDiskFileProviderOptions
 		{
 			RootPhysicalPath = BaseDirectory,
-			AllowUnhandledFileAuthorizationChecks= true
+			AllowUnhandledFileAuthorizationChecks = true
 		};
 
 		if (options is IServicesResolverUmbrellaOptions servicesOptions)

@@ -148,17 +148,17 @@ public class UmbrellaValidator : IUmbrellaValidator
 	protected IObjectGraphValidator ObjectGraphValidator { get; }
 
 	/// <inheritdoc />
-	public (bool isValid, IReadOnlyCollection<ValidationResult> results) ValidateItemAsync(object item, ValidationType validationType)
+	public (bool isValid, IReadOnlyCollection<ValidationResult> results) ValidateItem(object item, ValidationType validationType)
 	{
-		if (validationType == ValidationType.None)
+		if (validationType is ValidationType.None)
 			return (true, Array.Empty<ValidationResult>());
 
 		var ctx = new ValidationContext(item);
 
-		if (validationType == ValidationType.Deep)
+		if (validationType is ValidationType.Deep)
 			return ObjectGraphValidator.TryValidateObject(item, ctx, true);
 
-		if (validationType == ValidationType.Shallow)
+		if (validationType is ValidationType.Shallow)
 		{
 			var lstResult = new List<ValidationResult>();
 

@@ -314,7 +314,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual RepoOptions[] SearchSlimChildRepoOptions { get; } = Array.Empty<RepoOptions>();
 
 	/// <summary>
-	/// Gets the child <see cref="RepoOptions"/> used by the <see cref="Get"/> endpoint when loading entities from the repository.
+	/// Gets the child <see cref="RepoOptions"/> used by the <see cref="GetAsync"/> endpoint when loading entities from the repository.
 	/// </summary>
 	/// <remarks>
 	/// <para>
@@ -424,8 +424,8 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// Please see this for further details regarding behaviour.
 	/// </remarks>
 	/// <seealso cref="UmbrellaDataAccessApiController.ReadAllAsync"/>
-	[HttpGet(nameof(SearchSlim))]
-	public virtual Task<IActionResult> SearchSlim(int pageNumber, int pageSize, [FromQuery] SortExpression<TEntity>[]? sorters = null, [FromQuery] FilterExpression<TEntity>[]? filters = null, FilterExpressionCombinator? filterCombinator = null, CancellationToken cancellationToken = default)
+	[HttpGet("SearchSlim")]
+	public virtual Task<IActionResult> SearchSlimAsync(int pageNumber, int pageSize, [FromQuery] SortExpression<TEntity>[]? sorters = null, [FromQuery] FilterExpression<TEntity>[]? filters = null, FilterExpressionCombinator? filterCombinator = null, CancellationToken cancellationToken = default)
 		=> SlimReadEndpointEnabled
 		? ReadAllAsync<TEntity, TEntity, TEntityKey, TRepositoryOptions, TSlimModel, TPaginatedResultModel>(
 			pageNumber,
@@ -460,7 +460,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	/// <seealso cref="UmbrellaDataAccessApiController.ReadAsync"/>
 	[HttpGet]
-	public virtual Task<IActionResult> Get(TEntityKey id, CancellationToken cancellationToken = default)
+	public virtual Task<IActionResult> GetAsync(TEntityKey id, CancellationToken cancellationToken = default)
 		=> ReadEndpointEnabled
 		? ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 			id,
@@ -493,7 +493,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	/// <seealso cref="UmbrellaDataAccessApiController.CreateAsync"/>
 	[HttpPost]
-	public virtual Task<IActionResult> Post(TCreateModel model, CancellationToken cancellationToken = default)
+	public virtual Task<IActionResult> PostAsync(TCreateModel model, CancellationToken cancellationToken = default)
 		=> CreateEndpointEnabled
 		? CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateModel, TCreateResultModel>(
 			model,
@@ -527,7 +527,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	/// <seealso cref="UmbrellaDataAccessApiController.UpdateAsync"/>
 	[HttpPut]
-	public virtual Task<IActionResult> Put(TUpdateModel model, CancellationToken cancellationToken = default)
+	public virtual Task<IActionResult> PutAsync(TUpdateModel model, CancellationToken cancellationToken = default)
 		=> UpdateEndpointEnabled
 		? UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TUpdateModel, TUpdateResultModel>(
 			model,
@@ -561,7 +561,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	/// <seealso cref="UmbrellaDataAccessApiController.DeleteAsync"/>
 	[HttpDelete]
-	public virtual Task<IActionResult> Delete(TEntityKey id, CancellationToken cancellationToken = default)
+	public virtual Task<IActionResult> DeleteAsync(TEntityKey id, CancellationToken cancellationToken = default)
 		=> DeleteEndpointEnabled
 		? DeleteAsync(
 			id,

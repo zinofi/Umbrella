@@ -177,7 +177,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	/// where needed.
 	/// </summary>
 	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
-	protected Task RefreshGridAsyncUsingCurrentRefreshOptions()
+	protected Task RefreshGridAsyncUsingCurrentRefreshOptionsAsync()
 		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
 			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
 			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
