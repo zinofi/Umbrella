@@ -17,10 +17,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Remove="package-lock.json" />
-	  <Content Remove="package.json" />
-	  <Content Remove="tsconfig.json" />
-	  <Content Remove="Content\**" />
+		<Content Remove="package-lock.json" />
+		<Content Remove="package.json" />
+		<Content Remove="tsconfig.json" />
+		<Content Remove="Content\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,6 +31,10 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.13" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
+		<PackageReference Include="PolySharp" Version="1.10.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,13 +46,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
-	  <ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj" />
-	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
+		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj" />
+		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\" />
+		<Folder Include="wwwroot\" />
 	</ItemGroup>
 
 	<ItemGroup>

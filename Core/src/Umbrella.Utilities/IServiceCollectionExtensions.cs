@@ -48,9 +48,9 @@ using Umbrella.Utilities.TypeConverters;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 [assembly: InternalsVisibleTo("Umbrella.AspNetCore.WebUtilities")]
-[assembly: InternalsVisibleTo("Umbrella.AspNetCore.Blazor")]
-[assembly: InternalsVisibleTo("Umbrella.AspNetCore.DynamicImage")]
-[assembly: InternalsVisibleTo("Umbrella.DataAccess.Abstractions")]
+//[assembly: InternalsVisibleTo("Umbrella.AspNetCore.Blazor")]
+//[assembly: InternalsVisibleTo("Umbrella.AspNetCore.DynamicImage")]
+//[assembly: InternalsVisibleTo("Umbrella.DataAccess.Abstractions")]
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Caching.AzureStorage.Test")]
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Impl.Test")]
 [assembly: InternalsVisibleTo("Umbrella.DynamicImage.Test")]
