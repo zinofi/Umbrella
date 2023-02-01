@@ -53,12 +53,5 @@
 		<Using Include="System.Threading" />
 		<Using Include="System.Threading.Tasks" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.27">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
 	
 </Project>

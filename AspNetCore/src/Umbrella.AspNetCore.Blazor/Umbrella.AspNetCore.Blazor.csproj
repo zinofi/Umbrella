@@ -31,7 +31,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.13" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
-		<PackageReference Include="PolySharp" Version="1.10.0">
+		<PackageReference Include="PolySharp" Version="1.12.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -58,6 +58,13 @@
 	<ItemGroup>
 		<Using Include="Umbrella.Utilities.Extensions" />
 		<Using Include="Umbrella.AspNetCore.Blazor.Exceptions" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	</ItemGroup>
 
 </Project>
