@@ -30,7 +30,12 @@ public enum UmbrellaColumnFilterType
 	/// <summary>
 	/// Free text. Renders a text input of type "search".
 	/// </summary>
-	Search
+	Search,
+
+	/// <summary>
+	/// Date. Randers a text input of type "date".
+	/// </summary>
+	Date
 }
 
 internal static class UmbrellaColumnFilterTypeExtensions
@@ -42,6 +47,7 @@ internal static class UmbrellaColumnFilterTypeExtensions
 		UmbrellaColumnFilterType.Number => "number",
 		UmbrellaColumnFilterType.Options => "text", // This will never be used but here as a default.
 		UmbrellaColumnFilterType.Search => "search",
+		UmbrellaColumnFilterType.Date => "date",
 		_ => throw new SwitchExpressionException(value),
 	};
 }
