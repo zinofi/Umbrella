@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Blazored.Modal;
+﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
+using System.Runtime.CompilerServices;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 
@@ -31,6 +28,24 @@ public partial class UmbrellaDialog
 	/// </remarks>
 	[Parameter]
 	public UmbrellaDialogSize Size { get; set; } = UmbrellaDialogSize.Default;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether to show the header.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="true"/>.
+	/// </remarks>
+	[Parameter]
+	public bool ShowHeader { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether to show the close button.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="false"/>.
+	/// </remarks>
+	[Parameter]
+	public bool ShowCloseButton { get; set; }
 
 	/// <summary>
 	/// Gets or sets the sub title.
@@ -67,6 +82,15 @@ public partial class UmbrellaDialog
 		UmbrellaDialogSize.ExtraLarge => "modal-xl",
 		_ => throw new SwitchExpressionException(),
 	};
+	
+	/// <inheritdoc/>
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		ModalInstance.Options.HideHeader = !ShowHeader;
+		ModalInstance.Options.HideCloseButton = !ShowCloseButton;
+	}
 
 	/// <summary>
 	/// Handles clicks on the modal background.

@@ -14,7 +14,6 @@ using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
-using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.AspNetCore.Blazor.Extensions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
