@@ -4,9 +4,9 @@
 namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
-/// A factory used to create instances of Umbrella File Providers.
+/// A factory used to create instances of Umbrella File Storage Providers.
 /// </summary>
-public interface IUmbrellaFileProviderFactory
+public interface IUmbrellaFileStorageProviderFactory
 {
 	/// <summary>
 	/// Creates a provider of the specified type using the specified options.
@@ -16,6 +16,6 @@ public interface IUmbrellaFileProviderFactory
 	/// <param name="options">The options.</param>
 	/// <returns>The file provider.</returns>
 	TProvider CreateProvider<TProvider, TOptions>(TOptions options)
-		where TProvider : IUmbrellaFileProvider
-		where TOptions : UmbrellaFileProviderOptionsBase;
+		where TProvider : IUmbrellaFileStorageProvider
+		where TOptions : UmbrellaFileStorageProviderOptionsBase;
 }

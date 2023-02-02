@@ -16,9 +16,9 @@ namespace Umbrella.FileSystem.Abstractions;
 /// </summary>
 /// <typeparam name="TFileInfo">The type of the file information.</typeparam>
 /// <typeparam name="TOptions">The type of the options.</typeparam>
-public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
+public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	where TFileInfo : IUmbrellaFileInfo
-	where TOptions : UmbrellaFileProviderOptionsBase
+	where TOptions : UmbrellaFileStorageProviderOptionsBase
 {
 	#region Private Static Members
 	private static readonly char[] _subpathTrimCharacters = new[] { ' ', '\\', '/', '~', ' ' };
@@ -59,13 +59,13 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 
 	#region Constructors		
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="loggerFactory">The logger factory.</param>
 	/// <param name="mimeTypeUtility">The MIME type utility.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public UmbrellaFileProvider(
+	public UmbrellaFileStorageProvider(
 		ILogger logger,
 		ILoggerFactory loggerFactory,
 		IMimeTypeUtility mimeTypeUtility,
@@ -82,7 +82,7 @@ public abstract class UmbrellaFileProvider<TFileInfo, TOptions>
 	#region Public Methods
 
 	/// <inheritdoc />
-	public virtual void InitializeOptions(UmbrellaFileProviderOptionsBase options)
+	public virtual void InitializeOptions(UmbrellaFileStorageProviderOptionsBase options)
 	{
 		if (Options is not null)
 			throw new UmbrellaFileSystemException("The options have already been initialized for this instance.");

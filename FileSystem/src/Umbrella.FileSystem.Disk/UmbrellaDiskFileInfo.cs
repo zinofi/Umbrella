@@ -14,8 +14,7 @@ namespace Umbrella.FileSystem.Disk;
 /// An implementation of <see cref="IUmbrellaFileInfo"/> that uses the physical disk as the underlying storage mechanism.
 /// </summary>
 /// <seealso cref="IUmbrellaFileInfo" />
-/// <seealso cref="IEquatable{UmbrellaDiskFileInfo}" />
-public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFileInfo>
+public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 {
 	#region Private Members
 	private readonly string _metadataFullFileName;
@@ -32,7 +31,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 	/// <summary>
 	/// Gets the provider used to load this file instance.
 	/// </summary>
-	protected IUmbrellaDiskFileProvider Provider { get; }
+	protected IUmbrellaDiskFileStorageProvider Provider { get; }
 
 	/// <summary>
 	/// Gets the generic type converter.
@@ -70,12 +69,12 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 		IMimeTypeUtility mimeTypeUtility,
 		IGenericTypeConverter genericTypeConverter,
 		string subpath,
-		IUmbrellaDiskFileProvider provider,
+		IUmbrellaDiskFileStorageProvider provider,
 		FileInfo physicalFileInfo,
 		bool isNew)
 	{
-		if (subpath.EndsWith(UmbrellaDiskFileConstants.MetadataFileExtension, StringComparison.OrdinalIgnoreCase))
-			throw new UmbrellaFileSystemException($"Files with the extension '{UmbrellaDiskFileConstants.MetadataFileExtension}' are not permitted.");
+		if (subpath.EndsWith(UmbrellaDiskFileStorageConstants.MetadataFileExtension, StringComparison.OrdinalIgnoreCase))
+			throw new UmbrellaFileSystemException($"Files with the extension '{UmbrellaDiskFileStorageConstants.MetadataFileExtension}' are not permitted.");
 
 		Logger = logger;
 		Provider = provider;
@@ -86,7 +85,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 
 		ContentType = mimeTypeUtility.GetMimeType(Name);
 
-		_metadataFullFileName = PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension;
+		_metadataFullFileName = PhysicalFileInfo.FullName + UmbrellaDiskFileStorageConstants.MetadataFileExtension;
 	}
 	#endregion
 
@@ -110,7 +109,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			File.Copy(PhysicalFileInfo.FullName, destinationFile.PhysicalFileInfo.FullName, true);
 
 			if (File.Exists(_metadataFullFileName))
-				File.Copy(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension, true);
+				File.Copy(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + UmbrellaDiskFileStorageConstants.MetadataFileExtension, true);
 
 			destinationFile.IsNew = false;
 
@@ -141,7 +140,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			File.Copy(PhysicalFileInfo.FullName, target.PhysicalFileInfo.FullName, true);
 
 			if (File.Exists(_metadataFullFileName))
-				File.Copy(_metadataFullFileName, target.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension, true);
+				File.Copy(_metadataFullFileName, target.PhysicalFileInfo.FullName + UmbrellaDiskFileStorageConstants.MetadataFileExtension, true);
 
 			target.IsNew = false;
 
@@ -172,7 +171,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			File.Move(PhysicalFileInfo.FullName, destinationFile.PhysicalFileInfo.FullName);
 
 			if (File.Exists(_metadataFullFileName))
-				File.Move(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension);
+				File.Move(_metadataFullFileName, destinationFile.PhysicalFileInfo.FullName + UmbrellaDiskFileStorageConstants.MetadataFileExtension);
 
 			destinationFile.IsNew = false;
 
@@ -203,7 +202,7 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			File.Move(PhysicalFileInfo.FullName, target.PhysicalFileInfo.FullName);
 
 			if (File.Exists(_metadataFullFileName))
-				File.Move(_metadataFullFileName, target.PhysicalFileInfo.FullName + UmbrellaDiskFileConstants.MetadataFileExtension);
+				File.Move(_metadataFullFileName, target.PhysicalFileInfo.FullName + UmbrellaDiskFileStorageConstants.MetadataFileExtension);
 
 			target.IsNew = false;
 
@@ -522,76 +521,66 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 		}
 	}
-	#endregion
 
-	#region IEquatable Members		
-	/// <summary>
-	/// Indicates whether the current object is equal to another object of the same type.
-	/// </summary>
-	/// <param name="other">An object to compare with this object.</param>
-	/// <returns>
-	/// true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.
-	/// </returns>
-	public bool Equals(UmbrellaDiskFileInfo? other)
-		=> other is not null &&
-			IsNew == other.IsNew &&
-			Name == other.Name &&
-			SubPath == other.SubPath &&
-			Length == other.Length &&
-			EqualityComparer<DateTimeOffset?>.Default.Equals(LastModified, other.LastModified) &&
-			ContentType == other.ContentType;
-	#endregion
-
-	#region Overridden Methods		
-	/// <summary>
-	/// Determines whether the specified <see cref="object" />, is equal to this instance.
-	/// </summary>
-	/// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
-	/// <returns>
-	///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
-	/// </returns>
-	public override bool Equals(object obj) => Equals(obj as UmbrellaDiskFileInfo);
-
-	/// <summary>
-	/// Returns a hash code for this instance.
-	/// </summary>
-	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
-	/// </returns>
-	public override int GetHashCode()
+	/// <inheritdoc />
+	public async Task<TUserId> GetCreatedByIdAsync<TUserId>(CancellationToken cancellationToken = default)
 	{
-		int hashCode = 260482354;
-		hashCode = (hashCode * -1521134295) + IsNew.GetHashCode();
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(SubPath);
-		hashCode = (hashCode * -1521134295) + Length.GetHashCode();
-		hashCode = (hashCode * -1521134295) + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(ContentType);
+		cancellationToken.ThrowIfCancellationRequested();
 
-		return hashCode;
+		try
+		{
+			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
+		}
 	}
-	#endregion
 
-	#region Operators		
-	/// <summary>
-	/// Implements the operator ==.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator ==(UmbrellaDiskFileInfo left, UmbrellaDiskFileInfo right) => EqualityComparer<UmbrellaDiskFileInfo>.Default.Equals(left, right);
+	/// <inheritdoc />
+	public async Task SetCreatedByIdAsync<TUserId>(TUserId value, bool writeChanges = true, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
 
-	/// <summary>
-	/// Implements the operator !=.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator !=(UmbrellaDiskFileInfo left, UmbrellaDiskFileInfo right) => !(left == right);
+		try
+		{
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<string> GetFileNameAsync(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task SetFileNameAsync(string value, bool writeChanges = true, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
+		}
+	}
 	#endregion
 
 	#region Private Methods

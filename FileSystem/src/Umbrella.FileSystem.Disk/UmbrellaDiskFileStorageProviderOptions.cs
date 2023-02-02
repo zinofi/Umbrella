@@ -9,12 +9,12 @@ using Umbrella.Utilities.Options.Abstractions;
 namespace Umbrella.FileSystem.Disk;
 
 /// <summary>
-/// Options for the <see cref="UmbrellaDiskFileProvider"/>.
+/// Options for the <see cref="UmbrellaDiskFileStorageProvider"/>.
 /// </summary>
-/// <seealso cref="UmbrellaFileProviderOptionsBase" />
+/// <seealso cref="UmbrellaFileStorageProviderOptionsBase" />
 /// <seealso cref="ISanitizableUmbrellaOptions" />
 /// <seealso cref="IValidatableUmbrellaOptions" />
-public class UmbrellaDiskFileProviderOptions : UmbrellaFileProviderOptionsBase, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaDiskFileStorageProviderOptions : UmbrellaFileStorageProviderOptionsBase, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
 	/// Gets or sets the physical root path on disk for the file provider.

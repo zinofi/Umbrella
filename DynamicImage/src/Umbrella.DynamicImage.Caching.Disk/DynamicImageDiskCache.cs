@@ -12,7 +12,7 @@ namespace Umbrella.DynamicImage.Caching.Disk;
 /// <summary>
 /// A Dynamic Image cache implementation that is backed by Disk.
 /// </summary>
-public class DynamicImageDiskCache : DynamicImagePhysicalCache<IUmbrellaDiskFileProvider>, IDynamicImageCache
+public class DynamicImageDiskCache : DynamicImagePhysicalCache<IUmbrellaDiskFileStorageProvider>, IDynamicImageCache
 {
 	#region Protected Properties		
 	/// <summary>
@@ -35,7 +35,7 @@ public class DynamicImageDiskCache : DynamicImagePhysicalCache<IUmbrellaDiskFile
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		DynamicImageCacheCoreOptions cacheOptions,
-		IUmbrellaDiskFileProvider fileProvider,
+		IUmbrellaDiskFileStorageProvider fileProvider,
 		DynamicImageDiskCacheOptions diskCacheOptions)
 		: base(logger, cache, cacheKeyUtility, cacheOptions, fileProvider)
 	{

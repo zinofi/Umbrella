@@ -8,18 +8,18 @@ using Umbrella.Utilities.Options.Abstractions;
 namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
-/// Specifies a mapping between a collection of application relative folder paths and a <see cref="IUmbrellaFileProvider"/> instance.
+/// Specifies a mapping between a collection of application relative folder paths and a <see cref="IUmbrellaFileStorageProvider"/> instance.
 /// </summary>
 /// <seealso cref="ISanitizableUmbrellaOptions" />
 /// <seealso cref="IValidatableUmbrellaOptions" />
-public class UmbrellaFileProviderMapping : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaFileStorageProviderMapping : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaFileProviderMapping"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaFileStorageProviderMapping"/> class.
 	/// </summary>
 	/// <param name="fileProvider">The file provider.</param>
 	/// <param name="appRelativeFolderPaths">The application relative folder paths.</param>
-	public UmbrellaFileProviderMapping(IUmbrellaFileProvider fileProvider, params string[] appRelativeFolderPaths)
+	public UmbrellaFileStorageProviderMapping(IUmbrellaFileStorageProvider fileProvider, params string[] appRelativeFolderPaths)
 	{
 		FileProvider = fileProvider;
 		AppRelativeFolderPaths = appRelativeFolderPaths;
@@ -28,7 +28,7 @@ public class UmbrellaFileProviderMapping : ISanitizableUmbrellaOptions, IValidat
 	/// <summary>
 	/// Gets the file provider.
 	/// </summary>
-	public IUmbrellaFileProvider FileProvider { get; }
+	public IUmbrellaFileStorageProvider FileProvider { get; }
 
 	/// <summary>
 	/// Gets the application relative folder paths.

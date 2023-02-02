@@ -38,7 +38,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	/// <summary>
 	/// Gets the file provider.
 	/// </summary>
-	protected IUmbrellaFileProvider FileProvider { get; }
+	protected IUmbrellaFileStorageProvider FileProvider { get; }
 	
 	/// <inheritdoc/>
 	public abstract string DirectoryName { get; }
@@ -56,7 +56,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
-		IUmbrellaFileProvider fileProvider)
+		IUmbrellaFileStorageProvider fileProvider)
 	{
 		Logger = logger;
 		Cache = cache;

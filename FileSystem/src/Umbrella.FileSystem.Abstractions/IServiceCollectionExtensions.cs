@@ -23,7 +23,7 @@ public static class IServiceCollectionExtensions
 	{
 		Guard.IsNotNull(services);
 		
-		_ = services.AddSingleton<IUmbrellaFileProviderFactory, UmbrellaFileProviderFactory>();
+		_ = services.AddSingleton<IUmbrellaFileStorageProviderFactory, UmbrellaFileStorageProviderFactory>();
 
 		return services;
 	}

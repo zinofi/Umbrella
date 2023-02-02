@@ -17,8 +17,7 @@ namespace Umbrella.FileSystem.AzureStorage;
 /// An implementation of <see cref="IUmbrellaFileInfo"/> that uses Azure Blob Storage as the underlying storage mechanism.
 /// </summary>
 /// <seealso cref="IUmbrellaFileInfo" />
-/// <seealso cref="IEquatable{UmbrellaAzureBlobStorageFileInfo}" />
-public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaAzureBlobStorageFileInfo>
+public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 {
 	#region Private Members
 	private byte[]? _content;
@@ -27,7 +26,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	private BlobProperties? _blobProperties;
 	#endregion
 
-	#region Protected Properties		
+	#region Protected Properties
 	/// <summary>
 	/// Gets the log.
 	/// </summary>
@@ -36,7 +35,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	/// <summary>
 	/// Gets the file provider used to create this file.
 	/// </summary>
-	protected IUmbrellaAzureBlobStorageFileProvider Provider { get; }
+	protected IUmbrellaAzureBlobFileStorageProvider Provider { get; }
 
 	/// <summary>
 	/// Gets the generic type converter.
@@ -77,11 +76,11 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	#endregion
 
 	#region Constructors
-	internal UmbrellaAzureBlobStorageFileInfo(ILogger<UmbrellaAzureBlobStorageFileInfo> logger,
+	internal UmbrellaAzureBlobFileInfo(ILogger<UmbrellaAzureBlobFileInfo> logger,
 		IMimeTypeUtility mimeTypeUtility,
 		IGenericTypeConverter genericTypeConverter,
 		string subpath,
-		IUmbrellaAzureBlobStorageFileProvider provider,
+		IUmbrellaAzureBlobFileStorageProvider provider,
 		BlobClient blob,
 		bool isNew)
 	{
@@ -278,7 +277,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
-			var destinationFile = (UmbrellaAzureBlobStorageFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+			var destinationFile = (UmbrellaAzureBlobFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 			_ = await CopyAsync(destinationFile, cancellationToken).ConfigureAwait(false);
 
 			return destinationFile;
@@ -294,14 +293,14 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		// Copying between file providers of different types should not be permitted. Might be possible in future.
-		Guard.IsOfType<UmbrellaAzureBlobStorageFileInfo>(destinationFile);
+		Guard.IsOfType<UmbrellaAzureBlobFileInfo>(destinationFile);
 
 		try
 		{
 			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
-			var blobDestinationFile = (UmbrellaAzureBlobStorageFileInfo)destinationFile;
+			var blobDestinationFile = (UmbrellaAzureBlobFileInfo)destinationFile;
 
 			_ = await blobDestinationFile.Blob.StartCopyFromUriAsync(Blob.Uri, cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -344,7 +343,7 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 	public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsOfType<UmbrellaAzureBlobStorageFileInfo>(destinationFile);
+		Guard.IsOfType<UmbrellaAzureBlobFileInfo>(destinationFile);
 
 		try
 		{
@@ -496,6 +495,66 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 			throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 		}
 	}
+
+	/// <inheritdoc />
+	public async Task<TUserId> GetCreatedByIdAsync<TUserId>(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task SetCreatedByIdAsync<TUserId>(TUserId value, bool writeChanges = true, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<string> GetFileNameAsync(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task SetFileNameAsync(string value, bool writeChanges = true, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
+		}
+	}
 	#endregion
 
 	#region Private Methods
@@ -510,46 +569,5 @@ public class UmbrellaAzureBlobStorageFileInfo : IUmbrellaFileInfo, IEquatable<Um
 		if (IsNew)
 			throw new InvalidOperationException("Cannot perform this operation on a newly created file. The file must first be written to.");
 	}
-	#endregion
-
-	#region IEquatable Members
-	/// <inheritdoc />
-	public bool Equals(UmbrellaAzureBlobStorageFileInfo? other)
-		=> other is not null &&
-			IsNew == other.IsNew &&
-			Name == other.Name &&
-			SubPath == other.SubPath &&
-			Length == other.Length &&
-			EqualityComparer<DateTimeOffset?>.Default.Equals(LastModified, other.LastModified) &&
-			ContentType == other.ContentType;
-	#endregion
-
-	#region Overridden Methods
-	/// <inheritdoc />
-	public override bool Equals(object obj) => Equals(obj as UmbrellaAzureBlobStorageFileInfo);
-
-	/// <inheritdoc />
-	public override int GetHashCode()
-	{
-		int hashCode = 260482354;
-		hashCode = (hashCode * -1521134295) + IsNew.GetHashCode();
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(SubPath);
-		hashCode = (hashCode * -1521134295) + Length.GetHashCode();
-		hashCode = (hashCode * -1521134295) + EqualityComparer<DateTimeOffset?>.Default.GetHashCode(LastModified);
-
-		if (ContentType is not null)
-			hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(ContentType);
-
-		return hashCode;
-	}
-	#endregion
-
-	#region Operators
-	/// <inheritdoc />
-	public static bool operator ==(UmbrellaAzureBlobStorageFileInfo left, UmbrellaAzureBlobStorageFileInfo right) => EqualityComparer<UmbrellaAzureBlobStorageFileInfo>.Default.Equals(left, right);
-
-	/// <inheritdoc />
-	public static bool operator !=(UmbrellaAzureBlobStorageFileInfo left, UmbrellaAzureBlobStorageFileInfo right) => !(left == right);
 	#endregion
 }

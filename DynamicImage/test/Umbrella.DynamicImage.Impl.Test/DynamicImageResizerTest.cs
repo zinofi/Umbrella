@@ -169,7 +169,7 @@ public class DynamicImageResizerTest
 		_ = fileMock.Setup(x => x.ExistsAsync(default)).Returns(Task.FromResult(true));
 		_ = fileMock.Setup(x => x.Length).Returns(bytes.LongLength);
 
-		var fileProviderMock = new Mock<IUmbrellaFileProvider>();
+		var fileProviderMock = new Mock<IUmbrellaFileStorageProvider>();
 		_ = fileProviderMock.Setup(x => x.GetAsync("/dummypath.png", default)).Returns(Task.FromResult<IUmbrellaFileInfo?>(fileMock.Object));
 
 		var (options, targetSize) = item;

@@ -11,7 +11,7 @@ namespace Umbrella.DynamicImage.Caching.AzureStorage;
 /// <summary>
 /// A Dynamic Image cache implementation that is backed by Azure Blob Storage.
 /// </summary>
-public class DynamicImageAzureBlobStorageCache : DynamicImagePhysicalCache<IUmbrellaAzureBlobStorageFileProvider>, IDynamicImageCache
+public class DynamicImageAzureBlobStorageCache : DynamicImagePhysicalCache<IUmbrellaAzureBlobFileStorageProvider>, IDynamicImageCache
 {
 	#region Protected Properties		
 	/// <summary>
@@ -35,7 +35,7 @@ public class DynamicImageAzureBlobStorageCache : DynamicImagePhysicalCache<IUmbr
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		DynamicImageCacheCoreOptions cacheOptions,
-		IUmbrellaAzureBlobStorageFileProvider fileProvider,
+		IUmbrellaAzureBlobFileStorageProvider fileProvider,
 		DynamicImageAzureBlobStorageCacheOptions blobStorageCacheOptions)
 		: base(logger, cache, cacheKeyUtility, cacheOptions, fileProvider)
 	{

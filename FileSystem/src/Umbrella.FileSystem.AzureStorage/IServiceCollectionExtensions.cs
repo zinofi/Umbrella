@@ -22,31 +22,31 @@ public static class IServiceCollectionExtensions
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaAzureBlobStorageFileProvider(this IServiceCollection services, Action<IServiceProvider, UmbrellaAzureBlobStorageFileProviderOptions> optionsBuilder)
-		=> AddUmbrellaAzureBlobStorageFileProvider<UmbrellaAzureBlobStorageFileProvider>(services, optionsBuilder);
+	public static IServiceCollection AddUmbrellaAzureBlobFileStorageProvider(this IServiceCollection services, Action<IServiceProvider, UmbrellaAzureBlobStorageFileProviderOptions> optionsBuilder)
+		=> AddUmbrellaAzureBlobFileStorageProvider<UmbrellaAzureBlobStorageFileProvider>(services, optionsBuilder);
 
 	/// <summary>
 	/// Adds the <see cref="Umbrella.FileSystem.AzureStorage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	/// <typeparam name="TFileProvider">
-	/// The concrete implementation of <see cref="IUmbrellaAzureBlobStorageFileProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
-	/// resolved from the container correctly for both the <see cref="IUmbrellaFileProvider"/> and <see cref="IUmbrellaAzureBlobStorageFileProvider"/> interfaces.
+	/// The concrete implementation of <see cref="IUmbrellaAzureBlobFileStorageProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
+	/// resolved from the container correctly for both the <see cref="IUmbrellaFileStorageProvider"/> and <see cref="IUmbrellaAzureBlobFileStorageProvider"/> interfaces.
 	/// </typeparam>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 	/// <param name="optionsBuilder">The <see cref="UmbrellaAzureBlobStorageFileProviderOptions"/> builder.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaAzureBlobStorageFileProvider<TFileProvider>(this IServiceCollection services, Action<IServiceProvider, UmbrellaAzureBlobStorageFileProviderOptions> optionsBuilder)
-		where TFileProvider : class, IUmbrellaAzureBlobStorageFileProvider
-		=> AddUmbrellaAzureBlobStorageFileProvider<TFileProvider, UmbrellaAzureBlobStorageFileProviderOptions>(services, optionsBuilder);
+	public static IServiceCollection AddUmbrellaAzureBlobFileStorageProvider<TFileProvider>(this IServiceCollection services, Action<IServiceProvider, UmbrellaAzureBlobStorageFileProviderOptions> optionsBuilder)
+		where TFileProvider : class, IUmbrellaAzureBlobFileStorageProvider
+		=> AddUmbrellaAzureBlobFileStorageProvider<TFileProvider, UmbrellaAzureBlobStorageFileProviderOptions>(services, optionsBuilder);
 
 	/// <summary>
 	/// Adds the <see cref="Umbrella.FileSystem.AzureStorage"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	/// <typeparam name="TFileProvider">
-	/// The concrete implementation of <see cref="IUmbrellaAzureBlobStorageFileProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
-	/// resolved from the container correctly for both the <see cref="IUmbrellaFileProvider"/> and <see cref="IUmbrellaAzureBlobStorageFileProvider"/> interfaces.
+	/// The concrete implementation of <see cref="IUmbrellaAzureBlobFileStorageProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
+	/// resolved from the container correctly for both the <see cref="IUmbrellaFileStorageProvider"/> and <see cref="IUmbrellaAzureBlobFileStorageProvider"/> interfaces.
 	/// </typeparam>
 	/// <typeparam name="TOptions">The type of the options.</typeparam>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
@@ -54,8 +54,8 @@ public static class IServiceCollectionExtensions
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaAzureBlobStorageFileProvider<TFileProvider, TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
-		where TFileProvider : class, IUmbrellaAzureBlobStorageFileProvider
+	public static IServiceCollection AddUmbrellaAzureBlobFileStorageProvider<TFileProvider, TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
+		where TFileProvider : class, IUmbrellaAzureBlobFileStorageProvider
 		where TOptions : UmbrellaAzureBlobStorageFileProviderOptions, new()
 	{
 		Guard.IsNotNull(services);
@@ -63,14 +63,14 @@ public static class IServiceCollectionExtensions
 
 		services.AddUmbrellaFileSystemCore();
 
-		_ = services.AddSingleton<IUmbrellaAzureBlobStorageFileProvider>(x =>
+		_ = services.AddSingleton<IUmbrellaAzureBlobFileStorageProvider>(x =>
 		{
-			var factory = x.GetRequiredService<IUmbrellaFileProviderFactory>();
+			var factory = x.GetRequiredService<IUmbrellaFileStorageProviderFactory>();
 			var options = x.GetRequiredService<TOptions>();
 
 			return factory.CreateProvider<TFileProvider, TOptions>(options);
 		});
-		_ = services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetRequiredService<IUmbrellaAzureBlobStorageFileProvider>());
+		_ = services.ReplaceSingleton<IUmbrellaFileStorageProvider>(x => x.GetRequiredService<IUmbrellaAzureBlobFileStorageProvider>());
 
 		// Options
 		_ = services.ConfigureUmbrellaOptions(optionsBuilder);

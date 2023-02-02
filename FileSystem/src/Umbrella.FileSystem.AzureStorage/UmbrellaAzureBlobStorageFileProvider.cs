@@ -16,7 +16,7 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 namespace Umbrella.FileSystem.AzureStorage;
 
 /// <summary>
-/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
+/// An implementation of <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
 /// </summary>
 /// <seealso cref="UmbrellaAzureBlobStorageFileProvider{UmbrellaAzureBlobStorageFileProviderOptions}" />
 public class UmbrellaAzureBlobStorageFileProvider : UmbrellaAzureBlobStorageFileProvider<UmbrellaAzureBlobStorageFileProviderOptions>
@@ -37,11 +37,11 @@ public class UmbrellaAzureBlobStorageFileProvider : UmbrellaAzureBlobStorageFile
 }
 
 /// <summary>
-/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
+/// An implementation of <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/> which uses Azure Blob Storage as the underlying storage mechanism.
 /// </summary>
 /// <typeparam name="TOptions">The type of the provider options.</typeparam>
 /// <seealso cref="UmbrellaAzureBlobStorageFileProvider{UmbrellaAzureBlobStorageFileProviderOptions}" />
-public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaAzureBlobStorageFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobStorageFileProvider, IDisposable
+public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorageProvider<UmbrellaAzureBlobFileInfo, UmbrellaAzureBlobStorageFileProviderOptions>, IUmbrellaAzureBlobFileStorageProvider, IDisposable
 	where TOptions : UmbrellaAzureBlobStorageFileProviderOptions
 {
 	#region Constants
@@ -167,9 +167,9 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 			List<BlobClient> lstBlob = await container.GetBlobsByDirectoryAsync(string.Join(DirectorySeparator, parts.Skip(1)), cancellationToken: cancellationToken).ConfigureAwait(false);
 
-			UmbrellaAzureBlobStorageFileInfo[] files = lstBlob.Select(x => new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
+			UmbrellaAzureBlobFileInfo[] files = lstBlob.Select(x => new UmbrellaAzureBlobFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"/{parts[0]}/{x.Name}", this, x, false)).ToArray();
 
-			var lstResult = new List<UmbrellaAzureBlobStorageFileInfo>();
+			var lstResult = new List<UmbrellaAzureBlobFileInfo>();
 
 			foreach (var file in files)
 			{
@@ -191,7 +191,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 
 	#region Overridden Methods
 	/// <inheritdoc />
-	public override void InitializeOptions(UmbrellaFileProviderOptionsBase options)
+	public override void InitializeOptions(UmbrellaFileStorageProviderOptionsBase options)
 	{
 		base.InitializeOptions(options);
 
@@ -250,7 +250,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 		if (!isNew && !await blob.ExistsAsync(cancellationToken).ConfigureAwait(false))
 			return null;
 
-		var fileInfo = new UmbrellaAzureBlobStorageFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, cleanedPath, this, blob, isNew);
+		var fileInfo = new UmbrellaAzureBlobFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, cleanedPath, this, blob, isNew);
 		await fileInfo.InitializeAsync(cancellationToken).ConfigureAwait(false);
 
 		return !await CheckFileAccessAsync(fileInfo, blob, cancellationToken).ConfigureAwait(false)
@@ -285,7 +285,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileProvid
 	/// <param name="blob">The BLOB.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that returns <see langword="true" /> if the file passes the check; otherwise <see langword="false" />.</returns>
-	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobStorageFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
+	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

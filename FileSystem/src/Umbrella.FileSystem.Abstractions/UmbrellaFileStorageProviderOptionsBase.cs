@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Umbrella.Utilities.Constants;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -10,9 +11,9 @@ namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
 /// This is a base class for more specific options types.
-/// It is used by the <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> type as a way of generically specifying options without having to resort to generics.
+/// It is used by the <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/> type as a way of generically specifying options without having to resort to generics.
 /// </summary>
-public abstract class UmbrellaFileProviderOptionsBase : IServicesResolverUmbrellaOptions
+public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolverUmbrellaOptions
 {
 	private readonly object _syncRoot = new();
 	private IServiceCollection? _services;
@@ -52,7 +53,10 @@ public abstract class UmbrellaFileProviderOptionsBase : IServicesResolverUmbrell
 		int idxFirstSlash = fileSubPathSpan.IndexOf('/');
 		fileSubPathSpan = fileSubPathSpan.Slice(0, idxFirstSlash);
 
-		Span<char> directoryNameSpanLowered = stackalloc char[fileSubPathSpan.Length];
+		Span<char> directoryNameSpanLowered = fileSubPathSpan.Length <= StackAllocConstants.MaxCharSize
+			? stackalloc char[fileSubPathSpan.Length]
+			: new char[fileSubPathSpan.Length];
+
 		fileSubPathSpan.ToLowerInvariantSlim(directoryNameSpanLowered);
 
 		string directoryNameLowered = directoryNameSpanLowered.ToString();

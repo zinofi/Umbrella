@@ -13,46 +13,25 @@ using Umbrella.Utilities.TypeConverters.Abstractions;
 namespace Umbrella.FileSystem.Disk;
 
 /// <summary>
-/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses the physical disk as the underlying storage mechanism.
-/// </summary>
-/// <seealso cref="T:Umbrella.FileSystem.Disk.UmbrellaDiskFileProvider{Umbrella.FileSystem.Disk.UmbrellaDiskFileProviderOptions}" />
-public class UmbrellaDiskFileProvider : UmbrellaDiskFileProvider<UmbrellaDiskFileProviderOptions>
-{
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaDiskFileProvider"/> class.
-	/// </summary>
-	/// <param name="loggerFactory">The logger factory.</param>
-	/// <param name="mimeTypeUtility">The MIME type utility.</param>
-	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public UmbrellaDiskFileProvider(
-		ILoggerFactory loggerFactory,
-		IMimeTypeUtility mimeTypeUtility,
-		IGenericTypeConverter genericTypeConverter)
-		: base(loggerFactory, mimeTypeUtility, genericTypeConverter)
-	{
-	}
-}
-
-/// <summary>
-/// An implementation of <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/> which uses the physical disk as the underlying storage mechanism.
+/// An implementation of <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/> which uses the physical disk as the underlying storage mechanism.
 /// </summary>
 /// <typeparam name="TOptions">The type of the options.</typeparam>
-/// <seealso cref="UmbrellaDiskFileProvider{UmbrellaDiskFileProviderOptions}" />
-public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileProviderOptions>, IUmbrellaDiskFileProvider
-	where TOptions : UmbrellaDiskFileProviderOptions
+/// <seealso cref="UmbrellaDiskFileStorageProvider{UmbrellaDiskFileProviderOptions}" />
+public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProvider<UmbrellaDiskFileInfo, UmbrellaDiskFileStorageProviderOptions>, IUmbrellaDiskFileStorageProvider
+	where TOptions : UmbrellaDiskFileStorageProviderOptions
 {
 	#region Constructors		
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaDiskFileProvider{TOptions}"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaDiskFileStorageProvider{TOptions}"/> class.
 	/// </summary>
 	/// <param name="loggerFactory">The logger factory.</param>
 	/// <param name="mimeTypeUtility">The MIME type utility.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public UmbrellaDiskFileProvider(
+	public UmbrellaDiskFileStorageProvider(
 		ILoggerFactory loggerFactory,
 		IMimeTypeUtility mimeTypeUtility,
 		IGenericTypeConverter genericTypeConverter)
-		: base(loggerFactory.CreateLogger<UmbrellaDiskFileProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter)
+		: base(loggerFactory.CreateLogger<UmbrellaDiskFileStorageProvider>(), loggerFactory, mimeTypeUtility, genericTypeConverter)
 	{
 	}
 	#endregion
@@ -110,7 +89,7 @@ public class UmbrellaDiskFileProvider<TOptions> : UmbrellaFileProvider<UmbrellaD
 
 			UmbrellaDiskFileInfo[] files = directoryInfo
 				.GetFiles()
-				.Where(x => !x.Extension.Equals(UmbrellaDiskFileConstants.MetadataFileExtension, StringComparison.OrdinalIgnoreCase))
+				.Where(x => !x.Extension.Equals(UmbrellaDiskFileStorageConstants.MetadataFileExtension, StringComparison.OrdinalIgnoreCase))
 				.Select(x => new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, $"{subpath}/{x.Name}", this, x, false))
 				.ToArray();
 

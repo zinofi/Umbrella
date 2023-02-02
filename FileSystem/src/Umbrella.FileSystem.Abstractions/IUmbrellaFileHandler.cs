@@ -6,7 +6,7 @@ using System.Security.Claims;
 namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
-/// A handler used to access files stored using an implementation of the <see cref="UmbrellaFileProvider{TFileInfo, TOptions}"/>.
+/// A handler used to access files stored using an implementation of the <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/>.
 /// </summary>
 /// <typeparam name="TGroupId">The type of the group identifier.</typeparam>
 public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHandler

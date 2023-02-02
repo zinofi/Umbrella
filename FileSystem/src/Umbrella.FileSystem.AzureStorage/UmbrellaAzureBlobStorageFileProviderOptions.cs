@@ -12,7 +12,7 @@ namespace Umbrella.FileSystem.AzureStorage;
 /// <summary>
 /// The options for the UmbrellaAzureBlobStorageFileProvider.
 /// </summary>
-public class UmbrellaAzureBlobStorageFileProviderOptions : UmbrellaFileProviderOptionsBase, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaAzureBlobStorageFileProviderOptions : UmbrellaFileStorageProviderOptionsBase, ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
 	/// The connection string for the Azure storage account in which the blobs will be stored.

@@ -170,7 +170,7 @@ public class DynamicImageCacheTest
 
 	private static DynamicImageDiskCache CreateDynamicImageDiskCache()
 	{
-		var options = new UmbrellaDiskFileProviderOptions
+		var options = new UmbrellaDiskFileStorageProviderOptions
 		{
 			RootPhysicalPath = BaseDirectory,
 			AllowUnhandledFileAuthorizationChecks = true
@@ -179,8 +179,8 @@ public class DynamicImageCacheTest
 		if (options is IServicesResolverUmbrellaOptions servicesOptions)
 			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
-		var provider = new UmbrellaDiskFileProvider(
-			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileProvider>(),
+		var provider = new UmbrellaDiskFileStorageProvider(
+			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileStorageProvider>(),
 			CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
 			CoreUtilitiesMocks.CreateGenericTypeConverter());
 

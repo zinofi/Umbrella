@@ -15,7 +15,7 @@ namespace Umbrella.DynamicImage.Abstractions.Caching;
 /// <seealso cref="DynamicImageCache" />
 /// <seealso cref="IDynamicImageCache" />
 public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCache, IDynamicImageCache
-	where TFileProvider : IUmbrellaFileProvider
+	where TFileProvider : IUmbrellaFileStorageProvider
 {
 	#region Public Properties		
 	/// <summary>

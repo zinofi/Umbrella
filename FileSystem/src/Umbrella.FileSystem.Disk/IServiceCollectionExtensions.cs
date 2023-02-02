@@ -18,35 +18,35 @@ public static class IServiceCollectionExtensions
 	/// Adds the <see cref="Umbrella.FileSystem.Disk"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-	/// <param name="optionsBuilder">The <see cref="UmbrellaDiskFileProviderOptions"/> builder.</param>
+	/// <param name="optionsBuilder">The <see cref="UmbrellaDiskFileStorageProviderOptions"/> builder.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaDiskFileProvider(this IServiceCollection services, Action<IServiceProvider, UmbrellaDiskFileProviderOptions> optionsBuilder)
-		=> AddUmbrellaDiskFileProvider<UmbrellaDiskFileProvider>(services, optionsBuilder);
+	public static IServiceCollection AddUmbrellaDiskFileStorageProvider(this IServiceCollection services, Action<IServiceProvider, UmbrellaDiskFileStorageProviderOptions> optionsBuilder)
+		=> AddUmbrellaDiskFileStorageProvider<UmbrellaDiskFileStorageProvider>(services, optionsBuilder);
 
 	/// <summary>
 	/// Adds the <see cref="Umbrella.FileSystem.Disk"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	/// <typeparam name="TFileProvider">
-	/// The concrete implementation of <see cref="IUmbrellaDiskFileProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
-	/// resolved from the container correctly for both the <see cref="IUmbrellaFileProvider"/> and <see cref="IUmbrellaDiskFileProvider"/> interfaces.
+	/// The concrete implementation of <see cref="IUmbrellaDiskFileStorageProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
+	/// resolved from the container correctly for both the <see cref="IUmbrellaFileStorageProvider"/> and <see cref="IUmbrellaDiskFileStorageProvider"/> interfaces.
 	/// </typeparam>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-	/// <param name="optionsBuilder">The <see cref="UmbrellaDiskFileProviderOptions"/> builder.</param>
+	/// <param name="optionsBuilder">The <see cref="UmbrellaDiskFileStorageProviderOptions"/> builder.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaDiskFileProvider<TFileProvider>(this IServiceCollection services, Action<IServiceProvider, UmbrellaDiskFileProviderOptions> optionsBuilder)
-		where TFileProvider : class, IUmbrellaDiskFileProvider
-		=> AddUmbrellaDiskFileProvider<TFileProvider, UmbrellaDiskFileProviderOptions>(services, optionsBuilder);
+	public static IServiceCollection AddUmbrellaDiskFileStorageProvider<TFileProvider>(this IServiceCollection services, Action<IServiceProvider, UmbrellaDiskFileStorageProviderOptions> optionsBuilder)
+		where TFileProvider : class, IUmbrellaDiskFileStorageProvider
+		=> AddUmbrellaDiskFileStorageProvider<TFileProvider, UmbrellaDiskFileStorageProviderOptions>(services, optionsBuilder);
 
 	/// <summary>
 	/// Adds the <see cref="Umbrella.FileSystem.Disk"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
 	/// <typeparam name="TFileProvider">
-	/// The concrete implementation of <see cref="IUmbrellaDiskFileProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
-	/// resolved from the container correctly for both the <see cref="IUmbrellaFileProvider"/> and <see cref="IUmbrellaDiskFileProvider"/> interfaces.
+	/// The concrete implementation of <see cref="IUmbrellaDiskFileStorageProvider"/> to register. This allows consuming applications to override the default implementation and allow it to be
+	/// resolved from the container correctly for both the <see cref="IUmbrellaFileStorageProvider"/> and <see cref="IUmbrellaDiskFileStorageProvider"/> interfaces.
 	/// </typeparam>
 	/// <typeparam name="TOptions">The type of the options.</typeparam>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
@@ -54,23 +54,23 @@ public static class IServiceCollectionExtensions
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="optionsBuilder"/> is null.</exception>
-	public static IServiceCollection AddUmbrellaDiskFileProvider<TFileProvider, TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
-		where TFileProvider : class, IUmbrellaDiskFileProvider
-		where TOptions : UmbrellaDiskFileProviderOptions, new()
+	public static IServiceCollection AddUmbrellaDiskFileStorageProvider<TFileProvider, TOptions>(this IServiceCollection services, Action<IServiceProvider, TOptions> optionsBuilder)
+		where TFileProvider : class, IUmbrellaDiskFileStorageProvider
+		where TOptions : UmbrellaDiskFileStorageProviderOptions, new()
 	{
 		Guard.IsNotNull(services);
 		Guard.IsNotNull(optionsBuilder);
 
 		services.AddUmbrellaFileSystemCore();
 
-		_ = services.AddSingleton<IUmbrellaDiskFileProvider>(x =>
+		_ = services.AddSingleton<IUmbrellaDiskFileStorageProvider>(x =>
 		{
-			var factory = x.GetRequiredService<IUmbrellaFileProviderFactory>();
+			var factory = x.GetRequiredService<IUmbrellaFileStorageProviderFactory>();
 			var options = x.GetRequiredService<TOptions>();
 
 			return factory.CreateProvider<TFileProvider, TOptions>(options);
 		});
-		_ = services.ReplaceSingleton<IUmbrellaFileProvider>(x => x.GetRequiredService<IUmbrellaDiskFileProvider>());
+		_ = services.ReplaceSingleton<IUmbrellaFileStorageProvider>(x => x.GetRequiredService<IUmbrellaDiskFileStorageProvider>());
 
 		// Options
 		_ = services.ConfigureUmbrellaOptions(optionsBuilder);

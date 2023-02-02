@@ -23,7 +23,7 @@ public class FileSystemMiddlewareMapping : IValidatableUmbrellaOptions, ISanitiz
 	/// <summary>
 	/// Gets or sets the file provider mapping.
 	/// </summary>
-	public UmbrellaFileProviderMapping FileProviderMapping { get; set; } = null!;
+	public UmbrellaFileStorageProviderMapping FileProviderMapping { get; set; } = null!;
 
 	/// <inheritdoc />
 	public void Sanitize() => FileProviderMapping?.Sanitize();

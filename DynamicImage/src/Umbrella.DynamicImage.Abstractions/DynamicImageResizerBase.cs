@@ -43,7 +43,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 	#region IDynamicImageResizer Members
 	/// <inheritdoc />
-	public async Task<DynamicImageItem?> GenerateImageAsync(IUmbrellaFileProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
+	public async Task<DynamicImageItem?> GenerateImageAsync(IUmbrellaFileStorageProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(sourceFileProvider, nameof(sourceFileProvider));

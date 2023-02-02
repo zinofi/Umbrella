@@ -6,13 +6,13 @@ namespace Umbrella.FileSystem.Abstractions;
 /// <summary>
 /// A file provider abstraction that wraps an underlying storage mechanism, e.g. Disk storage, Azure Storage.
 /// </summary>
-public interface IUmbrellaFileProvider
+public interface IUmbrellaFileStorageProvider
 {
 	/// <summary>
 	/// Initializes the options of the provider.
 	/// </summary>
 	/// <param name="options">The options.</param>
-	void InitializeOptions(UmbrellaFileProviderOptionsBase options);
+	void InitializeOptions(UmbrellaFileStorageProviderOptionsBase options);
 
 	/// <summary>
 	/// Creates a new file at the specified <paramref name="subpath"/>.
