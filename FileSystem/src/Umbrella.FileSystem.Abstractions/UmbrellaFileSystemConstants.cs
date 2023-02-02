@@ -45,4 +45,9 @@ public class UmbrellaFileSystemConstants
 	/// The metadata key for the FileName value.
 	/// </summary>
 	public const string FileNameMetadataKey = "FileName";
+
+	/// <summary>
+	/// The metadata key for the FileUploadType value.
+	/// </summary>
+	public const string FileUploadTypeMetadataKey = "FileUploadType";
 }

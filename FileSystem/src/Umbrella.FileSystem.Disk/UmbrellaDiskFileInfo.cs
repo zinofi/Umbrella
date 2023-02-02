@@ -522,66 +522,6 @@ public class UmbrellaDiskFileInfo : IUmbrellaFileInfo, IEquatable<UmbrellaDiskFi
 			throw new UmbrellaFileSystemException("There has been an error writing the metadata changes.", exc);
 		}
 	}
-
-	/// <inheritdoc />
-	public async Task<TUserId> GetCreatedByIdAsync<TUserId>(CancellationToken cancellationToken = default)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		try
-		{
-			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			throw new UmbrellaFileSystemException("There has been an error getting the id.", exc);
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task SetCreatedByIdAsync<TUserId>(TUserId value, bool writeChanges = true, CancellationToken cancellationToken = default)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		try
-		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			throw new UmbrellaFileSystemException("There has been an error setting the id.", exc);
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task<string> GetFileNameAsync(CancellationToken cancellationToken = default)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		try
-		{
-			return await GetMetadataValueAsync<string>(UmbrellaFileSystemConstants.FileNameMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			throw new UmbrellaFileSystemException("There has been an error getting the file name.", exc);
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task SetFileNameAsync(string value, bool writeChanges = true, CancellationToken cancellationToken = default)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		try
-		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
-		}
-	}
 	#endregion
 
 	#region IEquatable Members		
