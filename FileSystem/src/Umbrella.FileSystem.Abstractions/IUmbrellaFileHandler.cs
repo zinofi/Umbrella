@@ -83,4 +83,54 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The web relative path to the file if one exists; otherwise <see langword="null"/>.</returns>
 	Task<string?> GetUrlByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Gets the name of the directory based on the current directory including the optional <paramref name="groupId"/>.
+	/// </summary>
+	/// <param name="groupId">The optional group identifier.</param>
+	/// <returns>The directory name, e.g. /documents or /documents/10 where the <paramref name="groupId"/> is 10.</returns>
+	string GetDirectoryName(TGroupId groupId);
+
+	/// <summary>
+	/// Gets the file path based on the current directory, <paramref name="fileName"/> and optional <paramref name="groupId"/>.
+	/// </summary>
+	/// <param name="fileName">Name of the file.</param>
+	/// <param name="groupId">The optional group identifier.</param>
+	/// <returns>The file path, e.g. /documents/file.png or /documents/10/file.png where the <paramref name="groupId"/> is 10.</returns>
+	string GetFilePath(string fileName, TGroupId groupId);
+
+	/// <summary>
+	/// Gets the file path as it can be accessed using a URL based on the current directory, <paramref name="fileName"/> and optional <paramref name="groupId"/>.
+	/// </summary>
+	/// <param name="fileName">Name of the file.</param>
+	/// <param name="groupId">The optional group identifier.</param>
+	/// <returns>The file path, e.g. /files/documents/file.png or /files/documents/10/file.png where the <paramref name="groupId"/> is 10.</returns>
+	string GetWebFilePath(string fileName, TGroupId groupId);
+
+	/// <summary>
+	/// Determines whether the specified <paramref name="filePath"/> is stored in the temporary files directory.
+	/// </summary>
+	/// <param name="filePath">Path of the file.</param>
+	/// <returns><see langword="true"/> if the file can be accessed; otherwise <see langword="false"/></returns>
+	bool IsTempFilePath(string filePath);
+
+	/// <summary>
+	/// Gets the name of the temporary directory.
+	/// </summary>
+	/// <returns>The directory name, e.g. /temp-files</returns>
+	string GetTempDirectoryName();
+
+	/// <summary>
+	/// Gets the path of the specified <paramref name="fileName"/> combined with the temporary files directory.
+	/// </summary>
+	/// <param name="fileName">Name of the file.</param>
+	/// <returns>The file path, e.g. /temp-files/file.png</returns>
+	string GetTempFilePath(string fileName);
+
+	/// <summary>
+	/// Gets the path of the specified <paramref name="fileName"/> stored in the temporary files directory to be accessed via a URL.
+	/// </summary>
+	/// <param name="fileName">Name of the file.</param>
+	/// <returns>The file path, e.g. /files/temp-files/file.png</returns>
+	string GetTempWebFilePath(string fileName);
 }
