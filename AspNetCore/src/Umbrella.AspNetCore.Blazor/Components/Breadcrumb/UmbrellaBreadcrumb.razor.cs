@@ -23,6 +23,11 @@ public partial class UmbrellaBreadcrumb
 	[CascadingParameter]
 	public List<UmbrellaBreadcrumbItem> BreadcrumbItemList { get; set; } = null!;
 
+	/// <summary>
+	/// Rerenders this instance.
+	/// </summary>
+	public void Rerender() => WeakReferenceMessenger.Default.Send(new UmbrellaBreadcrumbStateChangedMessage(BreadcrumbItemList));
+
 	/// <inheritdoc />
 	protected override void OnInitialized()
 	{
