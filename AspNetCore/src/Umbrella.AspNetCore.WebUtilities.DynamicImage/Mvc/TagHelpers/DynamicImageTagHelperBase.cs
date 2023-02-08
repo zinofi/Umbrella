@@ -8,6 +8,7 @@ using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Imaging;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
@@ -78,6 +79,12 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	public DynamicResizeMode ResizeMode { get; set; }
 
 	/// <summary>
+	/// Gets or sets the string that is prepended onto the value of the "src" attribute.
+	/// </summary>
+	[HtmlAttributeName("src-prefix")]
+	public string? SrcPrefix { get; set; }
+
+	/// <summary>
 	/// Gets or sets the <see cref="DynamicImageFormat"/>.
 	/// </summary>
 	public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
@@ -144,5 +151,19 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 		output.TagName = OutputTagName;
 
 		return src;
+	}
+	
+	/// <inheritdoc/>
+	protected override string ResolveImageUrl(string url)
+	{
+		if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+			return url;
+
+		string output = base.ResolveImageUrl(url);
+
+		if(!string.IsNullOrWhiteSpace(SrcPrefix))
+			output = SrcPrefix.TrimToLowerInvariant() + output;
+
+		return output;
 	}
 }

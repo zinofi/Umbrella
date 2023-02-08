@@ -116,7 +116,7 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// </summary>
 	/// <param name="url">The URL.</param>
 	/// <returns>The resolved image url.</returns>
-	protected string ResolveImageUrl(string url)
+	protected virtual string ResolveImageUrl(string url)
 	{
 		if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
 			return url;
