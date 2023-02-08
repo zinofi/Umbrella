@@ -67,7 +67,7 @@ public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolver
 			{
 				_authorizationHandlerMappings ??= _services
 					.Where(x => typeof(IUmbrellaFileAuthorizationHandler).IsAssignableFrom(x.ServiceType) && x.ImplementationType is not null)
-					.Select(x => _serviceProvider.GetRequiredService(x.ImplementationType!))
+					.Select(x => _serviceProvider.GetRequiredService(x.ServiceType!))
 					.Cast<IUmbrellaFileAuthorizationHandler>()
 					.ToDictionary(x => x.DirectoryName.ToLowerInvariant(), x => x);
 			}
