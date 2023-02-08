@@ -36,6 +36,7 @@ using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.Numerics;
 using Umbrella.Utilities.Numerics.Abstractions;
+using Umbrella.Utilities.Options;
 using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.Utilities.Options.Exceptions;
 using Umbrella.Utilities.Security;
@@ -122,6 +123,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddSingleton<IGenericHttpServiceUtility, GenericHttpServiceUtility>();
 		_ = services.AddSingleton<IResponsiveImageHelper, ResponsiveImageHelper>();
 		_ = services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+		_ = services.AddSingleton<IOptionsInitializer, OptionsInitializer>();
 
 		_ = services.AddSingleton<ISynchronizationManager, MemorySynchronizationManager>();
 
@@ -177,19 +179,11 @@ public static class IServiceCollectionExtensions
 			{
 				var options = new TOptions();
 
-				if (options is IDevelopmentModeUmbrellaOptions developmentModeOptions)
-					developmentModeOptions.SetDevelopmentMode(isDevelopmentMode);
-
-				if (options is IServicesResolverUmbrellaOptions servicesResolverOptions)
-					servicesResolverOptions.Initialize(services, serviceProvider);
-
 				optionsBuilder?.Invoke(serviceProvider, options);
 
-				if (options is ISanitizableUmbrellaOptions sanitizableOptions)
-					sanitizableOptions.Sanitize();
+				var optionsInitializer = serviceProvider.GetRequiredService<IOptionsInitializer>();
 
-				if (options is IValidatableUmbrellaOptions validatableOptions)
-					validatableOptions.Validate();
+				optionsInitializer.Initialize(options, services, isDevelopmentMode);
 
 				return options;
 			}

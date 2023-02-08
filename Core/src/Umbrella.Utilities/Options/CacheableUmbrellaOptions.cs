@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Options;
+using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.Utilities.Options;
 

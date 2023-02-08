@@ -4,6 +4,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Mime.Abstractions;
+using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 
 namespace Umbrella.FileSystem.Abstractions;
@@ -32,7 +33,12 @@ public class UmbrellaFileStorageProviderFactory : IUmbrellaFileStorageProviderFa
 	/// <summary>
 	/// Gets the DI services container.
 	/// </summary>
-	protected IServiceProvider Services { get; }
+	protected IServiceProvider ServiceProvider { get; }
+
+	/// <summary>
+	/// Gets the options initializer.
+	/// </summary>
+	public IOptionsInitializer OptionsInitializer { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaFileStorageProviderFactory"/> class.
@@ -40,25 +46,30 @@ public class UmbrellaFileStorageProviderFactory : IUmbrellaFileStorageProviderFa
 	/// <param name="logger">The logger.</param>
 	/// <param name="mimeTypeUtility">The MIME type utility.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	/// <param name="services">The services.</param>
+	/// <param name="serviceProvider">The services.</param>
+	/// <param name="optionsInitializer">The options initializer.</param>
 	public UmbrellaFileStorageProviderFactory(
 		ILogger<UmbrellaFileStorageProviderFactory> logger,
 		IMimeTypeUtility mimeTypeUtility,
 		IGenericTypeConverter genericTypeConverter,
-		IServiceProvider services)
+		IServiceProvider serviceProvider,
+		IOptionsInitializer optionsInitializer)
 	{
 		Log = logger;
 		MimeTypeUtility = mimeTypeUtility;
 		GenericTypeConverter = genericTypeConverter;
-		Services = services;
+		ServiceProvider = serviceProvider;
+		OptionsInitializer = optionsInitializer;
 	}
 
 	/// <inheritdoc />
-	public TProvider CreateProvider<TProvider, TOptions>(TOptions options)
+	public TProvider CreateProvider<TProvider, TOptions>(TOptions options, IServiceCollection services)
 		where TProvider : IUmbrellaFileStorageProvider
 		where TOptions : UmbrellaFileStorageProviderOptionsBase
 	{
-		var provider = ActivatorUtilities.CreateInstance<TProvider>(Services);
+		OptionsInitializer.Initialize(options, services);
+
+		var provider = ActivatorUtilities.CreateInstance<TProvider>(ServiceProvider);
 		provider.InitializeOptions(options);
 
 		return provider;

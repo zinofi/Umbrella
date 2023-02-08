@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
@@ -14,8 +16,9 @@ public interface IUmbrellaFileStorageProviderFactory
 	/// <typeparam name="TProvider">The type of the provider.</typeparam>
 	/// <typeparam name="TOptions">The type of the options.</typeparam>
 	/// <param name="options">The options.</param>
+	/// <param name="services">The services.</param>
 	/// <returns>The file provider.</returns>
-	TProvider CreateProvider<TProvider, TOptions>(TOptions options)
+	TProvider CreateProvider<TProvider, TOptions>(TOptions options, IServiceCollection services)
 		where TProvider : IUmbrellaFileStorageProvider
 		where TOptions : UmbrellaFileStorageProviderOptionsBase;
 }

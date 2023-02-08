@@ -68,7 +68,7 @@ public static class IServiceCollectionExtensions
 			var factory = x.GetRequiredService<IUmbrellaFileStorageProviderFactory>();
 			var options = x.GetRequiredService<TOptions>();
 
-			return factory.CreateProvider<TFileProvider, TOptions>(options);
+			return factory.CreateProvider<TFileProvider, TOptions>(options, services);
 		});
 		_ = services.ReplaceSingleton<IUmbrellaFileStorageProvider>(x => x.GetRequiredService<IUmbrellaAzureBlobFileStorageProvider>());
 
