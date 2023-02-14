@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Caching.Abstractions;
 
@@ -69,7 +65,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 			byte[]? bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
 
 			if (bytes is not null)
-				await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken: cancellationToken).ConfigureAwait(false);
+				_ = await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))
 		{
@@ -99,7 +95,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 			//evict it from the cache, i.e. delete the cached image from disk
 			if (sourceLastModified > fileInfo.LastModified)
 			{
-				await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
+				_ = await fileInfo.DeleteAsync(cancellationToken).ConfigureAwait(false);
 
 				return null;
 			}
@@ -129,7 +125,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 			string cacheKey = GenerateCacheKey(options);
 
 			string subPath = GetSubPath(cacheKey, fileExtension);
-			await FileProvider.DeleteAsync(subPath, cancellationToken).ConfigureAwait(false);
+			_ = await FileProvider.DeleteAsync(subPath, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }))
 		{
