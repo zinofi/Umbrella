@@ -49,6 +49,7 @@ public static class IServiceCollectionExtensions
 
 		_ = services.AddSingleton<IDynamicImageUtility, DynamicImageUtility>();
 		_ = services.AddSingleton<IDynamicImageCache, DynamicImageNoCache>();
+		_ = services.AddSingleton<IUmbrellaDynamicImageCacheFileHandler, UmbrellaDynamicImageCacheFileHandler>();
 
 		return services;
 	}
