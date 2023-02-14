@@ -70,10 +70,13 @@ public static class IServiceCollectionExtensions
 
 			return factory.CreateProvider<TFileProvider, TOptions>(options, services);
 		});
+		
 		_ = services.ReplaceSingleton<IUmbrellaFileStorageProvider>(x => x.GetRequiredService<IUmbrellaAzureBlobFileStorageProvider>());
-
+		
 		// Options
 		_ = services.ConfigureUmbrellaOptions(optionsBuilder);
+
+		_ = services.AddSingleton<IUmbrellaFileStorageProviderOptions>(x => x.GetRequiredService<TOptions>());
 
 		return services;
 	}

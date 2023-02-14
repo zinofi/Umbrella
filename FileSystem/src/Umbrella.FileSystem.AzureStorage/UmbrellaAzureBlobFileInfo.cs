@@ -197,7 +197,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
-		Guard.IsNotNull(target, nameof(target));
+		Guard.IsNotNull(target);
 
 		if (bufferSizeOverride.HasValue)
 			Guard.IsGreaterThanOrEqualTo(bufferSizeOverride.Value, 1);
@@ -239,7 +239,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	public async Task WriteFromStreamAsync(Stream stream, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(stream, nameof(stream));
+		Guard.IsNotNull(stream);
 
 		if (bufferSizeOverride.HasValue)
 			Guard.IsGreaterThanOrEqualTo(bufferSizeOverride.Value, 1);
@@ -270,7 +270,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	public virtual async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
 		try
 		{
@@ -324,7 +324,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	public virtual async Task<IUmbrellaFileInfo> MoveAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
 		try
 		{
@@ -385,7 +385,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
-		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
+		Guard.IsNotNullOrWhiteSpace(key);
 
 		try
 		{
@@ -409,7 +409,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
-		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
+		Guard.IsNotNullOrWhiteSpace(key);
 
 		try
 		{
@@ -439,7 +439,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
-		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
+		Guard.IsNotNullOrWhiteSpace(key);
 
 		try
 		{

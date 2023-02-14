@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Umbrella.FileSystem.Abstractions;
+﻿namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
 /// Constants used with the Umbrella file system.
@@ -50,4 +44,14 @@ public class UmbrellaFileSystemConstants
 	/// The metadata key for the FileUploadType value.
 	/// </summary>
 	public const string FileUploadTypeMetadataKey = "FileUploadType";
+
+	/// <summary>
+	/// The default temporary files directory name.
+	/// </summary>
+	public const string DefaultTempFilesDirectoryName = "temp-files";
+
+	/// <summary>
+	/// The default web files directory name.
+	/// </summary>
+	public const string DefaultWebFilesDirectoryName = "files";
 }

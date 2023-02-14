@@ -8,7 +8,6 @@ namespace Umbrella.DynamicImage.Abstractions;
 [StructLayout(LayoutKind.Auto)]
 public readonly record struct DynamicImageOptions
 {
-	#region Public Properties
 	/// <summary>
 	/// Gets the width.
 	/// </summary>
@@ -41,9 +40,7 @@ public readonly record struct DynamicImageOptions
 	/// This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <c>75</c>.
 	/// </remarks>
 	public int QualityRequest { get; } = 75;
-	#endregion
-
-	#region Constructors		
+	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageOptions"/> struct.
 	/// </summary>
@@ -68,9 +65,7 @@ public readonly record struct DynamicImageOptions
 		// TODO: Wire up the QualityRequest property. Guard.
 		// Will take considerable work to make all the upstream changes to utilise correctly!!
 	}
-	#endregion
 
-	#region Operators
 	/// <summary>
 	/// Performs an explicit conversion from <see cref="DynamicImageOptions"/> to <see cref="DynamicImageMapping"/>.
 	/// </summary>
@@ -79,29 +74,7 @@ public readonly record struct DynamicImageOptions
 	/// The result of the conversion.
 	/// </returns>
 	public static explicit operator DynamicImageMapping(in DynamicImageOptions options) => new(options.Width, options.Height, options.ResizeMode, options.Format);
-
-	/// <summary>
-	/// Implements the operator ==.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator ==(in DynamicImageOptions left, in DynamicImageOptions right) => left.Equals(right);
-
-	/// <summary>
-	/// Implements the operator !=.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator !=(in DynamicImageOptions left, in DynamicImageOptions right) => !(left == right);
-	#endregion
-
-	#region Public Static Methods		
+	
 	/// <summary>
 	/// Determines whether the specified options is empty.
 	/// </summary>
@@ -110,5 +83,4 @@ public readonly record struct DynamicImageOptions
 	///   <c>true</c> if the specified options is empty; otherwise, <c>false</c>.
 	/// </returns>
 	public static bool IsEmpty(in DynamicImageOptions options) => options == default;
-	#endregion
 }

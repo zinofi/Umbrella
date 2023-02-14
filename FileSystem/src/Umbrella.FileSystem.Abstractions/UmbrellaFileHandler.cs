@@ -5,6 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Context.Abstractions;
+using Umbrella.Utilities.Security.Extensions;
 
 namespace Umbrella.FileSystem.Abstractions;
 
@@ -39,7 +40,12 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	/// Gets the file provider.
 	/// </summary>
 	protected IUmbrellaFileStorageProvider FileProvider { get; }
-	
+
+	/// <summary>
+	/// Gets the options.
+	/// </summary>
+	public IUmbrellaFileStorageProviderOptions Options { get; }
+
 	/// <inheritdoc/>
 	public abstract string DirectoryName { get; }
 
@@ -51,18 +57,21 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
 	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
 	/// <param name="fileProvider">The file provider.</param>
+	/// <param name="options">The options.</param>
 	public UmbrellaFileHandler(
 		ILogger logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
-		IUmbrellaFileStorageProvider fileProvider)
+		IUmbrellaFileStorageProvider fileProvider,
+		IUmbrellaFileStorageProviderOptions options)
 	{
 		Logger = logger;
 		Cache = cache;
 		CacheKeyUtility = cacheKeyUtility;
 		CurrentUserClaimsPrincipalAccessor = currentUserClaimsPrincipalAccessor;
 		FileProvider = fileProvider;
+		Options = options;
 	}
 
 	/// <inheritdoc />
@@ -193,19 +202,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	}
 
 	/// <inheritdoc />
-	public virtual Task<bool> CanAccessAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		try
-		{
-			return Task.FromResult(true);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath }))
-		{
-			throw new UmbrellaFileSystemException("There has been a problem checking the file permissions.", exc);
-		}
-	}
+	public abstract Task<bool> CanAccessAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default);
 
 	/// <inheritdoc />
 	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, bool writeChanges = true, CancellationToken cancellationToken = default)
@@ -214,6 +211,9 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 
 		try
 		{
+			if (CurrentUserClaimsPrincipalAccessor.CurrentPrincipal is not null)
+				await fileInfo.SetCreatedByIdAsync(CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>(), false, cancellationToken);
+
 			if (writeChanges)
 				await fileInfo.WriteMetadataChangesAsync(cancellationToken);
 		}
@@ -233,18 +233,14 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		return lstFile.OrderByDescending(x => x.LastModified).FirstOrDefault();
 	}
 
-	// TODO FS: These need to come from options of some kind.
-	private const string TempFilesDirectoryName = "temp-files;";
-	private const string WebFolderName = "files;";
-
 	/// <inheritdoc/>
-	public string GetTempDirectoryName() => $"/{TempFilesDirectoryName}";
+	public string GetTempDirectoryName() => $"/{Options.TempFilesDirectoryName}";
 
 	/// <inheritdoc/>
 	public string GetTempFilePath(string fileName) => $"{GetTempDirectoryName()}/{fileName}";
 
 	/// <inheritdoc/>
-	public string GetTempWebFilePath(string fileName) => $"/{WebFolderName}{GetTempFilePath(fileName)}".ToLowerInvariant();
+	public string GetTempWebFilePath(string fileName) => $"/{Options.WebFilesDirectoryName}{GetTempFilePath(fileName)}".ToLowerInvariant();
 
 	/// <inheritdoc/>
 	public bool IsTempFilePath(string filePath) => filePath.StartsWith(GetTempDirectoryName() + "/", StringComparison.OrdinalIgnoreCase);
@@ -256,5 +252,5 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	public string GetFilePath(string fileName, TGroupId groupId) => $"{GetDirectoryName(groupId)}/{fileName}";
 
 	/// <inheritdoc/>
-	public string GetWebFilePath(string fileName, TGroupId groupId) => $"/{WebFolderName}{GetFilePath(fileName, groupId)}".ToLowerInvariant();
+	public string GetWebFilePath(string fileName, TGroupId groupId) => $"/{Options.WebFilesDirectoryName}{GetFilePath(fileName, groupId)}".ToLowerInvariant();
 }

@@ -13,7 +13,7 @@ namespace Umbrella.FileSystem.Abstractions;
 /// This is a base class for more specific options types.
 /// It is used by the <see cref="UmbrellaFileStorageProvider{TFileInfo, TOptions}"/> type as a way of generically specifying options without having to resort to generics.
 /// </summary>
-public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolverUmbrellaOptions
+public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolverUmbrellaOptions, IUmbrellaFileStorageProviderOptions
 {
 	private readonly object _syncRoot = new();
 	private IServiceCollection? _services;
@@ -25,6 +25,12 @@ public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolver
 	/// </summary>
 	/// <remarks>Defaults to <see langword="false"/>.</remarks>
 	public bool AllowUnhandledFileAuthorizationChecks { get; set; }
+	
+	/// <inheritdoc/>
+	public string TempFilesDirectoryName { get; set; } = UmbrellaFileSystemConstants.DefaultTempFilesDirectoryName;
+
+	/// <inheritdoc/>
+	public string WebFilesDirectoryName { get; set; } = UmbrellaFileSystemConstants.DefaultWebFilesDirectoryName;
 
 	void IServicesResolverUmbrellaOptions.Initialize(IServiceCollection services, IServiceProvider serviceProvider)
 	{

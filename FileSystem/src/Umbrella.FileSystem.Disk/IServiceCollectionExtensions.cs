@@ -75,6 +75,8 @@ public static class IServiceCollectionExtensions
 		// Options
 		_ = services.ConfigureUmbrellaOptions(optionsBuilder);
 
+		_ = services.AddSingleton<IUmbrellaFileStorageProviderOptions>(x => x.GetRequiredService<TOptions>());
+
 		return services;
 	}
 }

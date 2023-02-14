@@ -103,6 +103,9 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 	/// <inheritdoc />
 	public async Task DeleteDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(subpath);
+
 		try
 		{
 			string cleanedPath = SanitizeSubPathCore(subpath);
@@ -147,7 +150,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 	public async Task<IReadOnlyCollection<IUmbrellaFileInfo>> EnumerateDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		try
 		{
@@ -205,7 +208,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 	protected override async Task<IUmbrellaFileInfo?> GetFileAsync(string subpath, bool isNew, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		string cleanedPath = SanitizeSubPathCore(subpath);
 
@@ -261,6 +264,9 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 	/// <inheritdoc />
 	public override async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(subpath);
+
 		try
 		{
 			return await base.ExistsAsync(subpath, cancellationToken);
@@ -288,6 +294,8 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaAzureBlobFileInfo fileInfo, BlobClient blob, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(fileInfo);
+		Guard.IsNotNull(blob);
 
 		if (fileInfo.IsNew)
 			return true;

@@ -24,6 +24,7 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services);
 		
 		_ = services.AddSingleton<IUmbrellaFileStorageProviderFactory, UmbrellaFileStorageProviderFactory>();
+		_ = services.AddSingleton<IUmbrellaTempFileHandler, UmbrellaTempFileHandler>();
 
 		return services;
 	}

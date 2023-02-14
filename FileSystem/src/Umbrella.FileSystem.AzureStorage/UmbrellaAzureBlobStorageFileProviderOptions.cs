@@ -29,7 +29,7 @@ public class UmbrellaAzureBlobStorageFileProviderOptions : UmbrellaFileStoragePr
 	/// <summary>
 	/// Sanitizes this instance.
 	/// </summary>
-	public void Sanitize() => StorageConnectionString = StorageConnectionString.Trim();
+	public void Sanitize() => StorageConnectionString = StorageConnectionString?.Trim()!;
 
 	/// <summary>
 	/// Validates this instance.

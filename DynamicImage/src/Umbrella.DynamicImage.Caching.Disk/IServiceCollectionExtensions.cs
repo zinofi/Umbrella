@@ -19,21 +19,20 @@ public static class IServiceCollectionExtensions
 	/// with disk caching.
 	/// </summary>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
-	/// <param name="dynamicImageCacheCoreOptionsBuilder">The optional <see cref="DynamicImageCacheCoreOptions"/> builder.</param>
 	/// <param name="dynamicImageDiskCacheOptionsBuilder">The optional <see cref="DynamicImageDiskCacheOptions"/> builder.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
 	public static IServiceCollection AddUmbrellaDynamicImageDiskCache(
 		this IServiceCollection services,
-		Action<IServiceProvider, DynamicImageCacheCoreOptions>? dynamicImageCacheCoreOptionsBuilder = null,
 		Action<IServiceProvider, DynamicImageDiskCacheOptions>? dynamicImageDiskCacheOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services);
 
 		_ = services.AddUmbrellaDynamicImage();
 		_ = services.ReplaceSingleton<IDynamicImageCache, DynamicImageDiskCache>();
-		_ = services.ConfigureUmbrellaOptions(dynamicImageCacheCoreOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(dynamicImageDiskCacheOptionsBuilder);
+
+		_ = services.AddSingleton<DynamicImageCacheCoreOptions>(x => x.GetRequiredService<DynamicImageDiskCacheOptions>());
 
 		return services;
 	}

@@ -61,7 +61,7 @@ public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProv
 	public Task DeleteDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		try
 		{
@@ -94,7 +94,7 @@ public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProv
 	public async Task<IReadOnlyCollection<IUmbrellaFileInfo>> EnumerateDirectoryAsync(string subpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		try
 		{
@@ -169,6 +169,8 @@ public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProv
 	protected virtual async Task<bool> CheckFileAccessAsync(UmbrellaDiskFileInfo fileInfo, FileInfo physicalFileInfo, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(fileInfo);
+		Guard.IsNotNull(physicalFileInfo);
 
 		if (fileInfo.IsNew)
 			return true;

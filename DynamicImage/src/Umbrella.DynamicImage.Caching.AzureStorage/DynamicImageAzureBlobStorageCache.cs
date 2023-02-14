@@ -46,6 +46,6 @@ public class DynamicImageAzureBlobStorageCache : DynamicImagePhysicalCache<IUmbr
 	#region Overridden Methods
 	/// <inheritdoc />
 	protected override string GetSubPath(string cacheKey, string fileExtension)
-		=> $"/{BlobStorageCacheOptions.ContainerName}{base.GetSubPath(cacheKey, fileExtension)}";
+		=> $"/{BlobStorageCacheOptions.DirectoryName}{base.GetSubPath(cacheKey, fileExtension)}";
 	#endregion
 }
