@@ -24,6 +24,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 /// <seealso cref="IUmbrellaDialogUtility" />
 public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 {
+	private static readonly ModalParameters _emptyModalParameters = new();
+
 	private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new();
 
 	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultMessageButtons = new[]
@@ -415,7 +417,7 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 
 			IModalReference modal = modalParameters is not null
 				? _modalService.Show<T>(title, modalParameters, options)
-				: _modalService.Show<T>(title, options);
+				: _modalService.Show<T>(title, _emptyModalParameters, options);
 
 			return (TResult)await modal.Result;
 		}
