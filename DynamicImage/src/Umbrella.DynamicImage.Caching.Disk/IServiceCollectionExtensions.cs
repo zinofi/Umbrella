@@ -32,7 +32,7 @@ public static class IServiceCollectionExtensions
 		_ = services.ReplaceSingleton<IDynamicImageCache, DynamicImageDiskCache>();
 		_ = services.ConfigureUmbrellaOptions(dynamicImageDiskCacheOptionsBuilder);
 
-		_ = services.AddSingleton<DynamicImageCacheCoreOptions>(x => x.GetRequiredService<DynamicImageDiskCacheOptions>());
+		_ = services.ReplaceSingleton<DynamicImageCacheCoreOptions>(x => x.GetRequiredService<DynamicImageDiskCacheOptions>());
 
 		return services;
 	}

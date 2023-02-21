@@ -133,4 +133,17 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// <param name="fileName">Name of the file.</param>
 	/// <returns>The file path, e.g. /files/temp-files/file.png</returns>
 	string GetTempWebFilePath(string fileName);
+
+	/// <summary>
+	/// Saves the file content from the byte array to the underlying storage provider.
+	/// The path is determined from an internal call to <see cref="GetFilePath(string, TGroupId)"/>.
+	/// </summary>
+	/// <param name="groupId">The group id.</param>
+	/// <param name="fileName">The file name.</param>
+	/// <param name="bytes">The bytes.</param>
+	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
+	/// <param name="bufferSizeOverride">The buffer size override.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The saved file.</returns>
+	Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 }

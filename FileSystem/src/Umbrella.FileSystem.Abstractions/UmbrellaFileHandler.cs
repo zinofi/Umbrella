@@ -223,6 +223,23 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		}
 	}
 
+	/// <inheritdoc />
+	public async Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			string subPath = GetFilePath(fileName, groupId);
+
+			return await FileProvider.SaveAsync(subPath, bytes, cacheContents, bufferSizeOverride, cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName, cacheContents, bufferSizeOverride }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem saving the file.", exc);
+		}
+	}
+
 	private async Task<IUmbrellaFileInfo?> GetMostRecentExistingFileByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();

@@ -120,7 +120,7 @@ public static class ClaimsPrincipalExtensions
 	}
 
 	/// <summary>
-	/// Determines whether is in the specified role.
+	/// Determines whether the current principal is in the specified role.
 	/// </summary>
 	/// <typeparam name="TRole">The type of the role.</typeparam>
 	/// <param name="principal">The principal.</param>
@@ -129,6 +129,32 @@ public static class ClaimsPrincipalExtensions
 	public static bool IsInRole<TRole>(this ClaimsPrincipal principal, TRole roleType)
 		where TRole : struct, Enum
 		=> principal.IsInRole(roleType.ToString());
+
+	/// <summary>
+	/// Determines whether the current principal is in any of the specified <paramref name="roles"/>.
+	/// </summary>
+	/// <typeparam name="TAppRoleType">The type of the application role type.</typeparam>
+	/// <param name="claimsPrincipal">The claims principal.</param>
+	/// <param name="roles">The roles.</param>
+	/// <returns>
+	///   <see langword="true"/> if yes; otherwise <see langword="false"/>.
+	/// </returns>
+	public static bool IsInAnyRoles<TAppRoleType>(this ClaimsPrincipal claimsPrincipal, params TAppRoleType[] roles)
+		where TAppRoleType : struct, Enum
+		=> roles.Any(x => claimsPrincipal.IsInRole(x));
+
+	/// <summary>
+	/// Determines whether the current principal is in all of the specified <paramref name="roles"/>.
+	/// </summary>
+	/// <typeparam name="TAppRoleType">The type of the application role type.</typeparam>
+	/// <param name="claimsPrincipal">The claims principal.</param>
+	/// <param name="roles">The roles.</param>
+	/// <returns>
+	///   <see langword="true"/> if yes; otherwise <see langword="false"/>.
+	/// </returns>
+	public static bool IsInAllRoles<TAppRoleType>(this ClaimsPrincipal claimsPrincipal, params TAppRoleType[] roles)
+		where TAppRoleType : struct, Enum
+		=> roles.All(x => claimsPrincipal.IsInRole(x));
 
 	/// <summary>
 	/// Gets the roles.

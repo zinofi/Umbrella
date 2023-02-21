@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DynamicImage.Abstractions.Caching;
 using Umbrella.FileSystem.Abstractions;
 
+// TODO: Need to do some work to decouple the caching from this package and move to a new package.
+
 namespace Umbrella.DynamicImage.Abstractions;
 
 /// <summary>

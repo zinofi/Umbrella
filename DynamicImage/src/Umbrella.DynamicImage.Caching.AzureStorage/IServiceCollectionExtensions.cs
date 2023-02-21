@@ -32,7 +32,7 @@ public static class IServiceCollectionExtensions
 		_ = services.ReplaceSingleton<IDynamicImageCache, DynamicImageAzureBlobStorageCache>();
 		_ = services.ConfigureUmbrellaOptions(dynamicImageAzureBlobStorageCacheOptionsBuilder);
 
-		_ = services.AddSingleton<DynamicImageCacheCoreOptions>(x => x.GetRequiredService<DynamicImageAzureBlobStorageCacheOptions>());
+		_ = services.ReplaceSingleton<DynamicImageCacheCoreOptions>(x => x.GetRequiredService<DynamicImageAzureBlobStorageCacheOptions>());
 
 		return services;
 	}
