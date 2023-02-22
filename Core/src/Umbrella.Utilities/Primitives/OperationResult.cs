@@ -79,7 +79,7 @@ public readonly struct OperationResult<TResult>
 	}
 
 	/// <summary>
-	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.NotFound"/> for the specified <paramref name="item"/>.
+	/// Creates an <see cref="OperationResult"/> with a <see cref="Status"/> of <see cref="OperationResultStatus.Success"/> for the specified <paramref name="item"/>.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <returns>The <see cref="OperationResult"/> instance.</returns>
