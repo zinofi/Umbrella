@@ -10,6 +10,8 @@ using Umbrella.Utilities.FriendlyUrl.Abstractions;
 
 namespace Umbrella.Utilities.FriendlyUrl;
 
+// TODO: There is a bug in this in that a filename with an extension has it's period converted to a hyphen. This should not happen.
+
 /// <summary>
 /// A utility used to generate friendly URLs from a specified input string.
 /// </summary>
@@ -55,7 +57,7 @@ public class FriendlyUrlGenerator : IFriendlyUrlGenerator
 			bool prevdash = false;
 			int trueLength = 0;
 			char c;
-
+			
 			for (int i = 0; i < stringLength; i++)
 			{
 				c = normalizedString[i];
