@@ -78,7 +78,7 @@ public abstract class DynamicImageCache
 				var stringBuilder = new StringBuilder(bytes.Length * 2);
 
 				foreach (byte num in bytes)
-					stringBuilder.Append(num.ToString("x", CultureInfo.InvariantCulture).PadLeft(2, '0'));
+					_ = stringBuilder.Append(num.ToString("x", CultureInfo.InvariantCulture).PadLeft(2, '0'));
 
 				return stringBuilder.ToString();
 			},

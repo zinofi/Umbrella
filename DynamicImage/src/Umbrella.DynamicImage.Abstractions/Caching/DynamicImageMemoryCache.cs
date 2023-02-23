@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.DynamicImage.Abstractions.Caching;
@@ -47,7 +44,7 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 			string rawKey = GenerateCacheKey(dynamicImage.ImageOptions);
 			string cacheKey = GenerateMemoryCacheKey(rawKey);
 
-			Cache.SetValue(cacheKey, dynamicImage, _memoryCacheOptions);
+			_ = Cache.SetValue(cacheKey, dynamicImage, _memoryCacheOptions);
 
 			return Task.CompletedTask;
 		}

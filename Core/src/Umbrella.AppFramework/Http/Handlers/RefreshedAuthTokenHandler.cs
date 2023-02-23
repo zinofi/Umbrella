@@ -41,7 +41,7 @@ public class RefreshedAuthTokenHandler : DelegatingHandler
 			string? token = values.FirstOrDefault()?.Trim();
 
 			if (!string.IsNullOrWhiteSpace(token))
-				await _authHelper.GetCurrentClaimsPrincipalAsync(token);
+				_ = await _authHelper.GetCurrentClaimsPrincipalAsync(token);
 		}
 		else if (response.StatusCode is HttpStatusCode.Unauthorized && request.RequestUri.ToString().EndsWith("/auth/login", StringComparison.OrdinalIgnoreCase) is false)
 		{

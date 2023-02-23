@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Umbrella.Utilities.Extensions;
@@ -20,7 +19,7 @@ public static class ValidationResultExtensions
 	public static string ToValidationSummaryMessage(this IEnumerable<ValidationResult> results, string introMessage)
 	{
 		var messageBuilder = new StringBuilder(introMessage).AppendLine().AppendLine();
-		results.ForEach(x => messageBuilder.AppendLine(x.ErrorMessage));
+		_ = results.ForEach(x => messageBuilder.AppendLine(x.ErrorMessage));
 
 		return messageBuilder.ToString();
 	}

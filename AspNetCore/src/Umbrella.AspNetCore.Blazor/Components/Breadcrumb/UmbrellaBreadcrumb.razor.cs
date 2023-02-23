@@ -42,6 +42,6 @@ public partial class UmbrellaBreadcrumb
 		base.OnAfterRender(firstRender);
 
 		if (firstRender)
-			WeakReferenceMessenger.Default.Send(new UmbrellaBreadcrumbStateChangedMessage(BreadcrumbItemList));
+			_ = WeakReferenceMessenger.Default.Send(new UmbrellaBreadcrumbStateChangedMessage(BreadcrumbItemList));
 	}
 }

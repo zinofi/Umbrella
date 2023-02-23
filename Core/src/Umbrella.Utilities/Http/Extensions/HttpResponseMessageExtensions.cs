@@ -1,5 +1,5 @@
-﻿using System.Net.Http;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using System.Net.Http;
 
 namespace Umbrella.Utilities.Http.Extensions;
 
@@ -25,6 +25,6 @@ public static class HttpResponseMessageExtensions
 
 		string? responseContent = await responseMessage.Content.ReadAsStringAsync();
 
-		logger.Write(logLevel, state: new { requestUri, responseMessage.StatusCode, responseMessage.ReasonPhrase, responseContent });
+		_ = logger.Write(logLevel, state: new { requestUri, responseMessage.StatusCode, responseMessage.ReasonPhrase, responseContent });
 	}
 }

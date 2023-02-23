@@ -1,11 +1,9 @@
-﻿using System;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
-using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Navigation;
@@ -84,7 +82,7 @@ public class ActiveTagHelper : AnchorTagHelper
 			}
 			else
 			{
-				_log.WriteWarning(state: new { Area, Action, Controller, Page, PageHandler }, message: "The href attribute was empty meaning this tag helper did not run.");
+				_ = _log.WriteWarning(state: new { Area, Action, Controller, Page, PageHandler }, message: "The href attribute was empty meaning this tag helper did not run.");
 			}
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { Area, Action, Controller, Page, PageHandler }))

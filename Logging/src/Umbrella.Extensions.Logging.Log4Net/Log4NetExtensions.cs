@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.Extensions.Logging.Log4Net;
+﻿using Umbrella.Extensions.Logging.Log4Net;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.Logging;
@@ -35,7 +34,7 @@ public static class Log4NetExtensions
 	/// <returns>The instance of <see cref="ILoggingBuilder"/> with the log4net provider added to it.</returns>
 	public static ILoggingBuilder AddUmbrellaLog4Net(this ILoggingBuilder loggingBuilder, string contentRootPath, string configFileRelativePath)
 	{
-		loggingBuilder.AddProvider(new Log4NetProvider(contentRootPath, configFileRelativePath));
+		_ = loggingBuilder.AddProvider(new Log4NetProvider(contentRootPath, configFileRelativePath));
 
 		return loggingBuilder;
 	}

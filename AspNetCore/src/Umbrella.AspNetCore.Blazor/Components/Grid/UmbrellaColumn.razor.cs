@@ -68,7 +68,7 @@ public partial class UmbrellaColumn<TItem>
 		set
 		{
 			_property = value;
-			_propertyDelegate = value is not null ? value.Compile() : null;
+			_propertyDelegate = value?.Compile();
 		}
 	}
 

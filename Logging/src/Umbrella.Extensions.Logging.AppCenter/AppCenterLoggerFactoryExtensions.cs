@@ -20,7 +20,7 @@ public static class AppCenterLoggerFactoryExtensions
 		LogLevel minLevel = LogLevel.Information,
 		bool includeEventId = false)
 	{
-		loggingBuilder.AddProvider(new AppCenterLoggerProvider(minLevel, includeEventId));
+		_ = loggingBuilder.AddProvider(new AppCenterLoggerProvider(minLevel, includeEventId));
 
 		return loggingBuilder;
 	}

@@ -76,13 +76,13 @@ public abstract class UmbrellaApiController : ControllerBase
 		switch (operationResult.Status)
 		{
 			case OperationResultStatus.GenericFailure:
-				Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
+				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
 				return BadRequest(operationResult.ErrorMessage);
 			case OperationResultStatus.NotFound:
-				Logger.WriteWarning(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
+				_ = Logger.WriteWarning(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
 				return NotFound(operationResult.ErrorMessage);
 			case OperationResultStatus.Conflict:
-				Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
+				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
 				return Conflict(operationResult.ErrorMessage);
 			default:
 				throw new SwitchExpressionException(operationResult.Status);
@@ -100,13 +100,13 @@ public abstract class UmbrellaApiController : ControllerBase
 		switch (operationResult.Status)
 		{
 			case OperationResultStatus.GenericFailure:
-				Logger.WriteError(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
+				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
 				return ValidationProblem(operationResult.ValidationResults.ToModelStateDictionary());
 			case OperationResultStatus.NotFound:
-				Logger.WriteWarning(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
+				_ = Logger.WriteWarning(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
 				return NotFound(operationResult.PrimaryValidationMessage ?? "Not Found");
 			case OperationResultStatus.Conflict:
-				Logger.WriteError(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
+				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
 				return Conflict(operationResult.PrimaryValidationMessage ?? "Conflict");
 			default:
 				throw new SwitchExpressionException(operationResult.Status);

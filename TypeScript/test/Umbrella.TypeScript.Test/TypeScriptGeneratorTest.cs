@@ -27,7 +27,7 @@ public class TypeScriptGeneratorTest
 	[Fact]
 	public void GenerateAllUsingOnlyNamedAssembliesTest()
 	{
-		AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
+		_ = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
 
 		TypeScriptGenerator generator = new TypeScriptGenerator("Umbrella.TypeScript.Test")
 			.IncludeStandardGenerators()

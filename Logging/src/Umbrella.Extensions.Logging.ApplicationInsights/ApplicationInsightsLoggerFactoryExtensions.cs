@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.ApplicationInsights;
+﻿using Microsoft.ApplicationInsights;
 using Microsoft.Extensions.Logging;
 
 namespace Umbrella.Extensions.Logging.ApplicationInsights;
@@ -47,7 +46,7 @@ public static class ApplicationInsightsLoggerFactoryExtensions
 		bool trackExceptionsAsExceptionTelemetry = true,
 		bool includeEventId = false)
 	{
-		loggingBuilder.AddProvider(new ApplicationInsightsLoggerProvider(telemetryClient, minLevel, trackExceptionsAsExceptionTelemetry, includeEventId));
+		_ = loggingBuilder.AddProvider(new ApplicationInsightsLoggerProvider(telemetryClient, minLevel, trackExceptionsAsExceptionTelemetry, includeEventId));
 
 		return loggingBuilder;
 	}

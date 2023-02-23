@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Threading.Abstractions;
+﻿using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.Utilities.Threading;
 
@@ -42,6 +40,6 @@ public sealed class MemorySynchronizationRoot : ISynchronizationRoot
 		// Checking the Semaphore wasn't cancelled here to ensure we don't release when we shouldn't
 		// because the Semaphore will already have been released internally.
 		if (_currentTask?.Status == TaskStatus.RanToCompletion)
-			_semaphoreSlim.Release();
+			_ = _semaphoreSlim.Release();
 	}
 }

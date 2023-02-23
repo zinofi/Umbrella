@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
-using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout;
@@ -132,7 +129,7 @@ public class KnockoutPropertyTagHelper : TagHelper
 				Span<char> span = stackalloc char[PropertyName.Length + 1];
 				int idx = span.Write(0, propertyNameSpan.Slice(0, sliceLength));
 				idx = span.Write(idx, "_");
-				span.Write(idx, propertyNameSpan.Slice(sliceLength));
+				_ = span.Write(idx, propertyNameSpan.Slice(sliceLength));
 
 				exposedPropertyName = span.ToString();
 			}
@@ -167,7 +164,7 @@ public class KnockoutPropertyTagHelper : TagHelper
 				{
 					dataBindValue += $", cssValid: {_exposedPropertyName.Value}";
 
-					output.PostElement.SetHtmlContent($"<div class=\"invalid-feedback\" data-bind=\"validationMessage: {_exposedPropertyName.Value}\"></div>");
+					_ = output.PostElement.SetHtmlContent($"<div class=\"invalid-feedback\" data-bind=\"validationMessage: {_exposedPropertyName.Value}\"></div>");
 				}
 
 				if (!string.IsNullOrWhiteSpace(DisabledPropertyName))

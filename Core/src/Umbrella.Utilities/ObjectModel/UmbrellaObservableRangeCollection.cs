@@ -4,12 +4,9 @@
 // All Rights Reserved
 // Licensed under the MIT License (MIT)
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 
 namespace Umbrella.Utilities.ObjectModel;
 
@@ -51,7 +48,7 @@ public class UmbrellaObservableRangeCollection<T> : ObservableCollection<T>
 	/// <exception cref="ArgumentNullException">collection</exception>
 	public void AddRange(IEnumerable<T> collection, NotifyCollectionChangedAction notificationMode = NotifyCollectionChangedAction.Add)
 	{
-		if (notificationMode != NotifyCollectionChangedAction.Add && notificationMode != NotifyCollectionChangedAction.Reset)
+		if (notificationMode is not NotifyCollectionChangedAction.Add and not NotifyCollectionChangedAction.Reset)
 			throw new ArgumentException("Mode must be either Add or Reset for AddRange.", nameof(notificationMode));
 
 		if (collection is null)
@@ -86,7 +83,7 @@ public class UmbrellaObservableRangeCollection<T> : ObservableCollection<T>
 	/// <exception cref="ArgumentNullException">collection</exception>
 	public void RemoveRange(IEnumerable<T> collection, NotifyCollectionChangedAction notificationMode = NotifyCollectionChangedAction.Remove)
 	{
-		if (notificationMode != NotifyCollectionChangedAction.Remove && notificationMode != NotifyCollectionChangedAction.Reset)
+		if (notificationMode is not NotifyCollectionChangedAction.Remove and not NotifyCollectionChangedAction.Reset)
 			throw new ArgumentException("Mode must be either Remove or Reset for RemoveRange.", nameof(notificationMode));
 
 		if (collection is null)
@@ -100,7 +97,7 @@ public class UmbrellaObservableRangeCollection<T> : ObservableCollection<T>
 
 			foreach (var item in collection)
 			{
-				Items.Remove(item);
+				_ = Items.Remove(item);
 				raiseEvents = true;
 			}
 

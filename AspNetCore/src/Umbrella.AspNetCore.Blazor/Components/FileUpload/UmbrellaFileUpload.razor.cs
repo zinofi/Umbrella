@@ -141,13 +141,13 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 
 			using Stream stream = SelectedFile.OpenReadStream(MaxFileSizeBytes ?? 512000, _cancellationTokenSource.Token);
 
-			await using Timer timer = new(_ => InvokeAsync(() =>
+			await using Timer timer = new(_ => _ = InvokeAsync(() =>
 			{
 				UploadPercentage = (int)Math.Round(stream.Position / stream.Length * 100d, MidpointRounding.AwayFromZero);
 				StateHasChanged();
 			}));
 
-			timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+			_ = timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 
 			await OnRequestUpload.InvokeAsync(new UmbrellaFileUploadRequestEventArgs(stream, SelectedFile.Name, SelectedFile.ContentType, _cancellationTokenSource.Token));
 

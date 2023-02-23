@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.DynamicImage.Abstractions;
@@ -55,7 +53,7 @@ public class DynamicImagePictureSourceTagHelper : DynamicImageTagHelperBase
 	{
 		await base.ProcessAsync(context, output);
 
-		output.Attributes.RemoveAll("alt");
-		output.Attributes.RemoveAll("src");
+		_ = output.Attributes.RemoveAll("alt");
+		_ = output.Attributes.RemoveAll("src");
 	}
 }

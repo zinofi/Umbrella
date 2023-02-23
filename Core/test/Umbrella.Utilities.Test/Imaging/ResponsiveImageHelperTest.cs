@@ -51,7 +51,7 @@ public class ResponsiveImageHelperTest
 	{
 		var helper = CreateResponsiveImageHelper();
 
-		Assert.Throws<ArgumentOutOfRangeException>(() => helper.GetPixelDensities(maxDensity));
+		_ = Assert.Throws<ArgumentOutOfRangeException>(() => helper.GetPixelDensities(maxDensity));
 	}
 
 	[Theory]

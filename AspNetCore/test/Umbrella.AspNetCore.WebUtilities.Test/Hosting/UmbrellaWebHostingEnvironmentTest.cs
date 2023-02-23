@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.Utilities.Helpers;
+﻿using Umbrella.Utilities.Helpers;
 using Xunit;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test.Hosting;
@@ -12,10 +11,10 @@ public class UmbrellaWebHostingEnvironmentTest
 		var env = Mocks.CreateUmbrellaWebHostingEnvironment();
 
 #nullable disable
-		Assert.Throws<ArgumentNullException>(() => env.MapPath(null));
+		_ = Assert.Throws<ArgumentNullException>(() => env.MapPath(null));
 #nullable enable
-		Assert.Throws<ArgumentException>(() => env.MapPath(""));
-		Assert.Throws<ArgumentException>(() => env.MapPath("      "));
+		_ = Assert.Throws<ArgumentException>(() => env.MapPath(""));
+		_ = Assert.Throws<ArgumentException>(() => env.MapPath("      "));
 	}
 
 	[Fact]

@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Data;
-using System.Linq.Expressions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Linq.Expressions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.EntityFrameworkCore.Extensions;
 
@@ -33,7 +33,7 @@ public static class DbContextExtensions
 			Direction = ParameterDirection.Output
 		};
 
-		await dbContext.Database.ExecuteSqlRawAsync($"SET @result = NEXT VALUE FOR {sequenceName}", new[] { parameter }, cancellationToken);
+		_ = await dbContext.Database.ExecuteSqlRawAsync($"SET @result = NEXT VALUE FOR {sequenceName}", new[] { parameter }, cancellationToken);
 
 		return (int)parameter.Value;
 	}

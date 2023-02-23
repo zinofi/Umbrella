@@ -48,7 +48,7 @@ dotnet_style_readonly_field = true:error
 dotnet_style_object_initializer = true:suggestion
 dotnet_style_collection_initializer = true:suggestion
 dotnet_style_explicit_tuple_names = true:suggestion
-dotnet_style_null_propagation = true:suggestion
+dotnet_style_null_propagation = true:error
 dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:error
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
@@ -273,3 +273,10 @@ dotnet_diagnostic.IDE0090.severity = error
 dotnet_diagnostic.IDE0028.severity = error
 dotnet_diagnostic.CA1001.severity = error
 dotnet_diagnostic.VSTHRD002.severity = error
+dotnet_diagnostic.IDE0062.severity = error
+dotnet_diagnostic.IDE0030.severity = error
+
+# IDE0031: Use null propagation
+dotnet_diagnostic.IDE0031.severity = error
+dotnet_diagnostic.VSTHRD110.severity = error
+dotnet_diagnostic.IDE0058.severity = error

@@ -32,7 +32,7 @@ public class AppAuthHelper : IAppAuthHelper
 	/// <inheritdoc />
 	public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
 	{
-		add => WeakReferenceMessenger.Default.TryRegister<AuthenticationStateChangedMessage>(value.Target, (sender, args) => value(args.Value));
+		add => WeakReferenceMessenger.Default.TryRegister<AuthenticationStateChangedMessage>(value.Target, (sender, args) => _ = value(args.Value));
 		remove => WeakReferenceMessenger.Default.Unregister<AuthenticationStateChangedMessage>(value.Target);
 	}
 
