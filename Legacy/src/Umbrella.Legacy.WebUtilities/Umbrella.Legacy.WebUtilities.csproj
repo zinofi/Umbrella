@@ -1,45 +1,45 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
 		<DocumentationFile>bin\Release\net461\Umbrella.Legacy.WebUtilities.xml</DocumentationFile>
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <PackageId>Umbrella.Legacy.WebUtilities</PackageId>
-    <Description>This package contains a range of utility classes to aid web application development using the legacy ASP.NET stack.</Description>
-  </PropertyGroup>
+	<PropertyGroup>
+		<PackageId>Umbrella.Legacy.WebUtilities</PackageId>
+		<Description>This package contains a range of utility classes to aid web application development using the legacy ASP.NET stack.</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="GlobalResources\DialogModal.css;GlobalResources\DialogModal.js" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="GlobalResources\DialogModal.css;GlobalResources\DialogModal.js" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
-    <ProjectReference Include="..\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities\Umbrella.WebUtilities.csproj" />
+		<ProjectReference Include="..\Umbrella.Legacy.Utilities\Umbrella.Legacy.Utilities.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Brotli.NET" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.2.9" />
-    <PackageReference Include="Microsoft.Owin" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.2.2" />
+	<ItemGroup>
+		<PackageReference Include="Brotli.NET" Version="2.1.1" />
+		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
+		<PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.9" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.2.9" />
+		<PackageReference Include="Microsoft.Owin" Version="4.2.2" />
+		<PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.2.2" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-  </ItemGroup>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="System.ComponentModel.DataAnnotations" />
+		<Reference Include="System.Web" />
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Configuration" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Controls\EmbeddedUserControl.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Controls\EmbeddedUserControl.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
@@ -47,13 +47,6 @@
 
 	<ItemGroup>
 		<Using Include="Umbrella.Utilities.Extensions" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

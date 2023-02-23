@@ -52,6 +52,25 @@ public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbre
 	/// </summary>
 	public bool SecureServerConnection { get; set; }
 
+	/// <summary>
+	/// Gets or sets the email recipient white list.
+	/// </summary>
+	/// <remarks>
+	/// When specified, outbound emails will only be permitted to be sent to these recipients.
+	/// All other recipients will have their emails redirected to all email addresses specified using the
+	/// <see cref="RedirectRecipientEmailsList"/>.
+	/// </remarks>
+	public IReadOnlyCollection<string> EmailRecipientWhiteList { get; set; } = Array.Empty<string>();
+
+	/// <summary>
+	/// Gets or sets the redirect recipient emails list.
+	/// </summary>
+	/// <remarks>
+	/// When specified, all outbound emails, except those specified on the <see cref="EmailRecipientWhiteList"/>
+	/// will be redirected to these email addresses.
+	/// </remarks>
+	public IReadOnlyCollection<string> RedirectRecipientEmailsList { get; set; } = Array.Empty<string>();
+
 	/// <inheritdoc />
 	public void Sanitize()
 	{
@@ -61,25 +80,27 @@ public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbre
 		Host = Host?.Trim();
 		UserName = UserName?.Trim();
 		Password = Password?.Trim();
+		EmailRecipientWhiteList = EmailRecipientWhiteList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+		RedirectRecipientEmailsList = RedirectRecipientEmailsList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 	}
 
 	/// <inheritdoc />
-	/// <exception cref="ArgumentNullException">Thrown if <see cref="DefaultFromAddress"/> is null.</exception>
-	/// <exception cref="ArgumentException">Thrown if <see cref="DefaultFromAddress"/> is empty or whitespace.</exception>
 	public void Validate()
 	{
-		Guard.IsNotNullOrWhiteSpace(DefaultFromAddress, nameof(DefaultFromAddress));
+		Guard.IsNotNullOrWhiteSpace(DefaultFromAddress);
+		Guard.IsNotNull(EmailRecipientWhiteList);
+		Guard.IsNotNull(RedirectRecipientEmailsList);
 
 		switch (DeliveryMethod)
 		{
 			case EmailSenderDeliveryMode.Network:
-				Guard.IsNotNullOrWhiteSpace(Host, nameof(Host));
+				Guard.IsNotNullOrWhiteSpace(Host);
 
 				if (!string.IsNullOrWhiteSpace(UserName))
-					Guard.IsNotNullOrWhiteSpace(Password, nameof(Password));
+					Guard.IsNotNullOrWhiteSpace(Password);
 				break;
 			case EmailSenderDeliveryMode.SpecifiedPickupDirectory:
-				Guard.IsNotNullOrWhiteSpace(PickupDirectoryLocation, nameof(PickupDirectoryLocation));
+				Guard.IsNotNullOrWhiteSpace(PickupDirectoryLocation);
 				break;
 		}
 	}

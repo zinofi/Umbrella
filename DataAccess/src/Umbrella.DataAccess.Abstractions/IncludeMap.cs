@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.Abstractions;
@@ -15,7 +13,7 @@ public class IncludeMap<TEntity>
 	/// <summary>
 	/// Gets the includes as expressions.
 	/// </summary>
-	public HashSet<Expression<Func<TEntity, object>>> Includes { get; } = new HashSet<Expression<Func<TEntity, object>>>();
+	public HashSet<Expression<Func<TEntity, object?>>> Includes { get; } = new HashSet<Expression<Func<TEntity, object?>>>();
 
 	/// <summary>
 	/// Gets the includes as string paths, e.g. Parent -> Child -> Name will be Parent.Child.Name.
@@ -28,16 +26,16 @@ public class IncludeMap<TEntity>
 	/// Initializes a new instance of the <see cref="IncludeMap{TEntity}"/> class.
 	/// </summary>
 	/// <param name="paths">The property paths.</param>
-	public IncludeMap(params Expression<Func<TEntity, object>>[] paths)
+	public IncludeMap(params Expression<Func<TEntity, object?>>[] paths)
 	{
 		foreach (var path in paths)
 		{
-			Includes.Add(path);
+			_ = Includes.Add(path);
 
 			string propertyPath = path.GetMemberPath();
 
 			if (!string.IsNullOrEmpty(propertyPath))
-				PropertyPaths.Add(propertyPath);
+				_ = PropertyPaths.Add(propertyPath);
 		}
 	}
 	#endregion

@@ -49,8 +49,10 @@ public class MemorySynchronizationManager : ISynchronizationManager
 
 	private MemorySynchronizationRoot GetSynchronizationRoot(Type type, string key)
 	{
+		// TODO: Should we be interning these strings? This could mean the Semaphores never get cleaned up.
+		// Look into using a string pool.
 		var semaphoreSlim = _items.GetValue(string.Intern($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
-
+		
 		return new MemorySynchronizationRoot(semaphoreSlim);
 	}
 }

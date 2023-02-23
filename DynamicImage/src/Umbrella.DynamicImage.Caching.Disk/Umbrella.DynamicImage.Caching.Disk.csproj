@@ -22,12 +22,5 @@
 	  <ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.Disk\Umbrella.FileSystem.Disk.csproj" />
 	  <ProjectReference Include="..\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	</ItemGroup>
 	
 </Project>

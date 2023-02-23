@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Xunit;
 
 namespace Umbrella.DataAccess.Abstractions.Test;
@@ -10,7 +8,7 @@ public class IncludeMapTest
 	[Fact]
 	public void Valid()
 	{
-		var expressions = new Expression<Func<Type, object>>[]
+		var expressions = new Expression<Func<Type, object?>>[]
 		{
 			x => x.Name,
 			x => x.Assembly,
