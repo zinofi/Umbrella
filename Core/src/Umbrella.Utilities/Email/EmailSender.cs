@@ -58,11 +58,11 @@ public class EmailSender : IEmailSender
 						if (!string.IsNullOrWhiteSpace(_options.UserName))
 							client.Credentials = new NetworkCredential { UserName = _options.UserName, Password = _options.Password };
 
-						if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientWhiteList.Contains(email))
+						if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => email.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 						{
 							email = _options.GetRedirectRecipientEmails();
 						}
-						else if(_options.EmailRecipientWhiteList.Count > 0 && !_options.EmailRecipientWhiteList.Contains(email))
+						else if(_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => email.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 						{
 							return;
 						}

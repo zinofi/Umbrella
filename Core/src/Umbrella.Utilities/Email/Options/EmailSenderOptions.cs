@@ -56,20 +56,20 @@ public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbre
 	public bool SecureServerConnection { get; set; }
 
 	/// <summary>
-	/// Gets or sets the email recipient white list.
+	/// Gets or sets the email recipient domain white list.
 	/// </summary>
 	/// <remarks>
 	/// When specified, outbound emails will only be permitted to be sent to these recipients.
 	/// All other recipients will have their emails redirected to all email addresses specified using the
 	/// <see cref="RedirectRecipientEmailsList"/>.
 	/// </remarks>
-	public IReadOnlyCollection<string> EmailRecipientWhiteList { get; set; } = Array.Empty<string>();
+	public IReadOnlyCollection<string> EmailRecipientDomainWhiteList { get; set; } = Array.Empty<string>();
 
 	/// <summary>
 	/// Gets or sets the redirect recipient emails list.
 	/// </summary>
 	/// <remarks>
-	/// When specified, all outbound emails, except those specified on the <see cref="EmailRecipientWhiteList"/>
+	/// When specified, all outbound emails, except those specified on the <see cref="EmailRecipientDomainWhiteList"/>
 	/// will be redirected to these email addresses.
 	/// </remarks>
 	public IReadOnlyCollection<string> RedirectRecipientEmailsList { get; set; } = Array.Empty<string>();
@@ -83,7 +83,7 @@ public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbre
 		Host = Host?.Trim();
 		UserName = UserName?.Trim();
 		Password = Password?.Trim();
-		EmailRecipientWhiteList = EmailRecipientWhiteList.Select(x => x.TrimToLowerInvariant()).Distinct(StringComparer.Ordinal).ToArray();
+		EmailRecipientDomainWhiteList = EmailRecipientDomainWhiteList.Select(x => x.TrimToLowerInvariant()).Distinct(StringComparer.Ordinal).ToArray();
 		RedirectRecipientEmailsList = RedirectRecipientEmailsList.Select(x => x.TrimToLowerInvariant()).Distinct(StringComparer.Ordinal).ToArray();
 	}
 
@@ -91,7 +91,7 @@ public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbre
 	public void Validate()
 	{
 		Guard.IsNotNullOrWhiteSpace(DefaultFromAddress);
-		Guard.IsNotNull(EmailRecipientWhiteList);
+		Guard.IsNotNull(EmailRecipientDomainWhiteList);
 		Guard.IsNotNull(RedirectRecipientEmailsList);
 
 		switch (DeliveryMethod)
