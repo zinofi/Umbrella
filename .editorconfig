@@ -145,6 +145,7 @@ dotnet_diagnostic.CA1848.severity = silent
 dotnet_diagnostic.CA1051.severity = error
 dotnet_diagnostic.VSTHRD200.severity = error
 dotnet_diagnostic.VSTHRD100.severity = error
+dotnet_diagnostic.VSTHRD111.severity = silent
 
 ###############################
 # C# Code Style Rules         #

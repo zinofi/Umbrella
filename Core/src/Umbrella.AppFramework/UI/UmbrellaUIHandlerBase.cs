@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.AppFramework.Utilities.Constants;
@@ -58,7 +55,7 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
 	/// </summary>
 	/// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
-	protected async ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync();
+	protected async ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync().ConfigureAwait(false);
 
 	/// <summary>
 	/// Shows a friendly error message for the specified <paramref name="problemDetails"/> using the <see cref="DialogUtility"/>.
@@ -66,7 +63,7 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
 	protected async ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
-		=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+		=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title).ConfigureAwait(false);
 
 	/// <summary>
 	/// Sets the property value on the specified <paramref name="backingStore"/>, fires any specified <paramref name="onChanged"/> action and also calls the

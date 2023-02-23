@@ -72,7 +72,7 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 				//evict it from the cache
 				if (sourceLastModified > cacheItem.LastModified)
 				{
-					await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken);
+					await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 					return null;
 				}
@@ -96,7 +96,7 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 			string key = GenerateCacheKey(options);
 			string cacheKey = GenerateMemoryCacheKey(key);
 
-			await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken);
+			await Cache.RemoveAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options, fileExtension }))
 		{

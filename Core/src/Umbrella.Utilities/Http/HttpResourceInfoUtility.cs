@@ -65,7 +65,7 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 				async () =>
 				{
 					var request = new HttpRequestMessage(HttpMethod.Head, url);
-					HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+					HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
 					long contentLength = response.Content.Headers.ContentLength ?? 0;
 
@@ -87,7 +87,7 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 				_options.CacheThrowOnFailure,
 				_options.CachePriority,
 				cacheEnabledOverride: _options.CacheEnabled && useCache,
-				cancellationToken: cancellationToken);
+				cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { url }))
 		{

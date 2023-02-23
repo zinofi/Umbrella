@@ -43,13 +43,13 @@ public class RequestNotificationHandler : DelegatingHandler
 		});
 
 		if (isMatch)
-			return await base.SendAsync(request, cancellationToken);
+			return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
 		try
 		{
 			_loadingScreenUtility.Show();
 
-			HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+			HttpResponseMessage response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
 			return response;
 		}

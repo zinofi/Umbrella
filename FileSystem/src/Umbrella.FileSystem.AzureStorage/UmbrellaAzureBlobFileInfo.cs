@@ -503,7 +503,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken);
+			return await GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -518,7 +518,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -548,7 +548,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{

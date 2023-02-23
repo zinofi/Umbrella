@@ -118,7 +118,7 @@ public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProv
 
 			foreach (var file in files)
 			{
-				if (await CheckFileAccessAsync(file, file.PhysicalFileInfo, cancellationToken))
+				if (await CheckFileAccessAsync(file, file.PhysicalFileInfo, cancellationToken).ConfigureAwait(false))
 					lstResult.Add(file);
 				else
 					_ = Logger.WriteWarning(state: new { file.SubPath }, message: "File access failed.");
@@ -152,7 +152,7 @@ public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProv
 
 		var fileInfo = new UmbrellaDiskFileInfo(FileInfoLoggerInstance, MimeTypeUtility, GenericTypeConverter, cleanedSubPath, this, physicalFileInfo, isNew);
 
-		return !await CheckFileAccessAsync(fileInfo, physicalFileInfo, cancellationToken)
+		return !await CheckFileAccessAsync(fileInfo, physicalFileInfo, cancellationToken).ConfigureAwait(false)
 			? throw new UmbrellaFileAccessDeniedException(subpath)
 			: (IUmbrellaFileInfo)fileInfo;
 	}
@@ -178,7 +178,7 @@ public class UmbrellaDiskFileStorageProvider<TOptions> : UmbrellaFileStorageProv
 		IUmbrellaFileAuthorizationHandler? authorizationHandler = Options.GetAuthorizationHandler(fileInfo);
 
 		return authorizationHandler is not null
-			? await authorizationHandler.CanAccessAsync(fileInfo, cancellationToken)
+			? await authorizationHandler.CanAccessAsync(fileInfo, cancellationToken).ConfigureAwait(false)
 			: Options.AllowUnhandledFileAuthorizationChecks;
 	}
 	#endregion

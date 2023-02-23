@@ -64,7 +64,7 @@ public class DynamicImageTagHelper : DynamicImageTagHelperBase
 
 		if (lstSizeWidth is null || lstSizeWidth.Count is 0)
 		{
-			await base.ProcessAsync(context, output);
+			await base.ProcessAsync(context, output).ConfigureAwait(false);
 		}
 		else if (SizeWidths is not null)
 		{

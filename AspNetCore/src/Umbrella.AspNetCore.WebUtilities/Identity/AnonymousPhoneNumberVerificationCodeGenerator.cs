@@ -52,7 +52,7 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 	{
 		try
 		{
-			return await _userManager.GenerateUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, TUserKey>.CreatePurpose(phoneNumber));
+			return await _userManager.GenerateUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, TUserKey>.CreatePurpose(phoneNumber)).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -65,7 +65,7 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 	{
 		try
 		{
-			return await _userManager.VerifyUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, TUserKey>.CreatePurpose(phoneNumber), code);
+			return await _userManager.VerifyUserTokenAsync(_appUser, TokenOptions.DefaultPhoneProvider, AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, TUserKey>.CreatePurpose(phoneNumber), code).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{

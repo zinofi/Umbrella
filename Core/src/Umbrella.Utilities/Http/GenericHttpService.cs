@@ -116,7 +116,7 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpCallResult> PutAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
-		=> await PutAsync<TItem, object?>(url, item, parameters, cancellationToken);
+		=> await PutAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpCallResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
@@ -155,7 +155,7 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpCallResult> PatchAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
-		=> await PatchAsync<TItem, object?>(url, item, parameters, cancellationToken);
+		=> await PatchAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpCallResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)

@@ -87,7 +87,7 @@ public static class IEnumerableExtensions
 		Guard.IsNotNull(source, nameof(source));
 		Guard.IsNotNull(selector, nameof(selector));
 
-		return await Task.WhenAll(source.Select(x => selector(x, cancellationToken)));
+		return await Task.WhenAll(source.Select(x => selector(x, cancellationToken))).ConfigureAwait(false);
 	}
 
 	/// <summary>
@@ -107,7 +107,7 @@ public static class IEnumerableExtensions
 				while (partition.MoveNext())
 				{
 					await Task.Yield(); // prevents a sync/hot thread hangup
-					await funcBody(partition.Current);
+					await funcBody(partition.Current).ConfigureAwait(false);
 				}
 			}
 		}

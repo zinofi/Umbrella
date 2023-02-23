@@ -78,7 +78,7 @@ public class PermissionsUtility : IPermissionsUtility
 
 			foreach (var permission in lstRequiredPermission)
 			{
-				var status = await permission.CheckStatusAsync();
+				var status = await permission.CheckStatusAsync().ConfigureAwait(false);
 
 				if (status == PermissionStatus.Granted)
 					continue;
@@ -104,14 +104,14 @@ public class PermissionsUtility : IPermissionsUtility
 					_ => _options.GenericExplanationMessage
 				};
 
-				await _dialogUtility.ShowInfoMessageAsync(explanationMessage, "Permission Required");
+				await _dialogUtility.ShowInfoMessageAsync(explanationMessage, "Permission Required").ConfigureAwait(false);
 
 				foreach (var permission in lstDeniedPermission)
 				{
 					// We need all permissions to be granted. Fail on the first one.
-					if (await permission.RequestAsync() != PermissionStatus.Granted)
+					if (await permission.RequestAsync().ConfigureAwait(false) != PermissionStatus.Granted)
 					{
-						await _dialogUtility.ShowDangerMessageAsync("You have not granted the required permissions. Please try again.");
+						await _dialogUtility.ShowDangerMessageAsync("You have not granted the required permissions. Please try again.").ConfigureAwait(false);
 
 						// Track this so that the next time we get a failure for this permission we don't try again.
 						_ = _previousFailuresMappings.Add(permission.GetType());
@@ -135,7 +135,7 @@ public class PermissionsUtility : IPermissionsUtility
 					_ => _options.GenericDeniedErrorMessage
 				};
 
-				await _dialogUtility.ShowDangerMessageAsync(message, "Permission Denied");
+				await _dialogUtility.ShowDangerMessageAsync(message, "Permission Denied").ConfigureAwait(false);
 			}
 
 			return success;

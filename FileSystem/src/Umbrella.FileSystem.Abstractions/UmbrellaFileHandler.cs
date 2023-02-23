@@ -90,7 +90,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 				return fileInfo is null ? null : GetWebFilePath(fileInfo.Name, groupId);
 			},
 			() => TimeSpan.FromHours(1),
-			cancellationToken: cancellationToken);
+			cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
@@ -138,20 +138,20 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 			string permPath = GetFilePath(tempFileName, groupId);
 			string tempPath = GetTempFilePath(tempFileName);
 
-			IUmbrellaFileInfo? tempFileInfo = await FileProvider.GetAsync(tempPath, cancellationToken);
+			IUmbrellaFileInfo? tempFileInfo = await FileProvider.GetAsync(tempPath, cancellationToken).ConfigureAwait(false);
 
 			if (tempFileInfo is null)
 			{
 				// It might be the case that the temp file was already moved. Check for it at the permanent path.
-				bool exists = await FileProvider.ExistsAsync(permPath, cancellationToken);
+				bool exists = await FileProvider.ExistsAsync(permPath, cancellationToken).ConfigureAwait(false);
 
 				if (exists)
 					return GetWebFilePath(tempFileName, groupId);
 			}
 
-			IUmbrellaFileInfo fileInfo = await FileProvider.MoveAsync(tempPath, permPath, cancellationToken);
+			IUmbrellaFileInfo fileInfo = await FileProvider.MoveAsync(tempPath, permPath, cancellationToken).ConfigureAwait(false);
 
-			await ApplyPermissionsAsync(fileInfo, groupId, true, cancellationToken);
+			await ApplyPermissionsAsync(fileInfo, groupId, true, cancellationToken).ConfigureAwait(false);
 
 			return GetWebFilePath(tempFileName, groupId);
 		}
@@ -170,10 +170,10 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		try
 		{
 			string permPath = GetFilePath(providerFileName, groupId);
-			_ = await FileProvider.DeleteAsync(permPath, cancellationToken);
+			_ = await FileProvider.DeleteAsync(permPath, cancellationToken).ConfigureAwait(false);
 
 			string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
-			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken);
+			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
 		{
@@ -189,11 +189,11 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		try
 		{
 			string directoryName = GetDirectoryName(groupId);
-			await FileProvider.DeleteDirectoryAsync(directoryName, cancellationToken);
+			await FileProvider.DeleteDirectoryAsync(directoryName, cancellationToken).ConfigureAwait(false);
 
 			// Remove from the cache
 			string key = CacheKeyUtility.Create(GetType(), groupId + "");
-			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken);
+			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
@@ -212,10 +212,10 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		try
 		{
 			if (CurrentUserClaimsPrincipalAccessor.CurrentPrincipal is not null)
-				await fileInfo.SetCreatedByIdAsync(CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>(), false, cancellationToken);
+				await fileInfo.SetCreatedByIdAsync(CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>(), false, cancellationToken).ConfigureAwait(false);
 
 			if (writeChanges)
-				await fileInfo.WriteMetadataChangesAsync(cancellationToken);
+				await fileInfo.WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, groupId, writeChanges }))
 		{
@@ -232,7 +232,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		{
 			string subPath = GetFilePath(fileName, groupId);
 
-			return await FileProvider.SaveAsync(subPath, bytes, cacheContents, bufferSizeOverride, cancellationToken);
+			return await FileProvider.SaveAsync(subPath, bytes, cacheContents, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName, cacheContents, bufferSizeOverride }))
 		{
@@ -245,7 +245,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		cancellationToken.ThrowIfCancellationRequested();
 
 		string directoryName = GetDirectoryName(groupId);
-		IReadOnlyCollection<IUmbrellaFileInfo> lstFile = await FileProvider.EnumerateDirectoryAsync(directoryName, cancellationToken);
+		IReadOnlyCollection<IUmbrellaFileInfo> lstFile = await FileProvider.EnumerateDirectoryAsync(directoryName, cancellationToken).ConfigureAwait(false);
 
 		return lstFile.OrderByDescending(x => x.LastModified).FirstOrDefault();
 	}

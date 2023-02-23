@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Utilities.Abstractions;
 
@@ -37,12 +35,12 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 	{
 		try
 		{
-			string? clientId = await _storageService.GetAsync(ClientIdStorageKey);
+			string? clientId = await _storageService.GetAsync(ClientIdStorageKey).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(clientId))
 			{
 				clientId = Guid.NewGuid().ToString("N");
-				await _storageService.SetAsync(ClientIdStorageKey, clientId);
+				await _storageService.SetAsync(ClientIdStorageKey, clientId).ConfigureAwait(false);
 			}
 
 			return clientId!;
@@ -59,7 +57,7 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 	{
 		try
 		{
-			_authToken = await _storageService.GetAsync(AuthTokenStorageKey);
+			_authToken = await _storageService.GetAsync(AuthTokenStorageKey).ConfigureAwait(true);
 
 			return _authToken;
 		}
@@ -81,12 +79,12 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 			if (!string.IsNullOrEmpty(token))
 			{
 				_authToken = token;
-				await _storageService.SetAsync(AuthTokenStorageKey, token!);
+				await _storageService.SetAsync(AuthTokenStorageKey, token!).ConfigureAwait(true);
 			}
 			else
 			{
 				_authToken = null;
-				await _storageService.RemoveAsync(AuthTokenStorageKey);
+				await _storageService.RemoveAsync(AuthTokenStorageKey).ConfigureAwait(true);
 			}
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))

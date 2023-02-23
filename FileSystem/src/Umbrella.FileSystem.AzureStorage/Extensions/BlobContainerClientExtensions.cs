@@ -35,7 +35,7 @@ public static class BlobContainerClientExtensions
 			if (!item.IsBlob)
 			{
 				if (!topLevelOnly)
-					lstBlob.AddRange(await container.GetBlobsByDirectoryAsync(item.Prefix, topLevelOnly, directorySeparator, cancellationToken));
+					lstBlob.AddRange(await container.GetBlobsByDirectoryAsync(item.Prefix, topLevelOnly, directorySeparator, cancellationToken).ConfigureAwait(false));
 
 				continue;
 			}

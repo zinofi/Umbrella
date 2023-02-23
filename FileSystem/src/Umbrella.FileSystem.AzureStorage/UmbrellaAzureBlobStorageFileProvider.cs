@@ -269,7 +269,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 
 		try
 		{
-			return await base.ExistsAsync(subpath, cancellationToken);
+			return await base.ExistsAsync(subpath, cancellationToken).ConfigureAwait(false);
 		}
 		catch (UmbrellaFileSystemException exc) when (exc.InnerException is RequestFailedException rfe && rfe.ErrorCode == BlobErrorCode.ContainerBeingDeleted)
 		{
@@ -303,7 +303,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 		IUmbrellaFileAuthorizationHandler? authorizationHandler = Options.GetAuthorizationHandler(fileInfo);
 
 		return authorizationHandler is not null
-			? await authorizationHandler.CanAccessAsync(fileInfo, cancellationToken)
+			? await authorizationHandler.CanAccessAsync(fileInfo, cancellationToken).ConfigureAwait(false)
 			: Options.AllowUnhandledFileAuthorizationChecks;
 	}
 	#endregion

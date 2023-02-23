@@ -33,7 +33,7 @@ public static class DbContextExtensions
 			Direction = ParameterDirection.Output
 		};
 
-		_ = await dbContext.Database.ExecuteSqlRawAsync($"SET @result = NEXT VALUE FOR {sequenceName}", new[] { parameter }, cancellationToken);
+		_ = await dbContext.Database.ExecuteSqlRawAsync($"SET @result = NEXT VALUE FOR {sequenceName}", new[] { parameter }, cancellationToken).ConfigureAwait(false);
 
 		return (int)parameter.Value;
 	}
@@ -95,7 +95,7 @@ public static class DbContextExtensions
 			query = query.Skip(1);
 		}
 
-		return await query.FirstOrDefaultAsync(cancellationToken);
+		return await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 	}
 
 	/// <summary>
@@ -122,7 +122,8 @@ public static class DbContextExtensions
 				.Where(x => lstId.Distinct().Contains(x.Id))
 				.GroupBy(x => x.Id)
 				.Select(x => new IdEntityPairResult<TEntity, TEntityKey> { Id = x.Key, Entity = x.OrderByDescending(x => EF.Property<DateTime>(x, PeriodEndPropertyName)).Skip(1).FirstOrDefault() })
-				.ToArrayAsync(cancellationToken);
+				.ToArrayAsync(cancellationToken)
+				.ConfigureAwait(false);
 
 		return lstEntityHistory.UnionBy(lstId.Select(x => new IdEntityPairResult<TEntity, TEntityKey> { Id = x }), x => x.Id).ToArray();
 	}

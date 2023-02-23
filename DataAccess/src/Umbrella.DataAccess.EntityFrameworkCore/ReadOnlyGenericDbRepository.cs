@@ -280,7 +280,8 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 			.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
 			.ApplyPagination(pageNumber, pageSize)
 			.TrackChanges(trackChanges)
-			.ToArrayAsync(cancellationToken);
+			.ToArrayAsync(cancellationToken)
+			.ConfigureAwait(false);
 
 		int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 		var entities = results.Select(x => x.Entity).ToList();
@@ -329,7 +330,8 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 			.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
 			.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
 			.ApplyPagination(pageNumber, pageSize)
-			.ToArrayAsync(cancellationToken);
+			.ToArrayAsync(cancellationToken)
+			.ConfigureAwait(false);
 
 		int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 		var entities = results.Select(x => x.Entity).ToList();

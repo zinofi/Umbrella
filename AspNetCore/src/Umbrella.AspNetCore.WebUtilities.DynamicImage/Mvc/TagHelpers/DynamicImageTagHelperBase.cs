@@ -122,7 +122,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	{
 		_ = BuildCoreTag(output);
 
-		await base.ProcessAsync(context, output);
+		await base.ProcessAsync(context, output).ConfigureAwait(false);
 	}
 
 	/// <summary>

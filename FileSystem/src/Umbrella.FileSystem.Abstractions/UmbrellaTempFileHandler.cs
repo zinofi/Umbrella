@@ -44,7 +44,7 @@ public class UmbrellaTempFileHandler : UmbrellaFileHandler<int>, IUmbrellaTempFi
 
 		try
 		{
-			string fileInfoCreatedById = await fileInfo.GetCreatedByIdAsync<string>(cancellationToken);
+			string fileInfoCreatedById = await fileInfo.GetCreatedByIdAsync<string>(cancellationToken).ConfigureAwait(false);
 
 			if (fileInfoCreatedById is null)
 				return true;

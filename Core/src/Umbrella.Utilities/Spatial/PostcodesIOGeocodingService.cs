@@ -155,11 +155,11 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			string url = QueryHelpers.AddQueryString(_apiUrl + "/postcodes", queryParameters);
 
-			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
 			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
-				var resultWrapper = await response.Content.ReadFromJsonAsync<ReverseGeocodingResultWrapper>(cancellationToken: cancellationToken);
+				var resultWrapper = await response.Content.ReadFromJsonAsync<ReverseGeocodingResultWrapper>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				if (resultWrapper?.Result?.Count > 0)
 				{
@@ -204,11 +204,11 @@ public class PostcodesIOGeocodingService : IGeocodingService
 				GeoLocations = lstCleanedLocation
 			};
 
-			HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"{_apiUrl}/postcodes", bulkRequest, cancellationToken: cancellationToken);
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"{_apiUrl}/postcodes", bulkRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
-				var result = await response.Content.ReadFromJsonAsync<BulkReverseGeocodingResult>(cancellationToken: cancellationToken);
+				var result = await response.Content.ReadFromJsonAsync<BulkReverseGeocodingResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				if (result?.Result?.Count > 0)
 				{
@@ -263,7 +263,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
-				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupResultWrapper>(cancellationToken: cancellationToken);
+				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupResultWrapper>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				PostcodeLookupResult? result = resultWrapper?.Result;
 
@@ -304,11 +304,11 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			string url = $"{_apiUrl}/postcodes?q={encodedPostcode}";
 
-			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
 			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
-				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupPartialMapResultsWrapper>(cancellationToken: cancellationToken);
+				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupPartialMapResultsWrapper>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				PostcodeLookupResult[]? result = resultWrapper?.Result;
 
@@ -354,11 +354,11 @@ public class PostcodesIOGeocodingService : IGeocodingService
 				Postcodes = lstCleanedPostcode
 			};
 
-			HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/postcodes", JsonContent.Create(model), cancellationToken);
+			HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/postcodes", JsonContent.Create(model), cancellationToken).ConfigureAwait(false);
 
 			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
 			{
-				var result = await response.Content.ReadFromJsonAsync<BulkPostcodeLookupResult>(cancellationToken: cancellationToken);
+				var result = await response.Content.ReadFromJsonAsync<BulkPostcodeLookupResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				if (result?.Result?.Count > 0)
 				{

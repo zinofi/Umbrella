@@ -98,7 +98,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (!await ExistsAsync(cancellationToken))
+			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
 			var destinationFile = (UmbrellaDiskFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
@@ -129,7 +129,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (!await ExistsAsync(cancellationToken))
+			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
 			var target = (UmbrellaDiskFileInfo)destinationFile;
@@ -160,7 +160,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (!await ExistsAsync(cancellationToken))
+			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
 			var destinationFile = (UmbrellaDiskFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
@@ -191,7 +191,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (!await ExistsAsync(cancellationToken))
+			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
 			var target = (UmbrellaDiskFileInfo)destinationFile;
@@ -510,7 +510,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 			else
 			{
 				// Before deleting the file, reload the metadata just in case we have some on disk that hasn't be loaded into memory.
-				await ReloadMetadataAsync(cancellationToken);
+				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
 				if (_metadataDictionary is null || _metadataDictionary.Count is 0)
 					File.Delete(_metadataFullFileName);
@@ -544,7 +544,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -574,7 +574,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
+			await SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{

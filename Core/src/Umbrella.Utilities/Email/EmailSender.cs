@@ -73,7 +73,7 @@ public class EmailSender : IEmailSender
 				IsBodyHtml = true
 			};
 
-			await client.SendMailAsync(message);
+			await client.SendMailAsync(message).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress }))
 		{

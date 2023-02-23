@@ -32,7 +32,7 @@ public static class IAuthorizationServiceExtensions
 			tasks.Add(authorizationService.AuthorizeAsync(user, item, policyName));
 		}
 
-		AuthorizationResult[] authResults = await Task.WhenAll(tasks);
+		AuthorizationResult[] authResults = await Task.WhenAll(tasks).ConfigureAwait(false);
 
 		return authResults.All(x => x.Succeeded);
 	}

@@ -187,7 +187,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 		catch (Exception exc) when (Options.ReadAllExceptionFilter(exc))
 		{
-			IActionResult? result = await Options.HandleReadAllExceptionAsync(exc);
+			IActionResult? result = await Options.HandleReadAllExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
 				return result;
@@ -290,7 +290,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 		catch (Exception exc) when (Options.ReadExceptionFilter(exc))
 		{
-			IActionResult? result = await Options.HandleReadExceptionAsync(exc);
+			IActionResult? result = await Options.HandleReadExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
 				return result;
@@ -444,7 +444,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 		catch (Exception exc) when (Options.CreateExceptionFilter(exc))
 		{
-			IActionResult? result = await Options.HandleCreateExceptionAsync(exc);
+			IActionResult? result = await Options.HandleCreateExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
 				return result;
@@ -609,7 +609,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 		catch (Exception exc) when (Options.UpdateExceptionFilter(exc))
 		{
-			IActionResult? result = await Options.HandleUpdateExceptionAsync(exc);
+			IActionResult? result = await Options.HandleUpdateExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
 				return result;
@@ -710,7 +710,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		}
 		catch (Exception exc) when (Options.DeleteExceptionFilter(exc))
 		{
-			IActionResult? result = await Options.HandleDeleteExceptionAsync(exc);
+			IActionResult? result = await Options.HandleDeleteExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
 				return result;

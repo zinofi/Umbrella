@@ -16,7 +16,7 @@ public static class IUmbrellaFileInfoExtensions
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return await fileInfo.GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken);
+		return await fileInfo.GetMetadataValueAsync<TUserId>(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
 	/// <summary>
@@ -32,7 +32,7 @@ public static class IUmbrellaFileInfoExtensions
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		await fileInfo.SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken);
+		await fileInfo.SetMetadataValueAsync(UmbrellaFileSystemConstants.CreatedByIdMetadataKey, value, writeChanges, cancellationToken).ConfigureAwait(false);
 	}
 
 	/// <summary>
@@ -60,7 +60,7 @@ public static class IUmbrellaFileInfoExtensions
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		await fileInfo.SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken);
+		await fileInfo.SetMetadataValueAsync(UmbrellaFileSystemConstants.FileNameMetadataKey, value, writeChanges, cancellationToken).ConfigureAwait(false);
 	}
 
 	/// <summary>
@@ -75,7 +75,7 @@ public static class IUmbrellaFileInfoExtensions
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		string strFileUploadType = await fileInfo.GetMetadataValueAsync<string>("FileUploadType", cancellationToken: cancellationToken);
+		string strFileUploadType = await fileInfo.GetMetadataValueAsync<string>("FileUploadType", cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (Enum.TryParse(strFileUploadType, true, out TFileUpload fileUploadType))
 			return fileUploadType;
@@ -97,6 +97,6 @@ public static class IUmbrellaFileInfoExtensions
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		await fileInfo.SetMetadataValueAsync("FileUploadType", value.ToString(), writeChanges, cancellationToken);
+		await fileInfo.SetMetadataValueAsync("FileUploadType", value.ToString(), writeChanges, cancellationToken).ConfigureAwait(false);
 	}
 }

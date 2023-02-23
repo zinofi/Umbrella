@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.HighPerformance.Buffers;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Threading.Abstractions;
@@ -12,6 +13,7 @@ namespace Umbrella.Utilities.Threading;
 /// <seealso cref="ISynchronizationManager" />
 public class MemorySynchronizationManager : ISynchronizationManager
 {
+	private readonly StringPool _stringPool = new();
 	private readonly ConditionalWeakTable<string, SemaphoreSlim> _items = new();
 	private readonly ILogger<MemorySynchronizationManager> _logger;
 
@@ -49,9 +51,7 @@ public class MemorySynchronizationManager : ISynchronizationManager
 
 	private MemorySynchronizationRoot GetSynchronizationRoot(Type type, string key)
 	{
-		// TODO: Should we be interning these strings? This could mean the Semaphores never get cleaned up.
-		// Look into using a string pool.
-		var semaphoreSlim = _items.GetValue(string.Intern($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
+		var semaphoreSlim = _items.GetValue(_stringPool.GetOrAdd($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
 		
 		return new MemorySynchronizationRoot(semaphoreSlim);
 	}

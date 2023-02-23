@@ -56,21 +56,21 @@ public class AppUpdateMessageUtility : IAppUpdateMessageUtility
 			{
 				if (updateRequired)
 				{
-					await _dialogUtility.ShowMessageAsync(message, title, "Update");
-					await _uriNavigator.OpenAsync(storeLink!, true);
+					await _dialogUtility.ShowMessageAsync(message, title, "Update").ConfigureAwait(false);
+					await _uriNavigator.OpenAsync(storeLink!, true).ConfigureAwait(false);
 				}
 				else
 				{
-					bool openLink = await _dialogUtility.ShowConfirmMessageAsync(message, title, "Update");
+					bool openLink = await _dialogUtility.ShowConfirmMessageAsync(message, title, "Update").ConfigureAwait(false);
 
 					if (openLink)
-						await _uriNavigator.OpenAsync(storeLink!, true);
+						await _uriNavigator.OpenAsync(storeLink!, true).ConfigureAwait(false);
 				}
 			}
 			else
 			{
 				// No store link is available so we can only show the message.
-				await _dialogUtility.ShowMessageAsync(message, title, "Close");
+				await _dialogUtility.ShowMessageAsync(message, title, "Close").ConfigureAwait(false);
 			}
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { updateRequired, message }))

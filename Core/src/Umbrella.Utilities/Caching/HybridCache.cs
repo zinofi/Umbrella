@@ -199,7 +199,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 		try
 		{
-			return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder, cancellationToken);
+			return await GetOrCreateAsync(cacheKey, () => Task.FromResult(actionFunction()), expirationTimeSpanBuilder, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride, expirationTokensBuilder, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
@@ -300,7 +300,7 @@ public class HybridCache : IHybridCache, IDisposable
 				}
 			}
 
-			return await actionFunction();
+			return await actionFunction().ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 		{
@@ -456,9 +456,9 @@ public class HybridCache : IHybridCache, IDisposable
 				DistributedCacheEntryOptions options = BuildDistributedCacheEntryOptions(tsExpiration, slidingExpiration);
 
 				if (value is null)
-					await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken);
+					await DistributedCache.RemoveAsync(cacheKeyInternal, cancellationToken).ConfigureAwait(false);
 				else
-					await DistributedCache.SetAsync(cacheKeyInternal, value, options, cancellationToken);
+					await DistributedCache.SetAsync(cacheKeyInternal, value, options, cancellationToken).ConfigureAwait(false);
 			}
 			else
 			{

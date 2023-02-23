@@ -54,7 +54,7 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.setPageTitle", pageTitle);
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.setPageTitle", pageTitle).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { pageTitle }))
 		{
@@ -67,7 +67,7 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", scrollY, offset);
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", scrollY, offset).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { scrollY }))
 		{
@@ -80,7 +80,7 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", elementSelector, offset);
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", elementSelector, offset).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { elementSelector }))
 		{
@@ -93,7 +93,7 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToBottomAsync");
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToBottomAsync").ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -103,9 +103,9 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 
 	/// <inheritdoc />
 	[JSInvokable]
-	public async ValueTask OnWindowScrolledTopAsync() => await Task.WhenAll(_windowScrolledTopEventHandlerList.Select(x => x.Invoke()));
+	public async ValueTask OnWindowScrolledTopAsync() => await Task.WhenAll(_windowScrolledTopEventHandlerList.Select(x => x.Invoke())).ConfigureAwait(false);
 
-	private async Task InitializeWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.initializeWindowScrolledTopAsync", _interopReference, 10);
+	private async Task InitializeWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.initializeWindowScrolledTopAsync", _interopReference, 10).ConfigureAwait(false);
 
-	private async Task DestroyWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.destroyWindowScrolledTopAsync");
+	private async Task DestroyWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.destroyWindowScrolledTopAsync").ConfigureAwait(false);
 }

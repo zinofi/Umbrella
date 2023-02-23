@@ -62,7 +62,7 @@ public class AppAuthHelper : IAppAuthHelper
 		{
 			if (!string.IsNullOrEmpty(token))
 			{
-				await _tokenStorageService.SetTokenAsync(token);
+				await _tokenStorageService.SetTokenAsync(token).ConfigureAwait(false);
 				_claimsPrincipal = null;
 			}
 			else if (_claimsPrincipal is not null)
@@ -71,7 +71,7 @@ public class AppAuthHelper : IAppAuthHelper
 			}
 			else
 			{
-				token = await _tokenStorageService.GetTokenAsync();
+				token = await _tokenStorageService.GetTokenAsync().ConfigureAwait(false);
 			}
 
 			if (string.IsNullOrWhiteSpace(token))
@@ -87,7 +87,7 @@ public class AppAuthHelper : IAppAuthHelper
 			{
 				// There was a problem parsing the token. To ensure the user can get a new token,
 				// remove it from storage.
-				await _tokenStorageService.SetTokenAsync(null);
+				await _tokenStorageService.SetTokenAsync(null).ConfigureAwait(false);
 				throw;
 			}
 
@@ -107,13 +107,13 @@ public class AppAuthHelper : IAppAuthHelper
 	{
 		try
 		{
-			await _tokenStorageService.SetTokenAsync(null);
+			await _tokenStorageService.SetTokenAsync(null).ConfigureAwait(false);
 			_claimsPrincipal = null;
 
 			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(new ClaimsPrincipal(new ClaimsIdentity())));
 
 			if (executeDefaultPostLogoutAction && _options.PostLogoutAction is not null)
-				await _options.PostLogoutAction();
+				await _options.PostLogoutAction().ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }))
 		{

@@ -210,7 +210,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 
 		try
 		{
-			return await FindAllCoreAsync(pageNumber, pageSize, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions, cancellationToken);
+			return await FindAllCoreAsync(pageNumber, pageSize, trackChanges, map, sortExpressions, filterExpressions, filterExpressionCombinator, repoOptions, childOptions, coreFilterExpression, additionalFilterExpressions, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, trackChanges, map, sortExpressions = sortExpressions?.ToSortExpressionDescriptors(), filterExpressions = filterExpressions?.ToFilterExpressionDescriptors(), filterExpressionCombinator, repoOptions, childOptions }))
 		{

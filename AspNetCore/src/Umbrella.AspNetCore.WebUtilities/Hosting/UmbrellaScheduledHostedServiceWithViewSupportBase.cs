@@ -67,6 +67,6 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 
 		serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext = httpContext;
 
-		await ExecuteAsync(serviceScope, cancellationToken);
+		await ExecuteAsync(serviceScope, cancellationToken).ConfigureAwait(false);
 	}
 }

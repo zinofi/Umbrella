@@ -23,7 +23,7 @@ public static class HttpResponseMessageExtensions
 
 		string? requestUri = responseMessage.RequestMessage?.RequestUri?.ToString();
 
-		string? responseContent = await responseMessage.Content.ReadAsStringAsync();
+		string? responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
 		_ = logger.Write(logLevel, state: new { requestUri, responseMessage.StatusCode, responseMessage.ReasonPhrase, responseContent });
 	}

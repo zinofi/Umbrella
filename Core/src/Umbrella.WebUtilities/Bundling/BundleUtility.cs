@@ -220,7 +220,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The bundle path.</returns>
 	protected async Task<string> ResolveBundlePathAsync(string bundleNameOrPath, string bundleType, bool appendVersion, CancellationToken cancellationToken)
-		=> HostingEnvironment.MapWebPath(await DetermineBundlePathAsync(bundleNameOrPath, bundleType, cancellationToken), appendVersion: Options.AppendVersion ?? appendVersion, watchWhenAppendVersion: Options.WatchFiles);
+		=> HostingEnvironment.MapWebPath(await DetermineBundlePathAsync(bundleNameOrPath, bundleType, cancellationToken).ConfigureAwait(false), appendVersion: Options.AppendVersion ?? appendVersion, watchWhenAppendVersion: Options.WatchFiles);
 
 	/// <summary>
 	/// Resolves the bundle content asynchronous.
@@ -230,7 +230,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The bundle content.</returns>
 	protected async Task<string?> ResolveBundleContentAsync(string bundleNameOrPath, string bundleType, CancellationToken cancellationToken)
-		=> await HostingEnvironment.GetFileContentAsync(await DetermineBundlePathAsync(bundleNameOrPath, bundleType, cancellationToken), false, Options.CacheEnabled, Options.WatchFiles, cancellationToken).ConfigureAwait(false);
+		=> await HostingEnvironment.GetFileContentAsync(await DetermineBundlePathAsync(bundleNameOrPath, bundleType, cancellationToken).ConfigureAwait(false), false, Options.CacheEnabled, Options.WatchFiles, cancellationToken).ConfigureAwait(false);
 
 	/// <summary>
 	/// Determines the bundle path asynchronous.

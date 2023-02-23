@@ -52,7 +52,7 @@ public static class ControllerExtensions
 			new HtmlHelperOptions()
 		);
 
-		await viewResult.View.RenderAsync(viewContext);
+		await viewResult.View.RenderAsync(viewContext).ConfigureAwait(false);
 
 		return writer.GetStringBuilder().ToString();
 	}

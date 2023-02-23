@@ -75,9 +75,9 @@ public abstract class UmbrellaRazorEmailSender
 		{
 			string viewPath = viewNameOrPath.StartsWith('~') ? viewNameOrPath : GetFullViewPath(viewNameOrPath);
 
-			string content = await ViewToStringRenderer.RenderViewToStringAsync(viewPath, model, cancellationToken: cancellationToken);
+			string content = await ViewToStringRenderer.RenderViewToStringAsync(viewPath, model, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-			await EmailSender.SendEmailAsync(email, subject, content, cancellationToken: cancellationToken);
+			await EmailSender.SendEmailAsync(email, subject, content, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { model, email, subject, viewNameOrPath }))
 		{

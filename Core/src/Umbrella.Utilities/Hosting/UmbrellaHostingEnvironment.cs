@@ -79,7 +79,7 @@ public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
 
 		try
 		{
-			return await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken);
+			return await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, cache, watch }))
 		{

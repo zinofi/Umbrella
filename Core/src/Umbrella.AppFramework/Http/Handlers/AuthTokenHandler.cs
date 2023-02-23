@@ -1,7 +1,5 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 using Umbrella.AppFramework.Security.Abstractions;
 
 namespace Umbrella.AppFramework.Http.Handlers;
@@ -29,11 +27,11 @@ public class AuthTokenHandler : DelegatingHandler
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		string? token = await _tokenStorageService.GetTokenAsync();
+		string? token = await _tokenStorageService.GetTokenAsync().ConfigureAwait(false);
 
 		if (!string.IsNullOrEmpty(token))
 			request.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
 
-		return await base.SendAsync(request, cancellationToken);
+		return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 	}
 }

@@ -166,8 +166,8 @@ public class UmbrellaWebHostingEnvironment : UmbrellaHostingEnvironment, IUmbrel
 		try
 		{
 			return fromContentRoot
-				? await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken)
-				: await GetFileContentAsync("Web", FileProvider.Value, virtualPath, cache, watch, cancellationToken);
+				? await GetFileContentAsync("Standard", FileProvider.Value, virtualPath, cache, watch, cancellationToken).ConfigureAwait(false)
+				: await GetFileContentAsync("Web", FileProvider.Value, virtualPath, cache, watch, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { virtualPath, cache, watch }))
 		{

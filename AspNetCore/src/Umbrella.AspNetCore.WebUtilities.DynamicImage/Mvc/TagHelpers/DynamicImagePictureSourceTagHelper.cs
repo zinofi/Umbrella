@@ -51,7 +51,7 @@ public class DynamicImagePictureSourceTagHelper : DynamicImageTagHelperBase
 	/// <returns>A <see cref="Task"/> that on completion updates the output.</returns>
 	public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 	{
-		await base.ProcessAsync(context, output);
+		await base.ProcessAsync(context, output).ConfigureAwait(false);
 
 		_ = output.Attributes.RemoveAll("alt");
 		_ = output.Attributes.RemoveAll("src");

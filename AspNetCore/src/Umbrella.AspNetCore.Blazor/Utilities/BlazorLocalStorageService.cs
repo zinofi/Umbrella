@@ -34,7 +34,7 @@ public class BlazorLocalStorageService : IAppLocalStorageService
 	{
 		try
 		{
-			return await _storageService.GetItemAsStringAsync(key);
+			return await _storageService.GetItemAsStringAsync(key).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 		{
@@ -47,7 +47,7 @@ public class BlazorLocalStorageService : IAppLocalStorageService
 	{
 		try
 		{
-			await _storageService.RemoveItemAsync(key);
+			await _storageService.RemoveItemAsync(key).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 		{
@@ -60,7 +60,7 @@ public class BlazorLocalStorageService : IAppLocalStorageService
 	{
 		try
 		{
-			await _storageService.SetItemAsStringAsync(key, value);
+			await _storageService.SetItemAsStringAsync(key, value).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 		{
