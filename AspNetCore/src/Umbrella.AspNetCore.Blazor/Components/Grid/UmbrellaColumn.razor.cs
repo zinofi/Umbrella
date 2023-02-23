@@ -19,8 +19,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// </summary>
 public partial class UmbrellaColumn<TItem>
 {
-	private Expression<Func<TItem, object>>? _property;
-	private Func<TItem, object>? _propertyDelegate;
+	private Expression<Func<TItem, object?>>? _property;
+	private Func<TItem, object?>? _propertyDelegate;
 
 	[Inject]
 	private IAuthorizationService AuthorizationService { get; set; } = null!;
@@ -62,7 +62,7 @@ public partial class UmbrellaColumn<TItem>
 	/// Gets or sets the property selector for this column.
 	/// </summary>
 	[Parameter]
-	public Expression<Func<TItem, object>>? Property
+	public Expression<Func<TItem, object?>>? Property
 	{
 		get => _property;
 		set

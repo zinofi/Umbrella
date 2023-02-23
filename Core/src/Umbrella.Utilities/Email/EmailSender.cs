@@ -38,9 +38,9 @@ public class EmailSender : IEmailSender
 	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(email, nameof(email));
-		Guard.IsNotNullOrWhiteSpace(subject, nameof(subject));
-		Guard.IsNotNullOrWhiteSpace(body, nameof(body));
+		Guard.IsNotNullOrWhiteSpace(email);
+		Guard.IsNotNullOrWhiteSpace(subject);
+		Guard.IsNotNullOrWhiteSpace(body);
 
 		try
 		{
@@ -49,19 +49,32 @@ public class EmailSender : IEmailSender
 			switch (_options.DeliveryMethod)
 			{
 				case EmailSenderDeliveryMode.Network:
-					client.DeliveryMethod = SmtpDeliveryMethod.Network;
-					client.Host = _options.Host;
-					client.Port = _options.Port;
-					client.EnableSsl = _options.SecureServerConnection;
+					{
+						client.DeliveryMethod = SmtpDeliveryMethod.Network;
+						client.Host = _options.Host;
+						client.Port = _options.Port;
+						client.EnableSsl = _options.SecureServerConnection;
 
-					if (!string.IsNullOrWhiteSpace(_options.UserName))
-						client.Credentials = new NetworkCredential { UserName = _options.UserName, Password = _options.Password };
+						if (!string.IsNullOrWhiteSpace(_options.UserName))
+							client.Credentials = new NetworkCredential { UserName = _options.UserName, Password = _options.Password };
 
-					break;
+						if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientWhiteList.Contains(email))
+						{
+							email = _options.GetRedirectRecipientEmails();
+						}
+						else if(_options.EmailRecipientWhiteList.Count > 0 && !_options.EmailRecipientWhiteList.Contains(email))
+						{
+							return;
+						}
+
+						break;
+					}
 				case EmailSenderDeliveryMode.SpecifiedPickupDirectory:
-					client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-					client.PickupDirectoryLocation = _options.PickupDirectoryLocation;
-					break;
+					{
+						client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
+						client.PickupDirectoryLocation = _options.PickupDirectoryLocation;
+						break;
+					}
 				default:
 					throw new NotSupportedException($"Only {nameof(SmtpDeliveryMethod.Network)} and {nameof(SmtpDeliveryMethod.SpecifiedPickupDirectory)} are supported as delivery methods.");
 			}

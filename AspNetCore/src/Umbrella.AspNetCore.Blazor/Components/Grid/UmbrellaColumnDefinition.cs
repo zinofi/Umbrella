@@ -43,7 +43,7 @@ public class UmbrellaColumnDefinition<TItem>
 		UmbrellaColumnFilterType filterControlType,
 		FilterType filterMatchType,
 		UmbrellaColumnFilterOptionsType? filterOptionsType,
-		Expression<Func<TItem, object>>? property,
+		Expression<Func<TItem, object?>>? property,
 		string? filterMemberPathOverride,
 		string? sorterMemberPathOverride,
 		UmbrellaColumnDisplayMode displayMode)
@@ -92,7 +92,7 @@ public class UmbrellaColumnDefinition<TItem>
 	/// <summary>
 	/// Gets the property selector.
 	/// </summary>
-	public Expression<Func<TItem, object>>? Property { get; }
+	public Expression<Func<TItem, object?>>? Property { get; }
 
 	/// <summary>
 	/// Gets or sets the name of the property.
