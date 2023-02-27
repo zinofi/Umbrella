@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-namespace Umbrella.AppFramework.Utilities.Enumerations;
+namespace Umbrella.AppFramework.Services.Enumerations;
 
 /// <summary>
 /// Represents the current state of the loading screen.

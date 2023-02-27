@@ -1,13 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Umbrella.AppFramework.Utilities.Abstractions;
+﻿namespace Umbrella.AppFramework.Services.Abstractions;
 
 /// <summary>
 /// A utility used to show a message to the user when an application update is available and optionally force
 /// the user to upgrade to the new version.
 /// </summary>
-public interface IAppUpdateMessageUtility
+public interface IAppUpdateMessageService
 {
 	/// <summary>
 	/// Occurs when the message is shown.

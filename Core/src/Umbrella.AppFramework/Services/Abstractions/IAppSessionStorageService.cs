@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-
-namespace Umbrella.AppFramework.Utilities.Abstractions;
+﻿namespace Umbrella.AppFramework.Services.Abstractions;
 
 /// <summary>
-/// A persistent storage service used to store string values used by the app.
+/// A persistent session storage service used to store string values used by the app.
 /// </summary>
-public interface IAppLocalStorageService
+public interface IAppSessionStorageService
 {
 	/// <summary>
 	/// Gets the value with the specified <paramref name="key"/> or <see langword="null" /> if it does not exist.

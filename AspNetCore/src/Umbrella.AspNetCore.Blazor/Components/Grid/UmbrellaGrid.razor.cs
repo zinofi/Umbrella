@@ -5,7 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
-using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
+using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 
@@ -55,7 +55,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	private bool _autoScrollEnabled;
 
 	[Inject]
-	private IUmbrellaBlazorInteropUtility BlazorInteropUtility { get; set; } = null!;
+	private IUmbrellaBlazorInteropService BlazorInteropUtility { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.

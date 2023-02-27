@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Umbrella.AppFramework.Utilities.Enumerations;
+using Umbrella.AppFramework.Services.Enumerations;
 
-namespace Umbrella.AppFramework.Utilities.Abstractions;
+namespace Umbrella.AppFramework.Services.Abstractions;
 
 /// <summary>
-/// A utility used to show and hide an application loading screen.
+/// A service used to show and hide an application loading screen.
 /// </summary>
-public interface ILoadingScreenUtility
+public interface ILoadingScreenService
 {
 	/// <summary>
 	/// Occurs when the state of the loading screen has changed.

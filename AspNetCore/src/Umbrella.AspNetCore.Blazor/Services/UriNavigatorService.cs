@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AspNetCore.Blazor.Exceptions;
+using Umbrella.AppFramework.Services.Abstractions;
 
-namespace Umbrella.AspNetCore.Blazor.Utilities;
+namespace Umbrella.AspNetCore.Blazor.Services;
 
 /// <summary>
-/// A utility used to perform navigation to a specific URI.
+/// A service used to perform navigation to a specific URI.
 /// </summary>
-public class UriNavigator : IUriNavigator
+public class UriNavigatorService : IUriNavigatorService
 {
 	private readonly ILogger _logger;
 	private readonly NavigationManager _navigationManager;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UriNavigator"/> class.
+	/// Initializes a new instance of the <see cref="UriNavigatorService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="navigationManager">The navigation manager.</param>
-	public UriNavigator(
-		ILogger<UriNavigator> logger,
+	public UriNavigatorService(
+		ILogger<UriNavigatorService> logger,
 		NavigationManager navigationManager)
 	{
 		_logger = logger;

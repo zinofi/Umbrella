@@ -1,19 +1,19 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
-using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
+using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 
-namespace Umbrella.AspNetCore.Blazor.Utilities;
+namespace Umbrella.AspNetCore.Blazor.Services;
 
 /// <summary>
-/// A utility containing core interop functionality between Blazor and JavaScript for features not yet supported
+/// A service containing core interop functionality between Blazor and JavaScript for features not yet supported
 /// natively by Blazor.
 /// </summary>
-/// <seealso cref="IUmbrellaBlazorInteropUtility"/>
-public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
+/// <seealso cref="IUmbrellaBlazorInteropService"/>
+public class UmbrellaBlazorInteropService : IUmbrellaBlazorInteropService
 {
 	private readonly ILogger _logger;
 	private readonly IJSRuntime _jsRuntime;
-	private readonly DotNetObjectReference<UmbrellaBlazorInteropUtility> _interopReference;
+	private readonly DotNetObjectReference<UmbrellaBlazorInteropService> _interopReference;
 	private readonly List<AwaitableBlazorEventHandler> _windowScrolledTopEventHandlerList = new();
 
 	/// <inheritdoc />
@@ -36,12 +36,12 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaBlazorInteropUtility"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaBlazorInteropService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="jsRuntime">The js runtime.</param>
-	public UmbrellaBlazorInteropUtility(
-		ILogger<UmbrellaBlazorInteropUtility> logger,
+	public UmbrellaBlazorInteropService(
+		ILogger<UmbrellaBlazorInteropService> logger,
 		IJSRuntime jsRuntime)
 	{
 		_logger = logger;
@@ -108,4 +108,19 @@ public class UmbrellaBlazorInteropUtility : IUmbrellaBlazorInteropUtility
 	private async Task InitializeWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.initializeWindowScrolledTopAsync", _interopReference, 10).ConfigureAwait(false);
 
 	private async Task DestroyWindowScrolledTopAsync() => await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.destroyWindowScrolledTopAsync").ConfigureAwait(false);
+
+	/// <inheritdoc />
+	public async ValueTask OpenUrlAsync(string url, string target, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			await _jsRuntime.InvokeVoidAsync("open", cancellationToken, url, target);
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { url, target }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem opening the specified URL.", exc);
+		}
+	}
 }

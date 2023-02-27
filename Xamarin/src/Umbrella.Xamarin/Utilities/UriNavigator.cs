@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -11,7 +11,7 @@ namespace Umbrella.Xamarin.Utilities;
 /// <summary>
 /// A utility used to perform navigation to a specific URI.
 /// </summary>
-public class UriNavigator : IUriNavigator
+public class UriNavigator : IUriNavigatorService
 {
 	private readonly ILogger _logger;
 

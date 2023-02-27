@@ -4,21 +4,21 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Exceptions;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Messages;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Messages;
 
-namespace Umbrella.AppFramework.Utilities;
+namespace Umbrella.AppFramework.Services;
 
 /// <summary>
-/// A utility used to show a message to the user when an application update is available and optionally force
+/// A service used to show a message to the user when an application update is available and optionally force
 /// the user to upgrade to the new version.
 /// </summary>
-/// <seealso cref="IAppUpdateMessageUtility"/>
-public class AppUpdateMessageUtility : IAppUpdateMessageUtility
+/// <seealso cref="IAppUpdateMessageService"/>
+public class AppUpdateMessageService : IAppUpdateMessageService
 {
-	private readonly ILogger<AppUpdateMessageUtility> _logger;
-	private readonly IDialogUtility _dialogUtility;
-	private readonly IUriNavigator _uriNavigator;
+	private readonly ILogger _logger;
+	private readonly IDialogService _dialogUtility;
+	private readonly IUriNavigatorService _uriNavigator;
 
 	/// <inheritdoc />
 	public event Func<bool, string, Task> OnShow
@@ -28,15 +28,15 @@ public class AppUpdateMessageUtility : IAppUpdateMessageUtility
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AppUpdateMessageUtility"/> class.
+	/// Initializes a new instance of the <see cref="AppUpdateMessageService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="dialogUtility">The dialog utility.</param>
 	/// <param name="uriNavigator">The URI navigator.</param>
-	public AppUpdateMessageUtility(
-		ILogger<AppUpdateMessageUtility> logger,
-		IDialogUtility dialogUtility,
-		IUriNavigator uriNavigator)
+	public AppUpdateMessageService(
+		ILogger<AppUpdateMessageService> logger,
+		IDialogService dialogUtility,
+		IUriNavigatorService uriNavigator)
 	{
 		_logger = logger;
 		_dialogUtility = dialogUtility;

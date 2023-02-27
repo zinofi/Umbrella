@@ -11,8 +11,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Extensions;
 
@@ -84,7 +84,7 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	};
 
 	private readonly ILogger _logger;
-	private readonly IDialogTracker _dialogTracker;
+	private readonly IDialogTrackerService _dialogTracker;
 	private readonly IModalService _modalService;
 	private readonly IAppAuthHelper _appAuthHelper;
 	private readonly IAuthorizationService _authorizationService;
@@ -99,7 +99,7 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	/// <param name="authorizationService">The authorization service.</param>
 	public UmbrellaDialogUtility(
 		ILogger<UmbrellaDialogUtility> logger,
-		IDialogTracker dialogTracker,
+		IDialogTrackerService dialogTracker,
 		IModalService modalService,
 		IAppAuthHelper appAuthHelper,
 		IAuthorizationService authorizationService)

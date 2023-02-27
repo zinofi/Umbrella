@@ -2,14 +2,14 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel.DataAnnotations;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Constants;
 
-namespace Umbrella.AppFramework.Utilities.Abstractions;
+namespace Umbrella.AppFramework.Services.Abstractions;
 
 /// <summary>
-/// A utility used to show application dialogs.
+/// A service used to show application dialogs.
 /// </summary>
-public interface IDialogUtility
+public interface IDialogService
 {
 	/// <summary>
 	/// Shows a dialog with a message.

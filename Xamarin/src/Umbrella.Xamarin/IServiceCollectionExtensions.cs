@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.Utilities.Networking.Abstractions;
 using Umbrella.Xamarin.Networking;
 using Umbrella.Xamarin.ObjectModel;
@@ -33,11 +33,12 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services, nameof(services));
 
 		_ = services.AddSingleton<IAppLocalStorageService, XamarinLocalStorageService>();
-		_ = services.AddSingleton<IDialogUtility, DialogUtility>();
+		_ = services.AddSingleton(x => (IAppSessionStorageService)x.GetRequiredService<IAppLocalStorageService>());
+		_ = services.AddSingleton<IDialogService, DialogUtility>();
 		_ = services.AddSingleton<INetworkConnectionStatusUtility, NetworkConnectionStatusUtility>();
 		_ = services.AddSingleton<IPermissionsUtility, PermissionsUtility>();
 		_ = services.AddSingleton<IUmbrellaCommandFactory, UmbrellaCommandFactory>();
-		_ = services.AddSingleton<IUriNavigator, UriNavigator>();
+		_ = services.AddSingleton<IUriNavigatorService, UriNavigator>();
 		_ = services.AddSingleton<IXamarinValidationUtility, XamarinValidationUtility>();
 
 		_ = services.ConfigureUmbrellaOptions(permissionsUtilityOptionsBuilder);

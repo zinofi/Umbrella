@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;

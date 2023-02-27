@@ -1,29 +1,26 @@
-﻿using System;
-using System.Threading.Tasks;
-using Blazored.LocalStorage;
+﻿using Blazored.SessionStorage;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AspNetCore.Blazor.Exceptions;
+using Umbrella.AppFramework.Services.Abstractions;
 
-namespace Umbrella.AspNetCore.Blazor.Utilities;
+namespace Umbrella.AspNetCore.Blazor.Services;
 
 /// <summary>
-/// A persistent storage service used to store string values used by the app using the <see cref="ILocalStorageService"/>.
+/// A persistent session storage service used to store string values used by the app using the <see cref="ISessionStorageService"/>.
 /// </summary>
 /// <seealso cref="IAppLocalStorageService" />
-public class BlazorLocalStorageService : IAppLocalStorageService
+public class BlazorSessionStorageService : IAppSessionStorageService
 {
 	private readonly ILogger _logger;
-	private readonly ILocalStorageService _storageService;
+	private readonly ISessionStorageService _storageService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="BlazorLocalStorageService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="storageService">The storage service.</param>
-	public BlazorLocalStorageService(
-		ILogger<BlazorLocalStorageService> logger,
-		ILocalStorageService storageService)
+	public BlazorSessionStorageService(
+		ILogger<BlazorSessionStorageService> logger,
+		ISessionStorageService storageService)
 	{
 		_logger = logger;
 		_storageService = storageService;

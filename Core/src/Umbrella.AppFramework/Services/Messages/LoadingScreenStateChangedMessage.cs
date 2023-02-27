@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using Umbrella.AppFramework.Utilities.Enumerations;
+using Umbrella.AppFramework.Services.Enumerations;
 
-namespace Umbrella.AppFramework.Utilities.Messages;
+namespace Umbrella.AppFramework.Services.Messages;
 
 /// <summary>
 /// A message that signals when the <see cref="LoadingScreenState"/> has changed.

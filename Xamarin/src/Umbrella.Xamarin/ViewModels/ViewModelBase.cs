@@ -4,8 +4,8 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.UI;
-using Umbrella.AppFramework.Utilities.Abstractions;
 using Umbrella.Xamarin.ObjectModel.Abstractions;
 using Umbrella.Xamarin.Utilities.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
@@ -115,7 +115,7 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 	/// <param name="dialogUtility">The dialog utility.</param>
 	public ViewModelBase(
 		ILogger logger,
-		IDialogUtility dialogUtility,
+		IDialogService dialogUtility,
 		IAppAuthHelper authHelper,
 		IUmbrellaCommandFactory commandFactory)
 		: base(logger, dialogUtility, authHelper)

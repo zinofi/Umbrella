@@ -3,8 +3,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Constants;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Forms;
@@ -14,10 +14,10 @@ namespace Umbrella.Xamarin.Utilities;
 /// <summary>
 /// A utility used to show application dialogs.
 /// </summary>
-public class DialogUtility : IDialogUtility
+public class DialogUtility : IDialogService
 {
 	private readonly ILogger _logger;
-	private readonly IDialogTracker _dialogTracker;
+	private readonly IDialogTrackerService _dialogTracker;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DialogUtility"/> class.
@@ -26,7 +26,7 @@ public class DialogUtility : IDialogUtility
 	/// <param name="dialogTracker">The dialog tracker.</param>
 	public DialogUtility(
 		ILogger<DialogUtility> logger,
-		IDialogTracker dialogTracker)
+		IDialogTrackerService dialogTracker)
 	{
 		_logger = logger;
 		_dialogTracker = dialogTracker;

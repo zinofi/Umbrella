@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Constants;
 using Umbrella.Utilities.Http;
 
 namespace Umbrella.AppFramework.UI;
@@ -28,7 +28,7 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	/// <summary>
 	/// Gets the dialog utility.
 	/// </summary>
-	protected IDialogUtility DialogUtility { get; }
+	protected IDialogService DialogUtility { get; }
 
 	/// <summary>
 	/// Gets the authentication helper.
@@ -43,7 +43,7 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	/// <param name="authHelper">The authentication helper.</param>
 	public UmbrellaUIHandlerBase(
 		ILogger logger,
-		IDialogUtility dialogUtility,
+		IDialogService dialogUtility,
 		IAppAuthHelper authHelper)
 	{
 		Logger = logger;

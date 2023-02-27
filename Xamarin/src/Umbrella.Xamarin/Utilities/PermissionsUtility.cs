@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.Xamarin.Exceptions;
 using Umbrella.Xamarin.Utilities.Abstractions;
 using Umbrella.Xamarin.Utilities.Enumerations;
@@ -20,7 +20,7 @@ namespace Umbrella.Xamarin.Utilities;
 public class PermissionsUtility : IPermissionsUtility
 {
 	private readonly ILogger _logger;
-	private readonly IDialogUtility _dialogUtility;
+	private readonly IDialogService _dialogUtility;
 	private readonly PermissionsUtilityOptions _options;
 
 	private readonly Dictionary<PermissionType, IReadOnlyCollection<Permissions.BasePermission>> _androidMappings = new()
@@ -51,7 +51,7 @@ public class PermissionsUtility : IPermissionsUtility
 	/// <param name="options">The options.</param>
 	public PermissionsUtility(
 		ILogger<PermissionsUtility> logger,
-		IDialogUtility dialogUtility,
+		IDialogService dialogUtility,
 		PermissionsUtilityOptions options)
 	{
 		_logger = logger;

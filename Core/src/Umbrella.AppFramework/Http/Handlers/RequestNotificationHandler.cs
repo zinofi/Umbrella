@@ -3,7 +3,7 @@
 
 using System.Net.Http;
 using Umbrella.AppFramework.Http.Handlers.Options;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 
 namespace Umbrella.AppFramework.Http.Handlers;
 
@@ -15,7 +15,7 @@ namespace Umbrella.AppFramework.Http.Handlers;
 public class RequestNotificationHandler : DelegatingHandler
 {
 	private readonly RequestNotificationHandlerOptions _options;
-	private readonly ILoadingScreenUtility _loadingScreenUtility;
+	private readonly ILoadingScreenService _loadingScreenUtility;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RequestNotificationHandler"/> class.
@@ -24,7 +24,7 @@ public class RequestNotificationHandler : DelegatingHandler
 	/// <param name="loadingScreenUtility">The loading screen utility.</param>
 	public RequestNotificationHandler(
 		RequestNotificationHandlerOptions options,
-		ILoadingScreenUtility loadingScreenUtility)
+		ILoadingScreenService loadingScreenUtility)
 	{
 		_options = options;
 		_loadingScreenUtility = loadingScreenUtility;

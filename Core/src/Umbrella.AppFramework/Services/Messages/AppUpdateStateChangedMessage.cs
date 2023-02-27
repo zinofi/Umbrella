@@ -4,7 +4,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 
-namespace Umbrella.AppFramework.Utilities.Messages;
+namespace Umbrella.AppFramework.Services.Messages;
 
 /// <summary>
 /// A message for use with implementations of <see cref="IMessenger"/> which is used to send a notification to subscribers

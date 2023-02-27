@@ -3,7 +3,7 @@
 
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.Utilities.Networking.Abstractions;
 using Umbrella.Xamarin.ObjectModel.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
@@ -26,7 +26,7 @@ public class UmbrellaCommandFactory : IUmbrellaCommandFactory
 	/// <param name="networkConnectionStatusUtility">The network connection status utility.</param>
 	public UmbrellaCommandFactory(
 		ILogger<UmbrellaCommandFactory> logger,
-		IDialogUtility dialogUtility,
+		IDialogService dialogUtility,
 		INetworkConnectionStatusUtility networkConnectionStatusUtility)
 	{
 		Logger = logger;
@@ -42,7 +42,7 @@ public class UmbrellaCommandFactory : IUmbrellaCommandFactory
 	/// <summary>
 	/// Gets the dialog utility.
 	/// </summary>
-	protected IDialogUtility DialogUtility { get; }
+	protected IDialogService DialogUtility { get; }
 
 	/// <summary>
 	/// Gets the network connection status utility.

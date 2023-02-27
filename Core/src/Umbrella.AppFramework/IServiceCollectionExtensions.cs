@@ -7,8 +7,8 @@ using Umbrella.AppFramework.Http.Handlers.Options;
 using Umbrella.AppFramework.Security;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Security.Options;
-using Umbrella.AppFramework.Utilities;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services;
+using Umbrella.AppFramework.Services.Abstractions;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -24,20 +24,22 @@ public static class IServiceCollectionExtensions
 	/// </summary>
 	/// <param name="services">The services.</param>
 	/// <param name="appAuthHelperOptionsBuilder">The app auth helper options builder.</param>
+	/// <param name="appAuthTokenStorageServiceOptionsBuilder">The app auth token storage service options builder.</param>
 	/// <returns>The services.</returns>
 	public static IServiceCollection AddUmbrellaAppFramework(
 		this IServiceCollection services,
-		Action<IServiceProvider, AppAuthHelperOptions> appAuthHelperOptionsBuilder)
+		Action<IServiceProvider, AppAuthHelperOptions> appAuthHelperOptionsBuilder,
+		Action<IServiceProvider, AppAuthTokenStorageServiceOptions> appAuthTokenStorageServiceOptionsBuilder)
 	{
 		Guard.IsNotNull(services);
 
 		// NB: These needs to be scoped for use with Blazor.
 		_ = services.AddScoped<IAppAuthHelper, AppAuthHelper>();
-		_ = services.AddScoped<IAppUpdateMessageUtility, AppUpdateMessageUtility>();
+		_ = services.AddScoped<IAppUpdateMessageService, AppUpdateMessageService>();
 		_ = services.AddScoped<IAppAuthTokenStorageService, AppAuthTokenStorageService>();
 
-		_ = services.AddSingleton<IDialogTracker, DialogTracker>();
-		_ = services.AddSingleton<ILoadingScreenUtility, LoadingScreenUtility>();
+		_ = services.AddSingleton<IDialogTrackerService, DialogTrackerService>();
+		_ = services.AddSingleton<ILoadingScreenService, LoadingScreenService>();
 
 		// HTTP Delegating Handlers
 		_ = services.AddScoped<AuthTokenHandler>();
@@ -46,6 +48,7 @@ public static class IServiceCollectionExtensions
 
 		// Options
 		_ = services.ConfigureUmbrellaOptions(appAuthHelperOptionsBuilder);
+		_ = services.ConfigureUmbrellaOptions(appAuthTokenStorageServiceOptionsBuilder);
 
 		return services;
 	}

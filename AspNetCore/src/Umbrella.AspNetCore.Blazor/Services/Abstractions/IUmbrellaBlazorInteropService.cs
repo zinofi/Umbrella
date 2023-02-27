@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-namespace Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
+namespace Umbrella.AspNetCore.Blazor.Services.Abstractions;
 
 /// <summary>
 /// A utility containing core interop functionality between Blazor and JavaScript for features not yet supported
 /// natively by Blazor.
 /// </summary>
-public interface IUmbrellaBlazorInteropUtility
+public interface IUmbrellaBlazorInteropService
 {
 	/// <summary>
 	/// An event that is raised when the browser window is scrolled to the top.
@@ -35,6 +35,15 @@ public interface IUmbrellaBlazorInteropUtility
 	/// </summary>
 	/// <returns>A <see cref="ValueTask"/> that completes when the operation has completed.</returns>
 	ValueTask AnimateScrollToBottomAsync();
+
+	/// <summary>
+	/// Opens the specified <paramref name="url"/> using the specified <paramref name="target"/>.
+	/// </summary>
+	/// <param name="url">The URL.</param>
+	/// <param name="target">The target.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A <see cref="ValueTask"/> that completes when the operation has completed.</returns>
+	ValueTask OpenUrlAsync(string url, string target, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Sets the value for the <![CDATA[<title>]]> tag in the HTML <![CDATA[<head>]]> element.

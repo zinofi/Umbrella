@@ -1,15 +1,15 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Enumerations;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Enumerations;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Umbrella.Xamarin.Controls;
 
 /// <summary>
-/// A custom activity indicator that uses the <see cref="ILoadingScreenUtility.OnStateChanged"/> event internally to control
+/// A custom activity indicator that uses the <see cref="ILoadingScreenService.OnStateChanged"/> event internally to control
 /// when it is displayed.
 /// </summary>
 /// <seealso cref="ContentView" />
@@ -66,7 +66,7 @@ public partial class UmbrellaActivityInidicatorView : ContentView
 	{
 		InitializeComponent();
 
-		ILoadingScreenUtility loadingScreenUtility = UmbrellaXamarinServices.GetService<ILoadingScreenUtility>();
+		ILoadingScreenService loadingScreenUtility = UmbrellaXamarinServices.GetService<ILoadingScreenService>();
 
 		loadingScreenUtility.OnStateChanged += state => Device.BeginInvokeOnMainThread(() => IsLoading = state switch
 		{

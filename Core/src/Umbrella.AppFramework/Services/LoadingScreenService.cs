@@ -4,18 +4,18 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Exceptions;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Enumerations;
-using Umbrella.AppFramework.Utilities.Messages;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Enumerations;
+using Umbrella.AppFramework.Services.Messages;
 
-namespace Umbrella.AppFramework.Utilities;
+namespace Umbrella.AppFramework.Services;
 
 /// <summary>
 /// A utility used to show and hide an application loading screen.
 /// </summary>
-public class LoadingScreenUtility : ILoadingScreenUtility, IDisposable
+public class LoadingScreenService : ILoadingScreenService, IDisposable
 {
-	private readonly ILogger<LoadingScreenUtility> _logger;
+	private readonly ILogger _logger;
 	private CancellationTokenSource? _cancellationTokenSource;
 	private bool _disposedValue;
 
@@ -27,10 +27,10 @@ public class LoadingScreenUtility : ILoadingScreenUtility, IDisposable
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="LoadingScreenUtility"/> class.
+	/// Initializes a new instance of the <see cref="LoadingScreenService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
-	public LoadingScreenUtility(ILogger<LoadingScreenUtility> logger)
+	public LoadingScreenService(ILogger<LoadingScreenService> logger)
 	{
 		_logger = logger;
 	}

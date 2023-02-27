@@ -1,9 +1,9 @@
-﻿namespace Umbrella.AppFramework.Utilities.Abstractions;
+﻿namespace Umbrella.AppFramework.Services.Abstractions;
 
 /// <summary>
 /// A utility used to track open dialogs.
 /// </summary>
-public interface IDialogTracker
+public interface IDialogTrackerService
 {
 	/// <summary>
 	/// Marks the specified dialog as having been closed.

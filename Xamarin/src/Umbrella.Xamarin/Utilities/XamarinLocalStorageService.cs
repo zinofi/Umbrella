@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Essentials;
 
@@ -9,7 +9,7 @@ namespace Umbrella.Xamarin.Utilities;
 /// A persistent storage service used to store string values used by the app using the <see cref="SecureStorage"/> mechanism.
 /// </summary>
 /// <seealso cref="IAppLocalStorageService" />
-public class XamarinLocalStorageService : IAppLocalStorageService
+public class XamarinLocalStorageService : IAppLocalStorageService, IAppSessionStorageService
 {
 	private readonly ILogger _logger;
 	private readonly Dictionary<string, string> _virtualStorage = new();

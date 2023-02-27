@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-namespace Umbrella.AppFramework.Utilities.Constants;
+namespace Umbrella.AppFramework.Services.Constants;
 
 /// <summary>
 /// Constants that define default values used by dialogs.

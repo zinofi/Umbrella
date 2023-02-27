@@ -3,16 +3,16 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components.Authorization;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security.Options;
+using Umbrella.AspNetCore.Blazor.Services;
+using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Services.Grid;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
-using Umbrella.AspNetCore.Blazor.Utilities;
-using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -34,10 +34,11 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services, nameof(services));
 
 		_ = services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
+		_ = services.AddScoped<IAppSessionStorageService, BlazorSessionStorageService>();
 		_ = services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();
-		_ = services.AddScoped<IUriNavigator, UriNavigator>();
-		_ = services.AddTransient<IDialogUtility>(x => x.GetRequiredService<IUmbrellaDialogUtility>());
-		_ = services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
+		_ = services.AddScoped<IUriNavigatorService, UriNavigatorService>();
+		_ = services.AddTransient<IDialogService>(x => x.GetRequiredService<IUmbrellaDialogUtility>());
+		_ = services.AddSingleton<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 
 		// Security

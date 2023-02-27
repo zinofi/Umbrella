@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
-using Umbrella.AppFramework.Utilities.Abstractions;
+using Umbrella.AppFramework.Security.Options;
+using Umbrella.AppFramework.Services.Abstractions;
 
 namespace Umbrella.AppFramework.Security;
 
@@ -10,11 +11,10 @@ namespace Umbrella.AppFramework.Security;
 /// <seealso cref="IAppAuthTokenStorageService" />
 public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 {
-	private const string AuthTokenStorageKey = "App.AuthToken";
-	private const string ClientIdStorageKey = "App.ClientId";
-
 	private readonly ILogger _logger;
-	private readonly IAppLocalStorageService _storageService;
+	private readonly IAppLocalStorageService _localStorageService;
+	private readonly IAppSessionStorageService _sessionStorageService;
+	private readonly AppAuthTokenStorageServiceOptions _options;
 	private string? _authToken;
 
 	/// <summary>
@@ -22,12 +22,18 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="storageService">The storage service.</param>
+	/// <param name="sessionStorageService">The session storage service.</param>
+	/// <param name="options">The options.</param>
 	public AppAuthTokenStorageService(
 		ILogger<AppAuthTokenStorageService> logger,
-		IAppLocalStorageService storageService)
+		IAppLocalStorageService storageService,
+		IAppSessionStorageService sessionStorageService,
+		AppAuthTokenStorageServiceOptions options)
 	{
 		_logger = logger;
-		_storageService = storageService;
+		_localStorageService = storageService;
+		_sessionStorageService = sessionStorageService;
+		_options = options;
 	}
 
 	/// <inheritdoc />
@@ -35,12 +41,12 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 	{
 		try
 		{
-			string? clientId = await _storageService.GetAsync(ClientIdStorageKey).ConfigureAwait(false);
+			string? clientId = await _localStorageService.GetAsync(_options.ClientIdStorageKey).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(clientId))
 			{
 				clientId = Guid.NewGuid().ToString("N");
-				await _storageService.SetAsync(ClientIdStorageKey, clientId).ConfigureAwait(false);
+				await _localStorageService.SetAsync(_options.ClientIdStorageKey, clientId).ConfigureAwait(false);
 			}
 
 			return clientId!;
@@ -57,7 +63,9 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 	{
 		try
 		{
-			_authToken = await _storageService.GetAsync(AuthTokenStorageKey).ConfigureAwait(true);
+			_authToken = _options.UseAuthTokenLocalStorage
+				? await _localStorageService.GetAsync(_options.AuthTokenStorageKey).ConfigureAwait(false)
+				: await _sessionStorageService.GetAsync(_options.AuthTokenStorageKey).ConfigureAwait(false);
 
 			return _authToken;
 		}
@@ -79,12 +87,20 @@ public class AppAuthTokenStorageService : IAppAuthTokenStorageService
 			if (!string.IsNullOrEmpty(token))
 			{
 				_authToken = token;
-				await _storageService.SetAsync(AuthTokenStorageKey, token!).ConfigureAwait(true);
+
+				if (_options.UseAuthTokenLocalStorage)
+					await _localStorageService.SetAsync(_options.AuthTokenStorageKey, token!).ConfigureAwait(false);
+				else
+					await _sessionStorageService.SetAsync(_options.AuthTokenStorageKey, token!).ConfigureAwait(false);
 			}
 			else
 			{
 				_authToken = null;
-				await _storageService.RemoveAsync(AuthTokenStorageKey).ConfigureAwait(true);
+
+				if (_options.UseAuthTokenLocalStorage)
+					await _localStorageService.RemoveAsync(_options.AuthTokenStorageKey).ConfigureAwait(false);
+				else
+					await _sessionStorageService.RemoveAsync(_options.AuthTokenStorageKey).ConfigureAwait(false);
 			}
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))

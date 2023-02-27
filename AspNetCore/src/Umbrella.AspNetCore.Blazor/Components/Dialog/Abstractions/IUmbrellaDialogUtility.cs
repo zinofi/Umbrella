@@ -4,16 +4,16 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 
 /// <summary>
 /// Used to show dialogs in Blazor applications.
 /// </summary>
-/// <seealso cref="IDialogUtility" />
-public interface IUmbrellaDialogUtility : IDialogUtility
+/// <seealso cref="IDialogService" />
+public interface IUmbrellaDialogUtility : IDialogService
 {
 	/// <summary>
 	/// Shows a confirmation success dialog.

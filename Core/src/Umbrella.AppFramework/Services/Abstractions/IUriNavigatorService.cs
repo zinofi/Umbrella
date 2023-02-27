@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Umbrella.AppFramework.Utilities.Abstractions;
+﻿namespace Umbrella.AppFramework.Services.Abstractions;
 
 /// <summary>
 /// A utility used to perform navigation to a specific URI.
 /// </summary>
-public interface IUriNavigator
+public interface IUriNavigatorService
 {
 	/// <summary>
 	/// Opens the specified URI on the current device.

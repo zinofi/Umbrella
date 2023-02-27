@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Validation;
 
