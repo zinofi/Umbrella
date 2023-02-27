@@ -22,7 +22,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	private ILogger<UmbrellaFileUpload> Logger { get; set; } = null!;
 
 	[Inject]
-	private IUmbrellaDialogUtility DialogUtility { get; set; } = null!;
+	private IUmbrellaDialogService DialogUtility { get; set; } = null!;
 
 	private int UploadPercentage { get; set; }
 

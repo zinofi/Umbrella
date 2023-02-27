@@ -44,7 +44,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 	/// Gets the dialog utility.
 	/// </summary>
 	[Inject]
-	protected IUmbrellaDialogUtility DialogUtility { get; private set; } = null!;
+	protected IUmbrellaDialogService DialogUtility { get; private set; } = null!;
 
 	/// <summary>
 	/// Gets the authentication helper.

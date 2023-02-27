@@ -13,7 +13,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 /// Used to show dialogs in Blazor applications.
 /// </summary>
 /// <seealso cref="IDialogService" />
-public interface IUmbrellaDialogUtility : IDialogService
+public interface IUmbrellaDialogService : IDialogService
 {
 	/// <summary>
 	/// Shows a confirmation success dialog.

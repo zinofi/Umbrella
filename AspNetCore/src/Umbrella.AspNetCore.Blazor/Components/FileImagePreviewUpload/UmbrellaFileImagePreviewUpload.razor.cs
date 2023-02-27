@@ -21,7 +21,7 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	private ILogger<UmbrellaFileImagePreviewUpload> Logger { get; set; } = null!;
 
 	[Inject]
-	private IUmbrellaDialogUtility DialogUtility { get; set; } = null!;
+	private IUmbrellaDialogService DialogUtility { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the message shown when a new image has been uploaded in place of an existing one.

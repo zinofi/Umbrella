@@ -231,10 +231,27 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		try
 		{
 			string subPath = GetFilePath(fileName, groupId);
-
+			
 			return await FileProvider.SaveAsync(subPath, bytes, cacheContents, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName, cacheContents, bufferSizeOverride }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem saving the file.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<IUmbrellaFileInfo?> GetAsync(TGroupId groupId, string fileName, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			string subPath = GetFilePath(fileName, groupId);
+
+			return await FileProvider.GetAsync(subPath, cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem saving the file.", exc);
 		}

@@ -31,7 +31,7 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 	/// <param name="repository">The repository.</param>
 	internal UmbrellaRemoteDataAccessGridComponentService(
 		ILogger<UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>> logger,
-		IUmbrellaDialogUtility dialogUtility,
+		IUmbrellaDialogService dialogUtility,
 		TRepository repository)
 		: base(logger, dialogUtility)
 	{

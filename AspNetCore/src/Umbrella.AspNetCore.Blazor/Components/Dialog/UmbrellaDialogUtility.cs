@@ -21,8 +21,8 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 /// <summary>
 /// Used to show dialogs in Blazor applications.
 /// </summary>
-/// <seealso cref="IUmbrellaDialogUtility" />
-public class UmbrellaDialogUtility : IUmbrellaDialogUtility
+/// <seealso cref="IUmbrellaDialogService" />
+public class UmbrellaDialogService : IUmbrellaDialogService
 {
 	private static readonly ModalParameters _emptyModalParameters = new();
 
@@ -90,15 +90,15 @@ public class UmbrellaDialogUtility : IUmbrellaDialogUtility
 	private readonly IAuthorizationService _authorizationService;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaDialogUtility"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaDialogService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="dialogTracker">The dialog tracker.</param>
 	/// <param name="modalService">The modal service.</param>
 	/// <param name="appAuthHelper">The auth helper.</param>
 	/// <param name="authorizationService">The authorization service.</param>
-	public UmbrellaDialogUtility(
-		ILogger<UmbrellaDialogUtility> logger,
+	public UmbrellaDialogService(
+		ILogger<UmbrellaDialogService> logger,
 		IDialogTrackerService dialogTracker,
 		IModalService modalService,
 		IAppAuthHelper appAuthHelper,

@@ -49,7 +49,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		try
 		{
 			var logger = _loggerFactory.CreateLogger<UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>>();
-			var dialogUtility = _serviceProvider.GetRequiredService<IUmbrellaDialogUtility>();
+			var dialogUtility = _serviceProvider.GetRequiredService<IUmbrellaDialogService>();
 
 			var service = new UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(logger, dialogUtility)
 			{
@@ -89,7 +89,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		try
 		{
 			var logger = _loggerFactory.CreateLogger<UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>>();
-			var dialogUtility = _serviceProvider.GetRequiredService<IUmbrellaDialogUtility>();
+			var dialogUtility = _serviceProvider.GetRequiredService<IUmbrellaDialogService>();
 			var repository = _serviceProvider.GetRequiredService<TRepository>();
 
 			var service = new UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(logger, dialogUtility, repository)

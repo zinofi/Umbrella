@@ -26,7 +26,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// <param name="dialogUtility">The dialog utility.</param>
 	internal UmbrellaGridComponentService(
 		ILogger<UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>> logger,
-		IUmbrellaDialogUtility dialogUtility)
+		IUmbrellaDialogService dialogUtility)
 	{
 		Logger = logger;
 		DialogUtility = dialogUtility;
@@ -41,7 +41,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// <summary>
 	/// Gets the dialog utility.
 	/// </summary>
-	protected IUmbrellaDialogUtility DialogUtility { get; }
+	protected IUmbrellaDialogService DialogUtility { get; }
 
 	/// <inheritdoc />
 	public required string InitialSortPropertyName { get; init; } = null!;

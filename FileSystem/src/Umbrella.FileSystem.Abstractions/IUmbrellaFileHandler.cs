@@ -146,4 +146,13 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The saved file.</returns>
 	Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Gets the file from the underlying storage provider.
+	/// </summary>
+	/// <param name="groupId">The group identifier.</param>
+	/// <param name="fileName">Name of the file.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The file, if it exists; otherwise <see langword="null"/>.</returns>
+	Task<IUmbrellaFileInfo?> GetAsync(TGroupId groupId, string fileName, CancellationToken cancellationToken = default);
 }

@@ -35,9 +35,9 @@ public static class IServiceCollectionExtensions
 
 		_ = services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
 		_ = services.AddScoped<IAppSessionStorageService, BlazorSessionStorageService>();
-		_ = services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();
+		_ = services.AddScoped<IUmbrellaDialogService, UmbrellaDialogService>();
 		_ = services.AddScoped<IUriNavigatorService, UriNavigatorService>();
-		_ = services.AddTransient<IDialogService>(x => x.GetRequiredService<IUmbrellaDialogUtility>());
+		_ = services.AddTransient<IDialogService>(x => x.GetRequiredService<IUmbrellaDialogService>());
 		_ = services.AddSingleton<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 
