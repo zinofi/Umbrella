@@ -1,4 +1,5 @@
-﻿using Umbrella.Utilities.Email.Options;
+﻿using System.Net.Mail;
+using Umbrella.Utilities.Email.Options;
 
 namespace Umbrella.Utilities.Email.Abstractions;
 
@@ -14,7 +15,8 @@ public interface IEmailSender
 	/// <param name="subject">The subject of the email.</param>
 	/// <param name="body">The body of the email.</param>
 	/// <param name="fromAddress">The email address of the sender. If this is not specified, the default email address will be automatically set to the default value <see cref="EmailSenderOptions.DefaultFromAddress"/>.</param>
+	/// <param name="attachments">The email attachements.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable task which will complete when the email has been sent.</returns>
-	Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, CancellationToken cancellationToken = default);
+	Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, CancellationToken cancellationToken = default);
 }

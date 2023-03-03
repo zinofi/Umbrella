@@ -62,9 +62,8 @@ public static class IEnumerableExtensions
 		foreach (var item in source)
 		{
 			action(item);
+			yield return item;
 		}
-
-		return source;
 	}
 
 	/// <summary>

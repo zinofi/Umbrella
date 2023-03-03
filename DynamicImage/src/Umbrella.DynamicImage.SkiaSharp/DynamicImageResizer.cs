@@ -48,6 +48,9 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		}
 	}
 
+	// TODO: Could add an option to specify whether or not to resize if the image is already less than the width and height, ensuring we take
+	// into account the resize mode.
+	// TODO: Build in auto-rotate capability - see https://github.com/mono/SkiaSharp/issues/836
 	/// <inheritdoc />
 	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
 	{

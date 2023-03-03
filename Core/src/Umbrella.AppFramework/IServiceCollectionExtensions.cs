@@ -28,8 +28,8 @@ public static class IServiceCollectionExtensions
 	/// <returns>The services.</returns>
 	public static IServiceCollection AddUmbrellaAppFramework(
 		this IServiceCollection services,
-		Action<IServiceProvider, AppAuthHelperOptions> appAuthHelperOptionsBuilder,
-		Action<IServiceProvider, AppAuthTokenStorageServiceOptions> appAuthTokenStorageServiceOptionsBuilder)
+		Action<IServiceProvider, AppAuthHelperOptions>? appAuthHelperOptionsBuilder = null,
+		Action<IServiceProvider, AppAuthTokenStorageServiceOptions>? appAuthTokenStorageServiceOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services);
 

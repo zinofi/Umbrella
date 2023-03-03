@@ -35,7 +35,7 @@ public class EmailSender : IEmailSender
 	}
 
 	/// <inheritdoc />
-	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, CancellationToken cancellationToken = default)
+	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(email);
@@ -62,7 +62,7 @@ public class EmailSender : IEmailSender
 						{
 							email = _options.GetRedirectRecipientEmails();
 						}
-						else if(_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => email.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
+						else if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => email.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 						{
 							return;
 						}
@@ -85,6 +85,8 @@ public class EmailSender : IEmailSender
 				Body = body,
 				IsBodyHtml = true
 			};
+
+			_ = (attachments?.ForEach(message.Attachments.Add));
 
 			await client.SendMailAsync(message).ConfigureAwait(false);
 		}
