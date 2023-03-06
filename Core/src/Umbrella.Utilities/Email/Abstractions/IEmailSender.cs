@@ -3,6 +3,9 @@ using Umbrella.Utilities.Email.Options;
 
 namespace Umbrella.Utilities.Email.Abstractions;
 
+// TODO: Swap Attachment to use a custom class called something like EmailAttachment in order to remove the dependency on System.Net.Mail
+// in cases where we want to use a different implementation.
+
 /// <summary>
 /// A service used to send emails.
 /// </summary>
