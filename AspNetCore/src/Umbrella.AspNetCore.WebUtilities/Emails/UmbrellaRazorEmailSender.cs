@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.Logging;
+using System.Net.Mail;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.WebUtilities.Exceptions;
@@ -64,10 +65,12 @@ public abstract class UmbrellaRazorEmailSender
 	/// <param name="email">The destination email address. Multiple email addresses can be specified using a comma-delimited value.</param>
 	/// <param name="subject">The email subject.</param>
 	/// <param name="viewNameOrPath">The relative path or name of the razor view.</param>
+	/// <param name="fromAddress">The sender's address. If not specified, the <see cref="IEmailSender"/> will use the default email address from its configuration settings.</param>
+	/// <param name="attachments">The optional list of attachements for the email.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> which completes when the email has been sent to the system which ultimately sends the email.</returns>
 	/// <exception cref="UmbrellaWebException">Thrown if there is an error sending the email.</exception>
-	protected async Task SendEmailAsync<T>(T model, string email, string subject, string viewNameOrPath, CancellationToken cancellationToken)
+	protected async Task SendEmailAsync<T>(T model, string email, string subject, string viewNameOrPath, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -77,9 +80,9 @@ public abstract class UmbrellaRazorEmailSender
 
 			string content = await ViewToStringRenderer.RenderViewToStringAsync(viewPath, model, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-			await EmailSender.SendEmailAsync(email, subject, content, cancellationToken: cancellationToken).ConfigureAwait(false);
+			await EmailSender.SendEmailAsync(email, subject, content, fromAddress, attachments, cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { model, email, subject, viewNameOrPath }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { model, email, subject, viewNameOrPath, fromAddress }))
 		{
 			throw new UmbrellaWebException($"There has been an error sending the '{subject}' email.", exc);
 		}
