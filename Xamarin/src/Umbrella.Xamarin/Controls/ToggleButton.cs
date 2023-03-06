@@ -99,7 +99,7 @@ public class ToggleButton : Button
 			if (newValue)
 			{
 				// Ensure others in the group are deselected
-				_ = lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
+				lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
 				IsToggled = newValue;
 			}
 			else

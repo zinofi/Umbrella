@@ -19,7 +19,7 @@ public static class ValidationResultExtensions
 	public static string ToValidationSummaryMessage(this IEnumerable<ValidationResult> results, string introMessage)
 	{
 		var messageBuilder = new StringBuilder(introMessage).AppendLine().AppendLine();
-		_ = results.ForEach(x => messageBuilder.AppendLine(x.ErrorMessage));
+		results.ForEach(x => messageBuilder.AppendLine(x.ErrorMessage));
 
 		return messageBuilder.ToString();
 	}

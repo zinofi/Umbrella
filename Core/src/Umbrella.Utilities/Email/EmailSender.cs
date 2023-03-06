@@ -86,7 +86,7 @@ public class EmailSender : IEmailSender
 				IsBodyHtml = true
 			};
 
-			_ = (attachments?.ForEach(message.Attachments.Add));
+			attachments?.ForEach(message.Attachments.Add);
 
 			await client.SendMailAsync(message).ConfigureAwait(false);
 		}

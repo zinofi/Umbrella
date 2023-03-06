@@ -57,7 +57,7 @@ public static class CoreUtilitiesMocks
 	public static IMimeTypeUtility CreateMimeTypeUtility(params (string extension, string mimeType)[] mappings)
 	{
 		var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-		_ = mappings.ForEach(mapping => mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith(mapping.extension)))).Returns(mapping.mimeType));
+		mappings.ForEach(mapping => mimeTypeUtility.Setup(x => x.GetMimeType(It.Is<string>(y => !string.IsNullOrEmpty(y) && y.Trim().ToLowerInvariant().EndsWith(mapping.extension)))).Returns(mapping.mimeType));
 
 		return mimeTypeUtility.Object;
 	}

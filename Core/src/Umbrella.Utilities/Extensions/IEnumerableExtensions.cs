@@ -21,8 +21,8 @@ public static class IEnumerableExtensions
 	[Obsolete("This will be removed in a future version. Please use the new .NET 6 Chunk method when available.")]
 	public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> source, int itemsPerGroup)
 	{
-		Guard.IsNotNull(source, nameof(source));
-		Guard.IsGreaterThanOrEqualTo(itemsPerGroup, 1, nameof(itemsPerGroup));
+		Guard.IsNotNull(source);
+		Guard.IsGreaterThanOrEqualTo(itemsPerGroup, 1);
 
 		return source
 			.Select((x, i) => new { Index = i, Value = x })
@@ -40,7 +40,7 @@ public static class IEnumerableExtensions
 	[Obsolete("This will be removed in a future version as this method has been added to netstandard2.1")]
 	public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T>? comparer = null)
 	{
-		Guard.IsNotNull(source, nameof(source));
+		Guard.IsNotNull(source);
 
 		return new HashSet<T>(source, comparer);
 	}
@@ -54,15 +54,14 @@ public static class IEnumerableExtensions
 	/// <returns>An <see cref="IEnumerable{T}" /> whose elements are the result of invoking the transform function on each element of source.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if <paramref name="action"/> is null.</exception>
-	public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
+	public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
 	{
-		Guard.IsNotNull(source, nameof(source));
-		Guard.IsNotNull(action, nameof(action));
+		Guard.IsNotNull(source);
+		Guard.IsNotNull(action);
 
 		foreach (var item in source)
 		{
 			action(item);
-			yield return item;
 		}
 	}
 
@@ -83,8 +82,8 @@ public static class IEnumerableExtensions
 	public static async Task<IEnumerable<TResult>> SelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, Task<TResult>> selector, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(source, nameof(source));
-		Guard.IsNotNull(selector, nameof(selector));
+		Guard.IsNotNull(source);
+		Guard.IsNotNull(selector);
 
 		return await Task.WhenAll(source.Select(x => selector(x, cancellationToken))).ConfigureAwait(false);
 	}

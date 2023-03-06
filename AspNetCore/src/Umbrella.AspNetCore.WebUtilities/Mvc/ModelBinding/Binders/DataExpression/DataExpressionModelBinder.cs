@@ -218,7 +218,7 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 
 		if (Activator.CreateInstance(genericListType) is IList targetList)
 		{
-			_ = lstExpression.ForEach(x => targetList.Add(x));
+			lstExpression.ForEach(x => targetList.Add(x));
 
 			return (targetList, lstUnmatched);
 		}

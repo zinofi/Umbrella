@@ -1325,7 +1325,7 @@ public class UmbrellaFileProviderTest
 
 		var provider = new UmbrellaDiskFileStorageProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileStorageProvider>(),
-			CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
+			CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg", "image/jpg")),
 			CoreUtilitiesMocks.CreateGenericTypeConverter());
 
 		provider.InitializeOptions(options);

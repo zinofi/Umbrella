@@ -47,7 +47,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 		{
 			var properties = GetValidatablePropertyNames(model);
 			var qualifiedPropertyNames = properties.Where(x => x.EndsWith(propertyName, StringComparison.OrdinalIgnoreCase));
-			_ = qualifiedPropertyNames.ForEach(x => HideValidationField(x, page!));
+			qualifiedPropertyNames.ForEach(x => HideValidationField(x, page!));
 
 			IReadOnlyCollection<ValidationResult> lstError = new List<ValidationResult>();
 			var context = new ValidationContext(model) { MemberName = propertyName };
@@ -125,13 +125,13 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 	/// <inheritdoc />
 	public void HideValidationFields(object model, Page? page)
 	{
-		Guard.IsNotNull(page, nameof(page));
+		Guard.IsNotNull(page);
 
 		if (model is null)
 			return;
 
 		var properties = GetValidatablePropertyNames(model);
-		_ = properties.ForEach(x => HideValidationField(x, page!));
+		properties.ForEach(x => HideValidationField(x, page));
 	}
 
 	private void ShowValidationFields(IReadOnlyCollection<ValidationResult> errors, object model, Page page, bool deep, Func<List<ValidationResult>, IReadOnlyCollection<ValidationResult>>? resultsModifier, bool attachInlineValiation)
