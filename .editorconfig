@@ -281,3 +281,4 @@ dotnet_diagnostic.IDE0030.severity = error
 dotnet_diagnostic.IDE0031.severity = error
 dotnet_diagnostic.VSTHRD110.severity = error
 dotnet_diagnostic.IDE0058.severity = error
+dotnet_diagnostic.IDE0066.severity = error
