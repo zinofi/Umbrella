@@ -533,6 +533,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			model,
 			Repository,
 			cancellationToken,
+			entity => BeforeUpdateMappingModelToEntityAsync(entity, model, cancellationToken),
 			null,
 			entity => BeforeUpdateEntityAsync(entity, model, cancellationToken),
 			null,
@@ -646,18 +647,27 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
     /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
     protected virtual Task<IActionResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 
-    /// <summary>
-    /// This is called by the <c>Put</c> endpoint after the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>
+	/// <summary>
+	/// This is called by the <c>Put</c> endpoint before the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>.
+	/// </summary>
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+	protected virtual Task<IActionResult?> BeforeUpdateMappingModelToEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+
+	/// <summary>
+	/// This is called by the <c>Put</c> endpoint after the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>
 	/// but before auth checks are performed.
-    /// </summary>
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-    protected virtual Task<IActionResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+	protected virtual Task<IActionResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
 
     /// <summary>
     /// This is called by the <c>Delete</c> endpoint before the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
