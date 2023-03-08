@@ -66,9 +66,16 @@ public class XamarinLocalStorageService : IAppLocalStorageService, IAppSessionSt
 		try
 		{
 			if (_useVirtualStorage)
+			{
 				_virtualStorage[key] = value;
+			}
 			else
+			{
+				// We need to ensure the item has been removed before setting a value
+				// as iOS throws an exception when an item with the key already exists.
+				_ = SecureStorage.Remove(key);
 				await SecureStorage.SetAsync(key, value);
+			}
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { key }))
 		{
