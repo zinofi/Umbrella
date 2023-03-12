@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Threading.Abstractions;
+﻿namespace Umbrella.Utilities.Threading.Abstractions;
 
 /// <summary>
 /// A synchoronization manager which can be used to ensure exclusive execution of a section of code using granular locking in both

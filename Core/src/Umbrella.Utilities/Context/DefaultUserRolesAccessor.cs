@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Umbrella.Utilities.Context.Abstractions;
+﻿using Umbrella.Utilities.Context.Abstractions;
 
 namespace Umbrella.Utilities.Context;
 

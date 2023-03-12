@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Umbrella.Utilities.Exceptions;
 
@@ -8,6 +7,7 @@ namespace Umbrella.Utilities.Exceptions;
 /// for more specific Umbrella exceptions thrown from other Umbrella libraries.
 /// </summary>
 /// <seealso cref="Exception" />
+[Serializable]
 public class UmbrellaException : Exception
 {
 	/// <summary>

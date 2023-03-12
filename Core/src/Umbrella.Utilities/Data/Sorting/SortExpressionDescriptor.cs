@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.Utilities.Data.Abstractions;
+﻿using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Sorting;
 

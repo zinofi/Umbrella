@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.DynamicImage.Abstractions.Caching;
+﻿namespace Umbrella.DynamicImage.Abstractions.Caching;
 
 /// <summary>
 /// A default caching implementation that doesn't actually perform any caching. Useful for unit testing

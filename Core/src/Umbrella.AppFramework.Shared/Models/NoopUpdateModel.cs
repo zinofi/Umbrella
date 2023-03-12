@@ -1,9 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-
-namespace Umbrella.AppFramework.Shared.Models;
+﻿namespace Umbrella.AppFramework.Shared.Models;
 
 /// <summary>
 /// A no-op model. This exists for use when specifying generic parameters for types that make use of the AppFramework types

@@ -1,9 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-
-namespace Umbrella.Utilities.Data.Concurrency;
+﻿namespace Umbrella.Utilities.Data.Concurrency;
 
 /// <summary>
 /// Extensions for the <see cref="IConcurrencyStamp"/> type.

@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.DataAccess.Remote.Exceptions;
@@ -12,6 +8,7 @@ namespace Umbrella.DataAccess.Remote.Exceptions;
 /// </summary>
 /// <remarks>By design, this does not derive from <see cref="UmbrellaRemoteDataAccessException"/> and as such will have to be handled separately.</remarks>
 /// <seealso cref="UmbrellaConcurrencyException" />
+[Serializable]
 public class UmbrellaRemoteDataAccessConcurrencyException : UmbrellaConcurrencyException
 {
 	/// <summary>

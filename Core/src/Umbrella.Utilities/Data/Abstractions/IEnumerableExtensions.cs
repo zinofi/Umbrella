@@ -1,10 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.Utilities.Data.Abstractions;

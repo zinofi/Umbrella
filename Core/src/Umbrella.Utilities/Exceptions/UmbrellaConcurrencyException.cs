@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Runtime.Serialization;
 
 namespace Umbrella.Utilities.Exceptions;
@@ -11,6 +10,7 @@ namespace Umbrella.Utilities.Exceptions;
 /// for more specific Umbrella concurrency exceptions thrown from other Umbrella libraries.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaConcurrencyException : UmbrellaException
 {
 	/// <summary>

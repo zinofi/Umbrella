@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript;
 
 /// <summary>
 /// Used to specify that if the type of the property has been translated into a TypeScript array, e.g. <see cref="List{T}"/> has been transleted to T[],

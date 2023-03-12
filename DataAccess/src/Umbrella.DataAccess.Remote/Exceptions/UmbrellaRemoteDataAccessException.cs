@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.DataAccess.Remote.Exceptions;
@@ -11,6 +7,7 @@ namespace Umbrella.DataAccess.Remote.Exceptions;
 /// Represents an error that occurs during execution of a remote data access operation.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaRemoteDataAccessException : UmbrellaException
 {
 	/// <summary>

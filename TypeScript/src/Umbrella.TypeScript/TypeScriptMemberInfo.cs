@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript;
 
 /// <summary>
 /// Represents the TypeScript output to generated for a specific source member, i.e. a property on a C# model.

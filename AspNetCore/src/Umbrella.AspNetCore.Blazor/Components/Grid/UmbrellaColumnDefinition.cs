@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Linq.Expressions;
-using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 

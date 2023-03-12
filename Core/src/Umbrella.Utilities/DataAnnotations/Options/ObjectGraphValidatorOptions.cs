@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.DataAnnotations.Options;
+﻿namespace Umbrella.Utilities.DataAnnotations.Options;
 
 /// <summary>
 /// Options for use with the <see cref="ObjectGraphValidator" />.

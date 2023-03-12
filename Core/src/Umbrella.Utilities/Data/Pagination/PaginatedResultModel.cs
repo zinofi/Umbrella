@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Umbrella.Utilities.Data.Pagination;
+﻿namespace Umbrella.Utilities.Data.Pagination;
 
 // TODO: Could this be a readonly struct?? Or even a record (not yet though!).
 // NO. Can't be either yet because we need to be able to deserialize JSON to it.

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Umbrella.Legacy.WebUtilities.WebApi.Validators;
+﻿namespace Umbrella.Legacy.WebUtilities.WebApi.Validators;
 
 /// <summary>
 /// The response to be sent as part of the <see cref="StatusCodeValidationAttribute"/> HTTP response.

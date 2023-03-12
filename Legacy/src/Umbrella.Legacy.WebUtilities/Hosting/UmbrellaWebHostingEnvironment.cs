@@ -10,7 +10,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Constants;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Hosting;
 using Umbrella.Utilities.Hosting.Options;
 using Umbrella.WebUtilities.Exceptions;

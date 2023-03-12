@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Extensions;
+﻿namespace Umbrella.Utilities.Extensions;
 
 /// <summary>
 /// Extension methods for the <see cref="int"/> type.

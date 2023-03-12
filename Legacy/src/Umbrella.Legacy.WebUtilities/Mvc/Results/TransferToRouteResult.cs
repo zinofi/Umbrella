@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CommunityToolkit.Diagnostics;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -43,8 +43,7 @@ public class TransferToRouteResult : ActionResult
 	/// <inheritdoc />
 	public override void ExecuteResult(ControllerContext context)
 	{
-		if (context is null)
-			throw new ArgumentNullException("context");
+		Guard.IsNotNull(context);
 
 		var urlHelper = new UrlHelper(context.RequestContext);
 		string url = urlHelper.RouteUrl(RouteName, RouteValues);

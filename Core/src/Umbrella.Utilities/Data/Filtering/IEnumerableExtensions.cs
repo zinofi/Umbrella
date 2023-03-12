@@ -34,7 +34,7 @@ public static class IEnumerableExtensions
 
 			foreach (var filterExpression in filterExpressions)
 			{
-				bool predicate(TItem x)
+				bool Predicate(TItem x)
 				{
 					object? filterValue = filterExpression.Value;
 					object? propertyValue = filterExpression.GetDelegate()?.Invoke(x);
@@ -58,9 +58,9 @@ public static class IEnumerableExtensions
 				}
 
 				if (filterExpression.IsPrimary)
-					lstPrimaryFilterPredicate.Add(predicate);
+					lstPrimaryFilterPredicate.Add(Predicate);
 				else
-					lstFilterPredicate.Add(predicate);
+					lstFilterPredicate.Add(Predicate);
 			}
 
 			filteredItems = items;

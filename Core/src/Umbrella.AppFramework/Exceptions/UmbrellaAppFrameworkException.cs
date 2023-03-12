@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.AppFramework.Exceptions;
@@ -8,6 +7,7 @@ namespace Umbrella.AppFramework.Exceptions;
 /// Represents an exception thrown from a class in the <see cref="AppFramework"/> library.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaAppFrameworkException : UmbrellaException
 {
 	/// <summary>

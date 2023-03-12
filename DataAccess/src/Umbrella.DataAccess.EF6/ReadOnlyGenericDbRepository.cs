@@ -1,15 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Policy;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Data.Entity;
+using System.Linq.Expressions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EF6.Extensions;

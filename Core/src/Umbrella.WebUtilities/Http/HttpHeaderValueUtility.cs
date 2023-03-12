@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.WebUtilities.Http.Abstractions;
+﻿using Umbrella.WebUtilities.Http.Abstractions;
 
 namespace Umbrella.WebUtilities.Http;
 

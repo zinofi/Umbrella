@@ -6,6 +6,7 @@ namespace Umbrella.Legacy.WebUtilities.Extensions;
 /// <summary>
 /// Extensions methods for use with the <see cref="AppDomain"/> type.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Extension methods.")]
 public static class AppDomainExtensions
 {
 	private static readonly bool _isOwinApplication;

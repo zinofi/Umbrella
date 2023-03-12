@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.WebUtilities.Http.Abstractions;
+﻿namespace Umbrella.WebUtilities.Http.Abstractions;
 
 /// <summary>
 /// A utility used to create common HTTP Header values.

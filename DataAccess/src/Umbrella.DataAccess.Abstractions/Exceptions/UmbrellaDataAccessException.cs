@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.DataAccess.Abstractions.Exceptions;
@@ -8,6 +7,7 @@ namespace Umbrella.DataAccess.Abstractions.Exceptions;
 /// Represents a generic data access exception thrown from one of the Umbrella.DataAccess libraries.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaDataAccessException : UmbrellaException
 {
 	/// <summary>

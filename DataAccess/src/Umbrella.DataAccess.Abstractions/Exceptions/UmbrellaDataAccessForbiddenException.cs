@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.DataAccess.Abstractions.Exceptions;
+﻿namespace Umbrella.DataAccess.Abstractions.Exceptions;
 
 /// <summary>
 /// Represents an exception thrown during data access when the current user is forbidden to access a requested resource.

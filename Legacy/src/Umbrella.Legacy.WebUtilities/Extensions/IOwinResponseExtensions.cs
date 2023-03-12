@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Net;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 
 namespace Umbrella.Legacy.WebUtilities.Extensions;
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.DynamicImage.Abstractions.Caching;
+﻿namespace Umbrella.DynamicImage.Abstractions.Caching;
 
 /// <summary>
 /// Defines a contract for a caching mechanism for generated <see cref="DynamicImageItem"/> instances.

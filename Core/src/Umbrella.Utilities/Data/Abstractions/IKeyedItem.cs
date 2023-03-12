@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Data.Abstractions;
+﻿namespace Umbrella.Utilities.Data.Abstractions;
 
 /// <summary>
 /// An item that has a key of type <typeparamref name="TIdentifier"/>.

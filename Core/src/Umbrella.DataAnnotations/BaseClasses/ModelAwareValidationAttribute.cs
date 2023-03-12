@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-
-namespace Umbrella.DataAnnotations.BaseClasses;
+﻿namespace Umbrella.DataAnnotations.BaseClasses;
 
 /// <summary>
 /// Serves as the base class for all model aware validation attributes.

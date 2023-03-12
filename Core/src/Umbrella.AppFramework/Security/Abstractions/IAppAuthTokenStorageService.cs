@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Umbrella.AppFramework.Security.Abstractions;
+﻿namespace Umbrella.AppFramework.Security.Abstractions;
 
 /// <summary>
 /// A storage service for application auth tokens.

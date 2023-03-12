@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Http.Abstractions;
+﻿namespace Umbrella.Utilities.Http.Abstractions;
 
 /// <summary>
 /// An opinionated generic HTTP service used to query remote endpoints that follow the same conventions.

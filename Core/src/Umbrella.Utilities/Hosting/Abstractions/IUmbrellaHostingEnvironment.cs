@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Hosting.Abstractions;
+﻿namespace Umbrella.Utilities.Hosting.Abstractions;
 
 /// <summary>
 /// An abstraction over the current hosting environment.

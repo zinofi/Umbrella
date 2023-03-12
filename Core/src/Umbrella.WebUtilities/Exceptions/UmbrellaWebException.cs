@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.WebUtilities.Exceptions;
@@ -9,6 +8,7 @@ namespace Umbrella.WebUtilities.Exceptions;
 /// for more specific Umbrella web exceptions thrown from other Umbrella web libraries.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaWebException : UmbrellaException
 {
 	/// <summary>
@@ -42,7 +42,7 @@ public class UmbrellaWebException : UmbrellaException
 	/// </summary>
 	/// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
 	/// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
-	public UmbrellaWebException(SerializationInfo info, StreamingContext context)
+	protected UmbrellaWebException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{
 	}

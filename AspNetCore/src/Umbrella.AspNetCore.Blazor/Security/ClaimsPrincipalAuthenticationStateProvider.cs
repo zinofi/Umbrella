@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Shared.Security.Extensions;
-using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security.Options;
 using Umbrella.Utilities.Dating.Abstractions;

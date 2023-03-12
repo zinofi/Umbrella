@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Umbrella.Utilities.Data.Pagination;
+﻿namespace Umbrella.Utilities.Data.Pagination;
 
 /// <summary>
 /// Extensions for <see cref="IQueryable{T}"/> collections for pagination.

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Caching.Options;
+﻿namespace Umbrella.Utilities.Caching.Options;
 
 /// <summary>
 /// A delegate for specifiying the optional cache key builder.

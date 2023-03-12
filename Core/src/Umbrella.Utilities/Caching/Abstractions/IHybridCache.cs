@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
-using System.Threading;
 using Umbrella.Utilities.Caching.Options;
 using Umbrella.Utilities.Options;
 

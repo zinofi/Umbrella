@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.WebUtilities.Middleware.Options;
+﻿namespace Umbrella.WebUtilities.Middleware.Options;
 
 /// <summary>
 /// Specifies the HttpCacheControl values that can be used with middleware.

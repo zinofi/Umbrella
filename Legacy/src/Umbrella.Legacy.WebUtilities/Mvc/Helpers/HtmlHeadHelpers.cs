@@ -5,6 +5,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers;
 /// <summary>
 /// Extension methods for use with the <see cref="HtmlHelper"/> type, specifically for manipulating the HTML head content.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Extension methods.")]
 public static class HtmlHeadHelpers
 {
 	/// <summary>

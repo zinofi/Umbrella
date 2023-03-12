@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Umbrella.Utilities.Data.Abstractions;
+﻿namespace Umbrella.Utilities.Data.Abstractions;
 
 /// <summary>
 /// An equality comparer for comparing instances of <see cref="IDataExpressionDescriptor"/> by comparing the <see cref="IDataExpressionDescriptor.MemberPath"/>

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript;
 
 /// <summary>
 /// The type of the model that will be generated. Flags can be used to specify multiple types.

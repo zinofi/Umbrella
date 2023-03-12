@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Hosting.Abstractions;
+﻿using Umbrella.Utilities.Hosting.Abstractions;
 
 namespace Umbrella.WebUtilities.Hosting;
 

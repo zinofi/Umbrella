@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Caching;
+﻿namespace Umbrella.Utilities.Caching;
 
 /// <summary>
 /// Represents the meta-data of an entry stored in the <see cref="HybridCache"/> when the cached item is stored in-memory.

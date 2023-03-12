@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.WebUtilities.Bundling.Abstractions;
+﻿namespace Umbrella.WebUtilities.Bundling.Abstractions;
 
 /// <summary>
 /// A utility for resolving named CSS or JS bundles or relative paths to such bundles.

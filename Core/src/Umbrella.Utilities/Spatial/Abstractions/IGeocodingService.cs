@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Umbrella.Utilities.Spatial.Abstractions;
+﻿namespace Umbrella.Utilities.Spatial.Abstractions;
 
 /// <summary>
 /// A service that can be used to geocode one or more postcodes or <see cref="GeoLocation"/> instances and return data about each location.

@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.Utilities.Exceptions;
+﻿using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Http.Exceptions;
 

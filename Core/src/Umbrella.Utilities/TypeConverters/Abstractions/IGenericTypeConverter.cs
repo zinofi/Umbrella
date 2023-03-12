@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.TypeConverters.Abstractions;
+﻿namespace Umbrella.Utilities.TypeConverters.Abstractions;
 
 /// <summary>
 /// A custom type converter which converts strings to objects.

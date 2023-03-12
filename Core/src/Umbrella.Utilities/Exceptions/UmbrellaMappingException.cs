@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Mapping.Abstractions;
 
 namespace Umbrella.Utilities.Exceptions;
@@ -12,6 +8,7 @@ namespace Umbrella.Utilities.Exceptions;
 /// Primarily used by <see cref="IUmbrellaMapper"/> implementations.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaMappingException : UmbrellaException
 {
 	/// <summary>

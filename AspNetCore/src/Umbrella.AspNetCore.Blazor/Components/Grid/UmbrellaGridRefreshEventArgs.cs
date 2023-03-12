@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Umbrella.Utilities.Data.Filtering;
+﻿using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;

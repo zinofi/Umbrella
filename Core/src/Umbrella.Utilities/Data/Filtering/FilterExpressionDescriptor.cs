@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using Umbrella.Utilities.Data.Abstractions;
+﻿using Umbrella.Utilities.Data.Abstractions;
 
 namespace Umbrella.Utilities.Data.Filtering;
 

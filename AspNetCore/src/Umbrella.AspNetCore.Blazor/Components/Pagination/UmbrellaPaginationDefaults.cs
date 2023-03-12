@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Umbrella.AspNetCore.Blazor.Components.Pagination;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.Pagination;
 
 /// <summary>
 /// Specifies the pagination defaults.

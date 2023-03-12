@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Umbrella.Utilities.Http;
 
 namespace Umbrella.AspNetCore.Blazor.Extensions;

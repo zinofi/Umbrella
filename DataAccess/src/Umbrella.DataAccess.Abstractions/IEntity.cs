@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.DataAccess.Abstractions;
+﻿namespace Umbrella.DataAccess.Abstractions;
 
 /// <summary>
 /// Adds support to an entity type for storing it's unique Id.

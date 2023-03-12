@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript;
 
 /// <summary>
 /// Used to mark enum types to be output by the TypeScript generator.

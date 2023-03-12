@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.TypeScript.Exceptions;
@@ -8,6 +7,7 @@ namespace Umbrella.TypeScript.Exceptions;
 /// An Umbrella exception used to represent exceptions thrown from TypeScript generation infrastructure.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaTypeScriptException : UmbrellaException
 {
 	/// <summary>

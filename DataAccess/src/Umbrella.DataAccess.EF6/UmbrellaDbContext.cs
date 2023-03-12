@@ -2,8 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Data.Entity;
-using System.Threading;
-using System.Threading.Tasks;
 using Umbrella.DataAccess.Abstractions;
 
 namespace Umbrella.DataAccess.EF6;

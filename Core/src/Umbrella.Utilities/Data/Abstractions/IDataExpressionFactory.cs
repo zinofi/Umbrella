@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Data.Abstractions;
+﻿namespace Umbrella.Utilities.Data.Abstractions;
 
 /// <summary>
 /// A factory used to create instance of <see cref="IDataExpression"/>.

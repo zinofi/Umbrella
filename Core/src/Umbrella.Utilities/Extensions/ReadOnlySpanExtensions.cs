@@ -10,6 +10,7 @@ namespace Umbrella.Utilities.Extensions;
 /// <summary>
 /// Extension methods for use with <see cref="ReadOnlySpan{T}"/> instances.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Some methods used for benchmarking.")]
 public static class ReadOnlySpanExtensions
 {
 	#region ToLower	

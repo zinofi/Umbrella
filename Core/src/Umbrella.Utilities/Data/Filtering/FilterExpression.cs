@@ -1,9 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Data.Abstractions;

@@ -10,7 +10,6 @@ using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 

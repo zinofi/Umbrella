@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Owin;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Legacy.WebUtilities.Extensions;

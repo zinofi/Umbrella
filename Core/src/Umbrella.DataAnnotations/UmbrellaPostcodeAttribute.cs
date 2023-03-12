@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Umbrella.DataAnnotations.RegularExpressions;
+﻿using Umbrella.DataAnnotations.RegularExpressions;
 
 namespace Umbrella.DataAnnotations;
 

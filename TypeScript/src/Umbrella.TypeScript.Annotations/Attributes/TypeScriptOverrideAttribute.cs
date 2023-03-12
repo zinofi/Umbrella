@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript;
 
 /// <summary>
 /// This allows the type that is output in the generated TypeScript model to be different from the type in the source

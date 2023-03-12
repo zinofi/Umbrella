@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Extensions;
+﻿namespace Umbrella.Utilities.Extensions;
 
 /// <summary>
 /// Extension methods for use with <see cref="IComparable{T}"/> instances.

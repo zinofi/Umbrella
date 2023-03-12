@@ -9,6 +9,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers;
 /// <summary>
 /// Extension methods for use with the <see cref="UrlHelper"/> type, specifically for accessing embeddeded assembly resources.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Extension method.")]
 public static class EmbeddedResourceHelpers
 {
 	private static readonly Page _page = new();

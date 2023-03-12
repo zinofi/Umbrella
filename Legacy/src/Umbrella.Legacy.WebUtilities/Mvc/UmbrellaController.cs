@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.IO;
 using System.Web.Mvc;
 using Microsoft.Extensions.Logging;
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Umbrella.DataAnnotations.BaseClasses;
 
 namespace Umbrella.Legacy.WebUtilities.DataAnnotations;

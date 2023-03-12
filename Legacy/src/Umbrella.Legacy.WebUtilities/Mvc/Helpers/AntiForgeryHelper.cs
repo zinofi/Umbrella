@@ -10,6 +10,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Helpers;
 /// Extension methods for both the <see cref="HtmlHelper"/> and <see cref="IOwinContext"/> types for use with accessing the AntiForgery Token
 /// for the current request.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Extension methods.")]
 public static class AntiForgeryHelper
 {
 	/// <summary>

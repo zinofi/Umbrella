@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Umbrella.DataAnnotations.BaseClasses;
+﻿using Umbrella.DataAnnotations.BaseClasses;
 using Umbrella.DataAnnotations.Utilities;
 
 namespace Umbrella.DataAnnotations;

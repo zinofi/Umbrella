@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Umbrella.DataAccess.Abstractions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;

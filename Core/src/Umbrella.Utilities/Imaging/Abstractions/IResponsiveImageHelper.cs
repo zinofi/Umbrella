@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Umbrella.Utilities.Imaging;
+﻿namespace Umbrella.Utilities.Imaging;
 
 /// <summary>
 /// A helper used to support the generation of responsive images.

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.TypeScript.Generators.Abstractions;
+﻿namespace Umbrella.TypeScript.Generators.Abstractions;
 
 /// <summary>
 /// Specifies the behaviour of a TypeScript generator.

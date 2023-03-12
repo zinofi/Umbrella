@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace Umbrella.DataAnnotations.Test;
 
@@ -47,7 +46,6 @@ public class GreaterThanOrEqualToAttributeTest
 	[Fact]
 	public void DateNullValuesIsValid()
 	{
-		var date = DateTime.Now;
 		var model = new DateModel() { };
 		Assert.True(model.IsValid("Value2"));
 	}

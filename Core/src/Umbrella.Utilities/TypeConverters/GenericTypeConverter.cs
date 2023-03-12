@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 

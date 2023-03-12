@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.Utilities.Caching.Abstractions;
+﻿namespace Umbrella.Utilities.Caching.Abstractions;
 
 /// <summary>
 /// A utility used to create cache keys.

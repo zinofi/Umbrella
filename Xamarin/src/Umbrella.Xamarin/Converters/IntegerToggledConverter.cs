@@ -1,8 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Xamarin.Forms;
-
-namespace Umbrella.Xamarin.Converters;
+﻿namespace Umbrella.Xamarin.Converters;
 
 /// <summary>
 /// A converter that converts to / from a boolean if the binding value is an integer and if so, if it matches the parsed string value provided as the converter parameter.

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Umbrella.DynamicImage.Abstractions;
+﻿namespace Umbrella.DynamicImage.Abstractions;
 
 /// <summary>
 /// Contains utility methods for common operations performed by the Dynamic Image infrastructure.

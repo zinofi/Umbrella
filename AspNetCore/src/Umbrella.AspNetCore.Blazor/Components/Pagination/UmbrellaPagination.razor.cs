@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.Utilities.Data.Pagination;

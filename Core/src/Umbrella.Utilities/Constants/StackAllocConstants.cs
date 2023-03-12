@@ -1,10 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Text;
-using System.Text.Encodings.Web;
-
-namespace Umbrella.Utilities.Constants;
+﻿namespace Umbrella.Utilities.Constants;
 
 /// <summary>
 /// Defines constants used to constrain the size of stack allocations when using the <see langword="stackalloc"/> keyword from managed code.

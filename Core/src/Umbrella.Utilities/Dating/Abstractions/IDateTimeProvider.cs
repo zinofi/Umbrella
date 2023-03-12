@@ -1,9 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-
-namespace Umbrella.Utilities.Dating.Abstractions;
+﻿namespace Umbrella.Utilities.Dating.Abstractions;
 
 // TODO: Need to inject this and use it instead of all static calls to DateTime.x properties.
 

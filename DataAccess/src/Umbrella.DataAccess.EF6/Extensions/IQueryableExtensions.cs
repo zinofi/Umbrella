@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 using Umbrella.DataAccess.Abstractions;
 
 namespace Umbrella.DataAccess.EF6.Extensions;

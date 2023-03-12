@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Umbrella.Utilities.Context.Abstractions;
+﻿namespace Umbrella.Utilities.Context.Abstractions;
 
 /// <summary>
 /// Used to allow access to the roles of the current user.

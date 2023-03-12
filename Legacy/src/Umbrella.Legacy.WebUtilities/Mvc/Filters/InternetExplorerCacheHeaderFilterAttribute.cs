@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
 using Umbrella.Legacy.WebUtilities.Extensions;
 
@@ -15,7 +14,6 @@ public class InternetExplorerCacheHeaderFilterAttribute : ActionFilterAttribute
 	/// <inheritdoc />
 	public override void OnResultExecuted(ResultExecutedContext filterContext)
 	{
-		var request = filterContext.HttpContext.Request;
 		var response = filterContext.HttpContext.Response;
 
 		if (response.IsSuccessStatusCode())

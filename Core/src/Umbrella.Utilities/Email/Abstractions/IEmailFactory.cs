@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Umbrella.Utilities.Email.Abstractions;
+﻿namespace Umbrella.Utilities.Email.Abstractions;
 
 /// <summary>
 /// A generic class to aid in building emails based on HTML generated templates stored as static files on disk.
