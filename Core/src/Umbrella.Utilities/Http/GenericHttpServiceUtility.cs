@@ -96,7 +96,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 			if (response.IsSuccessStatusCode)
 			{
 				// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
-				if (response.StatusCode == HttpStatusCode.NoContent)
+				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
 					return (true, new HttpCallResult<TResult?>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 
 				if (response.Content.Headers.ContentLength > 0)
@@ -128,10 +128,10 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 		{
 			if (response.IsSuccessStatusCode)
 			{
-				if (response.StatusCode == HttpStatusCode.NoContent)
+				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
 					return (true, new HttpCallResult(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 
-				throw new NotSupportedException("Only 204 NoContent responses are supported when there is no result from the endpoint.");
+				throw new NotSupportedException("Only 201 Created and 204 NoContent responses are supported when there is no result from the endpoint.");
 			}
 
 			return default;
