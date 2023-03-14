@@ -46,7 +46,7 @@ public class UmbrellaTempFileHandler : UmbrellaFileHandler<int>, IUmbrellaTempFi
 		{
 			string fileInfoCreatedById = await fileInfo.GetCreatedByIdAsync<string>(cancellationToken).ConfigureAwait(false);
 
-			if (fileInfoCreatedById is null)
+			if (string.IsNullOrEmpty(fileInfoCreatedById))
 				return true;
 
 			if (CurrentUserClaimsPrincipalAccessor.CurrentPrincipal is null)
@@ -54,7 +54,7 @@ public class UmbrellaTempFileHandler : UmbrellaFileHandler<int>, IUmbrellaTempFi
 
 			string currentUserId = CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>();
 
-			if (currentUserId is null)
+			if (string.IsNullOrEmpty(currentUserId))
 				return false;
 
 			return fileInfoCreatedById.Equals(currentUserId, StringComparison.Ordinal);

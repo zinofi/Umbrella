@@ -113,7 +113,7 @@ public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 
 			return result;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc))
+		catch (Exception exc) when (Logger.WriteError(exc) && !exc.GetType().Name.EndsWith("DbUpdateConcurrencyException", StringComparison.Ordinal))
 		{
 			throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 		}
@@ -136,7 +136,7 @@ public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 
 			return result;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc))
+		catch (Exception exc) when (Logger.WriteError(exc) && !exc.GetType().Name.EndsWith("DbUpdateConcurrencyException", StringComparison.Ordinal))
 		{
 			throw new UmbrellaDataAccessException("There was a problem saving the changes.", exc);
 		}

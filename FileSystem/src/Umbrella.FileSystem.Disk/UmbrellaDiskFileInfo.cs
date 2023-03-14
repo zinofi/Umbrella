@@ -391,12 +391,8 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 			if (_metadataDictionary is null)
 				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-			if (_metadataDictionary is not null)
-			{
-				_ = _metadataDictionary.TryGetValue(key, out string rawValue);
-
+			if (_metadataDictionary is not null && _metadataDictionary.TryGetValue(key, out string rawValue))
 				return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)!;
-			}
 
 			return default!;
 		}
