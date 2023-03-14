@@ -302,5 +302,5 @@ dotnet_diagnostic.IDE0066.severity = error
 dotnet_diagnostic.IDE0052.severity = error
 dotnet_diagnostic.IDE0059.severity = error
 dotnet_diagnostic.IDE0051.severity = error
-dotnet_diagnostic.IDE0005.severity = error
+dotnet_diagnostic.IDE0005.severity = silent
 dotnet_diagnostic.IDE0270.severity = suggestion

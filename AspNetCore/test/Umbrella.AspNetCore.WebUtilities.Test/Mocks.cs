@@ -66,23 +66,23 @@ public static class Mocks
 			});
 	}
 
-	private static ViewContext CreateViewContext(string? requestPathBase = null)
-	{
-		var actionContext = new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
+	//private static ViewContext CreateViewContext(string? requestPathBase = null)
+	//{
+	//	var actionContext = new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
 
-		if (requestPathBase is not null)
-			actionContext.HttpContext.Request.PathBase = new PathString(requestPathBase);
+	//	if (requestPathBase is not null)
+	//		actionContext.HttpContext.Request.PathBase = new PathString(requestPathBase);
 
-		var metadataProvider = new EmptyModelMetadataProvider();
-		var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());
-		var viewContext = new ViewContext(
-			actionContext,
-			Mock.Of<IView>(),
-			viewData,
-			Mock.Of<ITempDataDictionary>(),
-			TextWriter.Null,
-			new HtmlHelperOptions());
+	//	var metadataProvider = new EmptyModelMetadataProvider();
+	//	var viewData = new ViewDataDictionary(metadataProvider, new ModelStateDictionary());
+	//	var viewContext = new ViewContext(
+	//		actionContext,
+	//		Mock.Of<IView>(),
+	//		viewData,
+	//		Mock.Of<ITempDataDictionary>(),
+	//		TextWriter.Null,
+	//		new HtmlHelperOptions());
 
-		return viewContext;
-	}
+	//	return viewContext;
+	//}
 }

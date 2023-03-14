@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.WebUtilities.Security;
@@ -58,7 +57,7 @@ public static class HttpContextExtensions
 
 	private static List<IDataExpressionDescriptor> GetDataExpressionDescriptors(HttpContext httpContext)
 	{
-		if (!httpContext.Items.TryGetValue(UnmatchedDataExpressionDescriptorKey, out object? objValue) || !(objValue is List<IDataExpressionDescriptor> lstDescriptor))
+		if (!httpContext.Items.TryGetValue(UnmatchedDataExpressionDescriptorKey, out object? objValue) || objValue is not List<IDataExpressionDescriptor> lstDescriptor)
 		{
 			lstDescriptor = new List<IDataExpressionDescriptor>();
 			httpContext.Items[UnmatchedDataExpressionDescriptorKey] = lstDescriptor;

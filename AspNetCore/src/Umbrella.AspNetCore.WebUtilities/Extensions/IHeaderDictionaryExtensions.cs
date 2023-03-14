@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AppFramework.Shared.Enumerations;
 using Umbrella.AppFramework.Shared.Primitives;

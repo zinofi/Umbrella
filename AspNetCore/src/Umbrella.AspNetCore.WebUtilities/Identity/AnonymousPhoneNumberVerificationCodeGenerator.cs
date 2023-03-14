@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Identity.Abstractions;
 using Umbrella.AspNetCore.WebUtilities.Identity.Options;
@@ -24,7 +21,6 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 	private readonly TUser _appUser;
 	private readonly ILogger _logger;
 	private readonly TUserManager _userManager;
-	private readonly AnonymousPhoneNumberVerificationCodeGeneratorOptions _options;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AnonymousPhoneNumberVerificationCodeGenerator{TUserManager, TUser, TUserKey}"/> class.
@@ -39,7 +35,6 @@ public class AnonymousPhoneNumberVerificationCodeGenerator<TUserManager, TUser, 
 	{
 		_logger = logger;
 		_userManager = userManager;
-		_options = options;
 
 		_appUser = new TUser
 		{

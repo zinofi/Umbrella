@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Net;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions;
 
