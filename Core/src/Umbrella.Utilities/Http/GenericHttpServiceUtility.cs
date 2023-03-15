@@ -95,10 +95,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 		{
 			if (response.IsSuccessStatusCode)
 			{
-				// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
-				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
-					return (true, new HttpCallResult<TResult?>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
-
+				// First check if we have some content
 				if (response.Content.Headers.ContentLength > 0)
 				{
 					TResult? result = response.Content.Headers.ContentType.MediaType switch
@@ -111,6 +108,11 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 
 					return (true, new HttpCallResult<TResult?>(true, result: result));
 				}
+
+				// Now check for a 201 or 204 in cases where we didn't receive content as those are still valid responses.
+				// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
+				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
+					return (true, new HttpCallResult<TResult?>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 			}
 
 			return default;
