@@ -399,7 +399,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		{
 			return await Items.AnyAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc))
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
 			throw new UmbrellaDataAccessException("There has been a problem determining if the item exists.", exc);
 		}
