@@ -44,6 +44,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
 		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null)
+		where TItemModel : notnull
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 	{
 		try

@@ -2,6 +2,6 @@
 	<p>@Message</p>
 	@if (OnReloadButtonClick.HasDelegate && ShowReloadButton)
 	{
-		<button class="btn btn-primary" @onclick="async () => await OnReloadButtonClick.InvokeAsync(null)">Reload</button>
+		<button class="btn btn-primary" @onclick="async () => await OnReloadButtonClick.InvokeAsync(null)">@ReloadButtonText</button>
 	}
 </div>

@@ -16,6 +16,7 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// </summary>
 /// <seealso cref="UmbrellaComponentBase" />
 public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel> : UmbrellaComponentBase
+	where TItemModel : notnull
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 {
 	/// <summary>

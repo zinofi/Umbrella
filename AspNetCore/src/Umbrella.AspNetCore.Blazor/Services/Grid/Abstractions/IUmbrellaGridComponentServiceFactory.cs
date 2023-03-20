@@ -34,7 +34,9 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// </param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(string initialSortPropertyName, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate, Action stateHasChangedDelegate, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null) where TPaginatedResultModel : PaginatedResultModel<TItemModel>;
+	IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(string initialSortPropertyName, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate, Action stateHasChangedDelegate, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null)
+		where TItemModel : notnull
+		where TPaginatedResultModel : PaginatedResultModel<TItemModel>;
 
 	/// <summary>
 	/// Creates an instance of the <see cref="UmbrellaRemoteDataAccessGridComponentService{TItemModel, TIdentifier, TPaginatedResultModel, TRepository}"/>.

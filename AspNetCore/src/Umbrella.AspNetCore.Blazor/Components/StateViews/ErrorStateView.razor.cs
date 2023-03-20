@@ -3,13 +3,16 @@
 namespace Umbrella.AspNetCore.Blazor.Components.StateViews;
 
 /// <summary>
-/// A state view component used to display an error message. Defaults to "There has been a problem. Please try again.".
+/// A state view component used to display an error message.
 /// </summary>
 public partial class ErrorStateView
 {
 	/// <summary>
-	/// Gets or sets the message. Defaults to "There has been a problem. Please try again.".
+	/// Gets or sets the message.
 	/// </summary>
+	/// <remarks>
+	/// Defaults to <c>There has been a problem. Please try again.</c>
+	/// </remarks>
 	[Parameter]
 	public string Message { get; set; } = "There has been a problem. Please try again.";
 
@@ -20,8 +23,18 @@ public partial class ErrorStateView
 	public EventCallback OnReloadButtonClick { get; set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether to show the reload button. Defaults to <see langword="true"/>.
+	/// Gets or sets a value indicating whether to show the reload button.
 	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="true"/>.
+	/// </remarks>
 	[Parameter]
 	public bool ShowReloadButton { get; set; } = true;
+
+	/// <summary>
+	/// Gets or sets the reload button text.
+	/// </summary>
+	/// <remarks>Defaults to <c>Reload</c></remarks>
+	[Parameter]
+	public string ReloadButtonText { get; set; } = "Reload";
 }

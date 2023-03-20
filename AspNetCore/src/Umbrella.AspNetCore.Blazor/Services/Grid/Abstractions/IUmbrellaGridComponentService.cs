@@ -13,7 +13,9 @@ namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
-public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> where TPaginatedResultModel : PaginatedResultModel<TItemModel>
+public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>
+	where TItemModel : notnull
+	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 {
 	/// <summary>
 	/// Gets a value specifying whether or not the grid will automatically render when the page loads. If this is set to <see langword="false" />

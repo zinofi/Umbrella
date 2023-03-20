@@ -39,6 +39,7 @@ public enum UmbrellaGridRenderMode
 /// <seealso cref="IUmbrellaGrid{TItem}" />
 [CascadingTypeParameter(nameof(TItem))]
 public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
+	where TItem : notnull
 {
 	private class UmbrellaGridSelectableItem
 	{

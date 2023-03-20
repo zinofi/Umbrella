@@ -17,7 +17,9 @@ namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
-public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> where TPaginatedResultModel : PaginatedResultModel<TItemModel>
+public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>
+	where TItemModel : notnull
+	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaGridComponentService{TItemModel, TPaginatedResultModel}"/> class.

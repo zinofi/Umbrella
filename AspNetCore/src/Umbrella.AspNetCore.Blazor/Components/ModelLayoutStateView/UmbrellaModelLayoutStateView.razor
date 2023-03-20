@@ -1,4 +1,6 @@
-﻿@if (CurrentState is LayoutState.Loading)
+﻿@typeparam TModel
+
+@if (CurrentState is LayoutState.Loading)
 {
     @if (Loading is not null)
     {
@@ -11,9 +13,9 @@
 }
 else if (CurrentState is LayoutState.Success && Model is not null)
 {
-    @Success
+    @Success?.Invoke(Model)
 }
-else if(CurrentState is LayoutState.Error)
+else if (CurrentState is LayoutState.Error)
 {
     @if (Error is not null)
     {
@@ -24,7 +26,11 @@ else if(CurrentState is LayoutState.Error)
         <ErrorStateView OnReloadButtonClick="ReloadCallback" />
     }
 }
-else
+else if (CurrentState is LayoutState.Empty)
 {
-    <p>TODO!!</p>
+    @Empty
+}
+else if(CurrentState is LayoutState.Saving)
+{
+    @Saving
 }
