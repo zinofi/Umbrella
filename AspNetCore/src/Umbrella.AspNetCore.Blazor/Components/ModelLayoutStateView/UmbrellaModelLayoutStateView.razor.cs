@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 
-namespace Umbrella.AspNetCore.Blazor.Components.FormLayoutStateView;
+namespace Umbrella.AspNetCore.Blazor.Components.ModelLayoutStateView;
 
-public partial class UmbrellaFormLayoutStateView
+public partial class UmbrellaModelLayoutStateView
 {
 	[Parameter]
 	[EditorRequired]

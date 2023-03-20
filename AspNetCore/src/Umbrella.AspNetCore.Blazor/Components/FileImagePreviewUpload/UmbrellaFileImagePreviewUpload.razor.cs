@@ -75,24 +75,30 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// <summary>
 	/// Gets or sets the target width of the resized image. The resized image width may be less than this value depending on the width of the uploaded source image.
 	/// </summary>
+	/// <remarks>Defaults to 1</remarks>
 	[Parameter]
 	public int WidthRequest { get; set; } = 1;
 
 	/// <summary>
 	/// Gets or sets the target height of the resized image. The resized image height may be less than this value depending on the height of the uploaded source image.
 	/// </summary>
+	/// <remarks>Defaults to 1</remarks>
 	[Parameter]
 	public int HeightRequest { get; set; } = 1;
 
 	/// <summary>
 	/// Gets or sets the mode to use when resizing images.
 	/// </summary>
+	/// <remarks>
+	/// Defaults to <see cref="DynamicResizeMode.UniformFill"/>
+	/// </remarks>
 	[Parameter]
 	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
 
 	/// <summary>
 	/// Gets or sets the image format of the resized image.
 	/// </summary>
+	/// <remarks>Defaults to <see cref="DynamicImageFormat.Jpeg"/></remarks>
 	[Parameter]
 	public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
 
@@ -137,6 +143,13 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// </summary>
 	[Parameter]
 	public EventCallback OnDeleteImage { get; set; }
+
+	/// <summary>
+	/// Gets or sets the delete button text.
+	/// </summary>
+	/// <remarks>Defaults to <c>Delete</c></remarks>
+	[Parameter]
+	public string DeleteButtonText { get; set; } = "Delete";
 
 	private string? UpdatedImageUrl { get; set; }
 	private UmbrellaFileImagePreviewUploadMode FileUploadMode { get; set; }

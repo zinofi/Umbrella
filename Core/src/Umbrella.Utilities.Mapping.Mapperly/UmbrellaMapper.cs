@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Umbrella.Utilities.Exceptions;
@@ -36,6 +37,8 @@ public class UmbrellaMapper : IUmbrellaMapper
 	/// <param name="options">The options.</param>
 	public UmbrellaMapper(ILogger<UmbrellaMapper> logger, UmbrellaMapperOptions options)
 	{
+		// TODO: Add a new ctor parameter for IServiceProvider.
+
 		_logger = logger;
 		_options = options;
 
@@ -63,7 +66,15 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 						throw new InvalidOperationException($"A registration already exists for the source and destination types. The type being registered is {existingType.FullName} but the type named {type.FullName} has already been registered.");
 					}
-
+					
+					// TODO: Use ActivatorUtilities.CreateInstance and use the service provider to provider ctor services for
+					// the type. That way we can encapsulate more logic inside the mappers, e.g. logic to call out to a web service, file handler, etc.
+					// Hmmmm... Opens up possibilities previously not workable using AutoMapper.
+					// Good idea? Violates SRP??
+					// Alternative approach is to create a model factory but then that adds more complexity and will mean changes
+					// to the generic controller code which will cause issues and then we're actually introducing more explicit coupling.
+					// Hmmm... At least doing this will give us the option to do more complex mapping inside the mappers. We don't
+					// necessarily have to use it.
 					cache.Add(key, Activator.CreateInstance(type)!);
 				}
 			}
