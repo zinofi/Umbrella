@@ -82,9 +82,17 @@ public class UmbrellaColumnDefinition<TItem>
 			FilterMatchType = FilterType.Equal;
 		}
 
-		if (Heading is null && Property is not null)
+		if (Property is not null)
 		{
-			Heading = Property.GetDisplayText();
+			if (string.IsNullOrEmpty(Heading))
+			{
+				Heading = Property.GetDisplayText();
+			}
+
+			if (string.IsNullOrEmpty(ShortHeading))
+			{
+				ShortHeading = Property.GetShortNameDisplayText() ?? Property.GetDisplayText();
+			}
 		}
 	}
 

@@ -140,15 +140,27 @@ public static class ExpressionExtensions
 	/// <returns>The display name according to the specified rules.</returns>
 	public static string? GetDisplayText(this LambdaExpression expression)
 	{
-		MemberExpression? memberExpression = expression.Body switch
-		{
-			UnaryExpression x => x.Operand as MemberExpression,
-			_ => expression.Body as MemberExpression
-		};
+		MemberExpression? memberExpression = GetMemberExpression(expression);
 
-		if (memberExpression is null)
-			return null;
-
-		return memberExpression.Member.GetDisplayText();
+		return memberExpression?.Member.GetDisplayText();
 	}
+
+	/// <summary>
+	/// Gets the short display text for the given expression by trying to read the <see cref="DisplayAttribute.ShortName"/>
+	/// property of a <see cref="DisplayAttribute"/> that has been applied to the member specified using the given expression.
+	/// </summary>
+	/// <param name="expression">The expression.</param>
+	/// <returns>The short display name if it has a value; otherwise <see langword="null"/>.</returns>
+	public static string? GetShortNameDisplayText(this LambdaExpression expression)
+	{
+		MemberExpression? memberExpression = GetMemberExpression(expression);
+
+		return memberExpression?.Member.GetShortDisplayText();
+	}
+
+	private static MemberExpression? GetMemberExpression(this LambdaExpression expression) => expression.Body switch
+	{
+		UnaryExpression x => x.Operand as MemberExpression,
+		_ => expression.Body as MemberExpression
+	};
 }

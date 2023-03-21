@@ -32,4 +32,17 @@ public static class MemberInfoExtensions
 			?? memberInfo.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName
 			?? memberInfo.Name.Humanize(LetterCasing.Title);
 	}
+
+	/// <summary>
+	/// Gets the short display text for the given member by trying to read the <see cref="DisplayAttribute.ShortName"/>
+	/// property of a <see cref="DisplayAttribute"/> that has been applied to the member.
+	/// </summary>
+	/// <param name="memberInfo">The member information.</param>
+	/// <returns>The short display name if it has a value; otherwise <see langword="null"/>.</returns>
+	public static string? GetShortDisplayText(this MemberInfo memberInfo)
+	{
+		Guard.IsNotNull(memberInfo);
+
+		return memberInfo.GetCustomAttribute<DisplayAttribute>()?.ShortName;
+	}
 }
