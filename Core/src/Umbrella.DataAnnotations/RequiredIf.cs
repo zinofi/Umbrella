@@ -18,9 +18,9 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 	public EqualityOperator Operator { get; }
 
 	/// <summary>
-	/// Gets the dependent value.
+	/// Gets the value that will be compared against the value of the <see cref="ContingentValidationAttribute.DependentPropertyName"/>
 	/// </summary>
-	public object DependentValue { get; }
+	public object ComparisonValue { get; }
 
 	/// <summary>
 	/// Gets the metadata.
@@ -32,12 +32,12 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	/// <param name="operator">The operator.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RequiredIfAttribute(string dependentProperty, EqualityOperator @operator, object dependentValue)
+	/// <param name="comparisonValue">The comparison value.</param>
+	public RequiredIfAttribute(string dependentProperty, EqualityOperator @operator, object comparisonValue)
 		: base(dependentProperty)
 	{
 		Operator = @operator;
-		DependentValue = dependentValue;
+		ComparisonValue = comparisonValue;
 		Metadata = OperatorMetadata.Get(Operator);
 	}
 
@@ -45,9 +45,9 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 	/// Initializes a new instance of the <see cref="RequiredIfAttribute"/> class with the <see cref="Operator"/> set to <see cref="EqualityOperator.EqualTo"/>.
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RequiredIfAttribute(string dependentProperty, object dependentValue)
-		: this(dependentProperty, EqualityOperator.EqualTo, dependentValue)
+	/// <param name="comparisonValue">The comparison value.</param>
+	public RequiredIfAttribute(string dependentProperty, object comparisonValue)
+		: this(dependentProperty, EqualityOperator.EqualTo, comparisonValue)
 	{
 	}
 
@@ -57,7 +57,7 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty, DependentValue);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentPropertyName, ComparisonValue);
 	}
 
 	/// <inheritdoc />
@@ -69,12 +69,12 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 			.Union(new[]
 			{
 				new KeyValuePair<string, object>("Operator", Operator.ToString()),
-				new KeyValuePair<string, object>("DependentValue", DependentValue)
+				new KeyValuePair<string, object>("DependentValue", ComparisonValue)
 			});
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object dependentValue, object container)
-		=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || (value is not null && !string.IsNullOrEmpty(value.ToString().Trim()));
+	public override bool IsValid(object value, object actualDependentPropertyValue, object model)
+		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || (value is not null && !string.IsNullOrEmpty(value.ToString().Trim()));
 
 	/// <inheritdoc />
 	public override string DefaultErrorMessageFormat => "{0} is required due to {1} being " + Metadata.ErrorMessage + " {2}";

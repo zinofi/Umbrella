@@ -6,6 +6,7 @@ namespace Umbrella.DataAnnotations;
 /// A <see cref="RegularExpressionAttribute"/> used to validate a UK mobile phone number.
 /// </summary>
 /// <seealso cref="RegularExpressionAttribute" />
+[AttributeUsage(AttributeTargets.Property)]
 public class UmbrellaMobilePhoneAttribute : RegularExpressionAttribute
 {
 	/// <summary>

@@ -59,7 +59,7 @@ public class DataExpressionFactory : IDataExpressionFactory
 					return default;
 
 				var memberAccess = UmbrellaDynamicExpression.CreateMemberAccess(parameter, descriptor.MemberPath!, false);
-
+				
 				if (memberAccess is null)
 					return default;
 

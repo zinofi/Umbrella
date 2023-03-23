@@ -41,8 +41,8 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 	}
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object dependentValue, object container)
-		=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
+	public override bool IsValid(object value, object actualDependentPropertyValue, object model)
+		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
 
 	/// <inheritdoc />
 	protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
@@ -58,7 +58,7 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty, DependentValue, Pattern);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentPropertyName, ComparisonValue, Pattern);
 	}
 
 	/// <inheritdoc />

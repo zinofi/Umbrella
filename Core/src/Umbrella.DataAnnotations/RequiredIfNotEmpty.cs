@@ -19,9 +19,9 @@ public class RequiredIfNotEmptyAttribute : ContingentValidationAttribute
 	}
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object dependentValue, object container)
+	public override bool IsValid(object value, object actualDependentPropertyValue, object model)
 	{
-		if (!string.IsNullOrWhiteSpace((dependentValue ?? string.Empty).ToString()))
+		if (!string.IsNullOrWhiteSpace((actualDependentPropertyValue ?? string.Empty).ToString()))
 			return value is not null && !string.IsNullOrWhiteSpace(value.ToString());
 
 		return true;

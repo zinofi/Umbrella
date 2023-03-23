@@ -6,6 +6,7 @@ namespace Umbrella.DataAnnotations;
 /// Specifies that a data field must match the regular expression for a UK Postcode.
 /// </summary>
 /// <seealso cref="RegularExpressionAttribute" />
+[AttributeUsage(AttributeTargets.Property)]
 public class UmbrellaPostcodeAttribute : RegularExpressionAttribute
 {
 	/// <summary>

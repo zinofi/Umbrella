@@ -17,6 +17,10 @@ public class OperatorMetadata
 	/// <summary>
 	/// Returns true if the validation check passes.
 	/// </summary>
+	/// <remarks>
+	/// This check is to ensure that the comparison between the comparison value matches the actual dependent property value
+	/// before validation is actually performed on the value of the current property.
+	/// </remarks>
 	public Func<object, object, bool, bool> IsValid { get; private set; } = null!;
 
 	/// <summary>

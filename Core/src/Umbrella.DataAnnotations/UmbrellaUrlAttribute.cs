@@ -6,6 +6,7 @@ namespace Umbrella.DataAnnotations;
 /// Specifies that a data field must be a valid URL.
 /// </summary>
 /// <seealso cref="RegularExpressionAttribute" />
+[AttributeUsage(AttributeTargets.Property)]
 public class UmbrellaUrlAttribute : RegularExpressionAttribute
 {
 	/// <summary>

@@ -52,11 +52,11 @@ public class MinDateAttribute : ModelAwareValidationAttribute
 	/// Returns true if the property is valid.
 	/// </summary>
 	/// <param name="value">The value.</param>
-	/// <param name="container">The container.</param>
+	/// <param name="model">The model.</param>
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public override bool IsValid(object value, object container)
+	public override bool IsValid(object value, object model)
 	{
 		// TODO: Consider enforcing the value to be specified as DateTimeKind.Utc to avoid issues.
 

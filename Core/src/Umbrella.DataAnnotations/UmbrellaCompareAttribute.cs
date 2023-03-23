@@ -5,6 +5,7 @@
 /// returned on validation failure contains the member name that the attribute targets.
 /// </summary>
 /// <seealso cref="CompareAttribute" />
+[AttributeUsage(AttributeTargets.Property)]
 public class UmbrellaCompareAttribute : CompareAttribute
 {
 	/// <summary>

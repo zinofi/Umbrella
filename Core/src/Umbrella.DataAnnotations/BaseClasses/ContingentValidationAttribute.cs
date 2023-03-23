@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Linq.Expressions;
 
 namespace Umbrella.DataAnnotations.BaseClasses;
 
@@ -12,22 +13,26 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	/// <summary>
 	/// Gets the name of the dependent property.
 	/// </summary>
-	public string DependentProperty { get; private set; }
+	/// <remarks>
+	/// This name can match a property with the same name on the model, e.g. FirstName, or can be a path to a nested property,
+	/// e.g. Car.Model
+	/// </remarks>
+	public string DependentPropertyName { get; private set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether validation will succeed if either
 	/// the value on which this attrubute has been applied is null or the value of
-	/// the <see cref="DependentProperty"/> is null.
+	/// the <see cref="DependentPropertyName"/> is null.
 	/// </summary>
 	public bool ReturnTrueOnEitherNull { get; set; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ContingentValidationAttribute"/> class.
 	/// </summary>
-	/// <param name="dependentProperty">The dependent property.</param>
-	public ContingentValidationAttribute(string dependentProperty)
+	/// <param name="dependentPropertyName">The dependent property name.</param>
+	public ContingentValidationAttribute(string dependentPropertyName)
 	{
-		DependentProperty = dependentProperty;
+		DependentPropertyName = dependentPropertyName;
 	}
 
 	/// <inheritdoc />
@@ -36,7 +41,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentPropertyName);
 	}
 
 	/// <inheritdoc />
@@ -52,7 +57,18 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 		var currentType = container.GetType();
 		object value = container;
 
-		foreach (string propertyName in DependentProperty.Split('.'))
+		// TODO: Could use a cached compiled expression here instead of reflection.
+		// Not sure of performance impact on Blazor, but makes sense for server apps.
+		// Would need to have a static property to change the configuration between web and client
+		// apps. Benchmark first though to see what the best approach is.
+		// Also, would need to copy the CreateMemberAccess method from Umbrella.Utilities to avoid
+		// creating a dependency on that package. I want to try and keep this package lightweight.
+
+		// ParameterExpression parameter = Expression.Parameter(currentType);
+		// var memberAccess = UmbrellaDynamicExpression.CreateMemberAccess(parameter, DependentPropertyName, false);
+		// var x = Expression.Lambda<Func<object, object>>(Expression.Convert(memberAccess, typeof(object)), parameter).Compile();
+
+		foreach (string propertyName in DependentPropertyName.Split('.'))
 		{
 			var property = currentType.GetProperty(propertyName);
 			value = property.GetValue(value, null);
@@ -64,20 +80,20 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 
 	/// <inheritdoc />
 	protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
-		=> base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
+		=> base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentPropertyName) });
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object container) => IsValid(value, GetDependentPropertyValue(container), container);
+	public override bool IsValid(object value, object model) => IsValid(value, GetDependentPropertyValue(model), model);
 
 	/// <summary>
-	/// If the value of <paramref name="dependentValue" /> is such that it matches the value of the <see cref="DependentProperty"/> value on
-	/// the <paramref name="container"/>, validation will take place on the supplied <paramref name="value"/>.
+	/// If the value of <paramref name="actualDependentPropertyValue" /> is such that it matches the value of the <see cref="DependentPropertyName"/> value on
+	/// the <paramref name="model"/>, validation will take place on the supplied <paramref name="value"/>.
 	/// </summary>
 	/// <param name="value">The value.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	/// <param name="container">The container.</param>
+	/// <param name="actualDependentPropertyValue">The comparison value.</param>
+	/// <param name="model">The model.</param>
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public abstract bool IsValid(object value, object dependentValue, object container);
+	public abstract bool IsValid(object value, object actualDependentPropertyValue, object model);
 }

@@ -27,12 +27,17 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// <summary>
 	/// Returns true if the value is valid.
 	/// </summary>
+	/// <remarks>
+	/// Although this method can be called manually, it is automatically called internally
+	/// by the built-in <see cref="ValidationAttribute.IsValid(object, ValidationContext)"/> which has been overridden
+	/// in the <see cref="ModelAwareValidationAttribute"/> base class.
+	/// </remarks>
 	/// <param name="value">The value.</param>
-	/// <param name="container">The container.</param>
+	/// <param name="model">The model.</param>
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public abstract bool IsValid(object value, object container);
+	public abstract bool IsValid(object value, object model);
 
 	/// <summary>
 	/// Gets the name of the type for use in client scenarios, e.g. jQuery Validation, when used with web projects.
@@ -56,9 +61,9 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// <inheritdoc />
 	protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)
 	{
-		object container = validationContext.ObjectInstance;
+		object model = validationContext.ObjectInstance;
 
-		if (!IsValid(value, container))
+		if (!IsValid(value, model))
 			return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), validationContext.MemberName is null ? null : new[] { validationContext.MemberName });
 
 		return ValidationResult.Success;

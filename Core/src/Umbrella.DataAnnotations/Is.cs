@@ -47,12 +47,12 @@ public class IsAttribute : ContingentValidationAttribute
 				   });
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object dependentValue, object container)
+	public override bool IsValid(object value, object actualDependentPropertyValue, object model)
 	{
-		if (PassOnNull && (value is null || dependentValue is null))
+		if (PassOnNull && (value is null || actualDependentPropertyValue is null))
 			return true;
 
-		return _metadata.IsValid(value, dependentValue, ReturnTrueOnEitherNull);
+		return _metadata.IsValid(value, actualDependentPropertyValue, ReturnTrueOnEitherNull);
 	}
 
 	/// <inheritdoc />
