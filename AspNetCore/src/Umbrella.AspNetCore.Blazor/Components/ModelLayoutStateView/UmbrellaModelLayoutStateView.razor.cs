@@ -51,7 +51,7 @@ public partial class UmbrellaModelLayoutStateView<TModel>
 	/// </remarks>
 	[Parameter]
 	[EditorRequired]
-	public RenderFragment<TModel>? Success { get; set; }
+	public RenderFragment? Success { get; set; }
 
 	/// <summary>
 	/// Gets or sets the content displayed when the value of <see cref="CurrentState"/> is <see cref="LayoutState.Loading"/>.
