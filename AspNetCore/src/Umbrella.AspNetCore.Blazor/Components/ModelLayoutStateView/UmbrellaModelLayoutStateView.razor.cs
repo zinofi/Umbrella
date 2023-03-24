@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.StateViews;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 
@@ -33,6 +34,7 @@ public partial class UmbrellaModelLayoutStateView<TModel>
 	/// </remarks>
 	[Parameter]
 	[EditorRequired]
+	[MemberNotNull(nameof(Model))]
 	public TModel? Model { get; set; }
 
 	/// <summary>

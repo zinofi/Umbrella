@@ -2,7 +2,9 @@
 // Licensed under the MIT License.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -38,6 +40,7 @@ public partial class UmbrellaColumn<TItem>
 	private bool ScanMode { get; set; }
 
 	[CascadingParameter]
+	[MemberNotNull(nameof(Value))]
 	private TItem? Value { get; set; }
 
 	private string? PropertyStringValue
