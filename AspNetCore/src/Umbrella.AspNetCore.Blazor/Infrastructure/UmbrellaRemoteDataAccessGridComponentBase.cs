@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
+using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
@@ -52,6 +53,8 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 
 			if (confirmed)
 			{
+				await BeforeDeletingAsync(item);
+
 				var result = await Repository.DeleteAsync(item.Id);
 
 				if (result.Success)
@@ -74,4 +77,11 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 			await DialogUtility.ShowDangerMessageAsync();
 		}
 	}
+
+	/// <summary>
+	/// Called after showing the confirmation dialog asking the user to confirm deletion, but before the calling the <c>DeleteAsync</c> method on the repository.
+	/// </summary>
+	/// <param name="item">The item being deleted.</param>
+	/// <returns>An awaitable task.</returns>
+	protected virtual ValueTask BeforeDeletingAsync(TItemModel item) => default;
 }

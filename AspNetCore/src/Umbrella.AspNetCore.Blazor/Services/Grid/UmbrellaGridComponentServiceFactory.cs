@@ -81,7 +81,8 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		bool autoRenderOnPageLoad = true,
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
-		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null)
+		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
+		Func<TItemModel, ValueTask>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
@@ -99,7 +100,8 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 				CallGridStateHasChangedOnRefresh = callGridStateHasChangedOnRefresh,
 				InitialSortDirection = initialSortDirection,
 				InitialSortPropertyName = initialSortPropertyName,
-				StateHasChangedDelegate = stateHasChangedDelegate
+				StateHasChangedDelegate = stateHasChangedDelegate,
+				BeforeDeletingDelegate = beforeDeletingDelegate
 			};
 
 			if (initialSortExpressions is not null)

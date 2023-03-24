@@ -58,9 +58,13 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// The collection of sort expressions used to initially sort the data in the grid.
 	/// Defaults to a collection containing a single sort expresssion which uses the <paramref name="initialSortPropertyName"/> and <paramref name="initialSortDirection"/>.
 	/// </param>
+	/// <param name="beforeDeletingDelegate">
+	/// An optional delegate that is invoked after showing the confirmation dialog asking the user to confirm deletion,
+	/// but before the calling the <c>DeleteAsync</c> method on the repository.
+	/// </param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(string initialSortPropertyName, Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null)
+	IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(string initialSortPropertyName, Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null, Func<TItemModel, ValueTask>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>

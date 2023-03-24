@@ -42,6 +42,12 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 	/// <inheritdoc />
 	public TRepository Repository { get; }
 
+	/// <summary>
+	/// Gets the optional delegate that is invoked after showing the confirmation dialog asking the user to confirm deletion,
+	/// but before the calling the <c>DeleteAsync</c> method on the repository.
+	/// </summary>
+	public Func<TItemModel, ValueTask>? BeforeDeletingDelegate { get; init; }
+
 	/// <inheritdoc />
 	public async Task DeleteItemClickAsync(TItemModel item)
 	{
@@ -49,10 +55,13 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 		{
 			string typeDisplayName = typeof(TItemModel).GetDisplayText();
 
-			bool confirmed = await DialogUtility.ShowConfirmDangerMessageAsync($"Are you sure you want to delete this {typeDisplayName}? ", $"Delete {typeDisplayName}");
+			bool confirmed = await DialogUtility.ShowConfirmDangerMessageAsync($"Are you sure you want to delete this {typeDisplayName}?", $"Delete {typeDisplayName}");
 
 			if (confirmed)
 			{
+				if (BeforeDeletingDelegate is not null)
+					await BeforeDeletingDelegate(item);
+
 				var result = await Repository.DeleteAsync(item.Id);
 
 				if (result.Success)
