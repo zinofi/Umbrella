@@ -359,6 +359,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 
 		try
 		{
+			// TODO: Benchmark accessing using FirstOrDefault, SingleOrDefault and FindAsync
 			var entity = await Items.TrackChanges(trackChanges).IncludeMap(map).SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken).ConfigureAwait(false);
 
 			if (entity is null)
