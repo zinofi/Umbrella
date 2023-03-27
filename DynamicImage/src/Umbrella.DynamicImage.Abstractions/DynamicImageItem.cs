@@ -37,6 +37,17 @@ public class DynamicImageItem
 	/// </summary>
 	public byte[]? Content { private get; set; }
 
+	// TODO: Need to be able to set these and retain their values using metadata.
+	///// <summary>
+	///// Gets or sets the width.
+	///// </summary>
+	//public int Width { get; set; }
+
+	///// <summary>
+	///// Gets or sets the height.
+	///// </summary>
+	//public int Height { get; set; }
+
 	/// <summary>
 	/// Gets or sets the <see cref="IUmbrellaFileInfo"/> instance.
 	/// </summary>
@@ -53,7 +64,7 @@ public class DynamicImageItem
 
 		if (Content is null && UmbrellaFileInfo is not null)
 			Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
+		
 		return Content;
 	}
 

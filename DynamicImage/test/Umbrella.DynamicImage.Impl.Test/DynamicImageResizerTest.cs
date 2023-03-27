@@ -220,7 +220,7 @@ public class DynamicImageResizerTest
 			_ = Directory.CreateDirectory(outputDirectory);
 
 			using var fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
-			await fs.WriteAsync(resizedImageBytes, 0, resizedImageBytes.Length);
+			await fs.WriteAsync(resizedImageBytes);
 		}
 	}
 
@@ -239,9 +239,9 @@ public class DynamicImageResizerTest
 	{
 		byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\test-dodgy-image.jpg"));
 
-		byte[] result = imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg);
+		var (resizedBytes, _, _) = imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg);
 
-		Assert.True(result.Length > 0);
+		Assert.True(resizedBytes.Length > 0);
 	}
 
 	[Theory]

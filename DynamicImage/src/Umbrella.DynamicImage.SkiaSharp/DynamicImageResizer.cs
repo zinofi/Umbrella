@@ -52,7 +52,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	// into account the resize mode.
 	// TODO: Build in auto-rotate capability - see https://github.com/mono/SkiaSharp/issues/836
 	/// <inheritdoc />
-	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
+	public override (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
 	{
 		Guard.IsNotNull(originalImage);
 		Guard.HasSizeGreaterThan(originalImage, 0);
@@ -84,7 +84,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 				using var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKFilterQuality.High);
 				using var outputImage = SKImage.FromBitmap(resizedImage);
 
-				return outputImage.Encode(GetImageFormat(format), qualityRequest).ToArray();
+				return (outputImage.Encode(GetImageFormat(format), qualityRequest).ToArray(), result.width, result.height);
 			}
 			finally
 			{

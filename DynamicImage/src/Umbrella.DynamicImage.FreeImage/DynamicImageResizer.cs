@@ -53,7 +53,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	}
 
 	/// <inheritdoc />
-	public override byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
+	public override (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
 	{
 		Guard.IsNotNull(originalImage);
 		Guard.HasSizeGreaterThan(originalImage, 0);
@@ -81,7 +81,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 
 				imageToSave.Save(outputStream, GetImageFormat(format), GetSaveFlags(format));
 
-				return outputStream.ToArray();
+				return (outputStream.ToArray(), result.width, result.height);
 			}
 			finally
 			{

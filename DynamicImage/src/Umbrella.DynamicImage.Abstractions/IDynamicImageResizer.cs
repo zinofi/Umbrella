@@ -40,8 +40,8 @@ public interface IDynamicImageResizer
 	/// </summary>
 	/// <param name="originalImage">The original image.</param>
 	/// <param name="options">The options.</param>
-	/// <returns>The resized image.</returns>
-	byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options);
+	/// <returns>The resized image together with its new width and height.</returns>
+	(byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, DynamicImageOptions options);
 
 	/// <summary>
 	/// Resizes the image.
@@ -52,6 +52,6 @@ public interface IDynamicImageResizer
 	/// <param name="resizeMode">The resize mode.</param>
 	/// <param name="format">The format.</param>
 	/// <param name="qualityRequest">A value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <c>75</c>.</param>
-	/// <returns>The resized image.</returns>
-	byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75);
+	/// <returns>The resized image together with its new width and height.</returns>
+	(byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75);
 }

@@ -105,11 +105,13 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			byte[] originalBytes = await sourceBytesProvider().ConfigureAwait(false);
 
 			// Need to get the newly resized image and assign it to the instance
+			var (resizedBytes, _, _) = ResizeImage(originalBytes, options);
+
 			dynamicImage = new DynamicImageItem
 			{
 				ImageOptions = options,
 				LastModified = DateTimeOffset.UtcNow,
-				Content = ResizeImage(originalBytes, options)
+				Content = resizedBytes
 			};
 
 			//Now add to the cache
@@ -127,11 +129,11 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	public abstract bool IsImage(byte[] bytes);
 
 	/// <inheritdoc />
-	public byte[] ResizeImage(byte[] originalImage, DynamicImageOptions options)
+	public (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, DynamicImageOptions options)
 		=> ResizeImage(originalImage, options.Width, options.Height, options.ResizeMode, options.Format, options.QualityRequest);
 
 	/// <inheritdoc />
-	public abstract byte[] ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75);
+	public abstract (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75);
 	#endregion
 
 	#region Protected Methods		
