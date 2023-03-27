@@ -82,7 +82,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
 		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
-		Func<TItemModel, ValueTask>? beforeDeletingDelegate = null)
+		Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>

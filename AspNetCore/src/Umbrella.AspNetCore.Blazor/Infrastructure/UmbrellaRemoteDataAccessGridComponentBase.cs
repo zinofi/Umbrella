@@ -53,7 +53,10 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 
 			if (confirmed)
 			{
-				await BeforeDeletingAsync(item);
+				bool success = await BeforeDeletingAsync(item);
+
+				if (!success)
+					return;
 
 				var result = await Repository.DeleteAsync(item.Id);
 
@@ -83,5 +86,5 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	/// </summary>
 	/// <param name="item">The item being deleted.</param>
 	/// <returns>An awaitable task.</returns>
-	protected virtual ValueTask BeforeDeletingAsync(TItemModel item) => default;
+	protected virtual ValueTask<bool> BeforeDeletingAsync(TItemModel item) => default;
 }
