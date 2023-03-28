@@ -8,6 +8,9 @@ namespace Umbrella.FileSystem.Abstractions;
 /// <summary>
 /// A handler used to perform authorization checks on files before they are accessed.
 /// </summary>
+/// <remarks>
+/// These handlers must be registered as singletons with the application DI container.
+/// </remarks>
 public interface IUmbrellaFileAuthorizationHandler
 {
 	/// <summary>
