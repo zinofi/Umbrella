@@ -525,6 +525,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 					if (!string.IsNullOrWhiteSpace(filterValue))
 					{
+						// Treating explicit values as special cases here where we want to intentionally pass a null value, e.g. for a nullable enum
+						// where we want to filter only on null.
+						if (filterValue is "null")
+							filterValue = null;
+
 						lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, filterValue, column.FilterMatchType));
 					}
 				}

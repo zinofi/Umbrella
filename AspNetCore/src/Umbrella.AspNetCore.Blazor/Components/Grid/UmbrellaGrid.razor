@@ -36,6 +36,10 @@
                                         {
                                             <select id="@id" class="form-select" @bind="column.FilterValue">
                                                 <option>Any</option>
+                                                @if(!string.IsNullOrEmpty(column.NullableEnumOption))
+                                                {
+                                                    <option value="null">@column.NullableEnumOption</option>
+                                                }
                                                 @foreach (object option in column.FilterOptions)
                                                 {
                                                     <option value="@option">@column.GetFilterOptionDisplayName(option)</option>

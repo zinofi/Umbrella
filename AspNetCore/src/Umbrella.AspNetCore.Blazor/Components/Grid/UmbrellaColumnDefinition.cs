@@ -30,6 +30,7 @@ public class UmbrellaColumnDefinition<TItem>
 	/// <param name="filterMemberPathOverride">The filter member override.</param>
 	/// <param name="sorterMemberPathOverride">The sorter member override.</param>
 	/// <param name="displayMode">The display mode.</param>
+	/// <param name="nullableEnumOption">The nullable enum option.</param>
 	public UmbrellaColumnDefinition(
 		string? heading,
 		string? shortHeading,
@@ -45,7 +46,8 @@ public class UmbrellaColumnDefinition<TItem>
 		Expression<Func<TItem, object?>>? property,
 		string? filterMemberPathOverride,
 		string? sorterMemberPathOverride,
-		UmbrellaColumnDisplayMode displayMode)
+		UmbrellaColumnDisplayMode displayMode,
+		string? nullableEnumOption)
 	{
 		Heading = heading;
 		ShortHeading = shortHeading;
@@ -63,6 +65,7 @@ public class UmbrellaColumnDefinition<TItem>
 		FilterMemberPathOverride = filterMemberPathOverride;
 		SorterMemberPathOverride = sorterMemberPathOverride;
 		DisplayMode = displayMode;
+		NullableEnumOption = nullableEnumOption;
 
 		if (FilterOptionsType is UmbrellaColumnFilterOptionsType.Enum)
 		{
@@ -74,12 +77,14 @@ public class UmbrellaColumnDefinition<TItem>
 			FilterControlType = UmbrellaColumnFilterType.Options;
 			FilterMatchType = FilterType.Equal;
 			FilterOptions = new[] { "Yes", "No" };
+			NullableEnumOption = null;
 		}
 		else if (FilterControlType is UmbrellaColumnFilterType.Options || FilterOptions is not null)
 		{
 			FilterControlType = UmbrellaColumnFilterType.Options;
 			FilterOptionsType = UmbrellaColumnFilterOptionsType.String;
 			FilterMatchType = FilterType.Equal;
+			NullableEnumOption = null;
 		}
 
 		if (Property is not null)
@@ -188,6 +193,16 @@ public class UmbrellaColumnDefinition<TItem>
 	/// Gets or sets the value used to filter the column.
 	/// </summary>
 	public string? FilterValue { get; set; }
+
+	/// <summary>
+	/// Gets or sets the nullable enum option.
+	/// </summary>
+	/// <remarks>
+	/// If a value is provided, an option will be shown when the <see cref="FilterOptionsType"/> is set to <see cref="UmbrellaColumnFilterOptionsType.Enum"/>
+	/// which will show a new option after the <c>Any</c> option with an explcit value of <see langword="null" /> with the value specified for this property
+	/// value displayed as the text in the dropdown for the option.
+	/// </remarks>
+	public string? NullableEnumOption { get; set; }
 
 	/// <summary>
 	/// Gets or sets the sort direction.

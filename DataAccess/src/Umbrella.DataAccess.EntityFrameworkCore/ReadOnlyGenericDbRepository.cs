@@ -340,13 +340,13 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 
 		var results = await shapedQuery
 			.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
-			.Select(x => new { Entity = x, TotalCount = filteredQuery.Count() })
+			.Select(x => new { Entity = x, TotalCount = shapedQuery.Count() })
 			.ApplyPagination(pageNumber, pageSize)
 			.ToArrayAsync(cancellationToken)
 			.ConfigureAwait(false);
 
-		int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
-		var entities = results.Select(x => x.Entity).ToList();
+		int totalCount = results.FirstOrDefault()?.TotalCount ?? await shapedQuery.CountAsync(cancellationToken).ConfigureAwait(false);
+		var entities = results.Select(x => x.Entity).ToArray();
 
 		return new PaginatedResultModel<TShapedEntity>(entities, pageNumber, pageSize, totalCount);
 	}

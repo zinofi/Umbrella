@@ -226,6 +226,17 @@ public partial class UmbrellaColumn<TItem>
 	public UmbrellaColumnDisplayMode DisplayMode { get; set; }
 
 	/// <summary>
+	/// Gets or sets the nullable enum option.
+	/// </summary>
+	/// <remarks>
+	/// If a value is provided, an option will be shown when the <see cref="FilterOptionsType"/> is set to <see cref="UmbrellaColumnFilterOptionsType.Enum"/>
+	/// which will show a new option after the <c>Any</c> option with an explcit value of <see langword="null" /> with the value specified for this property
+	/// value displayed as the text in the dropdown for the option.
+	/// </remarks>
+	[Parameter]
+	public string? NullableEnumOption { get; set; }
+
+	/// <summary>
 	/// Gets a value indicating whether this is the first column in the grid.
 	/// </summary>
 	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(Property?.GetMemberName(), StringComparison.Ordinal) is true;
@@ -242,7 +253,7 @@ public partial class UmbrellaColumn<TItem>
 		{
 			if (DisplayMode != UmbrellaColumnDisplayMode.None)
 			{
-				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode);
+				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode, NullableEnumOption);
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
 		}
