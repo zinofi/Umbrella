@@ -183,4 +183,11 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
 			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
 			CurrentRefreshOptions?.Filters);
+
+	/// <inheritdoc />
+	protected override async Task ReloadAsync()
+	{
+		await base.OnInitializedAsync();
+		await RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
+	}
 }
