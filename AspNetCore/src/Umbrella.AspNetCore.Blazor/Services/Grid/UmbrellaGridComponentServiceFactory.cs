@@ -43,7 +43,8 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		bool autoRenderOnPageLoad = true,
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
-		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null)
+		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
+		IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : notnull
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 	{
@@ -65,6 +66,9 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 			if (initialSortExpressions is not null)
 				service.InitialSortExpressions = initialSortExpressions;
 
+			if(initialFilterExpressions is not null)
+				service.InitialFilterExpressions = initialFilterExpressions;
+
 			return service;
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { initialSortPropertyName, autoRenderOnPageLoad, callGridStateHasChangedOnRefresh, initialSortDirection }))
@@ -82,6 +86,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		bool callGridStateHasChangedOnRefresh = true,
 		SortDirection initialSortDirection = SortDirection.Descending,
 		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
+		IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null,
 		Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
@@ -106,6 +111,9 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 			if (initialSortExpressions is not null)
 				service.InitialSortExpressions = initialSortExpressions;
+
+			if (initialFilterExpressions is not null)
+				service.InitialFilterExpressions = initialFilterExpressions;
 
 			if (loadPaginatedResultModelDelegate is not null)
 				service.LoadPaginatedResultModelDelegate = loadPaginatedResultModelDelegate;

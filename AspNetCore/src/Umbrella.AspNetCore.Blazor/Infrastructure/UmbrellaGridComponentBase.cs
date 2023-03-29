@@ -39,6 +39,14 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	protected virtual Lazy<IReadOnlyCollection<SortExpressionDescriptor>> InitialSortExpressions { get; }
 
 	/// <summary>
+	/// Gets the collection of filter expressions used to initially filter the data in the grid.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to an empty array.
+	/// </remarks>
+	protected virtual IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; } = Array.Empty<FilterExpressionDescriptor>();
+
+	/// <summary>
 	/// Gets or sets the current refresh options which are updated when the grid options have been changed as a result of filtering, sorting or paginating through data.
 	/// </summary>
 	/// <remarks>
@@ -84,7 +92,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 			if (AutoRenderOnPageLoad)
 				throw new InvalidOperationException("Auto rendering has been enabled. This method should not be manually called.");
 
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
+			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -100,7 +108,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 			if (!firstRender || !AutoRenderOnPageLoad)
 				return;
 
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
+			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -182,7 +190,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
 			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
 			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
-			CurrentRefreshOptions?.Filters);
+			CurrentRefreshOptions?.Filters ?? InitialFilterExpressions);
 
 	/// <inheritdoc />
 	protected override async Task ReloadAsync()

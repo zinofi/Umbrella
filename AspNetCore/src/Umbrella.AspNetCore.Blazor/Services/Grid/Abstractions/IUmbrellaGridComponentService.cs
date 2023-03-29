@@ -57,6 +57,14 @@ public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel
 	Lazy<IReadOnlyCollection<SortExpressionDescriptor>> InitialSortExpressions { get; }
 
 	/// <summary>
+	/// Gets the collection of filter expressions used to initially filter the data in the grid.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to an empty array.
+	/// </remarks>
+	IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; }
+
+	/// <summary>
 	/// Gets the property name used to initally sort the data in the grid.
 	/// </summary>
 	string InitialSortPropertyName { get; init; }

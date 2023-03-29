@@ -61,9 +61,9 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 			{
 				if (BeforeDeletingDelegate is not null)
 				{
-					bool success = await BeforeDeletingDelegate(item);
+					bool @continue = await BeforeDeletingDelegate(item);
 
-					if (!success)
+					if (!@continue)
 						return;
 				}
 

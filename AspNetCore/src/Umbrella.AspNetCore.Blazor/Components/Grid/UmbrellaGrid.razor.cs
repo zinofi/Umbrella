@@ -204,6 +204,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	public SortDirection InitialSortDirection { get; set; } = SortDirection.Descending;
 
 	/// <summary>
+	/// Gets or sets the initial filter expressions. Defaults to an empty array.
+	/// </summary>
+	[Parameter]
+	public IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; set; } = Array.Empty<FilterExpressionDescriptor>();
+
+	/// <summary>
 	/// Gets or sets the event callback invoked by this component when its filtering, sorting or pagination state has changed.
 	/// </summary>
 	[Parameter]
@@ -320,23 +326,28 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 				var column = ColumnDefinitions[i];
 
 				if (column.DisplayMode == UmbrellaColumnDisplayMode.None)
-				{
 					continue;
-				}
 
-				if (i == 0)
-				{
+				if (i is 0)
 					FirstColumnPropertyName = column.PropertyName;
-				}
 
 				if (column.Filterable)
-				{
 					filterableColumns.Add(column);
-				}
 
 				if (InitialSortPropertyName == column.PropertyName)
-				{
 					column.Direction = InitialSortDirection;
+
+				if (InitialFilterExpressions.Count > 0)
+				{
+					string? memberPath = column.FilterMemberPathOverride ?? column.PropertyName;
+
+					if (!string.IsNullOrEmpty(memberPath))
+					{
+						FilterExpressionDescriptor? filter = InitialFilterExpressions.FindFilterExpressionDescriptor(memberPath);
+
+						if (filter is not null)
+							column.FilterValue = filter.Value;
+					}
 				}
 			}
 

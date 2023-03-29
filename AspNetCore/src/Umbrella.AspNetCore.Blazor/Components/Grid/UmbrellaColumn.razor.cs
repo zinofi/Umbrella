@@ -39,8 +39,8 @@ public partial class UmbrellaColumn<TItem>
 	[CascadingParameter(Name = nameof(ScanMode))]
 	private bool ScanMode { get; set; }
 
+	[NotNull]
 	[CascadingParameter]
-	[MemberNotNull(nameof(Value))]
 	private TItem? Value { get; set; }
 
 	private string? PropertyStringValue

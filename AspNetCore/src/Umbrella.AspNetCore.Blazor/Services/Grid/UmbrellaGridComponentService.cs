@@ -55,6 +55,9 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	public Lazy<IReadOnlyCollection<SortExpressionDescriptor>> InitialSortExpressions { get; internal set; }
 
 	/// <inheritdoc />
+	public IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; internal set; } = Array.Empty<FilterExpressionDescriptor>();
+
+	/// <inheritdoc />
 	public UmbrellaGridRefreshEventArgs? CurrentRefreshOptions { get; protected set; }
 
 	/// <inheritdoc />
@@ -80,7 +83,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 			if (AutoRenderOnPageLoad)
 				throw new InvalidOperationException("Auto rendering has been enabled. This method should not be manually called.");
 
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
+			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -96,7 +99,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 			if (!firstRender || !AutoRenderOnPageLoad)
 				return;
 
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value);
+			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -151,7 +154,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
 			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
 			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
-			CurrentRefreshOptions?.Filters);
+			CurrentRefreshOptions?.Filters ?? InitialFilterExpressions);
 
 	/// <summary>
 	/// Shows the problem details error message. If this does not exist, the error message defaults to <see cref="DialogDefaults.UnknownErrorMessage"/>.
