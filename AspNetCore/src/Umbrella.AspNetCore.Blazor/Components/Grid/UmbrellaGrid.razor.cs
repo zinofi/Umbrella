@@ -471,6 +471,14 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		await UpdateGridAsync(PageNumber, PageSize);
 	}
 
+	private static async Task FilterTextAddonButtonClickAsync(UmbrellaColumnDefinition<TItem> columnDefinition)
+	{
+		if (columnDefinition.OnAddOnButtonClickedAsync is null)
+			throw new UmbrellaBlazorException($"The {nameof(UmbrellaColumn<TItem>.OnAddOnButtonClickedAsync)} has not been specified.");
+
+		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue);
+	}
+
 	/// <summary>
 	/// The event handler invoked by the <see cref="UmbrellaPagination"/> component when its state has changed as result of user interaction.
 	/// </summary>

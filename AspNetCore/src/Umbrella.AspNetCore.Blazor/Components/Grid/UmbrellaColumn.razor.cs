@@ -237,6 +237,38 @@ public partial class UmbrellaColumn<TItem>
 	public string? NullableEnumOption { get; set; }
 
 	/// <summary>
+	/// Gets or sets the addon button delegate which will be invoked when the add-on button is clicked when the <see cref="FilterControlType"/>
+	/// is set to <see cref="UmbrellaColumnFilterType.TextAddOnButton"/>.
+	/// </summary>
+	/// <remarks>
+	/// The delegate must accept a string parameter which will be the value of the current filter and return a string, which is the new filter value
+	/// to set the text box's content to, wrapped in a <see cref="ValueTask"/>.
+	/// </remarks>
+	[Parameter]
+	public Func<string?, ValueTask<string?>>? OnAddOnButtonClickedAsync { get; set; }
+
+	/// <summary>
+	/// Gets or sets the add on button CSS class.
+	/// </summary>
+	/// <remarks>Defaults to <c>btn btn-secondary</c>.</remarks>
+	[Parameter]
+	public string? AddOnButtonCssClass { get; set; } = "btn btn-secondary";
+
+	/// <summary>
+	/// Gets or sets the add on button text.
+	/// </summary>
+	/// <remarks>Defaults to <see langword="null"/>.</remarks>
+	[Parameter]
+	public string? AddOnButtonText { get; set; }
+
+	/// <summary>
+	/// Gets or sets the add on button icon CSS class.
+	/// </summary>
+	/// <remarks>Defaults to <c>fas list-radio</c>. If no icon is required, set this property value to an empty string or null.</remarks>
+	[Parameter]
+	public string? AddOnButtonIconCssClass { get; set; } = "fas list-radio";
+
+	/// <summary>
 	/// Gets a value indicating whether this is the first column in the grid.
 	/// </summary>
 	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(Property?.GetMemberName(), StringComparison.Ordinal) is true;
@@ -253,7 +285,7 @@ public partial class UmbrellaColumn<TItem>
 		{
 			if (DisplayMode != UmbrellaColumnDisplayMode.None)
 			{
-				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode, NullableEnumOption);
+				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode, NullableEnumOption, OnAddOnButtonClickedAsync, AddOnButtonCssClass, AddOnButtonText, AddOnButtonIconCssClass);
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
 		}

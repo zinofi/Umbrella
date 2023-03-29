@@ -31,6 +31,10 @@ public class UmbrellaColumnDefinition<TItem>
 	/// <param name="sorterMemberPathOverride">The sorter member override.</param>
 	/// <param name="displayMode">The display mode.</param>
 	/// <param name="nullableEnumOption">The nullable enum option.</param>
+	/// <param name="onAddOnButtonClickedAsync">The delegate invoked when the text addon button is clicked.</param>
+	/// <param name="addOnButtonCssClass">The CSS class for the add-on button.</param>
+	/// <param name="addOnButtonText">The text for the add-on button.</param>
+	/// <param name="addOnButtonIconCssClass">The CSS class for the icon displayed on the add-on button.</param>
 	public UmbrellaColumnDefinition(
 		string? heading,
 		string? shortHeading,
@@ -47,7 +51,11 @@ public class UmbrellaColumnDefinition<TItem>
 		string? filterMemberPathOverride,
 		string? sorterMemberPathOverride,
 		UmbrellaColumnDisplayMode displayMode,
-		string? nullableEnumOption)
+		string? nullableEnumOption,
+		Func<string?, ValueTask<string?>>? onAddOnButtonClickedAsync,
+		string? addOnButtonCssClass,
+		string? addOnButtonText,
+		string? addOnButtonIconCssClass)
 	{
 		Heading = heading;
 		ShortHeading = shortHeading;
@@ -66,6 +74,10 @@ public class UmbrellaColumnDefinition<TItem>
 		SorterMemberPathOverride = sorterMemberPathOverride;
 		DisplayMode = displayMode;
 		NullableEnumOption = nullableEnumOption;
+		OnAddOnButtonClickedAsync = onAddOnButtonClickedAsync;
+		AddOnButtonCssClass = addOnButtonCssClass;
+		AddOnButtonText = addOnButtonText;
+		AddOnButtonIconCssClass = addOnButtonIconCssClass;
 
 		if (FilterOptionsType is UmbrellaColumnFilterOptionsType.Enum)
 		{
@@ -203,6 +215,31 @@ public class UmbrellaColumnDefinition<TItem>
 	/// value displayed as the text in the dropdown for the option.
 	/// </remarks>
 	public string? NullableEnumOption { get; set; }
+
+	/// <summary>
+	/// Gets or sets the addon button delegate which will be invoked when the add-on button is clicked when the <see cref="FilterControlType"/>
+	/// is set to <see cref="UmbrellaColumnFilterType.TextAddOnButton"/>.
+	/// </summary>
+	/// <remarks>
+	/// The delegate must accept a string parameter which will be the value of the current filter and return a string, which is the new filter value
+	/// to set the text box's content to, wrapped in a <see cref="ValueTask"/>.
+	/// </remarks>
+	public Func<string?, ValueTask<string?>>? OnAddOnButtonClickedAsync { get; set; }
+
+	/// <summary>
+	/// Gets or sets the add on button CSS class.
+	/// </summary>
+	public string? AddOnButtonCssClass { get; set; }
+
+	/// <summary>
+	/// Gets or sets the add on button text.
+	/// </summary>
+	public string? AddOnButtonText { get; set; }
+
+	/// <summary>
+	/// Gets or sets the add on button icon CSS class.
+	/// </summary>
+	public string? AddOnButtonIconCssClass { get; set; }
 
 	/// <summary>
 	/// Gets or sets the sort direction.

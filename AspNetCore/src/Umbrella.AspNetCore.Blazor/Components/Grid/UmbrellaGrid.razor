@@ -29,14 +29,15 @@
                             string id = Guid.NewGuid().ToString("N");
 
                             <div class="col-md-4">
-                                <div class="form-group form-floating">
-                                    @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
-                                    {
+
+                                @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
+                                {
+                                    <div class="form-group form-floating">
                                         @if (column.FilterOptions is not null)
                                         {
                                             <select id="@id" class="form-select" @bind="column.FilterValue">
                                                 <option>Any</option>
-                                                @if(!string.IsNullOrEmpty(column.NullableEnumOption))
+                                                @if (!string.IsNullOrEmpty(column.NullableEnumOption))
                                                 {
                                                     <option value="null">@column.NullableEnumOption</option>
                                                 }
@@ -52,13 +53,32 @@
                                                 The type of the filter has been specified as Options but the FilterOptions collection is null.
                                             </div>
                                         }
-                                    }
-                                    else
-                                    {
+                                        <label for="@id">@column.Heading</label>
+                                    </div>
+                                }
+                                else if (column.FilterControlType is UmbrellaColumnFilterType.TextAddOnButton)
+                                {
+                                    <div class="input-group">
+                                        <div class="form-floating">
+                                            <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
+                                            <label for="@id">@column.Heading</label>
+                                        </div>
+                                        <button class="@column.AddOnButtonCssClass" type="button" @onclick="() => FilterTextAddonButtonClickAsync(column)">
+                                            @column.AddOnButtonText
+                                            @if(!string.IsNullOrEmpty(column.AddOnButtonIconCssClass))
+                                            {
+                                                <i class="@column.AddOnButtonIconCssClass"></i>
+                                            }
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group form-floating">
                                         <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" />
-                                    }
-                                    <label for="@id">@column.Heading</label>
-                                </div>
+                                        <label for="@id">@column.Heading</label>
+                                    </div>
+                                }
                             </div>
                         }
                     </div>

@@ -35,7 +35,12 @@ public enum UmbrellaColumnFilterType
 	/// <summary>
 	/// Date. Randers a text input of type "date".
 	/// </summary>
-	Date
+	Date,
+
+	/// <summary>
+	/// Renders a text input of type "text" with an add-on button which when clicked will invoke a specified delegate.
+	/// </summary>
+	TextAddOnButton
 }
 
 internal static class UmbrellaColumnFilterTypeExtensions
@@ -48,6 +53,7 @@ internal static class UmbrellaColumnFilterTypeExtensions
 		UmbrellaColumnFilterType.Options => "text", // This will never be used but here as a default.
 		UmbrellaColumnFilterType.Search => "search",
 		UmbrellaColumnFilterType.Date => "date",
+		UmbrellaColumnFilterType.TextAddOnButton => "text",
 		_ => throw new SwitchExpressionException(value),
 	};
 }
