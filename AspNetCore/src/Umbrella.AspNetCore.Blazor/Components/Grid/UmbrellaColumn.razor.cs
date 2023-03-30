@@ -266,7 +266,7 @@ public partial class UmbrellaColumn<TItem>
 	/// </summary>
 	/// <remarks>Defaults to <c>fas list-radio</c>. If no icon is required, set this property value to an empty string or null.</remarks>
 	[Parameter]
-	public string? AddOnButtonIconCssClass { get; set; } = "fas list-radio";
+	public string? AddOnButtonIconCssClass { get; set; } = "fas fa-list-ul";
 
 	/// <summary>
 	/// Gets a value indicating whether this is the first column in the grid.
