@@ -343,10 +343,10 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 					if (!string.IsNullOrEmpty(memberPath))
 					{
-						FilterExpressionDescriptor? filter = InitialFilterExpressions.FindFilterExpressionDescriptor(memberPath);
+						string? value = InitialFilterExpressions.FindFilterValue<string?>(memberPath);
 
-						if (filter is not null)
-							column.FilterValue = filter.Value;
+						if (value is not null)
+							column.FilterValue = value;
 					}
 				}
 			}
@@ -497,6 +497,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			{
 				column.Direction = InitialSortDirection;
 			}
+
+			// TODO: InitialFilters
 		}
 	}
 

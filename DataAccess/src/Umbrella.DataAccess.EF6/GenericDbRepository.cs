@@ -217,6 +217,8 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, repoOptions, childOptions, cancellationToken));
 
+			UpdateOriginalConcurrencyStamp(entity);
+
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -319,6 +321,8 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			await AfterContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, repoOptions, childOptions, cancellationToken));
+
+			UpdateOriginalConcurrencyStamp(entity);
 
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -723,6 +727,14 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	#endregion
 
 	#endregion
+
+	private void UpdateOriginalConcurrencyStamp(TEntity entity)
+	{
+		// Setting the ConcurrencyStamp value of the original entry to ensure that the call to save changes will fail
+		// if the database value has already changed.
+		if (entity is IConcurrencyStamp concurrencyStampEntity)
+			Context.Value.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue = concurrencyStampEntity.ConcurrencyStamp;
+	}
 
 	#region Public Methods
 	/// <inheritdoc />

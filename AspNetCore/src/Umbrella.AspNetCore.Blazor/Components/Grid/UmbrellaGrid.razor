@@ -58,18 +58,20 @@
                                 }
                                 else if (column.FilterControlType is UmbrellaColumnFilterType.TextAddOnButton)
                                 {
-                                    <div class="input-group">
-                                        <div class="form-floating">
-                                            <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
-                                            <label for="@id">@column.Heading</label>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="form-floating">
+                                                <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
+                                                <label for="@id">@column.Heading</label>
+                                            </div>
+                                            <button class="@column.AddOnButtonCssClass" type="button" @onclick="() => FilterTextAddonButtonClickAsync(column)">
+                                                @column.AddOnButtonText
+                                                @if (!string.IsNullOrEmpty(column.AddOnButtonIconCssClass))
+                                                {
+                                                    <i class="@column.AddOnButtonIconCssClass"></i>
+                                                }
+                                            </button>
                                         </div>
-                                        <button class="@column.AddOnButtonCssClass" type="button" @onclick="() => FilterTextAddonButtonClickAsync(column)">
-                                            @column.AddOnButtonText
-                                            @if(!string.IsNullOrEmpty(column.AddOnButtonIconCssClass))
-                                            {
-                                                <i class="@column.AddOnButtonIconCssClass"></i>
-                                            }
-                                        </button>
                                     </div>
                                 }
                                 else
