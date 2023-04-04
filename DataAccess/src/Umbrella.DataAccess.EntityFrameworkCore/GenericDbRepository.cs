@@ -231,6 +231,8 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 					_ = Context.Value.Set<TEntity>().Add(entity);
 			}
 
+			UpdateOriginalConcurrencyStamp(entity);
+
 			if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
 			{
 				entityHasChanged = true;
@@ -253,8 +255,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			await AfterContextSavingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextSavedChangesAsync(entity, isNew, repoOptions, childOptions, cancellationToken));
-
-			UpdateOriginalConcurrencyStamp(entity);
 
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
