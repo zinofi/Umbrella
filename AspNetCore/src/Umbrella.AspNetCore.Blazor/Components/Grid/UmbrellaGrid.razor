@@ -8,12 +8,12 @@
 
 <CascadingValue Value="this">
     <div class="u-grid">
-        @if (!ColumnScanComplete && RenderMode is UmbrellaGridRenderMode.Table)
+        @*@if (!ColumnScanComplete && RenderMode is UmbrellaGridRenderMode.Table)
         {
             <CascadingValue Name="ScanMode" Value="true">
                 @Columns?.Invoke(default!)
             </CascadingValue>
-        }
+        }*@
 
         @if (FilterableColumns?.Count > 0 && ShowFilters)
         {
