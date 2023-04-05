@@ -90,6 +90,11 @@
             </div>
         }
 
+        @if(FilterableColumns is null or {Count: 0})
+        {
+            <p>Filterable columns is null or 0.</p>
+        }
+
         @if (BulkActions is not null && CurrentState is LayoutState.Success)
         {
             <div class="u-grid__bulk-actions">
