@@ -17,6 +17,12 @@ public partial class ErrorStateView
 	public string Message { get; set; } = "There has been a problem. Please try again.";
 
 	/// <summary>
+	/// Gets or sets the content. When specified, this will override the <see cref="Message"/>.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+	/// <summary>
 	/// Gets or sets the event handler that will be invoked when the reload button is clicked.
 	/// </summary>
 	[Parameter]

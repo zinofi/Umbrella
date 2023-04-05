@@ -15,9 +15,11 @@ public partial class EmptyStateView
 	/// Gets or sets the message.
 	/// </summary>
 	[Parameter]
-	[EditorRequired]
 	public string? Message { get; set; }
 
-	/// <inheritdoc />
-	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(Message);
+	/// <summary>
+	/// Gets or sets the content. When specified, this will override the <see cref="Message"/>.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
 }

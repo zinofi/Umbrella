@@ -99,11 +99,25 @@
 
         @if (CurrentState is LayoutState.Loading)
         {
-            <LoadingStateView Message="@LoadingMessage" />
+            @if (LoadingMessageContent is not null)
+            {
+                <LoadingStateView>@LoadingMessageContent</LoadingStateView>
+            }
+            else
+            {
+                <LoadingStateView Message="@LoadingMessage" />
+            }
         }
         else if (CurrentState is LayoutState.Empty)
         {
-            <EmptyStateView Message="@EmptyMessage" />
+            @if (EmptyMessageContent is not null)
+            {
+                <EmptyStateView>@EmptyMessageContent</EmptyStateView>
+            }
+            else
+            {
+                <EmptyStateView Message="@EmptyMessage" />
+            }
         }
         else if (CurrentState is LayoutState.Success)
         {
@@ -266,7 +280,16 @@
         }
         else
         {
-            <ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClickAsync" ShowReloadButton="ShowReloadButton" />
+            @if (ErrorMessageContent is not null)
+            {
+                <ErrorStateView OnReloadButtonClick="ReloadButtonClickAsync" ShowReloadButton="ShowReloadButton">
+                    @ErrorMessageContent
+                </ErrorStateView>
+            }
+            else
+            {
+                <ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClickAsync" ShowReloadButton="ShowReloadButton" />
+            }
         }
     </div>
 </CascadingValue>

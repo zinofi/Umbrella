@@ -1,3 +1,10 @@
 ﻿<div class="u-state-view u-state-view--empty">
-	<p>@Message</p>
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <p>@Message</p>
+    }
 </div>

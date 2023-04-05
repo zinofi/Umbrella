@@ -15,4 +15,10 @@ public partial class LoadingStateView
 	/// </remarks>
 	[Parameter]
 	public string Message { get; set; } = "Loading... Please wait.";
+
+	/// <summary>
+	/// Gets or sets the content. When specified, this will override the <see cref="Message"/>.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
 }

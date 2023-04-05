@@ -132,20 +132,45 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// Gets or sets the message displayed when the grid is loading.
 	/// This is ususally only shown when the grid is first initialized.
 	/// </summary>
+	/// <remarks>Defaults to <c>Loading... Please wait.</c></remarks>
 	[Parameter]
 	public string LoadingMessage { get; set; } = "Loading... Please wait.";
 
 	/// <summary>
-	/// Gets or sets the message displayed when the grid contains no data.
+	/// Gets or sets the content displayed when the grid is loading.
+	/// This is ususally only shown when the grid is first initialized.
+	/// This overrides the value of the <see cref="LoadingMessage"/> when specified.
 	/// </summary>
 	[Parameter]
+	public RenderFragment? LoadingMessageContent { get; set; }
+
+	/// <summary>
+	/// Gets or sets the message displayed when the grid contains no data.
+	/// </summary>
+	/// <remarks>Defaults to <c>There is either no data to display or your search options have no results.</c></remarks>
+	[Parameter]
 	public string EmptyMessage { get; set; } = "There is either no data to display or your search options have no results.";
+
+	/// <summary>
+	/// Gets or sets the content displayed when there are no results.
+	/// This overrides the value of the <see cref="EmptyMessage"/> when specified.
+	/// </summary>
+	/// <remarks>Defaults to <c>There has been a problem. Please try again.</c></remarks>
+	[Parameter]
+	public RenderFragment? EmptyMessageContent { get; set; }
 
 	/// <summary>
 	/// Gets or sets the error message displayed when the grid fails to load correctly.
 	/// </summary>
 	[Parameter]
 	public string ErrorMessage { get; set; } = "There has been a problem. Please try again.";
+
+	/// <summary>
+	/// Gets or sets the content displayed when the grid fails to load correctly.
+	/// This overrides the value of the <see cref="ErrorMessage"/> when specified.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? ErrorMessageContent { get; set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether the reload button should be shown when the grid has failed to load correctly. Defaults to <see langword="true"/>.
