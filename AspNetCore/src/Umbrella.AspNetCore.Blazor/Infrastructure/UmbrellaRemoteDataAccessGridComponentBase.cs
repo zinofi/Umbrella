@@ -86,5 +86,5 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	/// </summary>
 	/// <param name="item">The item being deleted.</param>
 	/// <returns>An awaitable task.</returns>
-	protected virtual ValueTask<bool> BeforeDeletingAsync(TItemModel item) => default;
+	protected virtual ValueTask<bool> BeforeDeletingAsync(TItemModel item) => new(true);
 }
