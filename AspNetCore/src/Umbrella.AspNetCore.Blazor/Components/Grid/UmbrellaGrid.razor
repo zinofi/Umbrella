@@ -13,8 +13,6 @@
             <CascadingValue Name="ScanMode" Value="true">
                 @Columns?.Invoke(default!)
             </CascadingValue>
-
-            SetColumnScanCompleted();
         }
 
         @if (FilterableColumns?.Count > 0 && ShowFilters)
@@ -92,11 +90,6 @@
             </div>
         }
 
-        @if (FilterableColumns is null or { Count: 0 })
-        {
-            <p>Filterable columns is null or 0.</p>
-        }
-
         @if (BulkActions is not null && CurrentState is LayoutState.Success)
         {
             <div class="u-grid__bulk-actions">
@@ -117,6 +110,8 @@
         }
         else if (CurrentState is LayoutState.Empty)
         {
+            SetColumnScanCompleted();
+
             @if (EmptyMessageContent is not null)
             {
                 <EmptyStateView>@EmptyMessageContent</EmptyStateView>

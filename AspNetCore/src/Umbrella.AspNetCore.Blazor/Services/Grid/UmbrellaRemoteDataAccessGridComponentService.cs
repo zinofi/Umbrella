@@ -18,7 +18,8 @@ namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 /// <typeparam name="TRepository">The type of the repository.</typeparam>
 /// <seealso cref="UmbrellaGridComponentService{TItemModel, TPaginatedResultModel}" />
-public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>, IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> where TItemModel : class, IKeyedItem<TIdentifier>
+public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>, IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>
+	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TIdentifier, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
