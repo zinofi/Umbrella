@@ -127,15 +127,17 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	}
 
 	/// <inheritdoc />
-	public async Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, CancellationToken cancellationToken = default)
+	public async Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, string? newFileName = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(tempFileName);
 
 		try
 		{
+			string permFileName = !string.IsNullOrEmpty(newFileName) ? newFileName! : tempFileName;
+
 			// Move the file from the temp folder to the live folder
-			string permPath = GetFilePath(tempFileName, groupId);
+			string permPath = GetFilePath(permFileName, groupId);
 			string tempPath = GetTempFilePath(tempFileName);
 
 			IUmbrellaFileInfo? tempFileInfo = await FileProvider.GetAsync(tempPath, cancellationToken).ConfigureAwait(false);
@@ -146,16 +148,16 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 				bool exists = await FileProvider.ExistsAsync(permPath, cancellationToken).ConfigureAwait(false);
 
 				if (exists)
-					return GetWebFilePath(tempFileName, groupId);
+					return GetWebFilePath(permFileName, groupId);
 			}
 
 			IUmbrellaFileInfo fileInfo = await FileProvider.MoveAsync(tempPath, permPath, cancellationToken).ConfigureAwait(false);
 
 			await ApplyPermissionsAsync(fileInfo, groupId, true, cancellationToken).ConfigureAwait(false);
 
-			return GetWebFilePath(tempFileName, groupId);
+			return GetWebFilePath(permFileName, groupId);
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, tempFileName }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, tempFileName, newFileName }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem creating the item.", exc);
 		}

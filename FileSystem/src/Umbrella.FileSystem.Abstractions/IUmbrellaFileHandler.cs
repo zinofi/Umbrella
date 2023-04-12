@@ -34,6 +34,7 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// </summary>
 	/// <param name="groupId">The group identifier.</param>
 	/// <param name="tempFileName">Name of the temporary file to be moved.</param>
+	/// <param name="newFileName">An optional new name for the file when it is moved. If not provided, the <paramref name="tempFileName"/> will be used.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The web-relative path the file can be accessed from a public URL.</returns>
 	/// <remarks>
@@ -44,7 +45,7 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// <item>Return the web relative path to the moved file.</item>
 	/// </list>
 	/// </remarks>
-	Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, CancellationToken cancellationToken = default);
+	Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, string? newFileName = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes all files from the top-level folder for this handler contained within the sub-folder
