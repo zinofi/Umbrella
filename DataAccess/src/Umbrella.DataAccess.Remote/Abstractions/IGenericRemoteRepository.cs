@@ -15,11 +15,9 @@ namespace Umbrella.DataAccess.Remote.Abstractions;
 /// A generic repository used to query slim paginated remote resources.
 /// </summary>
 /// <typeparam name="TSlimItem">The type of the slim item.</typeparam>
-/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
-public interface IReadOnlyPaginatedSlimItemGenericRemoteRepository<TSlimItem, TIdentifier, TPaginatedResultModel>
-	where TSlimItem : class, IKeyedItem<TIdentifier>
-	where TIdentifier : IEquatable<TIdentifier>
+public interface IReadOnlyPaginatedSlimItemGenericRemoteRepository<TSlimItem, TPaginatedResultModel>
+	where TSlimItem : class
 	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 {
 	/// <summary>
@@ -95,7 +93,7 @@ public interface IDeleteItemGenericRemoteRepository<TIdentifier>
 /// <typeparam name="TCreateResult">The type of the create result.</typeparam>
 /// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 /// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
-public interface IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : IReadOnlyGenericRemoteRepository<TItem, TIdentifier>, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TSlimItem, TIdentifier, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+public interface IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : IReadOnlyGenericRemoteRepository<TItem, TIdentifier>, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TSlimItem, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
 	where TItem : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TSlimItem : class, IKeyedItem<TIdentifier>

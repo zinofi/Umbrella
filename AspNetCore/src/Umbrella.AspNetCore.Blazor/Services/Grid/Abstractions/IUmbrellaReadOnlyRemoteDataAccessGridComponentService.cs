@@ -1,6 +1,5 @@
 ﻿using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.DataAccess.Remote.Abstractions;
-using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
@@ -10,19 +9,16 @@ namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 /// Multiple instances of this service can be used to power multiple grids contained within a single Blazor component.
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
-/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 /// <typeparam name="TRepository">The type of the repository.</typeparam>
 /// <seealso cref="IUmbrellaGridComponentService{TItemModel, TPaginatedResultModel}" />
-public interface IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>
-	where TItemModel : class, IKeyedItem<TIdentifier>
-	where TIdentifier : IEquatable<TIdentifier>
+public interface IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> : IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>
+	where TItemModel : class
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>
 {
 	/// <summary>
-	/// The event handler invoked when an item in the grid is to be deleted.
+	/// Gets the repository.
 	/// </summary>
-	/// <param name="item">The item.</param>
-	Task DeleteItemClickAsync(TItemModel item);
+	TRepository Repository { get; }
 }

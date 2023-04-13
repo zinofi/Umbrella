@@ -18,11 +18,11 @@ namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 /// <typeparam name="TRepository">The type of the repository.</typeparam>
 /// <seealso cref="UmbrellaGridComponentService{TItemModel, TPaginatedResultModel}" />
-public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>, IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>
+public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>, IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TIdentifier, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaRemoteDataAccessGridComponentService{TItemModel, TIdentifier, TPaginatedResultModel, TRepository}"/> class.
@@ -34,14 +34,9 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 		ILogger<UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>> logger,
 		IUmbrellaDialogService dialogUtility,
 		TRepository repository)
-		: base(logger, dialogUtility)
+		: base(logger, dialogUtility, repository)
 	{
-		Repository = repository;
-		LoadPaginatedResultModelDelegate = (pageNumber, pageSize, sorters, filters) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters);
 	}
-
-	/// <inheritdoc />
-	public TRepository Repository { get; }
 
 	/// <summary>
 	/// Gets the optional delegate that is invoked after showing the confirmation dialog asking the user to confirm deletion,

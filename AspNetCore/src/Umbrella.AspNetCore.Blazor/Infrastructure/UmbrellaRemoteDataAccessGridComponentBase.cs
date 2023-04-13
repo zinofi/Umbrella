@@ -1,17 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
-using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
-using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Exceptions;
-using Umbrella.Utilities.Http.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 
@@ -24,21 +19,12 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 /// <typeparam name="TRepository">The type of the repository.</typeparam>
 /// <seealso cref="UmbrellaGridComponentBase{TItemModel, TPaginatedResultModel}" />
-public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel>
+public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> : UmbrellaReadOnlyRemoteDataAccessGridComponentBase<TItemModel, TPaginatedResultModel, TRepository>
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TIdentifier, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
 {
-	/// <summary>
-	/// Gets or sets the repository.
-	/// </summary>
-	[Inject]
-	protected TRepository Repository { get; set; } = null!;
-
-	/// <inheritdoc/>
-	protected override Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters);
-
 	/// <summary>
 	/// The event handler invoked when an item in the grid is to be deleted.
 	/// </summary>
