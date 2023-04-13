@@ -16,6 +16,8 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
+// TODO: SRP - Remove security checks??
+
 /// <summary>
 /// Serves as the base class for repositories which provide read-only access to entities stored in a database accessed using Entity Framework Core.
 /// </summary>
@@ -309,7 +311,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="additionalShapedFilterExpressions">Optional additional shaped filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The paginated results.</returns>
-	protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllShapedAsync<TShapedEntity>(
+	protected virtual Task<PaginatedResultModel<TShapedEntity>> FindAllShapedAsync<TShapedEntity>(
 		Expression<Func<TEntity, TShapedEntity>> shapedEntitySelector,
 		int pageNumber = 0,
 		int pageSize = 20,
@@ -323,6 +325,55 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		IEnumerable<Expression<Func<TShapedEntity, bool>>>? additionalShapedFilterExpressions = null,
 		CancellationToken cancellationToken = default)
 		where TShapedEntity : IEntity<TEntityKey>
+	{
+		return FindAllShapedAsync(
+			shapedEntitySelector,
+			new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending),
+			pageNumber,
+			pageSize,
+			sortExpressions,
+			entityFilterExpressions,
+			shapedFilterExpressions,
+			filterExpressionCombinator,
+			coreEntityFilterExpression,
+			coreShapedFilterExpression,
+			additionalEntityFilterExpressions,
+			additionalShapedFilterExpressions,
+			cancellationToken);
+	}
+
+	/// <summary>
+	/// Finds all shaped entities using the specified parameters.
+	/// </summary>
+	/// <typeparam name="TShapedEntity">The type of the shaped entity.</typeparam>
+	/// <param name="shapedEntitySelector">The shaped entity selector.</param>
+	/// <param name="initialSortExpression">The initial sort expression.</param>
+	/// <param name="pageNumber">The page number. Defaults to zero. Pagination will only be applied when this is greater than zero.</param>
+	/// <param name="pageSize">Size of the page.</param>
+	/// <param name="sortExpressions">The sort expressions.</param>
+	/// <param name="entityFilterExpressions">The entity filter expressions.</param>
+	/// <param name="shapedFilterExpressions">The shaped filter expressions.</param>
+	/// <param name="filterExpressionCombinator">The filter expression combinator.</param>
+	/// <param name="coreEntityFilterExpression">An additional entity filter expression to be applied to the query before the <paramref name="entityFilterExpressions"/> and any additional <paramref name="additionalEntityFilterExpressions"/> are applied.</param>
+	/// <param name="coreShapedFilterExpression">An additional shaped filter expression to be applied to the query before the <paramref name="entityFilterExpressions"/> and any additional <paramref name="additionalShapedFilterExpressions"/> are applied.</param>
+	/// <param name="additionalEntityFilterExpressions">Optional additional entity filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+	/// <param name="additionalShapedFilterExpressions">Optional additional shaped filter expressions that are too complex to model using the <see cref="FilterExpression{TItem}"/> type.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The paginated results.</returns>
+	protected virtual async Task<PaginatedResultModel<TShapedEntity>> FindAllShapedAsync<TShapedEntity>(
+		Expression<Func<TEntity, TShapedEntity>> shapedEntitySelector,
+		SortExpression<TShapedEntity> initialSortExpression,
+		int pageNumber = 0,
+		int pageSize = 20,
+		IEnumerable<SortExpression<TShapedEntity>>? sortExpressions = null,
+		IEnumerable<FilterExpression<TEntity>>? entityFilterExpressions = null,
+		IEnumerable<FilterExpression<TShapedEntity>>? shapedFilterExpressions = null,
+		FilterExpressionCombinator filterExpressionCombinator = FilterExpressionCombinator.And,
+		Expression<Func<TEntity, bool>>? coreEntityFilterExpression = null,
+		Expression<Func<TShapedEntity, bool>>? coreShapedFilterExpression = null,
+		IEnumerable<Expression<Func<TEntity, bool>>>? additionalEntityFilterExpressions = null,
+		IEnumerable<Expression<Func<TShapedEntity, bool>>>? additionalShapedFilterExpressions = null,
+		CancellationToken cancellationToken = default)
 	{
 		var filteredQuery = Items;
 
@@ -339,7 +390,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		shapedQuery = shapedQuery.ApplyFilterExpressions(shapedFilterExpressions, filterExpressionCombinator, additionalShapedFilterExpressions);
 
 		var results = await shapedQuery
-			.ApplySortExpressions(sortExpressions, new SortExpression<TShapedEntity>(x => x.Id, SortDirection.Ascending))
+			.ApplySortExpressions(sortExpressions, initialSortExpression)
 			.Select(x => new { Entity = x, TotalCount = shapedQuery.Count() })
 			.ApplyPagination(pageNumber, pageSize)
 			.ToArrayAsync(cancellationToken)
