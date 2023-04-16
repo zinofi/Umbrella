@@ -1,18 +1,21 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Runtime.Serialization;
+
 namespace Umbrella.FileSystem.Abstractions;
 
 /// <summary>
 /// An exception thrown when there is a permissions based error that occurs when accessing a file.
 /// </summary>
 /// <seealso cref="UmbrellaFileSystemException" />
-public class UmbrellaFileAccessDeniedException : UmbrellaFileSystemException
+[Serializable]
+public sealed class UmbrellaFileAccessDeniedException : UmbrellaFileSystemException
 {
 	/// <summary>
 	/// Gets the subpath.
 	/// </summary>
-	public string Subpath { get; }
+	public string? Subpath { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaFileAccessDeniedException"/> class.
@@ -33,5 +36,15 @@ public class UmbrellaFileAccessDeniedException : UmbrellaFileSystemException
 		: base($"Access to the file located at {subpath} has been denied.", innerException)
 	{
 		Subpath = subpath;
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaFileAccessDeniedException"/> class.
+	/// </summary>
+	/// <param name="info">The <see cref="SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+	/// <param name="context">The <see cref="StreamingContext"></see> that contains contextual information about the source or destination.</param>
+	private UmbrellaFileAccessDeniedException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
 	}
 }

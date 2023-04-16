@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling;
 using Umbrella.WebUtilities.Bundling.Abstractions;

@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using CommunityToolkit.Diagnostics;
-using Umbrella.Utilities.Extensions;
+﻿using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.WebUtilities.Exceptions;
 
@@ -22,7 +18,7 @@ public class ApiIntegrationCookieAuthenticationEventsOptions : ISanitizableUmbre
 	public string[] ApiPathPrefixes { get; set; } = new[] { "/api" };
 
 	/// <inheritdoc />
-	public void Sanitize() => ApiPathPrefixes.Select(x => x.TrimToLowerInvariant()).SkipWhile(x => x is null).Distinct();
+	public void Sanitize() => ApiPathPrefixes = ApiPathPrefixes.Select(x => x.TrimToLowerInvariant()).SkipWhile(x => x is null).Distinct().ToArray();
 
 	/// <inheritdoc />
 	public void Validate()

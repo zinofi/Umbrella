@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression.Filtering;
+﻿namespace Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression.Filtering;
 
 /// <summary>
 /// A model binder provider for the <see cref="FilterExpressionModelBinder"/>.

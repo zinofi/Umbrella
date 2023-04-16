@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.Xamarin.Converters;
+﻿using Umbrella.Xamarin.Converters;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

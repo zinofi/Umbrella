@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Extensions;
 
@@ -31,7 +29,7 @@ public static class ShellExtensions
 				{
 					var page = shell.Navigation.NavigationStack[i];
 
-					if (page is null || page is TPage)
+					if (page is null or TPage)
 						continue;
 
 					shell.Navigation.RemovePage(page);
@@ -42,7 +40,7 @@ public static class ShellExtensions
 				{
 					var page = shell.Navigation.ModalStack[i];
 
-					if (page is null || page is TPage)
+					if (page is null or TPage)
 						continue;
 
 					shell.Navigation.RemovePage(page);

@@ -1,5 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
+﻿using System.Runtime.Serialization;
 
 namespace Umbrella.FileSystem.Abstractions;
 
@@ -7,12 +6,13 @@ namespace Umbrella.FileSystem.Abstractions;
 /// An exception thrown when there has been a problem accessing a file because it could not be found.
 /// </summary>
 /// <seealso cref="UmbrellaFileSystemException" />
-public class UmbrellaFileNotFoundException : UmbrellaFileSystemException
+[Serializable]
+public sealed class UmbrellaFileNotFoundException : UmbrellaFileSystemException
 {
 	/// <summary>
 	/// Gets the subpath.
 	/// </summary>
-	public string Subpath { get; }
+	public string? Subpath { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaFileNotFoundException"/> class.
@@ -33,5 +33,15 @@ public class UmbrellaFileNotFoundException : UmbrellaFileSystemException
 		: base($"The file located at {subpath} could not be found.", innerException)
 	{
 		Subpath = subpath;
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaFileNotFoundException"/> class.
+	/// </summary>
+	/// <param name="info">The <see cref="SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+	/// <param name="context">The <see cref="StreamingContext"></see> that contains contextual information about the source or destination.</param>
+	private UmbrellaFileNotFoundException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
 	}
 }

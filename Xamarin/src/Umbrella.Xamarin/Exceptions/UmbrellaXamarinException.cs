@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Xamarin.Exceptions;
@@ -8,6 +7,7 @@ namespace Umbrella.Xamarin.Exceptions;
 /// Represents an exception in the Umbrella.Xamarin library.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaXamarinException : UmbrellaException
 {
 	/// <summary>

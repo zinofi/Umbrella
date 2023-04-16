@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Threading.Tasks;
-using Umbrella.Xamarin.Utilities.Enumerations;
+﻿using Umbrella.Xamarin.Utilities.Enumerations;
 using Xamarin.Essentials;
 
 namespace Umbrella.Xamarin.Utilities.Abstractions;

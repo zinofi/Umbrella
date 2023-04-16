@@ -162,6 +162,9 @@ dotnet_diagnostic.CA1051.severity = error
 dotnet_diagnostic.VSTHRD200.severity = error
 dotnet_diagnostic.VSTHRD100.severity = error
 dotnet_diagnostic.VSTHRD111.severity = silent
+dotnet_diagnostic.CA2208.severity = error
+dotnet_diagnostic.CA2237.severity = error
+dotnet_diagnostic.CA1806.severity = error
 
 ###############################
 # C# Code Style Rules         #
@@ -302,5 +305,6 @@ dotnet_diagnostic.IDE0066.severity = error
 dotnet_diagnostic.IDE0052.severity = error
 dotnet_diagnostic.IDE0059.severity = error
 dotnet_diagnostic.IDE0051.severity = error
-dotnet_diagnostic.IDE0005.severity = silent
+dotnet_diagnostic.IDE0005.severity = error
 dotnet_diagnostic.IDE0270.severity = suggestion
+dotnet_diagnostic.CA1507.severity = error

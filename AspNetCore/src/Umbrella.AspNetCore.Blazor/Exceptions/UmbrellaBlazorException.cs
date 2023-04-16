@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.AspNetCore.Blazor.Exceptions;
@@ -10,6 +7,7 @@ namespace Umbrella.AspNetCore.Blazor.Exceptions;
 /// Represents an exception thrown from a class in the <see cref="Blazor"/> library.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaBlazorException : UmbrellaException
 {
 	/// <summary>

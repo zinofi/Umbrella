@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Utilities.Abstractions;

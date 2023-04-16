@@ -7,6 +7,7 @@ namespace Umbrella.AppFramework.Shared.Exceptions;
 /// Represents an exception thrown from a class in the <see cref="Shared"/> library.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaAppFrameworkSharedException : UmbrellaException
 {
 	/// <summary>

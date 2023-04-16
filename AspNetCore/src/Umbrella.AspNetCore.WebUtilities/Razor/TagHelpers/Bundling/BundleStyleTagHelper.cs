@@ -1,11 +1,7 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using CommunityToolkit.Diagnostics;
+﻿using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Bundling;
-using Umbrella.Utilities.Extensions;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Security;

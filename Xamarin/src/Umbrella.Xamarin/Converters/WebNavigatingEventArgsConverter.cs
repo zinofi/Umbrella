@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Globalization;
+﻿using System.Globalization;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Converters;
@@ -17,8 +13,8 @@ public class WebNavigatingEventArgsConverter : IValueConverter
 	/// <inheritdoc />
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
-		if (!(value is WebNavigatingEventArgs eventArgs))
-			throw new ArgumentException("Expected WebNavigatingEventArgs as value", "value");
+		if (value is not WebNavigatingEventArgs eventArgs)
+			throw new ArgumentException("Expected WebNavigatingEventArgs as value", nameof(value));
 
 		return eventArgs;
 	}

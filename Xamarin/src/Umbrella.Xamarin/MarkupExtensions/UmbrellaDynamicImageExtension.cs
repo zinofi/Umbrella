@@ -1,5 +1,4 @@
-﻿using System;
-using Umbrella.DynamicImage.Abstractions;
+﻿using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Xamarin.Converters;
 using Xamarin.Forms;
 

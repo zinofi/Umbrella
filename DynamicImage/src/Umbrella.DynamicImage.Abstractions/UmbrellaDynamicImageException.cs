@@ -1,4 +1,5 @@
-﻿using Umbrella.Utilities.Exceptions;
+﻿using System.Runtime.Serialization;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.DynamicImage.Abstractions;
 
@@ -6,6 +7,7 @@ namespace Umbrella.DynamicImage.Abstractions;
 /// An exception class that represents errors that occur within the Dynamic Image infrastructure.
 /// </summary>
 /// <seealso cref="UmbrellaException" />
+[Serializable]
 public class UmbrellaDynamicImageException : UmbrellaException
 {
 	/// <summary>
@@ -56,5 +58,15 @@ public class UmbrellaDynamicImageException : UmbrellaException
 		: base(message, innerException)
 	{
 		Options = new DynamicImageOptions("", width, height, resizeMode, format);
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaDynamicImageException"/> class.
+	/// </summary>
+	/// <param name="info">The <see cref="SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+	/// <param name="context">The <see cref="StreamingContext"></see> that contains contextual information about the source or destination.</param>
+	protected UmbrellaDynamicImageException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
 	}
 }

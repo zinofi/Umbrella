@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Umbrella.AspNetCore.WebUtilities.Identity.Abstractions;
+﻿namespace Umbrella.AspNetCore.WebUtilities.Identity.Abstractions;
 
 /// <summary>
 /// A utility used to generate codes which can be used to verify the phone numbers of anonymous users.

@@ -7,6 +7,7 @@ namespace Umbrella.Utilities.Caching;
 /// Represents an error that occurs during usage of the <see cref="HybridCache"/>.
 /// </summary>
 /// <seealso cref="Exception" />
+[Serializable]
 public class HybridCacheException : UmbrellaException
 {
 	/// <summary>
@@ -38,8 +39,8 @@ public class HybridCacheException : UmbrellaException
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HybridCacheException"/> class.
 	/// </summary>
-	/// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
-	/// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
+	/// <param name="info">The <see cref="SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+	/// <param name="context">The <see cref="StreamingContext"></see> that contains contextual information about the source or destination.</param>
 	protected HybridCacheException(SerializationInfo info, StreamingContext context)
 		: base(info, context)
 	{

@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Umbrella.Utilities.Exceptions;
@@ -66,7 +62,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 						throw new InvalidOperationException($"A registration already exists for the source and destination types. The type being registered is {existingType.FullName} but the type named {type.FullName} has already been registered.");
 					}
-					
+
 					// TODO: Use ActivatorUtilities.CreateInstance and use the service provider to provider ctor services for
 					// the type. That way we can encapsulate more logic inside the mappers, e.g. logic to call out to a web service, file handler, etc.
 					// Hmmmm... Opens up possibilities previously not workable using AutoMapper.

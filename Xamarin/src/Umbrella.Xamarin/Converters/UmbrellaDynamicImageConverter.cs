@@ -1,8 +1,5 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Globalization;
 using Umbrella.DynamicImage.Abstractions;
-using Umbrella.Xamarin;
 using Xamarin.Forms;
 
 namespace Umbrella.Xamarin.Converters;

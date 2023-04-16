@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Umbrella.AspNetCore.WebUtilities.Security.Options;
 using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Security.Extensions;
