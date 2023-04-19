@@ -4,7 +4,6 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Buffers;
-using System.ComponentModel;
 using System.Globalization;
 using System.Security.Cryptography;
 using Umbrella.Utilities.Constants;
@@ -137,7 +136,7 @@ public class SecureRandomStringGenerator : ISecureRandomStringGenerator
 
 #if !AzureDevOps
 	[Obsolete]
-	[EditorBrowsable(EditorBrowsableState.Advanced)]
+	[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
 	internal string GenerateOld(int length = 8, int numbers = 0, int upperCaseCharacters = 0, int specialCharacters = 0)
 	{
 		try

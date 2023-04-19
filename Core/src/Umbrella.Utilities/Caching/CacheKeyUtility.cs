@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using System.Buffers;
-using System.ComponentModel;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
@@ -144,7 +143,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 
 #if !AzureDevOps
 	[Obsolete]
-	[EditorBrowsable(EditorBrowsableState.Advanced)]
+	[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
 	internal string CreateOld<T>(IEnumerable<string> keyParts) => $"{typeof(T).FullName}:{string.Join(":", keyParts)}".ToUpperInvariant();
 #endif
 }
