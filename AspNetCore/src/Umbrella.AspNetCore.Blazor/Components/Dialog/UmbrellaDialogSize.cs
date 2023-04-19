@@ -26,5 +26,10 @@ public enum UmbrellaDialogSize
 	/// <summary>
 	/// The extra large size which has a maximum width of 1140px when using Bootstrap.
 	/// </summary>
-	ExtraLarge
+	ExtraLarge,
+
+	/// <summary>
+	/// Makes the dialog cover the entire browser viewport.
+	/// </summary>
+	FullScreen
 }

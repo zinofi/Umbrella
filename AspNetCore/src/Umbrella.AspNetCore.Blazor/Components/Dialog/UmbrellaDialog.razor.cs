@@ -80,7 +80,8 @@ public partial class UmbrellaDialog
 		UmbrellaDialogSize.Small => "modal-sm",
 		UmbrellaDialogSize.Large => "modal-lg",
 		UmbrellaDialogSize.ExtraLarge => "modal-xl",
-		_ => throw new SwitchExpressionException(),
+		UmbrellaDialogSize.FullScreen => "modal-fullscreen",
+		_ => throw new SwitchExpressionException(Size)
 	};
 	
 	/// <inheritdoc/>

@@ -107,9 +107,10 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	public int PageNumber { get; private set; } = UmbrellaPaginationDefaults.PageNumber;
 
 	/// <summary>
-	/// Gets the current page size. Defaults to <see cref="UmbrellaPaginationDefaults.PageSize"/>.
+	/// Gets or sets the current page size. Defaults to <see cref="UmbrellaPaginationDefaults.PageSize"/>.
 	/// </summary>
-	public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
+	[Parameter]
+	public int PageSize { get; set; } = UmbrellaPaginationDefaults.PageSize;
 
 	/// <summary>
 	/// Gets or sets the columns to be displayed inside this grid component. This should be a collection of columns components.
