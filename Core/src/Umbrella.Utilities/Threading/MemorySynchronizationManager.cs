@@ -33,7 +33,9 @@ public class MemorySynchronizationManager : ISynchronizationManager
 
 		try
 		{
-			var syncRoot = GetSynchronizationRoot(type, key);
+			var semaphoreSlim = _items.GetValue(_stringPool.GetOrAdd($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
+
+			var syncRoot = new MemorySynchronizationRoot(semaphoreSlim);
 
 			_ = await syncRoot.WaitAsync(cancellationToken).ConfigureAwait(false);
 
@@ -48,11 +50,4 @@ public class MemorySynchronizationManager : ISynchronizationManager
 	/// <inheritdoc />
 	public ValueTask<ISynchronizationRoot> GetSynchronizationRootAndWaitAsync<T>(string key, CancellationToken cancellationToken = default)
 		=> GetSynchronizationRootAndWaitAsync(typeof(T), key, cancellationToken);
-
-	private MemorySynchronizationRoot GetSynchronizationRoot(Type type, string key)
-	{
-		var semaphoreSlim = _items.GetValue(_stringPool.GetOrAdd($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
-		
-		return new MemorySynchronizationRoot(semaphoreSlim);
-	}
 }

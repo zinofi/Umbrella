@@ -11,6 +11,9 @@ using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
+// TODO: Create a new [MemberPath] attribute so that these can be declared on the models which is where they really should be.
+// Leave the path override properties in for backwards compatibility and to use as overrides if for some reason they are still needed? Or mark them as obsolete?
+
 /// <summary>
 /// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
