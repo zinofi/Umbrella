@@ -112,7 +112,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo?> GetAsync(string subpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		try
 		{
@@ -128,7 +128,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<bool> DeleteAsync(string subpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		try
 		{
@@ -146,7 +146,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<bool> DeleteAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(fileInfo, nameof(fileInfo));
+		Guard.IsNotNull(fileInfo);
 
 		try
 		{
@@ -162,8 +162,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> CopyAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
-		Guard.IsNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+		Guard.IsNotNullOrWhiteSpace(sourceSubpath);
+		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
 		try
 		{
@@ -221,8 +221,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> MoveAsync(string sourceSubpath, string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(sourceSubpath, nameof(sourceSubpath));
-		Guard.IsNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+		Guard.IsNotNullOrWhiteSpace(sourceSubpath);
+		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
 		try
 		{
@@ -304,8 +304,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, Stream stream, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
-		Guard.IsNotNull(stream, nameof(stream));
+		Guard.IsNotNullOrWhiteSpace(subpath);
+		Guard.IsNotNull(stream);
 
 		try
 		{
@@ -328,7 +328,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<bool> ExistsAsync(string subpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(subpath, nameof(subpath));
+		Guard.IsNotNullOrWhiteSpace(subpath);
 
 		try
 		{
