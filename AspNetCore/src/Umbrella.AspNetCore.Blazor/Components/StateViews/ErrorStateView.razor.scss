@@ -1,0 +1,15 @@
+/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-error-state-view-color-primary
+	--u-error-state-view-font-weight
+*/
+
+.u-error-state-view
+{
+	p
+	{
+		color: var(--u-error-state-view-color-primary, red);
+		font-weight: var(--u-error-state-view-font-weight, bold);
+	}
+}

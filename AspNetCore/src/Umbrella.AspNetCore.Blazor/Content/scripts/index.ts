@@ -1,5 +1,4 @@
-﻿import "../styles/index.scss";
-import { UmbrellaBlazorInterop } from "./blazor/index";
+﻿import { UmbrellaBlazorInterop } from "./blazor/index";
 
 (() =>
 {
