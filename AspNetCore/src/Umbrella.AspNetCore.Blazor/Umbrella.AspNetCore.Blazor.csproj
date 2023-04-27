@@ -5,6 +5,7 @@
 		<TypeScriptToolsVersion>4.7</TypeScriptToolsVersion>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 		<DocumentationFile>bin\Release\net6.0\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
+		<ScopedCssEnabled>false</ScopedCssEnabled>
 	</PropertyGroup>
 
 	<PropertyGroup>
