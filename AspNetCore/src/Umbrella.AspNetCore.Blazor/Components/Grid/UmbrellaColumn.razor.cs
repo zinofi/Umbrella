@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Data.Filtering;
@@ -28,6 +29,9 @@ public partial class UmbrellaColumn<TItem>
 
 	[Inject]
 	private IAppAuthHelper AuthHelper { get; set; } = null!;
+
+	[Inject]
+	private ILogger<UmbrellaColumn<TItem>> Logger { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the <see cref="IUmbrellaGrid{TItem}"/> instance that contains this column.
@@ -277,13 +281,19 @@ public partial class UmbrellaColumn<TItem>
 	{
 		ClaimsPrincipal claimsPrincipal = await AuthHelper.GetCurrentClaimsPrincipalAsync();
 
-		if (!await AuthorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
+		if ( !await AuthorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
 			DisplayMode = UmbrellaColumnDisplayMode.None;
+
+		if (Logger.IsEnabled(LogLevel.Debug))
+			Logger.WriteDebug(new { ScanMode, DisplayMode, PropertyName = Property?.GetMemberName(), Value = Value?.ToString() });
 
 		if (ScanMode)
 		{
-			if (DisplayMode != UmbrellaColumnDisplayMode.None)
+			if (DisplayMode is not UmbrellaColumnDisplayMode.None)
 			{
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(message: "Creating column definition.");
+
 				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode, NullableEnumOption, OnAddOnButtonClickedAsync, AddOnButtonCssClass, AddOnButtonText, AddOnButtonIconCssClass);
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}

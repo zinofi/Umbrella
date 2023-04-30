@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
@@ -56,6 +57,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	private bool _autoScrollEnabled;
 
 	[Inject]
+	private ILogger<UmbrellaGrid<TItem>> Logger { get; set; } = null!;
+
+	[Inject]
 	private IUmbrellaBlazorInteropService BlazorInteropUtility { get; set; } = null!;
 
 	/// <summary>
@@ -71,9 +75,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <summary>
 	/// Gets the columns.
 	/// </summary>
-	private List<UmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new List<UmbrellaColumnDefinition<TItem>>();
+	private List<UmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new();
 
-	private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new List<UmbrellaGridSelectableItem>();
+	private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new();
 
 	private TItem SelectedRow { get; set; } = default!;
 
@@ -335,16 +339,31 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
 
 	/// <inheritdoc />
-	public void AddColumnDefinition(UmbrellaColumnDefinition<TItem> column) => ColumnDefinitions.Add(column);
+	public void AddColumnDefinition(UmbrellaColumnDefinition<TItem> column)
+	{
+		if (Logger.IsEnabled(LogLevel.Debug))
+			Logger.WriteDebug(new { column });
+
+		ColumnDefinitions.Add(column);
+	}
 
 	/// <inheritdoc />
 	public void SetColumnScanCompleted()
 	{
+		if (Logger.IsEnabled(LogLevel.Debug))
+			Logger.WriteDebug(new { ColumnScanComplete });
+
 		if (!ColumnScanComplete)
 		{
 			ColumnScanComplete = true;
 
+			if (Logger.IsEnabled(LogLevel.Debug))
+				Logger.WriteDebug(new { ColumnScanComplete });
+
 			var filterableColumns = new List<UmbrellaColumnDefinition<TItem>>();
+
+			if (Logger.IsEnabled(LogLevel.Debug))
+				Logger.WriteDebug(new { ColumnDefinitionsCount = ColumnDefinitions.Count });
 
 			for (int i = 0; i < ColumnDefinitions.Count; i++)
 			{
@@ -377,6 +396,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			}
 
 			FilterableColumns = filterableColumns;
+
+			if (Logger.IsEnabled(LogLevel.Debug))
+				Logger.WriteDebug(new { FilterableColumnsCount = FilterableColumns.Count });
 
 			StateHasChanged();
 		}

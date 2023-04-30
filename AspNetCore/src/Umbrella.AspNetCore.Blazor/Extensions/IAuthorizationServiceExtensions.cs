@@ -23,9 +23,8 @@ public static class IAuthorizationServiceExtensions
 	{
 		if (string.IsNullOrEmpty(roles) && string.IsNullOrEmpty(policyName))
 		{
-			// No custom policy or roles have been specified. Just authorize based on whether or not the user
-			// is authenticated.
-			return user.Identity?.IsAuthenticated is true;
+			// No roles or policy specified so just return true.
+			return true;
 		}
 		else
 		{

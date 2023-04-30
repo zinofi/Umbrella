@@ -10,7 +10,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// <summary>
 /// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-public class UmbrellaColumnDefinition<TItem>
+public record UmbrellaColumnDefinition<TItem>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition{TItem}"/> class.
