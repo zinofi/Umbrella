@@ -3,6 +3,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.Utilities.Primitives;
 
@@ -175,4 +177,72 @@ public enum OperationResultStatus
 	/// e.g, when creating a user, another user already exists with the same username.
 	/// </summary>
 	Conflict = 3
+}
+
+/// <summary>
+/// An exception that encapsulates the state of an <see cref="OperationResult" />.
+/// </summary>
+/// <seealso cref="UmbrellaException" />
+[Serializable]
+public class OperationResultException : UmbrellaException
+{
+	/// <summary>
+	/// Gets the status.
+	/// </summary>
+	public OperationResultStatus Status { get; init; }
+
+	/// <summary>
+	/// Gets the validation results.
+	/// </summary>
+	public IReadOnlyCollection<ValidationResult> ValidationResults { get; init; } = Array.Empty<ValidationResult>();
+
+	/// <summary>
+	/// Gets the primary validation message which is the first message in the <see cref="ValidationResults"/> collection.
+	/// </summary>
+	public string? PrimaryValidationMessage => ValidationResults.FirstOrDefault()?.ErrorMessage;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="status">The status.</param>
+	/// <param name="validationResults">The validation results.</param>
+	public OperationResultException(OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null)
+	{
+		Status = status;
+		ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="message">The message.</param>
+	/// <param name="status">The status.</param>
+	/// <param name="validationResults">The validation results.</param>
+	public OperationResultException(string message, OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null) : base(message)
+	{
+		Status = status;
+		ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="message">The message.</param>
+	/// <param name="innerException">The inner exception.</param>
+	/// <param name="status">The status.</param>
+	/// <param name="validationResults">The validation results.</param>
+	public OperationResultException(string message, Exception innerException, OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null) : base(message, innerException)
+	{
+		Status = status;
+		ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+	/// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
+	protected OperationResultException(SerializationInfo info, StreamingContext context) : base(info, context)
+	{
+	}
 }

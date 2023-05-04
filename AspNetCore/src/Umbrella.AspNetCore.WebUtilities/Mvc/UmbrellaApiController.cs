@@ -114,6 +114,39 @@ public abstract class UmbrellaApiController : ControllerBase
 	}
 
 	/// <summary>
+	/// Creates a failure result based on the specified <see cref="OperationResultException"/>.
+	/// </summary>
+	/// <param name="exception">The exception.</param>
+	/// <returns>The action result.</returns>
+	/// <exception cref="SwitchExpressionException"></exception>
+	protected IActionResult OperationResultFailure(OperationResultException exception)
+	{
+		switch(exception.Status)
+		{
+			case OperationResultStatus.GenericFailure when exception.ValidationResults is not { Count: > 0 }:
+				_ = Logger.WriteError(state: new { exception.Status }, message: exception.Message);
+				return BadRequest(exception.Message);
+			case OperationResultStatus.NotFound when exception.ValidationResults is not { Count: > 0 }:
+				_ = Logger.WriteWarning(state: new { exception.Status }, message: exception.Message);
+				return NotFound(exception.Message);
+			case OperationResultStatus.Conflict when exception.ValidationResults is not { Count: > 0 }:
+				_ = Logger.WriteError(state: new { exception.Status }, message: exception.Message);
+				return Conflict(exception.Message);
+			case OperationResultStatus.GenericFailure when exception.ValidationResults is { Count: > 0 }:
+				_ = Logger.WriteError(state: new { exception.Status }, message: exception.PrimaryValidationMessage);
+				return ValidationProblem(exception.ValidationResults.ToModelStateDictionary());
+			case OperationResultStatus.NotFound when exception.ValidationResults is { Count: > 0 }:
+				_ = Logger.WriteWarning(state: new { exception.Status }, message: exception.PrimaryValidationMessage);
+				return NotFound(exception.PrimaryValidationMessage ?? "Not Found");
+			case OperationResultStatus.Conflict when exception.ValidationResults is { Count: > 0 }:
+				_ = Logger.WriteError(state: new { exception.Status }, message: exception.PrimaryValidationMessage);
+				return Conflict(exception.PrimaryValidationMessage ?? "Conflict");
+			default:
+				throw new SwitchExpressionException(exception.Status);
+		}
+	}
+
+	/// <summary>
 	/// Creates a 201 Created <see cref="StatusCodeResult"/>.
 	/// </summary>
 	/// <returns>A <see cref="StatusCodeResult"/> of 201.</returns>
