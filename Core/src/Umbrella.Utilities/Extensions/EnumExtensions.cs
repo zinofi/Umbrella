@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using CommunityToolkit.Diagnostics;
 using Humanizer;
 using Umbrella.Utilities.Helpers;
@@ -31,7 +30,7 @@ public static class EnumExtensions
 	{
 		Guard.IsNotNull(separator, nameof(separator));
 
-		var lstAllOption = Enum.GetValues(options.GetType()).Cast<TEnum>().Select(x => x).ToArray();
+		var lstAllOption = EnumHelper<TEnum>.AllFlagsExceptMinMax;
 
 		var lstOption = new List<string>();
 
@@ -40,18 +39,6 @@ public static class EnumExtensions
 			if (options.HasFlag(item))
 				lstOption.Add(valueTransformer?.Invoke(item.ToString()) ?? item.ToDisplayString());
 		}
-
-		int min = EnumHelper<TEnum>.MinFlagValue;
-		int max = EnumHelper<TEnum>.MaxFlagValue;
-
-		// TODO: Need to make this more efficient.
-		if (min is 0)
-			_ = lstOption.Remove(lstOption.Find(x => Convert.ToInt32(x, CultureInfo.InvariantCulture) == min));
-
-		bool maxExists = lstOption.Any(x => Convert.ToInt32(x, CultureInfo.InvariantCulture) == max);
-
-		if (maxExists)
-			_ = lstOption.Remove(lstOption.Find(x => Convert.ToInt32(x, CultureInfo.InvariantCulture) == max));
 
 		return string.Join(separator, lstOption);
 	}
