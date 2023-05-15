@@ -1,23 +1,23 @@
 ﻿<nav class="breadcrumb-nav" aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="u-breadcrumb breadcrumb">
         @if (BreadcrumbItemList.Count is 0)
         {
-            <li class="breadcrumb-item active" aria-current="page">@Root</li>
+            <li class="u-breadcrumb-item breadcrumb-item active" aria-current="page">@Root</li>
         }
         else
         {
-            <li class="breadcrumb-item"><a class="breadcrumb-item__link" href="@RootPath">@Root</a></li>
+            <li class="u-breadcrumb-item breadcrumb-item"><a class="u-breadcrumb-item__link breadcrumb-item__link" href="@RootPath">@Root</a></li>
         }
 
         @foreach (var item in BreadcrumbItemList)
         {
             @if (item.IsActive)
             {
-                <li class="breadcrumb-item active" aria-current="page">@item.Name</li>
+                <li class="u-breadcrumb-item breadcrumb-item active" aria-current="page">@item.Name</li>
             }
             else
             {
-                <li class="breadcrumb-item"><a class="breadcrumb-item__link" href="@item.Url">@item.Name</a></li>
+                <li class="u-breadcrumb-item breadcrumb-item"><a class="u-breadcrumb-item__link breadcrumb-item__link" href="@item.Url">@item.Name</a></li>
             }
         }
     </ol>
