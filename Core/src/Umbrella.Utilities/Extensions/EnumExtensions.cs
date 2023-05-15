@@ -1,17 +1,19 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using CommunityToolkit.Diagnostics;
 using Humanizer;
+using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.Utilities.Extensions;
 
 /// <summary>
 /// A set of extension methods for <see cref="Enum"/> types.
 /// </summary>
+/// <remarks>
+/// Please note, these extension methods assume the underlying enum type is <see cref="int"/>.
+/// </remarks>
 public static class EnumExtensions
 {
 	private static readonly ConcurrentDictionary<Enum, string> _enumDisplayStringDictionary = new();
@@ -24,17 +26,32 @@ public static class EnumExtensions
 	/// <param name="valueTransformer">The value transformer.</param>
 	/// <param name="separator">The separator.</param>
 	/// <returns>A string containing the names of the values encapsulated by the enum.</returns>
-	public static string ToFlagsString(this Enum options, Func<string, string>? valueTransformer = null, string separator = ",")
+	public static string ToFlagsString<TEnum>(this TEnum options, Func<string, string>? valueTransformer = null, string separator = ",")
+		where TEnum : struct, Enum
 	{
 		Guard.IsNotNull(separator, nameof(separator));
 
+		var lstAllOption = Enum.GetValues(options.GetType()).Cast<TEnum>().Select(x => x).ToArray();
+
 		var lstOption = new List<string>();
 
-		foreach (Enum item in Enum.GetValues(options.GetType()))
+		foreach (TEnum item in lstAllOption)
 		{
 			if (options.HasFlag(item))
-				lstOption.Add(valueTransformer?.Invoke(item.ToString()) ?? item.ToString());
+				lstOption.Add(valueTransformer?.Invoke(item.ToString()) ?? item.ToDisplayString());
 		}
+
+		int min = EnumHelper<TEnum>.MinFlagValue;
+		int max = EnumHelper<TEnum>.MaxFlagValue;
+
+		// TODO: Need to make this more efficient.
+		if (min is 0)
+			_ = lstOption.Remove(lstOption.Find(x => Convert.ToInt32(x, CultureInfo.InvariantCulture) == min));
+
+		bool maxExists = lstOption.Any(x => Convert.ToInt32(x, CultureInfo.InvariantCulture) == max);
+
+		if (maxExists)
+			_ = lstOption.Remove(lstOption.Find(x => Convert.ToInt32(x, CultureInfo.InvariantCulture) == max));
 
 		return string.Join(separator, lstOption);
 	}

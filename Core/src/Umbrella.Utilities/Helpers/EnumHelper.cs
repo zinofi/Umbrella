@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Globalization;
+using System.Reflection;
+using Umbrella.Utilities.Exceptions;
+
 namespace Umbrella.Utilities.Helpers;
 
 /// <summary>
@@ -60,4 +64,19 @@ public static class EnumHelper<TEnum> where TEnum : struct, Enum
 	/// The collection of all enum values for the specified enum type as objects.
 	/// </summary>
 	public static readonly IReadOnlyCollection<object> AllObjects = Enum.GetValues(typeof(TEnum)).Cast<object>().ToArray();
+
+	/// <summary>
+	/// Determines if the enum type supports flags.
+	/// </summary>
+	public static readonly bool IsFlags = typeof(TEnum).GetCustomAttribute<FlagsAttribute>() != null;
+
+	/// <summary>
+	/// The minimum flag value of the enum type if it supports flags.
+	/// </summary>
+	public static readonly int MinFlagValue = IsFlags ? All.Min(x => Convert.ToInt32(x, CultureInfo.InvariantCulture)) : throw new UmbrellaException("The enum type does not support flags.");
+
+	/// <summary>
+	/// The maximum flag value of the enum type if it supports flags.
+	/// </summary>
+	public static readonly int MaxFlagValue = IsFlags ? All.Aggregate(0, (x, y) => x | Convert.ToInt32(y, CultureInfo.InvariantCulture)) : throw new UmbrellaException("The enum type does not support flags.");
 }
