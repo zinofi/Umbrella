@@ -79,4 +79,14 @@ public static class EnumHelper<TEnum> where TEnum : struct, Enum
 	/// The maximum flag value of the enum type if it supports flags.
 	/// </summary>
 	public static readonly int MaxFlagValue = IsFlags ? All.Aggregate(0, (x, y) => x | Convert.ToInt32(y, CultureInfo.InvariantCulture)) : throw new UmbrellaException("The enum type does not support flags.");
+
+	/// <summary>
+	/// The collection of all enum values for the specified enum type except the <see cref="MinFlagValue"/> and <see cref="MaxFlagValue"/>.
+	/// </summary>
+	public static readonly IReadOnlyCollection<TEnum> AllFlagsExceptMinMax = All.Where(x =>
+	{
+		int value = Convert.ToInt32(x, CultureInfo.InvariantCulture);
+
+		return value > MinFlagValue && value < MaxFlagValue;
+	}).ToArray();
 }
