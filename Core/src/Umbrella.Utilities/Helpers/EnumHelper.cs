@@ -87,6 +87,6 @@ public static class EnumHelper<TEnum> where TEnum : struct, Enum
 	{
 		int value = Convert.ToInt32(x, CultureInfo.InvariantCulture);
 
-		return value > MinFlagValue && value < MaxFlagValue;
+		return (MinFlagValue != 0 || value > MinFlagValue) && value < MaxFlagValue;
 	}).ToArray();
 }

@@ -21,6 +21,7 @@ public static class EnumExtensions
 	/// Converts the specified enum value that uses the <see cref="FlagsAttribute"/> to encapsulate multiple values
 	/// into a string containing the names of the enum values using the specified parameters.
 	/// </summary>
+	/// <typeparam name="TEnum">The type of the enum.</typeparam>
 	/// <param name="options">The options.</param>
 	/// <param name="valueTransformer">The value transformer.</param>
 	/// <param name="separator">The separator.</param>
@@ -37,7 +38,33 @@ public static class EnumExtensions
 		foreach (TEnum item in lstAllOption)
 		{
 			if (options.HasFlag(item))
-				lstOption.Add(valueTransformer?.Invoke(item.ToString()) ?? item.ToDisplayString());
+				lstOption.Add(valueTransformer?.Invoke(item.ToString()) ?? item.ToString());
+		}
+
+		return string.Join(separator, lstOption);
+	}
+
+	/// <summary>
+	/// Converts the specified enum value that uses the <see cref="FlagsAttribute"/> to encapsulate multiple values
+	/// into a string containing the friendly display names of the enum values using the specified parameters.
+	/// </summary>
+	/// <typeparam name="TEnum">The type of the enum.</typeparam>
+	/// <param name="options">The options.</param>
+	/// <param name="separator">The separator.</param>
+	/// <returns>A string containing the friendly display names of the values encapsulated by the enum.</returns>
+	public static string ToFlagsDisplayString<TEnum>(this TEnum options, string separator = ",")
+		where TEnum : struct, Enum
+	{
+		Guard.IsNotNull(separator, nameof(separator));
+
+		var lstAllOption = EnumHelper<TEnum>.AllFlagsExceptMinMax;
+
+		var lstOption = new List<string>();
+
+		foreach (TEnum item in lstAllOption)
+		{
+			if (options.HasFlag(item))
+				lstOption.Add(item.ToDisplayString());
 		}
 
 		return string.Join(separator, lstOption);
