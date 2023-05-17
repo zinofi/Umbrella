@@ -55,38 +55,69 @@ public static class EnumHelper
 /// <typeparam name="TEnum">The type of the enum.</typeparam>
 public static class EnumHelper<TEnum> where TEnum : struct, Enum
 {
+	private static int? _minFlagValue;
+	private static int? _maxFlagValue;
+	private static IReadOnlyCollection<TEnum>? _allFlagsExceptMinMax;
+
 	/// <summary>
 	/// The collection of all enum values for the specified enum type.
 	/// </summary>
-	public static readonly IReadOnlyCollection<TEnum> All = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
+	public static IReadOnlyCollection<TEnum> All { get; } = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
 
 	/// <summary>
 	/// The collection of all enum values for the specified enum type as objects.
 	/// </summary>
-	public static readonly IReadOnlyCollection<object> AllObjects = Enum.GetValues(typeof(TEnum)).Cast<object>().ToArray();
+	public static IReadOnlyCollection<object> AllObjects { get; } = Enum.GetValues(typeof(TEnum)).Cast<object>().ToArray();
 
 	/// <summary>
 	/// Determines if the enum type supports flags.
 	/// </summary>
-	public static readonly bool IsFlags = typeof(TEnum).GetCustomAttribute<FlagsAttribute>() != null;
+	public static bool IsFlags { get; } = typeof(TEnum).GetCustomAttribute<FlagsAttribute>() != null;
 
 	/// <summary>
 	/// The minimum flag value of the enum type if it supports flags.
 	/// </summary>
-	public static readonly int MinFlagValue = IsFlags ? All.Min(x => Convert.ToInt32(x, CultureInfo.InvariantCulture)) : throw new UmbrellaException("The enum type does not support flags.");
+	public static int MinFlagValue
+	{
+		get
+		{
+			if (!IsFlags)
+				throw new UmbrellaException("The enum type does not support flags.");
+
+			return _minFlagValue ??= All.Min(x => Convert.ToInt32(x, CultureInfo.InvariantCulture));
+		}
+	}
 
 	/// <summary>
 	/// The maximum flag value of the enum type if it supports flags.
 	/// </summary>
-	public static readonly int MaxFlagValue = IsFlags ? All.Aggregate(0, (x, y) => x | Convert.ToInt32(y, CultureInfo.InvariantCulture)) : throw new UmbrellaException("The enum type does not support flags.");
+	public static int MaxFlagValue
+	{
+		get
+		{
+			if (!IsFlags)
+				throw new UmbrellaException("The enum type does not support flags.");
+
+			return _maxFlagValue ??= All.Aggregate(0, (x, y) => x | Convert.ToInt32(y, CultureInfo.InvariantCulture));
+		}
+	}
 
 	/// <summary>
 	/// The collection of all enum values for the specified enum type except the <see cref="MinFlagValue"/> and <see cref="MaxFlagValue"/>.
 	/// </summary>
-	public static readonly IReadOnlyCollection<TEnum> AllFlagsExceptMinMax = All.Where(x =>
+	public static IReadOnlyCollection<TEnum> AllFlagsExceptMinMax
 	{
-		int value = Convert.ToInt32(x, CultureInfo.InvariantCulture);
+		get
+		{
+			if (!IsFlags)
+				throw new UmbrellaException("The enum type does not support flags.");
 
-		return (MinFlagValue != 0 || value > MinFlagValue) && value < MaxFlagValue;
-	}).ToArray();
+			return _allFlagsExceptMinMax ??= All.Where(x =>
+			{
+				int value = Convert.ToInt32(x, CultureInfo.InvariantCulture);
+
+				return (MinFlagValue != 0 || value > MinFlagValue) && value < MaxFlagValue;
+			}).ToArray();
+		}
+	}
 }

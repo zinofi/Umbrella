@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Security.Claims;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Umbrella.AppFramework.Exceptions;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Security.Messages;
@@ -27,6 +27,7 @@ public class AppAuthHelper : IAppAuthHelper
 
 	// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
 	// Could wrap this in a singleton service but not much point.
+	// TODO: Try and remove this in favour of setting on the current thread.
 	private static volatile ClaimsPrincipal? _claimsPrincipal;
 
 	/// <inheritdoc />
