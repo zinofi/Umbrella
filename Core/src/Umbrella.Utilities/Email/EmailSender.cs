@@ -37,6 +37,8 @@ public class EmailSender : IEmailSender
 	/// <inheritdoc />
 	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, CancellationToken cancellationToken = default)
 	{
+		// TODO: Add parameters to allow adding CC and BCC email addresses.
+
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(email);
 		Guard.IsNotNullOrWhiteSpace(subject);

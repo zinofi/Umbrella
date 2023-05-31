@@ -134,7 +134,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 				if (isEnumerable)
 					throw new InvalidOperationException($"The destination type is {param2.FullName} which is a collection. Please call the {nameof(MapAllAsync)} methods to map collections.");
 
-				throw new InvalidOperationException($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found.");
+				throw new InvalidOperationException($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found when trying to map to a new instance.");
 			}
 
 			if (value is IUmbrellaMapperlyNewInstanceMapper<TSource, TDestination> mapper)
@@ -163,7 +163,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 			var key = (param1, param2);
 
 			if (!_existingInstanceMapperDictionary.TryGetValue(key, out object? value))
-				throw new InvalidOperationException($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found.");
+				throw new InvalidOperationException($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found when trying to map to an existing instance.");
 
 			if (value is IUmbrellaMapperlyExistingInstanceMapper<TSource, TDestination> mapper)
 			{
@@ -245,7 +245,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 			var key = (elementType, param2);
 
 			if (!_newCollectionmapperDictionary.TryGetValue(key, out object? value))
-				throw new InvalidOperationException($"A mapper implementation for the specified source type {elementType.FullName} and destination type {param2.FullName} cannot be found.");
+				throw new InvalidOperationException($"A mapper implementation for the specified source type {elementType.FullName} and destination type {param2.FullName} cannot be found when trying to map to a new collection.");
 
 			if (value is IUmbrellaMapperlyNewCollectionMapper<TSource, TDestination> mapper)
 				return new ValueTask<IReadOnlyCollection<TDestination>>(mapper.MapAll(source));
