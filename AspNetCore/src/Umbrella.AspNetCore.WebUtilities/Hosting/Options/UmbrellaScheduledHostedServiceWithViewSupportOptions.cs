@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using Umbrella.Utilities.Options.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Hosting.Options;
@@ -46,6 +47,13 @@ public class UmbrellaScheduledHostedServiceWithViewSupportOptions : ISanitizable
 	/// This is assigned to the <c>CurrentUICulture</c> property of <see cref="Thread.CurrentThread"/>.
 	/// </remarks>
 	public string DefaultLanguageUICultureCode { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets an optional collection of claims to assign to the <see cref="ClaimsPrincipal"/>
+	/// that gets assigned to the current <see cref="HttpContext"/>.
+	/// </summary>
+	/// <remarks>Defaults to an empty array.</remarks>
+	public IReadOnlyCollection<Claim> Claims { get; set; } = Array.Empty<Claim>();
 
 	/// <inheritdoc/>
 	public void Sanitize()

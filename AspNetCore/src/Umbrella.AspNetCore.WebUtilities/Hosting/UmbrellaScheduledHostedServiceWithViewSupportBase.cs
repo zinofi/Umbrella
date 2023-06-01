@@ -1,7 +1,5 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Globalization;
+﻿using System.Globalization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -64,6 +62,9 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 		// We need to manually set these values to ensure correct formatting of values inside views.
 		Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Options.DefaultLanguageCultureCode);
 		Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Options.DefaultLanguageUICultureCode);
+
+		if (Options.Claims.Count > 0)
+			httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(Options.Claims, GetType().FullName));
 
 		serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext = httpContext;
 

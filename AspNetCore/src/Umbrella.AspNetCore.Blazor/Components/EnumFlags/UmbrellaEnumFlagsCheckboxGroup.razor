@@ -1,0 +1,16 @@
+﻿@using Umbrella.AspNetCore.Blazor.Components.Checkbox
+@typeparam TEnum
+@inherits InputBase<TEnum>
+
+<div class="u-enum-flags @CssClass">
+    <ul class="u-enum-flags__items">
+        @for (int i = 0; i < Options.Count; i++)
+        {
+            var option = Options.ElementAt(i);
+
+            <li class="u-enum-flags__item">
+                <UmbrellaCheckbox Value="option.IsSelected" ValueExpression="() => option.IsSelected" ValueChanged="() => OnOptionSelectionChanged(option)" Text="@option.Text" />
+            </li>
+        }
+    </ul>
+</div>

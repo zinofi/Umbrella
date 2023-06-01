@@ -43,6 +43,7 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+		<None Include="Components\EnumFlags\UmbrellaEnumFlagsCheckboxGroup.razor" />
 		<None Include="package-lock.json" />
 		<None Include="package.json" />
 		<None Include="tsconfig.json" />
