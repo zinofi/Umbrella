@@ -45,6 +45,15 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 	/// </summary>
 	protected UmbrellaScheduledHostedServiceWithViewSupportOptions Options { get; }
 
+	/// <summary>
+	/// Gets the current user.
+	/// </summary>
+	/// <remarks>
+	/// This defaults to <see langword="null" />. Override this property to assign a custom <see cref="ClaimsPrincipal" />
+	/// to assign to the <see cref="HttpContext" /> created when this job is executed.
+	/// </remarks>
+	protected virtual ClaimsPrincipal? CurrentUser { get; }
+
 	/// <inheritdoc/>
 	private protected override async Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
 	{
@@ -63,8 +72,8 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 		Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Options.DefaultLanguageCultureCode);
 		Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Options.DefaultLanguageUICultureCode);
 
-		if (Options.Claims.Count > 0)
-			httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(Options.Claims, GetType().FullName));
+		if (CurrentUser is not null)
+			httpContext.User = CurrentUser;
 
 		serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext = httpContext;
 
