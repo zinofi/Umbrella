@@ -19,7 +19,9 @@ public interface IEmailSender
 	/// <param name="body">The body of the email.</param>
 	/// <param name="fromAddress">The email address of the sender. If this is not specified, the default email address will be automatically set to the default value <see cref="EmailSenderOptions.DefaultFromAddress"/>.</param>
 	/// <param name="attachments">The email attachements.</param>
+	/// <param name="ccList">The list of email addresses to be added as CCs.</param>
+	/// <param name="bccList">The list of email addresses to be added as BCCs.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable task which will complete when the email has been sent.</returns>
-	Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, CancellationToken cancellationToken = default);
+	Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, IEnumerable<string>? ccList = null, IEnumerable<string>? bccList = null, CancellationToken cancellationToken = default);
 }
