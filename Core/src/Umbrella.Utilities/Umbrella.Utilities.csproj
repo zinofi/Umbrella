@@ -20,9 +20,9 @@
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.16" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.3" />
-		<PackageReference Include="Microsoft.Extensions.ObjectPool" Version="6.0.16" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.18" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
+		<PackageReference Include="Microsoft.Extensions.ObjectPool" Version="6.0.18" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.6.40">
 		  <PrivateAssets>all</PrivateAssets>
@@ -37,7 +37,7 @@
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-		<PackageReference Include="System.Text.Json" Version="6.0.7" />
+		<PackageReference Include="System.Text.Json" Version="6.0.8" />
 		<PackageReference Include="System.Net.Http.Json" Version="6.0.1" />
 	</ItemGroup>
 
