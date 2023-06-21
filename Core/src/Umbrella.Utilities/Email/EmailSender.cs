@@ -11,6 +11,9 @@ using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.Utilities.Email;
 
+// TODO: Migrate to MailKit or newer alternative as SmtpClient has been marked as obsolete by Microsoft.
+// Remove dependency from System.Net.Mail.Attachment in favour of a custom abstraction.
+
 /// <summary>
 /// An implementation of the <see cref="IEmailSender" /> abstraction that either sends emails
 /// using a configured SMTP server or saves them to a folder on disk as .eml files. Configuration is specified using
