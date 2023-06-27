@@ -8,7 +8,6 @@ using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Bundling.Options;
-using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.WebUtilities.Bundling;
@@ -100,7 +99,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundlePathAsync(bundleNameOrPath, "css", false, cancellationToken).ConfigureAwait(false),
 				Options,
-                cancellationToken: cancellationToken)
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -164,7 +163,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 					int idxLastSlash = loweredPath.LastIndexOf('/');
 
 					if (idxLastSlash != -1)
-						loweredPath = loweredPath.Substring(idxLastSlash + 1);
+						loweredPath = loweredPath[(idxLastSlash + 1)..];
 
 					return Path.Combine(Options.DefaultBundleFolderAppRelativePath, loweredPath);
 				});

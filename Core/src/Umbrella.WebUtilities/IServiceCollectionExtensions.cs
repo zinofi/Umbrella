@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Runtime.CompilerServices;
 using CommunityToolkit.Diagnostics;
+using System.Runtime.CompilerServices;
 using Umbrella.WebUtilities.Bundling;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Bundling.Options;
@@ -11,6 +11,9 @@ using Umbrella.WebUtilities.Http;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 using Umbrella.WebUtilities.Security;
+using Umbrella.WebUtilities.Versioning;
+using Umbrella.WebUtilities.Versioning.Abstractions;
+using Umbrella.WebUtilities.Versioning.Options;
 
 [assembly: InternalsVisibleTo("Umbrella.WebUtilities.Test")]
 
@@ -34,6 +37,7 @@ public static class IServiceCollectionExtensions
 	/// <param name="umbrellaWebHostingEnvironmentOptionsBuilder">The optional <see cref="UmbrellaWebHostingEnvironmentOptions"/> builder.</param>
 	/// <param name="queryStringParameterToHttpHeaderMiddlewareOptionsBuilder">The optional <see cref="QueryStringParameterToHttpHeaderMiddlewareOptions"/> builder.</param>
 	/// <param name="multiTenantSessionContextMiddlewareOptionsBuilder">The optional <see cref="MultiTenantSessionContextMiddlewareOptions"/> builder.</param>
+	/// <param name="systemVersionServiceOptionsBuilder">The optional <see cref="SystemVersionServiceOptions"/> builder.</param>
 	/// <param name="isDevelopmentMode">Specifies if the current application is running in development mode.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
@@ -46,6 +50,7 @@ public static class IServiceCollectionExtensions
 		Action<IServiceProvider, UmbrellaWebHostingEnvironmentOptions>? umbrellaWebHostingEnvironmentOptionsBuilder = null,
 		Action<IServiceProvider, QueryStringParameterToHttpHeaderMiddlewareOptions>? queryStringParameterToHttpHeaderMiddlewareOptionsBuilder = null,
 		Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions>? multiTenantSessionContextMiddlewareOptionsBuilder = null,
+		Action<IServiceProvider, SystemVersionServiceOptions>? systemVersionServiceOptionsBuilder = null,
 		bool isDevelopmentMode = false)
 	{
 		Guard.IsNotNull(services);
@@ -53,6 +58,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddSingleton<IBundleUtility, BundleUtility>();
 		_ = services.AddSingleton<IHttpHeaderValueUtility, HttpHeaderValueUtility>();
 		_ = services.AddSingleton<IWebpackBundleUtility, WebpackBundleUtility>();
+		_ = services.AddSingleton<ISystemVersionService, SystemVersionService>();
 
 		_ = services.AddScoped<NonceContext>();
 
@@ -64,6 +70,7 @@ public static class IServiceCollectionExtensions
 		_ = services.ConfigureUmbrellaOptions(umbrellaWebHostingEnvironmentOptionsBuilder, isDevelopmentMode);
 		_ = services.ConfigureUmbrellaOptions(queryStringParameterToHttpHeaderMiddlewareOptionsBuilder, isDevelopmentMode);
 		_ = services.ConfigureUmbrellaOptions(multiTenantSessionContextMiddlewareOptionsBuilder, isDevelopmentMode);
+		_ = services.ConfigureUmbrellaOptions(systemVersionServiceOptionsBuilder, isDevelopmentMode);
 
 		return services;
 	}

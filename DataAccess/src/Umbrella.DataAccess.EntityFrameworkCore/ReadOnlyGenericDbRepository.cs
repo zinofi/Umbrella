@@ -23,7 +23,7 @@ namespace Umbrella.DataAccess.EntityFrameworkCore;
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-/// <seealso cref="T:Umbrella.DataAccess.EntityFrameworkCore.ReadOnlyGenericDbRepository{TEntity, TDbContext, Umbrella.DataAccess.Abstractions.RepoOptions, System.Int32}" />
+/// <seealso cref="ReadOnlyGenericDbRepository{TEntity, TDbContext, RepoOptions, Int32}" />
 public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext> : ReadOnlyGenericDbRepository<TEntity, TDbContext, RepoOptions, int>
 	where TEntity : class, IEntity<int>
 	where TDbContext : DbContext

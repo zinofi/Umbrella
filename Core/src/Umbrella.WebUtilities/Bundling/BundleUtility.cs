@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Bundling.Options;
-using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.WebUtilities.Bundling;
@@ -142,7 +141,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 			return await Cache.GetOrCreateAsync(cacheKey,
 				async () => await ResolveBundleContentAsync(bundleNameOrPath, "js", cancellationToken).ConfigureAwait(false),
 				Options,
-                cancellationToken: cancellationToken)
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { bundleNameOrPath }))
@@ -242,7 +241,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 	protected virtual Task<string> DetermineBundlePathAsync(string bundleNameOrPath, string bundleType, CancellationToken cancellationToken)
 	{
 		if (Path.HasExtension(bundleNameOrPath))
-			bundleNameOrPath = bundleNameOrPath.Substring(0, bundleNameOrPath.LastIndexOf('.'));
+			bundleNameOrPath = bundleNameOrPath[..bundleNameOrPath.LastIndexOf('.')];
 
 		bundleNameOrPath += "." + bundleType;
 

@@ -24,11 +24,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
 		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Umbrella.WebUtilities.Exceptions" />
 	</ItemGroup>
 	
 </Project>
