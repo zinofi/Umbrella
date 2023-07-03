@@ -10,6 +10,15 @@ namespace Microsoft.Extensions.Hosting;
 public static class IHostEnvironmentExtensions
 {
 	/// <summary>
+	/// Checks if the current host environment name is <c>QA</c>
+	/// </summary>
+	/// <param name="hostEnvironment">The host environment.</param>
+	/// <returns>
+	///   <see langword="true"/> if the specified host environment is <c>QA</c>; otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool IsQA(this IHostEnvironment hostEnvironment) => hostEnvironment.IsEnvironment("QA");
+
+	/// <summary>
 	/// Checks if the current host environment name is <c>Integration</c>
 	/// </summary>
 	/// <param name="hostEnvironment">The host environment.</param>
