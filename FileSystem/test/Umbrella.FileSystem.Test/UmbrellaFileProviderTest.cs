@@ -1239,7 +1239,7 @@ public class UmbrellaFileProviderTest
 		var downLevelResults = await provider.EnumerateDirectoryAsync("/images/sub-images");
 
 		// Assert
-		Assert.Equal(1, topLevelResults.Count);
+		_ = Assert.Single(topLevelResults);
 		Assert.Equal(2, downLevelResults.Count);
 
 		Assert.Equal(subpath, topLevelResults.ElementAt(0).SubPath);
