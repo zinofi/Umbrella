@@ -9,6 +9,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Security;
 /// using the custom <see cref="AppAuthenticationSchemes.BearerFAT"/> authentication scheme.
 /// </summary>
 /// <seealso cref="JwtBearerEvents" />
+[Obsolete("This will be removed in a future version as it is no longer needed.")]
 public class AppJwtBearerFATEvents : JwtBearerEvents
 {
 	private const string TokenPrefix = AppAuthenticationSchemes.BearerFAT + " ";
