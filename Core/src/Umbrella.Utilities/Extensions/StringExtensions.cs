@@ -246,4 +246,14 @@ public static class StringExtensions
 
 		return span.ToString();
 	}
+
+	/// <summary>
+	/// Determines whether the specified <paramref name="url"/> is an absolute URL by
+	/// checking for a <c>http://</c> or <c>https://</c> prefix, using a <see cref="StringComparison.OrdinalIgnoreCase"/> equality check.
+	/// </summary>
+	/// <param name="url">The URL.</param>
+	/// <returns>
+	///   <see langword="true"/> if the <paramref name="url"/> is absolute; otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool IsAbsoluteUrl(this string url) => url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 }
