@@ -1,9 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
 using Umbrella.DataAccess.Abstractions;
+using Umbrella.Utilities.Helpers;
 
 #pragma warning disable IDE0130
 namespace Microsoft.AspNetCore.Builder;
@@ -75,4 +78,36 @@ public static class IApplicationBuilderExtensions
 	/// <param name="builder">The builder.</param>
 	/// <returns>The application builder.</returns>
 	public static IApplicationBuilder UseUmbrellaFileAccessTokenQueryString(this IApplicationBuilder builder) => builder.UseWhen(ctx => ctx.Request.Query.ContainsKey(AppQueryStringKeys.FileAccessToken), app => app.UseMiddleware<FileAccessTokenQueryStringMiddleware>());
+
+	/// <summary>
+	/// Ensures that the <see cref="IHostingEnvironment.ContentRootPath"/>,
+	/// <see cref="IHostingEnvironment.ContentRootFileProvider"/>
+	/// and <see cref="IHostingEnvironment.WebRootPath"/> have been set correctly
+	/// when developing a Blazor application hosted using ASP.NET Core.
+	/// </summary>
+	/// <remarks>
+	/// For some reason, only during development, these properties are set incorrectly.
+	/// This may be fixed in a future version but was definitely a problem when developing a .NET Core 3.1 project.
+	/// </remarks>
+	/// <param name="app">The application.</param>
+	/// <param name="clientProjectSuffix">The client project suffix.</param>
+	/// <param name="serverProjectSuffix">The server project suffix.</param>
+	/// <returns>The <see cref="WebApplication"/> instance.</returns>
+	public static WebApplication EnsureBlazorDevelopmentPaths(this WebApplication app, string clientProjectSuffix = "Client", string serverProjectSuffix = "Server")
+	{
+		if (app.Environment.ContentRootPath.LastIndexOf(clientProjectSuffix, StringComparison.InvariantCulture) > 0)
+		{
+			string contentRootPath = $@"{app.Environment.ContentRootPath[..app.Environment.ContentRootPath.LastIndexOf(clientProjectSuffix, StringComparison.InvariantCulture)]}{serverProjectSuffix}";
+			app.Environment.ContentRootPath = PathHelper.PlatformNormalize(contentRootPath);
+			app.Environment.ContentRootFileProvider = new PhysicalFileProvider(app.Environment.ContentRootPath);
+		}
+
+		if (string.IsNullOrEmpty(app.Environment.WebRootPath) || app.Environment.WebRootPath.LastIndexOf(serverProjectSuffix, StringComparison.InvariantCulture) > 0)
+		{
+			string webRootPath = $@"{app.Environment.ContentRootPath[..app.Environment.ContentRootPath.LastIndexOf(serverProjectSuffix, StringComparison.InvariantCulture)]}{clientProjectSuffix}\wwwroot";
+			app.Environment.WebRootPath = PathHelper.PlatformNormalize(webRootPath);
+		}
+
+		return app;
+	}
 }
