@@ -1,9 +1,8 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Umbrella.AppFramework.Shared.Constants;
+using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Helpers;
@@ -110,4 +109,19 @@ public static class IApplicationBuilderExtensions
 
 		return app;
 	}
+
+	/// <summary>
+	/// Branches the request pipeline to a terminal state, resulting in a 400 Bad Request, if the host domain being requested is for an <c>azurewebsites.net</c> domain
+	/// and the request path is not listed in the <paramref name="pathExceptions"/>.
+	/// </summary>
+	/// <param name="builder">The application builder.</param>
+	/// <param name="pathExceptions">The list of path exceptions.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseBlockAllAzureWebsitesNetDomainTraffic(this IApplicationBuilder builder, params string[] pathExceptions)
+		=> builder.MapWhen(x => !pathExceptions.Contains(x.Request.Path.Value, StringComparer.OrdinalIgnoreCase) && x.Request.Host.Host.EndsWith("azurewebsites.net", StringComparison.OrdinalIgnoreCase), app => app.Use((HttpContext context, Func<Task> next) =>
+		{
+			context.Response.SendStatusCode(HttpStatusCode.BadRequest);
+
+			return Task.CompletedTask;
+		}));
 }
