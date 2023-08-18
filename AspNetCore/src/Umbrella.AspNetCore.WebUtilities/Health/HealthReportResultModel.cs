@@ -2,4 +2,4 @@
 
 namespace Umbrella.AspNetCore.WebUtilities.Health;
 
-internal record HealthReportResultModel(string Name, HealthStatus Status, string? Description, Dictionary<string, string?> Data);
+internal readonly record struct HealthReportResultModel(string Name, HealthStatus Status, string? Description, Dictionary<string, string?> Data);
