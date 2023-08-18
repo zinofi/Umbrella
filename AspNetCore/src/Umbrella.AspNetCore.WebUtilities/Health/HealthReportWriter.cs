@@ -9,11 +9,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Health;
 /// </summary>
 public static class HealthReportWriter
 {
-	private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
-	{
-		WriteIndented = true
-	};
-
 	/// <summary>
 	/// Writes the specified report to the <see cref="HttpContext.Response"/> as JSON.
 	/// </summary>
@@ -28,9 +23,8 @@ public static class HealthReportWriter
 			healthReport.Status,
 			healthReport.Entries.Select(x => new HealthReportResultModel(x.Key, x.Value.Status, x.Value.Description, x.Value.Data.ToDictionary(x => x.Key, x => x.Value.ToString()))).ToArray());
 
-		return context.Response.WriteAsJsonAsync(
-			report,
-			_jsonOptions,
-			context.RequestAborted);
+		string json = JsonSerializer.Serialize(report, typeof(HealthReportModel), HealthSourceGenerationContext.Default);
+
+		return context.Response.WriteAsync(json, context.RequestAborted);
 	}
 }

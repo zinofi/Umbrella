@@ -4,6 +4,10 @@ using Umbrella.Utilities.ObjectModel;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Checkbox;
 
+/// <summary>
+/// A component used to display a list of options as checkboxes.
+/// </summary>
+/// <typeparam name="TOption">The type of the option.</typeparam>
 public partial class UmbrellaCheckboxGroup<TOption>
 {
 	private UmbrellaCheckboxGroupItem<TOption>? ShowAllOptionItem { get; set; }

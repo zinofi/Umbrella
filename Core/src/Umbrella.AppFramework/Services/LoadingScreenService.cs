@@ -53,7 +53,8 @@ public class LoadingScreenService : ILoadingScreenService, IDisposable
 			{
 				if (!token.IsCancellationRequested)
 					_ = WeakReferenceMessenger.Default.Send(new LoadingScreenStateChangedMessage(LoadingScreenState.Visible));
-			});
+			},
+			TaskScheduler.Default);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { delayMilliseconds }))
 		{
