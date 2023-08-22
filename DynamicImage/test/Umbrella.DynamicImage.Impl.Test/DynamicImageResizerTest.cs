@@ -306,6 +306,18 @@ public class DynamicImageResizerTest
 		Assert.True(isValid);
 	}
 
+	[Theory]
+	[MemberData(nameof(ResizersList))]
+	public void GetImageDimensions_ValidImage(IDynamicImageResizer imageResizer)
+	{
+		byte[] bytes = Convert.FromBase64String(TestPNG);
+
+		var (width, height) = imageResizer.GetImageDimensions(bytes);
+
+		Assert.Equal(300, width);
+		Assert.Equal(193, height);
+	}
+
 	private static DynamicImageResizerBase CreateDynamicImageResizer<T>()
 	{
 		var logger = new Mock<ILogger<T>>();

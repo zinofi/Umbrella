@@ -52,6 +52,23 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		}
 	}
 
+	/// <inheritdoc/>
+	public override (int width, int height) GetImageDimensions(byte[] bytes)
+	{
+		Guard.IsNotNull(bytes);
+
+		try
+		{
+			using var image = LoadBitmap(bytes);
+
+			return (image.Width, image.Height);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaDynamicImageException("There has been a problem determining the image dimensions.", exc);
+		}
+	}
+
 	/// <inheritdoc />
 	public override (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
 	{
@@ -63,8 +80,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 
 		try
 		{
-			using var inputStream = new MemoryStream(originalImage);
-			using var image = FreeImageBitmap.FromStream(inputStream);
+			using var image = LoadBitmap(originalImage);
 
 			FreeImageBitmap imageToSave = image;
 
@@ -74,7 +90,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 			{
 				if (result.offsetX > 0 || result.offsetY > 0)
 					imageToSave = image.Copy(new Rectangle(result.offsetX, result.offsetY, result.cropWidth, result.cropHeight));
-				
+
 				_ = imageToSave.Rescale(result.width, result.height, FREE_IMAGE_FILTER.FILTER_LANCZOS3);
 
 				using var outputStream = new MemoryStream();
@@ -97,6 +113,13 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	#endregion
 
 	#region Private Methods
+	private static FreeImageBitmap LoadBitmap(byte[] bytes)
+	{
+		using var inputStream = new MemoryStream(bytes);
+		
+		return FreeImageBitmap.FromStream(inputStream);
+	}
+
 	private static FREE_IMAGE_FORMAT GetImageFormat(DynamicImageFormat format) => format switch
 	{
 		DynamicImageFormat.Bmp => FREE_IMAGE_FORMAT.FIF_BMP,

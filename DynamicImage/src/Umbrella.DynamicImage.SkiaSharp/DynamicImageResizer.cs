@@ -48,6 +48,23 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		}
 	}
 
+	/// <inheritdoc/>
+	public override (int width, int height) GetImageDimensions(byte[] bytes)
+	{
+		Guard.IsNotNull(bytes);
+
+		try
+		{
+			using var image = LoadBitmap(bytes);
+
+			return (image.Width, image.Height);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaDynamicImageException("There has been a problem determining the image dimensions.", exc);
+		}
+	}
+
 	// TODO: Could add an option to specify whether or not to resize if the image is already less than the width and height, ensuring we take
 	// into account the resize mode.
 	// TODO: Build in auto-rotate capability - see https://github.com/mono/SkiaSharp/issues/836
@@ -114,7 +131,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 
 		var info = codec.Info;
 		var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height, info.ColorType, info.AlphaType, info.ColorSpace));
-
+		
 		var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels(out IntPtr length));
 
 		return result switch

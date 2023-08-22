@@ -134,6 +134,9 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 	/// <inheritdoc />
 	public abstract (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75);
+
+	/// <inheritdoc />
+	public abstract (int width, int height) GetImageDimensions(byte[] bytes);
 	#endregion
 
 	#region Protected Methods		
