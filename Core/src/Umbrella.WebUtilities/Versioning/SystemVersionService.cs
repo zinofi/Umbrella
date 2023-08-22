@@ -80,7 +80,7 @@ public class SystemVersionService : ISystemVersionService
 					version = SanitizeVersionNumber(version);
 				}
 
-				version ??= Assembly.GetEntryAssembly().GetName().Version?.ToString() ?? "Unavailable";
+				version ??= (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly())?.GetName()?.Version?.ToString() ?? "Unavailable";
 
 				string? databaseVersion = null;
 
