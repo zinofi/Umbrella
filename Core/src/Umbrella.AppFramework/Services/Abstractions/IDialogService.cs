@@ -3,6 +3,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using Umbrella.AppFramework.Services.Constants;
+using Umbrella.Utilities.Http;
 
 namespace Umbrella.AppFramework.Services.Abstractions;
 
@@ -38,6 +39,13 @@ public interface IDialogService
 	/// <param name="closeButtonText">The close button text.</param>
 	/// <returns>An awaitable task that completes when the dialog has been actioned.</returns>
 	ValueTask ShowValidationResultsMessageAsync(IEnumerable<ValidationResult> validationResults, string introMessage = DialogDefaults.ValidationResultsIntroMessage, string title = "Error", string closeButtonText = DialogDefaults.DefaultCloseButtonText);
+
+	/// <summary>
+	/// Shows a friendly error message for the specified <paramref name="problemDetails"/>.
+	/// </summary>
+	/// <param name="problemDetails">The problem details.</param>
+	/// <param name="title">The title.</param>
+	ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error");
 
 	/// <summary>
 	/// Shows a dialog with a message indicating a concurrency error.

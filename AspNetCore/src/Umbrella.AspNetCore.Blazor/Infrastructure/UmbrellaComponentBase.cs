@@ -95,7 +95,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
 	protected ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
-		=> DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+		=> DialogUtility.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
 
 	/// <summary>
 	/// Gets the value as a string suitable for use as a value with <![CDATA[<option>]]> elements of a <see cref="InputSelect{TValue}"/> component.

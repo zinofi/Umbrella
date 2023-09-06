@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.FileUpload;
 using Umbrella.DynamicImage.Abstractions;
+using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Imaging;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload;
@@ -61,7 +62,7 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// </summary>
 	[Parameter]
 	[EditorRequired]
-	public EventCallback<UmbrellaFileUploadRequestEventArgs> OnRequestUpload { get; set; }
+	public Func<UmbrellaFileUploadRequestEventArgs, Task<IHttpCallResult>>? OnRequestUpload { get; set; }
 
 	/// <summary>
 	/// The path prefix used when generating dynamic image paths.
@@ -164,18 +165,24 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 		}
 	}
 
-	private async Task OnRequestUploadInnerAsync(UmbrellaFileUploadRequestEventArgs args)
+	private async Task<IHttpCallResult?> OnRequestUploadInnerAsync(UmbrellaFileUploadRequestEventArgs args)
 	{
 		try
 		{
-			if (OnRequestUpload.HasDelegate)
-				await OnRequestUpload.InvokeAsync(args);
+			if (OnRequestUpload is null)
+				throw new InvalidOperationException($"The {nameof(OnRequestUpload)} property does not have an assigned delegate.");
+
+			IHttpCallResult result = await OnRequestUpload(args);
 
 			StateHasChanged();
+
+			return result;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
 			await DialogUtility.ShowDangerMessageAsync();
+
+			return null;
 		}
 	}
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Constants;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Http;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Forms;
 
@@ -146,6 +147,9 @@ public class DialogUtility : IDialogService
 			throw new UmbrellaXamarinException("There has been a problem showing the dialog.", exc);
 		}
 	}
+
+	/// <inheritdoc />
+	public ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error") => ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
 
 	/// <inheritdoc />
 	public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")

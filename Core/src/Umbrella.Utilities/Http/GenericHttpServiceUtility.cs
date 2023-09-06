@@ -149,18 +149,20 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 	{
 		try
 		{
-			string defaultMessage = response.StatusCode switch
-			{
-				HttpStatusCode.Unauthorized => HttpServiceMessages.DefaultUnauthorizedErrorMessage,
-				HttpStatusCode.Forbidden => HttpServiceMessages.DefaultForbiddenErrorMessage,
-				HttpStatusCode.InternalServerError => HttpServiceMessages.DefaultServerErrorMessage,
-				_ => HttpServiceMessages.DefaultUnknownErrorMessage
-			};
-
 			HttpContentHeaders headers = response.Content.Headers;
 
 			if (!headers.Any() || headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) is not true)
+			{
+				string defaultMessage = response.StatusCode switch
+				{
+					HttpStatusCode.Unauthorized => HttpServiceMessages.DefaultUnauthorizedErrorMessage,
+					HttpStatusCode.Forbidden => HttpServiceMessages.DefaultForbiddenErrorMessage,
+					HttpStatusCode.InternalServerError => HttpServiceMessages.DefaultServerErrorMessage,
+					_ => HttpServiceMessages.DefaultUnknownErrorMessage
+				};
+
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
+			}
 
 			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 

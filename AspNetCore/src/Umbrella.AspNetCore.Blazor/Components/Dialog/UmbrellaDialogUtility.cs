@@ -15,6 +15,7 @@ using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Extensions;
+using Umbrella.Utilities.Http;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 
@@ -372,6 +373,9 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 		}
 	}
+
+	/// <inheritdoc />
+	public ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error") => ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
 
 	/// <inheritdoc />
 	public ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)

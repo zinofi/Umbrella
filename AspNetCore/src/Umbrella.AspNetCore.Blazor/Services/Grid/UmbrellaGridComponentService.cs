@@ -162,5 +162,5 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
 	protected ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
-		=> DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+		=> DialogUtility.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
 }

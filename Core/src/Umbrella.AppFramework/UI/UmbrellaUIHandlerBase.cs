@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Services.Abstractions;
-using Umbrella.AppFramework.Services.Constants;
 using Umbrella.Utilities.Http;
 
 namespace Umbrella.AppFramework.UI;
@@ -62,8 +61,8 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	/// </summary>
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
-	protected async ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
-		=> await DialogUtility.ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title).ConfigureAwait(false);
+	protected ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
+		=> DialogUtility.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
 
 	/// <summary>
 	/// Sets the property value on the specified <paramref name="backingStore"/>, fires any specified <paramref name="onChanged"/> action and also calls the
