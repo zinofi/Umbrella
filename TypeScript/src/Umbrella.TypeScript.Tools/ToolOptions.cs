@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Umbrella.TypeScript.Tools;
+﻿namespace Umbrella.TypeScript.Tools;
 
 public class ToolOptions
 {

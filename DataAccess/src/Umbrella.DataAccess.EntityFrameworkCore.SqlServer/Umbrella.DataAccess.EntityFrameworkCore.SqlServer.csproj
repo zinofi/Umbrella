@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<DocumentationFile>bin\Release\net6.0\Umbrella.DataAccess.EntityFrameworkCore.SqlServer.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>

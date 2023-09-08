@@ -2,8 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net461;netstandard2.1</TargetFrameworks>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\net461\Umbrella.DataAccess.EF6.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>

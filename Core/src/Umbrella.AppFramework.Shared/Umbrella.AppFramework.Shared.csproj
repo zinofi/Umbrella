@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.AppFramework.Shared.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>

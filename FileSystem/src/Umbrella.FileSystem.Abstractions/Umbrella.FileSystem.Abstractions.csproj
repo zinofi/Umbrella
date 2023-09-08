@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.FileSystem.Abstractions.xml</DocumentationFile>
+		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.TypeScript.xml</DocumentationFile>
 		<DevelopmentDependency>true</DevelopmentDependency>
 	</PropertyGroup>
 

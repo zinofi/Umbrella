@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<DocumentationFile>bin\Release\net6.0\Umbrella.AspNetCore.WebUtilities.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>

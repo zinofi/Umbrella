@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Umbrella.Utilities.Extensions;
+﻿using Umbrella.Utilities.Extensions;
 using Xunit;
 
 namespace Umbrella.Utilities.Test.Extensions;

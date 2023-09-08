@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Xunit;
+﻿using Xunit;
 
 namespace Umbrella.DataAnnotations.Test;
 

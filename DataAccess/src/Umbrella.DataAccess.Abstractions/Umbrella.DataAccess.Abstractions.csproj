@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DataAccess.Abstractions.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>

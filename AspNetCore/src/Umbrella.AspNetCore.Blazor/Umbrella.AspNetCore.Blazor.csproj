@@ -4,7 +4,6 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<TypeScriptToolsVersion>4.7</TypeScriptToolsVersion>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-		<DocumentationFile>bin\Release\net6.0\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -24,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BlazorApplicationInsights" Version="2.2.0" />
+		<PackageReference Include="BlazorApplicationInsights" Version="2.2.2" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
 		<PackageReference Include="Blazored.Modal" Version="7.1.0" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />

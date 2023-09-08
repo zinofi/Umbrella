@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<DocumentationFile>bin\Release\net461\Umbrella.Legacy.WebUtilities.DynamicImage.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
