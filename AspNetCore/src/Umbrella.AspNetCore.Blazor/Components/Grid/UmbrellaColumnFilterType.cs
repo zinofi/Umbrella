@@ -40,7 +40,13 @@ public enum UmbrellaColumnFilterType
 	/// <summary>
 	/// Renders a text input of type "text" with an add-on button which when clicked will invoke a specified delegate.
 	/// </summary>
-	TextAddOnButton
+	TextAddOnButton,
+
+	/// <summary>
+	/// Renders a control that allows a user to enter a start and end date.
+	/// Used in conjunction with the <see cref="UmbrellaColumnDateRangeRequiredMode"/> enum.
+	/// </summary>
+	DateRange
 }
 
 internal static class UmbrellaColumnFilterTypeExtensions
@@ -54,6 +60,29 @@ internal static class UmbrellaColumnFilterTypeExtensions
 		UmbrellaColumnFilterType.Search => "search",
 		UmbrellaColumnFilterType.Date => "date",
 		UmbrellaColumnFilterType.TextAddOnButton => "text",
-		_ => throw new SwitchExpressionException(value),
+		UmbrellaColumnFilterType.DateRange => "text", // This will never be used but here as a default.
+		_ => throw new SwitchExpressionException(value)
 	};
+}
+
+/// <summary>
+/// The mode applied to a <see cref="UmbrellaColumnFilterType.DateRange"/> filter to specify which parts
+/// of the date range or required when entering values.
+/// </summary>
+public enum UmbrellaColumnDateRangeRequiredMode
+{
+	/// <summary>
+	/// Specifies that only the start date is required.
+	/// </summary>
+	StartDate,
+
+	/// <summary>
+	/// Specifies that only the end date is required.
+	/// </summary>
+	EndDate,
+
+	/// <summary>
+	/// Specifies that both the start date and end dates are required.
+	/// </summary>
+	Both
 }

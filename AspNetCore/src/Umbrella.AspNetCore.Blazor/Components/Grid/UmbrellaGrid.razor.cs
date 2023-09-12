@@ -116,6 +116,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
 
 	/// <summary>
+	/// Gets or sets the additional content to be displayed between the filter fields
+	/// and the action buttons that apply the filters to the grid.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? AdditionalFilterContent { get; set; }
+
+	/// <summary>
 	/// Gets or sets the columns to be displayed inside this grid component. This should be a collection of columns components.
 	/// </summary>
 	[Parameter]

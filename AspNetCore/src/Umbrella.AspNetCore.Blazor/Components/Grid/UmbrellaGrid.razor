@@ -4,6 +4,7 @@
 #pragma warning disable CS8625
     string groupName = Guid.NewGuid().ToString("N");
     string filterContainerId = "a" + Guid.NewGuid().ToString("N")[1..];
+    bool filterableColumnsExist = FilterableColumns is { Count: > 0 };
 }
 
 <CascadingValue Value="this">
@@ -15,7 +16,7 @@
             </CascadingValue>
         }
 
-        @if (FilterableColumns?.Count > 0 && ShowFilters)
+        @if (ShowFilters && (filterableColumnsExist || AdditionalFilterContent is not null))
         {
             <div class="u-grid__filters">
                 <a class="u-grid__filters-heading-collapse-button" data-bs-toggle="collapse" href="#@filterContainerId" role="button" aria-expanded="@ExpandFiltersOnLoad.ToString().ToLowerInvariant()" aria-controls="@filterContainerId">
@@ -23,67 +24,82 @@
                     <i class="fas fa-caret-down"></i>
                 </a>
                 <form id="@filterContainerId" class="collapse @(ExpandFiltersOnLoad ? "show" : "")" method="get" novalidate>
-                    <div class="row">
-                        @foreach (var column in FilterableColumns)
-                        {
-                            string id = Guid.NewGuid().ToString("N");
+                    @if (filterableColumnsExist)
+                    {
+                        <div class="row">
+                            @foreach (var column in FilterableColumns!)
+                            {
+                                string id = Guid.NewGuid().ToString("N");
 
-                            <div class="col-md-4">
+                                <div class="col-md-4">
 
-                                @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
-                                {
-                                    <div class="form-group form-floating">
-                                        @if (column.FilterOptions is not null)
-                                        {
-                                            <select id="@id" class="form-select" @bind="column.FilterValue">
-                                                <option>Any</option>
-                                                @if (!string.IsNullOrEmpty(column.NullableEnumOption))
-                                                {
-                                                    <option value="null">@column.NullableEnumOption</option>
-                                                }
-                                                @foreach (object option in column.FilterOptions)
-                                                {
-                                                    <option value="@option">@column.GetFilterOptionDisplayName(option)</option>
-                                                }
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <div class="alert alert-danger">
-                                                The type of the filter has been specified as Options but the FilterOptions collection is null.
-                                            </div>
-                                        }
-                                        <label for="@id">@column.Heading</label>
-                                    </div>
-                                }
-                                else if (column.FilterControlType is UmbrellaColumnFilterType.TextAddOnButton)
-                                {
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <div class="form-floating">
-                                                <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
-                                                <label for="@id">@column.Heading</label>
-                                            </div>
-                                            <button class="@column.AddOnButtonCssClass" type="button" @onclick="() => FilterTextAddonButtonClickAsync(column)">
-                                                @column.AddOnButtonText
-                                                @if (!string.IsNullOrEmpty(column.AddOnButtonIconCssClass))
-                                                {
-                                                    <i class="@column.AddOnButtonIconCssClass"></i>
-                                                }
-                                            </button>
+                                    @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
+                                    {
+                                        <div class="form-group form-floating">
+                                            @if (column.FilterOptions is not null)
+                                            {
+                                                <select id="@id" class="form-select" @bind="column.FilterValue">
+                                                    <option>Any</option>
+                                                    @if (!string.IsNullOrEmpty(column.NullableEnumOption))
+                                                    {
+                                                        <option value="null">@column.NullableEnumOption</option>
+                                                    }
+                                                    @foreach (object option in column.FilterOptions)
+                                                    {
+                                                        <option value="@option">@column.GetFilterOptionDisplayName(option)</option>
+                                                    }
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                                <div class="alert alert-danger">
+                                                    The type of the filter has been specified as Options but the FilterOptions collection is null.
+                                                </div>
+                                            }
+                                            <label for="@id">@column.Heading</label>
                                         </div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="form-group form-floating">
-                                        <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" />
-                                        <label for="@id">@column.Heading</label>
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </div>
+                                    }
+                                    else if (column.FilterControlType is UmbrellaColumnFilterType.TextAddOnButton)
+                                    {
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="form-floating">
+                                                    <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
+                                                    <label for="@id">@column.Heading</label>
+                                                </div>
+                                                <button class="@column.AddOnButtonCssClass" type="button" @onclick="() => FilterTextAddonButtonClickAsync(column)">
+                                                    @column.AddOnButtonText
+                                                    @if (!string.IsNullOrEmpty(column.AddOnButtonIconCssClass))
+                                                    {
+                                                        <i class="@column.AddOnButtonIconCssClass"></i>
+                                                    }
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if(column.FilterControlType is UmbrellaColumnFilterType.DateRange)
+                                    {
+                                        
+                                    }
+                                    else
+                                    {
+                                        <div class="form-group form-floating">
+                                            <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" />
+                                            <label for="@id">@column.Heading</label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (AdditionalFilterContent is not null)
+                    {
+                        <div class="row">
+                            @AdditionalFilterContent
+                        </div>
+                    }
+
                     <button type="submit" class="btn btn-primary btn-sm" @onclick="ApplyFiltersClickAsync" @onclick:preventDefault>Search <i class="fas fa-search"></i></button>
                     <button type="reset" class="btn btn-secondary btn-sm" @onclick="ResetFiltersClickAsync">Reset <i class="fas fa-times-circle"></i></button>
                 </form>
