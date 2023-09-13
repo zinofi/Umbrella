@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-namespace Umbrella.AspNetCore.Blazor.Components.Grid;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
 /// <summary>
 /// An interface that encapsulates the core functionality of the <see cref="UmbrellaGrid{TItem}" /> component.

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Components.Grid.Options;
 using Umbrella.AspNetCore.Blazor.Security;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security.Options;
@@ -29,7 +30,8 @@ public static class IServiceCollectionExtensions
 	/// <returns>The services builder.</returns>
 	public static IServiceCollection AddUmbrellaBlazor(
 		this IServiceCollection services,
-		Action<IServiceProvider, ClaimsPrincipalAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null)
+		Action<IServiceProvider, ClaimsPrincipalAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null,
+		Action<IServiceProvider, UmbrellaGridOptions>? umbrellaGridOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services, nameof(services));
 
@@ -45,6 +47,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();
 		_ = services.AddScoped<IClaimsPrincipalAuthenticationStateProvider>(x => (ClaimsPrincipalAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
 		_ = services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
+		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
 
 		return services;
 	}

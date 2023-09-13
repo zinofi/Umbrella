@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 
@@ -10,7 +7,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// <summary>
 /// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-public record UmbrellaColumnDefinition<TItem>
+public sealed record UmbrellaColumnDefinition<TItem>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition{TItem}"/> class.
@@ -289,11 +286,7 @@ public record UmbrellaColumnDefinition<TItem>
 				return enumOption.ToDisplayString();
 			}
 
-			string? optionDisplayName = option.ToString();
-
-			return optionDisplayName is null
-				? throw new UmbrellaBlazorException("The display name for the option must have a value.")
-				: optionDisplayName;
+			return option.ToString() ?? throw new UmbrellaBlazorException("The display name for the option must have a value.");
 		}
 
 		return FilterOptionDisplayNameSelector(option);

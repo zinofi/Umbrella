@@ -46,7 +46,12 @@ public enum UmbrellaColumnFilterType
 	/// Renders a control that allows a user to enter a start and end date.
 	/// Used in conjunction with the <see cref="UmbrellaColumnDateRangeRequiredMode"/> enum.
 	/// </summary>
-	DateRange
+	DateRange,
+
+	/// <summary>
+	/// Renders a text input of type "text" that shows a list of autocomplete options when the user finishes typing.
+	/// </summary>
+	AutoComplete
 }
 
 internal static class UmbrellaColumnFilterTypeExtensions
@@ -61,6 +66,7 @@ internal static class UmbrellaColumnFilterTypeExtensions
 		UmbrellaColumnFilterType.Date => "date",
 		UmbrellaColumnFilterType.TextAddOnButton => "text",
 		UmbrellaColumnFilterType.DateRange => "text", // This will never be used but here as a default.
+		UmbrellaColumnFilterType.AutoComplete => "text", // This will never be used but here as a default.
 		_ => throw new SwitchExpressionException(value)
 	};
 }
