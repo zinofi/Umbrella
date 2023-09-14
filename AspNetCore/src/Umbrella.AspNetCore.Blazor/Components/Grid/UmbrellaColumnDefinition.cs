@@ -238,6 +238,8 @@ public sealed record UmbrellaColumnDefinition<TItem>
 	/// </summary>
 	public string? AddOnButtonIconCssClass { get; set; }
 
+	public Func<string, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; set; }
+
 	/// <summary>
 	/// Gets or sets the sort direction.
 	/// </summary>
