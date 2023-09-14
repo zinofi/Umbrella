@@ -54,12 +54,12 @@ public class FileAccessTokenQueryStringMiddleware
 
 			if (validationResult.IsValid)
 				context.User = new ClaimsPrincipal(validationResult.ClaimsIdentity);
-
-			await _next(context);
 		}
 		catch (Exception exc) when (_log.WriteError(exc))
 		{
 			throw;
 		}
+
+		await _next(context);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using Ultimedia.Rtms.Web.Server.Middleware;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
@@ -124,4 +125,11 @@ public static class IApplicationBuilderExtensions
 
 			return Task.CompletedTask;
 		}));
+
+	/// <summary>
+	/// Adds the <see cref="LinkHeaderMiddleware"/> to the pipeline.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	public static IApplicationBuilder UseUmbrellaLinkHeader(this IApplicationBuilder builder) => builder.UseMiddleware<LinkHeaderMiddleware>();
 }

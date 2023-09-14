@@ -38,6 +38,7 @@ public static class IServiceCollectionExtensions
 	/// <param name="queryStringParameterToHttpHeaderMiddlewareOptionsBuilder">The optional <see cref="QueryStringParameterToHttpHeaderMiddlewareOptions"/> builder.</param>
 	/// <param name="multiTenantSessionContextMiddlewareOptionsBuilder">The optional <see cref="MultiTenantSessionContextMiddlewareOptions"/> builder.</param>
 	/// <param name="systemVersionServiceOptionsBuilder">The optional <see cref="SystemVersionServiceOptions"/> builder.</param>
+	/// <param name="linkHeaderMiddlewareOptionsBuilder">The optional <see cref="LinkHeaderMiddlewareOptions"/> builder.</param>
 	/// <param name="isDevelopmentMode">Specifies if the current application is running in development mode.</param>
 	/// <returns>The <see cref="IServiceCollection"/> dependency injection container builder.</returns>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="services"/> is null.</exception>
@@ -51,6 +52,7 @@ public static class IServiceCollectionExtensions
 		Action<IServiceProvider, QueryStringParameterToHttpHeaderMiddlewareOptions>? queryStringParameterToHttpHeaderMiddlewareOptionsBuilder = null,
 		Action<IServiceProvider, MultiTenantSessionContextMiddlewareOptions>? multiTenantSessionContextMiddlewareOptionsBuilder = null,
 		Action<IServiceProvider, SystemVersionServiceOptions>? systemVersionServiceOptionsBuilder = null,
+		Action<IServiceProvider, LinkHeaderMiddlewareOptions>? linkHeaderMiddlewareOptionsBuilder = null,
 		bool isDevelopmentMode = false)
 	{
 		Guard.IsNotNull(services);
@@ -71,6 +73,7 @@ public static class IServiceCollectionExtensions
 		_ = services.ConfigureUmbrellaOptions(queryStringParameterToHttpHeaderMiddlewareOptionsBuilder, isDevelopmentMode);
 		_ = services.ConfigureUmbrellaOptions(multiTenantSessionContextMiddlewareOptionsBuilder, isDevelopmentMode);
 		_ = services.ConfigureUmbrellaOptions(systemVersionServiceOptionsBuilder, isDevelopmentMode);
+		_ = services.ConfigureUmbrellaOptions(linkHeaderMiddlewareOptionsBuilder, isDevelopmentMode);
 
 		return services;
 	}

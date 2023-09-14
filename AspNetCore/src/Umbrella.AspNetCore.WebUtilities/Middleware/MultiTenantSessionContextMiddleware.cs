@@ -57,13 +57,13 @@ public class MultiTenantSessionContextMiddleware<TAppTenantKey>
 
 				dbAppAuthSessionContext.IsAuthenticated = true;
 			}
-
-			await _next.Invoke(context);
 		}
 		catch (Exception exc) when (_log.WriteError(exc))
 		{
 			throw;
 		}
+
+		await _next.Invoke(context);
 	}
 }
 

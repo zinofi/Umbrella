@@ -71,13 +71,13 @@ public class QueryStringParameterToHttpHeaderMiddleware
 					}
 				}
 			}
-
-			await _next.Invoke(context);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
 			throw;
 		}
+
+		await _next.Invoke(context);
 	}
 	#endregion
 }
