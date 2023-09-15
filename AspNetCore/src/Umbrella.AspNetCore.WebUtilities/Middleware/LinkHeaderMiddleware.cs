@@ -62,7 +62,9 @@ public class LinkHeaderMiddleware
                 {
                     string cacheKey = _cacheKeyUtility.Create<LinkHeaderMiddleware>("LinkHeaders");
 
-					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.Urls.Select(x => x.ToLowerInvariant() + "; rel=preconnect").Concat(_options.Urls.Select(x => x.ToLowerInvariant() + "; rel=dns-prefetch"))).ToArray();
+					static string FormatUrl(string url, string rel) => $"<{url}>; crossorigin; rel={rel}";
+
+					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.Urls.Select(x => FormatUrl(x, "preconnect")).Concat(_options.Urls.Select(x => FormatUrl(x, "dns-prefetch")))).ToArray();
 
                     context.Response.Headers.AppendList("Link", cachedValue);
                 }
