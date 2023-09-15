@@ -12,9 +12,6 @@ using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
-// TODO: Create a new [MemberPath] attribute so that these can be declared on the models which is where they really should be.
-// Leave the path override properties in for backwards compatibility and to use as overrides if for some reason they are still needed? Or mark them as obsolete?
-
 /// <summary>
 /// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
@@ -294,7 +291,30 @@ public partial class UmbrellaColumn<TItem>
 				if (Logger.IsEnabled(LogLevel.Debug))
 					Logger.WriteDebug(message: "Creating column definition.");
 
-				var definition = new UmbrellaColumnDefinition<TItem>(Heading, ShortHeading, PercentageWidth, Sortable, Filterable, FilterOptions, FilterOptionDisplayNameSelector, AdditionalAttributes, FilterControlType, FilterMatchType, FilterOptionsType, Property, FilterMemberPathOverride ?? MemberPathOverride, SorterMemberPathOverride ?? MemberPathOverride, DisplayMode, NullableEnumOption, OnAddOnButtonClickedAsync, AddOnButtonCssClass, AddOnButtonText, AddOnButtonIconCssClass);
+				string? memberPathAttributeValue = Property?.GetUmbrellaMemberPath();
+
+				var definition = new UmbrellaColumnDefinition<TItem>(
+					Heading,
+					ShortHeading,
+					PercentageWidth,
+					Sortable,
+					Filterable,
+					FilterOptions,
+					FilterOptionDisplayNameSelector,
+					AdditionalAttributes,
+					FilterControlType,
+					FilterMatchType,
+					FilterOptionsType,
+					Property,
+					FilterMemberPathOverride ?? MemberPathOverride ?? memberPathAttributeValue,
+					SorterMemberPathOverride ?? MemberPathOverride ?? memberPathAttributeValue,
+					DisplayMode,
+					NullableEnumOption,
+					OnAddOnButtonClickedAsync,
+					AddOnButtonCssClass,
+					AddOnButtonText,
+					AddOnButtonIconCssClass);
+				
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
 		}

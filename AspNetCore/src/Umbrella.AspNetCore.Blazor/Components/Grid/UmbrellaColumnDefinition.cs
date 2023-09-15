@@ -4,6 +4,19 @@ using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
+// 1. Try and change the filter value from a string to a generic type. When sending to the server, we'll need to call .ToString on it.
+// What impact will this have? For primitive types, this should work as it currently does.
+// For custom types, the user will have to override the .ToString method.
+// For custom types, the filter value should not be directly editable though, e.g. for a date range, it needs to be selected from a modal, or combo of fields which
+// is readonly.
+// For autocomplete, the selected value needs to be used which might not be a string, it might be an Id.
+// For add-on button, it might be a complex object again. Will we break anything doing this? Should be ok on Reach where it's used by ensuring types default to strings.
+// We will also need to create an interface that can be used to allow instances of columns to be passed around without running into problems with generic type parameters
+// not being know.
+
+// 2. After doing that, we need to create an overloaded version of this class with suitable defaults for the autocomplete type parameters.
+// Although these can live on the base class, they need to be defaulted.
+
 /// <summary>
 /// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
@@ -238,7 +251,7 @@ public sealed record UmbrellaColumnDefinition<TItem>
 	/// </summary>
 	public string? AddOnButtonIconCssClass { get; set; }
 
-	public Func<string, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; set; }
+	public Func<string, Task<IEnumerable<object>>>? AutoCompleteSearchMethod { get; set; }
 
 	/// <summary>
 	/// Gets or sets the sort direction.

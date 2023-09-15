@@ -6,6 +6,7 @@ using Humanizer;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Umbrella.Utilities.Data.Attributes;
 
 namespace Umbrella.Utilities.Extensions;
 
@@ -44,5 +45,18 @@ public static class MemberInfoExtensions
 		Guard.IsNotNull(memberInfo);
 
 		return memberInfo.GetCustomAttribute<DisplayAttribute>()?.ShortName;
+	}
+
+	/// <summary>
+	/// Gets the member path for the given member by trying to read the <see cref="UmbrellaMemberPathAttribute.Value"/>
+	/// property of a <see cref="UmbrellaMemberPathAttribute"/> that has been applied to the member.
+	/// </summary>
+	/// <param name="memberInfo">The member information.</param>
+	/// <returns>The member path if it has a value; otherwise <see langword="null"/>.</returns>
+	public static string? GetUmbrellaMemberPath(this MemberInfo memberInfo)
+	{
+		Guard.IsNotNull(memberInfo);
+
+		return memberInfo.GetCustomAttribute<UmbrellaMemberPathAttribute>()?.Value;
 	}
 }

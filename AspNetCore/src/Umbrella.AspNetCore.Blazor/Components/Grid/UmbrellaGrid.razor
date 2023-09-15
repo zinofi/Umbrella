@@ -85,7 +85,19 @@
                                     else if (column.FilterControlType is UmbrellaColumnFilterType.AutoComplete)
                                     {
                                         <div class="form-group form-floating">
-                                            <BlazoredTypeahead id="@id" SearchMethod="column.AutoCompleteSearchMethod" @bind-Value="column.FilterValue" />
+                                            @* <BlazoredTypeahead
+                                                id="@id"
+                                                
+                                                @bind-Value="column.FilterValue"
+                                                Debounce="300"
+                                                MaximumSuggestions="10"
+                                                MinimumLength="3"
+                                                TItem="int"
+                                                               TValue="column.AutoCompleteValueType">
+                                                <SelectedTemplate>
+                                                    
+                                                </SelectedTemplate>
+                                            </BlazoredTypeahead> *@
                                             <label for="@id">@column.Heading</label>
                                         </div>
                                     }

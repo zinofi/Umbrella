@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Humanizer;
+using Umbrella.Utilities.Data.Attributes;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Expressions;
 
@@ -156,6 +157,19 @@ public static class ExpressionExtensions
 		MemberExpression? memberExpression = GetMemberExpression(expression);
 
 		return memberExpression?.Member.GetShortDisplayText();
+	}
+
+	/// <summary>
+	/// Gets the member path for the given expression by trying to read the <see cref="UmbrellaMemberPathAttribute.Value"/>
+	/// property of a <see cref="UmbrellaMemberPathAttribute"/> that has been applied to the member specified using the given expression.
+	/// </summary>
+	/// <param name="expression">The expression.</param>
+	/// <returns>The member path if it has a value; otherwise <see langword="null"/>.</returns>
+	public static string? GetUmbrellaMemberPath(this LambdaExpression expression)
+	{
+		MemberExpression? memberExpression = GetMemberExpression(expression);
+
+		return memberExpression?.Member.GetUmbrellaMemberPath();
 	}
 
 	private static MemberExpression? GetMemberExpression(this LambdaExpression expression) => expression.Body switch
