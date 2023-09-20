@@ -17,13 +17,6 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 // 2. After doing that, we need to create an overloaded version of this class with suitable defaults for the autocomplete type parameters.
 // Although these can live on the base class, they need to be defaulted.
 
-public sealed record UmbrellaColumnDefinition<TItem, TValue> : UmbrellaColumnDefinition<TItem, TValue, object>
-{
-	public UmbrellaColumnDefinition(string? heading, string? shortHeading, int? percentageWidth, bool sortable, bool filterable, IReadOnlyCollection<object>? filterOptions, Func<object, string>? filterOptionDisplayNameSelector, IReadOnlyDictionary<string, object> additionalAttributes, UmbrellaColumnFilterType filterControlType, FilterType filterMatchType, UmbrellaColumnFilterOptionsType? filterOptionsType, Expression<Func<TItem, TValue?>>? property, string? filterMemberPathOverride, string? sorterMemberPathOverride, UmbrellaColumnDisplayMode displayMode, string? nullableEnumOption, Func<string?, ValueTask<string?>>? onAddOnButtonClickedAsync, string? addOnButtonCssClass, string? addOnButtonText, string? addOnButtonIconCssClass) : base(heading, shortHeading, percentageWidth, sortable, filterable, filterOptions, filterOptionDisplayNameSelector, additionalAttributes, filterControlType, filterMatchType, filterOptionsType, property, filterMemberPathOverride, sorterMemberPathOverride, displayMode, nullableEnumOption, onAddOnButtonClickedAsync, addOnButtonCssClass, addOnButtonText, addOnButtonIconCssClass)
-	{
-	}
-}
-
 public interface IUmbrellaColumnDefinition<TItem>
 {
 	IReadOnlyDictionary<string, object> AdditionalAttributes { get; }
@@ -42,7 +35,7 @@ public interface IUmbrellaColumnDefinition<TItem>
 	Func<object, string>? FilterOptionDisplayNameSelector { get; }
 	IReadOnlyCollection<object>? FilterOptions { get; }
 	UmbrellaColumnFilterOptionsType? FilterOptionsType { get; }
-	object? FilterValue { get; set; }
+	string? FilterValue { get; set; }
 	string? Heading { get; }
 	string? NullableEnumOption { get; set; }
 	Func<string?, ValueTask<string?>>? OnAddOnButtonClickedAsync { get; set; }
@@ -57,10 +50,10 @@ public interface IUmbrellaColumnDefinition<TItem>
 /// <summary>
 /// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-public record UmbrellaColumnDefinition<TItem, TValue, TAutoCompleteItem> : IUmbrellaColumnDefinition<TItem>
+public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinition<TItem>
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition{TItem, TValue, TAutoCompleteItem}"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition{TItem, TValue}"/> class.
 	/// </summary>
 	/// <param name="heading">The heading.</param>
 	/// <param name="shortHeading">The short heading.</param>
@@ -251,7 +244,7 @@ public record UmbrellaColumnDefinition<TItem, TValue, TAutoCompleteItem> : IUmbr
 	/// <summary>
 	/// Gets or sets the value used to filter the column.
 	/// </summary>
-	public object? FilterValue { get; set; }
+	public string? FilterValue { get; set; }
 
 	/// <summary>
 	/// Gets or sets the nullable enum option.

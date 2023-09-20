@@ -15,9 +15,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// <summary>
 /// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-public class UmbrellaColumn<TItem> : UmbrellaColumn<TItem, object>
+public class UmbrellaActionsColumn<TItem> : UmbrellaColumn<TItem, object>
 	where TItem : notnull
 {
+	/// <inheritdoc/>
+	protected override bool IsActions => true;
 }
 
 /// <summary>
@@ -189,8 +191,7 @@ public partial class UmbrellaColumn<TItem, TValue>
 	/// Gets or sets a value that specifies whether or not this column contains actions, e.g. buttons, links,
 	/// that can be used to perform actions on the data item that this column is associated with.
 	/// </summary>
-	[Parameter]
-	public bool IsActions { get; set; }
+	protected virtual bool IsActions { get; }
 
 	/// <summary>
 	/// Gets or sets the child content rendered by this column.
@@ -286,7 +287,7 @@ public partial class UmbrellaColumn<TItem, TValue>
 	{
 		ClaimsPrincipal claimsPrincipal = await AuthHelper.GetCurrentClaimsPrincipalAsync();
 
-		if ( !await AuthorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
+		if (!await AuthorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
 			DisplayMode = UmbrellaColumnDisplayMode.None;
 
 		if (Logger.IsEnabled(LogLevel.Debug))
@@ -322,7 +323,7 @@ public partial class UmbrellaColumn<TItem, TValue>
 					AddOnButtonCssClass,
 					AddOnButtonText,
 					AddOnButtonIconCssClass);
-				
+
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
 		}

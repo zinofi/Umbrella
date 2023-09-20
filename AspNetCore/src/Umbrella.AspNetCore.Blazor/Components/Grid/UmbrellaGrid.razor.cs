@@ -530,7 +530,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		if (columnDefinition.OnAddOnButtonClickedAsync is null)
 			throw new UmbrellaBlazorException($"The {nameof(columnDefinition.OnAddOnButtonClickedAsync)} has not been specified.");
 
-		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue?.ToString());
+		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue);
 	}
 
 	/// <summary>
@@ -583,21 +583,19 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 					lstSorters.Add(new SortExpressionDescriptor(column.SorterMemberPathOverride ?? column.PropertyName, column.Direction.Value));
 				}
 
-				string? stringFilterValue = column.FilterValue?.ToString();
-
-				if (column.Filterable && !string.IsNullOrWhiteSpace(stringFilterValue))
+				if (column.Filterable && !string.IsNullOrEmpty(column.FilterValue))
 				{
 					lstFilters ??= new List<FilterExpressionDescriptor>();
 
 					string? filterValue = column.FilterOptionsType switch
 					{
-						UmbrellaColumnFilterOptionsType.String when column.FilterControlType is UmbrellaColumnFilterType.Options && stringFilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
-						UmbrellaColumnFilterOptionsType.String => stringFilterValue,
-						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) => "true",
-						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("no", StringComparison.OrdinalIgnoreCase) => "false",
-						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
-						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
-						_ => stringFilterValue
+						UmbrellaColumnFilterOptionsType.String when column.FilterControlType is UmbrellaColumnFilterType.Options && column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
+						UmbrellaColumnFilterOptionsType.String => column.FilterValue,
+						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) => "true",
+						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("no", StringComparison.OrdinalIgnoreCase) => "false",
+						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
+						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
+						_ => column.FilterValue
 					};
 
 					if (!string.IsNullOrWhiteSpace(filterValue))
