@@ -15,6 +15,14 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// <summary>
 /// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
+public class UmbrellaColumn<TItem> : UmbrellaColumn<TItem, object>
+	where TItem : notnull
+{
+}
+
+/// <summary>
+/// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
+/// </summary>
 public partial class UmbrellaColumn<TItem, TValue>
 	where TItem : notnull
 {
