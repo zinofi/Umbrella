@@ -17,13 +17,50 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 // 2. After doing that, we need to create an overloaded version of this class with suitable defaults for the autocomplete type parameters.
 // Although these can live on the base class, they need to be defaulted.
 
+public sealed record UmbrellaColumnDefinition<TItem, TValue> : UmbrellaColumnDefinition<TItem, TValue, object>
+{
+	public UmbrellaColumnDefinition(string? heading, string? shortHeading, int? percentageWidth, bool sortable, bool filterable, IReadOnlyCollection<object>? filterOptions, Func<object, string>? filterOptionDisplayNameSelector, IReadOnlyDictionary<string, object> additionalAttributes, UmbrellaColumnFilterType filterControlType, FilterType filterMatchType, UmbrellaColumnFilterOptionsType? filterOptionsType, Expression<Func<TItem, TValue?>>? property, string? filterMemberPathOverride, string? sorterMemberPathOverride, UmbrellaColumnDisplayMode displayMode, string? nullableEnumOption, Func<string?, ValueTask<string?>>? onAddOnButtonClickedAsync, string? addOnButtonCssClass, string? addOnButtonText, string? addOnButtonIconCssClass) : base(heading, shortHeading, percentageWidth, sortable, filterable, filterOptions, filterOptionDisplayNameSelector, additionalAttributes, filterControlType, filterMatchType, filterOptionsType, property, filterMemberPathOverride, sorterMemberPathOverride, displayMode, nullableEnumOption, onAddOnButtonClickedAsync, addOnButtonCssClass, addOnButtonText, addOnButtonIconCssClass)
+	{
+	}
+}
+
+public interface IUmbrellaColumnDefinition<TItem>
+{
+	IReadOnlyDictionary<string, object> AdditionalAttributes { get; }
+	string? AddOnButtonCssClass { get; set; }
+	string? AddOnButtonIconCssClass { get; set; }
+	string? AddOnButtonText { get; set; }
+	Func<string, Task<IEnumerable<object>>>? AutoCompleteSearchMethod { get; set; }
+	string ColumnWidthCssClass { get; }
+	SortDirection? Direction { get; set; }
+	string DirectionCssClass { get; }
+	UmbrellaColumnDisplayMode DisplayMode { get; }
+	bool Filterable { get; }
+	UmbrellaColumnFilterType FilterControlType { get; }
+	FilterType FilterMatchType { get; }
+	string? FilterMemberPathOverride { get; }
+	Func<object, string>? FilterOptionDisplayNameSelector { get; }
+	IReadOnlyCollection<object>? FilterOptions { get; }
+	UmbrellaColumnFilterOptionsType? FilterOptionsType { get; }
+	object? FilterValue { get; set; }
+	string? Heading { get; }
+	string? NullableEnumOption { get; set; }
+	Func<string?, ValueTask<string?>>? OnAddOnButtonClickedAsync { get; set; }
+	int? PercentageWidth { get; }
+	string? PropertyName { get; }
+	string? ShortHeading { get; }
+	bool Sortable { get; }
+	string? SorterMemberPathOverride { get; }
+	string GetFilterOptionDisplayName(object option);
+}
+
 /// <summary>
 /// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-public sealed record UmbrellaColumnDefinition<TItem>
+public record UmbrellaColumnDefinition<TItem, TValue, TAutoCompleteItem> : IUmbrellaColumnDefinition<TItem>
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition{TItem}"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaColumnDefinition{TItem, TValue, TAutoCompleteItem}"/> class.
 	/// </summary>
 	/// <param name="heading">The heading.</param>
 	/// <param name="shortHeading">The short heading.</param>
@@ -57,7 +94,7 @@ public sealed record UmbrellaColumnDefinition<TItem>
 		UmbrellaColumnFilterType filterControlType,
 		FilterType filterMatchType,
 		UmbrellaColumnFilterOptionsType? filterOptionsType,
-		Expression<Func<TItem, object?>>? property,
+		Expression<Func<TItem, TValue?>>? property,
 		string? filterMemberPathOverride,
 		string? sorterMemberPathOverride,
 		UmbrellaColumnDisplayMode displayMode,
@@ -126,7 +163,7 @@ public sealed record UmbrellaColumnDefinition<TItem>
 	/// <summary>
 	/// Gets the property selector.
 	/// </summary>
-	public Expression<Func<TItem, object?>>? Property { get; }
+	public Expression<Func<TItem, TValue?>>? Property { get; }
 
 	/// <summary>
 	/// Gets or sets the name of the property.
@@ -214,7 +251,7 @@ public sealed record UmbrellaColumnDefinition<TItem>
 	/// <summary>
 	/// Gets or sets the value used to filter the column.
 	/// </summary>
-	public string? FilterValue { get; set; }
+	public object? FilterValue { get; set; }
 
 	/// <summary>
 	/// Gets or sets the nullable enum option.

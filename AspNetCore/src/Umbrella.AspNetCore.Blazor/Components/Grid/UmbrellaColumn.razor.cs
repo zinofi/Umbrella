@@ -15,11 +15,11 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 /// <summary>
 /// A column component for use with the <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-public partial class UmbrellaColumn<TItem>
+public partial class UmbrellaColumn<TItem, TValue>
 	where TItem : notnull
 {
-	private Expression<Func<TItem, object?>>? _property;
-	private Func<TItem, object?>? _propertyDelegate;
+	private Expression<Func<TItem, TValue?>>? _property;
+	private Func<TItem, TValue?>? _propertyDelegate;
 
 	[Inject]
 	private IAuthorizationService AuthorizationService { get; set; } = null!;
@@ -28,7 +28,7 @@ public partial class UmbrellaColumn<TItem>
 	private IAppAuthHelper AuthHelper { get; set; } = null!;
 
 	[Inject]
-	private ILogger<UmbrellaColumn<TItem>> Logger { get; set; } = null!;
+	private ILogger<UmbrellaColumn<TItem, TValue>> Logger { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the <see cref="IUmbrellaGrid{TItem}"/> instance that contains this column.
@@ -65,7 +65,7 @@ public partial class UmbrellaColumn<TItem>
 	/// Gets or sets the property selector for this column.
 	/// </summary>
 	[Parameter]
-	public Expression<Func<TItem, object?>>? Property
+	public Expression<Func<TItem, TValue?>>? Property
 	{
 		get => _property;
 		set
@@ -293,7 +293,7 @@ public partial class UmbrellaColumn<TItem>
 
 				string? memberPathAttributeValue = Property?.GetUmbrellaMemberPath();
 
-				var definition = new UmbrellaColumnDefinition<TItem>(
+				var definition = new UmbrellaColumnDefinition<TItem, TValue>(
 					Heading,
 					ShortHeading,
 					PercentageWidth,

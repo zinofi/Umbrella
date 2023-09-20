@@ -75,7 +75,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <summary>
 	/// Gets the columns.
 	/// </summary>
-	private List<UmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new();
+	private List<IUmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new();
 
 	private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new();
 
@@ -92,7 +92,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <summary>
 	/// Gets the filterable columns.
 	/// </summary>
-	private IReadOnlyCollection<UmbrellaColumnDefinition<TItem>>? FilterableColumns { get; set; }
+	private IReadOnlyCollection<IUmbrellaColumnDefinition<TItem>>? FilterableColumns { get; set; }
 
 	/// <summary>
 	/// Gets the current <see cref="LayoutState"/> of the component.
@@ -346,7 +346,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
 
 	/// <inheritdoc />
-	public void AddColumnDefinition(UmbrellaColumnDefinition<TItem> column)
+	public void AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column)
 	{
 		if (Logger.IsEnabled(LogLevel.Debug))
 			Logger.WriteDebug(new { column });
@@ -367,7 +367,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { ColumnScanComplete });
 
-			var filterableColumns = new List<UmbrellaColumnDefinition<TItem>>();
+			var filterableColumns = new List<IUmbrellaColumnDefinition<TItem>>();
 
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { ColumnDefinitionsCount = ColumnDefinitions.Count });
@@ -498,7 +498,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// </summary>
 	/// <param name="target">The column that has been clicked.</param>
 	/// <returns>A <see cref="Task"/> that completes when the grid has been updated.</returns>
-	private async Task ColumnHeadingClickAsync(UmbrellaColumnDefinition<TItem> target)
+	private async Task ColumnHeadingClickAsync(IUmbrellaColumnDefinition<TItem> target)
 	{
 		foreach (var column in ColumnDefinitions)
 		{
@@ -525,12 +525,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		await UpdateGridAsync(PageNumber, PageSize);
 	}
 
-	private static async Task FilterTextAddonButtonClickAsync(UmbrellaColumnDefinition<TItem> columnDefinition)
+	private static async Task FilterTextAddonButtonClickAsync(IUmbrellaColumnDefinition<TItem> columnDefinition)
 	{
 		if (columnDefinition.OnAddOnButtonClickedAsync is null)
-			throw new UmbrellaBlazorException($"The {nameof(UmbrellaColumn<TItem>.OnAddOnButtonClickedAsync)} has not been specified.");
+			throw new UmbrellaBlazorException($"The {nameof(columnDefinition.OnAddOnButtonClickedAsync)} has not been specified.");
 
-		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue);
+		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue?.ToString());
 	}
 
 	/// <summary>
@@ -583,19 +583,21 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 					lstSorters.Add(new SortExpressionDescriptor(column.SorterMemberPathOverride ?? column.PropertyName, column.Direction.Value));
 				}
 
-				if (column.Filterable && !string.IsNullOrWhiteSpace(column.FilterValue))
+				string? stringFilterValue = column.FilterValue?.ToString();
+
+				if (column.Filterable && !string.IsNullOrWhiteSpace(stringFilterValue))
 				{
 					lstFilters ??= new List<FilterExpressionDescriptor>();
 
 					string? filterValue = column.FilterOptionsType switch
 					{
-						UmbrellaColumnFilterOptionsType.String when column.FilterControlType is UmbrellaColumnFilterType.Options && column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
-						UmbrellaColumnFilterOptionsType.String => column.FilterValue,
-						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) => "true",
-						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("no", StringComparison.OrdinalIgnoreCase) => "false",
-						UmbrellaColumnFilterOptionsType.Boolean when column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
-						UmbrellaColumnFilterOptionsType.Enum when column.FilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
-						_ => column.FilterValue
+						UmbrellaColumnFilterOptionsType.String when column.FilterControlType is UmbrellaColumnFilterType.Options && stringFilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
+						UmbrellaColumnFilterOptionsType.String => stringFilterValue,
+						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) => "true",
+						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("no", StringComparison.OrdinalIgnoreCase) => "false",
+						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
+						UmbrellaColumnFilterOptionsType.Boolean when stringFilterValue.Equals("any", StringComparison.OrdinalIgnoreCase) => null,
+						_ => stringFilterValue
 					};
 
 					if (!string.IsNullOrWhiteSpace(filterValue))
