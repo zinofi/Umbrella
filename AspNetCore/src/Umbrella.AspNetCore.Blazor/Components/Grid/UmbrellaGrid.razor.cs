@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
@@ -55,6 +56,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	}
 
 	private bool _autoScrollEnabled;
+	private EditContext EditContext { get; } = new(new object());
 
 	[Inject]
 	private ILogger<UmbrellaGrid<TItem>> Logger { get; set; } = null!;

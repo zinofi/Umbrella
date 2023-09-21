@@ -2,7 +2,7 @@
 
 namespace Umbrella.Utilities.TypeConverters;
 
-internal static class GenericTypeConverterHelper
+public static class GenericTypeConverterHelper
 {
 	public static T Convert<T>(string? value, Func<T> fallbackCreator, Func<string?, T>? customValueConverter = null, CultureInfo? cultureInfo = null)
 	{

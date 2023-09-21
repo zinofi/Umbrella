@@ -33,7 +33,7 @@ public enum UmbrellaColumnFilterType
 	Search,
 
 	/// <summary>
-	/// Date. Randers a text input of type "date".
+	/// Date. Renders a text input of type "date".
 	/// </summary>
 	Date,
 

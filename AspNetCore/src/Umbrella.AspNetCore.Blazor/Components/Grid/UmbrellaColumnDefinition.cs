@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.TypeConverters;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
@@ -45,6 +46,7 @@ public interface IUmbrellaColumnDefinition<TItem>
 	bool Sortable { get; }
 	string? SorterMemberPathOverride { get; }
 	string GetFilterOptionDisplayName(object option);
+	Type FilterValueType { get; }
 }
 
 /// <summary>
@@ -151,6 +153,8 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 				ShortHeading = Property.GetShortNameDisplayText() ?? Property.GetDisplayText();
 			}
 		}
+
+		FilterValueType = typeof(TValue);
 	}
 
 	/// <summary>
@@ -302,6 +306,20 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 	/// Gets the CSS class for the width of the column based on the value of the <see cref="PercentageWidth"/> property.
 	/// </summary>
 	public string ColumnWidthCssClass => PercentageWidth.HasValue ? $"u-grid__column--{PercentageWidth}" : "u-grid__column--auto";
+
+	/// <summary>
+	/// Gets the type of the filter value.
+	/// </summary>
+	/// <remarks>
+	/// This is the <see cref="Type"/> of the <typeparamref name="TValue"/> generic type parameter.
+	/// </remarks>
+	public Type FilterValueType { get; }
+
+	public TValue? TypedFilterValue
+	{
+		get => FilterValue is not null ? GenericTypeConverterHelper.Convert<TValue>(FilterValue) : default;
+		set => FilterValue = value is not null ? value.ToString() : default;
+	}
 
 	/// <summary>
 	/// Gets a friendly display name for a specified filter <paramref name="option"/>.
