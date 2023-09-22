@@ -617,7 +617,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 							if (dateRange.StartDate != DateTime.MinValue && dateRange.EndDate != DateTime.MaxValue)
 							{
 								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.StartDate.ToString("O"), FilterType.GreaterThanOrEqual));
-								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.EndDate.ToString("O"), FilterType.GreaterThanOrEqual));
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.EndDate.ToString("O"), FilterType.LessThanOrEqual));
 							}
 						}
 						else
