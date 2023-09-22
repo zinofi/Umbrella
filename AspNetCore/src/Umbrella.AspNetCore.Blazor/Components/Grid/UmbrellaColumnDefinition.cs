@@ -317,9 +317,35 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 
 	public TValue? TypedFilterValue
 	{
-		get => FilterValue is not null ? GenericTypeConverterHelper.Convert<TValue>(FilterValue) : default;
-		set => FilterValue = value is not null ? value.ToString() : default;
+		get
+		{
+			return FilterValue is not null ? GenericTypeConverterHelper.Convert<TValue>(FilterValue) : default;
+		}
+		set
+		{
+			FilterValue = value is not null ? value.ToString() : default;
+		}
 	}
+
+	//public object? NullableTypedFilterValue
+	//{
+	//	get
+	//	{
+	//		// Construct the Nullable<T> type using reflection
+	//		Type nullableType = typeof(Nullable<>).MakeGenericType(FilterValueType);
+
+	//		// Create an instance of the Nullable<T> type
+	//		object? nullableInstance = FilterValue is not null
+	//			? Activator.CreateInstance(nullableType, GenericTypeConverterHelper.Convert<TValue>(FilterValue))
+	//			: Activator.CreateInstance(nullableType);
+
+	//		return nullableInstance;
+	//	}
+	//	set
+	//	{
+	//		FilterValue = value is not null ? value.ToString() : default;
+	//	}
+	//}
 
 	/// <summary>
 	/// Gets a friendly display name for a specified filter <paramref name="option"/>.

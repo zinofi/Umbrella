@@ -121,24 +121,6 @@
                                                 </div>
                                             </EditForm>
                                         }
-                                        else if (column is UmbrellaColumnDefinition<TItem, DateOnly> doColumn)
-                                        {
-                                            <EditForm EditContext="EditContext">
-                                                <div class="form-group form-floating">
-                                                    <InputDate id="@id" class="form-control" @bind-Value="doColumn.TypedFilterValue" />
-                                                    <label for="@id">@column.Heading</label>
-                                                </div>
-                                            </EditForm>
-                                        }
-                                        else if (column is UmbrellaColumnDefinition<TItem, DateOnly?> ndoColumn)
-                                        {
-                                            <EditForm EditContext="EditContext">
-                                                <div class="form-group form-floating">
-                                                    <InputDate id="@id" class="form-control" @bind-Value="ndoColumn.TypedFilterValue" />
-                                                    <label for="@id">@column.Heading</label>
-                                                </div>
-                                            </EditForm>
-                                        }
                                     }
                                     else
                                     {

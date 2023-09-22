@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Exceptions;
@@ -83,7 +80,25 @@ public static class UmbrellaDynamicExpression
 
 		try
 		{
-			return selector.Split('.').Aggregate((Expression)target, Expression.PropertyOrField) as MemberExpression;
+			var expression = selector.Split('.').Aggregate((Expression)target, Expression.PropertyOrField) as MemberExpression;
+
+			// TODO: This is a bit hacky.
+			// We need some kind of way of allowing this behaviour to specified by the caller.
+			// Maybe we can have an additional parameter specifying how dates should be dealt, i.e. do nothing so we can match times
+			// and another so we only match the date.
+			// Maybe remove this code after DateOnly is fully supported by all layers of the stack in .NET 8
+			string? dateTimeDateAccessor = expression switch
+			{
+				null => null,
+				var _ when expression.Type == typeof(DateTime) => selector + ".Date",
+				var _ when expression.Type == typeof(DateTime?) => selector + ".Value.Date",
+				_ => null
+			};
+
+			if (!string.IsNullOrEmpty(dateTimeDateAccessor))
+				expression = dateTimeDateAccessor!.Split('.').Aggregate((Expression)target, Expression.PropertyOrField) as MemberExpression;
+
+			return expression;
 		}
 		catch (Exception exc)
 		{
