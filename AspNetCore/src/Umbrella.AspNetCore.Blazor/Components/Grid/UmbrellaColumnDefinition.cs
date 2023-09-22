@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using System.Text.Json;
+using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.TypeConverters;
@@ -47,6 +49,7 @@ public interface IUmbrellaColumnDefinition<TItem>
 	string? SorterMemberPathOverride { get; }
 	string GetFilterOptionDisplayName(object option);
 	Type FilterValueType { get; }
+	string? ToDateRangeDisplayValue();
 }
 
 /// <summary>
@@ -379,5 +382,18 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 		}
 
 		return FilterOptionDisplayNameSelector(option);
+	}
+
+	public string? ToDateRangeDisplayValue()
+	{
+		if (!string.IsNullOrEmpty(FilterValue))
+		{
+			DateRange model = JsonSerializer.Deserialize(FilterValue, DateRangeJsonSerializerContext.Default.DateRange);
+
+			if (model.StartDate != DateTime.MinValue && model.EndDate != DateTime.MinValue)
+				return $"{model.StartDate} - {model.EndDate}";
+		}
+
+		return null;
 	}
 }

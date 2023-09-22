@@ -1,0 +1,26 @@
+@using Umbrella.AspNetCore.Blazor.Components.Dialog
+@inherits DateRangeDialogBase
+
+<UmbrellaDialog>
+    <p>Please select a date range.</p>
+    <EditForm Model="Model" OnSubmit="SubmitFormAsync" novalidate>
+        <DataAnnotationsValidator />
+
+        <div class="form-group form-floating">
+            <InputDate class="form-control" @bind-Value="Model.StartDate" />
+            <LabelText ForTarget="() => Model.StartDate" />
+            <ValidationMessage For="() => Model.StartDate" />
+        </div>
+
+        <div class="form-group form-floating">
+            <InputDate class="form-control" @bind-Value="Model.EndDate" />
+            <LabelText ForTarget="() => Model.EndDate" />
+            <ValidationMessage For="() => Model.EndDate" />
+        </div>
+
+        <div class="form-group form-group--buttons">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-secondary" @onclick="CloseClickAsync">Cancel</button>
+        </div>
+    </EditForm>
+</UmbrellaDialog>

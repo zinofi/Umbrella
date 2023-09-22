@@ -80,7 +80,17 @@
                                     }
                                     else if (column.FilterControlType is UmbrellaColumnFilterType.DateRange)
                                     {
-                                        <p>Date Range: TODO</p>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="form-floating">
+                                                    <input id="@id" class="form-control" type="text" value="@column.ToDateRangeDisplayValue()" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
+                                                    <label for="@id">@column.Heading</label>
+                                                </div>
+                                                <button class="btn btn-primary" type="button" @onclick="() => DateRangeSelectionButtonClickAsync(column)">
+                                                    Select <i class="fa fas-calendar-days"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     }
                                     else if (column.FilterControlType is UmbrellaColumnFilterType.AutoComplete)
                                     {

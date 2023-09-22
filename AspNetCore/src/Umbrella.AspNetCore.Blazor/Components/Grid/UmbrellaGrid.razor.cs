@@ -1,10 +1,15 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Blazored.Modal;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
+using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
@@ -63,6 +68,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 	[Inject]
 	private IUmbrellaBlazorInteropService BlazorInteropUtility { get; set; } = null!;
+
+	[Inject]
+	private IUmbrellaDialogService DialogService { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.
@@ -602,18 +610,31 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 					if (!string.IsNullOrWhiteSpace(filterValue))
 					{
-						// Treating explicit values as special cases here where we want to intentionally pass a null value, e.g. for a nullable enum
-						// where we want to filter only on null.
-						if (filterValue is "null")
+						if (column.FilterControlType is UmbrellaColumnFilterType.DateRange)
 						{
-							filterValue = null;
-						}
-						else if (DateTime.TryParse(filterValue, out DateTime dtFilter))
-						{
-							filterValue = dtFilter.ToString("O") + "Z";
-						}
+							DateRange dateRange = JsonSerializer.Deserialize(column.FilterValue, DateRangeJsonSerializerContext.Default.DateRange);
 
-						lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, filterValue, column.FilterMatchType));
+							if (dateRange.StartDate != DateTime.MinValue && dateRange.EndDate != DateTime.MaxValue)
+							{
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.StartDate.ToString("O"), FilterType.GreaterThanOrEqual));
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.EndDate.ToString("O"), FilterType.GreaterThanOrEqual));
+							}
+						}
+						else
+						{
+							// Treating explicit values as special cases here where we want to intentionally pass a null value, e.g. for a nullable enum
+							// where we want to filter only on null.
+							if (filterValue is "null")
+							{
+								filterValue = null;
+							}
+							else if (DateTime.TryParse(filterValue, out DateTime dtFilter))
+							{
+								filterValue = dtFilter.ToString("O") + "Z";
+							}
+
+							lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, filterValue, column.FilterMatchType));
+						}
 					}
 				}
 			}
@@ -628,6 +649,35 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			}
 
 			await OnGridOptionsChanged.InvokeAsync(new UmbrellaGridRefreshEventArgs(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)));
+		}
+	}
+
+	private async Task DateRangeSelectionButtonClickAsync(IUmbrellaColumnDefinition<TItem> column)
+	{
+		try
+		{
+			DateRange dateRange = !string.IsNullOrEmpty(column.FilterValue)
+				? JsonSerializer.Deserialize(column.FilterValue, DateRangeJsonSerializerContext.Default.DateRange)
+				: default;
+
+			var parameters = new ModalParameters
+			{
+				{ nameof(DateRangeDialog.Model), new DateRangeDialogModel { StartDate = dateRange.StartDate != DateTime.MinValue ? dateRange.StartDate : null, EndDate = dateRange.EndDate != DateTime.MinValue ? dateRange.EndDate : null } }
+			};
+
+			var result = await DialogService.ShowDialogAsync<DateRangeDialog>("Select Dates", "", parameters);
+
+			if (result.Cancelled)
+				return;
+
+			if (result.Data is not DateRangeDialogModel resultModel)
+				throw new InvalidOperationException("There has been a problem determining the selected date range.");
+
+			column.FilterValue = JsonSerializer.Serialize(new DateRange(resultModel.StartDate ?? DateTime.MinValue, resultModel.EndDate ?? DateTime.MinValue), typeof(DateRange), DateRangeJsonSerializerContext.Default);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			await DialogService.ShowDangerMessageAsync();
 		}
 	}
 }
