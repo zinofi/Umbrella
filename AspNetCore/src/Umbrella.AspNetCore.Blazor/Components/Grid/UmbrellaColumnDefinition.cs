@@ -26,7 +26,6 @@ public interface IUmbrellaColumnDefinition<TItem>
 	string? AddOnButtonCssClass { get; set; }
 	string? AddOnButtonIconCssClass { get; set; }
 	string? AddOnButtonText { get; set; }
-	Func<string, Task<IEnumerable<object>>>? AutoCompleteSearchMethod { get; set; }
 	string ColumnWidthCssClass { get; }
 	SortDirection? Direction { get; set; }
 	string DirectionCssClass { get; }
@@ -50,6 +49,26 @@ public interface IUmbrellaColumnDefinition<TItem>
 	string GetFilterOptionDisplayName(object option);
 	Type FilterValueType { get; }
 	string? ToDateRangeDisplayValue();
+
+	/// <summary>
+	/// Gets or sets the AutoComplete search method.
+	/// </summary>
+	Func<string?, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; }
+
+	/// <summary>
+	/// Gets or sets the AutoComplete debounce in milliseconds.
+	/// </summary>
+	int AutoCompleteDebounce { get; }
+
+	/// <summary>
+	/// Gets or sets the AutoComplete maximum suggestions that will be displayed to the user.
+	/// </summary>
+	int AutoCompleteMaximumSuggestions { get; }
+
+	/// <summary>
+	/// Gets or sets the minimum characters that need to be provided before the <see cref="AutoCompleteSearchMethod"/> delegate is invoked.
+	/// </summary>
+	int AutoCompleteMinimumLength { get; }
 }
 
 /// <summary>
@@ -100,7 +119,11 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 		Func<string?, ValueTask<string?>>? onAddOnButtonClickedAsync,
 		string? addOnButtonCssClass,
 		string? addOnButtonText,
-		string? addOnButtonIconCssClass)
+		string? addOnButtonIconCssClass,
+		int autoCompleteDebounce,
+		int autoCompleteMaximumSuggestions,
+		int autoCompleteMinimumLength,
+		Func<string?, Task<IEnumerable<string>>>? autoCompleteSearchMethod)
 	{
 		Heading = heading;
 		ShortHeading = shortHeading;
@@ -158,6 +181,10 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 		}
 
 		FilterValueType = typeof(TValue);
+		AutoCompleteDebounce = autoCompleteDebounce;
+		AutoCompleteMaximumSuggestions = autoCompleteMaximumSuggestions;
+		AutoCompleteMinimumLength = autoCompleteMinimumLength;
+		AutoCompleteSearchMethod = autoCompleteSearchMethod;
 	}
 
 	/// <summary>
@@ -288,8 +315,6 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 	/// </summary>
 	public string? AddOnButtonIconCssClass { get; set; }
 
-	public Func<string, Task<IEnumerable<object>>>? AutoCompleteSearchMethod { get; set; }
-
 	/// <summary>
 	/// Gets or sets the sort direction.
 	/// </summary>
@@ -329,6 +354,18 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 			FilterValue = value is not null ? value.ToString() : default;
 		}
 	}
+	
+	/// <inheritdoc/>
+	public int AutoCompleteDebounce { get; }
+	
+	/// <inheritdoc/>
+	public int AutoCompleteMaximumSuggestions { get; }
+
+	/// <inheritdoc/>
+	public int AutoCompleteMinimumLength { get; }
+
+	/// <inheritdoc/>
+	public Func<string?, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; }
 
 	//public object? NullableTypedFilterValue
 	//{

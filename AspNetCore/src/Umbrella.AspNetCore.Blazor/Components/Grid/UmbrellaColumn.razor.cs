@@ -278,6 +278,33 @@ public partial class UmbrellaColumn<TItem, TValue>
 	public string? AddOnButtonIconCssClass { get; set; } = "fas fa-list-ul";
 
 	/// <summary>
+	/// Gets or sets the AutoComplete search method.
+	/// </summary>
+	[Parameter]
+	public Func<string?, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; set; }
+
+	/// <summary>
+	/// Gets or sets the AutoComplete debounce in milliseconds.
+	/// </summary>
+	/// <remarks>Defaults to <c>300ms</c></remarks>
+	[Parameter]
+	public int AutoCompleteDebounce { get; set; } = 300;
+
+	/// <summary>
+	/// Gets or sets the AutoComplete maximum suggestions that will be displayed to the user.
+	/// </summary>
+	/// <remarks>Defaults to <c>10</c></remarks>
+	[Parameter]
+	public int AutoCompleteMaximumSuggestions { get; set; } = 10;
+
+	/// <summary>
+	/// Gets or sets the minimum characters that need to be provided before the <see cref="AutoCompleteSearchMethod"/> delegate is invoked.
+	/// </summary>
+	/// <remarks>Defaults to <c>3</c></remarks>
+	[Parameter]
+	public int AutoCompleteMinimumLength { get; set; } = 3;
+
+	/// <summary>
 	/// Gets a value indicating whether this is the first column in the grid.
 	/// </summary>
 	public bool IsFirstColumn => UmbrellaGridInstance.FirstColumnPropertyName?.Equals(Property?.GetMemberName(), StringComparison.Ordinal) is true;
@@ -322,7 +349,11 @@ public partial class UmbrellaColumn<TItem, TValue>
 					OnAddOnButtonClickedAsync,
 					AddOnButtonCssClass,
 					AddOnButtonText,
-					AddOnButtonIconCssClass);
+					AddOnButtonIconCssClass,
+					AutoCompleteDebounce,
+					AutoCompleteMaximumSuggestions,
+					AutoCompleteMinimumLength,
+					AutoCompleteSearchMethod);
 
 				UmbrellaGridInstance.AddColumnDefinition(definition);
 			}
