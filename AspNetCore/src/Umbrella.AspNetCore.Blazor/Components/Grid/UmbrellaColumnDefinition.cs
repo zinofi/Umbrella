@@ -159,6 +159,10 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 			FilterOptions = new[] { "Yes", "No" };
 			NullableEnumOption = null;
 		}
+		else if (FilterControlType is UmbrellaColumnFilterType.Date or UmbrellaColumnFilterType.DateRange or UmbrellaColumnFilterType.AutoComplete)
+		{
+			FilterMatchType = FilterType.Equal;
+		}
 		else if (FilterControlType is UmbrellaColumnFilterType.Options || FilterOptions is not null)
 		{
 			FilterControlType = UmbrellaColumnFilterType.Options;
@@ -354,10 +358,10 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 			FilterValue = value is not null ? value.ToString() : default;
 		}
 	}
-	
+
 	/// <inheritdoc/>
 	public int AutoCompleteDebounce { get; }
-	
+
 	/// <inheritdoc/>
 	public int AutoCompleteMaximumSuggestions { get; }
 
