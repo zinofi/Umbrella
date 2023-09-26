@@ -27,7 +27,6 @@
 		<PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
 		<PackageReference Include="Blazored.Modal" Version="7.1.0" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
-		<PackageReference Include="Blazored.Typeahead" Version="4.7.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.22" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.22" />
@@ -43,6 +42,7 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+		<None Include="Components\AutoComplete\UmbrellaAutoComplete.razor" />
 		<None Include="Components\EnumFlags\UmbrellaEnumFlagsCheckboxGroup.razor" />
 		<None Include="Components\Messages\ErrorMessage.razor" />
 		<None Include="Components\Messages\SuccessMessage.razor" />

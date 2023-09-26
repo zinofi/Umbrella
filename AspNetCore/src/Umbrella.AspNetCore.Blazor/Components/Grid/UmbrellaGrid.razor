@@ -1,4 +1,4 @@
-﻿@using Blazored.Typeahead
+﻿@using Umbrella.AspNetCore.Blazor.Components.AutoComplete
 @typeparam TItem
 
 @{
@@ -87,44 +87,22 @@
                                                     <label for="@id">@column.Heading</label>
                                                 </div>
                                                 <button class="btn btn-primary" type="button" @onclick="() => DateRangeSelectionButtonClickAsync(column)">
-                                                    Select <i class="fa fas-calendar-days"></i>
+                                                    Select <i class="fas fa-calendar-days"></i>
+                                                </button>
+                                                <button class="btn btn-danger" type="button" @onclick="() => column.FilterValue = null">
+                                                    Clear <i class="fas fa-ban"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     }
                                     else if (column.FilterControlType is UmbrellaColumnFilterType.AutoComplete)
                                     {
-                                        if (column.AutoCompleteSearchMethod is null)
-                                            throw new InvalidOperationException($"The {nameof(column.AutoCompleteSearchMethod)} has not been specified.");
-
-                                        <div class="form-group form-floating">
-                                            <BlazoredTypeahead id="@id"
-                                                               class="u-grid__autocomplete-filter"
-                                                               @bind-Value="column.FilterValue"
-                                                               Debounce="column.AutoCompleteDebounce"
-                                                               MaximumSuggestions="column.AutoCompleteMaximumSuggestions"
-                                                               MinimumLength="column.AutoCompleteMinimumLength"
-                                                               SearchMethod="column.AutoCompleteSearchMethod"
-                                                               TItem="string"
-                                                               TValue="string">
-                                                <SelectedTemplate>
-                                                    <div class="u-grid__autocomplete-filter__selected">@context</div>
-                                                </SelectedTemplate>
-                                                <ResultTemplate>
-                                                    <div class="u-grid__autocomplete-filter__result">@context</div>
-                                                </ResultTemplate>
-                                                <HelpTemplate>
-                                                    <div class="u-grid__autocomplete-filter__help">
-                                                        Please enter a minimum of @column.AutoCompleteMinimumLength characters to start searching.
-                                                    </div>
-                                                </HelpTemplate>
-                                                <NotFoundTemplate>
-                                                    <div class="u-grid__autocomplete-filter__not-found">
-                                                        We couldn't find any options that match your search. Please try again using a different search term.
-                                                    </div>
-                                                </NotFoundTemplate>
-                                            </BlazoredTypeahead>
-                                        </div>
+                                        <UmbrellaAutoComplete @bind-Value="column.FilterValue"
+                                                              LabelText="@column.Heading"
+                                                              SearchMethod="column.AutoCompleteSearchMethod"
+                                                              Debounce="column.AutoCompleteDebounce"
+                                                              MaximumSuggestions="column.AutoCompleteMaximumSuggestions"
+                                                              MinimumLength="column.AutoCompleteMinimumLength" />
                                     }
                                     else if (column.FilterControlType is UmbrellaColumnFilterType.Date)
                                     {
