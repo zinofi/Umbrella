@@ -660,9 +660,15 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 				? JsonSerializer.Deserialize(column.FilterValue, DateRangeJsonSerializerContext.Default.DateRange)
 				: default;
 
+			var dialogModel = new DateRangeDialogModel
+			{
+				StartDate = dateRange.StartDate != DateTime.MinValue ? dateRange.StartDate : null,
+				EndDate = dateRange.EndDate != DateTime.MinValue ? dateRange.EndDate : null
+			};
+
 			var parameters = new ModalParameters
 			{
-				{ nameof(DateRangeDialog.Model), new DateRangeDialogModel { StartDate = dateRange.StartDate != DateTime.MinValue ? dateRange.StartDate : null, EndDate = dateRange.EndDate != DateTime.MinValue ? dateRange.EndDate : null } }
+				{ nameof(DateRangeDialog.Model), dialogModel }
 			};
 
 			var result = await DialogService.ShowDialogAsync<DateRangeDialog>("Select Dates", "", parameters);
@@ -673,7 +679,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			if (result.Data is not DateRangeDialogModel resultModel)
 				throw new InvalidOperationException("There has been a problem determining the selected date range.");
 
-			column.FilterValue = JsonSerializer.Serialize(new DateRange(resultModel.StartDate ?? DateTime.MinValue, resultModel.EndDate ?? DateTime.MinValue), typeof(DateRange), DateRangeJsonSerializerContext.Default);
+			var updatedDateRange = new DateRange
+			{
+				StartDate = resultModel.StartDate ?? DateTime.MinValue,
+				EndDate = resultModel.EndDate ?? DateTime.MinValue
+			};
+
+			column.FilterValue = JsonSerializer.Serialize(updatedDateRange, typeof(DateRange), DateRangeJsonSerializerContext.Default);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{

@@ -92,8 +92,11 @@
                                             </div>
                                         </div>
                                     }
-                                    else if (column.FilterControlType is UmbrellaColumnFilterType.AutoComplete && column.AutoCompleteSearchMethod is not null)
+                                    else if (column.FilterControlType is UmbrellaColumnFilterType.AutoComplete)
                                     {
+                                        if (column.AutoCompleteSearchMethod is null)
+                                            throw new InvalidOperationException($"The {nameof(column.AutoCompleteSearchMethod)} has not been specified.");
+
                                         <div class="form-group form-floating">
                                             <BlazoredTypeahead id="@id"
                                                                class="u-grid__autocomplete-filter"
