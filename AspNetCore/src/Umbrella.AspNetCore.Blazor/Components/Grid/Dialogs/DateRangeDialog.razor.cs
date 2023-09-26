@@ -1,5 +1,4 @@
 ﻿using Blazored.Modal.Services;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
 using Umbrella.AspNetCore.Blazor.Infrastructure;
@@ -8,7 +7,6 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
 
 public abstract class DateRangeDialogBase : UmbrellaDialogComponentBase
 {
-	[Parameter]
 	public DateRangeDialogModel Model { get; set; } = new();
 
 	public async Task SubmitFormAsync()

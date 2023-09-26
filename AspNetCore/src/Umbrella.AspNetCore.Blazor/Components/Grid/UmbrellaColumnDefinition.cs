@@ -428,7 +428,7 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 			DateRange model = JsonSerializer.Deserialize(FilterValue, DateRangeJsonSerializerContext.Default.DateRange);
 
 			if (model.StartDate != DateTime.MinValue && model.EndDate != DateTime.MinValue)
-				return $"{model.StartDate} - {model.EndDate}";
+				return $"{model.StartDate:d} - {model.EndDate:d}";
 		}
 
 		return null;

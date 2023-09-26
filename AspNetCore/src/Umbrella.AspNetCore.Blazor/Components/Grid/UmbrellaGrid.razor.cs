@@ -616,8 +616,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 							if (dateRange.StartDate != DateTime.MinValue && dateRange.EndDate != DateTime.MaxValue)
 							{
-								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.StartDate.ToString("O"), FilterType.GreaterThanOrEqual));
-								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.EndDate.ToString("O"), FilterType.LessThanOrEqual));
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.StartDate.ToString("O") + "Z", FilterType.GreaterThanOrEqual));
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.EndDate.ToString("O") + "Z", FilterType.LessThanOrEqual));
 							}
 						}
 						else
@@ -656,22 +656,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	{
 		try
 		{
-			DateRange dateRange = !string.IsNullOrEmpty(column.FilterValue)
-				? JsonSerializer.Deserialize(column.FilterValue, DateRangeJsonSerializerContext.Default.DateRange)
-				: default;
-
-			var dialogModel = new DateRangeDialogModel
-			{
-				StartDate = dateRange.StartDate != DateTime.MinValue ? dateRange.StartDate : null,
-				EndDate = dateRange.EndDate != DateTime.MinValue ? dateRange.EndDate : null
-			};
-
-			var parameters = new ModalParameters
-			{
-				{ nameof(DateRangeDialog.Model), dialogModel }
-			};
-
-			var result = await DialogService.ShowDialogAsync<DateRangeDialog>("Select Dates", "", parameters);
+			var result = await DialogService.ShowDialogAsync<DateRangeDialog>("Select Dates", "");
 
 			if (result.Cancelled)
 				return;
