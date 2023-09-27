@@ -7,9 +7,16 @@ namespace Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
 
 public abstract class DateRangeDialogBase : UmbrellaDialogComponentBase
 {
-	public DateRangeDialogModel Model { get; set; } = new();
+	/// <summary>
+	/// Gets the model used by the edit form on the dialog.
+	/// </summary>
+	protected DateRangeDialogModel Model { get; } = new();
 
-	public async Task SubmitFormAsync()
+	/// <summary>
+	/// The event handler invoked when the form is submitted.
+	/// </summary>
+	/// <returns>An awaitable <see cref="Task"/>.</returns>
+	protected async Task SubmitFormAsync()
 	{
 		try
 		{

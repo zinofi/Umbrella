@@ -55,6 +55,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
 		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj" />
 		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 	</ItemGroup>

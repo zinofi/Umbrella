@@ -1,8 +1,9 @@
 ﻿using System.Linq.Expressions;
 using System.Text.Json;
-using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.Dating;
+using Umbrella.Utilities.Dating.Json;
 using Umbrella.Utilities.TypeConverters;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
@@ -429,7 +430,7 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 	{
 		if (!string.IsNullOrEmpty(FilterValue))
 		{
-			DateRange model = JsonSerializer.Deserialize(FilterValue, DateRangeJsonSerializerContext.Default.DateRange);
+			DateTimeRange model = JsonSerializer.Deserialize(FilterValue, DateTimeRangeJsonSerializerContext.Default.DateTimeRange);
 
 			if (model.StartDate != DateTime.MinValue && model.EndDate != DateTime.MinValue)
 				return $"{model.StartDate:d} - {model.EndDate:d}";

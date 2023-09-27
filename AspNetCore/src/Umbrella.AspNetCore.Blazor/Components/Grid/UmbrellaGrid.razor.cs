@@ -11,6 +11,8 @@ using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
+using Umbrella.Utilities.Dating;
+using Umbrella.Utilities.Dating.Json;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
@@ -608,7 +610,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 					{
 						if (column.FilterControlType is UmbrellaColumnFilterType.DateRange)
 						{
-							DateRange dateRange = JsonSerializer.Deserialize(column.FilterValue, DateRangeJsonSerializerContext.Default.DateRange);
+							DateTimeRange dateRange = JsonSerializer.Deserialize(column.FilterValue, DateTimeRangeJsonSerializerContext.Default.DateTimeRange);
 
 							if (dateRange.StartDate != DateTime.MinValue && dateRange.EndDate != DateTime.MaxValue)
 							{
@@ -660,13 +662,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			if (result.Data is not DateRangeDialogModel resultModel)
 				throw new InvalidOperationException("There has been a problem determining the selected date range.");
 
-			var updatedDateRange = new DateRange
+			var updatedDateRange = new DateTimeRange
 			{
 				StartDate = resultModel.StartDate ?? DateTime.MinValue,
 				EndDate = resultModel.EndDate ?? DateTime.MinValue
 			};
 
-			column.FilterValue = JsonSerializer.Serialize(updatedDateRange, typeof(DateRange), DateRangeJsonSerializerContext.Default);
+			column.FilterValue = JsonSerializer.Serialize(updatedDateRange, typeof(DateTimeRange), DateTimeRangeJsonSerializerContext.Default);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
