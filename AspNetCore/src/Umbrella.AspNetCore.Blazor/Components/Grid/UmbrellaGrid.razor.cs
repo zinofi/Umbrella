@@ -324,6 +324,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	[Parameter]
 	public bool ShowRadioSelectColumn { get; set; }
 
+	/// <summary>
+	/// Gets or sets the callback that will be invoked when the search filters and sorters are being reset.
+	/// </summary>
+	[Parameter]
+	public EventCallback OnResetFiltersAndSorters { get; set; }
+
 	private void OnCheckboxSelectColumnSelectionChanged(UmbrellaGridSelectableItem selectableItem)
 	{
 		selectableItem.IsSelected = !selectableItem.IsSelected;
@@ -497,7 +503,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <returns></returns>
 	private async Task ResetFiltersClickAsync()
 	{
-		ResetFiltersAndSorters();
+		await ResetFiltersAndSortersAsync();
 		await UpdateGridAsync();
 	}
 
@@ -529,7 +535,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <returns>A <see cref="Task"/> that completes when the grid has been reloaded.</returns>
 	private async Task ReloadButtonClickAsync()
 	{
-		ResetFiltersAndSorters();
+		await ResetFiltersAndSortersAsync();
 		await UpdateGridAsync(PageNumber, PageSize);
 	}
 
@@ -548,7 +554,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
 	private Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(args.PageNumber, args.PageSize);
 
-	private void ResetFiltersAndSorters()
+	private async Task ResetFiltersAndSortersAsync()
 	{
 		foreach (var column in ColumnDefinitions)
 		{
@@ -562,6 +568,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 			// TODO: InitialFilters
 		}
+
+		if (OnResetFiltersAndSorters.HasDelegate)
+			await OnResetFiltersAndSorters.InvokeAsync();
 	}
 
 	private async Task UpdateGridAsync(int? pageNumber = null, int? pageSize = null)
