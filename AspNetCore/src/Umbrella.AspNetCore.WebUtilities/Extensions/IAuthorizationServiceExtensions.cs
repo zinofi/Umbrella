@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 #pragma warning disable IDE0130
 namespace Microsoft.AspNetCore.Authorization;
@@ -25,15 +22,14 @@ public static class IAuthorizationServiceExtensions
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		var tasks = new List<Task<AuthorizationResult>>();
-
 		foreach (var item in resources)
 		{
-			tasks.Add(authorizationService.AuthorizeAsync(user, item, policyName));
+			var result = await authorizationService.AuthorizeAsync(user, item, policyName);
+
+			if (!result.Succeeded)
+				return false;
 		}
 
-		AuthorizationResult[] authResults = await Task.WhenAll(tasks).ConfigureAwait(false);
-
-		return authResults.All(x => x.Succeeded);
+		return true;
 	}
 }
