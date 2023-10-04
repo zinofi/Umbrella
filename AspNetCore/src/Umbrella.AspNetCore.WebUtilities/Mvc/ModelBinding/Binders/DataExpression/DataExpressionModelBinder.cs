@@ -136,10 +136,13 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 				{
 					bindingContext.Result = ModelBindingResult.Success(modelResult);
 				}
-				else
+
+				if (unmatchedItems is { Count: > 0 })
 				{
-					bindingContext.HttpContext.TrackUnmatchedDataExpressionDescriptors((IEnumerable<IDataExpressionDescriptor>)descriptors);
-					bindingContext.Result = ModelBindingResult.Success(null);
+					bindingContext.HttpContext.TrackUnmatchedDataExpressionDescriptors((IEnumerable<IDataExpressionDescriptor>)unmatchedItems);
+
+					if (modelResult is null)
+						bindingContext.Result = ModelBindingResult.Success(null);
 				}
 			}
 			else
