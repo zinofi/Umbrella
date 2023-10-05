@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Exceptions;
@@ -23,8 +24,16 @@ public class AppUpdateMessageService : IAppUpdateMessageService
 	/// <inheritdoc />
 	public event Func<bool, string, Task> OnShow
 	{
-		add => WeakReferenceMessenger.Default.TryRegister<AppUpdateStateChangedMessage>(value.Target, (_, args) => _ = value.Invoke(args.Value.updateRequired, args.Value.message));
-		remove => WeakReferenceMessenger.Default.Unregister<AppUpdateStateChangedMessage>(value.Target);
+		add
+		{
+			Guard.IsNotNull(value.Target);
+			WeakReferenceMessenger.Default.TryRegister<AppUpdateStateChangedMessage>(value.Target, (_, args) => _ = value.Invoke(args.Value.updateRequired, args.Value.message));
+		}
+		remove
+		{
+			Guard.IsNotNull(value.Target);
+			WeakReferenceMessenger.Default.Unregister<AppUpdateStateChangedMessage>(value.Target);
+		}
 	}
 
 	/// <summary>

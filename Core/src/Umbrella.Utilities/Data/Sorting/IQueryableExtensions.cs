@@ -29,20 +29,24 @@ public static class IQueryableExtensions
 
 			foreach (SortExpression<TItem> sortExpression in sortExpressions)
 			{
+				var expression = sortExpression.Expression ?? throw new InvalidOperationException("The expression cannot be found.");
+
 				orderedQuery = i++ == 0
 					? sortExpression.Direction == SortDirection.Ascending
-						? items.OrderBy(sortExpression.Expression)
-						: items.OrderByDescending(sortExpression.Expression)
+						? items.OrderBy(expression)
+						: items.OrderByDescending(expression)
 					: sortExpression.Direction == SortDirection.Ascending
-						? orderedQuery.ThenBy(sortExpression.Expression)
-						: orderedQuery.ThenByDescending(sortExpression.Expression);
+						? orderedQuery!.ThenBy(expression)
+						: orderedQuery!.ThenByDescending(expression);
 			}
 		}
 		else if (defaultSortOrderExpression == default)
 		{
+			var expression = defaultSortOrderExpression.Expression ?? throw new InvalidOperationException("The expression cannot be found.");
+
 			orderedQuery = defaultSortOrderExpression.Direction == SortDirection.Ascending
-						? items.OrderBy(defaultSortOrderExpression.Expression)
-						: items.OrderByDescending(defaultSortOrderExpression.Expression);
+						? items.OrderBy(expression)
+						: items.OrderByDescending(expression);
 		}
 
 		return orderedQuery ?? items;

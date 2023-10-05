@@ -65,7 +65,7 @@ public static class TypeExtensions
 			? throw new ArgumentException($"{nameof(enumType)} is not an Enum.")
 			: Enum.GetValues(enumType)
 			.OfType<object>()
-			.ToDictionary(x => Convert.ToInt32(x, CultureInfo.InvariantCulture), x => Enum.GetName(enumType, x));
+			.ToDictionary(x => Convert.ToInt32(x, CultureInfo.InvariantCulture), x => Enum.GetName(enumType, x) ?? throw new InvalidOperationException("There has been a problem getting the enum name."));
 	}
 
 	/// <summary>

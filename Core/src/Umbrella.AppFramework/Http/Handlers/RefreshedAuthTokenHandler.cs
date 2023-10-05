@@ -43,7 +43,7 @@ public class RefreshedAuthTokenHandler : DelegatingHandler
 			if (!string.IsNullOrWhiteSpace(token))
 				_ = await _authHelper.GetCurrentClaimsPrincipalAsync(token).ConfigureAwait(false);
 		}
-		else if (response.StatusCode is HttpStatusCode.Unauthorized && request.RequestUri.ToString().EndsWith("/auth/login", StringComparison.OrdinalIgnoreCase) is false)
+		else if (response.StatusCode is HttpStatusCode.Unauthorized && request.RequestUri?.ToString().EndsWith("/auth/login", StringComparison.OrdinalIgnoreCase) is false)
 		{
 			string json = UmbrellaStatics.SerializeJson(new HttpProblemDetails { Title = "Logged Out", Detail = "You have been logged out due to inactivity. Please login again to continue." });
 			response.Content = new StringContent(json, Encoding.UTF8, "application/problem+json");

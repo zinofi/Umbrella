@@ -8,7 +8,7 @@
 public abstract class ModelAwareValidationAttribute : ValidationAttribute
 {
 	/// <inheritdoc />
-	public override bool IsValid(object value) => throw new NotImplementedException();
+	public override bool IsValid(object? value) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public override string FormatErrorMessage(string name)
@@ -59,8 +59,11 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	public Dictionary<string, object> ClientValidationParameters => GetClientValidationParameters().ToDictionary(kv => kv.Key.ToLowerInvariant(), kv => kv.Value);
 
 	/// <inheritdoc />
-	protected sealed override ValidationResult IsValid(object value, ValidationContext validationContext)
+	protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
+		if (value is null)
+			return null;
+
 		object model = validationContext.ObjectInstance;
 
 		if (!IsValid(value, model))

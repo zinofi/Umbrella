@@ -6,6 +6,6 @@
 public class RequiredTrueAttribute : ValidationAttribute
 {
 	/// <inheritdoc />
-	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
 		=> value is true ? ValidationResult.Success : new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>());
 }

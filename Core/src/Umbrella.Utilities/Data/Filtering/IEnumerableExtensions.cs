@@ -129,6 +129,9 @@ public static class IEnumerableExtensions
 	/// <remarks>If the <paramref name="cultureInfo"/> is not specified, <see cref="CultureInfo.InvariantCulture"/> is used.</remarks>
 	public static (bool found, TFilterValue filterValue, IEnumerable<FilterExpression<TItem>>? updatedFilters) PopFilter<TItem, TFilterValue>(this IEnumerable<FilterExpression<TItem>>? filters, string filterPath, CultureInfo? cultureInfo = null)
 	{
+		if (filters is null)
+			return (false, default!, filters);
+
 		FilterExpression<TItem>? filter = filters.FindByMemberPath(filterPath);
 
 		if (filter is null)

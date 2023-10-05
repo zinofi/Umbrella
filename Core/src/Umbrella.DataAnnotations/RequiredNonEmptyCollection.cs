@@ -11,7 +11,7 @@ namespace Umbrella.DataAnnotations;
 public class RequiredNonEmptyCollectionAttribute : ValidationAttribute
 {
 	/// <inheritdoc />
-	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
 	{
 		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>();
 

@@ -37,8 +37,8 @@ public class RequestNotificationHandler : DelegatingHandler
 
 		bool isMatch = _options.Exclusions.Any(x => x.PathMatchType switch
 		{
-			RequestNotificationHandlerPathMatchType.Exact => request.RequestUri.AbsolutePath.Equals(x.Path, StringComparison.InvariantCultureIgnoreCase) && request.Method == x.Method,
-			RequestNotificationHandlerPathMatchType.StartsWith => request.RequestUri.AbsolutePath.StartsWith(x.Path, StringComparison.InvariantCultureIgnoreCase) && request.Method == x.Method,
+			RequestNotificationHandlerPathMatchType.Exact => request.RequestUri?.AbsolutePath.Equals(x.Path, StringComparison.OrdinalIgnoreCase) is true && request.Method == x.Method,
+			RequestNotificationHandlerPathMatchType.StartsWith => request.RequestUri?.AbsolutePath.StartsWith(x.Path, StringComparison.OrdinalIgnoreCase) is true && request.Method == x.Method,
 			_ => throw new NotSupportedException($"The type {x.PathMatchType} is not supported.")
 		});
 

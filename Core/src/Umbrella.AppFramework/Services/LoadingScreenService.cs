@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Exceptions;
@@ -22,8 +23,16 @@ public class LoadingScreenService : ILoadingScreenService, IDisposable
 	/// <inheritdoc />
 	public event Action<LoadingScreenState> OnStateChanged
 	{
-		add => WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, args) => value(args.Value));
-		remove => WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
+		add
+		{
+			Guard.IsNotNull(value.Target);
+			WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, args) => value(args.Value));
+		}
+		remove
+		{
+			Guard.IsNotNull(value.Target);
+			WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
+		}
 	}
 
 	/// <summary>

@@ -18,9 +18,12 @@ public class UmbrellaCompareAttribute : CompareAttribute
 	}
 
 	/// <inheritdoc />
-	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
-		ValidationResult result = base.IsValid(value, validationContext);
+		ValidationResult? result = base.IsValid(value, validationContext);
+
+		if (result is null)
+			return result;
 
 		if (result == ValidationResult.Success)
 			return result;

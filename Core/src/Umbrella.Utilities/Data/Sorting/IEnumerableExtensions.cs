@@ -29,20 +29,24 @@ public static class IEnumerableExtensions
 
 			foreach (SortExpression<TItem> sortExpression in sortExpressions)
 			{
+				var @delegate = sortExpression.GetDelegate() ?? throw new InvalidOperationException("The delegate cannot be loaded.");
+
 				orderedItems = i++ is 0
 					? sortExpression.Direction == SortDirection.Ascending
-						? items.OrderBy(sortExpression.GetDelegate())
-						: items.OrderByDescending(sortExpression.GetDelegate())
+						? items.OrderBy(@delegate)
+						: items.OrderByDescending(@delegate)
 					: sortExpression.Direction == SortDirection.Ascending
-						? orderedItems.ThenBy(sortExpression.GetDelegate())
-						: orderedItems.ThenByDescending(sortExpression.GetDelegate());
+						? orderedItems!.ThenBy(@delegate)
+						: orderedItems!.ThenByDescending(@delegate);
 			}
 		}
 		else if (defaultSortOrderExpression == default)
 		{
+			var @delegate = defaultSortOrderExpression.GetDelegate() ?? throw new InvalidOperationException("The delegate cannot be loaded.");
+
 			orderedItems = defaultSortOrderExpression.Direction is SortDirection.Ascending
-						? items.OrderBy(defaultSortOrderExpression.GetDelegate())
-						: items.OrderByDescending(defaultSortOrderExpression.GetDelegate());
+						? items.OrderBy(@delegate)
+						: items.OrderByDescending(@delegate);
 		}
 
 		return orderedItems ?? items;

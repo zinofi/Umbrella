@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -33,8 +34,16 @@ public class AppAuthHelper : IAppAuthHelper
 	/// <inheritdoc />
 	public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
 	{
-		add => WeakReferenceMessenger.Default.TryRegister<AuthenticationStateChangedMessage>(value.Target, (sender, args) => _ = value(args.Value));
-		remove => WeakReferenceMessenger.Default.Unregister<AuthenticationStateChangedMessage>(value.Target);
+		add
+		{
+			Guard.IsNotNull(value.Target);
+			WeakReferenceMessenger.Default.TryRegister<AuthenticationStateChangedMessage>(value.Target, (sender, args) => _ = value(args.Value));
+		}
+		remove
+		{
+			Guard.IsNotNull(value.Target);
+			WeakReferenceMessenger.Default.Unregister<AuthenticationStateChangedMessage>(value.Target);
+		}
 	}
 
 	/// <summary>

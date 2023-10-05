@@ -64,7 +64,13 @@ public class DataExpressionFactory : IDataExpressionFactory
 					return default;
 
 				UnaryExpression objectMemberExpression = Expression.Convert(memberAccess, typeof(object));
-				LambdaExpression lambdaExpression = Expression.Lambda(elementType.GetProperty("Expression")?.PropertyType.GetGenericArguments()[0], objectMemberExpression, parameter);
+
+				Type? delegateType = elementType.GetProperty("Expression")?.PropertyType.GetGenericArguments()[0];
+
+				if (delegateType is null)
+					return default;
+
+				LambdaExpression lambdaExpression = Expression.Lambda(delegateType, objectMemberExpression, parameter);
 
 				return (memberAccess, lambdaExpression, new Lazy<Delegate>(() => lambdaExpression.Compile()), new Lazy<string>(() => lambdaExpression.GetMemberPath()));
 			});
@@ -78,17 +84,21 @@ public class DataExpressionFactory : IDataExpressionFactory
 
 				if (result.member.Type.IsEnum && EnumHelper.TryParseEnum(result.member.Type, descriptorValue, true, out object? enumValue))
 				{
-					object underlyingValue = Convert.ChangeType(enumValue, result.member.Type.GetEnumUnderlyingType(), CultureInfo.CurrentCulture);
+					object? underlyingValue = Convert.ChangeType(enumValue, result.member.Type.GetEnumUnderlyingType(), CultureInfo.CurrentCulture);
 
 					if (underlyingValue is not null)
 						descriptorValue = underlyingValue.ToString();
 				}
 
-				return (IDataExpression)Activator.CreateInstance(elementType, result.lambda, result.@delegate, result.memberPath, descriptorValue, filterExpressionDescriptor.Type, filterExpressionDescriptor.IsPrimary);
+				object? instance = Activator.CreateInstance(elementType, result.lambda, result.@delegate, result.memberPath, descriptorValue, filterExpressionDescriptor.Type, filterExpressionDescriptor.IsPrimary);
+
+				return instance as IDataExpression;
 			}
 			else if (descriptor is SortExpressionDescriptor sortExpressionDescriptor)
 			{
-				return (IDataExpression)Activator.CreateInstance(elementType, result.lambda, result.@delegate, result.memberPath, sortExpressionDescriptor.Direction);
+				object? instance = Activator.CreateInstance(elementType, result.lambda, result.@delegate, result.memberPath, sortExpressionDescriptor.Direction);
+
+				return instance as IDataExpression;
 			}
 
 			throw new NotSupportedException("The specified descriptor type is not supported.");
