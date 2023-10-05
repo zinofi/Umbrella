@@ -158,7 +158,7 @@ public class HybridCache : IHybridCache, IDisposable
 							{
 								cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 								_ = MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
-								_ = entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
+								_ = entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry? removedEntry));
 							}
 
 							return entryToAdd;
@@ -280,7 +280,7 @@ public class HybridCache : IHybridCache, IDisposable
 							{
 								cacheMetaEntry = new HybridCacheMetaEntry(cacheKeyInternal, expirationTimeSpan, slidingExpiration);
 								_ = MemoryCacheMetaEntryDictionary.TryAdd(cacheKeyInternal, cacheMetaEntry);
-								_ = entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
+								_ = entry.RegisterPostEvictionCallback((key, value, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry? removedEntry));
 							}
 
 							return entryToAdd;
@@ -338,7 +338,7 @@ public class HybridCache : IHybridCache, IDisposable
 			{
 				bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
 
-				if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry cacheMetaEntry))
+				if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry? cacheMetaEntry))
 					cacheMetaEntry.AddHit();
 
 				return (found, value);
@@ -376,7 +376,7 @@ public class HybridCache : IHybridCache, IDisposable
 			{
 				bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
 
-				if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry cacheMetaEntry))
+				if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry? cacheMetaEntry))
 					cacheMetaEntry.AddHit();
 
 				return (found, value);
@@ -416,7 +416,7 @@ public class HybridCache : IHybridCache, IDisposable
 				MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(tsExpiration, slidingExpiration, priority, expirationTokensBuilder);
 
 				if (TrackKeys)
-					_ = options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
+					_ = options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry? removedEntry));
 
 				_ = MemoryCache.Set(cacheKeyInternal, value, options);
 
@@ -465,7 +465,7 @@ public class HybridCache : IHybridCache, IDisposable
 				MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(tsExpiration, slidingExpiration, priority, expirationTokensBuilder);
 
 				if (TrackKeys)
-					_ = options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry removedEntry));
+					_ = options.RegisterPostEvictionCallback((key, cachedValue, reason, state) => MemoryCacheMetaEntryDictionary.TryRemove(cacheKeyInternal, out HybridCacheMetaEntry? removedEntry));
 
 				_ = MemoryCache.Set(cacheKeyInternal, value, options);
 

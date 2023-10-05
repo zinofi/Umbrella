@@ -44,6 +44,9 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 	{
 		try
 		{
+			if (_threadLocalRandom.Value is null)
+				throw new InvalidOperationException("The value of the thread local is null.");
+
 			return _threadLocalRandom.Value.Next();
 		}
 		catch (Exception exc) when (_log.WriteError(exc))
@@ -75,6 +78,9 @@ public class ConcurrentRandomGenerator : IConcurrentRandomGenerator, IDisposable
 
 		try
 		{
+			if (_threadLocalRandom.Value is null)
+				throw new InvalidOperationException("The value of the thread local is null.");
+
 			return _threadLocalRandom.Value.Next(min, max);
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { min, max }))

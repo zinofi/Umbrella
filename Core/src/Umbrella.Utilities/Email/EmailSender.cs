@@ -54,7 +54,7 @@ public class EmailSender : IEmailSender
 				case EmailSenderDeliveryMode.Network:
 					{
 						client.DeliveryMethod = SmtpDeliveryMethod.Network;
-						client.Host = _options.Host;
+						client.Host = _options.Host!;
 						client.Port = _options.Port;
 						client.EnableSsl = _options.SecureServerConnection;
 
@@ -82,7 +82,12 @@ public class EmailSender : IEmailSender
 					throw new NotSupportedException($"Only {nameof(SmtpDeliveryMethod.Network)} and {nameof(SmtpDeliveryMethod.SpecifiedPickupDirectory)} are supported as delivery methods.");
 			}
 
-			using var message = new MailMessage(fromAddress?.TrimToLowerInvariant() ?? _options.DefaultFromAddress, email)
+			string? senderAddress = fromAddress?.TrimToLowerInvariant() ?? _options.DefaultFromAddress;
+
+			if (string.IsNullOrEmpty(senderAddress))
+				throw new InvalidOperationException("The sender address cannot be determined.");
+
+			using var message = new MailMessage(senderAddress, email)
 			{
 				Subject = subject,
 				Body = body,
@@ -93,7 +98,11 @@ public class EmailSender : IEmailSender
 			ccList?.ForEach(message.CC.Add);
 			bccList?.ForEach(message.Bcc.Add);
 
+#if NET6_0_OR_GREATER
+			await client.SendMailAsync(message, cancellationToken).ConfigureAwait(false);
+#else
 			await client.SendMailAsync(message).ConfigureAwait(false);
+#endif
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress }))
 		{

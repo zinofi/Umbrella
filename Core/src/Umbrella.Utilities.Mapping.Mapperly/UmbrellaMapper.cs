@@ -87,6 +87,8 @@ public class UmbrellaMapper : IUmbrellaMapper
 		try
 		{
 			var param1 = source.GetType().GetOriginalType();
+			Guard.IsNotNull(param1);
+
 			var param2 = typeof(TDestination);
 
 			MethodInfo miOriginal = GetType().GetMethods().SingleOrDefault(x => x.Name is nameof(MapAsync) && x.GetCustomAttribute<PrimaryMappingMethodAttribute>() is not null)!;
@@ -115,6 +117,8 @@ public class UmbrellaMapper : IUmbrellaMapper
 		try
 		{
 			var param1 = source.GetType().GetOriginalType();
+			Guard.IsNotNull(param1);
+
 			var param2 = typeof(TDestination);
 
 			var key = (param1, param2);
@@ -155,6 +159,8 @@ public class UmbrellaMapper : IUmbrellaMapper
 		try
 		{
 			var param1 = source.GetType().GetOriginalType();
+			Guard.IsNotNull(param1);
+
 			var param2 = typeof(TDestination);
 
 			var key = (param1, param2);
@@ -191,6 +197,9 @@ public class UmbrellaMapper : IUmbrellaMapper
 				throw new InvalidOperationException("The elementType of the source collection could not be determined.");
 
 			elementType = elementType.GetOriginalType();
+
+			if (elementType is null)
+				throw new InvalidOperationException("The elementType of the source collection could not be determined.");
 
 			var type2 = typeof(TDestination);
 
@@ -240,6 +249,9 @@ public class UmbrellaMapper : IUmbrellaMapper
 				throw new InvalidOperationException("The elementType of the source collection could not be determined.");
 
 			elementType = elementType.GetOriginalType();
+
+			if (elementType is null)
+				throw new InvalidOperationException("The elementType of the source collection could not be determined.");
 
 			var param2 = typeof(TDestination);
 

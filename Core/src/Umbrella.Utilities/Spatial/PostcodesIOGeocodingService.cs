@@ -157,7 +157,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType?.MediaType?.Equals("application/json", StringComparison.Ordinal) is true)
 			{
 				var resultWrapper = await response.Content.ReadFromJsonAsync<ReverseGeocodingResultWrapper>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -206,7 +206,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"{_apiUrl}/postcodes", bulkRequest, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType?.MediaType?.Equals("application/json", StringComparison.Ordinal) is true)
 			{
 				var result = await response.Content.ReadFromJsonAsync<BulkReverseGeocodingResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -261,7 +261,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType?.MediaType?.Equals("application/json", StringComparison.Ordinal) is true)
 			{
 				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupResultWrapper>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -306,7 +306,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType?.MediaType?.Equals("application/json", StringComparison.Ordinal) is true)
 			{
 				var resultWrapper = await response.Content.ReadFromJsonAsync<PostcodeLookupPartialMapResultsWrapper>(cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -356,7 +356,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 
 			HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/postcodes", JsonContent.Create(model), cancellationToken).ConfigureAwait(false);
 
-			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType.MediaType.Equals("application/json", StringComparison.Ordinal))
+			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType?.MediaType?.Equals("application/json", StringComparison.Ordinal) is true)
 			{
 				var result = await response.Content.ReadFromJsonAsync<BulkPostcodeLookupResult>(cancellationToken: cancellationToken).ConfigureAwait(false);
 

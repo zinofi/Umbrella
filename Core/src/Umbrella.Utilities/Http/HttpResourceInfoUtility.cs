@@ -16,6 +16,7 @@ namespace Umbrella.Utilities.Http;
 /// </summary>
 public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 {
+	private const string DefaultMimeType = "application/octet-stream";
 	private readonly ILogger _log;
 	private readonly HttpClient _httpClient;
 	private readonly IHybridCache _hybridCache;
@@ -73,10 +74,10 @@ public class HttpResourceInfoUtility : IHttpResourceInfoUtility, IDisposable
 					{
 						DateTime? lastModified = null;
 
-						if (response.Headers.TryGetValues("Last-Modified", out IEnumerable<string> values) && DateTime.TryParse(values.FirstOrDefault(), out DateTime result))
+						if (response.Headers.TryGetValues("Last-Modified", out IEnumerable<string>? values) && DateTime.TryParse(values.FirstOrDefault(), out DateTime result))
 							lastModified = result;
 
-						return new HttpResourceInfo(response.Content.Headers.ContentType.MediaType, contentLength, lastModified, url);
+						return new HttpResourceInfo(response.Content.Headers.ContentType?.MediaType ?? DefaultMimeType, contentLength, lastModified, url);
 					}
 
 					return null;

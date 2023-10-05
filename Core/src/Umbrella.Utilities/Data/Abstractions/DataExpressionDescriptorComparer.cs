@@ -17,7 +17,7 @@ public class DataExpressionDescriptorComparer<TDescriptor> : EqualityComparer<TD
 	where TDescriptor : IDataExpressionDescriptor
 {
 	/// <inheritdoc />
-	public override bool Equals(TDescriptor x, TDescriptor y)
+	public override bool Equals(TDescriptor? x, TDescriptor? y)
 	{
 		if (x?.MemberPath is null && y?.MemberPath is null)
 			return true;
@@ -32,5 +32,9 @@ public class DataExpressionDescriptorComparer<TDescriptor> : EqualityComparer<TD
 	}
 
 	/// <inheritdoc />
+#if NET6_0_OR_GREATER
+	public override int GetHashCode(TDescriptor obj) => obj?.MemberPath?.ToUpperInvariant()?.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? -1;
+#else
 	public override int GetHashCode(TDescriptor obj) => obj?.MemberPath?.ToUpperInvariant()?.GetHashCode() ?? -1;
+#endif
 }

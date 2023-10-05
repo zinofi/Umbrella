@@ -29,7 +29,7 @@ public struct GeoLocation : IEquatable<GeoLocation>
 	public double Longitude { readonly get; set; }
 
 	/// <inheritdoc />
-	public override readonly bool Equals(object obj) => obj is GeoLocation location && Equals(location);
+	public override readonly bool Equals(object? obj) => obj is GeoLocation location && Equals(location);
 
 	/// <inheritdoc />
 	public readonly bool Equals(GeoLocation other) => Latitude == other.Latitude &&

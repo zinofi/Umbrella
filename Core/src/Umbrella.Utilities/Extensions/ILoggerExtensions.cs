@@ -176,7 +176,7 @@ public static class ILoggerExtensions
 
 			foreach (var pi in propertyInfos)
 			{
-				stateDictionary.Add(new KeyValuePair<string, string>(pi.Name, Convert.ToString(pi.GetValue(state) ?? string.Empty, CultureInfo.InvariantCulture)));
+				stateDictionary.Add(new KeyValuePair<string, string>(pi.Name, Convert.ToString(pi.GetValue(state) ?? string.Empty, CultureInfo.InvariantCulture) ?? string.Empty));
 			}
 		}
 
@@ -186,7 +186,11 @@ public static class ILoggerExtensions
 		if (!string.IsNullOrEmpty(message))
 			_ = messageBuilder.Append(" - " + message);
 
+#if NET6_0_OR_GREATER
+		_ = messageBuilder.Append(CultureInfo.InvariantCulture, $" on Line: {lineNumber}, Path: {filePath}");
+#else
 		_ = messageBuilder.Append($" on Line: {lineNumber}, Path: {filePath}");
+#endif
 
 		stateDictionary.Insert(0, new("LoggerMessage", messageBuilder.ToString()));
 

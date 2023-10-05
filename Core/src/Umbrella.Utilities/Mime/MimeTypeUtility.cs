@@ -828,7 +828,7 @@ public class MimeTypeUtility : IMimeTypeUtility
 
 			return string.IsNullOrWhiteSpace(fileNameOrExtension)
 				? DefaultMimeType
-				: _mimeTypeDictionary.TryGetValue(fileNameOrExtension, out string mimeType) ? mimeType : DefaultMimeType;
+				: _mimeTypeDictionary.TryGetValue(fileNameOrExtension, out string? mimeType) ? mimeType ?? DefaultMimeType : DefaultMimeType;
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { fileNameOrExtension }))
 		{

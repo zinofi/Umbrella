@@ -61,7 +61,7 @@ public class GenericEqualityComparer<TObject, TProperty> : EqualityComparer<TObj
 	/// <param name="x">The first object instance.</param>
 	/// <param name="y">The second object instance.</param>
 	/// <returns>Whether or not the 2 object instances are equal.</returns>
-	public override bool Equals(TObject x, TObject y)
+	public override bool Equals(TObject? x, TObject? y)
 	{
 		// Check the objects for null combinations first.
 		if (x is null && y is null)

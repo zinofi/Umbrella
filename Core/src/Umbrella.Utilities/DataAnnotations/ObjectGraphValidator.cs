@@ -87,8 +87,10 @@ public class ObjectGraphValidator : IObjectGraphValidator
 						continue;
 					}
 
-					object child = pi.GetValue(value);
-					ValidateObject(child);
+					object? child = pi.GetValue(value);
+
+					if(child is not null)
+						ValidateObject(child);
 				}
 			}
 

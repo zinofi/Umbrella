@@ -52,8 +52,11 @@ public static class ExpressionExtensions
 		var parts = new List<string>();
 
 		// Inner Method
-		void ParsePath(Expression expression)
+		void ParsePath(Expression? expression)
 		{
+			if (expression is null)
+				return;
+
 			while (expression.NodeType is ExpressionType.Convert or ExpressionType.ConvertChecked)
 			{
 				expression = ((UnaryExpression)expression).Operand;

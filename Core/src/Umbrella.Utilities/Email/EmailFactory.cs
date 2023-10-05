@@ -67,6 +67,8 @@ public class EmailFactory : IEmailFactory
 		{
 			string? absolutePath = _hostingEnvironment.MapPath(options.TemplatesVirtualPath);
 
+			Guard.IsNotNullOrEmpty(absolutePath);
+
 			var dicItems = new Dictionary<string, string>();
 
 			foreach (string filename in Directory.EnumerateFiles(absolutePath, "*.html", SearchOption.TopDirectoryOnly))

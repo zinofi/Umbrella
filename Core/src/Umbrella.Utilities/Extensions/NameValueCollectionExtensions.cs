@@ -38,8 +38,8 @@ public static class NameValueCollectionExtensions
 		Guard.IsNotNullOrWhiteSpace(pairSeparator, nameof(pairSeparator));
 
 		return string.Join(pairSeparator,
-					nvc.AllKeys.Where(key => !string.IsNullOrWhiteSpace(nvc[key]))
+					nvc.AllKeys.Where(key => !string.IsNullOrEmpty(key) && !string.IsNullOrWhiteSpace(nvc[key]))
 						.Select(
-							key => string.Join(pairSeparator, nvc.GetValues(key).Select(val => $"{urlEncoder(key)}{keyValueSeparator}{urlEncoder(val)}"))));
+							key => string.Join(pairSeparator, nvc.GetValues(key!)?.Select(val => $"{urlEncoder(key!)}{keyValueSeparator}{urlEncoder(val)}") ?? Array.Empty<string>())));
 	}
 }

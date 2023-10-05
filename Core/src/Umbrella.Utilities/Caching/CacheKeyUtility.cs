@@ -47,7 +47,10 @@ public class CacheKeyUtility : ICacheKeyUtility
 
 		try
 		{
-			string typeName = type.FullName;
+			string? typeName = type.FullName;
+
+			Guard.IsNotNullOrEmpty(typeName);
+
 			int length = typeName.Length + key.Length + 1;
 
 			bool isStack = length <= StackAllocConstants.MaxCharSize;
@@ -91,7 +94,10 @@ public class CacheKeyUtility : ICacheKeyUtility
 			int partsCount = keyPartsLength ?? keyParts.Length;
 
 			// It seems the typeof call is expensive on CLR vs .NET Core
-			string typeName = type.FullName;
+			string? typeName = type.FullName;
+
+			Guard.IsNotNullOrEmpty(typeName);
+
 			int partsLengthTotal = -1;
 
 			for (int i = 0; i < partsCount; i++)

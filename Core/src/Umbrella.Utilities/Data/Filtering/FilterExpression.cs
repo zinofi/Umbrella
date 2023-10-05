@@ -11,7 +11,7 @@ namespace Umbrella.Utilities.Data.Filtering;
 /// </summary>
 /// <typeparam name="TItem">The type of the item.</typeparam>
 [StructLayout(LayoutKind.Auto)]
-public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TItem>>, IDataExpression<TItem>
+public readonly record struct FilterExpression<TItem> : IDataExpression<TItem>
 {
 	private readonly Lazy<Func<TItem, object>>? _lazyFunc;
 	private readonly Lazy<string>? _lazyMemberPath;
@@ -91,28 +91,6 @@ public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TIt
 	public FilterExpressionDescriptor? ToFilterExpressionDescriptor()
 		=> (FilterExpressionDescriptor?)this;
 
-	/// <inheritdoc />
-	public override bool Equals(object obj) => obj is FilterExpression<TItem> expression && Equals(expression);
-
-	/// <inheritdoc />
-	public bool Equals(FilterExpression<TItem> other) => EqualityComparer<Func<TItem, object>?>.Default.Equals(GetDelegate(), other.GetDelegate()) &&
-			   EqualityComparer<Expression<Func<TItem, object>>?>.Default.Equals(Expression, other.Expression) &&
-			   MemberPath == other.MemberPath &&
-			   EqualityComparer<object?>.Default.Equals(Value, other.Value) &&
-			   Type == other.Type;
-
-	/// <inheritdoc />
-	public override int GetHashCode()
-	{
-		int hashCode = -1510804887;
-		hashCode = (hashCode * -1521134295) + EqualityComparer<Func<TItem, object>?>.Default.GetHashCode(GetDelegate());
-		hashCode = (hashCode * -1521134295) + EqualityComparer<Expression<Func<TItem, object>>?>.Default.GetHashCode(Expression);
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string?>.Default.GetHashCode(MemberPath);
-		hashCode = (hashCode * -1521134295) + EqualityComparer<object?>.Default.GetHashCode(Value);
-		hashCode = (hashCode * -1521134295) + Type.GetHashCode();
-		return hashCode;
-	}
-
 	/// <summary>
 	/// Performs an explicit conversion from <see cref="FilterExpression{TItem}"/> to <see cref="FilterExpressionDescriptor"/>.
 	/// </summary>
@@ -124,24 +102,4 @@ public readonly struct FilterExpression<TItem> : IEquatable<FilterExpression<TIt
 		=> filterExpression != default && filterExpression.MemberPath is not null
 			? new FilterExpressionDescriptor(filterExpression.MemberPath, filterExpression.Value!.ToString(), filterExpression.Type, filterExpression.IsPrimary)
 			: null;
-
-	/// <summary>
-	/// Implements the operator ==.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator ==(FilterExpression<TItem> left, FilterExpression<TItem> right) => left.Equals(right);
-
-	/// <summary>
-	/// Implements the operator !=.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator !=(FilterExpression<TItem> left, FilterExpression<TItem> right) => !(left == right);
 }

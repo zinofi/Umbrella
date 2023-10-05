@@ -158,7 +158,11 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 		string sanitizedImageUrl = imageUrl;
 		string? qs = null;
 
+#if NET6_0_OR_GREATER
+		if (imageUrl.Contains('?', StringComparison.Ordinal))
+#else
 		if (imageUrl.Contains('?'))
+#endif
 		{
 			string[] parts = imageUrl.Split('?');
 

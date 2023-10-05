@@ -98,12 +98,17 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 				// First check if we have some content
 				if (response.Content.Headers.ContentLength > 0)
 				{
-					TResult? result = response.Content.Headers.ContentType.MediaType switch
+					TResult? result = response.Content.Headers.ContentType?.MediaType switch
 					{
+#if NET6_0_OR_GREATER
+						"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false),
+						"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)),
+#else
 						"text/plain" when typeof(TResult) == typeof(string) => (TResult)(object)await response.Content.ReadAsStringAsync().ConfigureAwait(false),
 						"application/json" => UmbrellaStatics.DeserializeJson<TResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false)),
+#endif
 						"text/html" => throw new NotSupportedException("HTML responses are not supported and should not be returned by API endpoints. This might indicate an incorrect API url is being used which doesn't exist on the server."),
-						_ => throw new NotImplementedException()
+						_ => throw new NotImplementedException($"Unsupported media type: {response.Content.Headers.ContentType?.MediaType}")
 					};
 
 					return (true, new HttpCallResult<TResult?>(true, result: result));
@@ -164,7 +169,11 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 			}
 
+#if NET6_0_OR_GREATER
+			string json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
 			string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
 
 			return UmbrellaStatics.DeserializeJson<HttpProblemDetails>(json);
 		}

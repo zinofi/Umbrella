@@ -45,7 +45,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 {
 	#region Private Static Members
 	private static readonly MemoryCacheEntryOptions _defaultMemoryCacheEntryOptions = new();
-	private static readonly string _cacheKeyPrefix = typeof(ReadOnlyAppSettingsBase<TAppSettingsSource>).FullName;
+	private static readonly string _cacheKeyPrefix = typeof(ReadOnlyAppSettingsBase<TAppSettingsSource>).FullName ?? "";
 	#endregion
 
 	#region Protected Properties		

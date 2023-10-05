@@ -23,7 +23,11 @@ public static class HttpResponseMessageExtensions
 
 		string? requestUri = responseMessage.RequestMessage?.RequestUri?.ToString();
 
+#if NET6_0_OR_GREATER
+		string? responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
 		string? responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
 
 		_ = logger.Write(logLevel, state: new { requestUri, responseMessage.StatusCode, responseMessage.ReasonPhrase, responseContent });
 	}

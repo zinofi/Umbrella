@@ -24,7 +24,7 @@ public class PhysicalFileChangeToken : IChangeToken
 		bool notifyOnError = true,
 		bool notifyOnDeleted = true,
 		bool notifyOnRenamed = true)
-		: this(fileInfo.DirectoryName, fileInfo.Name, notifyOnChanged, notifyOnError, notifyOnDeleted, notifyOnRenamed)
+		: this(fileInfo.DirectoryName ?? "", fileInfo.Name, notifyOnChanged, notifyOnError, notifyOnDeleted, notifyOnRenamed)
 	{
 	}
 

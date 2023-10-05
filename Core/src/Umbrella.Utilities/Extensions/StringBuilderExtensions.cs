@@ -279,7 +279,11 @@ public static class StringBuilderExtensions
 	{
 		string tabs = _tabDictionary.GetOrAdd(tabCount, x => string.Join("", CreateTabArray(x)));
 
+#if NET6_0_OR_GREATER
+		return builder.AppendLine(CultureInfo.InvariantCulture, $"{tabs}{value}");
+#else
 		return builder.AppendLine($"{tabs}{value}");
+#endif
 	}
 
 	/// <summary>
@@ -336,7 +340,7 @@ public static class StringBuilderExtensions
 
 		return builder;
 	}
-	#endregion
+#endregion
 
 	#region Private Methods
 	private static IEnumerable<char> CreateTabArray(int length)

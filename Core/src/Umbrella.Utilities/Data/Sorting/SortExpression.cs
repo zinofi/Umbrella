@@ -14,7 +14,7 @@ namespace Umbrella.Utilities.Data.Sorting;
 /// </summary>
 /// <typeparam name="TItem">The type of the item being sorted.</typeparam>
 [StructLayout(LayoutKind.Auto)]
-public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>, IDataExpression<TItem>
+public readonly record struct SortExpression<TItem> : IDataExpression<TItem>
 {
 	private readonly Lazy<Func<TItem, object>>? _lazyFunc;
 	private readonly Lazy<string>? _lazyMemberPath;
@@ -76,24 +76,6 @@ public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>
 	public SortExpressionDescriptor? ToSortExpressionDescriptor()
 		=> (SortExpressionDescriptor?)this;
 
-	/// <inheritdoc />
-	public override bool Equals(object obj) => obj is SortExpression<TItem> expression && Equals(expression);
-
-	/// <inheritdoc />
-	public bool Equals(SortExpression<TItem> other) => Direction == other.Direction &&
-			   EqualityComparer<Expression<Func<TItem, object>>?>.Default.Equals(Expression, other.Expression) &&
-			   MemberPath == other.MemberPath;
-
-	/// <inheritdoc />
-	public override int GetHashCode()
-	{
-		int hashCode = -155208075;
-		hashCode = (hashCode * -1521134295) + Direction.GetHashCode();
-		hashCode = (hashCode * -1521134295) + EqualityComparer<Expression<Func<TItem, object>>?>.Default.GetHashCode(Expression);
-		hashCode = (hashCode * -1521134295) + EqualityComparer<string?>.Default.GetHashCode(MemberPath);
-		return hashCode;
-	}
-
 	/// <summary>
 	/// Performs an explicit conversion from <see cref="SortExpression{TItem}"/> to <see cref="SortExpressionDescriptor"/>.
 	/// </summary>
@@ -105,24 +87,4 @@ public readonly struct SortExpression<TItem> : IEquatable<SortExpression<TItem>>
 		=> sortExpression != default && sortExpression.MemberPath is not null
 			? new SortExpressionDescriptor(sortExpression.MemberPath, sortExpression.Direction)
 			: null;
-
-	/// <summary>
-	/// Implements the operator ==.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator ==(SortExpression<TItem> left, SortExpression<TItem> right) => left.Equals(right);
-
-	/// <summary>
-	/// Implements the operator !=.
-	/// </summary>
-	/// <param name="left">The left.</param>
-	/// <param name="right">The right.</param>
-	/// <returns>
-	/// The result of the operator.
-	/// </returns>
-	public static bool operator !=(SortExpression<TItem> left, SortExpression<TItem> right) => !(left == right);
 }

@@ -54,7 +54,7 @@ public abstract class AppSettingsBase : ReadOnlyAppSettingsBase<IAppSettingsSour
 
 				if (type.IsPrimitive || type.IsEnum || type == typeof(string))
 				{
-					valueToStore = value.ToString().Trim();
+					valueToStore = value.ToString()?.Trim();
 
 					if (string.IsNullOrEmpty(valueToStore))
 						valueToStore = null;

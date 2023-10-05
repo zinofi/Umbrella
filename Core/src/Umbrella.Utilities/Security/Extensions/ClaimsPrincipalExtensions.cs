@@ -98,10 +98,10 @@ public static class ClaimsPrincipalExtensions
 	/// <returns>The identifier</returns>
 	public static TUserId GetId<TUserId>(this ClaimsPrincipal principal, string nameIdentifierClaimType = ClaimTypes.NameIdentifier)
 	{
-		if (!principal.Identity.IsAuthenticated)
+		if (principal.Identity?.IsAuthenticated is not true)
 			return default!;
 
-		Claim idClaim = principal.FindFirst(nameIdentifierClaimType);
+		Claim? idClaim = principal.FindFirst(nameIdentifierClaimType);
 
 		if (idClaim is null)
 			throw new UmbrellaException("The NameIdentifier claim could not be found. This should not be possible.");

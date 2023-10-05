@@ -56,7 +56,7 @@ public class GenericComparer<TObject, TProperty> : Comparer<TObject>
 	}
 
 	/// <inheritdoc />
-	public override int Compare(TObject x, TObject y)
+	public override int Compare(TObject? x, TObject? y)
 	{
 		// Check the objects for null combinations first.
 		if (x is null && y is null)

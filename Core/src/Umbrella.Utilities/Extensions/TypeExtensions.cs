@@ -92,7 +92,7 @@ public static class TypeExtensions
 		if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
 			return true;
 
-		Type baseType = givenType.BaseType;
+		Type? baseType = givenType.BaseType;
 
 		return baseType is not null && IsAssignableToGenericType(baseType, genericType);
 	}
@@ -117,7 +117,7 @@ public static class TypeExtensions
 				return (true, it.GetGenericArguments()[0]);
 		}
 
-		Type baseType = givenType.BaseType;
+		Type? baseType = givenType.BaseType;
 
 		return baseType is null ? ((bool isEnumerable, Type? elementType))(false, null) : baseType.GetIEnumerableTypeData();
 	}
@@ -127,5 +127,5 @@ public static class TypeExtensions
 	/// </summary>
 	/// <param name="type">The type.</param>
 	/// <returns>The original type, if it has been dynamically proxied, otherwise the same type instance passed into the method.</returns>
-	public static Type GetOriginalType(this Type type) => type.Name.EndsWith("_DynamicProxy", StringComparison.Ordinal) ? type.BaseType : type;
+	public static Type? GetOriginalType(this Type type) => type.Name?.EndsWith("_DynamicProxy", StringComparison.Ordinal) is true ? type.BaseType : type;
 }
