@@ -1,0 +1,30 @@
+/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-checkbox-group-margin
+	--u-checkbox-group-items-gap
+*/
+
+.u-checkbox-group
+{
+	$margin: 8px 0;
+	$items-gap: 8px;
+
+	margin: var(--u-checkbox-group-margin, $margin);
+
+	&__items
+	{
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--u-checkbox-group-items-gap, $items-gap);
+		margin: 0;
+		padding: 0;
+	}
+
+	&__item
+	{
+		margin: 0;
+		padding: 0;
+	}
+}

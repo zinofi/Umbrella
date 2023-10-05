@@ -1,34 +1,42 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Web.Http.ModelBinding;
 
-namespace Umbrella.Legacy.WebUtilities.WebApi.Extensions
+namespace Umbrella.Legacy.WebUtilities.WebApi.Extensions;
+
+/// <summary>
+/// Extension methods that operation on enumerable collections of <see cref="ValidationResult"/>.
+/// </summary>
+public static class IEnumerableValidationResultExtensions
 {
-	public static class IEnumerableValidationResultExtensions
+	/// <summary>
+	/// Converts an enumerable collection of <see cref="ValidationResult"/> to a <see cref="ModelStateDictionary"/>.
+	/// </summary>
+	/// <param name="validationResults">The validation results.</param>
+	/// <returns></returns>
+	public static ModelStateDictionary ToModelStateDictionary(this IEnumerable<ValidationResult> validationResults)
 	{
-		public static ModelStateDictionary ToModelStateDictionary(this IEnumerable<ValidationResult> validationResults)
+		var dictionary = new ModelStateDictionary();
+
+		foreach (var item in validationResults)
 		{
-			var dictionary = new ModelStateDictionary();
+			var memberNames = item.MemberNames?.ToList();
 
-			foreach (var item in validationResults)
+			if (memberNames?.Count > 0)
 			{
-				var memberNames = item.MemberNames?.ToList();
-
-				if (memberNames?.Count > 0)
+				foreach (string key in memberNames)
 				{
-					foreach (string key in memberNames)
-					{
-						dictionary.AddModelError(key, item.ErrorMessage);
-					}
-				}
-				else
-				{
-					dictionary.AddModelError(string.Empty, item.ErrorMessage);
+					dictionary.AddModelError(key, item.ErrorMessage);
 				}
 			}
-
-			return dictionary;
+			else
+			{
+				dictionary.AddModelError(string.Empty, item.ErrorMessage);
+			}
 		}
+
+		return dictionary;
 	}
 }

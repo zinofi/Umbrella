@@ -6,10 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.filenesting.json = .filenesting.json
 		.gitignore = .gitignore
 		commands.json = commands.json
 		Directory.Build.props = Directory.Build.props
-		global.json = global.json
 		icon.png = icon.png
 		NuGet.Config = NuGet.Config
 		PackLocal.cmd = PackLocal.cmd
@@ -48,10 +48,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.EF6", "DataAccess\src\Umbrella.DataAccess.EF6\Umbrella.DataAccess.EF6.csproj", "{F0868FBD-BC81-431F-9A45-8E10BBC08E7A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities", "AspNetCore\src\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj", "{F07EDE25-B6E9-4D2D-903A-C36E850C0C94}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net.Azure", "Logging\src\Umbrella.Extensions.Logging.Log4Net.Azure\Umbrella.Extensions.Logging.Log4Net.Azure.csproj", "{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DataAccess.Mapping", "DataAccess\src\Umbrella.DataAccess.Mapping\Umbrella.DataAccess.Mapping.csproj", "{90EC7DCA-8B0F-4833-A60C-223EC3138E36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.DataAnnotations", "AspNetCore\src\Umbrella.AspNetCore.DataAnnotations\Umbrella.AspNetCore.DataAnnotations.csproj", "{FE1010FA-192E-4C9E-B1A5-89073631DDC2}"
 EndProject
@@ -139,8 +135,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.SkiaS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.DynamicImage.FreeImage", "DynamicImage\src\Umbrella.DynamicImage.FreeImage\Umbrella.DynamicImage.FreeImage.csproj", "{5AC3FA02-4826-470D-84D4-BC4D681B804C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Log4Net.Azure.Test", "Logging\test\Umbrella.Extensions.Logging.Log4Net.Azure.Test\Umbrella.Extensions.Logging.Log4Net.Azure.Test.csproj", "{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{1A673C30-B606-479B-A067-111CCAEFEF2F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}"
@@ -150,8 +144,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{97D84008-D9A9-4A0C-B51C-144F3ABEEF11}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.WebUtilities.DynamicImage.Test", "AspNetCore\test\Umbrella.AspNetCore.WebUtilities.DynamicImage.Test\Umbrella.AspNetCore.WebUtilities.DynamicImage.Test.csproj", "{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging.Azure", "Logging\src\Umbrella.Extensions.Logging.Azure\Umbrella.Extensions.Logging.Azure.csproj", "{37FF704B-43D7-4B73-9CD2-736E1DDBD082}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Benchmark", "Core\benchmark\Umbrella.Utilities.Benchmark\Umbrella.Utilities.Benchmark.csproj", "{C55A126A-6326-4487-A4ED-53985786943D}"
 EndProject
@@ -201,7 +193,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Extensions.Logging
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AppFramework.Shared", "Core\src\Umbrella.AppFramework.Shared\Umbrella.AppFramework.Shared.csproj", "{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Mapping.AutoMapper", "Core\src\Umbrella.Utilities.Mapping.AutoMapper\Umbrella.Utilities.Mapping.AutoMapper.csproj", "{70B54969-F308-4485-9AE3-748BF783A7DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Mapping.AutoMapper", "Core\src\Umbrella.Utilities.Mapping.AutoMapper\Umbrella.Utilities.Mapping.AutoMapper.csproj", "{70B54969-F308-4485-9AE3-748BF783A7DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Mapping.Mapperly", "Core\src\Umbrella.Utilities.Mapping.Mapperly\Umbrella.Utilities.Mapping.Mapperly.csproj", "{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -294,18 +288,6 @@ Global
 		{F07EDE25-B6E9-4D2D-903A-C36E850C0C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F07EDE25-B6E9-4D2D-903A-C36E850C0C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F07EDE25-B6E9-4D2D-903A-C36E850C0C94}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE1010FA-192E-4C9E-B1A5-89073631DDC2}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
 		{FE1010FA-192E-4C9E-B1A5-89073631DDC2}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
 		{FE1010FA-192E-4C9E-B1A5-89073631DDC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -414,24 +396,12 @@ Global
 		{5AC3FA02-4826-470D-84D4-BC4D681B804C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AC3FA02-4826-470D-84D4-BC4D681B804C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AC3FA02-4826-470D-84D4-BC4D681B804C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C55A126A-6326-4487-A4ED-53985786943D}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
 		{C55A126A-6326-4487-A4ED-53985786943D}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
 		{C55A126A-6326-4487-A4ED-53985786943D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -564,6 +534,12 @@ Global
 		{70B54969-F308-4485-9AE3-748BF783A7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70B54969-F308-4485-9AE3-748BF783A7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70B54969-F308-4485-9AE3-748BF783A7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -583,8 +559,6 @@ Global
 		{B630BB27-C12D-4DF5-B4CA-B8E3DFF31224} = {B1144C83-C2B3-40FB-8F68-22A3228E7725}
 		{F0868FBD-BC81-431F-9A45-8E10BBC08E7A} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
 		{F07EDE25-B6E9-4D2D-903A-C36E850C0C94} = {A592A2ED-763F-4172-95DB-316662A0A42E}
-		{5B1F4B31-7E84-4FB1-9CBE-B4DBFE8318CD} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
-		{90EC7DCA-8B0F-4833-A60C-223EC3138E36} = {A2F5D3BD-EF91-4288-A6EB-59F2B758E27D}
 		{FE1010FA-192E-4C9E-B1A5-89073631DDC2} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 		{55BED670-A11E-4516-BC33-52855F022D30} = {DD608A44-2EC2-4F08-8BE0-E182F55EEC09}
 		{8DE8C471-2ED0-4B28-94D0-742BF89D543F} = {DD608A44-2EC2-4F08-8BE0-E182F55EEC09}
@@ -624,12 +598,10 @@ Global
 		{FC43C9FD-4517-4D08-95DA-E3E516A807BD} = {13C6F057-3FA8-4E45-BB6D-09E958B0A4C2}
 		{61C816A8-2919-47D8-8D07-7B6F8CC1483D} = {495839BF-FFB6-4499-A175-05B00E9AEBE8}
 		{5AC3FA02-4826-470D-84D4-BC4D681B804C} = {495839BF-FFB6-4499-A175-05B00E9AEBE8}
-		{B9A27B72-7849-4BF8-BDD5-A4C0C25F30D6} = {97D84008-D9A9-4A0C-B51C-144F3ABEEF11}
 		{7B35E0EB-A59C-4EDC-B255-E2B469A4DB20} = {1A673C30-B606-479B-A067-111CCAEFEF2F}
 		{6669CFBF-6FC2-4BFE-A712-A96A403D0D54} = {1A673C30-B606-479B-A067-111CCAEFEF2F}
 		{97D84008-D9A9-4A0C-B51C-144F3ABEEF11} = {1A673C30-B606-479B-A067-111CCAEFEF2F}
 		{D3C8B80C-F585-4BD9-A02C-2C403C4E659F} = {1695D124-726F-446B-988E-61B9B440D345}
-		{37FF704B-43D7-4B73-9CD2-736E1DDBD082} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 		{C55A126A-6326-4487-A4ED-53985786943D} = {B35C85E1-B2C5-4F0B-9975-6E86DF7F5BE9}
 		{EB7B2014-DB57-4460-BDBF-A055A2F81D9F} = {D8B05C3A-5AAC-41F7-99C8-3279378B68AB}
 		{BE5E8DB0-788E-42FA-99DF-862D8638E4C1} = {B1144C83-C2B3-40FB-8F68-22A3228E7725}
@@ -653,6 +625,7 @@ Global
 		{73FBC60F-3587-4A33-A2EE-CBA71D2F0C91} = {7B35E0EB-A59C-4EDC-B255-E2B469A4DB20}
 		{A5FC3F8D-68D4-4A76-AA15-36C3CA96B36D} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{70B54969-F308-4485-9AE3-748BF783A7DD} = {84D45264-D944-4A17-A230-AAEECE889301}
+		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92} = {84D45264-D944-4A17-A230-AAEECE889301}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

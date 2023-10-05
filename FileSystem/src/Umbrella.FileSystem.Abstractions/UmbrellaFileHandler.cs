@@ -1,182 +1,292 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Caching.Abstractions;
+using Umbrella.Utilities.Context.Abstractions;
+using Umbrella.Utilities.Security.Extensions;
 
-namespace Umbrella.FileSystem.Abstractions
+namespace Umbrella.FileSystem.Abstractions;
+
+/// <summary>
+/// Serves as the base class for file handlers.
+/// </summary>
+/// <typeparam name="TGroupId">The type of the group id.</typeparam>
+public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGroupId>
+	where TGroupId : IEquatable<TGroupId>
 {
 	/// <summary>
-	/// Serves as the base class for file handlers.
+	/// Gets the logger.
 	/// </summary>
-	/// <typeparam name="TGroupId">The type of the group id.</typeparam>
-	/// <typeparam name="TFileAccessUtility">The type of the file access utility.</typeparam>
-	/// <typeparam name="TDirectoryType">The type of the directory.</typeparam>
-	public abstract class UmbrellaFileHandler<TGroupId, TFileAccessUtility, TDirectoryType> : IUmbrellaFileHandler<TGroupId>
-		where TFileAccessUtility : IUmbrellaFileAccessUtility<TDirectoryType, TGroupId>
-		where TDirectoryType : struct, Enum
+	protected ILogger Logger { get; }
+
+	/// <summary>
+	/// Gets the cache.
+	/// </summary>
+	protected IHybridCache Cache { get; }
+
+	/// <summary>
+	/// Gets the cache key utility.
+	/// </summary>
+	protected ICacheKeyUtility CacheKeyUtility { get; }
+
+	/// <summary>
+	/// Gets the current user claims principal accessor.
+	/// </summary>
+	public ICurrentUserClaimsPrincipalAccessor CurrentUserClaimsPrincipalAccessor { get; }
+
+	/// <summary>
+	/// Gets the file provider.
+	/// </summary>
+	protected IUmbrellaFileStorageProvider FileProvider { get; }
+
+	/// <summary>
+	/// Gets the options.
+	/// </summary>
+	public IUmbrellaFileStorageProviderOptions Options { get; }
+
+	/// <inheritdoc/>
+	public abstract string DirectoryName { get; }
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaFileHandler{TGroupId}"/> class.
+	/// </summary>
+	/// <param name="logger">The logger.</param>
+	/// <param name="cache">The cache.</param>
+	/// <param name="cacheKeyUtility">The cache key utility.</param>
+	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
+	/// <param name="fileProvider">The file provider.</param>
+	/// <param name="options">The options.</param>
+	public UmbrellaFileHandler(
+		ILogger logger,
+		IHybridCache cache,
+		ICacheKeyUtility cacheKeyUtility,
+		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
+		IUmbrellaFileStorageProvider fileProvider,
+		IUmbrellaFileStorageProviderOptions options)
 	{
-		protected ILogger Logger { get; }
-		protected IHybridCache Cache { get; }
-		protected ICacheKeyUtility CacheKeyUtility { get; }
-		protected IUmbrellaFileProvider FileProvider { get; }
-		protected TFileAccessUtility FileAccessUtility { get; }
-		protected abstract TDirectoryType DirectoryType { get; }
+		Logger = logger;
+		Cache = cache;
+		CacheKeyUtility = cacheKeyUtility;
+		CurrentUserClaimsPrincipalAccessor = currentUserClaimsPrincipalAccessor;
+		FileProvider = fileProvider;
+		Options = options;
+	}
 
-		public UmbrellaFileHandler(
-			ILogger logger,
-			IHybridCache cache,
-			ICacheKeyUtility cacheKeyUtility,
-			IUmbrellaFileProvider fileProvider,
-			TFileAccessUtility fileAccessUtility)
+	/// <inheritdoc />
+	public async Task<string?> GetMostRecentUrlByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
 		{
-			Logger = logger;
-			Cache = cache;
-			CacheKeyUtility = cacheKeyUtility;
-			FileProvider = fileProvider;
-			FileAccessUtility = fileAccessUtility;
+			string key = CacheKeyUtility.Create(GetType(), groupId + "");
+
+			return await Cache.GetOrCreateAsync(key, async () =>
+			{
+				IUmbrellaFileInfo? fileInfo = await GetMostRecentExistingFileByGroupIdAsync(groupId, cancellationToken).ConfigureAwait(false);
+
+				return fileInfo is null ? null : GetWebFilePath(fileInfo.Name, groupId);
+			},
+			() => TimeSpan.FromHours(1),
+			cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
-
-		/// <inheritdoc />
-		public async Task<string?> GetMostRecentUrlByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken = default)
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
 		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				string key = CacheKeyUtility.Create(GetType(), groupId + "");
-
-				return await Cache.GetOrCreateAsync(key, async () =>
-				{
-					IUmbrellaFileInfo? fileInfo = await GetMostRecentExistingFileByGroupIdAsync(groupId, cancellationToken);
-
-					return fileInfo is null ? null : FileAccessUtility.GetWebFilePath(DirectoryType, groupId, fileInfo.Name);
-				},
-				cancellationToken,
-				() => TimeSpan.FromHours(1));
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { groupId }, returnValue: true))
-			{
-				throw new UmbrellaFileSystemException("There has been a problem getting the most recent URL.", exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public async Task<string?> GetUrlByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNullOrWhiteSpace(providerFileName, nameof(providerFileName));
-
-			try
-			{
-				string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
-
-				return await Cache.GetOrCreateAsync(key, async () =>
-				{
-					string filePath = FileAccessUtility.GetFilePath(DirectoryType, groupId, providerFileName);
-
-					IUmbrellaFileInfo? fileInfo = await FileProvider.GetAsync(filePath, cancellationToken);
-
-					return fileInfo is null ? null : FileAccessUtility.GetWebFilePath(DirectoryType, groupId, fileInfo.Name);
-				},
-				cancellationToken,
-				() => TimeSpan.FromHours(1));
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }, returnValue: true))
-			{
-				throw new UmbrellaFileSystemException("There has been a problem getting specified file.", exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public async Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNullOrWhiteSpace(tempFileName, nameof(tempFileName));
-
-			try
-			{
-				// Move the file from the temp folder to the live folder
-				string permPath = FileAccessUtility.GetFilePath(DirectoryType, groupId, tempFileName);
-				string tempPath = FileAccessUtility.GetTempFilePath(tempFileName);
-
-				IUmbrellaFileInfo? tempFileInfo = await FileProvider.GetAsync(tempPath, cancellationToken);
-
-				if (tempFileInfo is null)
-				{
-					// It might be the case that the temp file was already moved. Check for it at the permanent path.
-					bool exists = await FileProvider.ExistsAsync(permPath, cancellationToken);
-
-					if (exists)
-						return FileAccessUtility.GetWebFilePath(DirectoryType, groupId, tempFileName);
-				}
-
-				IUmbrellaFileInfo fileInfo = await FileProvider.MoveAsync(tempPath, permPath, cancellationToken);
-
-				await FileAccessUtility.ApplyPermissionsAsync(fileInfo, groupId, cancellationToken);
-
-				return FileAccessUtility.GetWebFilePath(DirectoryType, groupId, tempFileName);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { groupId, tempFileName }, returnValue: true))
-			{
-				throw new UmbrellaFileSystemException("There has been a problem creating the item.", exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public async Task DeleteByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNullOrWhiteSpace(providerFileName, nameof(providerFileName));
-
-			try
-			{
-				string permPath = FileAccessUtility.GetFilePath(DirectoryType, groupId, providerFileName);
-				await FileProvider.DeleteAsync(permPath, cancellationToken);
-
-				string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
-				await Cache.RemoveAsync<string>(key, cancellationToken);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }, returnValue: true))
-			{
-				throw new UmbrellaFileSystemException("There has been a problem deleting the item.", exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public async Task DeleteAllByGroupId(TGroupId groupId, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			try
-			{
-				string directoryName = FileAccessUtility.GetDirectoryName(DirectoryType, groupId);
-				await FileProvider.DeleteDirectoryAsync(directoryName, cancellationToken);
-
-				// Remove from the cache
-				string key = CacheKeyUtility.Create(GetType(), groupId + "");
-				await Cache.RemoveAsync<string>(key, cancellationToken);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { groupId }, returnValue: true))
-			{
-				throw new UmbrellaFileSystemException("There has been a problem deleting the files for the specified group.", exc);
-			}
-		}
-
-		private async Task<IUmbrellaFileInfo?> GetMostRecentExistingFileByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			string directoryName = FileAccessUtility.GetDirectoryName(DirectoryType, groupId);
-			IReadOnlyCollection<IUmbrellaFileInfo> lstFile = await FileProvider.EnumerateDirectoryAsync(directoryName, cancellationToken);
-
-			return lstFile.OrderByDescending(x => x.LastModified).FirstOrDefault();
+			throw new UmbrellaFileSystemException("There has been a problem getting the most recent URL.", exc);
 		}
 	}
+
+	/// <inheritdoc />
+	public async Task<string?> GetUrlByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(providerFileName);
+
+		try
+		{
+			string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
+
+			return await Cache.GetOrCreateAsync(key, async () =>
+			{
+				string filePath = GetFilePath(providerFileName, groupId);
+
+				IUmbrellaFileInfo? fileInfo = await FileProvider.GetAsync(filePath, cancellationToken).ConfigureAwait(false);
+
+				return fileInfo is null ? null : GetWebFilePath(fileInfo.Name, groupId);
+			},
+			() => TimeSpan.FromHours(1),
+			cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem getting specified file.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<string> CreateByGroupIdAndTempFileNameAsync(TGroupId groupId, string tempFileName, string? newFileName = null, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(tempFileName);
+
+		try
+		{
+			string permFileName = !string.IsNullOrEmpty(newFileName) ? newFileName! : tempFileName;
+
+			// Move the file from the temp folder to the live folder
+			string permPath = GetFilePath(permFileName, groupId);
+			string tempPath = GetTempFilePath(tempFileName);
+
+			IUmbrellaFileInfo? tempFileInfo = await FileProvider.GetAsync(tempPath, cancellationToken).ConfigureAwait(false);
+
+			if (tempFileInfo is null)
+			{
+				// It might be the case that the temp file was already moved. Check for it at the permanent path.
+				bool exists = await FileProvider.ExistsAsync(permPath, cancellationToken).ConfigureAwait(false);
+
+				if (exists)
+					return GetWebFilePath(permFileName, groupId);
+			}
+
+			IUmbrellaFileInfo fileInfo = await FileProvider.MoveAsync(tempPath, permPath, cancellationToken).ConfigureAwait(false);
+
+			await ApplyPermissionsAsync(fileInfo, groupId, true, cancellationToken).ConfigureAwait(false);
+
+			return GetWebFilePath(permFileName, groupId);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, tempFileName, newFileName }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem creating the item.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task DeleteByGroupIdAndProviderFileNameAsync(TGroupId groupId, string providerFileName, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(providerFileName);
+
+		try
+		{
+			string permPath = GetFilePath(providerFileName, groupId);
+			_ = await FileProvider.DeleteAsync(permPath, cancellationToken).ConfigureAwait(false);
+
+			string key = CacheKeyUtility.Create(GetType(), $"{groupId}:{providerFileName}");
+			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, providerFileName }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem deleting the item.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task DeleteAllByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			string directoryName = GetDirectoryName(groupId);
+			await FileProvider.DeleteDirectoryAsync(directoryName, cancellationToken).ConfigureAwait(false);
+
+			// Remove from the cache
+			string key = CacheKeyUtility.Create(GetType(), groupId + "");
+			await Cache.RemoveAsync<string>(key, cancellationToken: cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem deleting the files for the specified group.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public abstract Task<bool> CanAccessAsync(IUmbrellaFileInfo fileInfo, CancellationToken cancellationToken = default);
+
+	/// <inheritdoc />
+	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, bool writeChanges = true, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			if (CurrentUserClaimsPrincipalAccessor.CurrentPrincipal is not null)
+				await fileInfo.SetCreatedByIdAsync(CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>(), false, cancellationToken).ConfigureAwait(false);
+
+			if (writeChanges)
+				await fileInfo.WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { fileInfo.SubPath, groupId, writeChanges }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem applying the required file permissions.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			string subPath = GetFilePath(fileName, groupId);
+			
+			return await FileProvider.SaveAsync(subPath, bytes, cacheContents, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName, cacheContents, bufferSizeOverride }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem saving the file.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<IUmbrellaFileInfo?> GetAsync(TGroupId groupId, string fileName, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			string subPath = GetFilePath(fileName, groupId);
+
+			return await FileProvider.GetAsync(subPath, cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName }))
+		{
+			throw new UmbrellaFileSystemException("There has been a problem saving the file.", exc);
+		}
+	}
+
+	private async Task<IUmbrellaFileInfo?> GetMostRecentExistingFileByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		string directoryName = GetDirectoryName(groupId);
+		IReadOnlyCollection<IUmbrellaFileInfo> lstFile = await FileProvider.EnumerateDirectoryAsync(directoryName, cancellationToken).ConfigureAwait(false);
+
+		return lstFile.OrderByDescending(x => x.LastModified).FirstOrDefault();
+	}
+
+	/// <inheritdoc/>
+	public string GetTempDirectoryName() => $"/{Options.TempFilesDirectoryName}";
+
+	/// <inheritdoc/>
+	public string GetTempFilePath(string fileName) => $"{GetTempDirectoryName()}/{fileName}";
+
+	/// <inheritdoc/>
+	public string GetTempWebFilePath(string fileName) => $"/{Options.WebFilesDirectoryName}{GetTempFilePath(fileName)}".ToLowerInvariant();
+
+	/// <inheritdoc/>
+	public bool IsTempFilePath(string filePath) => filePath.StartsWith(GetTempDirectoryName() + "/", StringComparison.OrdinalIgnoreCase);
+
+	/// <inheritdoc/>
+	public string GetDirectoryName(TGroupId groupId) => $"/{DirectoryName}/{groupId}";
+
+	/// <inheritdoc/>
+	public string GetFilePath(string fileName, TGroupId groupId) => $"{GetDirectoryName(groupId)}/{fileName}";
+
+	/// <inheritdoc/>
+	public string GetWebFilePath(string fileName, TGroupId groupId) => $"/{Options.WebFilesDirectoryName}{GetFilePath(fileName, groupId)}".ToLowerInvariant();
 }

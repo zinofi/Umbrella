@@ -1,82 +1,93 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
 using Umbrella.FileSystem.Abstractions;
-using Umbrella.Utilities;
 
-namespace Umbrella.DynamicImage.Abstractions
+namespace Umbrella.DynamicImage.Abstractions;
+
+/// <summary>
+/// Represents a DynamicImage.
+/// </summary>
+public class DynamicImageItem
 {
+	private DateTimeOffset? _lastModified;
+
 	/// <summary>
-	/// Represents a DynamicImage.
+	/// Gets or sets the last modified date
 	/// </summary>
-	public class DynamicImageItem
+	public DateTimeOffset? LastModified
 	{
-		private DateTimeOffset? _lastModified;
+		get => UmbrellaFileInfo is not null ? UmbrellaFileInfo.LastModified : _lastModified;
+		set => _lastModified = value;
+	}
 
-		/// <summary>
-		/// Gets or sets the last modified date
-		/// </summary>
-		public DateTimeOffset? LastModified
+	/// <summary>
+	/// Gets the length of the image.
+	/// </summary>
+	public long Length => UmbrellaFileInfo?.Length ?? Content?.Length ?? -1;
+
+	/// <summary>
+	/// Gets or sets the image options.
+	/// </summary>
+	public DynamicImageOptions ImageOptions { get; set; }
+
+	/// <summary>
+	/// Gets or sets the content.
+	/// </summary>
+	public byte[]? Content { private get; set; }
+
+	// TODO: Need to be able to set these and retain their values using metadata.
+	///// <summary>
+	///// Gets or sets the width.
+	///// </summary>
+	//public int Width { get; set; }
+
+	///// <summary>
+	///// Gets or sets the height.
+	///// </summary>
+	//public int Height { get; set; }
+
+	/// <summary>
+	/// Gets or sets the <see cref="IUmbrellaFileInfo"/> instance.
+	/// </summary>
+	public IUmbrellaFileInfo? UmbrellaFileInfo { get; set; }
+
+	/// <summary>
+	/// Gets the content of the image file.
+	/// </summary>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The image file content.</returns>
+	public async Task<byte[]?> GetContentAsync(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		if (Content is null && UmbrellaFileInfo is not null)
+			Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+		
+		return Content;
+	}
+
+	/// <summary>
+	/// Writes the content of the image file to the target stream.
+	/// </summary>
+	/// <param name="target">The target.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An awaitable <see cref="Task"/>.</returns>
+	/// <remarks>This is just a convenience wrapper around the <see cref="IUmbrellaFileInfo.WriteToStreamAsync(Stream, int?, CancellationToken)"/> method.</remarks>
+	public async Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(target);
+
+		if (Content is null && UmbrellaFileInfo is not null)
 		{
-			get => UmbrellaFileInfo != null ? UmbrellaFileInfo.LastModified : _lastModified;
-			set => _lastModified = value;
+			await UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken: cancellationToken).ConfigureAwait(false);
+
+			return;
 		}
 
-		/// <summary>
-		/// Gets the length of the image.
-		/// </summary>
-		public long Length => UmbrellaFileInfo?.Length ?? Content?.Length ?? -1;
-
-		/// <summary>
-		/// Gets or sets the image options.
-		/// </summary>
-		public DynamicImageOptions ImageOptions { get; set; }
-
-		/// <summary>
-		/// Gets or sets the content.
-		/// </summary>
-		public byte[]? Content { private get; set; }
-
-		/// <summary>
-		/// Gets or sets the <see cref="IUmbrellaFileInfo"/> instance.
-		/// </summary>
-		public IUmbrellaFileInfo? UmbrellaFileInfo { get; set; }
-
-		/// <summary>
-		/// Gets the content of the image file.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>The image file content.</returns>
-		public async Task<byte[]?> GetContentAsync(CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-
-			if (Content is null && UmbrellaFileInfo != null)
-				Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken);
-
-			return Content;
-		}
-
-		/// <summary>
-		/// Writes the content of the image file to the target stream.
-		/// </summary>
-		/// <param name="target">The target.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns>An awaitable <see cref="Task"/>.</returns>
-		/// <remarks>This is just a convenience wrapper around the <see cref="IUmbrellaFileInfo.WriteToStreamAsync(Stream, CancellationToken, int?)"/> method.</remarks>
-		public Task WriteContentToStreamAsync(Stream target, CancellationToken cancellationToken = default)
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-			Guard.ArgumentNotNull(target, nameof(target));
-
-			if (Content is null && UmbrellaFileInfo != null)
-				return UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken);
-
-			if(Content != null)
-				return target.WriteAsync(Content, 0, Content.Length);
-
-			return Task.CompletedTask;
-		}
+		if (Content is not null)
+			await target.WriteAsync(Content, 0, Content.Length, cancellationToken).ConfigureAwait(false);
 	}
 }

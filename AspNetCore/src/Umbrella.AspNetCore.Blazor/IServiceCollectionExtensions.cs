@@ -1,45 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Blazored.LocalStorage;
-using Blazored.Modal;
-using Blazored.SessionStorage;
-using Tewr.Blazor.FileReader;
-using Umbrella.AppFramework.Security;
-using Umbrella.AppFramework.Security.Abstractions;
-using Umbrella.AppFramework.Utilities;
-using Umbrella.AppFramework.Utilities.Abstractions;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Components.Authorization;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
-using Umbrella.AspNetCore.Blazor.Utilities;
-using Umbrella.AspNetCore.Blazor.Utilities.Abstractions;
-using Umbrella.Utilities;
+using Umbrella.AspNetCore.Blazor.Components.Grid.Options;
+using Umbrella.AspNetCore.Blazor.Security;
+using Umbrella.AspNetCore.Blazor.Security.Abstractions;
+using Umbrella.AspNetCore.Blazor.Security.Options;
+using Umbrella.AspNetCore.Blazor.Services;
+using Umbrella.AspNetCore.Blazor.Services.Abstractions;
+using Umbrella.AspNetCore.Blazor.Services.Grid;
+using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 
-namespace Microsoft.Extensions.DependencyInjection
+#pragma warning disable IDE0130
+namespace Microsoft.Extensions.DependencyInjection;
+
+/// <summary>
+/// Extension methods used to register services for the <see cref="Umbrella.AspNetCore.Blazor"/> package with a specified
+/// <see cref="IServiceCollection"/> dependency injection container builder.
+/// </summary>
+public static class IServiceCollectionExtensions
 {
 	/// <summary>
-	/// Extension methods used to register services for the <see cref="Umbrella.AspNetCore.Blazor"/> package with a specified
-	/// <see cref="IServiceCollection"/> dependency injection container builder.
+	/// Adds the <see cref="Umbrella.AspNetCore.Blazor"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
-	public static class IServiceCollectionExtensions
-    {
-		/// <summary>
-		/// Adds the <see cref="Umbrella.AspNetCore.Blazor"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
-		/// </summary>
-		/// <returns>The services builder.</returns>
-		public static IServiceCollection AddUmbrellaBlazor(this IServiceCollection services)
-		{
-			Guard.ArgumentNotNull(services, nameof(services));
+	/// <returns>The services builder.</returns>
+	public static IServiceCollection AddUmbrellaBlazor(
+		this IServiceCollection services,
+		Action<IServiceProvider, ClaimsPrincipalAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null,
+		Action<IServiceProvider, UmbrellaGridOptions>? umbrellaGridOptionsBuilder = null)
+	{
+		Guard.IsNotNull(services, nameof(services));
 
-			services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
-			services.AddScoped<IUmbrellaDialogUtility, UmbrellaDialogUtility>();
-			services.AddScoped<IUriNavigator, UriNavigator>();
-			services.AddTransient<IDialogUtility>(x => x.GetService<IUmbrellaDialogUtility>());
-			services.AddSingleton<IUmbrellaBlazorInteropUtility, UmbrellaBlazorInteropUtility>();
+		_ = services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
+		_ = services.AddScoped<IAppSessionStorageService, BlazorSessionStorageService>();
+		_ = services.AddScoped<IUmbrellaDialogService, UmbrellaDialogService>();
+		_ = services.AddScoped<IUriNavigatorService, UriNavigatorService>();
+		_ = services.AddTransient<IDialogService>(x => x.GetRequiredService<IUmbrellaDialogService>());
+		_ = services.AddSingleton<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
+		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 
-			return services;
-		}
-    }
+		// Security
+		_ = services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();
+		_ = services.AddScoped<IClaimsPrincipalAuthenticationStateProvider>(x => (ClaimsPrincipalAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
+		_ = services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
+		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
+
+		return services;
+	}
 }

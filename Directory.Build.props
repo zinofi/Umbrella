@@ -1,12 +1,17 @@
 <Project>
 	<PropertyGroup>
-		<Version>3.0.0-preview-0303</Version>
+		<Version>6.0.0-preview-0205</Version>
 
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
-		<LangVersion>8.0</LangVersion>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<LangVersion>latest</LangVersion>
 		<Configurations>Debug;Release;AzureDevOps</Configurations>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
+		<!-- Disabling these in favour of manually adding the using statements further down. This is to ensure compatibility with legacy .NET packages.  -->
+		<ImplicitUsings>false</ImplicitUsings>
+		
 		<!-- NuGet settings -->
 		<Authors>Zinofi Digital Ltd</Authors>
 		<Company>Zinofi Digital Ltd</Company>
@@ -22,10 +27,32 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
+	
+	<PropertyGroup>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+		<CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='AzureDevOps'">
 		<Optimize>true</Optimize>
 		<DefineConstants>AzureDevOps</DefineConstants>
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="System.Collections.Generic" />
+		<Using Include="System.IO" />
+		<Using Include="System.Linq" />
+		<Using Include="System.Net" />
+		<Using Include="System.Threading" />
+		<Using Include="System.Threading.Tasks" />
+	</ItemGroup>
+	
 </Project>

@@ -1,72 +1,74 @@
-﻿using System;
-using System.Globalization;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Umbrella.Utilities;
+using System.Globalization;
 
-namespace Umbrella.AspNetCore.Blazor.Components.Radio
+namespace Umbrella.AspNetCore.Blazor.Components.Radio;
+
+/// <summary>
+/// Serves as the base class of the <see cref="UmbrellaRadio{TValue}"/> component.
+/// </summary>
+public abstract class UmbrellaRadioBase<TValue> : InputBase<TValue>
 {
 	/// <summary>
-	/// Serves as the base class of the <see cref="UmbrellaRadio{TValue}"/> component.
+	/// Gets or sets the ID of the checkbox. This is used to associate the checkbox input with it's label.
 	/// </summary>
-	public abstract class UmbrellaRadioBase<TValue> : InputBase<TValue>
+	public string Id { get; set; } = Guid.NewGuid().ToString("N");
+
+	/// <summary>
+	/// Gets or sets the name used to group a collection of radio buttons.
+	/// </summary>
+	[Parameter]
+	[EditorRequired]
+	public string GroupName { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets the label text for the radio button.
+	/// </summary>
+	[Parameter]
+	public string Text { get; set; } = null!;
+
+	/// <inheritdoc />
+	protected override void OnParametersSet()
 	{
-		/// <summary>
-		/// Gets or sets the ID of the checkbox. This is used to associate the checkbox input with it's label.
-		/// </summary>
-		public string Id { get; set; } = Guid.NewGuid().ToString("N");
+		base.OnParametersSet();
 
-		/// <summary>
-		/// Gets or sets the name used to group a collection of radio buttons.
-		/// </summary>
-		[Parameter]
-		public string GroupName { get; set; } = null!;
+		Guard.IsNotNullOrWhiteSpace(GroupName, nameof(GroupName));
+	}
 
-		/// <summary>
-		/// Gets or sets the label text for the radio button.
-		/// </summary>
-		[Parameter]
-		public string Text { get; set; } = null!;
+	/// <summary>
+	/// Gets or sets the selected value.
+	/// </summary>
+	[Parameter]
+	public TValue SelectedValue { get; set; } = default!;
 
-		/// <inheritdoc />
-		protected override void OnParametersSet()
+	/// <summary>
+	/// Called by the Blazor infrastructure when the <see cref="SelectedValue"/> changes.
+	/// </summary>
+	/// <param name="args">The <see cref="ChangeEventArgs"/>.</param>
+	protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value?.ToString();
+
+	/// <inheritdoc />
+	protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
+	{
+		bool success = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsedValue);
+
+		if (success && parsedValue is not null)
 		{
-			base.OnParametersSet();
+			result = parsedValue;
+			validationErrorMessage = null!;
 
-			Guard.ArgumentNotNullOrWhiteSpace(GroupName, nameof(GroupName));
+			return true;
 		}
-
-		/// <summary>
-		/// Gets or sets the selected value.
-		/// </summary>
-		[Parameter]
-		public TValue SelectedValue { get; set; } = default!;
-
-		/// <summary>
-		/// Called by the Blazor infrastructure when the <see cref="SelectedValue"/> changes.
-		/// </summary>
-		/// <param name="args">The <see cref="ChangeEventArgs"/>.</param>
-		protected void OnValueChange(ChangeEventArgs args) => CurrentValueAsString = args.Value.ToString();
-
-		/// <inheritdoc />
-		protected override bool TryParseValueFromString(string value, out TValue result, out string errorMessage)
+		else
 		{
-			bool success = BindConverter.TryConvertTo<TValue>(value, CultureInfo.CurrentCulture, out var parsedValue);
+			result = default!;
+			validationErrorMessage = $"{FieldIdentifier.FieldName} field isn't valid.";
 
-			if (success)
-			{
-				result = parsedValue;
-				errorMessage = null!;
-
-				return true;
-			}
-			else
-			{
-				result = default!;
-				errorMessage = $"{FieldIdentifier.FieldName} field isn't valid.";
-
-				return false;
-			}
+			return false;
 		}
 	}
 }

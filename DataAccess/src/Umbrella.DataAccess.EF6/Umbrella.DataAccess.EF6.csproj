@@ -2,8 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net461;netstandard2.1</TargetFrameworks>
-		<Configurations>Debug;Release;AzureDevOps</Configurations>
-		<DocumentationFile>bin\Release\net461\Umbrella.DataAccess.EF6.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -14,6 +12,14 @@
 	<ItemGroup>
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">

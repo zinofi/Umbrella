@@ -1,65 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System.Xml.Serialization;
-using Umbrella.Utilities;
+using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.WebUtilities.SiteMap
+namespace Umbrella.WebUtilities.SiteMap;
+
+/// <summary>
+/// A class used to create an XML SiteMap.
+/// </summary>
+[XmlRoot("urlset", Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")]
+public class XmlSiteMap
 {
 	/// <summary>
-	/// A class used to create an XML SiteMap.
+	/// Gets or sets the urls.
 	/// </summary>
-	[XmlRoot("urlset", Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")]
-	public class XmlSiteMap
+	[XmlElement("url")]
+	public List<XmlSiteMapUrl> Urls { get; } = new List<XmlSiteMapUrl>();
+
+	/// <summary>
+	/// Adds the specified URL.
+	/// </summary>
+	/// <param name="url">The URL.</param>
+	/// <param name="changeFrequency">The change frequency.</param>
+	/// <param name="lastModified">The last modified.</param>
+	/// <param name="priority">The priority.</param>
+	/// <returns>The <see cref="XmlSiteMap"/>.</returns>
+	public XmlSiteMap Add(string url, ChangeFrequency? changeFrequency = null, DateTime? lastModified = null, double? priority = null)
 	{
-		/// <summary>
-		/// Gets or sets the urls.
-		/// </summary>
-		[XmlElement("url")]
-		public List<XmlSiteMapUrl> Urls { get; } = new List<XmlSiteMapUrl>();
+		Guard.IsNotNullOrWhiteSpace(url);
 
-		/// <summary>
-		/// Adds the specified URL.
-		/// </summary>
-		/// <param name="url">The URL.</param>
-		/// <param name="changeFrequency">The change frequency.</param>
-		/// <param name="lastModified">The last modified.</param>
-		/// <param name="priority">The priority.</param>
-		/// <returns></returns>
-		public XmlSiteMap Add(string url, ChangeFrequency? changeFrequency = null, DateTime? lastModified = null, double? priority = null)
+		url = url.TrimToLowerInvariant();
+
+		// Ensure the list doesn't already include this URL
+		if (!Urls.Any(x => x.Url == url))
 		{
-			Guard.ArgumentNotNullOrWhiteSpace(url, nameof(url));
-
-			url = url.TrimToLowerInvariant();
-
-			// Ensure the list doesn't already include this URL
-			if (!Urls.Any(x => x.Url == url))
+			Urls.Add(new XmlSiteMapUrl
 			{
-				Urls.Add(new XmlSiteMapUrl
-				{
-					Url = url,
-					ChangeFrequency = changeFrequency,
-					LastModified = lastModified.HasValue ? lastModified.Value.ToUniversalTime().ToString("o") : "",
-					Priority = priority
-				});
-			}
-
-			return this;
+				Url = url,
+				ChangeFrequency = changeFrequency,
+				LastModified = lastModified.HasValue ? lastModified.Value.ToUniversalTime().ToString("o") : "",
+				Priority = priority
+			});
 		}
 
-		/// <inheritdoc />
-		public override string ToString()
-		{
-			using var ms = new MemoryStream();
-			var xs = new XmlSerializer(typeof(XmlSiteMap));
-			xs.Serialize(ms, this);
+		return this;
+	}
 
-			ms.Position = 0;
+	/// <inheritdoc />
+	public override string ToString()
+	{
+		using var ms = new MemoryStream();
+		var xs = new XmlSerializer(typeof(XmlSiteMap));
+		xs.Serialize(ms, this);
 
-			using var reader = new StreamReader(ms);
-			return reader.ReadToEnd();
-		}
+		ms.Position = 0;
+
+		using var reader = new StreamReader(ms);
+		return reader.ReadToEnd();
 	}
 }

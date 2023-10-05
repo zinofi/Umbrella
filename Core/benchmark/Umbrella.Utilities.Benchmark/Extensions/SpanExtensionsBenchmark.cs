@@ -1,79 +1,76 @@
-﻿using System;
-using System.Linq;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.Utilities.Benchmark.Extensions
+namespace Umbrella.Utilities.Benchmark.Extensions;
+
+[MemoryDiagnoser]
+[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.NetCoreApp31)]
+public class SpanExtensionsBenchmark
 {
-	[MemoryDiagnoser]
-	[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.NetCoreApp31)]
-	public class SpanExtensionsBenchmark
+	[Benchmark]
+	public int Char_AppendStringBenchmark()
 	{
-		[Benchmark]
-		public int Char_AppendStringBenchmark()
-		{
-			Span<char> span = stackalloc char[10];
+		Span<char> span = stackalloc char[10];
 
-			int currentIndex = span.Append(0, "12345");
-			currentIndex = span.Append(currentIndex, "67890");
+		int currentIndex = span.Write(0, "12345");
+		currentIndex = span.Write(currentIndex, "67890");
 
-			return span.Length;
-		}
+		return span.Length;
+	}
 
-		[Benchmark]
-		public int Char_AppendReadOnlySpanBenchmark()
-		{
-			Span<char> span = stackalloc char[10];
+	[Benchmark]
+	public int Char_AppendReadOnlySpanBenchmark()
+	{
+		Span<char> span = stackalloc char[10];
 
-			int currentIndex = span.Append(0, "12345".AsSpan());
-			currentIndex = span.Append(currentIndex, "67890".AsSpan());
+		int currentIndex = span.Write(0, "12345".AsSpan());
+		currentIndex = span.Write(currentIndex, "67890".AsSpan());
 
-			return span.Length;
-		}
+		return span.Length;
+	}
 
-		[Benchmark]
-		public int Char_ToLowerBenchmark()
-		{
-			Span<char> span = stackalloc char[10];
-			span.Fill('A');
+	[Benchmark]
+	public int Char_ToLowerBenchmark()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('A');
 
-			span.ToLower();
+		span.ToLower();
 
-			return span.Length;
-		}
+		return span.Length;
+	}
 
-		[Benchmark]
-		public int Char_ToLowerInvariantBenchmark()
-		{
-			Span<char> span = stackalloc char[10];
-			span.Fill('A');
+	[Benchmark]
+	public int Char_ToLowerInvariantBenchmark()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('A');
 
-			span.ToLowerInvariant();
+		span.ToLowerInvariant();
 
-			return span.Length;
-		}
+		return span.Length;
+	}
 
-		[Benchmark]
-		public int Char_ToUpperBenchmark()
-		{
-			Span<char> span = stackalloc char[10];
-			span.Fill('A');
+	[Benchmark]
+	public int Char_ToUpperBenchmark()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('A');
 
-			span.ToUpper();
+		span.ToUpper();
 
-			return span.Length;
-		}
+		return span.Length;
+	}
 
-		[Benchmark]
-		public int Char_ToUpperInvariantBenchmark()
-		{
-			Span<char> span = stackalloc char[10];
-			span.Fill('A');
+	[Benchmark]
+	public int Char_ToUpperInvariantBenchmark()
+	{
+		Span<char> span = stackalloc char[10];
+		span.Fill('A');
 
-			span.ToUpperInvariant();
+		span.ToUpperInvariant();
 
-			return span.Length;
-		}
+		return span.Length;
 	}
 }

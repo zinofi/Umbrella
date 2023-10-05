@@ -1,51 +1,50 @@
 ﻿using Umbrella.Utilities.Http.Abstractions;
 
-namespace Umbrella.Utilities.Http
+namespace Umbrella.Utilities.Http;
+
+/// <summary>
+/// Represents the result of a Http call.
+/// </summary>
+/// <seealso cref="IHttpCallResult"/>
+public class HttpCallResult : IHttpCallResult
 {
 	/// <summary>
-	/// Represents the result of a Http call.
+	/// Initializes a new instance of the <see cref="HttpCallResult"/> class.
 	/// </summary>
-	/// <seealso cref="IHttpCallResult"/>
-	public class HttpCallResult : IHttpCallResult
+	/// <param name="success">if set to <c>true</c> signals that the call succeeded without errors.</param>
+	/// <param name="problemDetails">The problem details.</param>
+	public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="HttpCallResult"/> class.
-		/// </summary>
-		/// <param name="success">if set to <c>true</c> signals that the call succeeded without errors.</param>
-		/// <param name="problemDetails">The problem details.</param>
-		public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null)
-		{
-			Success = success;
-			ProblemDetails = problemDetails;
-		}
-
-		/// <inheritdoc />
-		public bool Success { get; }
-
-		/// <inheritdoc />
-		public HttpProblemDetails? ProblemDetails { get; }
+		Success = success;
+		ProblemDetails = problemDetails;
 	}
 
+	/// <inheritdoc />
+	public bool Success { get; }
+
+	/// <inheritdoc />
+	public HttpProblemDetails? ProblemDetails { get; }
+}
+
+/// <summary>
+/// Represents the result of a Http call.
+/// </summary>
+/// <typeparam name="TResult">The type of the result.</typeparam>
+/// <seealso cref="IHttpCallResult{TResult}"/>
+public class HttpCallResult<TResult> : HttpCallResult, IHttpCallResult<TResult>
+{
 	/// <summary>
-	/// Represents the result of a Http call.
+	/// Initializes a new instance of the <see cref="HttpCallResult{TResult}"/> class.
 	/// </summary>
-	/// <typeparam name="TResult">The type of the result.</typeparam>
-	/// <seealso cref="IHttpCallResult{TResult}"/>
-	public class HttpCallResult<TResult> : HttpCallResult, IHttpCallResult<TResult>
+	/// <param name="success">if set to <c>true</c> signals that the call succeeded without errors.</param>
+	/// <param name="problemDetails">The problem details.</param>
+	/// <param name="result">The result.</param>
+	public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null, TResult result = default!)
+		: base(success, problemDetails)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="HttpCallResult{TResult}"/> class.
-		/// </summary>
-		/// <param name="success">if set to <c>true</c> signals that the call succeeded without errors.</param>
-		/// <param name="problemDetails">The problem details.</param>
-		/// <param name="result">The result.</param>
-		public HttpCallResult(bool success, HttpProblemDetails? problemDetails = null, TResult result = default!)
-			: base(success, problemDetails)
-		{
-			Result = result!;
-		}
-
-		/// <inheritdoc />
-		public TResult Result { get; }
+		Result = result!;
 	}
+
+	/// <inheritdoc />
+	public TResult Result { get; }
 }

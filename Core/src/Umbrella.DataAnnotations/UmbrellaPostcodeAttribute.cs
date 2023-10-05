@@ -1,20 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Umbrella.DataAnnotations.RegularExpressions;
+﻿using Umbrella.DataAnnotations.RegularExpressions;
 
-namespace Umbrella.DataAnnotations
+namespace Umbrella.DataAnnotations;
+
+/// <summary>
+/// Specifies that a data field must match the regular expression for a UK Postcode.
+/// </summary>
+/// <seealso cref="RegularExpressionAttribute" />
+[AttributeUsage(AttributeTargets.Property)]
+public class UmbrellaPostcodeAttribute : RegularExpressionAttribute
 {
 	/// <summary>
-	/// Specifies that a data field must match the regular expression for a UK Postcode.
+	/// Initializes a new instance of the <see cref="UmbrellaPostcodeAttribute"/> class.
 	/// </summary>
-	/// <seealso cref="System.ComponentModel.DataAnnotations.RegularExpressionAttribute" />
-	public class UmbrellaPostcodeAttribute : RegularExpressionAttribute
+	public UmbrellaPostcodeAttribute()
+		: base(PostcodeRegularExpressions.UKPostcodeRegexString)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaPostcodeAttribute"/> class.
-		/// </summary>
-		public UmbrellaPostcodeAttribute()
-			: base(PostcodeRegularExpressions.UKPostcodeRegexString)
-		{
-		}
 	}
 }

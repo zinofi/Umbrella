@@ -1,16 +1,18 @@
 ﻿@if (Model.TotalCount > 0)
 {
+    string paginationSizeButtonId = "a" + Guid.NewGuid().ToString("N")[1..];
+
 	<nav class="u-pagination" aria-label="table navigation">
 		<ul class="pagination @(SmallPagination ? "pagination-sm" : "")">
 			@if (Model.PageNumbers.Count > 1)
 			{
 				<li class="page-item">
-					<a class="page-link" href="#" aria-label="First Page" @onclick="FirstClick" @onclick:preventDefault>
+					<a class="page-link" href="#" aria-label="First Page" @onclick="FirstClickAsync" @onclick:preventDefault>
 						<span aria-hidden="true">&laquo;</span>
 					</a>
 				</li>
 				<li class="page-item">
-					<a class="page-link" href="#" aria-label="Previous Page" @onclick="PreviousClick" @onclick:preventDefault>
+					<a class="page-link" href="#" aria-label="Previous Page" @onclick="PreviousClickAsync" @onclick:preventDefault>
 						<span aria-hidden="true">&lsaquo;</span>
 					</a>
 				</li>
@@ -18,32 +20,32 @@
 			@foreach (var item in Model.PageNumbers)
 			{
 				<li class="page-item @(item.IsCurrentPage ? "active" : "")">
-					<a class="page-link" href="#" aria-label="Page @(item.Number)" @onclick="(e => ItemClick(item.Number))" @onclick:preventDefault>@item.Number</a>
+					<a class="page-link" href="#" aria-label="Page @(item.Number)" @onclick="(e => ItemClickAsync(item.Number))" @onclick:preventDefault>@item.Number</a>
 				</li>
 			}
 			@if (Model.PageNumbers.Count > 1)
 			{
 				<li class="page-item">
-					<a class="page-link" href="#" aria-label="Next Page" @onclick="NextClick" @onclick:preventDefault>
+					<a class="page-link" href="#" aria-label="Next Page" @onclick="NextClickAsync" @onclick:preventDefault>
 						<span aria-hidden="true">&rsaquo;</span>
 					</a>
 				</li>
 				<li class="page-item">
-					<a class="page-link" href="#" aria-label="Last Page" @onclick="LastClick" @onclick:preventDefault>
+					<a class="page-link" href="#" aria-label="Last Page" @onclick="LastClickAsync" @onclick:preventDefault>
 						<span aria-hidden="true">&raquo;</span>
 					</a>
 				</li>
 			}
 		</ul>
 		<div class="pagination-size">
-			<div class="dropdown">
-				<a class="btn @(SmallPagination ? "btn-sm" : "") btn-primary dropdown-toggle" href="#" role="button" id="items-per-page" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<div class="dropdown" aria-role="menu">
+                <a class="btn @(SmallPagination ? "btn-sm" : "") btn-primary dropdown-toggle" href="#" role="button" id="@paginationSizeButtonId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					@PageSize
 				</a>
-				<div class="dropdown-menu" aria-labelledby="items-per-page">
+                <div class="dropdown-menu" aria-labelledby="@paginationSizeButtonId">
 					@foreach (var option in PageSizeOptions)
 					{
-						<a class="dropdown-item @(option == PageSize ? "active" : "")" href="#" @onclick="@(e => PageSizeClick(option))" @onclick:preventDefault>@option</a>
+						<a class="dropdown-item @(option == PageSize ? "active" : "")" href="#" @onclick="@(e => PageSizeClickAsync(option))" @onclick:preventDefault>@option</a>
 					}
 				</div>
 			</div>

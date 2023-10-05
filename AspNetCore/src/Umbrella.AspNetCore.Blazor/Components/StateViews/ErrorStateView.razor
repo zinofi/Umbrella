@@ -1,7 +1,15 @@
-﻿<div class="u-state-view u-state-view--error">
-	<p>@Message</p>
+﻿<div class="u-error-state-view">
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <p>@Message</p>
+    }
+
 	@if (OnReloadButtonClick.HasDelegate && ShowReloadButton)
 	{
-		<button class="btn btn-primary" @onclick="async () => await OnReloadButtonClick.InvokeAsync(null)">Reload</button>
+		<button class="btn btn-primary" @onclick="async () => await OnReloadButtonClick.InvokeAsync(null)">@ReloadButtonText</button>
 	}
 </div>

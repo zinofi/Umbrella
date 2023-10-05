@@ -1,434 +1,445 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.AppFramework.Utilities.Constants;
+using Umbrella.AppFramework.Services.Abstractions;
+using Umbrella.AppFramework.Services.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
-using Umbrella.AspNetCore.Blazor.Exceptions;
 using Umbrella.AspNetCore.Blazor.Extensions;
-using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Http;
 
-namespace Umbrella.AspNetCore.Blazor.Components.Dialog
+namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
+
+/// <summary>
+/// Used to show dialogs in Blazor applications.
+/// </summary>
+/// <seealso cref="IUmbrellaDialogService" />
+public class UmbrellaDialogService : IUmbrellaDialogService
 {
-	/// <summary>
-	/// Used to show dialogs in Blazor applications.
-	/// </summary>
-	/// <seealso cref="IUmbrellaDialogUtility" />
-	public class UmbrellaDialogUtility : IUmbrellaDialogUtility
+	private static readonly ModalParameters _emptyModalParameters = new();
+
+	private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new();
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultMessageButtons = new[]
 	{
-		private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>>();
+		new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Primary)
+	};
 
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultMessageButtons = new[]
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultSuccessMessageButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Success)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultDangerMessageButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Danger)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultInfoMessageButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Info)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultWarningMessageButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Warning)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
+		new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Primary)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmSuccessButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
+		new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Success)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmDangerButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
+		new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Danger)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmInfoButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
+		new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Info)
+	};
+
+	private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmWarningButtons = new[]
+	{
+		new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
+		new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Warning)
+	};
+
+	private readonly ILogger _logger;
+	private readonly IDialogTrackerService _dialogTracker;
+	private readonly IModalService _modalService;
+	private readonly IAppAuthHelper _appAuthHelper;
+	private readonly IAuthorizationService _authorizationService;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaDialogService"/> class.
+	/// </summary>
+	/// <param name="logger">The logger.</param>
+	/// <param name="dialogTracker">The dialog tracker.</param>
+	/// <param name="modalService">The modal service.</param>
+	/// <param name="appAuthHelper">The auth helper.</param>
+	/// <param name="authorizationService">The authorization service.</param>
+	public UmbrellaDialogService(
+		ILogger<UmbrellaDialogService> logger,
+		IDialogTrackerService dialogTracker,
+		IModalService modalService,
+		IAppAuthHelper appAuthHelper,
+		IAuthorizationService authorizationService)
+	{
+		_logger = logger;
+		_dialogTracker = dialogTracker;
+		_modalService = modalService;
+		_appAuthHelper = appAuthHelper;
+		_authorizationService = authorizationService;
+	}
+
+	/// <inheritdoc />
+	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	{
+		try
 		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Primary)
-		};
+			int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
 
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultSuccessMessageButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Success)
-		};
+			if (!_dialogTracker.TrackOpen(code))
+				return;
 
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultDangerMessageButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Danger)
-		};
+			var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+				? _defaultMessageButtons
+				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Primary) };
 
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultInfoMessageButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Info)
-		};
+			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons);
 
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultWarningMessageButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCloseButtonText, UmbrellaDialogButtonType.Warning)
-		};
-
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
-			new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Primary)
-		};
-
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmSuccessButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
-			new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Success)
-		};
-
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmDangerButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
-			new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Danger)
-		};
-
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmInfoButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
-			new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Info)
-		};
-
-		private readonly IReadOnlyCollection<UmbrellaDialogButton> _defaultConfirmWarningButtons = new[]
-		{
-			new UmbrellaDialogButton(DialogDefaults.DefaultCancelButtonText, UmbrellaDialogButtonType.Default, true),
-			new UmbrellaDialogButton(DialogDefaults.DefaultConfirmButtonText, UmbrellaDialogButtonType.Warning)
-		};
-
-		private readonly ILogger _logger;
-		private readonly IDialogTracker _dialogTracker;
-		private readonly IModalService _modalService;
-		private readonly IAppAuthHelper _appAuthHelper;
-		private readonly IAuthorizationService _authorizationService;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaDialogUtility"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		/// <param name="dialogTracker">The dialog tracker.</param>
-		/// <param name="modalService">The modal service.</param>
-		/// <param name="appAuthHelper">The auth helper.</param>
-		/// <param name="authorizationService">The authorization service.</param>
-		public UmbrellaDialogUtility(
-			ILogger<UmbrellaDialogUtility> logger,
-			IDialogTracker dialogTracker,
-			IModalService modalService,
-			IAppAuthHelper appAuthHelper,
-			IAuthorizationService authorizationService)
-		{
-			_logger = logger;
-			_dialogTracker = dialogTracker;
-			_modalService = modalService;
-			_appAuthHelper = appAuthHelper;
-			_authorizationService = authorizationService;
+			_dialogTracker.Close(code);
 		}
-
-		/// <inheritdoc />
-		public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 		{
-			try
-			{
-				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
-
-				if (!_dialogTracker.TrackOpen(code))
-					return;
-
-				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
-					? _defaultMessageButtons
-					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Primary) };
-
-				await ShowDialogAsync(message, title, "u-dialog--message", buttons);
-
-				_dialogTracker.Close(code);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 		}
+	}
 
-		/// <inheritdoc />
-		public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again.", string title = "Error", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	/// <inheritdoc />
+	public async ValueTask ShowDangerMessageAsync(string message = "An unknown error has occurred. Please try again.", string title = "Error", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	{
+		try
 		{
-			try
-			{
-				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
+			int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
 
-				if (!_dialogTracker.TrackOpen(code))
-					return;
+			if (!_dialogTracker.TrackOpen(code))
+				return;
 
-				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
-					? _defaultDangerMessageButtons
-					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
+			var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+				? _defaultDangerMessageButtons
+				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
 
-				await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
 
-				_dialogTracker.Close(code);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			_dialogTracker.Close(code);
 		}
-
-		/// <inheritdoc />
-		public async ValueTask ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 		{
-			try
-			{
-				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
-
-				if (!_dialogTracker.TrackOpen(code))
-					return;
-
-				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
-					? _defaultInfoMessageButtons
-					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Info) };
-
-				_logger.WriteInformation(message: "Opening info dialog");
-
-				await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-info", buttons);
-
-				_dialogTracker.Close(code);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 		}
+	}
 
-		/// <inheritdoc />
-		public async ValueTask ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	/// <inheritdoc />
+	public async ValueTask ShowInfoMessageAsync(string message, string title = "Information", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	{
+		try
 		{
-			try
-			{
-				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
+			int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
 
-				if (!_dialogTracker.TrackOpen(code))
-					return;
+			if (!_dialogTracker.TrackOpen(code))
+				return;
 
-				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
-					? _defaultSuccessMessageButtons
-					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Success) };
+			var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+				? _defaultInfoMessageButtons
+				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Info) };
 
-				await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-success", buttons);
+			_logger.WriteInformation(message: "Opening info dialog");
 
-				_dialogTracker.Close(code);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-info", buttons);
+
+			_dialogTracker.Close(code);
 		}
-
-		/// <inheritdoc />
-		public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 		{
-			try
-			{
-				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
-
-				if (!_dialogTracker.TrackOpen(code))
-					return;
-
-				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
-					? _defaultWarningMessageButtons
-					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Warning) };
-
-				await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-warning", buttons);
-
-				_dialogTracker.Close(code);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 		}
+	}
 
-		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	/// <inheritdoc />
+	public async ValueTask ShowSuccessMessageAsync(string message, string title = "Success", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	{
+		try
 		{
-			try
-			{
-				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Primary, _defaultConfirmButtons, acceptButtonText, cancelButtonText);
+			int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
 
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm", buttons);
+			if (!_dialogTracker.TrackOpen(code))
+				return;
 
-				return !result.Cancelled;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+				? _defaultSuccessMessageButtons
+				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Success) };
+
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-success", buttons);
+
+			_dialogTracker.Close(code);
 		}
-
-		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 		{
-			try
-			{
-				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Danger, _defaultConfirmDangerButtons, acceptButtonText, cancelButtonText);
-
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-danger", buttons);
-
-				return !result.Cancelled;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 		}
+	}
 
-		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	/// <inheritdoc />
+	public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	{
+		try
 		{
-			try
-			{
-				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Success, _defaultConfirmSuccessButtons, acceptButtonText, cancelButtonText);
+			int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
 
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-success", buttons);
+			if (!_dialogTracker.TrackOpen(code))
+				return;
 
-				return !result.Cancelled;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+				? _defaultWarningMessageButtons
+				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Warning) };
+
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-warning", buttons);
+
+			_dialogTracker.Close(code);
 		}
-
-		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 		{
-			try
-			{
-				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Info, _defaultConfirmInfoButtons, acceptButtonText, cancelButtonText);
-
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-info", buttons);
-
-				return !result.Cancelled;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
 		}
+	}
 
-		/// <inheritdoc />
-		public async ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	/// <inheritdoc />
+	public async ValueTask<bool> ShowConfirmMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	{
+		try
 		{
-			try
-			{
-				var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Warning, _defaultConfirmWarningButtons, acceptButtonText, cancelButtonText);
+			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Primary, _defaultConfirmButtons, acceptButtonText, cancelButtonText);
 
-				ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-warning", buttons);
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm", buttons);
 
-				return !result.Cancelled;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
+			return !result.Cancelled;
 		}
-
-		/// <inheritdoc />
-		public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null)
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
 		{
-			try
-			{
-				var parameters = new ModalParameters();
-				parameters.Add(nameof(UmbrellaDialog.SubTitle), subTitle);
-				parameters.Add(nameof(UmbrellaDialog.Message), message);
-				parameters.Add(nameof(UmbrellaDialog.Buttons), buttons);
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
 
-				var options = new ModalOptions
+	/// <inheritdoc />
+	public async ValueTask<bool> ShowConfirmDangerMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	{
+		try
+		{
+			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Danger, _defaultConfirmDangerButtons, acceptButtonText, cancelButtonText);
+
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-danger", buttons);
+
+			return !result.Cancelled;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask<bool> ShowConfirmSuccessMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	{
+		try
+		{
+			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Success, _defaultConfirmSuccessButtons, acceptButtonText, cancelButtonText);
+
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-success", buttons);
+
+			return !result.Cancelled;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask<bool> ShowConfirmInfoMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	{
+		try
+		{
+			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Info, _defaultConfirmInfoButtons, acceptButtonText, cancelButtonText);
+
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-info", buttons);
+
+			return !result.Cancelled;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask<bool> ShowConfirmWarningMessageAsync(string message, string title, string acceptButtonText = DialogDefaults.DefaultConfirmButtonText, string cancelButtonText = DialogDefaults.DefaultCancelButtonText)
+	{
+		try
+		{
+			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Warning, _defaultConfirmWarningButtons, acceptButtonText, cancelButtonText);
+
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-warning", buttons);
+
+			return !result.Cancelled;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null)
+	{
+		try
+		{
+			var parameters = new ModalParameters
+			{
+				{ nameof(UmbrellaDialog.SubTitle), subTitle ?? "" },
+				{ nameof(UmbrellaDialog.Message), message },
+				{ nameof(UmbrellaDialog.Buttons), buttons }
+			};
+
+			var options = new ModalOptions
+			{
+				Class = cssClass,
+				DisableBackgroundCancel = true,
+				UseCustomLayout = true
+			};
+
+			IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);
+
+			return await modal.Result;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask ShowValidationResultsMessageAsync(IEnumerable<ValidationResult> validationResults, string introMessage = "Please correct all validation errors.", string title = "Error", string closeButtonText = "Close")
+	{
+		try
+		{
+			string message = validationResults.ToValidationSummaryMessage(introMessage);
+
+			int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
+
+			if (!_dialogTracker.TrackOpen(code))
+				return;
+
+			var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
+				? _defaultDangerMessageButtons
+				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
+
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
+
+			_dialogTracker.Close(code);
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { title }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error") => ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+
+	/// <inheritdoc />
+	public ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
+		where T : ComponentBase => ShowDialogAsync<T, ModalResult>(title, cssClass, modalParameters);
+
+	/// <inheritdoc />
+	public async ValueTask<TResult> ShowDialogAsync<T, TResult>(string title, string cssClass, ModalParameters? modalParameters = null)
+		where T : ComponentBase
+		where TResult : ModalResult
+	{
+		try
+		{
+			IReadOnlyCollection<AuthorizeAttribute> authorizeAttributes = _authorizationAttributeCache.GetOrAdd(typeof(T), key => key.GetCustomAttributes<AuthorizeAttribute>(true).ToArray());
+
+			if (authorizeAttributes.Count > 0)
+			{
+				static void ThrowAccessDeniedException()
 				{
-					Class = cssClass,
-					DisableBackgroundCancel = true,
-					UseCustomLayout = true
-				};
-
-				IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);
-
-				return await modal.Result;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public async ValueTask ShowValidationResultsMessageAsync(IEnumerable<ValidationResult> validationResults, string introMessage = "Please correct all validation errors.", string title = "Error", string closeButtonText = "Close")
-		{
-			try
-			{
-				string message = validationResults.ToValidationSummaryMessage(introMessage);
-
-				int code = _dialogTracker.GenerateCode(message, title, null, closeButtonText);
-
-				if (!_dialogTracker.TrackOpen(code))
-					return;
-
-				var buttons = closeButtonText is DialogDefaults.DefaultCloseButtonText
-					? _defaultDangerMessageButtons
-					: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
-
-				await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
-
-				_dialogTracker.Close(code);
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { title }, returnValue: true))
-			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
-		}
-
-		/// <inheritdoc />
-		public ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)
-			where T : ComponentBase => ShowDialogAsync<T, ModalResult>(title, cssClass, modalParameters);
-
-		/// <inheritdoc />
-		public async ValueTask<TResult> ShowDialogAsync<T, TResult>(string title, string cssClass, ModalParameters? modalParameters = null)
-			where T : ComponentBase
-			where TResult : ModalResult
-		{
-			try
-			{
-				IReadOnlyCollection<AuthorizeAttribute> authorizeAttributes = _authorizationAttributeCache.GetOrAdd(typeof(T), key => key.GetCustomAttributes<AuthorizeAttribute>(true).ToArray());
-
-				if (authorizeAttributes.Count > 0)
-				{
-					static void ThrowAccessDeniedException() => throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
-
-					ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync();
-
-					if (!claimsPrincipal.Identity.IsAuthenticated)
-						ThrowAccessDeniedException();
-
-					// We will now check all authorization attributes. The first one that fails will throw an exception.
-					foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
-					{
-						bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, authorizeAttribute.Roles, authorizeAttribute.Policy);
-
-						if (!authorized)
-							ThrowAccessDeniedException();
-					}
+					throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
 				}
 
-				var options = new ModalOptions
+				ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync();
+
+				if (claimsPrincipal.Identity?.IsAuthenticated is false)
+					ThrowAccessDeniedException();
+
+				// We will now check all authorization attributes. The first one that fails will throw an exception.
+				foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
 				{
-					Class = cssClass,
-					DisableBackgroundCancel = true,
-					UseCustomLayout = true,
-					ContentScrollable = true
-				};
+					bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, authorizeAttribute.Roles, authorizeAttribute.Policy);
 
-				IModalReference modal = _modalService.Show<T>(title, modalParameters, options);
-
-				return (TResult)await modal.Result;
+					if (!authorized)
+						ThrowAccessDeniedException();
+				}
 			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }, returnValue: true))
+
+			var options = new ModalOptions
 			{
-				throw new UmbrellaWebComponentException("There has been a problem showing the dialog.", exc);
-			}
-		}
+				Class = cssClass,
+				DisableBackgroundCancel = true,
+				UseCustomLayout = true
+			};
 
-		private IReadOnlyCollection<UmbrellaDialogButton> GetConfirmButtons(UmbrellaDialogButtonType acceptButtonType, IReadOnlyCollection<UmbrellaDialogButton> defaultButtons, string acceptButtonText, string cancelButtonText)
-			=> acceptButtonText is DialogDefaults.DefaultConfirmButtonText && cancelButtonText is DialogDefaults.DefaultCancelButtonText
-				? defaultButtons
-				: new[]
-				{
-					new UmbrellaDialogButton(cancelButtonText, UmbrellaDialogButtonType.Default, true),
-					new UmbrellaDialogButton(acceptButtonText, acceptButtonType)
-				};
+			IModalReference modal = modalParameters is not null
+				? _modalService.Show<T>(title, modalParameters, options)
+				: _modalService.Show<T>(title, _emptyModalParameters, options);
+
+			return (TResult)await modal.Result;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }))
+		{
+			throw new UmbrellaBlazorException("There has been a problem showing the dialog.", exc);
+		}
 	}
+
+	private static IReadOnlyCollection<UmbrellaDialogButton> GetConfirmButtons(UmbrellaDialogButtonType acceptButtonType, IReadOnlyCollection<UmbrellaDialogButton> defaultButtons, string acceptButtonText, string cancelButtonText)
+		=> acceptButtonText is DialogDefaults.DefaultConfirmButtonText && cancelButtonText is DialogDefaults.DefaultCancelButtonText
+			? defaultButtons
+			: new[]
+			{
+				new UmbrellaDialogButton(cancelButtonText, UmbrellaDialogButtonType.Default, true),
+				new UmbrellaDialogButton(acceptButtonText, acceptButtonType)
+			};
+
+	/// <inheritdoc/>
+	public ValueTask ShowConcurrencyDangerMessageAsync(string message = DialogDefaults.ConcurrencyErrorMessage) => ShowDangerMessageAsync(message);
 }

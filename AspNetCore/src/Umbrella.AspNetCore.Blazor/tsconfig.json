@@ -32,6 +32,6 @@
 		"wwwroot",
 		"gulpfile.js",
 		"webpack.*",
-		"postcss.config.js"
+		"**/postcss.config.js"
 	]
 }

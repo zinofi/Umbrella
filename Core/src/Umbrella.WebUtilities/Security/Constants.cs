@@ -1,18 +1,17 @@
-﻿namespace Umbrella.WebUtilities.Security
+﻿namespace Umbrella.WebUtilities.Security;
+
+/// <summary>
+/// Default web based security constants.
+/// </summary>
+public class SecurityConstants
 {
 	/// <summary>
-	/// Default web based security constants.
+	/// The default nonce key used primarily by security middleware.
 	/// </summary>
-	public class SecurityConstants
-	{
-		/// <summary>
-		/// The default nonce key used primarily by security middleware.
-		/// </summary>
-		public const string DefaultNonceKey = "UMBRELLA_WEB_NONCE";
+	public const string DefaultNonceKey = "UMBRELLA_WEB_NONCE";
 
-		/// <summary>
-		/// The default size of generated nonce values in bytes.
-		/// </summary>
-		public const int DefaultNonceBytes = 32;
-	}
+	/// <summary>
+	/// The default size of generated nonce values in bytes.
+	/// </summary>
+	public const int DefaultNonceBytes = 32;
 }

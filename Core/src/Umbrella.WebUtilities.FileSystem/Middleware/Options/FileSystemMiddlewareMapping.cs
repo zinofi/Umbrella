@@ -1,43 +1,44 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
 using Umbrella.FileSystem.Abstractions;
-using Umbrella.Utilities;
 using Umbrella.Utilities.Options.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 
-namespace Umbrella.WebUtilities.FileSystem.Middleware.Options
+namespace Umbrella.WebUtilities.FileSystem.Middleware.Options;
+
+/// <summary>
+/// Specifies a file provider mapping and options for that mapping for use with the file provider middleware.
+/// </summary>
+/// <seealso cref="IValidatableUmbrellaOptions" />
+/// <seealso cref="ISanitizableUmbrellaOptions" />
+public class FileSystemMiddlewareMapping : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
 {
 	/// <summary>
-	/// Specifies a file provider mapping and options for that mapping for use with the file provider middleware.
+	/// Gets or sets the cacheability. Defaults to <see cref="MiddlewareHttpCacheability.NoCache" />.
 	/// </summary>
-	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.IValidatableUmbrellaOptions" />
-	/// <seealso cref="Umbrella.Utilities.Options.Abstractions.ISanitizableUmbrellaOptions" />
-	public class FileSystemMiddlewareMapping : IValidatableUmbrellaOptions, ISanitizableUmbrellaOptions
+	public MiddlewareHttpCacheability Cacheability { get; set; } = MiddlewareHttpCacheability.NoCache;
+
+	/// <summary>
+	/// Gets or sets the file provider mapping.
+	/// </summary>
+	public UmbrellaFileStorageProviderMapping FileProviderMapping { get; set; } = null!;
+
+	/// <inheritdoc />
+	public void Sanitize() => FileProviderMapping?.Sanitize();
+
+	/// <inheritdoc />
+	public void Validate()
 	{
-		/// <summary>
-		/// Gets or sets the cacheability. Defaults to <see cref="MiddlewareHttpCacheability.NoCache" />.
-		/// </summary>
-		public MiddlewareHttpCacheability Cacheability { get; set; } = MiddlewareHttpCacheability.NoCache;
+		Guard.IsNotNull(FileProviderMapping);
+		FileProviderMapping.Validate();
 
-		/// <summary>
-		/// Gets or sets the file provider mapping.
-		/// </summary>
-		public UmbrellaFileProviderMapping FileProviderMapping { get; set; } = null!;
-
-		/// <inheritdoc />
-		public void Sanitize() => FileProviderMapping?.Sanitize();
-
-		/// <inheritdoc />
-		public void Validate()
+		switch (Cacheability)
 		{
-			Guard.ArgumentNotNull(FileProviderMapping, nameof(FileProviderMapping));
-			FileProviderMapping.Validate();
-
-			switch (Cacheability)
-			{
-				case MiddlewareHttpCacheability.Private:
-				case MiddlewareHttpCacheability.Public:
-					throw new ArgumentException("Public and Private values are not permitted.", nameof(Cacheability));
-			}
+			case MiddlewareHttpCacheability.Private:
+			case MiddlewareHttpCacheability.Public:
+				throw new ArgumentException("Public and Private values are not permitted.", nameof(Cacheability));
 		}
 	}
 }

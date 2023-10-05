@@ -1,26 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.DynamicImage.FreeImage.xml</DocumentationFile>
-  </PropertyGroup>
-  
-  <PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<PackageId>Umbrella.DynamicImage.FreeImage</PackageId>
-    <Description>This package contains an implementation of the IDynamicImageResizer built using the .NET Core wrapper for FreeImage. The repo for this wrapper can be found on github: https://github.com/matgr1/FreeImage-dotnet-core</Description>
-  </PropertyGroup>
+		<Description>This package contains an implementation of the IDynamicImageResizer built using the .NET Core wrapper for FreeImage. The repo for this wrapper can be found on github: https://github.com/matgr1/FreeImage-dotnet-core</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FreeImage.Standard" Version="4.3.8" />
+	<ItemGroup>
+		<PackageReference Include="FreeImage.Standard" Version="4.3.8" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-  </ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
-	
+
 </Project>

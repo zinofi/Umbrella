@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
+using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.UI;
-using Umbrella.AppFramework.Utilities.Abstractions;
-using Umbrella.Utilities.Http.Exceptions;
-using Umbrella.Utilities.WeakEventManager.Abstractions;
 using Umbrella.Xamarin.ObjectModel.Abstractions;
 using Umbrella.Xamarin.Utilities.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
@@ -14,285 +13,179 @@ using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
-namespace Umbrella.Xamarin.ViewModels
+namespace Umbrella.Xamarin.ViewModels;
+
+/// <summary>
+/// A base view model which all Xamarin view models should extend.
+/// </summary>
+/// <seealso cref="UmbrellaUIHandlerBase" />
+public abstract class ViewModelBase : UmbrellaUIHandlerBase
 {
+	private bool _isBusy;
+	private Page? _currentPage;
+	private bool _isRefreshing;
+	private LayoutState _currentState = LayoutState.Loading;
+
 	/// <summary>
-	/// A base view model which all Xamarin view models should extend.
+	/// Gets or sets a value indicating whether this instance is refreshing.
 	/// </summary>
-	/// <seealso cref="UmbrellaUIHandlerBase" />
-	public abstract class ViewModelBase : UmbrellaUIHandlerBase
+	/// <remarks>
+	/// This is usually bound to a control, e.g. a <see cref="RefreshView"/>, which means its value is set by the control.
+	/// However, it needs to be manually set to <see langword="false"/> when the refresh operation has been completed
+	/// in order for the UI to change state.
+	/// </remarks>
+	public bool IsRefreshing
 	{
-		private bool _isBusy;
-		private Page? _currentPage;
-		private bool _isRefreshing;
-		private LayoutState _currentState = LayoutState.Loading;
+		get => _isRefreshing;
+		set => SetProperty(ref _isRefreshing, value);
+	}
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this instance is refreshing.
-		/// </summary>
-		/// <remarks>
-		/// This is usually bound to a control, e.g. a <see cref="RefreshView"/>, which means its value is set by the control.
-		/// However, it needs to be manually set to <see langword="false"/> when the refresh operation has been completed
-		/// in order for the UI to change state.
-		/// </remarks>
-		public bool IsRefreshing
+	/// <summary>
+	/// Gets or sets the current layout state. The initial state is <see cref="LayoutState.Loading"/>.
+	/// </summary>
+	public LayoutState CurrentState
+	{
+		get => _currentState;
+		set => SetProperty(ref _currentState, value);
+	}
+
+	/// <summary>
+	/// Gets or sets the current page.
+	/// </summary>
+	/// <remarks>This is required for ViewModels which need access to the current Xamarin page, e.g. it needs to be passed to the <see cref="IXamarinValidationUtility"/>.</remarks>
+	/// <exception cref="Exception">The CurrentPage property has not been set.</exception>
+	public Page? CurrentPage
+	{
+		get => _currentPage ?? throw new InvalidOperationException("The CurrentPage property has not been set.");
+		set => _currentPage = value;
+	}
+
+	/// <summary>
+	/// Gets or sets a value indicating whether this instance is busy.
+	/// </summary>
+	/// <remarks>This is useful when implementing mutex code blocks, e.g. when loading items from a remote API and wanting to ensure duplicate requests don't take place.</remarks>
+	public bool IsBusy
+	{
+		get => _isBusy;
+		set => SetProperty(ref _isBusy, value);
+	}
+
+	/// <summary>
+	/// Gets the reload button command.
+	/// </summary>
+	public AsyncCommand ReloadButtonCommand { get; }
+
+	/// <summary>
+	/// Gets the OpenUrlInternal command.
+	/// </summary>
+	public AsyncCommand<string?> OpenUrlInternalCommand { get; }
+
+	/// <summary>
+	/// Gets the OpenUrlExternal command.
+	/// </summary>
+	public AsyncCommand<string?> OpenUrlExternalCommand { get; }
+
+	/// <summary>
+	/// Gets the navigate back button command.
+	/// </summary>
+	public AsyncCommand NavigateBackButtonCommand { get; }
+
+	/// <summary>
+	/// Gets the navigate to application path button command.
+	/// </summary>
+	public AsyncCommand<string?> NavigateToAppPathButtonCommand { get; }
+
+	/// <summary>
+	/// Gets the command factory.
+	/// </summary>
+	protected IUmbrellaCommandFactory CommandFactory { get; }
+
+	/// <summary>
+	/// Gets a value which specifies whether or not a check should be made for an active network connection when the <see cref="ReloadButtonCommand" /> is invoked.
+	/// </summary>
+	/// <remarks>Defaults to <see langword="true"/>.</remarks>
+	protected virtual bool CheckNetworkConnectionOnReload { get; } = true;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ViewModelBase"/> class.
+	/// </summary>
+	/// <param name="logger">The logger.</param>
+	/// <param name="authHelper">The authentication helper.</param>
+	/// <param name="commandFactory">The command factory.</param>
+	/// <param name="dialogUtility">The dialog utility.</param>
+	public ViewModelBase(
+		ILogger logger,
+		IDialogService dialogUtility,
+		IAppAuthHelper authHelper,
+		IUmbrellaCommandFactory commandFactory)
+		: base(logger, dialogUtility, authHelper)
+	{
+		CommandFactory = commandFactory;
+
+		NavigateBackButtonCommand = commandFactory.CreateAsyncCommand(NavigateBackAsync);
+		NavigateToAppPathButtonCommand = commandFactory.CreateAsyncCommand<string?>(NavigateToAppPathAsync);
+		ReloadButtonCommand = commandFactory.CreateAsyncCommand(OnReloadButtonClickedAsync, CheckNetworkConnectionOnReload);
+		OpenUrlInternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, true), true);
+		OpenUrlExternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, false), true);
+	}
+
+	/// <summary>
+	/// Sets the <see cref="IsBusy"/> and <see cref="IsRefreshing"/> flags to <see langword="false" />.
+	/// </summary>
+	protected void ClearFlags() => IsBusy = IsRefreshing = false;
+
+	/// <summary>
+	/// Called when the <see cref="ReloadButtonCommand"/> is invoked. Unless overridden, this method
+	/// just returns <see cref="Task.CompletedTask"/>.
+	/// </summary>
+	/// <returns>An awaitable Task that completes when the operation completes.</returns>
+	protected virtual Task OnReloadButtonClickedAsync() => Task.CompletedTask;
+
+	/// <summary>
+	/// Opens the specified <paramref name="url"/>.
+	/// </summary>
+	/// <param name="url">The URL to open.</param>
+	/// <param name="openInsideApp">
+	/// If <see langword="true"/>, opens the specified <paramref name="url"/> inside the app; otherwise
+	/// the <paramref name="url"/> will open in the default web browser.
+	/// </param>
+	/// <returns>An awaitable Task that completes when the operation completes.</returns>
+	protected async Task OpenUrlAsync(string? url, bool openInsideApp)
+	{
+		Guard.IsNotNullOrWhiteSpace(url);
+
+		try
 		{
-			get => _isRefreshing;
-			set => SetProperty(ref _isRefreshing, value);
+			await Browser.OpenAsync(url, openInsideApp ? BrowserLaunchMode.SystemPreferred : BrowserLaunchMode.External);
 		}
-
-		/// <summary>
-		/// Gets or sets the current layout state. The initial state is <see cref="LayoutState.Loading"/>.
-		/// </summary>
-		public LayoutState CurrentState
+		catch (Exception exc) when (Logger.WriteError(exc, new { url, openInsideApp }))
 		{
-			get => _currentState;
-			set => SetProperty(ref _currentState, value);
-		}
-
-		/// <summary>
-		/// Gets or sets the current page.
-		/// </summary>
-		/// <remarks>This is required for ViewModels which need access to the current Xamarin page, e.g. it needs to be passed to the <see cref="IXamarinValidationUtility"/>.</remarks>
-		/// <exception cref="Exception">The CurrentPage property has not been set.</exception>
-		public Page? CurrentPage
-		{
-			get => _currentPage ?? throw new Exception("The CurrentPage property has not been set.");
-			set => _currentPage = value;
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this instance is busy.
-		/// </summary>
-		/// <remarks>This is useful when implementing mutex code blocks, e.g. when loading items from a remote API and wanting to ensure duplicate requests don't take place.</remarks>
-		public bool IsBusy
-		{
-			get => _isBusy;
-			set => SetProperty(ref _isBusy, value);
-		}
-
-		/// <summary>
-		/// Gets the reload button command.
-		/// </summary>
-		public AsyncCommand ReloadButtonCommand { get; }
-
-		/// <summary>
-		/// Gets the OpenUrlInternal command.
-		/// </summary>
-		public AsyncCommand<string?> OpenUrlInternalCommand { get; }
-
-		/// <summary>
-		/// Gets the OpenUrlExternal command.
-		/// </summary>
-		public AsyncCommand<string?> OpenUrlExternalCommand { get; }
-
-		/// <summary>
-		/// Gets the navigate back button command.
-		/// </summary>
-		public AsyncCommand NavigateBackButtonCommand { get; }
-
-		/// <summary>
-		/// Gets the navigate to application path button command.
-		/// </summary>
-		public AsyncCommand<string?> NavigateToAppPathButtonCommand { get; }
-
-		/// <summary>
-		/// Gets the event manager.
-		/// </summary>
-		protected IGlobalWeakEventManager EventManager { get; }
-
-		/// <summary>
-		/// Gets the command factory.
-		/// </summary>
-		protected IUmbrellaCommandFactory CommandFactory { get; }
-
-		/// <summary>
-		/// Gets a value which specifies whether or not a check should be made for an active network connection when the <see cref="ReloadButtonCommand" /> is invoked.
-		/// </summary>
-		/// <remarks>Defaults to <see langword="true"/>.</remarks>
-		protected virtual bool CheckNetworkConnectionOnReload { get; } = true;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ViewModelBase"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		/// <param name="authHelper">The authentication helper.</param>
-		/// <param name="eventManager">The event manager.</param>
-		/// <param name="commandFactory">The command factory.</param>
-		/// <param name="dialogUtility">The dialog utility.</param>
-		public ViewModelBase(
-			ILogger logger,
-			IDialogUtility dialogUtility,
-			IAppAuthHelper authHelper,
-			IGlobalWeakEventManager eventManager,
-			IUmbrellaCommandFactory commandFactory)
-			: base(logger, dialogUtility, authHelper)
-		{
-			EventManager = eventManager;
-			CommandFactory = commandFactory;
-
-			NavigateBackButtonCommand = commandFactory.CreateAsyncCommand(NavigateBackAsync);
-			NavigateToAppPathButtonCommand = commandFactory.CreateAsyncCommand<string?>(NavigateToAppPathAsync);
-			ReloadButtonCommand = commandFactory.CreateAsyncCommand(OnReloadButtonClicked, CheckNetworkConnectionOnReload);
-			OpenUrlInternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, true), true);
-			OpenUrlExternalCommand = commandFactory.CreateAsyncCommand<string?>(x => OpenUrlAsync(x, false), true);
-		}
-
-		/// <summary>
-		/// Sets the <see cref="IsBusy"/> and <see cref="IsRefreshing"/> flags to <see langword="false" />.
-		/// </summary>
-		protected void ClearFlags() => IsBusy = IsRefreshing = false;
-
-		/// <summary>
-		/// Called when the <see cref="ReloadButtonCommand"/> is invoked. Unless overridden, this method
-		/// just returns <see cref="Task.CompletedTask"/>.
-		/// </summary>
-		/// <returns>An awaitable Task that completes when the operation completes.</returns>
-		protected virtual Task OnReloadButtonClicked() => Task.CompletedTask;
-
-		/// <summary>
-		/// Opens the specified <paramref name="url"/>.
-		/// </summary>
-		/// <param name="url">The URL to open.</param>
-		/// <param name="openInsideApp">
-		/// If <see langword="true"/>, opens the specified <paramref name="url"/> inside the app; otherwise
-		/// the <paramref name="url"/> will open in the default web browser.
-		/// </param>
-		/// <returns>An awaitable Task that completes when the operation completes.</returns>
-		protected async Task OpenUrlAsync(string? url, bool openInsideApp)
-		{
-			try
-			{
-				if (string.IsNullOrWhiteSpace(url))
-					throw new Exception("The url is null or empty");
-
-				await Browser.OpenAsync(url, openInsideApp ? BrowserLaunchMode.SystemPreferred : BrowserLaunchMode.External);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { url, openInsideApp }))
-			{
-				await DialogUtility.ShowDangerMessageAsync();
-			}
-		}
-
-		/// <summary>
-		/// Performs navigation from the current page to the specified path.
-		/// </summary>
-		/// <param name="path">The application path to navigate to.</param>
-		/// <returns>An awaitable Task that completes when the operation completes.</returns>
-		protected async Task NavigateToAppPathAsync(string? path)
-		{
-			try
-			{
-				if (string.IsNullOrWhiteSpace(path))
-					throw new Exception("The path is null or empty");
-
-				await Shell.Current.GoToAsync(path);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { path }))
-			{
-				await DialogUtility.ShowDangerMessageAsync();
-			}
-		}
-
-		/// <summary>
-		/// Performs navigation from the current page to the previous page in the navigation stack.
-		/// </summary>
-		/// <returns>An awaitable Task that completes when the operation completes.</returns>
-		protected Task NavigateBackAsync() => NavigateToAppPathAsync("..");
-
-		/// <summary>
-		/// Registers an auto-unsubscribing event subscription with the specified <paramref name="eventName"/>.
-		/// This replaces any existing subscriptions for the same named event. After the event is raised by a publisher,
-		/// the subscription is automatically removed to prevent the <paramref name="eventHandler"/> being executed again.
-		/// </summary>
-		/// <param name="eventName">The name of the event to subscribe to.</param>
-		/// <param name="eventHandler">The event handler.</param>
-		/// <returns>A <see cref="Task"/> which completes after the subscription has been registered.</returns>
-		protected async Task RegisterAutoUnsubscribingEventAsync(string eventName, Func<Task> eventHandler)
-		{
-			try
-			{
-				var state = new Dictionary<string, object>
-				{
-					[nameof(eventName)] = eventName,
-					[nameof(eventHandler)] = eventHandler,
-				};
-
-				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Func<Dictionary<string, object>, Task>>(async state =>
-				{
-					try
-					{
-						await ((Func<Task>)state[nameof(eventHandler)])();
-
-					}
-					catch (UmbrellaHttpServiceConcurrencyException)
-					{
-						await DialogUtility.ShowDangerMessageAsync("The data on this page has changed since it was loaded. Please try again.");
-					}
-					catch (Exception exc) when (Logger.WriteError(exc))
-					{
-						await DialogUtility.ShowDangerMessageAsync();
-					}
-					finally
-					{
-						EventManager.RemoveAllEventHandlers((string)state[nameof(eventName)]);
-					}
-				}, eventName, state);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
-			{
-				EventManager.RemoveAllEventHandlers(eventName);
-				await DialogUtility.ShowDangerMessageAsync();
-			}
-		}
-
-		/// <summary>
-		/// Registers an auto-unsubscribing event subscription with the specified <paramref name="eventName"/>.
-		/// This replaces any existing subscriptions for the same named event. After the event is raised by a publisher,
-		/// the subscription is automatically removed to prevent the <paramref name="eventHandler"/> being executed again.
-		/// </summary>
-		/// <typeparam name="TResult">The type of the result raised by a publisher and supplied as the argument to the <paramref name="eventHandler"/>.</typeparam>
-		/// <param name="eventName">The name of the event to subscribe to.</param>
-		/// <param name="eventHandler">The event handler.</param>
-		/// <returns>A <see cref="Task"/> which completes after the subscription has been registered.</returns>
-		protected async Task RegisterAutoUnsubscribingEventAsync<TResult>(string eventName, Func<TResult, Task> eventHandler)
-		{
-			try
-			{
-				var state = new Dictionary<string, object>
-				{
-					[nameof(eventName)] = eventName,
-					[nameof(eventHandler)] = eventHandler,
-				};
-
-				EventManager.RemoveAllEventHandlers(eventName);
-				EventManager.AddEventHandler<Func<Dictionary<string, object>, TResult, Task>>(async (state, result) =>
-				{
-					try
-					{
-						await ((Func<TResult, Task>)state[nameof(eventHandler)])(result);
-					}
-					catch (UmbrellaHttpServiceConcurrencyException)
-					{
-						await DialogUtility.ShowDangerMessageAsync("The data on this page has changed since it was loaded. Please try again.");
-					}
-					catch (Exception exc) when (Logger.WriteError(exc))
-					{
-						await DialogUtility.ShowDangerMessageAsync();
-					}
-					finally
-					{
-						EventManager.RemoveAllEventHandlers((string)state[nameof(eventName)]);
-					}
-
-				}, eventName, state);
-			}
-			catch (Exception exc) when (Logger.WriteError(exc, new { eventName }))
-			{
-				EventManager.RemoveAllEventHandlers(eventName);
-				await DialogUtility.ShowDangerMessageAsync();
-			}
+			await DialogUtility.ShowDangerMessageAsync();
 		}
 	}
+
+	/// <summary>
+	/// Performs navigation from the current page to the specified path.
+	/// </summary>
+	/// <param name="path">The application path to navigate to.</param>
+	/// <returns>An awaitable Task that completes when the operation completes.</returns>
+	protected async Task NavigateToAppPathAsync(string? path)
+	{
+		Guard.IsNotNullOrWhiteSpace(path);
+
+		try
+		{
+			await Shell.Current.GoToAsync(path);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { path }))
+		{
+			await DialogUtility.ShowDangerMessageAsync();
+		}
+	}
+
+	/// <summary>
+	/// Performs navigation from the current page to the previous page in the navigation stack.
+	/// </summary>
+	/// <returns>An awaitable Task that completes when the operation completes.</returns>
+	protected Task NavigateBackAsync() => NavigateToAppPathAsync("..");
 }

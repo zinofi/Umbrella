@@ -1,0 +1,36 @@
+﻿@typeparam TModel
+
+@if (CurrentState is LayoutState.Loading)
+{
+    @if (Loading is not null)
+    {
+        @Loading
+    }
+    else
+    {
+        <LoadingStateView />
+    }
+}
+else if (CurrentState is LayoutState.Success && Model is not null)
+{
+    @Success
+}
+else if (CurrentState is LayoutState.Error)
+{
+    @if (Error is not null)
+    {
+        @Error
+    }
+    else
+    {
+        <ErrorStateView OnReloadButtonClick="ReloadCallback" />
+    }
+}
+else if (CurrentState is LayoutState.Empty)
+{
+    @Empty
+}
+else if(CurrentState is LayoutState.Saving)
+{
+    @Saving
+}

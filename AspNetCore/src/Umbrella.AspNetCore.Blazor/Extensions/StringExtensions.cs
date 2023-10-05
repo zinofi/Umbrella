@@ -1,33 +1,25 @@
-﻿using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Components;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
 
-namespace Umbrella.AspNetCore.Blazor.Extensions
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Components;
+using Umbrella.Utilities.Constants;
+
+namespace Umbrella.AspNetCore.Blazor.Extensions;
+
+/// <summary>
+/// Blazor specific extension methods for use with strings.
+/// </summary>
+public static class StringExtensions
 {
 	/// <summary>
-	/// Blazor specific extension methods for use with strings.
+	/// Encodes the specified <paramref name="value"/> as HTML and then replaces all encoded new line characters with the specified <paramref name="replacement"/>.
 	/// </summary>
-	public static class StringExtensions
-	{
-		private static readonly string _encodedNewLineToken;
-
-		static StringExtensions()
-		{
-			// TODO: Need to allow this to deal with \r\n and \n to cope with differences between Windows and Unix.
-			_encodedNewLineToken = HtmlEncoder.Default.Encode("\n");
-		}
-
-		/// <summary>
-		/// Encodes the specified <paramref name="value"/> as HTML and then replaces all encoded '\n' new line characters with the specified <paramref name="replacement"/>.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="replacement">The replacement.</param>
-		/// <returns>The HTML encoded output.</returns>
-		public static MarkupString ReplaceNewLine(this string? value, string replacement = "<br />")
-		{
-			if (string.IsNullOrWhiteSpace(value))
-				return default;
-
-			return (MarkupString)HtmlEncoder.Default.Encode(value).Replace(_encodedNewLineToken, replacement);
-		}
-	}
+	/// <param name="value">The value.</param>
+	/// <param name="replacement">The replacement.</param>
+	/// <returns>The HTML encoded output.</returns>
+	public static MarkupString ReplaceNewLines(this string? value, string replacement = "<br />")
+		=> string.IsNullOrWhiteSpace(value)
+		? default
+		: (MarkupString)HtmlEncoder.Default.Encode(value).NormalizeHtmlEncodedNewLines().Replace(StringEncodingConstants.HtmlEncodedCrLfToken, replacement, StringComparison.Ordinal);
 }

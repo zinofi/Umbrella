@@ -1,0 +1,15 @@
+/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-empty-state-view-color-primary
+	--u-empty-state-view-font-weight
+*/
+
+.u-empty-state-view
+{
+	p
+	{
+		color: var(--u-empty-state-view-color-primary, red);
+		font-weight: var(--u-empty-state-view-font-weight, bold);
+	}
+}

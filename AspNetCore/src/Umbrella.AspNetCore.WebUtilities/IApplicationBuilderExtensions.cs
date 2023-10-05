@@ -1,98 +1,135 @@
-﻿using Umbrella.AspNetCore.WebUtilities.Middleware;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
+using Ultimedia.Rtms.Web.Server.Middleware;
+using Umbrella.AppFramework.Shared.Constants;
+using Umbrella.AspNetCore.WebUtilities.Extensions;
+using Umbrella.AspNetCore.WebUtilities.Middleware;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.Utilities;
+using Umbrella.Utilities.Helpers;
 
-namespace Microsoft.AspNetCore.Builder
+#pragma warning disable IDE0130
+namespace Microsoft.AspNetCore.Builder;
+
+/// <summary>
+/// Extentions methods for the <see cref="IApplicationBuilder" /> type.
+/// These methods will usually be called when configuring the middleware pipeline in Startup.cs.
+/// </summary>
+public static class IApplicationBuilderExtensions
 {
 	/// <summary>
-	/// Extentions methods for the <see cref="IApplicationBuilder" /> type.
-	/// These methods will usually be called when configuring the middleware pipeline in Startup.cs.
+	/// Adds the <see cref="QueryStringParameterToHttpHeaderMiddleware" /> to the pipeline.
 	/// </summary>
-	public static class IApplicationBuilderExtensions
+	/// <param name="builder">The builder.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseUmbrellaQueryStringParameterToHttpHeader(this IApplicationBuilder builder) => builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>();
+
+	/// <summary>
+	/// Adds the <see cref="InternetExplorerCacheHeadersMiddleware" /> to the pipeline.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder) => builder.UseMiddleware<InternetExplorerCacheHeadersMiddleware>();
+
+	/// <summary>
+	/// Adds the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey}"/> to the pipeline.
+	/// </summary>
+	/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey>(this IApplicationBuilder builder) => builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey>>();
+
+	/// <summary>
+	/// Adds the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey, TNullableAppTenantKey}"/> to the pipeline.
+	/// </summary>
+	/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
+	/// <typeparam name="TNullableAppTenantKey">The type of the nullable application tenant key.</typeparam>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The application builder.</returns>
+	/// <remarks>
+	/// The ability to allow a <typeparamref name="TNullableAppTenantKey"/> to be specified allows for a <see cref="DbAppTenantSessionContext{TNullableAppTenantKey}"/>
+	/// to be accessed in a context where the current user may or may not be associated with a specific tenant. For example, application users will be stored in a database
+	/// and each user will normally be associated with a tenant. However, the same database table may contain users not associated to a single tenant, e.g. system administrators,
+	/// and those users will need to perform actions outside the context of a single tenant. The provision of a nullable key allows for this under these specialized circumstances.
+	/// </remarks>
+	public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey, TNullableAppTenantKey>(this IApplicationBuilder builder) => builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>>();
+
+	/// <summary>
+	/// Adds the <see cref="FrontEndCompressionMiddleware"/> to the pipeline.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The application builder.</returns>
+	[Obsolete("This will be removed in a future version.")]
+	public static IApplicationBuilder UseUmbrellaFrontEndCompression(this IApplicationBuilder builder) => builder.UseMiddleware<FrontEndCompressionMiddleware>();
+
+	/// <summary>
+	/// Adds the <see cref="ApiExceptionMiddleware"/> to the pipeline for all requests
+	/// that have the specified <paramref name="pathPrefix"/>.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <param name="pathPrefix">The path prefix for API endpoints.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseUmbrellaApiException(this IApplicationBuilder builder, string pathPrefix = "/api") => builder.UseWhen(x => x.Request.Path.StartsWithSegments(pathPrefix, StringComparison.OrdinalIgnoreCase), app => app.UseMiddleware<ApiExceptionMiddleware>());
+
+	/// <summary>
+	/// Adds the <see cref="FileAccessTokenQueryStringMiddleware"/> to the pipeline for all requests
+	/// that have a specified QueryString parameter with name <see cref="AppQueryStringKeys.FileAccessToken"/>.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseUmbrellaFileAccessTokenQueryString(this IApplicationBuilder builder) => builder.UseWhen(ctx => ctx.Request.Query.ContainsKey(AppQueryStringKeys.FileAccessToken), app => app.UseMiddleware<FileAccessTokenQueryStringMiddleware>());
+
+	/// <summary>
+	/// Ensures that the <see cref="IHostingEnvironment.ContentRootPath"/>,
+	/// <see cref="IHostingEnvironment.ContentRootFileProvider"/>
+	/// and <see cref="IHostingEnvironment.WebRootPath"/> have been set correctly
+	/// when developing a Blazor application hosted using ASP.NET Core.
+	/// </summary>
+	/// <remarks>
+	/// For some reason, only during development, these properties are set incorrectly.
+	/// This may be fixed in a future version but was definitely a problem when developing a .NET Core 3.1 project.
+	/// </remarks>
+	/// <param name="app">The application.</param>
+	/// <param name="clientProjectSuffix">The client project suffix.</param>
+	/// <param name="serverProjectSuffix">The server project suffix.</param>
+	/// <returns>The <see cref="WebApplication"/> instance.</returns>
+	public static WebApplication EnsureBlazorDevelopmentPaths(this WebApplication app, string clientProjectSuffix = "Client", string serverProjectSuffix = "Server")
 	{
-		/// <summary>
-		/// Adds the <see cref="QueryStringParameterToHttpHeaderMiddleware" /> to the pipeline.
-		/// </summary>
-		/// <param name="builder">The builder.</param>
-		/// <returns>The application builder.</returns>
-		public static IApplicationBuilder UseUmbrellaQueryStringParameterToHttpHeader(this IApplicationBuilder builder)
+		if (app.Environment.ContentRootPath.LastIndexOf(clientProjectSuffix, StringComparison.InvariantCulture) > 0)
 		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
-
-			return builder.UseMiddleware<QueryStringParameterToHttpHeaderMiddleware>();
+			string contentRootPath = $@"{app.Environment.ContentRootPath[..app.Environment.ContentRootPath.LastIndexOf(clientProjectSuffix, StringComparison.InvariantCulture)]}{serverProjectSuffix}";
+			app.Environment.ContentRootPath = PathHelper.PlatformNormalize(contentRootPath);
+			app.Environment.ContentRootFileProvider = new PhysicalFileProvider(app.Environment.ContentRootPath);
 		}
 
-		/// <summary>
-		/// Adds the <see cref="InternetExplorerCacheHeadersMiddleware" /> to the pipeline.
-		/// </summary>
-		/// <param name="builder">The builder.</param>
-		/// <returns>The application builder.</returns>
-		public static IApplicationBuilder UseUmbrellaInternetExplorerCacheHeaders(this IApplicationBuilder builder)
+		if (string.IsNullOrEmpty(app.Environment.WebRootPath) || app.Environment.WebRootPath.LastIndexOf(serverProjectSuffix, StringComparison.InvariantCulture) > 0)
 		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
-
-			return builder.UseMiddleware<InternetExplorerCacheHeadersMiddleware>();
+			string webRootPath = $@"{app.Environment.ContentRootPath[..app.Environment.ContentRootPath.LastIndexOf(serverProjectSuffix, StringComparison.InvariantCulture)]}{clientProjectSuffix}\wwwroot";
+			app.Environment.WebRootPath = PathHelper.PlatformNormalize(webRootPath);
 		}
 
-		/// <summary>
-		/// Adds the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey}"/> to the pipeline.
-		/// </summary>
-		/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
-		/// <param name="builder">The builder.</param>
-		/// <returns>The application builder.</returns>
-		public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey>(this IApplicationBuilder builder)
-		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
-
-			return builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey>>();
-		}
-
-		/// <summary>
-		/// Adds the <see cref="MultiTenantSessionContextMiddleware{TAppTenantKey, TNullableAppTenantKey}"/> to the pipeline.
-		/// </summary>
-		/// <typeparam name="TAppTenantKey">The type of the application tenant key.</typeparam>
-		/// <typeparam name="TNullableAppTenantKey">The type of the nullable application tenant key.</typeparam>
-		/// <param name="builder">The builder.</param>
-		/// <returns>The application builder.</returns>
-		/// <remarks>
-		/// The ability to allow a <typeparamref name="TNullableAppTenantKey"/> to be specified allows for a <see cref="DbAppTenantSessionContext{TNullableAppTenantKey}"/>
-		/// to be accessed in a context where the current user may or may not be associated with a specific tenant. For example, application users will be stored in a database
-		/// and each user will normally be associated with a tenant. However, the same database table may contain users not associated to a single tenant, e.g. system administrators,
-		/// and those users will need to perform actions outside the context of a single tenant. The provision of a nullable key allows for this under these specialized circumstances.
-		/// </remarks>
-		public static IApplicationBuilder UseUmbrellaMultiTenantSessionContext<TAppTenantKey, TNullableAppTenantKey>(this IApplicationBuilder builder)
-		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
-
-			return builder.UseMiddleware<MultiTenantSessionContextMiddleware<TAppTenantKey, TNullableAppTenantKey>>();
-		}
-
-		/// <summary>
-		/// Adds the <see cref="FrontEndCompressionMiddleware"/> to the pipeline.
-		/// </summary>
-		/// <param name="builder">The builder.</param>
-		/// <returns>The application builder.</returns>
-		public static IApplicationBuilder UseUmbrellaFrontEndCompression(this IApplicationBuilder builder)
-		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
-
-			builder.UseMiddleware<FrontEndCompressionMiddleware>();
-
-			return builder;
-		}
-
-		/// <summary>
-		/// Adds the <see cref="ApiExceptionMiddleware"/> to the pipeline.
-		/// </summary>
-		/// <param name="builder">The builder.</param>
-		/// <returns>The application builder.</returns>
-		public static IApplicationBuilder UseUmbrellaApiException(this IApplicationBuilder builder)
-		{
-			Guard.ArgumentNotNull(builder, nameof(builder));
-
-			builder.UseMiddleware<ApiExceptionMiddleware>();
-
-			return builder;
-		}
+		return app;
 	}
+
+	/// <summary>
+	/// Branches the request pipeline to a terminal state, resulting in a 400 Bad Request, if the host domain being requested is for an <c>azurewebsites.net</c> domain
+	/// and the request path is not listed in the <paramref name="pathExceptions"/>.
+	/// </summary>
+	/// <param name="builder">The application builder.</param>
+	/// <param name="pathExceptions">The list of path exceptions.</param>
+	/// <returns>The application builder.</returns>
+	public static IApplicationBuilder UseBlockAllAzureWebsitesNetDomainTraffic(this IApplicationBuilder builder, params string[] pathExceptions)
+		=> builder.MapWhen(x => !pathExceptions.Contains(x.Request.Path.Value, StringComparer.OrdinalIgnoreCase) && x.Request.Host.Host.EndsWith("azurewebsites.net", StringComparison.OrdinalIgnoreCase), app => app.Use((HttpContext context, Func<Task> next) =>
+		{
+			context.Response.SendStatusCode(HttpStatusCode.BadRequest);
+
+			return Task.CompletedTask;
+		}));
+
+	/// <summary>
+	/// Adds the <see cref="LinkHeaderMiddleware"/> to the pipeline.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	public static IApplicationBuilder UseUmbrellaLinkHeader(this IApplicationBuilder builder) => builder.UseMiddleware<LinkHeaderMiddleware>();
 }

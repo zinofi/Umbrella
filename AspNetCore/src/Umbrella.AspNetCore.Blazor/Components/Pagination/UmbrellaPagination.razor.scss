@@ -1,0 +1,17 @@
+.u-pagination
+{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.pagination
+	{
+		margin: 0;
+
+		&-size
+		{
+			display: flex;
+			align-items: center;
+		}
+	}
+}

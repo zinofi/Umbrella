@@ -4,11 +4,17 @@
 using Umbrella.Utilities.Networking.Abstractions;
 using Xamarin.Essentials;
 
-namespace Umbrella.Xamarin.Networking
+namespace Umbrella.Xamarin.Networking;
+
+/// <summary>
+/// A utility used to determine if there is a network connection.
+/// </summary>
+/// <seealso cref="INetworkConnectionStatusUtility" />
+public class NetworkConnectionStatusUtility : INetworkConnectionStatusUtility
 {
-	public class NetworkConnectionStatusUtility : INetworkConnectionStatusUtility
-	{
-		/// <inheritdoc />
-		public bool IsConnected => Connectivity.NetworkAccess == NetworkAccess.Internet;
-	}
+	// TODO: Can we make this a little bit more sophisticated by pinging an endpoint when the NetworkAccess == NetworkAccess.Internet.
+	// Maybe ping every x seconds and if no response set IsConnected to false.
+
+	/// <inheritdoc />
+	public bool IsConnected => Connectivity.NetworkAccess == NetworkAccess.Internet;
 }

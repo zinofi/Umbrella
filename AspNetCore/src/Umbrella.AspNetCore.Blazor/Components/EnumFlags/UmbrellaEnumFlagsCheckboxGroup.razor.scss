@@ -1,0 +1,30 @@
+/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-enum-flags-margin
+	--u-enum-flags-items-gap
+*/
+
+.u-enum-flags
+{
+	$margin: 8px 0;
+	$items-gap: 8px;
+
+	margin: var(--u-enum-flags-margin, $margin);
+
+	&__items
+	{
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--u-enum-flags-items-gap, $items-gap);
+		margin: 0;
+		padding: 0;
+	}
+
+	&__item
+	{
+		margin: 0;
+		padding: 0;
+	}
+}

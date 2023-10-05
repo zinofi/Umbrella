@@ -1,39 +1,35 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.Extensions.ObjectPool;
-using System;
+﻿using Microsoft.Extensions.ObjectPool;
 using Umbrella.Utilities.Exceptions;
 
-namespace Umbrella.Utilities.Security.Abstractions
+namespace Umbrella.Utilities.Security.Abstractions;
+
+/// <summary>
+/// The base class for auth check id types.
+/// </summary>
+/// <typeparam name="TAuthCheckId">The type from which this is derived.</typeparam>
+/// <typeparam name="TValue">The type of the value stored by this type.</typeparam>
+public abstract class UmbrellaAuthCheckId<TAuthCheckId, TValue> : IDisposable
+	where TAuthCheckId : class
 {
 	/// <summary>
-	/// The base class for auth check id types.
+	/// Gets or sets the object pool.
 	/// </summary>
-	/// <typeparam name="TAuthCheckId">The type from which this is derived.</typeparam>
-	/// <typeparam name="TValue">The type of the value stored by this type.</typeparam>
-	public abstract class UmbrellaAuthCheckId<TAuthCheckId, TValue> : IDisposable
-		where TAuthCheckId : class
+	public ObjectPool<TAuthCheckId>? Pool { get; internal set; }
+
+	/// <summary>
+	/// Gets or sets the value.
+	/// </summary>
+	public TValue Value { get; internal set; } = default!;
+
+	/// <inheritdoc />
+	public void Dispose()
 	{
-		/// <summary>
-		/// Gets or sets the object pool.
-		/// </summary>
-		public ObjectPool<TAuthCheckId>? Pool { get; internal set; }
+		if (this is TAuthCheckId value)
+			Pool?.Return(value);
+		else
+			throw new UmbrellaException($"The object is not of type: {typeof(TAuthCheckId).FullName}.");
 
-		/// <summary>
-		/// Gets or sets the value.
-		/// </summary>
-		public TValue Value { get; internal set; } = default!;
-
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			if (this is TAuthCheckId value)
-				Pool?.Return(value);
-			else
-				throw new UmbrellaException($"The object is not of type: {typeof(TAuthCheckId).FullName}.");
-
-			Pool = null;
-		}
+		Pool = null;
+		GC.SuppressFinalize(this);
 	}
 }

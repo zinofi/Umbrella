@@ -1,14 +1,14 @@
-﻿<div class="modal-backdrop fade show" @onclick="BackgroundClick"></div>
+﻿<div class="modal-backdrop fade show" @onclick="BackgroundClickAsync"></div>
 <div class="modal fade show d-block u-dialog" tabindex="-1" role="dialog">
-	<div class="modal-dialog @(DialogSizeCssClass) @(ModalInstance.Options.Class) @(ModalInstance.Options.ContentScrollable is true ? "modal-dialog-scrollable" : "")" role="document">
+	<div class="modal-dialog @(DialogSizeCssClass) @(ModalInstance.Options.Class) modal-dialog-scrollable" role="document">
 		<div class="modal-content">
-			@if (ModalInstance.Options.HideHeader != true)
+			@if (ModalInstance.Options.HideHeader is not true)
 			{
 				<div class="modal-header">
 					<h5 class="modal-title">@ModalInstance.Title</h5>
-					@if (ModalInstance.Options.HideCloseButton != true)
+					@if (ModalInstance.Options.HideCloseButton is not true)
 					{
-						<button type="button" class="close" aria-label="Close" @onclick="CloseClick">
+						<button type="button" class="close" aria-label="Close" @onclick="CloseClickAsync">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					}
@@ -23,7 +23,7 @@
 					}
 					@if (!string.IsNullOrWhiteSpace(Message))
 					{
-						<p>@Message.ReplaceNewLine()</p>
+						<p>@Message.ReplaceNewLines()</p>
 					}
 				</div>
 				@if (Buttons?.Count > 0)
@@ -31,7 +31,7 @@
 					<div class="modal-footer">
 						@foreach (var button in Buttons)
 						{
-							<button type="button" class="btn btn-@(button.CssClass) @(button.FlexibleWidth ? "btn--flexible" : "")" @onclick="(e => ButtonClick(button))">@button.Text</button>
+							<button type="button" class="btn btn-@(button.CssClass) @(button.FlexibleWidth ? "btn--flexible" : "")" @onclick="(e => ButtonClickAsync(button))">@button.Text</button>
 						}
 					</div>
 				}

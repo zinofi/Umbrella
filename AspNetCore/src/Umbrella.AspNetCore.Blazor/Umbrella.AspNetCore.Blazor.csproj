@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
-		<RazorLangVersion>3.0</RazorLangVersion>
-		<TypeScriptToolsVersion>4.1</TypeScriptToolsVersion>
+		<TargetFramework>net6.0</TargetFramework>
+		<TypeScriptToolsVersion>4.7</TypeScriptToolsVersion>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-		<DocumentationFile>bin\Release\netstandard2.1\Umbrella.AspNetCore.Blazor.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -14,22 +12,41 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="package-lock.json" />
-	  <Content Remove="package.json" />
-	  <Content Remove="tsconfig.json" />
-	  <Content Remove="Content\**" />
+		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
-		<PackageReference Include="Blazored.Modal" Version="6.0.1" />
-		<PackageReference Include="Blazored.SessionStorage" Version="1.0.13" />
+		<Content Remove="package-lock.json" />
+		<Content Remove="package.json" />
+		<Content Remove="tsconfig.json" />
+		<Content Remove="Content\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BlazorApplicationInsights" Version="2.2.2" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
+		<PackageReference Include="Blazored.Modal" Version="7.1.0" />
+		<PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.22" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Tewr.Blazor.FileReader" Version="2.1.0.20274" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.22" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+		<None Include="Components\AutoComplete\UmbrellaAutoComplete.razor" />
+		<None Include="Components\EnumFlags\UmbrellaEnumFlagsCheckboxGroup.razor" />
+		<None Include="Components\Messages\ErrorMessage.razor" />
+		<None Include="Components\Messages\SuccessMessage.razor" />
+		<None Include="Components\Messages\WarningMessage.razor" />
 		<None Include="package-lock.json" />
 		<None Include="package.json" />
 		<None Include="tsconfig.json" />
@@ -37,12 +54,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
-	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
+		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj" />
+		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\" />
+		<Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Umbrella.Utilities.Extensions" />
+		<Using Include="Umbrella.AspNetCore.Blazor.Exceptions" />
 	</ItemGroup>
 
 </Project>

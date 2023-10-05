@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<DocumentationFile>bin\Release\net461\Umbrella.Legacy.WebUtilities.DynamicImage.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -20,6 +19,14 @@
 		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
 		<PackageReference Include="Microsoft.Owin" Version="4.2.2" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -36,5 +43,5 @@
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
-	
+
 </Project>

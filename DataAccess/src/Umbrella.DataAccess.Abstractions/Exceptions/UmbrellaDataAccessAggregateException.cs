@@ -1,21 +1,31 @@
-﻿using System;
+﻿using System.Runtime.Serialization;
 
-namespace Umbrella.DataAccess.Abstractions.Exceptions
+namespace Umbrella.DataAccess.Abstractions.Exceptions;
+
+/// <summary>
+/// Represents an exception thrown during data access that results in multiple exceptions.
+/// </summary>
+/// <seealso cref="UmbrellaDataAccessException" />
+[Serializable]
+public class UmbrellaDataAccessAggregateException : UmbrellaDataAccessException
 {
 	/// <summary>
-	/// Represents an exception thrown during data access that results in multiple exceptions.
+	/// Initializes a new instance of the <see cref="UmbrellaDataAccessAggregateException"/> class.
 	/// </summary>
-	/// <seealso cref="UmbrellaDataAccessException" />
-	public class UmbrellaDataAccessAggregateException : UmbrellaDataAccessException
+	/// <param name="message">The message.</param>
+	/// <param name="innerExceptions">The inner exceptions.</param>
+	public UmbrellaDataAccessAggregateException(string message, params Exception[] innerExceptions)
+		: base(message, new AggregateException(innerExceptions))
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaDataAccessAggregateException"/> class.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <param name="innerExceptions">The inner exceptions.</param>
-		public UmbrellaDataAccessAggregateException(string message, params Exception[] innerExceptions)
-			: base(message, new AggregateException(innerExceptions))
-		{
-		}
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaDataAccessAggregateException"/> class.
+	/// </summary>
+	/// <param name="info">The <see cref="SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+	/// <param name="context">The <see cref="StreamingContext"></see> that contains contextual information about the source or destination.</param>
+	protected UmbrellaDataAccessAggregateException(SerializationInfo info, StreamingContext context)
+		: base(info, context)
+	{
 	}
 }

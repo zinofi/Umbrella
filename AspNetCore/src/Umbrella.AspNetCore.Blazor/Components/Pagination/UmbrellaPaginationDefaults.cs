@@ -1,25 +1,22 @@
-﻿using System.Collections.Generic;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.Pagination;
 
-namespace Umbrella.AspNetCore.Blazor.Components.Pagination
+/// <summary>
+/// Specifies the pagination defaults.
+/// </summary>
+public static class UmbrellaPaginationDefaults
 {
 	/// <summary>
-	/// Specifies the pagination defaults.
+	/// The default page number.
 	/// </summary>
-	public static class UmbrellaPaginationDefaults
-	{
-		/// <summary>
-		/// The default page number.
-		/// </summary>
-		public const int PageNumber = 1;
+	public const int PageNumber = 1;
 
-		/// <summary>
-		/// The default page size.
-		/// </summary>
-		public const int PageSize = 50;
+	/// <summary>
+	/// The default page size.
+	/// </summary>
+	public const int PageSize = 50;
 
-		/// <summary>
-		/// The default page size options of 10, 25, and 50.
-		/// </summary>
-		public static readonly IReadOnlyCollection<int> PageSizeOptions = new[] { 10, 25, 50 };
-	}
+	/// <summary>
+	/// The default page size options of 10, 25, and 50.
+	/// </summary>
+	public static readonly IReadOnlyCollection<int> PageSizeOptions = new[] { 10, 25, 50 };
 }

@@ -1,0 +1,15 @@
+/*
+	Define and specify values for the following variables to override the default styling.
+
+	--u-loading-state-view-color-primary
+	--u-loading-state-view-font-weight
+*/
+
+.u-loading-state-view
+{
+	p
+	{
+		color: var(--u-loading-state-view-color-primary, red);
+		font-weight: var(--u-loading-state-view-font-weight, bold);
+	}
+}

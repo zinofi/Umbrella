@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.WebUtilities.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -12,15 +11,28 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="3.1.32" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Abstractions\Umbrella.DataAccess.Abstractions.csproj" />
 		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Umbrella.WebUtilities.Exceptions" />
 	</ItemGroup>
 	
 </Project>

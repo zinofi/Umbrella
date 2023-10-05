@@ -1,0 +1,6 @@
+@model Umbrella.WebUtilities.Versioning.Models.SystemVersionModel
+<!-- Version: @Model.Version -->
+@if (!string.IsNullOrEmpty(Model.DatabaseVersion))
+{
+    <!-- Database Version: @Model.DatabaseVersion -->
+}

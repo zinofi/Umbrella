@@ -1,0 +1,10 @@
+﻿<div class="u-autocomplete form-group form-floating">
+    <input id="@_id" class="form-control" list="@("dl" + _id)" type="search" placeholder="@LabelText" value="@Value" @oninput="OnInput" @onchange="OnChangeAsync" spellcheck="false" autocomplete="off" data-lpignore="true" />
+    <label for="@_id">@LabelText</label>
+    <datalist id="@("dl" + _id)" class="u-autocomplete__datalist">
+        @foreach(string option in _options)
+        {
+            <option value="@option" />
+        }
+    </datalist>
+</div>

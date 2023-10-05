@@ -2,40 +2,36 @@
 // Licensed under the MIT License.
 
 using Microsoft.Extensions.ObjectPool;
-using System;
 using System.Collections.Concurrent;
 using Umbrella.Utilities.Exceptions;
 
-namespace Umbrella.Utilities.Security.Abstractions
+namespace Umbrella.Utilities.Security.Abstractions;
+
+/// <summary>
+/// The base class for factories used to create AuthCheckId instances.
+/// </summary>
+public abstract class UmbrellaAuthCheckIdFactory
 {
+	private static readonly ConcurrentDictionary<Type, object> _objectPoolDictionary = new();
+
 	/// <summary>
-	/// The base class for factories used to create AuthCheckId instances.
+	/// Create a new instance of the specified <typeparamref name="TAuthCheckId"/> type that has contains a value of <typeparamref name="TValue"/>.
 	/// </summary>
-	public abstract class UmbrellaAuthCheckIdFactory
+	/// <typeparam name="TAuthCheckId">The auth check id type.</typeparam>
+	/// <typeparam name="TValue">The value type.</typeparam>
+	/// <param name="id">The id value.</param>
+	/// <returns>A new auth check id instance that derives from <typeparamref name="TAuthCheckId"/>.</returns>
+	/// <exception cref="UmbrellaException">Thrown if an <see cref="ObjectPool"/> cannot be found for the specified <typeparamref name="TAuthCheckId"/>.</exception>
+	protected static TAuthCheckId GetAuthCheckId<TAuthCheckId, TValue>(TValue id)
+		where TAuthCheckId : UmbrellaAuthCheckId<TAuthCheckId, TValue>, new()
 	{
-		private static readonly ConcurrentDictionary<Type, object> _objectPoolDictionary = new ConcurrentDictionary<Type, object>();
+		if (_objectPoolDictionary.GetOrAdd(typeof(TAuthCheckId), type => ObjectPool.Create<TAuthCheckId>()) is not ObjectPool<TAuthCheckId> objectPool)
+			throw new UmbrellaException("The object pool cannot be found.");
 
-		/// <summary>
-		/// Create a new instance of the specified <typeparamref name="TAuthCheckId"/> type that has contains a value of <typeparamref name="TValue"/>.
-		/// </summary>
-		/// <typeparam name="TAuthCheckId">The auth check id type.</typeparam>
-		/// <typeparam name="TValue">The value type.</typeparam>
-		/// <param name="id">The id value.</param>
-		/// <returns>A new auth check id instance that derives from <typeparamref name="TAuthCheckId"/>.</returns>
-		/// <exception cref="UmbrellaException">Thrown if an <see cref="ObjectPool"/> cannot be found for the specified <typeparamref name="TAuthCheckId"/>.</exception>
-		protected TAuthCheckId GetAuthCheckId<TAuthCheckId, TValue>(TValue id)
-			where TAuthCheckId : UmbrellaAuthCheckId<TAuthCheckId, TValue>, new()
-		{
-			var objectPool = _objectPoolDictionary.GetOrAdd(typeof(TAuthCheckId), type => ObjectPool.Create<TAuthCheckId>()) as ObjectPool<TAuthCheckId>;
+		TAuthCheckId obj = objectPool.Get();
+		obj.Value = id;
+		obj.Pool = objectPool;
 
-			if (objectPool is null)
-				throw new UmbrellaException("The object pool cannot be found.");
-
-			TAuthCheckId obj = objectPool.Get();
-			obj.Value = id;
-			obj.Pool = objectPool;
-
-			return obj;
-		}
+		return obj;
 	}
 }

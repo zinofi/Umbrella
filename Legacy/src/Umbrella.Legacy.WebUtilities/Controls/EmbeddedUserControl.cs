@@ -1,84 +1,82 @@
-﻿using System;
+﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
+// Licensed under the MIT License.
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 
-namespace Umbrella.Legacy.WebUtilities.Controls
+namespace Umbrella.Legacy.WebUtilities.Controls;
+
+/// <summary>
+/// A UserControl that can be embedded inside an assembly.
+/// </summary>
+/// <seealso cref="UserControl" />
+public class EmbeddedUserControl : UserControl
 {
+	#region Private Static Members
+	private static readonly ConcurrentDictionary<Type, (string content, EmbeddedUserControlOptionsAttribute options)> _cachedControlInfoDictionary = new();
+	private static readonly ConcurrentDictionary<string, List<FieldInfo>> _cachedControlFieldsDictionary = new();
+	#endregion
+
+	#region Delegates		
 	/// <summary>
-	/// A UserControl that can be embedded inside an assembly.
+	/// The on framework initialized delegate invoked by the <see cref="FrameworkInitialize"/> method after it has executed all other code.
 	/// </summary>
-	/// <seealso cref="System.Web.UI.UserControl" />
-	public class EmbeddedUserControl : UserControl
+	protected Action? OnFrameworkInitialized { get; set; }
+	#endregion
+
+	#region Overridden Methods
+	/// <inheritdoc />
+	protected override void FrameworkInitialize()
 	{
-		#region Private Static Members
-		private static readonly ConcurrentDictionary<Type, (string content, EmbeddedUserControlOptionsAttribute options)> _cachedControlInfoDictionary = new ConcurrentDictionary<Type, (string, EmbeddedUserControlOptionsAttribute)>();
-		private static readonly ConcurrentDictionary<string, List<FieldInfo>> _cachedControlFieldsDictionary = new ConcurrentDictionary<string, List<FieldInfo>>();
-		#endregion
+		base.FrameworkInitialize();
 
-		#region Delegates		
-		/// <summary>
-		/// The on framework initialized delegate invoked by the <see cref="FrameworkInitialize"/> method after it has executed all other code.
-		/// </summary>
-		protected Action? OnFrameworkInitialized;
-		#endregion
+		Type type = GetType();
 
-		#region Overridden Methods
-		/// <inheritdoc />
-		protected override void FrameworkInitialize()
+		var (content, options) = _cachedControlInfoDictionary.GetOrAdd(type, key =>
 		{
-			base.FrameworkInitialize();
+			using Stream stream = Assembly.GetAssembly(type).GetManifestResourceStream(type, type.Name + ".ascx");
+			using var reader = new StreamReader(stream);
 
-			Type type = GetType();
+			string content = reader.ReadToEnd();
 
-			var (content, options) = _cachedControlInfoDictionary.GetOrAdd(type, key =>
-			{
-				using Stream stream = Assembly.GetAssembly(type).GetManifestResourceStream(type, type.Name + ".ascx");
-				using var reader = new StreamReader(stream);
+			EmbeddedUserControlOptionsAttribute options = type.GetCustomAttributes(typeof(EmbeddedUserControlOptionsAttribute), false).OfType<EmbeddedUserControlOptionsAttribute>().FirstOrDefault();
 
-				string content = reader.ReadToEnd();
+			return (content, options);
+		});
 
-				EmbeddedUserControlOptionsAttribute options = type.GetCustomAttributes(typeof(EmbeddedUserControlOptionsAttribute), false).OfType<EmbeddedUserControlOptionsAttribute>().FirstOrDefault();
+		Control userControl = Page.ParseControl(content, true);
 
-				return (content, options);
-			});
-
-			Control userControl = Page.ParseControl(content, true);
-
-			if (options != null)
-			{
-				EnableViewState = options.EnableViewState;
-				ClientIDMode = options.ClientIDMode;
-			}
-
-			Controls.Add(userControl);
-
-			EnsureControls();
-
-			OnFrameworkInitialized?.Invoke();
-		}
-		#endregion
-
-		#region Private Methods
-		private void EnsureControls()
+		if (options is not null)
 		{
-			Type type = GetType();
-
-			List<FieldInfo> fields = _cachedControlFieldsDictionary.GetOrAdd(type.FullName, key => fields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly).Where(x => typeof(Control).IsAssignableFrom(x.FieldType)).ToList());
-
-			// We should have the reflection information we need from the cache now
-			foreach (FieldInfo field in fields)
-			{
-				if (field.GetValue(this) == null)
-				{
-					Control value = FindControl(field.Name);
-					field.SetValue(this, value);
-				}
-			}
+			EnableViewState = options.EnableViewState;
+			ClientIDMode = options.ClientIDMode;
 		}
-		#endregion
+
+		Controls.Add(userControl);
+
+		EnsureControls();
+
+		OnFrameworkInitialized?.Invoke();
 	}
+	#endregion
+
+	#region Private Methods
+	private void EnsureControls()
+	{
+		Type type = GetType();
+
+		List<FieldInfo> fields = _cachedControlFieldsDictionary.GetOrAdd(type.FullName, key => fields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly).Where(x => typeof(Control).IsAssignableFrom(x.FieldType)).ToList());
+
+		// We should have the reflection information we need from the cache now
+		foreach (FieldInfo field in fields)
+		{
+			if (field.GetValue(this) is null)
+			{
+				Control value = FindControl(field.Name);
+				field.SetValue(this, value);
+			}
+		}
+	}
+	#endregion
 }

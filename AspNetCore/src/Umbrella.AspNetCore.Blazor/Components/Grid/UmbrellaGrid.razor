@@ -1,76 +1,189 @@
-﻿@typeparam TItem
+﻿@using Umbrella.AspNetCore.Blazor.Components.AutoComplete
+@typeparam TItem
 
 @{
+#pragma warning disable CS8625
     string groupName = Guid.NewGuid().ToString("N");
+    string filterContainerId = "a" + Guid.NewGuid().ToString("N")[1..];
+    bool filterableColumnsExist = FilterableColumns is { Count: > 0 };
 }
 
 <CascadingValue Value="this">
     <div class="u-grid">
-        @if (!ColumnScanComplete && RenderMode == UmbrellaGridRenderMode.Full)
+        @if (!ColumnScanComplete && RenderMode is UmbrellaGridRenderMode.Table)
         {
             <CascadingValue Name="ScanMode" Value="true">
                 @Columns?.Invoke(default!)
             </CascadingValue>
         }
 
-        @if (FilterableColumns?.Count > 0 && ShowFilters)
+        @if (ShowFilters && (filterableColumnsExist || AdditionalFilterContent is not null))
         {
             <div class="u-grid__filters">
-                @if (!string.IsNullOrWhiteSpace(FilterOptionsHeading))
-                {
+                <a class="u-grid__filters-heading-collapse-button" data-bs-toggle="collapse" href="#@filterContainerId" role="button" aria-expanded="@ExpandFiltersOnLoad.ToString().ToLowerInvariant()" aria-controls="@filterContainerId">
                     <h2 class="u-grid__filters-heading text-secondary">@FilterOptionsHeading</h2>
-                }
-                <form method="get" novalidate>
-                    <div class="row">
-                        @foreach (var column in FilterableColumns)
-                        {
-                            string id = Guid.NewGuid().ToString("N");
+                    <i class="fas fa-caret-down"></i>
+                </a>
+                <form id="@filterContainerId" class="collapse @(ExpandFiltersOnLoad ? "show" : "")" method="get" novalidate>
+                    @if (filterableColumnsExist)
+                    {
+                        <div class="row">
+                            @foreach (var column in FilterableColumns!)
+                            {
+                                string id = Guid.NewGuid().ToString("N");
 
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="@id">@column.Heading</label>
-                                    @if (column.FilterControlType == UmbrellaColumnFilterType.Options)
+                                <div class="col-md-4">
+
+                                    @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
                                     {
-                                        <select id="@id" class="custom-select custom-select-sm" @bind="column.FilterValue">
-                                            <option>Any</option>
-                                            @foreach (object option in column.FilterOptions)
+                                        <div class="form-group form-floating">
+                                            @if (column.FilterOptions is not null)
                                             {
-                                                <option value="@option">@column.GetFilterOptionDisplayName(option)</option>
+                                                <select id="@id" class="form-select" @bind="column.FilterValue">
+                                                    <option>Any</option>
+                                                    @if (!string.IsNullOrEmpty(column.NullableEnumOption))
+                                                    {
+                                                        <option value="null">@column.NullableEnumOption</option>
+                                                    }
+                                                    @foreach (object option in column.FilterOptions)
+                                                    {
+                                                        <option value="@option">@column.GetFilterOptionDisplayName(option)</option>
+                                                    }
+                                                </select>
                                             }
-                                        </select>
+                                            else
+                                            {
+                                                <div class="alert alert-danger">
+                                                    The type of the filter has been specified as Options but the FilterOptions collection is null.
+                                                </div>
+                                            }
+                                            <label for="@id">@column.Heading</label>
+                                        </div>
+                                    }
+                                    else if (column.FilterControlType is UmbrellaColumnFilterType.TextAddOnButton)
+                                    {
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="form-floating">
+                                                    <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
+                                                    <label for="@id">@column.Heading</label>
+                                                </div>
+                                                <button class="@column.AddOnButtonCssClass" type="button" @onclick="() => FilterTextAddonButtonClickAsync(column)">
+                                                    @column.AddOnButtonText
+                                                    @if (!string.IsNullOrEmpty(column.AddOnButtonIconCssClass))
+                                                    {
+                                                        <i class="@column.AddOnButtonIconCssClass"></i>
+                                                    }
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (column.FilterControlType is UmbrellaColumnFilterType.DateRange)
+                                    {
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="form-floating">
+                                                    <input id="@id" class="form-control" type="text" value="@column.ToDateRangeDisplayValue()" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" readonly />
+                                                    <label for="@id">@column.Heading</label>
+                                                </div>
+                                                <button class="btn btn-primary" type="button" @onclick="() => DateRangeSelectionButtonClickAsync(column)">
+                                                    Select <i class="fas fa-calendar-days"></i>
+                                                </button>
+                                                <button class="btn btn-danger" type="button" @onclick="() => column.FilterValue = null">
+                                                    Clear <i class="fas fa-ban"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (column.FilterControlType is UmbrellaColumnFilterType.AutoComplete)
+                                    {
+                                        <UmbrellaAutoComplete @bind-Value="column.FilterValue"
+                                                              LabelText="@column.Heading"
+                                                              SearchMethod="column.AutoCompleteSearchMethod"
+                                                              Debounce="column.AutoCompleteDebounce"
+                                                              MaximumSuggestions="column.AutoCompleteMaximumSuggestions"
+                                                              MinimumLength="column.AutoCompleteMinimumLength" />
+                                    }
+                                    else if (column.FilterControlType is UmbrellaColumnFilterType.Date)
+                                    {
+                                        if (column is UmbrellaColumnDefinition<TItem, DateTime> dtColumn)
+                                        {
+                                            <EditForm EditContext="EditContext">
+                                                <div class="form-group form-floating">
+                                                    <InputDate id="@id" class="form-control" @bind-Value="dtColumn.TypedFilterValue" />
+                                                    <label for="@id">@column.Heading</label>
+                                                </div>
+                                            </EditForm>
+                                        }
+                                        else if (column is UmbrellaColumnDefinition<TItem, DateTime?> ndtColumn)
+                                        {
+                                            <EditForm EditContext="EditContext">
+                                                <div class="form-group form-floating">
+                                                    <InputDate id="@id" class="form-control" @bind-Value="ndtColumn.TypedFilterValue" />
+                                                    <label for="@id">@column.Heading</label>
+                                                </div>
+                                            </EditForm>
+                                        }
                                     }
                                     else
                                     {
-                                        <input id="@id" class="form-control form-control-sm" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" spellcheck="false" autocomplete="off" />
+                                        <div class="form-group form-floating">
+                                            <input id="@id" class="form-control" type="@column.FilterControlType.ToControlTypeString()" @bind-value="column.FilterValue" placeholder="@column.Heading" spellcheck="false" autocomplete="off" data-lpignore="true" />
+                                            <label for="@id">@column.Heading</label>
+                                        </div>
                                     }
                                 </div>
-                            </div>
-                        }
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-sm" @onclick="ApplyFiltersClick" @onclick:preventDefault>Search <i class="fas fa-search"></i></button>
-                    <button type="reset" class="btn btn-secondary btn-sm" @onclick="ResetFiltersClick">Reset <i class="fas fa-times-circle"></i></button>
+                            }
+                        </div>
+                    }
+
+                    @if (AdditionalFilterContent is not null)
+                    {
+                        <div class="row">
+                            @AdditionalFilterContent
+                        </div>
+                    }
+
+                    <button type="submit" class="btn btn-primary btn-sm" @onclick="ApplyFiltersClickAsync" @onclick:preventDefault>Search <i class="fas fa-search"></i></button>
+                    <button type="reset" class="btn btn-secondary btn-sm" @onclick="ResetFiltersClickAsync">Reset <i class="fas fa-times-circle"></i></button>
                 </form>
             </div>
         }
 
-        @if (BulkActions != null && CurrentState == LayoutState.Success)
+        @if (BulkActions is not null && CurrentState is LayoutState.Success)
         {
             <div class="u-grid__bulk-actions">
                 @BulkActions
             </div>
         }
 
-        @if (CurrentState == LayoutState.Loading)
+        @if (CurrentState is LayoutState.Loading)
         {
-            <LoadingStateView Message="@LoadingMessage" />
+            @if (LoadingMessageContent is not null)
+            {
+                <LoadingStateView>@LoadingMessageContent</LoadingStateView>
+            }
+            else
+            {
+                <LoadingStateView Message="@LoadingMessage" />
+            }
         }
-        else if (CurrentState == LayoutState.Empty)
+        else if (CurrentState is LayoutState.Empty)
         {
-            <EmptyStateView Message="@EmptyMessage" />
+            SetColumnScanCompleted();
+
+            @if (EmptyMessageContent is not null)
+            {
+                <EmptyStateView>@EmptyMessageContent</EmptyStateView>
+            }
+            else
+            {
+                <EmptyStateView Message="@EmptyMessage" />
+            }
         }
-        else if (CurrentState == LayoutState.Success)
+        else if (CurrentState is LayoutState.Success)
         {
-            @if (RenderMode is UmbrellaGridRenderMode.Full)
+            @if (RenderMode is UmbrellaGridRenderMode.Table)
             {
                 <div class="u-grid__results-container">
                     <table class="u-grid__results @GridCssClass">
@@ -87,7 +200,7 @@
                             {
                                 <col class="u-grid__column" />
                             }
-                            @foreach (var column in ColumnDefinitions)
+                            @foreach (var column in ColumnDefinitions.Where(x => x.DisplayMode is UmbrellaColumnDisplayMode.Full))
                             {
                                 <col class="u-grid__column @(column.ColumnWidthCssClass)" @attributes="column.AdditionalAttributes" />
                             }
@@ -111,12 +224,12 @@
                                 {
                                     <th></th>
                                 }
-                                @foreach (var column in ColumnDefinitions.Where(x => x.DisplayMode == UmbrellaColumnDisplayMode.Full))
+                                @foreach (var column in ColumnDefinitions.Where(x => x.DisplayMode is UmbrellaColumnDisplayMode.Full))
                                 {
                                     <th @attributes="column.AdditionalAttributes">
                                         @if (column.Sortable)
                                         {
-                                            <a href="#" @onclick="@(e => ColumnHeadingClick(column))" @onclick:preventDefault title="@column.Heading">
+                                            <a href="#" @onclick="@(e => ColumnHeadingClickAsync(column))" @onclick:preventDefault title="@column.Heading">
                                                 @(column.ShortHeading ?? column.Heading)
                                                 <i class="@column.DirectionCssClass"></i>
                                             </a>
@@ -124,7 +237,7 @@
                                         else
                                         {
                                             <span title="@column.Heading">
-                                            @(column.ShortHeading ?? column.Heading)
+                                                @(column.ShortHeading ?? column.Heading)
                                             </span>
                                         }
                                     </th>
@@ -132,12 +245,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Items)
+                            @foreach (TItem item in Items)
                             {
-                                var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
+                                var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item))!;
                                 var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
 
-                                <tr class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "") @(isCurrentItemSelected && !string.IsNullOrWhiteSpace(ItemSelectedCssClass) ? ItemSelectedCssClass : "")">
+                                <tr @key="item" class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "") @(isCurrentItemSelected && !string.IsNullOrWhiteSpace(ItemSelectedCssClass) ? ItemSelectedCssClass : "")">
                                     @if (ShowCheckboxSelectColumn)
                                     {
                                         string id = Guid.NewGuid().ToString("N");
@@ -153,18 +266,34 @@
                                     }
                                     @if (ShowRadioSelectColumn)
                                     {
-                                        string id = Guid.NewGuid().ToString("N");
+                                        @if (item is not null)
+                                        {
+                                            string id = Guid.NewGuid().ToString("N");
 
-                                        <th class="u-grid__item-radio">
-                                            <div class="u-radio">
-                                                <input type="radio" id="@id" name="@groupName" checked="@(SelectedRow?.Equals(item))" @onchange="(() => SelectedRow = item)" class="u-radio__input" />
-                                                <label class="u-radio__label" for="@id">
-                                                    <span class="sr-only">@item?.ToString()</span>
-                                                </label>
-                                            </div>
-                                        </th>
+                                            <th class="u-grid__item-radio">
+                                                <div class="u-radio">
+                                                    <input type="radio" id="@id" name="@groupName" checked="@(SelectedRow?.Equals(item))" @onchange="(() => SelectedRow = item)" class="u-radio__input" />
+                                                    <label class="u-radio__label" for="@id">
+                                                        <span class="sr-only">@item?.ToString()</span>
+                                                    </label>
+                                                </div>
+                                            </th>
+                                        }
+                                        else
+                                        {
+                                            <!-- Rendering error: item is null -->
+                                        }
                                     }
-                                    @Columns?.Invoke(item)
+                                    @if (item is not null)
+                                    {
+                                        <CascadingValue Value="item">
+                                            @Columns?.Invoke(item)
+                                        </CascadingValue>
+                                    }
+                                    else
+                                    {
+                                        <!-- Rendering error: item is null -->
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -176,12 +305,12 @@
                     <UmbrellaPagination SmallPagination="@SmallPagination" OnOptionsChanged="OnPaginationOptionsChangedAsync" @ref="PaginationInstance" />
                 }
             }
-            else if (RenderMode is UmbrellaGridRenderMode.Slim)
+            else if (RenderMode is UmbrellaGridRenderMode.CollectionView)
             {
                 <div class="u-grid__results @GridCssClass">
                     @foreach (var item in Items)
                     {
-                        var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item));
+                        var selectableItem = SelectableItems.Find(x => x.Item!.Equals(item))!;
                         var isCurrentItemSelected = (ShowCheckboxSelectColumn && selectableItem.IsSelected) || (ShowRadioSelectColumn && item!.Equals(SelectedRow));
 
                         <div class="u-grid__item @ItemCssClass @(isCurrentItemSelected ? "u-grid__item--selected" : "")">
@@ -193,7 +322,9 @@
                             {
                                 <span>TODO</span>
                             }
-                            @Columns?.Invoke(item)
+                            <CascadingValue Value="item">
+                                @Columns?.Invoke(item)
+                            </CascadingValue>
                         </div>
                     }
                 </div>
@@ -211,7 +342,16 @@
         }
         else
         {
-            <ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClick" ShowReloadButton="ShowReloadButton" />
+            @if (ErrorMessageContent is not null)
+            {
+                <ErrorStateView OnReloadButtonClick="ReloadButtonClickAsync" ShowReloadButton="ShowReloadButton">
+                    @ErrorMessageContent
+                </ErrorStateView>
+            }
+            else
+            {
+                <ErrorStateView Message="@ErrorMessage" OnReloadButtonClick="ReloadButtonClickAsync" ShowReloadButton="ShowReloadButton" />
+            }
         }
     </div>
 </CascadingValue>

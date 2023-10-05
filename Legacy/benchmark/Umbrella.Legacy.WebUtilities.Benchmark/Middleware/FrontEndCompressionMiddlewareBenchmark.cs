@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -14,54 +12,53 @@ using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
 
-namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware
+namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware;
+
+[MemoryDiagnoser]
+[SimpleJob(RuntimeMoniker.Net461)]
+public class FrontEndCompressionMiddlewareBenchmark
 {
-	[MemoryDiagnoser]
-	[SimpleJob(RuntimeMoniker.Net461)]
-	public class FrontEndCompressionMiddlewareBenchmark
+	private readonly FrontEndCompressionMiddleware _frontEndCompressionMiddleware;
+
+	public FrontEndCompressionMiddlewareBenchmark()
 	{
-		private readonly FrontEndCompressionMiddleware _frontEndCompressionMiddleware;
+		var logger = new Mock<ILogger<FrontEndCompressionMiddleware>>();
+		var cache = new Mock<IHybridCache>();
+		var hostingEnvironment = new Mock<IUmbrellaHostingEnvironment>();
+		var httpHeaderValueUtility = new Mock<IHttpHeaderValueUtility>();
+		var mimeTypeUtility = new Mock<IMimeTypeUtility>();
 
-		public FrontEndCompressionMiddlewareBenchmark()
+		var options = new FrontEndCompressionMiddlewareOptions
 		{
-			var logger = new Mock<ILogger<FrontEndCompressionMiddleware>>();
-			var cache = new Mock<IHybridCache>();
-			var hostingEnvironment = new Mock<IUmbrellaHostingEnvironment>();
-			var httpHeaderValueUtility = new Mock<IHttpHeaderValueUtility>();
-			var mimeTypeUtility = new Mock<IMimeTypeUtility>();
-
-			var options = new FrontEndCompressionMiddlewareOptions
+			Mappings = new List<FrontEndCompressionMiddlewareMapping>
 			{
-				Mappings = new List<FrontEndCompressionMiddlewareMapping>
+				new FrontEndCompressionMiddlewareMapping
 				{
-					new FrontEndCompressionMiddlewareMapping
-					{
-						AppRelativeFolderPaths = new[] { "/sitefiles" }
-					}
+					AppRelativeFolderPaths = new[] { "/sitefiles" }
 				}
-			};
+			}
+		};
 
-			_frontEndCompressionMiddleware = new FrontEndCompressionMiddleware(
-				null!,
-				logger.Object,
-				CoreUtilitiesMocks.CreateCacheKeyUtility(),
-				cache.Object,
-				hostingEnvironment.Object,
-				httpHeaderValueUtility.Object,
-				mimeTypeUtility.Object,
-				options);
+		_frontEndCompressionMiddleware = new FrontEndCompressionMiddleware(
+			null!,
+			logger.Object,
+			CoreUtilitiesMocks.CreateCacheKeyUtility(),
+			cache.Object,
+			hostingEnvironment.Object,
+			httpHeaderValueUtility.Object,
+			mimeTypeUtility.Object,
+			options);
 
-			var fileProvider = new Mock<IFileProvider>();
+		var fileProvider = new Mock<IFileProvider>();
 
-			_frontEndCompressionMiddleware.FileProvider = fileProvider.Object;
-		}
+		_frontEndCompressionMiddleware.FileProvider = fileProvider.Object;
+	}
 
-		[Benchmark]
-		public async Task RunMiddleware()
-		{
-			var context = new Mock<IOwinContext>();
+	[Benchmark]
+	public async Task RunMiddlewareAsync()
+	{
+		var context = new Mock<IOwinContext>();
 
-			await _frontEndCompressionMiddleware.Invoke(context.Object);
-		}
+		await _frontEndCompressionMiddleware.Invoke(context.Object);
 	}
 }

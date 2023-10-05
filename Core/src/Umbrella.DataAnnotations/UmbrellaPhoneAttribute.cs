@@ -1,20 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Umbrella.DataAnnotations.RegularExpressions;
+﻿using Umbrella.DataAnnotations.RegularExpressions;
 
-namespace Umbrella.DataAnnotations
+namespace Umbrella.DataAnnotations;
+
+/// <summary>
+/// Specifies that a data field must match the regular expression for a UK Phone Number.
+/// </summary>
+/// <seealso cref="RegularExpressionAttribute" />
+[AttributeUsage(AttributeTargets.Property)]
+public class UmbrellaPhoneAttribute : RegularExpressionAttribute
 {
 	/// <summary>
-	/// Specifies that a data field must match the regular expression for a UK Phone Number.
+	/// Initializes a new instance of the <see cref="UmbrellaPhoneAttribute"/> class.
 	/// </summary>
-	/// <seealso cref="System.ComponentModel.DataAnnotations.RegularExpressionAttribute" />
-	public class UmbrellaPhoneAttribute : RegularExpressionAttribute
+	public UmbrellaPhoneAttribute()
+		: base(PhoneRegularExpressions.UKPhoneRegexString)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UmbrellaPhoneAttribute"/> class.
-		/// </summary>
-		public UmbrellaPhoneAttribute()
-			: base(PhoneRegularExpressions.UKPhoneRegexString)
-		{
-		}
 	}
 }

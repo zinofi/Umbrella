@@ -1,85 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Security.Abstractions;
 
-namespace Umbrella.Utilities.Security
+namespace Umbrella.Utilities.Security;
+
+/// <summary>
+/// A utility class containing useful methods to help manage JSON Web Tokens.
+/// </summary>
+public class JwtUtility : IJwtUtility
 {
+	private readonly ILogger<JwtUtility> _logger;
+
 	/// <summary>
-	/// A utility class containing useful methods to help manage JSON Web Tokens.
+	/// Initializes a new instance of the <see cref="JwtUtility"/> class.
 	/// </summary>
-	public class JwtUtility : IJwtUtility
+	/// <param name="logger">The logger.</param>
+	public JwtUtility(ILogger<JwtUtility> logger)
 	{
-		private readonly ILogger<JwtUtility> _logger;
+		_logger = logger;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="JwtUtility"/> class.
-		/// </summary>
-		/// <param name="logger">The logger.</param>
-		public JwtUtility(ILogger<JwtUtility> logger)
+	/// <inheritdoc />
+	public IReadOnlyCollection<Claim> ParseClaimsFromJwt(string jwt, string roleClaimType = ClaimTypes.Role)
+	{
+		try
 		{
-			_logger = logger;
-		}
+			var claims = new List<Claim>();
+			string payload = jwt.Split('.')[1];
+			byte[] jsonBytes = ParseBase64WithoutPadding(payload);
+			string json = Encoding.UTF8.GetString(jsonBytes);
+			var keyValuePairs = UmbrellaStatics.DeserializeJson<Dictionary<string, object>>(json);
 
-		/// <inheritdoc />
-		public IReadOnlyCollection<Claim> ParseClaimsFromJwt(string jwt, string roleClaimType = ClaimTypes.Role)
-		{
-			try
+			if (keyValuePairs is null)
+				throw new InvalidOperationException("The json could not be converted to a dictionary of key/value pairs.");
+
+			_ = keyValuePairs.TryGetValue(roleClaimType, out object roles);
+
+			if (roles is not null)
 			{
-				var claims = new List<Claim>();
-				string payload = jwt.Split('.')[1];
-				byte[] jsonBytes = ParseBase64WithoutPadding(payload);
-				string json = Encoding.UTF8.GetString(jsonBytes);
-				var keyValuePairs = UmbrellaStatics.DeserializeJson<Dictionary<string, object>>(json);
-
-				keyValuePairs.TryGetValue(roleClaimType, out object roles);
-
-				if (roles != null)
+				if (roles.ToString().Trim().StartsWith("[", StringComparison.Ordinal))
 				{
-					if (roles.ToString().Trim().StartsWith("["))
-					{
-						string[] parsedRoles = UmbrellaStatics.DeserializeJson<string[]>(roles.ToString());
+					string[]? parsedRoles = UmbrellaStatics.DeserializeJson<string[]>(roles.ToString());
 
-						foreach (string parsedRole in parsedRoles)
-						{
-							claims.Add(new Claim(roleClaimType, parsedRole));
-						}
-					}
-					else
-					{
-						claims.Add(new Claim(roleClaimType, roles.ToString()));
-					}
+					if (parsedRoles is null)
+						throw new InvalidOperationException("The roles could not be parsed.");
 
-					keyValuePairs.Remove(roleClaimType);
+					foreach (string parsedRole in parsedRoles)
+					{
+						claims.Add(new Claim(roleClaimType, parsedRole));
+					}
+				}
+				else
+				{
+					claims.Add(new Claim(roleClaimType, roles.ToString()));
 				}
 
-				claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+				_ = keyValuePairs.Remove(roleClaimType);
+			}
 
-				return claims;
-			}
-			catch (Exception exc) when (_logger.WriteError(exc, new { roleClaimType }, returnValue: true))
-			{
-				throw new UmbrellaException("There has been a problem parsing the claims from the JWT.", exc);
-			}
+			claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+
+			return claims;
 		}
-
-		private byte[] ParseBase64WithoutPadding(string base64)
+		catch (Exception exc) when (_logger.WriteError(exc, new { roleClaimType }))
 		{
-			base64 = (base64.Length % 4) switch
-			{
-				2 => base64 += "==",
-				3 => base64 += "=",
-				_ => base64
-			};
-
-			// Replace invalid characters.
-			base64 = base64.Replace('-', '+').Replace('_', '/');
-
-			return Convert.FromBase64String(base64);
+			throw new UmbrellaException("There has been a problem parsing the claims from the JWT.", exc);
 		}
+	}
+
+	private static byte[] ParseBase64WithoutPadding(string base64)
+	{
+		base64 = (base64.Length % 4) switch
+		{
+			2 => base64 += "==",
+			3 => base64 += "=",
+			_ => base64
+		};
+
+		// Replace invalid characters.
+		base64 = base64.Replace('-', '+').Replace('_', '/');
+
+		return Convert.FromBase64String(base64);
 	}
 }

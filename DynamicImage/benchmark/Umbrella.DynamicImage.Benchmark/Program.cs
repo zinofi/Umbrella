@@ -1,15 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
-using System;
+using Umbrella.DynamicImage.Benchmark;
 
-namespace Umbrella.DynamicImage.Benchmark
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            BenchmarkRunner.Run<DynamicImageUtilityBenchmark>();
-            Console.WriteLine("Press any key to exit...");
-            Console.Read();
-        }
-    }
-}
+_ = BenchmarkRunner.Run<DynamicImageUtilityBenchmark>();
+Console.WriteLine("Press any key to exit...");
+_ = Console.Read();

@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<DocumentationFile>bin\Release\netstandard2.0\Umbrella.Xamarin.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -12,9 +11,17 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.5" />
-		<PackageReference Include="Xamarin.Essentials" Version="1.7.5" />
-		<PackageReference Include="Xamarin.Forms" Version="5.0.0.2578" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.6" />
+		<PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
+		<PackageReference Include="Xamarin.Forms" Version="5.0.0.2612" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,15 +29,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
-	  <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
-	  <ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.AppFramework\Umbrella.AppFramework.csproj" />
+		<ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Controls\UmbrellaActivityInidicatorView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Controls\UmbrellaActivityInidicatorView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</EmbeddedResource>
 	</ItemGroup>
 
 </Project>

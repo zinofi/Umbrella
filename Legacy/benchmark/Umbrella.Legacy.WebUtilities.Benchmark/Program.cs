@@ -1,19 +1,8 @@
 ﻿using BenchmarkDotNet.Running;
-using System;
-using Umbrella.Legacy.WebUtilities.Benchmark.Hosting;
 using Umbrella.Legacy.WebUtilities.Benchmark.Middleware;
 
-namespace Umbrella.Legacy.WebUtilities.Benchmark
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            //BenchmarkRunner.Run<UmbrellaWebHostingEnvironmentBenchmark>();
-            BenchmarkRunner.Run<FrontEndCompressionMiddlewareBenchmark>();
+//BenchmarkRunner.Run<UmbrellaWebHostingEnvironmentBenchmark>();
+_ = BenchmarkRunner.Run<FrontEndCompressionMiddlewareBenchmark>();
 
-            Console.WriteLine("Press any key to exit...");
-            Console.Read();
-        }
-    }
-}
+Console.WriteLine("Press any key to exit...");
+_ = Console.Read();

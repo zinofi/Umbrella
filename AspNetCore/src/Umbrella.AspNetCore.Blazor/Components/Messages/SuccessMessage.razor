@@ -1,0 +1,15 @@
+﻿@inherits MessageComponentBase
+
+@if (!string.IsNullOrWhiteSpace(Message) || ChildContent != null)
+{
+	<div class="alert alert-success" role="alert">
+		@if(ChildContent != null)
+		{
+			@ChildContent
+		}
+		else
+		{
+			@Message
+		}
+	</div>
+}

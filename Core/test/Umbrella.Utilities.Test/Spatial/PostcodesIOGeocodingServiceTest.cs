@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Umbrella.Utilities.Test.Spatial;
 
-namespace Umbrella.Utilities.Test.Spatial
+public class PostcodesIOGeocodingServiceTest
 {
-    public class PostcodesIOGeocodingServiceTest
-    {
-        
-    }
+
 }
