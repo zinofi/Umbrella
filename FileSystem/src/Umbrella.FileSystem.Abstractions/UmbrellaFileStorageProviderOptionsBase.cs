@@ -79,6 +79,6 @@ public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolver
 			}
 		}
 
-		return _authorizationHandlerMappings.TryGetValue(directoryNameLowered, out IUmbrellaFileAuthorizationHandler handler) ? handler : null;
+		return _authorizationHandlerMappings.TryGetValue(directoryNameLowered, out IUmbrellaFileAuthorizationHandler? handler) ? handler : null;
 	}
 }

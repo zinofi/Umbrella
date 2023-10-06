@@ -389,7 +389,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (_blobProperties is not null && _blobProperties.Metadata.TryGetValue(key, out string rawValue))
+			if (_blobProperties is not null && _blobProperties.Metadata.TryGetValue(key, out string? rawValue))
 				return await Task.FromResult(GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)!).ConfigureAwait(false);
 
 			return default!;

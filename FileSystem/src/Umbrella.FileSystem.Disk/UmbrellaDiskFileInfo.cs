@@ -94,7 +94,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 	public async Task<IUmbrellaFileInfo> CopyAsync(string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNullOrWhiteSpace(destinationSubpath, nameof(destinationSubpath));
+		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
 		try
 		{
@@ -102,6 +102,8 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 				throw new UmbrellaFileNotFoundException(SubPath);
 
 			var destinationFile = (UmbrellaDiskFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
+
+			Guard.IsNotNull(destinationFile.PhysicalFileInfo.Directory);
 
 			if (!destinationFile.PhysicalFileInfo.Directory.Exists)
 				destinationFile.PhysicalFileInfo.Directory.Create();
@@ -134,6 +136,8 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 			var target = (UmbrellaDiskFileInfo)destinationFile;
 
+			Guard.IsNotNull(target.PhysicalFileInfo.Directory);
+
 			if (!target.PhysicalFileInfo.Directory.Exists)
 				target.PhysicalFileInfo.Directory.Create();
 
@@ -165,6 +169,8 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 			var destinationFile = (UmbrellaDiskFileInfo)await Provider.CreateAsync(destinationSubpath, cancellationToken).ConfigureAwait(false);
 
+			Guard.IsNotNull(destinationFile.PhysicalFileInfo.Directory);
+
 			if (!destinationFile.PhysicalFileInfo.Directory.Exists)
 				destinationFile.PhysicalFileInfo.Directory.Create();
 
@@ -195,6 +201,8 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 				throw new UmbrellaFileNotFoundException(SubPath);
 
 			var target = (UmbrellaDiskFileInfo)destinationFile;
+
+			Guard.IsNotNull(target.PhysicalFileInfo.Directory);
 
 			if (!target.PhysicalFileInfo.Directory.Exists)
 				target.PhysicalFileInfo.Directory.Create();
@@ -265,7 +273,11 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 			using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true))
 			{
+#if NET6_0_OR_GREATER
+				_ = await fs.ReadAsync(bytes, cancellationToken).ConfigureAwait(false);
+#else
 				_ = await fs.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+#endif
 			}
 
 			_contents = cacheContents ? bytes : null;
@@ -313,12 +325,18 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
+			Guard.IsNotNull(PhysicalFileInfo.Directory);
+
 			if (!PhysicalFileInfo.Directory.Exists)
 				PhysicalFileInfo.Directory.Create();
 
 			using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.Write, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true))
 			{
+#if NET6_0_OR_GREATER
+				await fs.WriteAsync(bytes, cancellationToken).ConfigureAwait(false);
+#else
 				await fs.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+#endif
 			}
 
 			_contents = cacheContents ? bytes : null;
@@ -341,6 +359,8 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
+			Guard.IsNotNull(PhysicalFileInfo.Directory);
+
 			if (!PhysicalFileInfo.Directory.Exists)
 				PhysicalFileInfo.Directory.Create();
 
@@ -391,7 +411,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 			if (_metadataDictionary is null)
 				await ReloadMetadataAsync(cancellationToken).ConfigureAwait(false);
 
-			if (_metadataDictionary is not null && _metadataDictionary.TryGetValue(key, out string rawValue))
+			if (_metadataDictionary is not null && _metadataDictionary.TryGetValue(key, out string? rawValue))
 				return GenericTypeConverter.Convert(rawValue, fallback, customValueConverter)!;
 
 			return default!;
@@ -422,7 +442,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 				}
 				else
 				{
-					_metadataDictionary[key] = value.ToString();
+					_metadataDictionary[key] = value.ToString() ?? "";
 				}
 
 				if (writeChanges)
@@ -577,7 +597,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 			throw new UmbrellaFileSystemException("There has been an error setting the file name.", exc);
 		}
 	}
-	#endregion
+#endregion
 
 	#region Private Methods
 	private async Task ReloadMetadataAsync(CancellationToken cancellationToken = default)

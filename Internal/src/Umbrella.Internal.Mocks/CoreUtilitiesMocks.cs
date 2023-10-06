@@ -49,7 +49,7 @@ public static class CoreUtilitiesMocks
 	public static ILoggerFactory CreateLoggerFactory<T>()
 	{
 		var loggerFactory = new Mock<ILoggerFactory>();
-		_ = loggerFactory.Setup(x => x.CreateLogger(typeof(T).FullName)).Returns(CreateLogger<T>());
+		_ = loggerFactory.Setup(x => x.CreateLogger(typeof(T).FullName ?? "Default")).Returns(CreateLogger<T>());
 
 		return loggerFactory.Object;
 	}
