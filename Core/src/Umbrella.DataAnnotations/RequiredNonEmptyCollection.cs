@@ -11,17 +11,17 @@ namespace Umbrella.DataAnnotations;
 public class RequiredNonEmptyCollectionAttribute : ValidationAttribute
 {
 	/// <inheritdoc />
-	protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
-		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>();
+		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext.MemberName) ? new[] { validationContext.MemberName } : Array.Empty<string>();
 
 		if (value is null)
-			return new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), memberNames);
+			return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), memberNames);
 
 		bool isValid = ValidationHelper.IsNonEmptyCollection(value);
-
+		
 		return isValid
 			? ValidationResult.Success
-			: new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), memberNames);
+			: new ValidationResult(FormatErrorMessage(validationContext.DisplayName), memberNames);
 	}
 }

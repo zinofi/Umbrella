@@ -136,13 +136,18 @@ public abstract class GenericRemoteDataService
 		where TIdentifier : IEquatable<TIdentifier>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(id, nameof(id));
+		Guard.IsNotNull(id);
 
 		try
 		{
+			string? strId = id.ToString();
+
+			if (string.IsNullOrEmpty(strId))
+				throw new InvalidOperationException("The id cannot be converted to a string.");
+
 			var parameters = new Dictionary<string, string>
 			{
-				["id"] = id.ToString()
+				["id"] = strId
 			};
 
 			IHttpCallResult<TItem?> result = await RemoteService.GetAsync<TItem>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
@@ -308,9 +313,14 @@ public abstract class GenericRemoteDataService
 
 		try
 		{
+			string? strId = id.ToString();
+
+			if (string.IsNullOrEmpty(strId))
+				throw new InvalidOperationException("The id cannot be converted to a string.");
+
 			var parameters = new Dictionary<string, string>
 			{
-				["id"] = id.ToString()
+				["id"] = strId
 			};
 
 			IHttpCallResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);

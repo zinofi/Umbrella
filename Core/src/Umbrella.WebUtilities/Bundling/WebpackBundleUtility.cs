@@ -131,7 +131,7 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 
 		Dictionary<string, string> dicManifest = await GetManifestAsync(cancellationToken);
 
-		return dicManifest.TryGetValue(bundleNameKey, out string bundlePath)
+		return dicManifest.TryGetValue(bundleNameKey, out string? bundlePath)
 			? bundlePath
 			: throw new InvalidOperationException("The specified Webpack bundle cannot be found.");
 	}
@@ -156,7 +156,12 @@ public class WebpackBundleUtility : BundleUtility<WebpackBundleUtilityOptions>, 
 				using var sr = new StreamReader(stream);
 				string json = await sr.ReadToEndAsync().ConfigureAwait(false);
 
-				return UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json).ToDictionary(x => x.Key.ToLowerInvariant(), x =>
+				var deserializedJson = UmbrellaStatics.DeserializeJson<Dictionary<string, string>>(json);
+
+				if (deserializedJson is null)
+					throw new InvalidOperationException("There has been a problem deserializing the json.");
+
+				return deserializedJson.ToDictionary(x => x.Key.ToLowerInvariant(), x =>
 				{
 					string loweredPath = x.Value.ToLowerInvariant();
 

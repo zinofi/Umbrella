@@ -21,7 +21,7 @@ public class EntityValidator : IEntityValidator
 	/// <returns>
 	/// The validation result.
 	/// </returns>
-	public ValidationResult ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true)
+	public ValidationResult? ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true)
 		=> !value.IsValidLength(minLength, maxLength, !required)
 			? new ValidationResult(string.Format(CultureInfo.CurrentCulture, ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName })
 			: ValidationResult.Success;
@@ -38,7 +38,7 @@ public class EntityValidator : IEntityValidator
 	/// <returns>
 	/// The validation result.
 	/// </returns>
-	public ValidationResult ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true)
+	public ValidationResult? ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true)
 		where TProperty : struct, IComparable<TProperty>
 		=> !value.IsValidRange(min, max, !required)
 			? new ValidationResult(string.Format(CultureInfo.CurrentCulture, ErrorMessages.InvalidPropertyNumberRangeErrorMessageFormat, propertyName, min, max), new[] { propertyName })

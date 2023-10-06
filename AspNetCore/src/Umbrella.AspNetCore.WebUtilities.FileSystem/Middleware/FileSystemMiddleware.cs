@@ -61,7 +61,7 @@ public class FileSystemMiddleware
 			// path = path.Substring(_options.FileSystemPathPrefix.Length + 1); // NB: Codefix suggestion by VS below.
 			path = path[(_options.FileSystemPathPrefix.Length + 1)..];
 
-			FileSystemMiddlewareMapping mapping = _options.GetMapping(path);
+			FileSystemMiddlewareMapping? mapping = _options.GetMapping(path);
 
 			if (mapping is not null)
 			{

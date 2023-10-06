@@ -8,7 +8,7 @@ namespace Umbrella.DataAccess.Abstractions.Test;
 // TODO: Add test for the other method and more data for the first test.
 public class EntityValidatorTest
 {
-	private static readonly GenericEqualityComparer<ValidationResult, string?> _validationResultComparer = new(x => x.ErrorMessage, (x, y) => x.ErrorMessage == y.ErrorMessage && x.MemberNames.SequenceEqual(y.MemberNames));
+	private static readonly GenericEqualityComparer<ValidationResult?, string?> _validationResultComparer = new(x => x?.ErrorMessage, (x, y) => x is not null && y is not null && x.ErrorMessage == y.ErrorMessage && x.MemberNames.SequenceEqual(y.MemberNames));
 
 	[Theory]
 	[InlineData(null, "Prop1", 1, 2, true, false)]
@@ -21,9 +21,9 @@ public class EntityValidatorTest
 	{
 		EntityValidator entityValidator = CreateEntityValidator();
 
-		ValidationResult result = entityValidator.ValidatePropertyStringLength(value, propertyName, minLength, maxLength, required);
+		ValidationResult? result = entityValidator.ValidatePropertyStringLength(value, propertyName, minLength, maxLength, required);
 
-		ValidationResult expected = shouldPass
+		ValidationResult? expected = shouldPass
 			? ValidationResult.Success!
 			: new ValidationResult(string.Format(CultureInfo.InvariantCulture, ErrorMessages.InvalidPropertyStringLengthErrorMessageFormat, propertyName, minLength, maxLength), new[] { propertyName });
 
@@ -37,7 +37,7 @@ public class EntityValidatorTest
 	{
 		EntityValidator entityValidator = CreateEntityValidator();
 
-		ValidationResult result = entityValidator.ValidatePropertyNumberRange(value, propertyName, minLength, maxLength, required);
+		ValidationResult? result = entityValidator.ValidatePropertyNumberRange(value, propertyName, minLength, maxLength, required);
 
 		ValidationResult expected = shouldPass
 			? ValidationResult.Success!

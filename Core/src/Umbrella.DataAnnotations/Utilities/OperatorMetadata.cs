@@ -145,7 +145,7 @@ public class OperatorMetadata
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
 
-						return Regex.Match((value ?? "").ToString(), dependentValue?.ToString() ?? "").Success;
+						return Regex.Match((value ?? "").ToString() ?? "", dependentValue?.ToString() ?? "").Success;
 					}
 				}
 			},
@@ -158,7 +158,7 @@ public class OperatorMetadata
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
 
-						return !Regex.Match((value ?? "").ToString(), dependentValue?.ToString() ?? "").Success;
+						return !Regex.Match((value ?? "").ToString() ?? "", dependentValue?.ToString() ?? "").Success;
 					}
 				}
 			}

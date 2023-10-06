@@ -89,9 +89,14 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 
 		try
 		{
+			string? strId = id.ToString();
+
+			if (string.IsNullOrEmpty(strId))
+				throw new InvalidOperationException("The id cannot be converted to a string.");
+
 			var parameters = new Dictionary<string, string>
 			{
-				["id"] = id.ToString()
+				["id"] = strId
 			};
 
 			return await RemoteService.GetAsync<bool>(ApiUrl + "/Exists", parameters, cancellationToken).ConfigureAwait(false);

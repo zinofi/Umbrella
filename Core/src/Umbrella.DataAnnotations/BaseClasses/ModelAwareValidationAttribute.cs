@@ -42,7 +42,11 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// <summary>
 	/// Gets the name of the type for use in client scenarios, e.g. jQuery Validation, when used with web projects.
 	/// </summary>
+	#if NET6_0_OR_GREATER
+	public virtual string ClientTypeName => GetType().Name.Replace("Attribute", "", StringComparison.Ordinal);
+#else
 	public virtual string ClientTypeName => GetType().Name.Replace("Attribute", "");
+#endif
 
 	/// <summary>
 	/// Gets the client validation parameters. Useful for web projects, e.g. jQuery Unobtrusive Validation, where these parameters

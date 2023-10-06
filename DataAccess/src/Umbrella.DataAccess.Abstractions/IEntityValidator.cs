@@ -20,7 +20,7 @@ public interface IEntityValidator
 	/// <param name="max">The maximum.</param>
 	/// <param name="required">Specifies if a value is required for the property.</param>
 	/// <returns>The validation result.</returns>
-	ValidationResult ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true) where TProperty : struct, IComparable<TProperty>;
+	ValidationResult? ValidatePropertyNumberRange<TProperty>(TProperty? value, string propertyName, TProperty min, TProperty max, bool required = true) where TProperty : struct, IComparable<TProperty>;
 
 	/// <summary>
 	/// Validates the length of the property string.
@@ -31,5 +31,5 @@ public interface IEntityValidator
 	/// <param name="maxLength">The maximum length.</param>
 	/// <param name="required">Specifies if a value is required for the property.</param>
 	/// <returns>The validation result.</returns>
-	ValidationResult ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true);
+	ValidationResult? ValidatePropertyStringLength(string value, string propertyName, int minLength, int maxLength, bool required = true);
 }

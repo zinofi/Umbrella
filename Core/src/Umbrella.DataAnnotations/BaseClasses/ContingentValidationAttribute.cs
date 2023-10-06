@@ -54,7 +54,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	private object GetDependentPropertyValue(object container)
 	{
 		var currentType = container.GetType();
-		object value = container;
+		object? value = container;
 
 		// TODO: Could use a cached compiled expression here instead of reflection.
 		// Not sure of performance impact on Blazor, but makes sense for server apps.
@@ -69,9 +69,9 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 
 		foreach (string propertyName in DependentPropertyName.Split('.'))
 		{
-			var property = currentType.GetProperty(propertyName);
-			value = property.GetValue(value, null);
-			currentType = property.PropertyType;
+			var property = currentType?.GetProperty(propertyName);
+			value = property?.GetValue(value, null);
+			currentType = property?.PropertyType;
 		}
 
 		return value;

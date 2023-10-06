@@ -33,9 +33,12 @@ public class FileSystemMiddlewareOptions : ISanitizableUmbrellaOptions, IValidat
 	/// <param name="searchPath">The search path.</param>
 	/// <returns></returns>
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public FileSystemMiddlewareMapping GetMapping(string searchPath)
+	public FileSystemMiddlewareMapping? GetMapping(string searchPath)
 	{
-		Guard.IsNotNullOrWhiteSpace(searchPath, nameof(searchPath));
+		Guard.IsNotNullOrWhiteSpace(searchPath);
+
+		if (_flattenedMappings is null)
+			return null;
 
 		return _flattenedMappings.SingleOrDefault(x => searchPath.Trim().StartsWith(x.Key, StringComparison.OrdinalIgnoreCase)).Value;
 	}

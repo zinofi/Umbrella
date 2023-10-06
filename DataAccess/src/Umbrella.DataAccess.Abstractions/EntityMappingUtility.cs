@@ -62,7 +62,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 				if (item is null)
 					throw new InvalidOperationException("The item is null.");
 
-				TEntity entity = existingItems.SingleOrDefault(x => matchSelector(item, x));
+				TEntity? entity = existingItems.SingleOrDefault(x => matchSelector(item, x));
 
 				// No existing item with this id, so add a new one
 				if (entity is null)

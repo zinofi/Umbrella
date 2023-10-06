@@ -60,7 +60,7 @@ public class FileSystemMiddleware : OwinMiddleware
 			// Strip the prefix
 			path = path.Substring(_options.FileSystemPathPrefix.Length + 1);
 
-			FileSystemMiddlewareMapping mapping = _options.GetMapping(path);
+			FileSystemMiddlewareMapping? mapping = _options.GetMapping(path);
 
 			if (mapping is not null)
 			{
