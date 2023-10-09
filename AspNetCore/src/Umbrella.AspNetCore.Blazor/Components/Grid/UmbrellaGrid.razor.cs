@@ -8,6 +8,7 @@ using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
+using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
@@ -70,6 +71,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 	[Inject]
 	private IUmbrellaDialogService DialogService { get; set; } = null!;
+
+	[Inject]
+	private NavigationManager Navigation { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.
@@ -331,46 +335,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	[Parameter]
 	public EventCallback OnResetFiltersAndSorters { get; set; }
 
-	/// <summary>
-	/// Gets or sets the column name used to sort the grid.
-	/// </summary>
-	/// <remarks>
-	/// This property should not be specified directly and is intended to be populated using a querystring parameter
-	/// of the same name.
-	/// </remarks>
-	[Parameter]
-	[SupplyParameterFromQuery]
-	public string? SortBy { get; set; }
-
-	/// <summary>
-	/// Gets or sets the column direction used to sort the grid.
-	/// </summary>
-	/// <remarks>
-	/// This property should not be specified directly and is intended to be populated using a querystring parameter
-	/// of the same name.
-	/// </remarks>
-	[Parameter]
-	[SupplyParameterFromQuery]
-	public SortDirection SortDirection { get; set; }
-
-	/// <summary>
-	/// Gets or sets the filters used to reduce the set of results displayed on the screen.
-	/// </summary>
-	/// <remarks>
-	/// This property should not be specified directly and is intended to be populated using a querystring parameter
-	/// of the same name.
-	/// </remarks>
-	[Parameter]
-	[SupplyParameterFromQuery]
-	public string? Filters { get; set; }
-
 	private void OnCheckboxSelectColumnSelectionChanged(UmbrellaGridSelectableItem selectableItem)
 	{
 		selectableItem.IsSelected = !selectableItem.IsSelected;
 		CheckboxSelectColumnSelected = SelectableItems.Any(x => x.IsSelected);
 	}
 
-	private void OnCheckboxSelectColumnSelectedChanged(ChangeEventArgs e)
+	private void OnCheckboxSelectColumnSelectedChanged()
 	{
 		CheckboxSelectColumnSelected = !CheckboxSelectColumnSelected;
 		SelectableItems.ForEach(x => x.IsSelected = CheckboxSelectColumnSelected);
@@ -391,12 +362,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	}
 
 	/// <inheritdoc/>
-	protected override async Task OnParametersSetAsync()
+	protected override void OnParametersSet()
 	{
 		Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName);
-
-		if (ColumnScanComplete)
-			await ApplyQueryStringSortersAndFiltersAsync();
 	}
 
 	/// <inheritdoc />
@@ -411,9 +379,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	/// <inheritdoc />
 	public async ValueTask SetColumnScanCompletedAsync()
 	{
-		if (Logger.IsEnabled(LogLevel.Debug))
-			Logger.WriteDebug(new { ColumnScanComplete });
-
 		if (!ColumnScanComplete)
 		{
 			ColumnScanComplete = true;
@@ -731,31 +696,44 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	{
 		bool updateGrid = false;
 
-		if (!string.IsNullOrEmpty(SortBy))
+		var sortByResult = Navigation.TryGetQueryStringValue<string>("sortBy");
+		var sortDirectionResult = Navigation.TryGetQueryStringEnumValue<SortDirection>("sortDirection");
+		var filtersResult = Navigation.TryGetQueryStringValue<string>("filters");
+
+		if (Logger.IsEnabled(LogLevel.Debug))
+			Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult });
+
+		if (sortByResult.success)
 		{
-			IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.PropertyName == SortBy && x.Sortable);
+			IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.PropertyName?.Equals(sortByResult.value, StringComparison.OrdinalIgnoreCase) is true && x.Sortable);
 
 			if (sortColumn is not null)
 			{
-				sortColumn.Direction = SortDirection;
+				sortColumn.Direction = sortDirectionResult.success ? sortDirectionResult.value : SortDirection.Ascending;
 				updateGrid = true;
+
+				if (Logger.IsEnabled(LogLevel.Debug))
+					Logger.WriteDebug(new { sortColumn.PropertyName, sortColumn.Direction }, "Applied Sorter");
 			}
 		}
 
-		if (!string.IsNullOrEmpty(Filters))
+		if (filtersResult.success)
 		{
-			Dictionary<string, string>? dicFilters = JsonSerializer.Deserialize<Dictionary<string, string>>(Filters, _jsonSerializerOptions);
+			Dictionary<string, string>? dicFilters = JsonSerializer.Deserialize<Dictionary<string, string>>(filtersResult.value, _jsonSerializerOptions);
 
 			if (dicFilters is { Count: > 0 })
 			{
 				foreach (var kvp in dicFilters)
 				{
-					IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName == kvp.Key);
+					IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true);
 
 					if (filterableColumn is not null)
 					{
 						filterableColumn.FilterValue = kvp.Value;
 						updateGrid = true;
+
+						if (Logger.IsEnabled(LogLevel.Debug))
+							Logger.WriteDebug(new { filterableColumn.PropertyName, filterableColumn.FilterValue }, "Applied Filter");
 					}
 				}
 			}
