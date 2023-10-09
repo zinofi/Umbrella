@@ -59,7 +59,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// </summary>
 	/// <param name="uri">The URI to append the token to.</param>
 	/// <returns>The URI with the appended token if the <see cref="UmbrellaAppClaimType.FileAccessToken" /> claim exists; otherwise the value of the <paramref name="uri"/> parameter.</returns>
-	public string AppendFileAccessToken(string uri)
+	protected string AppendFileAccessToken(string uri)
 	{
 		string? accessToken = User.GetFileAccessToken();
 
