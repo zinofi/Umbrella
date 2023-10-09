@@ -58,6 +58,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		public TItem Item { get; }
 	}
 
+	private static readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
 	private bool _autoScrollEnabled;
 	private EditContext EditContext { get; } = new(new object());
 
@@ -330,6 +331,39 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	[Parameter]
 	public EventCallback OnResetFiltersAndSorters { get; set; }
 
+	/// <summary>
+	/// Gets or sets the column name used to sort the grid.
+	/// </summary>
+	/// <remarks>
+	/// This property should not be specified directly and is intended to be populated using a querystring parameter
+	/// of the same name.
+	/// </remarks>
+	[Parameter]
+	[SupplyParameterFromQuery]
+	public string? SortBy { get; set; }
+
+	/// <summary>
+	/// Gets or sets the column direction used to sort the grid.
+	/// </summary>
+	/// <remarks>
+	/// This property should not be specified directly and is intended to be populated using a querystring parameter
+	/// of the same name.
+	/// </remarks>
+	[Parameter]
+	[SupplyParameterFromQuery]
+	public SortDirection SortDirection { get; set; }
+
+	/// <summary>
+	/// Gets or sets the filters used to reduce the set of results displayed on the screen.
+	/// </summary>
+	/// <remarks>
+	/// This property should not be specified directly and is intended to be populated using a querystring parameter
+	/// of the same name.
+	/// </remarks>
+	[Parameter]
+	[SupplyParameterFromQuery]
+	public string? Filters { get; set; }
+
 	private void OnCheckboxSelectColumnSelectionChanged(UmbrellaGridSelectableItem selectableItem)
 	{
 		selectableItem.IsSelected = !selectableItem.IsSelected;
@@ -356,8 +390,14 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		}
 	}
 
-	/// <inheritdoc />
-	protected override void OnParametersSet() => Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName, nameof(InitialSortPropertyName));
+	/// <inheritdoc/>
+	protected override async Task OnParametersSetAsync()
+	{
+		Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName);
+
+		if (ColumnScanComplete)
+			await ApplyQueryStringSortersAndFiltersAsync();
+	}
 
 	/// <inheritdoc />
 	public void AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column)
@@ -369,7 +409,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	}
 
 	/// <inheritdoc />
-	public void SetColumnScanCompleted()
+	public async ValueTask SetColumnScanCompletedAsync()
 	{
 		if (Logger.IsEnabled(LogLevel.Debug))
 			Logger.WriteDebug(new { ColumnScanComplete });
@@ -420,6 +460,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { FilterableColumnsCount = FilterableColumns.Count });
+
+			await ApplyQueryStringSortersAndFiltersAsync();
 
 			StateHasChanged();
 		}
@@ -683,5 +725,43 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		{
 			await DialogService.ShowDangerMessageAsync();
 		}
+	}
+
+	private async ValueTask ApplyQueryStringSortersAndFiltersAsync()
+	{
+		bool updateGrid = false;
+
+		if (!string.IsNullOrEmpty(SortBy))
+		{
+			IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.PropertyName == SortBy && x.Sortable);
+
+			if (sortColumn is not null)
+			{
+				sortColumn.Direction = SortDirection;
+				updateGrid = true;
+			}
+		}
+
+		if (!string.IsNullOrEmpty(Filters))
+		{
+			Dictionary<string, string>? dicFilters = JsonSerializer.Deserialize<Dictionary<string, string>>(Filters, _jsonSerializerOptions);
+
+			if (dicFilters is { Count: > 0 })
+			{
+				foreach (var kvp in dicFilters)
+				{
+					IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName == kvp.Key);
+
+					if (filterableColumn is not null)
+					{
+						filterableColumn.FilterValue = kvp.Value;
+						updateGrid = true;
+					}
+				}
+			}
+		}
+
+		if (updateGrid)
+			await UpdateGridAsync();
 	}
 }

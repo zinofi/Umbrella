@@ -360,7 +360,7 @@ public partial class UmbrellaColumn<TItem, TValue>
 		}
 		else
 		{
-			UmbrellaGridInstance.SetColumnScanCompleted();
+			await UmbrellaGridInstance.SetColumnScanCompletedAsync();
 		}
 	}
 }

@@ -81,7 +81,9 @@ public class PermissionsPolicyBuilder
 	}
 
 	/// <inheritdoc/>
-	public override string ToString() => string.Join(",", _permissionsDictionary.OrderBy(x => x.Key).Select(x =>
+	public override string ToString() => ToPermissionsPolicyString();
+
+	public string ToPermissionsPolicyString() => string.Join(",", _permissionsDictionary.OrderBy(x => x.Key).Select(x =>
 	{
 		string values = x.Value.Count is 0 ? "" : string.Join(" ", x.Value.Select(x => x switch
 		{

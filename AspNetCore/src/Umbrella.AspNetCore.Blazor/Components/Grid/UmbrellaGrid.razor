@@ -170,7 +170,7 @@
         }
         else if (CurrentState is LayoutState.Empty)
         {
-            SetColumnScanCompleted();
+            _ = SetColumnScanCompletedAsync();
 
             @if (EmptyMessageContent is not null)
             {

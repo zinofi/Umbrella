@@ -1,10 +1,7 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-namespace Umbrella.AspNetCore.Blazor.Components.Grid;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
 /// <summary>
-/// Specifies how a <see cref="UmbrellaColumn{TItem}"/> component should be displayed inside an <see cref="UmbrellaGrid{TItem}"/>.
+/// Specifies how a <see cref="UmbrellaColumn{TItem, TValue}"/> component should be displayed inside an <see cref="UmbrellaGrid{TItem}"/>.
 /// </summary>
 public enum UmbrellaColumnDisplayMode
 {

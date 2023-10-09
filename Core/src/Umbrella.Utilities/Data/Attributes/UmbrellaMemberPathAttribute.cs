@@ -1,8 +1,14 @@
 ﻿using CommunityToolkit.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Sorting;
 
 namespace Umbrella.Utilities.Data.Attributes;
 
+/// <summary>
+/// Used to specify a full property path to be sent to the server to override the property name
+/// when a property is being used in conjunction with <see cref="SortExpression{T}"/> and <see cref="FilterExpression{T}"/> instances.
+/// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class UmbrellaMemberPathAttribute : Attribute
 {

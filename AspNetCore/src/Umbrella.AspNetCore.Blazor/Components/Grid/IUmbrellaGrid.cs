@@ -24,5 +24,5 @@ public interface IUmbrellaGrid<TItem>
 	/// <summary>
 	/// Sets the column scan as having been completed.
 	/// </summary>
-	void SetColumnScanCompleted();
+	ValueTask SetColumnScanCompletedAsync();
 }
