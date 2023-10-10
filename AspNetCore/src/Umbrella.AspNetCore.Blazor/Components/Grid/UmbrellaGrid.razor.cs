@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -385,6 +386,19 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 		}
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="UmbrellaGrid{TItem}"/> class.
+	/// </summary>
+	public UmbrellaGrid()
+	{
+		Navigation.LocationChanged += Navigation_LocationChanged;
+	}
+
+	private void Navigation_LocationChanged(object? sender, LocationChangedEventArgs e)
+	{
+		
+	}
+
 	/// <inheritdoc />
 	public void AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column)
 	{
@@ -499,7 +513,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// <summary>
 	/// The click event handler for the reset filters button.
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>An awaitable Task that completes when the operation has completed.</returns>
 	private async Task ResetFiltersClickAsync()
 	{
 		await ResetFiltersAndSortersAsync();
@@ -779,6 +793,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 			{
 				_cts.Cancel();
 				_cts.Dispose();
+
+				Navigation.LocationChanged -= Navigation_LocationChanged;
 			}
 
 			_disposedValue = true;
