@@ -51,7 +51,7 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 		{
 			string typeDisplayName = typeof(TItemModel).GetDisplayText();
 
-			bool confirmed = await DialogUtility.ShowConfirmDangerMessageAsync($"Are you sure you want to delete this {typeDisplayName}?", $"Delete {typeDisplayName}");
+			bool confirmed = await DialogService.ShowConfirmDangerMessageAsync($"Are you sure you want to delete this {typeDisplayName}?", $"Delete {typeDisplayName}");
 
 			if (confirmed)
 			{
@@ -67,8 +67,8 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 
 				if (result.Success)
 				{
-					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
-					await RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
+					await DialogService.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
+					await GridInstance.RefreshAsync();
 				}
 				else
 				{
@@ -78,11 +78,11 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 		}
 		catch (UmbrellaConcurrencyException)
 		{
-			await DialogUtility.ShowConcurrencyDangerMessageAsync();
+			await DialogService.ShowConcurrencyDangerMessageAsync();
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { item.Id }))
 		{
-			await DialogUtility.ShowDangerMessageAsync();
+			await DialogService.ShowDangerMessageAsync();
 		}
 	}
 }

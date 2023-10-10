@@ -28,7 +28,7 @@ public class UmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TP
 		: base(logger, dialogUtility)
 	{
 		Repository = repository;
-		LoadPaginatedResultModelDelegate = (pageNumber, pageSize, sorters, filters) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters);
+		LoadPaginatedResultModelDelegate = (pageNumber, pageSize, sorters, filters, cancellationToken) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters, cancellationToken: cancellationToken);
 	}
 
 	/// <inheritdoc />

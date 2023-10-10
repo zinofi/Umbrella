@@ -25,14 +25,13 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// Initializes a new instance of the <see cref="UmbrellaGridComponentService{TItemModel, TPaginatedResultModel}"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
-	/// <param name="dialogUtility">The dialog utility.</param>
+	/// <param name="dialogService">The dialog utility.</param>
 	internal UmbrellaGridComponentService(
 		ILogger<UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>> logger,
-		IUmbrellaDialogService dialogUtility)
+		IUmbrellaDialogService dialogService)
 	{
 		Logger = logger;
-		DialogUtility = dialogUtility;
-		InitialSortExpressions = new Lazy<IReadOnlyCollection<SortExpressionDescriptor>>(() => new[] { new SortExpressionDescriptor(InitialSortPropertyName, InitialSortDirection) });
+		DialogService = dialogService;
 	}
 
 	/// <summary>
@@ -43,22 +42,10 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// <summary>
 	/// Gets the dialog utility.
 	/// </summary>
-	protected IUmbrellaDialogService DialogUtility { get; }
-
-	/// <inheritdoc />
-	public required string InitialSortPropertyName { get; init; } = null!;
-
-	/// <inheritdoc />
-	public SortDirection InitialSortDirection { get; init; } = SortDirection.Descending;
-
-	/// <inheritdoc />
-	public Lazy<IReadOnlyCollection<SortExpressionDescriptor>> InitialSortExpressions { get; internal set; }
+	protected IUmbrellaDialogService DialogService { get; }
 
 	/// <inheritdoc />
 	public IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; internal set; } = Array.Empty<FilterExpressionDescriptor>();
-
-	/// <inheritdoc />
-	public UmbrellaGridRefreshEventArgs? CurrentRefreshOptions { get; protected set; }
 
 	/// <inheritdoc />
 	public UmbrellaGrid<TItemModel> GridInstance { get; set; } = null!;
@@ -67,74 +54,29 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	public bool CallGridStateHasChangedOnRefresh { get; init; } = true;
 
 	/// <inheritdoc />
-	public bool AutoRenderOnPageLoad { get; init; } = true;
-
-	/// <inheritdoc />
 	public required Action StateHasChangedDelegate { get; init; }
 
 	/// <inheritdoc />
-	public Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; internal set; } = null!;
+	public Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; internal set; } = null!;
 
-	/// <inheritdoc />
-	public async Task InitializeGridAsync()
+	/// <summary>
+	/// Invoked by the <see cref="GridInstance"/> when it requests new data.
+	/// </summary>
+	/// <param name="args">The request containing details of the current filtering, sorting and pagination options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The response provided to the grid.</returns>
+	public async Task<UmbrellaGridDataResponse<TItemModel>?> OnGridDataRequestAsync(UmbrellaGridDataRequest args, CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			if (AutoRenderOnPageLoad)
-				throw new InvalidOperationException("Auto rendering has been enabled. This method should not be manually called.");
-
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			await DialogUtility.ShowDangerMessageAsync();
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task OnAfterRenderAsync(bool firstRender)
-	{
-		try
-		{
-			if (!firstRender || !AutoRenderOnPageLoad)
-				return;
-
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			await DialogUtility.ShowDangerMessageAsync();
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task OnGridOptionsChangedAsync(UmbrellaGridRefreshEventArgs args)
-	{
-		try
-		{
-			CurrentRefreshOptions = args;
-
-			await RefreshGridAsync(args.PageNumber, args.PageSize, args.Sorters, args.Filters);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { args }))
-		{
-			await DialogUtility.ShowDangerMessageAsync();
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task RefreshGridAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null)
-	{
-		try
-		{
-			var result = await LoadPaginatedResultModelDelegate(pageNumber, pageSize, sorters, filters);
+			var result = await LoadPaginatedResultModelDelegate(args.PageNumber, args.PageSize, args.Sorters, args.Filters, cancellationToken);
 
 			if (result.Success && result.Result is not null)
 			{
-				await GridInstance.UpdateAsync(result.Result.Items, result.Result.TotalCount, result.Result.PageNumber, result.Result.PageSize, CallGridStateHasChangedOnRefresh);
-
 				if (!CallGridStateHasChangedOnRefresh)
 					StateHasChangedDelegate();
+
+				return new UmbrellaGridDataResponse<TItemModel>(result.Result.Items, result.Result.TotalCount, result.Result.PageNumber, result.Result.PageSize, CallGridStateHasChangedOnRefresh);
 			}
 			else
 			{
@@ -145,16 +87,17 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 		catch
 		{
 			GridInstance.SetErrorState();
-			throw;
+			await DialogService.ShowDangerMessageAsync();
 		}
+
+		return null;
 	}
 
-	/// <inheritdoc />
-	public Task RefreshGridAsyncUsingCurrentRefreshOptionsAsync()
-		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
-			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
-			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
-			CurrentRefreshOptions?.Filters ?? InitialFilterExpressions);
+	/// <summary>
+	/// Refreshes the grid, retaining its state.
+	/// </summary>
+	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
+	protected Task RefreshGridAsync() => GridInstance.RefreshAsync();
 
 	/// <summary>
 	/// Shows the problem details error message. If this does not exist, the error message defaults to <see cref="DialogDefaults.UnknownErrorMessage"/>.
@@ -162,5 +105,5 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
 	protected ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
-		=> DialogUtility.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
+		=> DialogService.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
 }

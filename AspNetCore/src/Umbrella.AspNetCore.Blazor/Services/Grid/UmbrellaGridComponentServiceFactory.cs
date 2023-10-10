@@ -37,13 +37,9 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 	/// <inheritdoc/>
 	public IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(
-		string initialSortPropertyName,
-		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate,
+		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate,
 		Action stateHasChangedDelegate,
-		bool autoRenderOnPageLoad = true,
 		bool callGridStateHasChangedOnRefresh = true,
-		SortDirection initialSortDirection = SortDirection.Descending,
-		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
 		IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : notnull
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
@@ -55,23 +51,17 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 			var service = new UmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(logger, dialogUtility)
 			{
-				AutoRenderOnPageLoad = autoRenderOnPageLoad,
 				CallGridStateHasChangedOnRefresh = callGridStateHasChangedOnRefresh,
-				InitialSortDirection = initialSortDirection,
-				InitialSortPropertyName = initialSortPropertyName,
 				LoadPaginatedResultModelDelegate = loadPaginatedResultModelDelegate,
 				StateHasChangedDelegate = stateHasChangedDelegate
 			};
-
-			if (initialSortExpressions is not null)
-				service.InitialSortExpressions = initialSortExpressions;
 
 			if(initialFilterExpressions is not null)
 				service.InitialFilterExpressions = initialFilterExpressions;
 
 			return service;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { initialSortPropertyName, autoRenderOnPageLoad, callGridStateHasChangedOnRefresh, initialSortDirection }))
+		catch (Exception exc) when (_logger.WriteError(exc, new { callGridStateHasChangedOnRefresh }))
 		{
 			throw new UmbrellaBlazorException("There has been a problem creating the service.", exc);
 		}
@@ -79,13 +69,9 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 	/// <inheritdoc/>
 	public IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> CreateUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>(
-		string initialSortPropertyName,
 		Action stateHasChangedDelegate,
-		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null,
-		bool autoRenderOnPageLoad = true,
+		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null,
 		bool callGridStateHasChangedOnRefresh = true,
-		SortDirection initialSortDirection = SortDirection.Descending,
-		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
 		IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : class
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
@@ -99,15 +85,9 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 			var service = new UmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>(logger, dialogUtility, repository)
 			{
-				AutoRenderOnPageLoad = autoRenderOnPageLoad,
 				CallGridStateHasChangedOnRefresh = callGridStateHasChangedOnRefresh,
-				InitialSortDirection = initialSortDirection,
-				InitialSortPropertyName = initialSortPropertyName,
 				StateHasChangedDelegate = stateHasChangedDelegate
 			};
-
-			if (initialSortExpressions is not null)
-				service.InitialSortExpressions = initialSortExpressions;
 
 			if (initialFilterExpressions is not null)
 				service.InitialFilterExpressions = initialFilterExpressions;
@@ -117,7 +97,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 			return service;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { initialSortPropertyName, autoRenderOnPageLoad, callGridStateHasChangedOnRefresh, initialSortDirection }))
+		catch (Exception exc) when (_logger.WriteError(exc, new { callGridStateHasChangedOnRefresh }))
 		{
 			throw new UmbrellaBlazorException("There has been a problem creating the service.", exc);
 		}
@@ -125,13 +105,9 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 	/// <inheritdoc/>
 	public IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(
-		string initialSortPropertyName,
 		Action stateHasChangedDelegate,
-		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null,
-		bool autoRenderOnPageLoad = true,
+		Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null,
 		bool callGridStateHasChangedOnRefresh = true,
-		SortDirection initialSortDirection = SortDirection.Descending,
-		Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null,
 		IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null,
 		Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
@@ -147,16 +123,10 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 			var service = new UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(logger, dialogUtility, repository)
 			{
-				AutoRenderOnPageLoad = autoRenderOnPageLoad,
 				CallGridStateHasChangedOnRefresh = callGridStateHasChangedOnRefresh,
-				InitialSortDirection = initialSortDirection,
-				InitialSortPropertyName = initialSortPropertyName,
 				StateHasChangedDelegate = stateHasChangedDelegate,
 				BeforeDeletingDelegate = beforeDeletingDelegate
 			};
-
-			if (initialSortExpressions is not null)
-				service.InitialSortExpressions = initialSortExpressions;
 
 			if (initialFilterExpressions is not null)
 				service.InitialFilterExpressions = initialFilterExpressions;
@@ -166,7 +136,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 
 			return service;
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { initialSortPropertyName, autoRenderOnPageLoad, callGridStateHasChangedOnRefresh, initialSortDirection }))
+		catch (Exception exc) when (_logger.WriteError(exc, new { callGridStateHasChangedOnRefresh }))
 		{
 			throw new UmbrellaBlazorException("There has been a problem creating the service.", exc);
 		}

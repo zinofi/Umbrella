@@ -1,8 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Components;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
@@ -20,25 +16,6 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 {
 	/// <summary>
-	/// Gets the property name used to initally sort the data in the grid.
-	/// </summary>
-	protected abstract string InitialSortPropertyName { get; }
-
-	/// <summary>
-	/// Gets the sort direction used to initially sort the data in the grid.
-	/// </summary>
-	/// <remarks>Defaults to <see cref="SortDirection.Descending"/>.</remarks>
-	protected virtual SortDirection InitialSortDirection => SortDirection.Descending;
-
-	/// <summary>
-	/// Gets the collection of sort expressions used to initially sort the data in the grid.
-	/// </summary>
-	/// <remarks>
-	/// Defaults to a collection containing a single sort expresssion which uses the <see cref="InitialSortPropertyName"/> and <see cref="InitialSortDirection"/>.
-	/// </remarks>
-	protected virtual Lazy<IReadOnlyCollection<SortExpressionDescriptor>> InitialSortExpressions { get; }
-
-	/// <summary>
 	/// Gets the collection of filter expressions used to initially filter the data in the grid.
 	/// </summary>
 	/// <remarks>
@@ -47,125 +24,35 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	protected virtual IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; } = Array.Empty<FilterExpressionDescriptor>();
 
 	/// <summary>
-	/// Gets or sets the current refresh options which are updated when the grid options have been changed as a result of filtering, sorting or paginating through data.
-	/// </summary>
-	/// <remarks>
-	/// This is updated internally inside this component by the <see cref="OnGridOptionsChangedAsync(UmbrellaGridRefreshEventArgs)"/> event handler.
-	/// </remarks>
-	protected UmbrellaGridRefreshEventArgs? CurrentRefreshOptions { get; set; }
-
-	/// <summary>
 	/// Gets or sets the grid instance.
 	/// </summary>
 	protected UmbrellaGrid<TItemModel> GridInstance { get; set; } = null!;
 
 	/// <summary>
 	/// Gets a value specifying whether or not the <see cref="GridInstance"/> should internally call its <see cref="ComponentBase.StateHasChanged"/> method
-	/// when this component invokes its <see cref="UmbrellaGrid{TItem}.UpdateAsync(IReadOnlyCollection{TItem}, int?, int?, int?, bool)"/> method called internally
-	/// by the <see cref="RefreshGridAsync(int, int, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?)"/> method.
+	/// when this component responds to an <see cref="UmbrellaGridDataRequest"/> and provides a <see cref="UmbrellaGridDataResponse{TItem}"/>.
 	/// </summary>
 	/// <remarks>Defaults to <see langword="true"/>.</remarks>
 	protected virtual bool CallGridStateHasChangedOnRefresh { get; } = true;
 
 	/// <summary>
-	/// Gets a value specifying whether or not the grid will automatically render when the page loads. If this is set to <see langword="false" />
-	/// the <see cref="InitializeGridAsync"/> method should be manually called.
+	/// Invoked by the <see cref="GridInstance"/> when it requests new data.
 	/// </summary>
-	/// <remarks>Defaults to <see langword="true"/>.</remarks>
-	protected virtual bool AutoRenderOnPageLoad { get; } = true;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaGridComponentBase{TItemModel, TPaginatedResultModel}"/> class.
-	/// </summary>
-	public UmbrellaGridComponentBase()
-	{
-		InitialSortExpressions = new Lazy<IReadOnlyCollection<SortExpressionDescriptor>>(() => new[] { new SortExpressionDescriptor(InitialSortPropertyName, InitialSortDirection) });
-	}
-
-	/// <summary>
-	/// Initializes the grid.
-	/// </summary>
-	protected async Task InitializeGridAsync()
+	/// <param name="args">The request containing details of the current filtering, sorting and pagination options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The response provided to the grid.</returns>
+	protected async Task<UmbrellaGridDataResponse<TItemModel>?> OnGridDataRequestAsync(UmbrellaGridDataRequest args, CancellationToken cancellationToken)
 	{
 		try
 		{
-			if (AutoRenderOnPageLoad)
-				throw new InvalidOperationException("Auto rendering has been enabled. This method should not be manually called.");
-
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			await DialogUtility.ShowDangerMessageAsync();
-		}
-	}
-
-	/// <inheritdoc />
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		try
-		{
-			if (!firstRender || !AutoRenderOnPageLoad)
-				return;
-
-			await RefreshGridAsync(GridInstance.PageNumber, GridInstance.PageSize, sorters: InitialSortExpressions.Value, filters: InitialFilterExpressions);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc))
-		{
-			await DialogUtility.ShowDangerMessageAsync();
-		}
-	}
-
-	/// <summary>
-	/// The event handler invoked by the <see cref="GridInstance"/> as a result of filtering, sorting or pagination.
-	/// </summary>
-	/// <param name="args">The event args containing details of the current filtering, sorting and pagination options.</param>
-	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
-	protected async Task OnGridOptionsChangedAsync(UmbrellaGridRefreshEventArgs args)
-	{
-		try
-		{
-			CurrentRefreshOptions = args;
-
-			await RefreshGridAsync(args.PageNumber, args.PageSize, args.Sorters, args.Filters);
-		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { args }))
-		{
-			await DialogUtility.ShowDangerMessageAsync();
-		}
-	}
-
-	/// <summary>
-	/// Loads new data from the server using the specified options.
-	/// </summary>
-	/// <param name="pageNumber">The page number.</param>
-	/// <param name="pageSize">The page size.</param>
-	/// <param name="sorters">The sorters.</param>
-	/// <param name="filters">The filters.</param>
-	/// <returns>The results from the server.</returns>
-	protected abstract Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null);
-
-	/// <summary>
-	/// Refreshes the data in the grid using the specified options. Internally this calls <see cref="LoadPaginatedResultModelAsync(int, int, IEnumerable{SortExpressionDescriptor}?, IEnumerable{FilterExpressionDescriptor}?)" />
-	/// to load new data, usually from the server.
-	/// </summary>
-	/// <param name="pageNumber">The page number.</param>
-	/// <param name="pageSize">The page size.</param>
-	/// <param name="sorters">The sorters.</param>
-	/// <param name="filters">The filters.</param>
-	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
-	protected virtual async Task RefreshGridAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null)
-	{
-		try
-		{
-			var result = await LoadPaginatedResultModelAsync(pageNumber, pageSize, sorters, filters);
+			var result = await LoadPaginatedResultModelAsync(args.PageNumber, args.PageSize, args.Sorters, args.Filters, cancellationToken);
 
 			if (result.Success && result.Result is not null)
 			{
-				await GridInstance.UpdateAsync(result.Result.Items, result.Result.TotalCount, result.Result.PageNumber, result.Result.PageSize, CallGridStateHasChangedOnRefresh);
-
 				if (!CallGridStateHasChangedOnRefresh)
 					StateHasChanged();
+
+				return new UmbrellaGridDataResponse<TItemModel>(result.Result.Items, result.Result.TotalCount, result.Result.PageNumber, result.Result.PageSize, CallGridStateHasChangedOnRefresh);
 			}
 			else
 			{
@@ -176,26 +63,27 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		catch
 		{
 			GridInstance.SetErrorState();
-			throw;
+			await DialogUtility.ShowDangerMessageAsync();
 		}
+
+		return null;
 	}
 
 	/// <summary>
-	/// Refreshes the grid using any existing <see cref="CurrentRefreshOptions"/> falling back to the
-	/// <see cref="UmbrellaGrid{TItem}.PageNumber"/> and <see cref="UmbrellaGrid{TItem}.PageSize"/> for the current <see cref="GridInstance"/>
-	/// where needed.
+	/// Loads new data from the server using the specified options.
 	/// </summary>
-	/// <returns>An awaitable Task that completes when this operation has completed.</returns>
-	protected Task RefreshGridAsyncUsingCurrentRefreshOptionsAsync()
-		=> RefreshGridAsync(CurrentRefreshOptions?.PageNumber ?? GridInstance.PageNumber,
-			CurrentRefreshOptions?.PageSize ?? GridInstance.PageSize,
-			CurrentRefreshOptions?.Sorters ?? InitialSortExpressions.Value,
-			CurrentRefreshOptions?.Filters ?? InitialFilterExpressions);
+	/// <param name="pageNumber">The page number.</param>
+	/// <param name="pageSize">The page size.</param>
+	/// <param name="sorters">The sorters.</param>
+	/// <param name="filters">The filters.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The results from the server.</returns>
+	protected abstract Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, CancellationToken cancellationToken = default);
 
 	/// <inheritdoc />
 	protected override async Task ReloadAsync()
 	{
 		await base.OnInitializedAsync();
-		await RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
+		await GridInstance.RefreshAsync();
 	}
 }

@@ -19,23 +19,15 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// </summary>
 	/// <typeparam name="TItemModel">The type of the item model.</typeparam>
 	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
-	/// <param name="initialSortPropertyName">The sort direction used to initially sort the data in the grid.</param>
 	/// <param name="loadPaginatedResultModelDelegate">The delegate used to load the paginated results.</param>
 	/// <param name="stateHasChangedDelegate">The StateHasChanged delegate. This should always be initialized to <see cref="ComponentBase.StateHasChanged"/>.</param>
-	/// <param name="autoRenderOnPageLoad">Specifies whether or not the grid will automatically render when the page loads. If this is set to <see langword="false" />
-	/// the <c>InitializeGridAsync</c> method should be manually called.</param>
 	/// <param name="callGridStateHasChangedOnRefresh">Gets a value specifying whether or not the <c>GridInstance</c> should internally call its <see cref="ComponentBase.StateHasChanged"/> method
 	/// when this component invokes its <c>UpdateAsync</c> method called internally
 	/// by the <c>RefreshGridAsync</c> method.</param>
-	/// <param name="initialSortDirection">The sort direction used to initially sort the data in the grid.</param>
-	/// <param name="initialSortExpressions">
-	/// The collection of sort expressions used to initially sort the data in the grid.
-	/// Defaults to a collection containing a single sort expresssion which uses the <paramref name="initialSortPropertyName"/> and <paramref name="initialSortDirection"/>.
-	/// </param>
 	/// <param name="initialFilterExpressions">The initial filter expressions.</param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(string initialSortPropertyName, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate, Action stateHasChangedDelegate, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
+	IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate, Action stateHasChangedDelegate, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : notnull
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>;
 
@@ -45,23 +37,15 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// <typeparam name="TItemModel">The type of the item model.</typeparam>
 	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 	/// <typeparam name="TRepository">The type of the repository.</typeparam>
-	/// <param name="initialSortPropertyName">The sort direction used to initially sort the data in the grid.</param>
 	/// <param name="stateHasChangedDelegate">The StateHasChanged delegate. This should always be initialized to <see cref="ComponentBase.StateHasChanged"/>.</param>
 	/// <param name="loadPaginatedResultModelDelegate">The delegate used to load the paginated results.</param>
-	/// <param name="autoRenderOnPageLoad">Specifies whether or not the grid will automatically render when the page loads. If this is set to <see langword="false" />
-	/// the <c>InitializeGridAsync</c> method should be manually called.</param>
 	/// <param name="callGridStateHasChangedOnRefresh">Gets a value specifying whether or not the <c>GridInstance</c> should internally call its <see cref="ComponentBase.StateHasChanged"/> method
 	/// when this component invokes its <c>UpdateAsync</c> method called internally
 	/// by the <c>RefreshGridAsync</c> method.</param>
-	/// <param name="initialSortDirection">The sort direction used to initially sort the data in the grid.</param>
-	/// <param name="initialSortExpressions">
-	/// The collection of sort expressions used to initially sort the data in the grid.
-	/// Defaults to a collection containing a single sort expresssion which uses the <paramref name="initialSortPropertyName"/> and <paramref name="initialSortDirection"/>.
-	/// </param>
 	/// <param name="initialFilterExpressions">The initial filter expressions.</param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> CreateUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>(string initialSortPropertyName, Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
+	IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> CreateUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>(Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : class
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 		where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>;
@@ -73,19 +57,11 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 	/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
 	/// <typeparam name="TRepository">The type of the repository.</typeparam>
-	/// <param name="initialSortPropertyName">The sort direction used to initially sort the data in the grid.</param>
 	/// <param name="stateHasChangedDelegate">The StateHasChanged delegate. This should always be initialized to <see cref="ComponentBase.StateHasChanged"/>.</param>
 	/// <param name="loadPaginatedResultModelDelegate">The delegate used to load the paginated results.</param>
-	/// <param name="autoRenderOnPageLoad">Specifies whether or not the grid will automatically render when the page loads. If this is set to <see langword="false" />
-	/// the <c>InitializeGridAsync</c> method should be manually called.</param>
 	/// <param name="callGridStateHasChangedOnRefresh">Gets a value specifying whether or not the <c>GridInstance</c> should internally call its <see cref="ComponentBase.StateHasChanged"/> method
 	/// when this component invokes its <c>UpdateAsync</c> method called internally
 	/// by the <c>RefreshGridAsync</c> method.</param>
-	/// <param name="initialSortDirection">The sort direction used to initially sort the data in the grid.</param>
-	/// <param name="initialSortExpressions">
-	/// The collection of sort expressions used to initially sort the data in the grid.
-	/// Defaults to a collection containing a single sort expresssion which uses the <paramref name="initialSortPropertyName"/> and <paramref name="initialSortDirection"/>.
-	/// </param>
 	/// <param name="initialFilterExpressions">The initial filter expressions.</param>
 	/// <param name="beforeDeletingDelegate">
 	/// An optional delegate that is invoked after showing the confirmation dialog asking the user to confirm deletion,
@@ -93,7 +69,7 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// </param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(string initialSortPropertyName, Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool autoRenderOnPageLoad = true, bool callGridStateHasChangedOnRefresh = true, SortDirection initialSortDirection = SortDirection.Descending, Lazy<IReadOnlyCollection<SortExpressionDescriptor>>? initialSortExpressions = null, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null, Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
+	IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null, Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>

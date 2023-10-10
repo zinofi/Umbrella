@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Diagnostics;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 using System.Text.Json;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
@@ -44,7 +44,7 @@ public enum UmbrellaGridRenderMode
 /// <seealso cref="ComponentBase" />
 /// <seealso cref="IUmbrellaGrid{TItem}" />
 [CascadingTypeParameter(nameof(TItem))]
-public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
+public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	where TItem : notnull
 {
 	private class UmbrellaGridSelectableItem
@@ -60,7 +60,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	}
 
 	private static readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
+	private readonly CancellationTokenSource _cts = new();
 	private bool _autoScrollEnabled;
+	private string? _initialSortPropertyName;
+	private Expression<Func<TItem, object>>? _initialSortPropertyExpression;
+	private bool _disposedValue;
+
 	private EditContext EditContext { get; } = new(new object());
 
 	[Inject]
@@ -241,15 +246,25 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	public UmbrellaGridRenderMode RenderMode { get; set; } = UmbrellaGridRenderMode.Table;
 
 	/// <summary>
-	/// Gets or sets the name of the property which will be used to sort the data when the grid is first initialized.
+	/// Gets or sets the initial sort property.
 	/// </summary>
 	[Parameter]
-	public string InitialSortPropertyName { get; set; } = null!;
+	[EditorRequired]
+	public Expression<Func<TItem, object>>? InitialSortProperty
+	{
+		get => _initialSortPropertyExpression;
+		set
+		{
+			_initialSortPropertyExpression = value;
+			_initialSortPropertyName = value?.GetMemberName();
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the initial sort direction. Defaults to <see cref="SortDirection.Descending"/>.
 	/// </summary>
 	[Parameter]
+	[EditorRequired]
 	public SortDirection InitialSortDirection { get; set; } = SortDirection.Descending;
 
 	/// <summary>
@@ -259,10 +274,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	public IReadOnlyCollection<FilterExpressionDescriptor> InitialFilterExpressions { get; set; } = Array.Empty<FilterExpressionDescriptor>();
 
 	/// <summary>
-	/// Gets or sets the event callback invoked by this component when its filtering, sorting or pagination state has changed.
+	/// Gets or sets the callback that is invoked when the grid makes a request for data.
 	/// </summary>
 	[Parameter]
-	public EventCallback<UmbrellaGridRefreshEventArgs> OnGridOptionsChanged { get; set; }
+	[EditorRequired]
+	public Func<UmbrellaGridDataRequest, CancellationToken, Task<UmbrellaGridDataResponse<TItem>>> OnDataRequestedAsync { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the page size options. Defaults to <see cref="UmbrellaPaginationDefaults.PageSizeOptions"/>.
@@ -335,6 +351,14 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	[Parameter]
 	public EventCallback OnResetFiltersAndSorters { get; set; }
 
+	/// <summary>
+	/// Gets or sets the query string state discriminator used to distinguish between querystring state values
+	/// for sorters and filters so that are applied to the correct grid component where more than one
+	/// is in use on a single component or page.
+	/// </summary>
+	[Parameter]
+	public string? QueryStringStateDiscriminator { get; set; }
+
 	private void OnCheckboxSelectColumnSelectionChanged(UmbrellaGridSelectableItem selectableItem)
 	{
 		selectableItem.IsSelected = !selectableItem.IsSelected;
@@ -359,12 +383,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 			return TotalCount == 1 ? "Showing 1 of 1 items" : $"Showing items {startItem} to {endItem} of {TotalCount}";
 		}
-	}
-
-	/// <inheritdoc/>
-	protected override void OnParametersSet()
-	{
-		Guard.IsNotNullOrWhiteSpace(InitialSortPropertyName);
 	}
 
 	/// <inheritdoc />
@@ -404,7 +422,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 				if (column.Filterable)
 					filterableColumns.Add(column);
 
-				if (InitialSortPropertyName == column.PropertyName)
+				if (_initialSortPropertyName == column.PropertyName)
 					column.Direction = InitialSortDirection;
 
 				if (InitialFilterExpressions.Count > 0)
@@ -433,48 +451,24 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	}
 
 	/// <summary>
+	/// Refreshes the grid, optionally resetting the state.
+	/// </summary>
+	/// <param name="resetState">if set to <see langword="true"/>, resets pagination, sorters and filters.</param>
+	public async Task RefreshAsync(bool resetState = false)
+	{
+		if (resetState)
+			await ResetFiltersAndSortersAsync();
+
+		await UpdateGridAsync();
+	}
+
+	/// <summary>
 	/// Changes the <see cref="CurrentState"/> to <see cref="LayoutState.Error"/> and forces re-rendering.
 	/// </summary>
 	public void SetErrorState()
 	{
 		CurrentState = LayoutState.Error;
 		StateHasChanged();
-	}
-
-	/// <summary>
-	/// Updates the grid data.
-	/// </summary>
-	/// <param name="items">The data items.</param>
-	/// <param name="totalCount">The total size of all results without pagination applied.</param>
-	/// <param name="pageNumber">The current page number.</param>
-	/// <param name="pageSize">The current page size.</param>
-	/// <param name="callStateHasChanged">Specifies whether <see cref="ComponentBase.StateHasChanged"/> should be invoked.</param>
-	public async ValueTask UpdateAsync(IReadOnlyCollection<TItem> items, int? totalCount = null, int? pageNumber = null, int? pageSize = null, bool callStateHasChanged = true)
-	{
-		Items = items;
-		TotalCount = totalCount ?? TotalCount;
-		PageSize = pageSize ?? PageSize;
-		PageNumber = pageNumber ?? PageNumber;
-
-		SelectableItems.Clear();
-		SelectableItems.AddRange(Items.Select(x => new UmbrellaGridSelectableItem(false, x)));
-		SelectedRow = default!;
-		CheckboxSelectColumnSelected = false;
-
-		if (AutoScrollTop && _autoScrollEnabled)
-		{
-			await BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
-		}
-
-		// Only enable auto-scrolling after the initial page load.
-		_autoScrollEnabled = true;
-
-		CurrentState = Items.Count > 0 ? LayoutState.Success : LayoutState.Empty;
-
-		if (callStateHasChanged)
-		{
-			StateHasChanged();
-		}
 	}
 
 	/// <summary>
@@ -493,9 +487,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (!firstRender && PaginationInstance is not null)
-		{
 			await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
-		}
 	}
 
 	/// <summary>
@@ -563,17 +555,18 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 	private async Task ResetFiltersAndSortersAsync()
 	{
+		PageNumber = 1;
+
 		foreach (var column in ColumnDefinitions)
 		{
 			column.FilterValue = null;
-			column.Direction = null;
+			column.Direction = column.PropertyName == _initialSortPropertyName ? InitialSortDirection : null;
 
-			if (column.PropertyName == InitialSortPropertyName)
+			foreach (var filter in InitialFilterExpressions)
 			{
-				column.Direction = InitialSortDirection;
+				if (column.PropertyName == filter.MemberPath || column.FilterMemberPathOverride == filter.MemberPath)
+					column.FilterValue = filter.Value;
 			}
-
-			// TODO: InitialFilters
 		}
 
 		if (OnResetFiltersAndSorters.HasDelegate)
@@ -585,11 +578,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 		PageNumber = pageNumber ?? 1;
 
 		if (pageSize.HasValue)
-		{
 			PageSize = pageSize.Value;
-		}
 
-		if (OnGridOptionsChanged.HasDelegate)
+		if (OnDataRequestedAsync is not null)
 		{
 			List<SortExpressionDescriptor>? lstSorters = null;
 			List<FilterExpressionDescriptor>? lstFilters = null;
@@ -662,7 +653,28 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 				return target;
 			}
 
-			await OnGridOptionsChanged.InvokeAsync(new UmbrellaGridRefreshEventArgs(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)));
+			UmbrellaGridDataResponse<TItem> response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
+
+			Items = response.Items;
+			TotalCount = response.TotalCount ?? TotalCount;
+			PageSize = response.PageSize ?? PageSize;
+			PageNumber = response.PageNumber ?? PageNumber;
+
+			SelectableItems.Clear();
+			SelectableItems.AddRange(Items.Select(x => new UmbrellaGridSelectableItem(false, x)));
+			SelectedRow = default!;
+			CheckboxSelectColumnSelected = false;
+
+			if (AutoScrollTop && _autoScrollEnabled)
+				await BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
+
+			// Only enable auto-scrolling after the initial page load.
+			_autoScrollEnabled = true;
+
+			CurrentState = Items.Count > 0 ? LayoutState.Success : LayoutState.Empty;
+
+			if (response.CallStateHasChanged)
+				StateHasChanged();
 		}
 	}
 
@@ -694,11 +706,22 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 
 	private async ValueTask ApplyQueryStringSortersAndFiltersAsync()
 	{
-		bool updateGrid = false;
+		await ResetFiltersAndSortersAsync();
 
-		var sortByResult = Navigation.TryGetQueryStringValue<string>("sortBy");
-		var sortDirectionResult = Navigation.TryGetQueryStringEnumValue<SortDirection>("sortDirection");
-		var filtersResult = Navigation.TryGetQueryStringValue<string>("filters");
+		string sortByKey = "sortBy";
+		string sortDirectionKey = "sortDirection";
+		string filtersKey = "filters";
+
+		if (!string.IsNullOrEmpty(QueryStringStateDiscriminator))
+		{
+			sortByKey = $"{QueryStringStateDiscriminator}:{sortByKey}";
+			sortDirectionKey = $"{QueryStringStateDiscriminator}:{sortDirectionKey}";
+			filtersKey = $"{QueryStringStateDiscriminator}:{filtersKey}";
+		}
+
+		var sortByResult = Navigation.TryGetQueryStringValue<string>(sortByKey);
+		var sortDirectionResult = Navigation.TryGetQueryStringEnumValue<SortDirection>(sortDirectionKey);
+		var filtersResult = Navigation.TryGetQueryStringValue<string>(filtersKey);
 
 		if (Logger.IsEnabled(LogLevel.Debug))
 			Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult });
@@ -710,7 +733,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			if (sortColumn is not null)
 			{
 				sortColumn.Direction = sortDirectionResult.success ? sortDirectionResult.value : SortDirection.Ascending;
-				updateGrid = true;
 
 				if (Logger.IsEnabled(LogLevel.Debug))
 					Logger.WriteDebug(new { sortColumn.PropertyName, sortColumn.Direction }, "Applied Sorter");
@@ -730,7 +752,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 					if (filterableColumn is not null)
 					{
 						filterableColumn.FilterValue = kvp.Value;
-						updateGrid = true;
 
 						if (Logger.IsEnabled(LogLevel.Debug))
 							Logger.WriteDebug(new { filterableColumn.PropertyName, filterableColumn.FilterValue }, "Applied Filter");
@@ -739,7 +760,36 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>
 			}
 		}
 
-		if (updateGrid)
-			await UpdateGridAsync();
+		PageNumber = UmbrellaPaginationDefaults.PageNumber;
+		PageSize = UmbrellaPaginationDefaults.PageSize;
+
+		await UpdateGridAsync();
+	}
+
+	/// <summary>
+	/// Disposes this object.
+	/// </summary>
+	/// <param name="disposing">if set to <see langword="true"/>, disposes managed state if not already disposed.</param>
+	/// <returns></returns>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!_disposedValue)
+		{
+			if (disposing)
+			{
+				_cts.Cancel();
+				_cts.Dispose();
+			}
+
+			_disposedValue = true;
+		}
+	}
+	
+	/// <inheritdoc/>
+	public void Dispose()
+	{
+		// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
 	}
 }

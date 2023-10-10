@@ -31,5 +31,5 @@ public abstract class UmbrellaReadOnlyRemoteDataAccessGridComponentBase<TItemMod
 	protected TRepository Repository { get; set; } = null!;
 
 	/// <inheritdoc/>
-	protected override Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters);
+	protected override Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, CancellationToken cancellationToken = default) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters, cancellationToken: cancellationToken);
 }

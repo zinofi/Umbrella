@@ -49,7 +49,7 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 				if (result.Success)
 				{
 					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
-					await RefreshGridAsyncUsingCurrentRefreshOptionsAsync();
+					await GridInstance.RefreshAsync();
 				}
 				else
 				{
