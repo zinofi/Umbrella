@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using CommunityToolkit.Diagnostics;
+using System.Linq.Expressions;
 using System.Text.Json;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
@@ -7,70 +8,6 @@ using Umbrella.Utilities.Dating.Json;
 using Umbrella.Utilities.TypeConverters;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
-
-// 1. Try and change the filter value from a string to a generic type. When sending to the server, we'll need to call .ToString on it.
-// What impact will this have? For primitive types, this should work as it currently does.
-// For custom types, the user will have to override the .ToString method.
-// For custom types, the filter value should not be directly editable though, e.g. for a date range, it needs to be selected from a modal, or combo of fields which
-// is readonly.
-// For autocomplete, the selected value needs to be used which might not be a string, it might be an Id.
-// For add-on button, it might be a complex object again. Will we break anything doing this? Should be ok on Reach where it's used by ensuring types default to strings.
-// We will also need to create an interface that can be used to allow instances of columns to be passed around without running into problems with generic type parameters
-// not being know.
-
-// 2. After doing that, we need to create an overloaded version of this class with suitable defaults for the autocomplete type parameters.
-// Although these can live on the base class, they need to be defaulted.
-
-public interface IUmbrellaColumnDefinition<TItem>
-{
-	IReadOnlyDictionary<string, object> AdditionalAttributes { get; }
-	string? AddOnButtonCssClass { get; set; }
-	string? AddOnButtonIconCssClass { get; set; }
-	string? AddOnButtonText { get; set; }
-	string ColumnWidthCssClass { get; }
-	SortDirection? Direction { get; set; }
-	string DirectionCssClass { get; }
-	UmbrellaColumnDisplayMode DisplayMode { get; }
-	bool Filterable { get; }
-	UmbrellaColumnFilterType FilterControlType { get; }
-	FilterType FilterMatchType { get; }
-	string? FilterMemberPathOverride { get; }
-	Func<object, string>? FilterOptionDisplayNameSelector { get; }
-	IReadOnlyCollection<object>? FilterOptions { get; }
-	UmbrellaColumnFilterOptionsType? FilterOptionsType { get; }
-	string? FilterValue { get; set; }
-	string? Heading { get; }
-	string? NullableEnumOption { get; set; }
-	Func<string?, ValueTask<string?>>? OnAddOnButtonClickedAsync { get; set; }
-	int? PercentageWidth { get; }
-	string? PropertyName { get; }
-	string? ShortHeading { get; }
-	bool Sortable { get; }
-	string? SorterMemberPathOverride { get; }
-	string GetFilterOptionDisplayName(object option);
-	Type FilterValueType { get; }
-	string? ToDateRangeDisplayValue();
-
-	/// <summary>
-	/// Gets or sets the AutoComplete search method.
-	/// </summary>
-	Func<string?, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; }
-
-	/// <summary>
-	/// Gets or sets the AutoComplete debounce in milliseconds.
-	/// </summary>
-	int AutoCompleteDebounce { get; }
-
-	/// <summary>
-	/// Gets or sets the AutoComplete maximum suggestions that will be displayed to the user.
-	/// </summary>
-	int AutoCompleteMaximumSuggestions { get; }
-
-	/// <summary>
-	/// Gets or sets the minimum characters that need to be provided before the <see cref="AutoCompleteSearchMethod"/> delegate is invoked.
-	/// </summary>
-	int AutoCompleteMinimumLength { get; }
-}
 
 /// <summary>
 /// Defines a column displayed using the <see cref="UmbrellaGrid{TItem}"/> component.
@@ -100,6 +37,10 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 	/// <param name="addOnButtonCssClass">The CSS class for the add-on button.</param>
 	/// <param name="addOnButtonText">The text for the add-on button.</param>
 	/// <param name="addOnButtonIconCssClass">The CSS class for the icon displayed on the add-on button.</param>
+	/// <param name="autoCompleteDebounce">The autocomplete debounce in milliseconds.</param>
+	/// <param name="autoCompleteMaximumSuggestions">The maximum number of autocomplete suggestions to be shown.</param>
+	/// <param name="autoCompleteMinimumLength">The minimum length of search text required before the autocomplete search method is called.</param>
+	/// <param name="autoCompleteSearchMethod">The callback method invoked when autocomplete suggestions are required.</param>
 	public UmbrellaColumnDefinition(
 		string? heading,
 		string? shortHeading,
@@ -197,137 +138,73 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 	/// </summary>
 	public Expression<Func<TItem, TValue?>>? Property { get; }
 
-	/// <summary>
-	/// Gets or sets the name of the property.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? PropertyName { get; }
 
-	/// <summary>
-	/// Gets or sets the property path override used as the <see cref="FilterExpressionDescriptor.MemberPath"/> property value when
-	/// creating filters.
-	/// </summary>
-	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
-	/// </remarks>
+	/// <inheritdoc/>
 	public string? FilterMemberPathOverride { get; }
 
-	/// <summary>
-	/// Gets or sets the property path override used as the value <see cref="SortExpressionDescriptor.MemberPath"/> property value when
-	/// creating sorters.
-	/// </summary>
-	/// <remarks>
-	/// If this value is <see langword="null"/>, the <see cref="Property"/> will be used.
-	/// </remarks>
+	/// <inheritdoc/>
 	public string? SorterMemberPathOverride { get; }
 
-	/// <summary>
-	/// Gets the display mode.
-	/// </summary>
+	/// <inheritdoc/>
 	public UmbrellaColumnDisplayMode DisplayMode { get; }
 
-	/// <summary>
-	/// Gets the column heading display text.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? Heading { get; }
 
-	/// <summary>
-	/// Gets the column short heading display text.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? ShortHeading { get; }
 
-	/// <summary>
-	/// Gets the percentage width of the column.
-	/// </summary>
+	/// <inheritdoc/>
 	public int? PercentageWidth { get; }
 
-	/// <summary>
-	/// Gets a value specifying whether or not the column is sortable.
-	/// </summary>
+	/// <inheritdoc/>
 	public bool Sortable { get; }
 
-	/// <summary>
-	/// Gets a value specifying whether or not the column is filterable.
-	/// </summary>
+	/// <inheritdoc/>
 	public bool Filterable { get; }
 
-	/// <summary>
-	/// Gets a value specifying the type of control that is rendered to allow filtering, if enabled using the <see cref="Filterable"/> property.
-	/// </summary>
+	/// <inheritdoc/>
 	public UmbrellaColumnFilterType FilterControlType { get; }
-
-	/// <summary>
-	/// Gets a value specifying how the <see cref="FilterValue"/> will be matched against the data in the column.
-	/// </summary>
+	
+	/// <inheritdoc/>
 	public FilterType FilterMatchType { get; }
 
-	/// <summary>
-	/// Gets the filter options displayed to the user.
-	/// </summary>
+	/// <inheritdoc/>
 	public IReadOnlyCollection<object>? FilterOptions { get; }
 
-	/// <summary>
-	/// Specifies the type of the <see cref="FilterOptions"/> displayed to the user.
-	/// </summary>
+	/// <inheritdoc/>
 	public UmbrellaColumnFilterOptionsType? FilterOptionsType { get; }
 
-	/// <summary>
-	/// Gets a delegate used to convert a filter option to a friendly string for displaying to the user.
-	/// </summary>
+	/// <inheritdoc/>
 	public Func<object, string>? FilterOptionDisplayNameSelector { get; }
 
-	/// <summary>
-	/// Gets a collection of the unmatched parameter values specified on the column component that this instance is associated with.
-	/// </summary>
+	/// <inheritdoc/>
 	public IReadOnlyDictionary<string, object> AdditionalAttributes { get; }
 
-	/// <summary>
-	/// Gets or sets the value used to filter the column.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? FilterValue { get; set; }
 
-	/// <summary>
-	/// Gets or sets the nullable enum option.
-	/// </summary>
-	/// <remarks>
-	/// If a value is provided, an option will be shown when the <see cref="FilterOptionsType"/> is set to <see cref="UmbrellaColumnFilterOptionsType.Enum"/>
-	/// which will show a new option after the <c>Any</c> option with an explcit value of <see langword="null" /> with the value specified for this property
-	/// value displayed as the text in the dropdown for the option.
-	/// </remarks>
+	/// <inheritdoc/>
 	public string? NullableEnumOption { get; set; }
 
-	/// <summary>
-	/// Gets or sets the addon button delegate which will be invoked when the add-on button is clicked when the <see cref="FilterControlType"/>
-	/// is set to <see cref="UmbrellaColumnFilterType.TextAddOnButton"/>.
-	/// </summary>
-	/// <remarks>
-	/// The delegate must accept a string parameter which will be the value of the current filter and return a string, which is the new filter value
-	/// to set the text box's content to, wrapped in a <see cref="ValueTask"/>.
-	/// </remarks>
+	/// <inheritdoc/>
 	public Func<string?, ValueTask<string?>>? OnAddOnButtonClickedAsync { get; set; }
 
-	/// <summary>
-	/// Gets or sets the add on button CSS class.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? AddOnButtonCssClass { get; set; }
 
-	/// <summary>
-	/// Gets or sets the add on button text.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? AddOnButtonText { get; set; }
 
-	/// <summary>
-	/// Gets or sets the add on button icon CSS class.
-	/// </summary>
+	/// <inheritdoc/>
 	public string? AddOnButtonIconCssClass { get; set; }
 
-	/// <summary>
-	/// Gets or sets the sort direction.
-	/// </summary>
+	/// <inheritdoc/>
 	public SortDirection? Direction { get; set; }
 
-	/// <summary>
-	/// Gets the sort direction CSS class based on the current value of the <see cref="Direction"/> property.
-	/// </summary>
+	/// <inheritdoc/>
 	public string DirectionCssClass => Direction switch
 	{
 		SortDirection.Ascending => "fas fa-sort-up",
@@ -335,19 +212,13 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 		_ => "fas fa-sort",
 	};
 
-	/// <summary>
-	/// Gets the CSS class for the width of the column based on the value of the <see cref="PercentageWidth"/> property.
-	/// </summary>
+	/// <inheritdoc/>
 	public string ColumnWidthCssClass => PercentageWidth.HasValue ? $"u-grid__column--{PercentageWidth}" : "u-grid__column--auto";
 
-	/// <summary>
-	/// Gets the type of the filter value.
-	/// </summary>
-	/// <remarks>
-	/// This is the <see cref="Type"/> of the <typeparamref name="TValue"/> generic type parameter.
-	/// </remarks>
+	/// <inheritdoc/>
 	public Type FilterValueType { get; }
 
+	/// <inheritdoc/>
 	public TValue? TypedFilterValue
 	{
 		get
@@ -372,31 +243,7 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 	/// <inheritdoc/>
 	public Func<string?, Task<IEnumerable<string>>>? AutoCompleteSearchMethod { get; }
 
-	//public object? NullableTypedFilterValue
-	//{
-	//	get
-	//	{
-	//		// Construct the Nullable<T> type using reflection
-	//		Type nullableType = typeof(Nullable<>).MakeGenericType(FilterValueType);
-
-	//		// Create an instance of the Nullable<T> type
-	//		object? nullableInstance = FilterValue is not null
-	//			? Activator.CreateInstance(nullableType, GenericTypeConverterHelper.Convert<TValue>(FilterValue))
-	//			: Activator.CreateInstance(nullableType);
-
-	//		return nullableInstance;
-	//	}
-	//	set
-	//	{
-	//		FilterValue = value is not null ? value.ToString() : default;
-	//	}
-	//}
-
-	/// <summary>
-	/// Gets a friendly display name for a specified filter <paramref name="option"/>.
-	/// </summary>
-	/// <param name="option">The filter option.</param>
-	/// <returns>The friendly display name.</returns>
+	/// <inheritdoc/>
 	public string GetFilterOptionDisplayName(object option)
 	{
 		if (FilterOptionDisplayNameSelector is null)
@@ -426,8 +273,11 @@ public record UmbrellaColumnDefinition<TItem, TValue> : IUmbrellaColumnDefinitio
 		return FilterOptionDisplayNameSelector(option);
 	}
 
+	/// <inheritdoc/>
 	public string? ToDateRangeDisplayValue()
 	{
+		Guard.IsTrue(FilterControlType is UmbrellaColumnFilterType.DateRange);
+
 		if (!string.IsNullOrEmpty(FilterValue))
 		{
 			DateTimeRange model = JsonSerializer.Deserialize(FilterValue, DateTimeRangeJsonSerializerContext.Default.DateTimeRange);

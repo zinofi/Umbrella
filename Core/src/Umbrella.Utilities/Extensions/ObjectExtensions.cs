@@ -25,14 +25,19 @@ public static class ObjectExtensions
 		return UmbrellaStatics.SerializeJson(value, useCamelCasingRules);
 	}
 
-	// TODO: Write a method that can trim all string properties
-	// Needs to be able to trim strings in all parts of the object graph, including collections, where possible.
-	// Can only do this where we are allowed to assign a new string.
+    // TODO: Write a method that can trim all string properties
+    // Needs to be able to trim strings in all parts of the object graph, including collections, where possible.
+    // Can only do this where we are allowed to assign a new string.
 
-	// Initally create a version that uses compiled expressions / reflection to do this
-	// but ultimately we need to use source generators to do this. Create an attribute that can be added to a class
-	// that creates a TrimStringProperties method. Need to think about how this will work with inheritance.
-	[EditorBrowsable(EditorBrowsableState.Never)]
+    // Initally create a version that uses compiled expressions / reflection to do this
+    // but ultimately we need to use source generators to do this. Create an attribute that can be added to a class
+    // that creates a TrimStringProperties method. Need to think about how this will work with inheritance.
+
+    /// <summary>
+    /// Trims all string properties recursively.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
 	public static void TrimAllStringProperties(this object value)
 	{
 		if (value is null)

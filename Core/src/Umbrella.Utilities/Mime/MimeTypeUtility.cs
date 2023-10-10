@@ -824,9 +824,13 @@ public class MimeTypeUtility : IMimeTypeUtility
 
 			//Assume the filename is the extension
 			//If it contains any . chars run it through the Path utility method.
-			fileNameOrExtension = fileNameOrExtension.IndexOf('.') == -1 ? fileNameOrExtension : Path.GetExtension(fileNameOrExtension).TrimStart('.');
+#if NET6_0_OR_GREATER
+			fileNameOrExtension = !fileNameOrExtension.Contains('.', StringComparison.Ordinal) ? fileNameOrExtension : Path.GetExtension(fileNameOrExtension).TrimStart('.');
+#else
+			fileNameOrExtension = !fileNameOrExtension.Contains('.') ? fileNameOrExtension : Path.GetExtension(fileNameOrExtension).TrimStart('.');
+#endif
 
-			return string.IsNullOrWhiteSpace(fileNameOrExtension)
+            return string.IsNullOrWhiteSpace(fileNameOrExtension)
 				? DefaultMimeType
 				: _mimeTypeDictionary.TryGetValue(fileNameOrExtension, out string? mimeType) ? mimeType ?? DefaultMimeType : DefaultMimeType;
 		}
@@ -835,5 +839,5 @@ public class MimeTypeUtility : IMimeTypeUtility
 			throw new UmbrellaException($"There was a problem identifying the mime type of the specified file name or extension: {fileNameOrExtension}", exc);
 		}
 	}
-	#endregion
+#endregion
 }

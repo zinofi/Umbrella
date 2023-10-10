@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Fine for benchmark projects.")]
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Fine for benchmark projects.")]

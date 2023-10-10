@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Text;
-using System.Text.Encodings.Web;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Primitives;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Umbrella.Utilities.Http;
 
@@ -84,17 +84,25 @@ public static class QueryHelpers
 		Guard.IsNotNull(uri);
 		Guard.IsNotNull(queryString);
 
+#if NET6_0_OR_GREATER
+		int anchorIndex = uri.IndexOf('#', StringComparison.Ordinal);
+#else
 		int anchorIndex = uri.IndexOf('#');
+#endif
 		string uriToBeAppended = uri;
 		string anchorText = "";
 		// If there is an anchor, then the query string must be inserted before its first occurrence.
 		if (anchorIndex != -1)
 		{
-			anchorText = uri.Substring(anchorIndex);
-			uriToBeAppended = uri.Substring(0, anchorIndex);
+			anchorText = uri[anchorIndex..];
+			uriToBeAppended = uri[..anchorIndex];
 		}
 
+#if NET6_0_OR_GREATER
+		int queryIndex = uriToBeAppended.IndexOf('?', StringComparison.Ordinal);
+#else
 		int queryIndex = uriToBeAppended.IndexOf('?');
+#endif
 		bool hasQuery = queryIndex != -1;
 
 		var sb = new StringBuilder();
@@ -145,7 +153,13 @@ public static class QueryHelpers
 		}
 
 		int textLength = queryString.Length;
+
+#if NET6_0_OR_GREATER
+		int equalIndex = queryString.IndexOf('=', StringComparison.Ordinal);
+#else
 		int equalIndex = queryString.IndexOf('=');
+#endif
+
 		if (equalIndex == -1)
 		{
 			equalIndex = textLength;
@@ -166,7 +180,7 @@ public static class QueryHelpers
 					++scanIndex;
 				}
 
-				string name = queryString.Substring(scanIndex, equalIndex - scanIndex);
+				string name = queryString[scanIndex..equalIndex];
 				string value = queryString.Substring(equalIndex + 1, delimiterIndex - equalIndex - 1);
 				accumulator.Append(
 					Uri.UnescapeDataString(name.Replace('+', ' ')),
@@ -181,7 +195,7 @@ public static class QueryHelpers
 			{
 				if (delimiterIndex > scanIndex)
 				{
-					accumulator.Append(queryString.Substring(scanIndex, delimiterIndex - scanIndex), string.Empty);
+					accumulator.Append(queryString[scanIndex..delimiterIndex], string.Empty);
 				}
 			}
 
@@ -246,9 +260,9 @@ internal struct KeyValueAccumulator
 		ValueCount++;
 	}
 
-	public bool HasValues => ValueCount > 0;
+	public readonly bool HasValues => ValueCount > 0;
 
-	public int KeyCount => _accumulator?.Count ?? 0;
+	public readonly int KeyCount => _accumulator?.Count ?? 0;
 
 	public int ValueCount { get; private set; }
 

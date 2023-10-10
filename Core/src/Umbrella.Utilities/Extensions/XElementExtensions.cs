@@ -54,7 +54,11 @@ public static class XElementExtensions
 			if (type.IsPrimitive || type == typeof(decimal) || type == typeof(string))
 			{
 				string cleanedAttributeValue = type.IsPrimitive || type == typeof(decimal)
+#if NET6_0_OR_GREATER
+					? attributeValue!.Replace(" ", "", StringComparison.Ordinal)
+#else
 					? attributeValue!.Replace(" ", "")
+#endif
 					: attributeValue!;
 
 				try
@@ -97,7 +101,11 @@ public static class XElementExtensions
 		if (attribute is null && required)
 			throw new UmbrellaException($"The {name} attribute of a {element.Name} element could not be found.");
 
+#if NET6_0_OR_GREATER
+		string? attributeValue = attribute?.Value?.Replace(" ", "", StringComparison.Ordinal);
+#else
 		string? attributeValue = attribute?.Value?.Replace(" ", "");
+#endif
 
 		return !string.IsNullOrEmpty(attributeValue) && Enum.TryParse(attributeValue, true, out T output)
 			? output

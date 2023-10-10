@@ -86,8 +86,13 @@ public class DynamicImageUtility : IDynamicImageUtility
 			string url = relativeUrl.TrimToLowerInvariant();
 
 			// Strip away any QueryString
+#if NET6_0_OR_GREATER
+			if (url.Contains('?', StringComparison.Ordinal))
+				url = url[..url.IndexOf('?', StringComparison.Ordinal)];
+#else
 			if (url.Contains('?'))
-				url = url.Substring(0, url.IndexOf('?'));
+				url = url[..url.IndexOf('?')];
+#endif
 
 			if (!Path.HasExtension(url))
 				return (DynamicImageParseUrlResult.Invalid, default);
@@ -176,12 +181,20 @@ public class DynamicImageUtility : IDynamicImageUtility
 
 		try
 		{
+#if NET6_0_OR_GREATER
+			string path = options.SourcePath.Replace("~/", "", StringComparison.Ordinal).TrimStart('/');
+#else
 			string path = options.SourcePath.Replace("~/", "").TrimStart('/');
+#endif
 
 			// Remove the querystring and append to the end of the generated URL.
 			string? qs = null;
 
+#if NET6_0_OR_GREATER
+			if (path.Contains('?', StringComparison.Ordinal))
+#else
 			if (path.Contains('?'))
+#endif
 			{
 				string[] parts = path.Split('?');
 
@@ -201,7 +214,11 @@ public class DynamicImageUtility : IDynamicImageUtility
 				options.Height,
 				options.ResizeMode,
 				originalExtension,
+#if NET6_0_OR_GREATER
+				path.Replace(originalExtension, options.Format.ToFileExtensionString(), StringComparison.Ordinal).ToLowerInvariant());
+#else
 				path.Replace(originalExtension, options.Format.ToFileExtensionString()).ToLowerInvariant());
+#endif
 
 			if (!string.IsNullOrEmpty(qs))
 				virtualPath += "?" + qs;
@@ -213,5 +230,5 @@ public class DynamicImageUtility : IDynamicImageUtility
 			throw new UmbrellaDynamicImageException("An error has occurred whilst generating the virtual path.", exc);
 		}
 	}
-	#endregion
+#endregion
 }

@@ -186,9 +186,13 @@ public class EmailContent
 		}
 
 		if (replaceNewLines)
+#if NET6_0_OR_GREATER
+			value = value.Replace(newLineToken, "<br />", StringComparison.Ordinal);
+#else
 			value = value.Replace(newLineToken, "<br />");
+#endif
 
-		return value;
+        return value;
 	}
-	#endregion
+#endregion
 }

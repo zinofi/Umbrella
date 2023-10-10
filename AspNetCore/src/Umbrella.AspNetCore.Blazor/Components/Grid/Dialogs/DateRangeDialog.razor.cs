@@ -5,7 +5,11 @@ using Umbrella.AspNetCore.Blazor.Infrastructure;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
 
-public abstract class DateRangeDialogBase : UmbrellaDialogComponentBase
+/// <summary>
+/// A dialog used to select a date range.
+/// </summary>
+/// <seealso cref="UmbrellaDialogComponentBase" />
+public partial class DateRangeDialog : UmbrellaDialogComponentBase
 {
 	/// <summary>
 	/// Gets the model used by the edit form on the dialog.
