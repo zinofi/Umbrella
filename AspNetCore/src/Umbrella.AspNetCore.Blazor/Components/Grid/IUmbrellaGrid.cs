@@ -19,7 +19,7 @@ public interface IUmbrellaGrid<TItem>
 	/// Adds the column definition to the grid.
 	/// </summary>
 	/// <param name="column">The column.</param>
-	void AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column);
+	bool AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column);
 
 	/// <summary>
 	/// Sets the column scan as having been completed.

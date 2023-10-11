@@ -2,10 +2,8 @@
 @typeparam TItem
 
 @{
-#pragma warning disable CS8625
     string groupName = Guid.NewGuid().ToString("N");
     string filterContainerId = "a" + Guid.NewGuid().ToString("N")[1..];
-    bool filterableColumnsExist = FilterableColumns is { Count: > 0 };
 }
 
 <CascadingValue Value="this">
@@ -17,7 +15,7 @@
             </CascadingValue>
         }
 
-        @if (ShowFilters && (filterableColumnsExist || AdditionalFilterContent is not null))
+        @if (ShowFilters && (FilterableColumns is { Count: > 0 } || AdditionalFilterContent is not null))
         {
             <div class="u-grid__filters">
                 <a class="u-grid__filters-heading-collapse-button" data-bs-toggle="collapse" href="#@filterContainerId" role="button" aria-expanded="@ExpandFiltersOnLoad.ToString().ToLowerInvariant()" aria-controls="@filterContainerId">
@@ -25,7 +23,7 @@
                     <i class="fas fa-caret-down"></i>
                 </a>
                 <form id="@filterContainerId" class="collapse @(ExpandFiltersOnLoad ? "show" : "")" method="get" novalidate>
-                    @if (filterableColumnsExist)
+                    @if (FilterableColumns is { Count: > 0 })
                     {
                         <div class="row">
                             @foreach (var column in FilterableColumns!)
@@ -170,8 +168,6 @@
         }
         else if (CurrentState is LayoutState.Empty)
         {
-            _ = SetColumnScanCompletedAsync();
-
             @if (EmptyMessageContent is not null)
             {
                 <EmptyStateView>@EmptyMessageContent</EmptyStateView>

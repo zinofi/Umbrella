@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -94,7 +93,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// <summary>
 	/// Gets the columns.
 	/// </summary>
-	private List<IUmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new();
+	private HashSet<IUmbrellaColumnDefinition<TItem>> ColumnDefinitions { get; } = new();
 
 	private List<UmbrellaGridSelectableItem> SelectableItems { get; } = new();
 
@@ -265,7 +264,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// Gets or sets the initial sort direction. Defaults to <see cref="SortDirection.Descending"/>.
 	/// </summary>
 	[Parameter]
-	[EditorRequired]
 	public SortDirection InitialSortDirection { get; set; } = SortDirection.Descending;
 
 	/// <summary>
@@ -279,7 +277,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// </summary>
 	[Parameter]
 	[EditorRequired]
-	public Func<UmbrellaGridDataRequest, CancellationToken, Task<UmbrellaGridDataResponse<TItem>>> OnDataRequestedAsync { get; set; } = null!;
+	public Func<UmbrellaGridDataRequest, CancellationToken, Task<UmbrellaGridDataResponse<TItem>?>> OnDataRequestedAsync { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the page size options. Defaults to <see cref="UmbrellaPaginationDefaults.PageSizeOptions"/>.
@@ -386,26 +384,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaGrid{TItem}"/> class.
-	/// </summary>
-	public UmbrellaGrid()
-	{
-		Navigation.LocationChanged += Navigation_LocationChanged;
-	}
-
-	private void Navigation_LocationChanged(object? sender, LocationChangedEventArgs e)
-	{
-		
-	}
-
 	/// <inheritdoc />
-	public void AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column)
+	public bool AddColumnDefinition(IUmbrellaColumnDefinition<TItem> column)
 	{
 		if (Logger.IsEnabled(LogLevel.Debug))
 			Logger.WriteDebug(new { column });
 
-		ColumnDefinitions.Add(column);
+		return ColumnDefinitions.Add(column);
 	}
 
 	/// <inheritdoc />
@@ -425,9 +410,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 			for (int i = 0; i < ColumnDefinitions.Count; i++)
 			{
-				var column = ColumnDefinitions[i];
+				var column = ColumnDefinitions.ElementAt(i);
 
-				if (column.DisplayMode == UmbrellaColumnDisplayMode.None)
+				if (column.DisplayMode is UmbrellaColumnDisplayMode.None)
 					continue;
 
 				if (i is 0)
@@ -500,8 +485,15 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// <inheritdoc />
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		if (!firstRender && PaginationInstance is not null)
-			await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
+		if (!firstRender)
+		{
+			if (PaginationInstance is not null)
+				await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
+		}
+		else
+		{
+			await SetColumnScanCompletedAsync();
+		}
 	}
 
 	/// <summary>
@@ -667,12 +659,18 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 				return target;
 			}
 
-			UmbrellaGridDataResponse<TItem> response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
+			UmbrellaGridDataResponse<TItem>? response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
 
-			Items = response.Items;
-			TotalCount = response.TotalCount ?? TotalCount;
-			PageSize = response.PageSize ?? PageSize;
-			PageNumber = response.PageNumber ?? PageNumber;
+			if (response is null)
+			{
+				await DialogService.ShowDangerMessageAsync("There has been a problem loading the data. Please try again.");
+				return;
+			}
+
+			Items = response.Value.Items;
+			TotalCount = response.Value.TotalCount ?? TotalCount;
+			PageSize = response.Value.PageSize ?? PageSize;
+			PageNumber = response.Value.PageNumber ?? PageNumber;
 
 			SelectableItems.Clear();
 			SelectableItems.AddRange(Items.Select(x => new UmbrellaGridSelectableItem(false, x)));
@@ -687,7 +685,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 			CurrentState = Items.Count > 0 ? LayoutState.Success : LayoutState.Empty;
 
-			if (response.CallStateHasChanged)
+			if (response.Value.CallStateHasChanged)
 				StateHasChanged();
 		}
 	}
@@ -746,6 +744,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 			if (sortColumn is not null)
 			{
+				// We need to clear any current sort columns before applying the one from the querystring
+				foreach (var column in ColumnDefinitions)
+				{
+					column.Direction = null;
+				}
+
 				sortColumn.Direction = sortDirectionResult.success ? sortDirectionResult.value : SortDirection.Ascending;
 
 				if (Logger.IsEnabled(LogLevel.Debug))
@@ -759,6 +763,14 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 			if (dicFilters is { Count: > 0 })
 			{
+				if (FilterableColumns is not null)
+				{
+					foreach (var item in FilterableColumns)
+					{
+						item.FilterValue = null;
+					}
+				}
+
 				foreach (var kvp in dicFilters)
 				{
 					IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true);
@@ -793,14 +805,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 			{
 				_cts.Cancel();
 				_cts.Dispose();
-
-				Navigation.LocationChanged -= Navigation_LocationChanged;
 			}
 
 			_disposedValue = true;
 		}
 	}
-	
+
 	/// <inheritdoc/>
 	public void Dispose()
 	{

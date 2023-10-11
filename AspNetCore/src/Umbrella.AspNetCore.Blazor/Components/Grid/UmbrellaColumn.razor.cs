@@ -355,12 +355,11 @@ public partial class UmbrellaColumn<TItem, TValue>
 					AutoCompleteMinimumLength,
 					AutoCompleteSearchMethod);
 
-				UmbrellaGridInstance.AddColumnDefinition(definition);
+				_ = UmbrellaGridInstance.AddColumnDefinition(definition);
+
+				//if (!added)
+				//	await UmbrellaGridInstance.SetColumnScanCompletedAsync();
 			}
-		}
-		else
-		{
-			await UmbrellaGridInstance.SetColumnScanCompletedAsync();
 		}
 	}
 }
