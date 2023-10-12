@@ -356,9 +356,6 @@ public partial class UmbrellaColumn<TItem, TValue>
 					AutoCompleteSearchMethod);
 
 				_ = UmbrellaGridInstance.AddColumnDefinition(definition);
-
-				//if (!added)
-				//	await UmbrellaGridInstance.SetColumnScanCompletedAsync();
 			}
 		}
 	}

@@ -5,7 +5,7 @@ using Umbrella.Utilities.Extensions;
 namespace Umbrella.Utilities.Benchmark.Extensions;
 
 [MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.Net60), SimpleJob(RuntimeMoniker.Net70)]
+[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.Net60)]
 public class StringExtensionsBenchmark
 {
 	private const string ShortString = "Rio Tinto Minera Perú Limitada SAC (RTMPL) Borax Français (BF)";

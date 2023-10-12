@@ -15,87 +15,87 @@ public static class CharExtensions
 	/// <returns>The ASCII equivalent.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">character - The specified character must be greater than the unicode character 128.</exception>
 	public static string RemapInternationalCharacterToAscii(this char character)
-    {
-        if (character < 128)
-            throw new ArgumentOutOfRangeException(nameof(character), "The specified character must be greater than the unicode character 128.");
+	{
+		if (character < 128)
+			throw new ArgumentOutOfRangeException(nameof(character), "The specified character must be greater than the unicode character 128.");
 
-        char s = char.ToLowerInvariant(character);
+		char s = char.ToLowerInvariant(character);
 
-        if ("àåáâäãåą".Contains(s))
-        {
-            return "a";
-        }
-        else if ("èéêëę".Contains(s))
-        {
-            return "e";
-        }
-        else if ("ìíîïı".Contains(s))
-        {
-            return "i";
-        }
-        else if ("òóôõöøőð".Contains(s))
-        {
-            return "o";
-        }
-        else if ("ùúûüŭů".Contains(s))
-        {
-            return "u";
-        }
-        else if ("çćčĉ".Contains(s))
-        {
-            return "c";
-        }
-        else if ("żźž".Contains(s))
-        {
-            return "z";
-        }
-        else if ("śşšŝ".Contains(s))
-        {
-            return "s";
-        }
-        else if ("ñń".Contains(s))
-        {
-            return "n";
-        }
-        else if ("ýÿ".Contains(s))
-        {
-            return "y";
-        }
-        else if ("ğĝ".Contains(s))
-        {
-            return "g";
-        }
-        else if (character == 'ř')
-        {
-            return "r";
-        }
-        else if (character == 'ł')
-        {
-            return "l";
-        }
-        else if (character == 'đ')
-        {
-            return "d";
-        }
-        else if (character == 'ß')
-        {
-            return "ss";
-        }
-        else if (character == 'þ')
-        {
-            return "th";
-        }
-        else if (character == 'ĥ')
-        {
-            return "h";
-        }
-        else if (character == 'ĵ')
-        {
-            return "j";
-        }
-        else
-        {
-            return "";
-        }
-    }
+		if ("àåáâäãåą".Contains(s))
+		{
+			return "a";
+		}
+		else if ("èéêëę".Contains(s))
+		{
+			return "e";
+		}
+		else if ("ìíîïı".Contains(s))
+		{
+			return "i";
+		}
+		else if ("òóôõöøőð".Contains(s))
+		{
+			return "o";
+		}
+		else if ("ùúûüŭů".Contains(s))
+		{
+			return "u";
+		}
+		else if ("çćčĉ".Contains(s))
+		{
+			return "c";
+		}
+		else if ("żźž".Contains(s))
+		{
+			return "z";
+		}
+		else if ("śşšŝ".Contains(s))
+		{
+			return "s";
+		}
+		else if ("ñń".Contains(s))
+		{
+			return "n";
+		}
+		else if ("ýÿ".Contains(s))
+		{
+			return "y";
+		}
+		else if ("ğĝ".Contains(s))
+		{
+			return "g";
+		}
+		else if (character == 'ř')
+		{
+			return "r";
+		}
+		else if (character == 'ł')
+		{
+			return "l";
+		}
+		else if (character == 'đ')
+		{
+			return "d";
+		}
+		else if (character == 'ß')
+		{
+			return "ss";
+		}
+		else if (character == 'þ')
+		{
+			return "th";
+		}
+		else if (character == 'ĥ')
+		{
+			return "h";
+		}
+		else if (character == 'ĵ')
+		{
+			return "j";
+		}
+		else
+		{
+			return "";
+		}
+	}
 }

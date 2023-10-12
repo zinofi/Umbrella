@@ -33,7 +33,7 @@ public static class IServiceCollectionExtensions
 		Action<IServiceProvider, ClaimsPrincipalAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null,
 		Action<IServiceProvider, UmbrellaGridOptions>? umbrellaGridOptionsBuilder = null)
 	{
-		Guard.IsNotNull(services, nameof(services));
+		Guard.IsNotNull(services);
 
 		_ = services.AddScoped<IAppLocalStorageService, BlazorLocalStorageService>();
 		_ = services.AddScoped<IAppSessionStorageService, BlazorSessionStorageService>();

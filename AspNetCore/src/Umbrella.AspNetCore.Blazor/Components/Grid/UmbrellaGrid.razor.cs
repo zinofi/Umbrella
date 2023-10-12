@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.Json;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
+using Umbrella.AspNetCore.Blazor.Components.Grid.Options;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Extensions;
@@ -59,6 +61,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 		public TItem Item { get; }
 	}
 
+	private enum QueryStringStateUpdateMode { None, Reset, Update }
+
 	private static readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
 	private readonly CancellationTokenSource _cts = new();
 	private bool _autoScrollEnabled;
@@ -79,6 +83,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 	[Inject]
 	private NavigationManager Navigation { get; set; } = null!;
+
+	[Inject]
+	private UmbrellaGridOptions Options { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.
@@ -358,6 +365,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	[Parameter]
 	public string? QueryStringStateDiscriminator { get; set; }
 
+	private string PageNumberQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:pageNumber" : "pageNumber";
+	private string PageSizeQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:pageSize" : "pageSize";
+	private string SortByQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:sortBy" : "sortBy";
+	private string SortDirectionQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:sortDirection" : "sortDirection";
+	private string FiltersQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:filters" : "filters";
+
 	private void OnCheckboxSelectColumnSelectionChanged(UmbrellaGridSelectableItem selectableItem)
 	{
 		selectableItem.IsSelected = !selectableItem.IsSelected;
@@ -458,7 +471,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 		if (resetState)
 			await ResetFiltersAndSortersAsync();
 
-		await UpdateGridAsync();
+		await UpdateGridAsync(resetState ? QueryStringStateUpdateMode.Reset : QueryStringStateUpdateMode.None);
 	}
 
 	/// <summary>
@@ -500,7 +513,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// The click event handler for the apply filters button.
 	/// </summary>
 	/// <returns>An awaitable Task that completes when the operation has completed.</returns>
-	private async Task ApplyFiltersClickAsync() => await UpdateGridAsync();
+	private async Task ApplyFiltersClickAsync() => await UpdateGridAsync(QueryStringStateUpdateMode.Update);
 
 	/// <summary>
 	/// The click event handler for the reset filters button.
@@ -509,7 +522,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	private async Task ResetFiltersClickAsync()
 	{
 		await ResetFiltersAndSortersAsync();
-		await UpdateGridAsync();
+		await UpdateGridAsync(QueryStringStateUpdateMode.Reset);
 	}
 
 	/// <summary>
@@ -531,7 +544,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 				: null;
 		}
 
-		await UpdateGridAsync();
+		await UpdateGridAsync(QueryStringStateUpdateMode.Update);
 	}
 
 	/// <summary>
@@ -541,7 +554,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	private async Task ReloadButtonClickAsync()
 	{
 		await ResetFiltersAndSortersAsync();
-		await UpdateGridAsync(PageNumber, PageSize);
+		await UpdateGridAsync(QueryStringStateUpdateMode.None, PageNumber, PageSize);
 	}
 
 	private static async Task FilterTextAddonButtonClickAsync(IUmbrellaColumnDefinition<TItem> columnDefinition)
@@ -557,7 +570,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// </summary>
 	/// <param name="args">The event arguments containing the updated state of the pagination component.</param>
 	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
-	private Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(args.PageNumber, args.PageSize);
+	private Task OnPaginationOptionsChangedAsync(UmbrellaPaginationEventArgs args) => UpdateGridAsync(QueryStringStateUpdateMode.Update, args.PageNumber, args.PageSize);
 
 	private async Task ResetFiltersAndSortersAsync()
 	{
@@ -579,7 +592,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 			await OnResetFiltersAndSorters.InvokeAsync();
 	}
 
-	private async Task UpdateGridAsync(int? pageNumber = null, int? pageSize = null)
+	private async Task UpdateGridAsync(QueryStringStateUpdateMode queryStringStateUpdateMode, int? pageNumber = null, int? pageSize = null)
 	{
 		PageNumber = pageNumber ?? 1;
 
@@ -627,8 +640,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 							if (dateRange.StartDate != DateTime.MinValue && dateRange.EndDate != DateTime.MaxValue)
 							{
-								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.StartDate.ToString("O") + "Z", FilterType.GreaterThanOrEqual));
-								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dateRange.EndDate.ToString("O") + "Z", FilterType.LessThanOrEqual));
+								string dtStartValue = dateRange.StartDate.ToString("O");
+								string dtEndValue = dateRange.EndDate.ToString("O");
+
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dtStartValue.EndsWith("Z", StringComparison.InvariantCulture) ? dtStartValue : dtStartValue + "Z", FilterType.GreaterThanOrEqual));
+								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dtEndValue.EndsWith("Z", StringComparison.InvariantCulture) ? dtEndValue : dtEndValue + "Z", FilterType.LessThanOrEqual));
 							}
 						}
 						else
@@ -641,7 +657,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 							}
 							else if (DateTime.TryParse(filterValue, out DateTime dtFilter))
 							{
-								filterValue = dtFilter.ToString("O") + "Z";
+								string dtValue = dtFilter.ToString("O");
+
+								filterValue = dtValue.EndsWith("Z", StringComparison.InvariantCulture) ? dtValue : dtValue + "Z";
 							}
 
 							lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, filterValue, column.FilterMatchType));
@@ -657,6 +675,80 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 				target ??= Array.Empty<T>();
 
 				return target;
+			}
+
+			if (Options.IsSearchOptionStateEnabled && queryStringStateUpdateMode is QueryStringStateUpdateMode.Reset or QueryStringStateUpdateMode.Update)
+			{
+				string url = Navigation.Uri;
+
+				if (queryStringStateUpdateMode is QueryStringStateUpdateMode.Update)
+				{
+					// We only support a single sorter at the moment so just grab the first one.
+					SortExpressionDescriptor? sortExpression = lstSorters?.FirstOrDefault();
+
+					if (sortExpression is not null)
+					{
+						if (sortExpression.MemberPath == _initialSortPropertyName && sortExpression.Direction == InitialSortDirection)
+						{
+							url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+							{
+								[SortByQueryStringParamKey] = null,
+								[SortDirectionQueryStringParamKey] = null
+							});
+						}
+						else
+						{
+							url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+							{
+								[SortByQueryStringParamKey] = sortExpression.MemberPath,
+								[SortDirectionQueryStringParamKey] = (int)sortExpression.Direction
+							});
+						}
+					}
+
+					if (lstFilters is { Count: > 0 })
+					{
+						var dicFilters = lstFilters.Where(x => !string.IsNullOrEmpty(x.MemberPath) && !string.IsNullOrEmpty(x.Value)).Select(x => new KeyValuePair<string, string>(x.MemberPath!, x.Value!));
+
+						url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+						{
+							[FiltersQueryStringParamKey] = JsonSerializer.Serialize(dicFilters, _jsonSerializerOptions)
+						});
+					}
+					else
+					{
+						url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+						{
+							[FiltersQueryStringParamKey] = null
+						});
+					}
+
+					if (Logger.IsEnabled(LogLevel.Debug))
+						Logger.WriteDebug(new { PageNumber, PageSize });
+
+					url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+					{
+						[PageNumberQueryStringParamKey] = PageNumber > 1 ? PageNumber : null
+					});
+
+					url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+					{
+						[PageSizeQueryStringParamKey] = PageSize != UmbrellaPaginationDefaults.PageSize ? PageSize : null
+					});
+				}
+				else if (queryStringStateUpdateMode is QueryStringStateUpdateMode.Reset)
+				{
+					url = new Uri(url).GetComponents(UriComponents.Path, UriFormat.Unescaped);
+
+					// We need to ensure any changes to the page size are preserved.
+					url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
+					{
+						[PageSizeQueryStringParamKey] = PageSize != UmbrellaPaginationDefaults.PageSize ? PageSize : null
+					});
+				}
+
+				if (url != Navigation.Uri)
+					Navigation.NavigateTo(url);
 			}
 
 			UmbrellaGridDataResponse<TItem>? response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
@@ -720,76 +812,125 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	{
 		await ResetFiltersAndSortersAsync();
 
-		string sortByKey = "sortBy";
-		string sortDirectionKey = "sortDirection";
-		string filtersKey = "filters";
-
-		if (!string.IsNullOrEmpty(QueryStringStateDiscriminator))
+		if (Options.IsSearchOptionStateEnabled)
 		{
-			sortByKey = $"{QueryStringStateDiscriminator}:{sortByKey}";
-			sortDirectionKey = $"{QueryStringStateDiscriminator}:{sortDirectionKey}";
-			filtersKey = $"{QueryStringStateDiscriminator}:{filtersKey}";
-		}
+			var sortByResult = Navigation.TryGetQueryStringValue<string>(SortByQueryStringParamKey);
+			var sortDirectionResult = Navigation.TryGetQueryStringEnumValue<SortDirection>(SortDirectionQueryStringParamKey);
+			var filtersResult = Navigation.TryGetQueryStringValue<string>(FiltersQueryStringParamKey);
+			var pageNumberResult = Navigation.TryGetQueryStringValue<int>(PageNumberQueryStringParamKey);
+			var pageSizeResult = Navigation.TryGetQueryStringValue<int>(PageSizeQueryStringParamKey);
 
-		var sortByResult = Navigation.TryGetQueryStringValue<string>(sortByKey);
-		var sortDirectionResult = Navigation.TryGetQueryStringEnumValue<SortDirection>(sortDirectionKey);
-		var filtersResult = Navigation.TryGetQueryStringValue<string>(filtersKey);
+			if (Logger.IsEnabled(LogLevel.Debug))
+				Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult });
 
-		if (Logger.IsEnabled(LogLevel.Debug))
-			Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult });
-
-		if (sortByResult.success)
-		{
-			IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.PropertyName?.Equals(sortByResult.value, StringComparison.OrdinalIgnoreCase) is true && x.Sortable);
-
-			if (sortColumn is not null)
+			if (sortByResult.success)
 			{
-				// We need to clear any current sort columns before applying the one from the querystring
-				foreach (var column in ColumnDefinitions)
+				IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.PropertyName?.Equals(sortByResult.value, StringComparison.OrdinalIgnoreCase) is true && x.Sortable);
+
+				if (sortColumn is not null)
 				{
-					column.Direction = null;
+					// We need to clear any current sort columns before applying the one from the querystring
+					foreach (var column in ColumnDefinitions)
+					{
+						column.Direction = null;
+					}
+
+					sortColumn.Direction = sortDirectionResult.success ? sortDirectionResult.value : SortDirection.Ascending;
+
+					if (Logger.IsEnabled(LogLevel.Debug))
+						Logger.WriteDebug(new { sortColumn.PropertyName, sortColumn.Direction }, "Applied Sorter");
 				}
+			}
 
-				sortColumn.Direction = sortDirectionResult.success ? sortDirectionResult.value : SortDirection.Ascending;
+			if (filtersResult.success)
+			{
+				List<KeyValuePair<string, string>>? dicFilters = JsonSerializer.Deserialize<List<KeyValuePair<string, string>>>(filtersResult.value, _jsonSerializerOptions);
 
-				if (Logger.IsEnabled(LogLevel.Debug))
-					Logger.WriteDebug(new { sortColumn.PropertyName, sortColumn.Direction }, "Applied Sorter");
+				if (dicFilters is { Count: > 0 })
+				{
+					if (FilterableColumns is not null)
+					{
+						foreach (var item in FilterableColumns)
+						{
+							item.FilterValue = null;
+						}
+					}
+
+					for (int i = 0; i < dicFilters.Count; i++)
+					{
+						KeyValuePair<string, string> kvp = dicFilters[i];
+						IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true);
+
+						if (filterableColumn is not null)
+						{
+							if (filterableColumn.FilterOptionsType is UmbrellaColumnFilterOptionsType.Boolean && bool.TryParse(kvp.Value, out bool result))
+							{
+								filterableColumn.FilterValue = result ? "Yes" : "No";
+							}
+							else if (filterableColumn.FilterControlType is UmbrellaColumnFilterType.DateRange)
+							{
+								// There should be another filter with the same name so we need to find that before we can assign the filter value correctly.
+								KeyValuePair<string, string>? otherFilter = dicFilters.LastOrDefault(x => x.Key == kvp.Key);
+
+								// If the other value can't be found, just skip it.
+								if (otherFilter is null)
+									continue;
+
+								_ = dicFilters.Remove(otherFilter.Value);
+								i--;
+
+								if (DateTime.TryParseExact(kvp.Value, "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var date1) && DateTime.TryParseExact(otherFilter.Value.Value, "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var date2))
+								{
+									DateTime startDate = date1 <= date2 ? date1 : date2;
+									DateTime endDate = date1 <= date2 ? date2 : date1;
+
+									var dateRange = new DateTimeRange
+									{
+										StartDate = startDate,
+										EndDate = endDate
+									};
+
+									filterableColumn.FilterValue = JsonSerializer.Serialize(dateRange, typeof(DateTimeRange), DateTimeRangeJsonSerializerContext.Default);
+
+									if (Logger.IsEnabled(LogLevel.Debug))
+										Logger.WriteDebug(new { filterableColumn.PropertyName, filterableColumn.FilterValue }, "QueryString Date Range Filter");
+								}
+							}
+							else if (filterableColumn.FilterControlType is UmbrellaColumnFilterType.Date && DateTime.TryParseExact(kvp.Value, "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var date))
+							{
+								if (filterableColumn is UmbrellaColumnDefinition<TItem, DateTime> dtColumn)
+								{
+									dtColumn.TypedFilterValue = date;
+								}
+								else if (filterableColumn is UmbrellaColumnDefinition<TItem, DateTime?> ndtColumn)
+								{
+									ndtColumn.TypedFilterValue = date;
+								}
+							}
+							else
+							{
+								filterableColumn.FilterValue = kvp.Value;
+							}
+
+							if (Logger.IsEnabled(LogLevel.Debug))
+								Logger.WriteDebug(new { filterableColumn.PropertyName, filterableColumn.FilterValue }, "Applied Filter");
+						}
+					}
+				}
+			}
+
+			if (pageNumberResult.success)
+			{
+				PageNumber = pageNumberResult.value;
+			}
+
+			if (pageSizeResult.success)
+			{
+				PageSize = pageSizeResult.value;
 			}
 		}
 
-		if (filtersResult.success)
-		{
-			Dictionary<string, string>? dicFilters = JsonSerializer.Deserialize<Dictionary<string, string>>(filtersResult.value, _jsonSerializerOptions);
-
-			if (dicFilters is { Count: > 0 })
-			{
-				if (FilterableColumns is not null)
-				{
-					foreach (var item in FilterableColumns)
-					{
-						item.FilterValue = null;
-					}
-				}
-
-				foreach (var kvp in dicFilters)
-				{
-					IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true);
-
-					if (filterableColumn is not null)
-					{
-						filterableColumn.FilterValue = kvp.Value;
-
-						if (Logger.IsEnabled(LogLevel.Debug))
-							Logger.WriteDebug(new { filterableColumn.PropertyName, filterableColumn.FilterValue }, "Applied Filter");
-					}
-				}
-			}
-		}
-
-		PageNumber = UmbrellaPaginationDefaults.PageNumber;
-		PageSize = UmbrellaPaginationDefaults.PageSize;
-
-		await UpdateGridAsync();
+		await UpdateGridAsync(QueryStringStateUpdateMode.None, PageNumber, PageSize);
 	}
 
 	/// <summary>

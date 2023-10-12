@@ -309,8 +309,14 @@ public static class StringExtensions
         {
             char c = value[i];
 
-            _ = sb.Append(c < 128 ? c : c.RemapInternationalCharacterToAscii());
-        }
+			_ = c < 128
+				? sb.Append(c)
+#if NET6_0_OR_GREATER
+				: sb.Append(c.RemapInternationalCharacterToAscii());
+#else
+				: sb.Append(c.RemapInternationalCharacterToAscii());
+#endif
+		}
 
         return sb.ToString();
     }

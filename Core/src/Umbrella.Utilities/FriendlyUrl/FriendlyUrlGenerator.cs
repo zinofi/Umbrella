@@ -69,8 +69,8 @@ public class FriendlyUrlGenerator : IFriendlyUrlGenerator
                         if (c < 128)
                             _ = stringBuilder.Append(c);
                         else
-                            _ = stringBuilder.Append(c.RemapInternationalCharacterToAscii());
-                        prevdash = false;
+							_ = stringBuilder.Append(c.RemapInternationalCharacterToAscii());
+						prevdash = false;
                         trueLength = stringBuilder.Length;
                         break;
                     // Check if the character is to be replaced by a hyphen but only if the last character wasn't
