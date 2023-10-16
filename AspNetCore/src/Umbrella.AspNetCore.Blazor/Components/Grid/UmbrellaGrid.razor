@@ -38,7 +38,7 @@
                                             @if (column.FilterOptions is not null)
                                             {
                                                 <select id="@id" class="form-select" @bind="column.FilterValue">
-                                                    <option>Any</option>
+                                                    <option value="">Any</option>
                                                     @if (!string.IsNullOrEmpty(column.NullableEnumOption))
                                                     {
                                                         <option value="null">@column.NullableEnumOption</option>

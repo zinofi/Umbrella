@@ -23,7 +23,8 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// A base component to be used with Blazor components which contain commonly used functionality.
 /// </summary>
 /// <seealso cref="ComponentBase" />
-public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
+/// <seealso cref="IAsyncDisposable"/>
+public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 {
 	private bool _disposedValue;
 	private readonly Lazy<CancellationTokenSource> _cancellationTokenSource = new(() => new());
@@ -169,7 +170,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 	/// Releases unmanaged and - optionally - managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-	protected virtual void Dispose(bool disposing)
+	protected virtual ValueTask DisposeAsync(bool disposing)
 	{
 		if (!_disposedValue)
 		{
@@ -184,12 +185,14 @@ public abstract class UmbrellaComponentBase : ComponentBase, IDisposable
 
 			_disposedValue = true;
 		}
+
+		return default;
 	}
 
 	/// <inheritdoc/>
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		Dispose(disposing: true);
+		await DisposeAsync(disposing: true);
 		GC.SuppressFinalize(this);
 	}
 }

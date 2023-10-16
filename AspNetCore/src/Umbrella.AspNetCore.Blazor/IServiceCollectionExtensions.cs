@@ -42,6 +42,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddTransient<IDialogService>(x => x.GetRequiredService<IUmbrellaDialogService>());
 		_ = services.AddSingleton<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
+		_ = services.AddTransient<IBrowserEventAggregator, BrowserEventAggregator>();
 
 		// Security
 		_ = services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();

@@ -1,14 +1,23 @@
 ﻿/* eslint-disable */
 import animateScrollTo from 'animated-scroll-to';
+import { BrowserEventAggregator } from './browserEventAggregator';
 
 export class UmbrellaBlazorInterop
 {
+	#browserEventAggregator: BrowserEventAggregator | null = null;
+
 	scrollTimeout: number;
 	blazorInteropUtility: any;
 	boundScrollTopFunction: any;
 
-	constructor()
+	get browserEventAggregator()
 	{
+		if (this.#browserEventAggregator)
+			return this.#browserEventAggregator;
+
+		this.#browserEventAggregator = new BrowserEventAggregator();
+
+		return this.#browserEventAggregator;
 	}
 
 	public setPageTitle(title: string): void

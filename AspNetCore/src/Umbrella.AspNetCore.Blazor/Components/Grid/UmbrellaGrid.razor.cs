@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Modal;
+using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
@@ -46,7 +48,7 @@ public enum UmbrellaGridRenderMode
 /// <seealso cref="ComponentBase" />
 /// <seealso cref="IUmbrellaGrid{TItem}" />
 [CascadingTypeParameter(nameof(TItem))]
-public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
+public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposable
 	where TItem : notnull
 {
 	private class UmbrellaGridSelectableItem
@@ -69,6 +71,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	private string? _initialSortPropertyName;
 	private Expression<Func<TItem, object>>? _initialSortPropertyExpression;
 	private bool _disposedValue;
+	private string? _sessionStorageSearchStateKey;
 
 	private EditContext EditContext { get; } = new(new object());
 
@@ -86,6 +89,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 	[Inject]
 	private UmbrellaGridOptions Options { get; set; } = null!;
+
+	[Inject]
+	private Lazy<IBrowserEventAggregator> BrowserEventAggregator { get; set; } = null!;
+
+	[Inject]
+	private ISessionStorageService SessionStorageService { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.
@@ -139,6 +148,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// Gets the current page size. Defaults to <see cref="UmbrellaPaginationDefaults.PageSize"/>.
 	/// </summary>
 	public int PageSize { get; private set; } = UmbrellaPaginationDefaults.PageSize;
+
+	/// <summary>
+	/// Gets or sets the dialog instance.
+	/// </summary>
+	[CascadingParameter]
+	protected BlazoredModalInstance? ModalInstance { get; set; }
 
 	/// <summary>
 	/// Gets or sets the additional content to be displayed between the filter fields
@@ -370,6 +385,25 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	private string SortByQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:sortBy" : "sortBy";
 	private string SortDirectionQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:sortDirection" : "sortDirection";
 	private string FiltersQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:filters" : "filters";
+
+	private bool IsSearchOptionStateEnabled { get; set; }
+
+	/// <inheritdoc/>
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+
+		IsSearchOptionStateEnabled = Options.IsSearchOptionStateEnabled && ModalInstance is null;
+
+		if (IsSearchOptionStateEnabled)
+		{
+			string url = new Uri(Navigation.Uri).GetComponents(UriComponents.Path, UriFormat.Unescaped).ToLowerInvariant();
+
+			_sessionStorageSearchStateKey = HashCode.Combine(QueryStringStateDiscriminator, typeof(TItem).FullName, url).ToString(CultureInfo.InvariantCulture);
+
+			await BrowserEventAggregator.Value.SubscribeAsync("popstate", async () => await InvokeAsync(async () => await ApplyQueryStringSortersAndFiltersAsync()), _cts.Token);
+		}
+	}
 
 	private void OnCheckboxSelectColumnSelectionChanged(UmbrellaGridSelectableItem selectableItem)
 	{
@@ -677,7 +711,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 				return target;
 			}
 
-			if (Options.IsSearchOptionStateEnabled && queryStringStateUpdateMode is QueryStringStateUpdateMode.Reset or QueryStringStateUpdateMode.Update)
+			if (IsSearchOptionStateEnabled && queryStringStateUpdateMode is QueryStringStateUpdateMode.Reset or QueryStringStateUpdateMode.Update)
 			{
 				string url = Navigation.Uri;
 
@@ -748,7 +782,14 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 				}
 
 				if (url != Navigation.Uri)
+				{
+					// Before navigating, store the url in SessionStorage, the intention being that if the user has navigated
+					// away from the screen containing the grid, we can restore state by loading it from there.
+					if (!string.IsNullOrEmpty(_sessionStorageSearchStateKey))
+						await SessionStorageService.SetItemAsStringAsync(_sessionStorageSearchStateKey, url, _cts.Token);
+
 					Navigation.NavigateTo(url);
+				}
 			}
 
 			UmbrellaGridDataResponse<TItem>? response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
@@ -812,7 +853,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	{
 		await ResetFiltersAndSortersAsync();
 
-		if (Options.IsSearchOptionStateEnabled)
+		if (IsSearchOptionStateEnabled)
 		{
 			var sortByResult = Navigation.TryGetQueryStringValue<string>(SortByQueryStringParamKey);
 			var sortDirectionResult = Navigation.TryGetQueryStringEnumValue<SortDirection>(SortDirectionQueryStringParamKey);
@@ -821,7 +862,33 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 			var pageSizeResult = Navigation.TryGetQueryStringValue<int>(PageSizeQueryStringParamKey);
 
 			if (Logger.IsEnabled(LogLevel.Debug))
-				Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult });
+				Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult, pageNumberResult, pageSizeResult }, "Reading QueryString");
+
+			// If we have nothing on the querystring, try and restore the state from Session Storage
+			if (!sortByResult.success && !sortDirectionResult.success && !filtersResult.success && !pageNumberResult.success && !pageSizeResult.success)
+			{
+				if (!string.IsNullOrEmpty(_sessionStorageSearchStateKey))
+				{
+					string url = await SessionStorageService.GetItemAsStringAsync(_sessionStorageSearchStateKey, _cts.Token);
+
+					if (!string.IsNullOrEmpty(url) && url != Navigation.Uri)
+					{
+						Navigation.NavigateTo(url, replace: true);
+
+						var uri = Navigation.ToAbsoluteUri(url);
+
+						// Re-read the values from the updated querystring
+						sortByResult = uri.TryGetQueryStringValue<string>(SortByQueryStringParamKey);
+						sortDirectionResult = uri.TryGetQueryStringEnumValue<SortDirection>(SortDirectionQueryStringParamKey);
+						filtersResult = uri.TryGetQueryStringValue<string>(FiltersQueryStringParamKey);
+						pageNumberResult = uri.TryGetQueryStringValue<int>(PageNumberQueryStringParamKey);
+						pageSizeResult = uri.TryGetQueryStringValue<int>(PageSizeQueryStringParamKey);
+
+						if (Logger.IsEnabled(LogLevel.Debug))
+							Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult, pageNumberResult, pageSizeResult }, "Re-reading QueryString");
+					}
+				}
+			}
 
 			if (sortByResult.success)
 			{
@@ -848,14 +915,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 
 				if (dicFilters is { Count: > 0 })
 				{
-					if (FilterableColumns is not null)
-					{
-						foreach (var item in FilterableColumns)
-						{
-							item.FilterValue = null;
-						}
-					}
-
 					for (int i = 0; i < dicFilters.Count; i++)
 					{
 						KeyValuePair<string, string> kvp = dicFilters[i];
@@ -937,8 +996,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	/// Disposes this object.
 	/// </summary>
 	/// <param name="disposing">if set to <see langword="true"/>, disposes managed state if not already disposed.</param>
-	/// <returns></returns>
-	protected virtual void Dispose(bool disposing)
+	/// <returns>A <see cref="ValueTask"/> that represents the asynchronous invocation operation.</returns>
+	protected virtual async ValueTask DisposeAsync(bool disposing)
 	{
 		if (!_disposedValue)
 		{
@@ -946,6 +1005,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 			{
 				_cts.Cancel();
 				_cts.Dispose();
+
+				if (BrowserEventAggregator.IsValueCreated)
+					await BrowserEventAggregator.Value.DisposeAsync();
 			}
 
 			_disposedValue = true;
@@ -953,10 +1015,10 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IDisposable
 	}
 
 	/// <inheritdoc/>
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-		Dispose(disposing: true);
+		// Do not change this code. Put cleanup code in 'DisposeAsync(bool disposing)' method
+		await DisposeAsync(disposing: true);
 		GC.SuppressFinalize(this);
 	}
 }
