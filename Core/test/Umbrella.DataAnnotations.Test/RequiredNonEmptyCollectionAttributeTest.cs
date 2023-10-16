@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace Umbrella.DataAnnotations.Test;
+﻿namespace Umbrella.DataAnnotations.Test;
 
 public class RequiredNonEmptyCollectionAttributeTest
 {
