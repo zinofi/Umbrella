@@ -873,7 +873,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 					if (!string.IsNullOrEmpty(url) && url != Navigation.Uri)
 					{
-						Navigation.NavigateTo(url, replace: true);
+						Navigation.NavigateTo(url);
 
 						var uri = Navigation.ToAbsoluteUri(url);
 
