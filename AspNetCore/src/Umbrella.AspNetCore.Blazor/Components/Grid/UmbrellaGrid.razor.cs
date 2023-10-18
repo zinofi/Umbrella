@@ -401,7 +401,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 			_sessionStorageSearchStateKey = HashCode.Combine(QueryStringStateDiscriminator, typeof(TItem).FullName, url).ToString(CultureInfo.InvariantCulture);
 
-			await BrowserEventAggregator.Value.SubscribeAsync("popstate", async () => await InvokeAsync(async () => await ApplyQueryStringSortersAndFiltersAsync()), _cts.Token);
+			await BrowserEventAggregator.Value.SubscribeAsync("popstate", async () => await InvokeAsync(async () => await ApplyQueryStringSortersAndFiltersAsync(false)), _cts.Token);
 		}
 	}
 
@@ -490,7 +490,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { FilterableColumnsCount = FilterableColumns.Count });
 
-			await ApplyQueryStringSortersAndFiltersAsync();
+			await ApplyQueryStringSortersAndFiltersAsync(true);
 
 			StateHasChanged();
 		}
@@ -849,7 +849,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 		}
 	}
 
-	private async ValueTask ApplyQueryStringSortersAndFiltersAsync()
+	private async ValueTask ApplyQueryStringSortersAndFiltersAsync(bool tryRestoreFromSessionStorage)
 	{
 		await ResetFiltersAndSortersAsync();
 
@@ -865,28 +865,31 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 				Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult, pageNumberResult, pageSizeResult }, "Reading QueryString");
 
 			// If we have nothing on the querystring, try and restore the state from Session Storage
-			if (!sortByResult.success && !sortDirectionResult.success && !filtersResult.success && !pageNumberResult.success && !pageSizeResult.success)
+			if (tryRestoreFromSessionStorage
+				&& !sortByResult.success
+				&& !sortDirectionResult.success
+				&& !filtersResult.success
+				&& !pageNumberResult.success
+				&& !pageSizeResult.success
+				&& !string.IsNullOrEmpty(_sessionStorageSearchStateKey))
 			{
-				if (!string.IsNullOrEmpty(_sessionStorageSearchStateKey))
+				string url = await SessionStorageService.GetItemAsStringAsync(_sessionStorageSearchStateKey, _cts.Token);
+
+				if (!string.IsNullOrEmpty(url) && url != Navigation.Uri)
 				{
-					string url = await SessionStorageService.GetItemAsStringAsync(_sessionStorageSearchStateKey, _cts.Token);
+					Navigation.NavigateTo(url, replace: true);
 
-					if (!string.IsNullOrEmpty(url) && url != Navigation.Uri)
-					{
-						Navigation.NavigateTo(url);
+					var uri = Navigation.ToAbsoluteUri(url);
 
-						var uri = Navigation.ToAbsoluteUri(url);
+					// Re-read the values from the updated querystring
+					sortByResult = uri.TryGetQueryStringValue<string>(SortByQueryStringParamKey);
+					sortDirectionResult = uri.TryGetQueryStringEnumValue<SortDirection>(SortDirectionQueryStringParamKey);
+					filtersResult = uri.TryGetQueryStringValue<string>(FiltersQueryStringParamKey);
+					pageNumberResult = uri.TryGetQueryStringValue<int>(PageNumberQueryStringParamKey);
+					pageSizeResult = uri.TryGetQueryStringValue<int>(PageSizeQueryStringParamKey);
 
-						// Re-read the values from the updated querystring
-						sortByResult = uri.TryGetQueryStringValue<string>(SortByQueryStringParamKey);
-						sortDirectionResult = uri.TryGetQueryStringEnumValue<SortDirection>(SortDirectionQueryStringParamKey);
-						filtersResult = uri.TryGetQueryStringValue<string>(FiltersQueryStringParamKey);
-						pageNumberResult = uri.TryGetQueryStringValue<int>(PageNumberQueryStringParamKey);
-						pageSizeResult = uri.TryGetQueryStringValue<int>(PageSizeQueryStringParamKey);
-
-						if (Logger.IsEnabled(LogLevel.Debug))
-							Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult, pageNumberResult, pageSizeResult }, "Re-reading QueryString");
-					}
+					if (Logger.IsEnabled(LogLevel.Debug))
+						Logger.WriteDebug(new { sortByResult, sortDirectionResult, filtersResult, pageNumberResult, pageSizeResult }, "Re-reading QueryString");
 				}
 			}
 
