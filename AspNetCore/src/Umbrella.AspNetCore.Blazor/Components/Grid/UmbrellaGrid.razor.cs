@@ -895,7 +895,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 			if (sortByResult.success)
 			{
-				IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.PropertyName?.Equals(sortByResult.value, StringComparison.OrdinalIgnoreCase) is true && x.Sortable);
+				IUmbrellaColumnDefinition<TItem>? sortColumn = ColumnDefinitions.FirstOrDefault(x => x.Sortable && (x.PropertyName?.Equals(sortByResult.value, StringComparison.OrdinalIgnoreCase) is true || x.SorterMemberPathOverride?.Equals(sortByResult.value, StringComparison.OrdinalIgnoreCase) is true));
 
 				if (sortColumn is not null)
 				{
@@ -921,7 +921,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 					for (int i = 0; i < dicFilters.Count; i++)
 					{
 						KeyValuePair<string, string> kvp = dicFilters[i];
-						IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true);
+						IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.Filterable && (x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true || x.FilterMemberPathOverride?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true));
 
 						if (filterableColumn is not null)
 						{
