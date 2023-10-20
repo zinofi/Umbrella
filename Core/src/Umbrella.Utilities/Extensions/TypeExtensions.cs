@@ -127,5 +127,10 @@ public static class TypeExtensions
 	/// </summary>
 	/// <param name="type">The type.</param>
 	/// <returns>The original type, if it has been dynamically proxied, otherwise the same type instance passed into the method.</returns>
-	public static Type? GetOriginalType(this Type type) => type.Name?.EndsWith("_DynamicProxy", StringComparison.Ordinal) is true ? type.BaseType : type;
+	public static Type? GetOriginalType(this Type type) => type switch
+	{
+		var _ when type.Name?.EndsWith("_DynamicProxy", StringComparison.Ordinal) is true => type.BaseType,
+		var _ when type.Name?.StartsWith("Castle.Proxies", StringComparison.Ordinal) is true && type.Name?.EndsWith("Proxy", StringComparison.Ordinal) is true => type.BaseType,
+		_ => type
+	};
 }
