@@ -130,7 +130,7 @@ public static class TypeExtensions
 	public static Type? GetOriginalType(this Type type) => type switch
 	{
 		var _ when type.Name?.EndsWith("_DynamicProxy", StringComparison.Ordinal) is true => type.BaseType,
-		var _ when type.Name?.StartsWith("Castle.Proxies", StringComparison.Ordinal) is true && type.Name?.EndsWith("Proxy", StringComparison.Ordinal) is true => type.BaseType,
+		var _ when type.FullName?.StartsWith("Castle.Proxies", StringComparison.Ordinal) is true && type.Name?.EndsWith("Proxy", StringComparison.Ordinal) is true => type.BaseType,
 		_ => type
 	};
 }
