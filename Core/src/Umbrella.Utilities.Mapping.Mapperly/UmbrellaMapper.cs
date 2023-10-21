@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Umbrella.Utilities.Exceptions;
@@ -32,11 +31,9 @@ public class UmbrellaMapper : IUmbrellaMapper
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="options">The options.</param>
-	/// <param name="serviceProvider">The service provider.</param>
 	public UmbrellaMapper(
 		ILogger<UmbrellaMapper> logger,
-		UmbrellaMapperOptions options,
-		IServiceProvider serviceProvider)
+		UmbrellaMapperOptions options)
 	{
 		// TODO: Add a new ctor parameter for IServiceProvider.
 
@@ -47,7 +44,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 		foreach (Type type in assembliesToScan.SelectMany(x => x.GetExportedTypes()))
 		{
-			static void PopulateMapperCache(IServiceProvider serviceProvider, Type type, Type interfaceType, Dictionary<(Type, Type), object> cache)
+			static void PopulateMapperCache(Type type, Type interfaceType, Dictionary<(Type, Type), object> cache)
 			{
 				Type[] mapperlyInterfaces = type.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == interfaceType).ToArray();
 
@@ -68,13 +65,13 @@ public class UmbrellaMapper : IUmbrellaMapper
 						throw new InvalidOperationException($"A registration already exists for the source and destination types. The type being registered is {existingType.FullName} but the type named {type.FullName} has already been registered.");
 					}
 
-					cache.Add(key, ActivatorUtilities.CreateInstance(serviceProvider, type));
+					cache.Add(key, Activator.CreateInstance(type)!);
 				}
 			}
 
-			PopulateMapperCache(serviceProvider, type, typeof(IUmbrellaMapperlyNewInstanceMapper<,>), _newInstanceMapperDictionary);
-			PopulateMapperCache(serviceProvider, type, typeof(IUmbrellaMapperlyNewCollectionMapper<,>), _newCollectionmapperDictionary);
-			PopulateMapperCache(serviceProvider, type, typeof(IUmbrellaMapperlyExistingInstanceMapper<,>), _existingInstanceMapperDictionary);
+			PopulateMapperCache(type, typeof(IUmbrellaMapperlyNewInstanceMapper<,>), _newInstanceMapperDictionary);
+			PopulateMapperCache(type, typeof(IUmbrellaMapperlyNewCollectionMapper<,>), _newCollectionmapperDictionary);
+			PopulateMapperCache(type, typeof(IUmbrellaMapperlyExistingInstanceMapper<,>), _existingInstanceMapperDictionary);
 		}
 	}
 
