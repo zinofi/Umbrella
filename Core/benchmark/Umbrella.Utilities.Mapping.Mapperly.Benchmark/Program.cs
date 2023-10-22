@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
+using Umbrella.Utilities.Mapping.Mapperly.Benchmark;
 
 BenchmarkRunner.Run<UmbrellaMapperBenchmark>();
 
