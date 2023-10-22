@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net461;net6.0</TargetFrameworks>
+		<IsPackable>false</IsPackable>
+		<NoWarn>CS1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="BenchmarkDotNet.Artifacts\**" />
+		<EmbeddedResource Remove="BenchmarkDotNet.Artifacts\**" />
+		<None Remove="BenchmarkDotNet.Artifacts\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.9" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Moq" Version="4.20.69" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Internal\src\Umbrella.Internal.Mocks\Umbrella.Internal.Mocks.csproj" />
+		<ProjectReference Include="..\..\src\Umbrella.Utilities.Mapping.Mapperly\Umbrella.Utilities.Mapping.Mapperly.csproj" />
+	</ItemGroup>
+
+</Project>

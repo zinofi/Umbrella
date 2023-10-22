@@ -197,7 +197,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Mapping.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Mapping.Mapperly", "Core\src\Umbrella.Utilities.Mapping.Mapperly\Umbrella.Utilities.Mapping.Mapperly.csproj", "{94D14711-08D5-4E1B-9D64-70FDDCB8ED92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Mapping.Mapperly.Test", "Core\test\Umbrella.Utilities.Mapping.Mapperly\Umbrella.Utilities.Mapping.Mapperly.Test.csproj", "{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Mapping.Mapperly.Test", "Core\test\Umbrella.Utilities.Mapping.Mapperly.Test\Umbrella.Utilities.Mapping.Mapperly.Test.csproj", "{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Mapping.Mapperly.Benchmark", "Core\benchmark\Umbrella.Utilities.Mapping.Mapperly.Benchmark\Umbrella.Utilities.Mapping.Mapperly.Benchmark.csproj", "{358A2EC3-B9DB-4042-B960-232DD9E6318B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -548,6 +550,12 @@ Global
 		{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -635,6 +643,7 @@ Global
 		{70B54969-F308-4485-9AE3-748BF783A7DD} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{94D14711-08D5-4E1B-9D64-70FDDCB8ED92} = {84D45264-D944-4A17-A230-AAEECE889301}
 		{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1} = {D8B05C3A-5AAC-41F7-99C8-3279378B68AB}
+		{358A2EC3-B9DB-4042-B960-232DD9E6318B} = {B35C85E1-B2C5-4F0B-9975-6E86DF7F5BE9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
