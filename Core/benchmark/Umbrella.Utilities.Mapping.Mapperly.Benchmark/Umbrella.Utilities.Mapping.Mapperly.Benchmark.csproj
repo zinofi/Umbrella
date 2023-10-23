@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net461;net6.0</TargetFrameworks>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
@@ -16,6 +16,10 @@
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.13.9" />
 		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.13.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

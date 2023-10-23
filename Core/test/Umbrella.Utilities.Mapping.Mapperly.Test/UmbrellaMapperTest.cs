@@ -64,7 +64,7 @@ public class UmbrellaMapperTest
 
 		Assert.Equal(lstExpectedDestination.Count(), lstDestination.Count);
 
-		foreach(var (expectedDestination, destination) in lstDestination.Zip(lstExpectedDestination))
+		foreach (var (expectedDestination, destination) in lstDestination.Zip(lstExpectedDestination))
 		{
 			AssertExpectedDestinationEquality(expectedDestination, destination);
 		}
