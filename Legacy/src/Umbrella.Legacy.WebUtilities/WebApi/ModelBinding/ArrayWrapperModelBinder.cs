@@ -57,7 +57,10 @@ public class ArrayWrapperModelBinder : IModelBinder
 
 			try
 			{
-				var token = JToken.Parse(rawValue);
+				if (string.IsNullOrEmpty(rawValue))
+					return false;
+
+				var token = JToken.Parse(rawValue!);
 
 				if (token.Type == JTokenType.Array)
 				{
