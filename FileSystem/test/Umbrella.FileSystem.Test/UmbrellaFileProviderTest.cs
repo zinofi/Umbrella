@@ -467,18 +467,18 @@ public class UmbrellaFileProviderTest
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task CopyAsync_FromPath_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc)
-		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
 			_ = await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png");
-		});
+		}));
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task CopyAsync_FromFileBytes_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
-		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
@@ -494,13 +494,13 @@ public class UmbrellaFileProviderTest
 
 			//At this point the file will not exist
 			_ = await provider.CopyAsync(fileInfo, "~/images/willfail.jpg");
-		});
+		}));
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task CopyAsync_FromFileStream_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
-		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
@@ -517,7 +517,7 @@ public class UmbrellaFileProviderTest
 
 			//At this point the file will not exist
 			_ = await provider.CopyAsync(fileInfo, "~/images/willfail.jpg");
-		});
+		}));
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
@@ -771,7 +771,7 @@ public class UmbrellaFileProviderTest
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task CreateAsync_CopyAsync_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc)
-		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
@@ -779,25 +779,25 @@ public class UmbrellaFileProviderTest
 			var fileInfo = await provider.CreateAsync("~/images/testimage.jpg");
 
 			var copy = await provider.CopyAsync(fileInfo, "~/images/copy.jpg");
-		});
+		}));
 	#endregion
 
 	#region Move
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task MoveAsync_FromPath_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc)
-		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
 			_ = await provider.MoveAsync("~/images/notexists.jpg", "~/images/willfail.png");
-		});
+		}));
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task MoveAsync_FromFileBytes_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
-		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
@@ -813,13 +813,13 @@ public class UmbrellaFileProviderTest
 
 			//At this point the file will not exist
 			_ = await provider.MoveAsync(fileInfo, "~/images/willfail.jpg");
-		});
+		}));
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task MoveAsync_FromFileStream_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc) =>
 		//Should be a file system exception with a file not found exception inside
-		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
@@ -836,7 +836,7 @@ public class UmbrellaFileProviderTest
 
 			//At this point the file will not exist
 			_ = await provider.MoveAsync(fileInfo, "~/images/willfail.jpg");
-		});
+		}));
 
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
@@ -1090,7 +1090,7 @@ public class UmbrellaFileProviderTest
 	[Theory]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task CreateAsync_MoveAsync_NotExistsAsync(Func<IUmbrellaFileStorageProvider> providerFunc)
-		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>(async () =>
+		=> await Assert.ThrowsAsync<UmbrellaFileNotFoundException>((Func<Task>)(async () =>
 		{
 			var provider = providerFunc();
 
@@ -1098,7 +1098,7 @@ public class UmbrellaFileProviderTest
 			var fileInfo = await provider.CreateAsync("~/images/testimage.jpg");
 
 			var move = await provider.MoveAsync(fileInfo, "~/images/move.jpg");
-		});
+		}));
 	#endregion
 
 	[Theory]
