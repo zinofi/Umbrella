@@ -65,31 +65,31 @@ public static class CharExtensions
 		{
 			return "g";
 		}
-		else if (character == 'ř')
+		else if (character is 'ř')
 		{
 			return "r";
 		}
-		else if (character == 'ł')
+		else if (character is 'ł')
 		{
 			return "l";
 		}
-		else if (character == 'đ')
+		else if (character is 'đ')
 		{
 			return "d";
 		}
-		else if (character == 'ß')
+		else if (character is 'ß')
 		{
 			return "ss";
 		}
-		else if (character == 'þ')
+		else if (character is 'þ')
 		{
 			return "th";
 		}
-		else if (character == 'ĥ')
+		else if (character is 'ĥ')
 		{
 			return "h";
 		}
-		else if (character == 'ĵ')
+		else if (character is 'ĵ')
 		{
 			return "j";
 		}
