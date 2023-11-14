@@ -58,7 +58,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
 	/// <param name="fileProvider">The file provider.</param>
 	/// <param name="options">The options.</param>
-	public UmbrellaFileHandler(
+	protected UmbrellaFileHandler(
 		ILogger logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,

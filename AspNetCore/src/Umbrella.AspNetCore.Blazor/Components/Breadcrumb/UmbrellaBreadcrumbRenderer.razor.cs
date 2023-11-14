@@ -24,7 +24,7 @@ public partial class UmbrellaBreadcrumbRenderer
 	[Parameter]
 	public string RootPath { get; set; } = null!;
 
-	private List<UmbrellaBreadcrumbItem> BreadcrumbItemList { get; } = new();
+	private List<UmbrellaBreadcrumbItem> BreadcrumbItemList { get; } = [];
 
 	/// <inheritdoc />
 	protected override void OnInitialized()

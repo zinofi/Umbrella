@@ -69,7 +69,7 @@ public abstract class BundleScriptTagHelper<TBundleUtility> : TagHelper
 	/// <param name="logger">The logger.</param>
 	/// <param name="bundleUtility">The bundle utility.</param>
 	/// <param name="nonceContext">The nonce context.</param>
-	public BundleScriptTagHelper(
+	protected BundleScriptTagHelper(
 		ILogger<WebpackScriptTagHelper> logger,
 		TBundleUtility bundleUtility,
 		Lazy<NonceContext> nonceContext)

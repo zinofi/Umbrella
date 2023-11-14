@@ -30,13 +30,13 @@ public class FrontEndCompressionMiddlewareBenchmark
 
 		var options = new FrontEndCompressionMiddlewareOptions
 		{
-			Mappings = new List<FrontEndCompressionMiddlewareMapping>
-			{
-				new FrontEndCompressionMiddlewareMapping
+			Mappings =
+			[
+				new()
 				{
-					AppRelativeFolderPaths = new[] { "/sitefiles" }
+					AppRelativeFolderPaths = ["/sitefiles"]
 				}
-			}
+			]
 		};
 
 		_frontEndCompressionMiddleware = new FrontEndCompressionMiddleware(
@@ -59,6 +59,6 @@ public class FrontEndCompressionMiddlewareBenchmark
 	{
 		var context = new Mock<IOwinContext>();
 
-		await _frontEndCompressionMiddleware.Invoke(context.Object);
+		await _frontEndCompressionMiddleware.Invoke(context.Object).ConfigureAwait(true);
 	}
 }

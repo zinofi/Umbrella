@@ -20,7 +20,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Mvc.Tags;
 public class ResponsiveDynamicImageTag : ResponsiveImageTag
 {
 	#region Private Members
-	private readonly HashSet<int> _sizeWidths = new();
+	private readonly HashSet<int> _sizeWidths = [];
 	private string? _sizeAttributeValue;
 	private readonly float _ratio;
 	private readonly IDynamicImageUtility _dynamicImageUtility;
@@ -71,12 +71,15 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 		int portOverride)
 		: base(path, altText, htmlAttributes, mapVirtualPathFunc)
 	{
-		_dynamicImageUtility = dynamicImageUtility;
+		if (mapVirtualPathFunc is null)
+			throw new ArgumentNullException(nameof(mapVirtualPathFunc));
+
+		_dynamicImageUtility = dynamicImageUtility ?? throw new ArgumentNullException(nameof(dynamicImageUtility));
 		_resizeMode = resizeMode;
 		_format = format;
 		_dynamicImagePathPrefix = dynamicImagePathPrefix;
 		_toAbsolutePath = toAbsolutePath;
-		_httpRequest = request;
+		_httpRequest = request ?? throw new ArgumentNullException(nameof(request));
 		_schemeOverride = schemeOverride;
 		_hostOverride = hostOverride;
 		_portOverride = portOverride;
@@ -109,6 +112,9 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 	/// <inheritdoc/>
 	protected override void AddSrcsetAttribute(TagBuilder imgTag)
 	{
+		if (imgTag is null)
+			throw new ArgumentNullException(nameof(imgTag));
+
 		//If we don't have any size information just call into the base method
 		//but only if we also have some density information
 		if (_sizeWidths.Count == 0 && PixelDensities.Count > 1)
@@ -134,6 +140,9 @@ public class ResponsiveDynamicImageTag : ResponsiveImageTag
 	/// <returns>The current <see cref="ResponsiveDynamicImageTag"/> instance.</returns>
 	public ResponsiveDynamicImageTag WithSizes(params int[] x1Widths)
 	{
+		if (x1Widths is null)
+			throw new ArgumentNullException(nameof(x1Widths));
+
 		foreach (int size in x1Widths)
 			_ = _sizeWidths.Add(size);
 

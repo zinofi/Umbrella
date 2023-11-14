@@ -21,7 +21,7 @@ public abstract class UmbrellaDbContext : DbContext
 	/// Initializes a new instance of the <see cref="UmbrellaDbContext"/> class.
 	/// </summary>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaDbContext(
+	protected UmbrellaDbContext(
 		IUmbrellaDbContextHelper dbContextHelper)
 	{
 		ContextHelper = dbContextHelper;
@@ -32,7 +32,7 @@ public abstract class UmbrellaDbContext : DbContext
 	/// </summary>
 	/// <param name="dbContextOptions">The database context options.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaDbContext(
+	protected UmbrellaDbContext(
 		DbContextOptions dbContextOptions,
 		IUmbrellaDbContextHelper dbContextHelper)
 		: base(dbContextOptions)

@@ -47,7 +47,7 @@ public class IsAttribute : ContingentValidationAttribute
 				   });
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object actualDependentPropertyValue, object model)
+	public override bool IsValid(object value, object? actualDependentPropertyValue, object model)
 	{
 		if (PassOnNull && (value is null || actualDependentPropertyValue is null))
 			return true;

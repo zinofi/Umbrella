@@ -17,7 +17,7 @@ public class XmlSiteMap
 	/// Gets or sets the urls.
 	/// </summary>
 	[XmlElement("url")]
-	public List<XmlSiteMapUrl> Urls { get; } = new List<XmlSiteMapUrl>();
+	public List<XmlSiteMapUrl> Urls { get; } = [];
 
 	/// <summary>
 	/// Adds the specified URL.

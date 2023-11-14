@@ -165,9 +165,9 @@ public static class ILoggerExtensions
 
 		var stateDictionary = new List<KeyValuePair<string, string>>
 		{
-			new KeyValuePair<string, string>(nameof(methodName), methodName),
-			new KeyValuePair<string, string>(nameof(filePath), filePath),
-			new KeyValuePair<string, string>(nameof(lineNumber), lineNumber.ToString(CultureInfo.InvariantCulture))
+			new(nameof(methodName), methodName),
+			new(nameof(filePath), filePath),
+			new(nameof(lineNumber), lineNumber.ToString(CultureInfo.InvariantCulture))
 		};
 
 		if (state is not null)

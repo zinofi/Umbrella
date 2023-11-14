@@ -71,6 +71,6 @@ public class PhysicalFileChangeToken : IChangeToken
 	public bool ActiveChangeCallbacks => false;
 
 	/// <inheritdoc />
-	public IDisposable RegisterChangeCallback(Action<object> callback, object state) => EmptyDisposable.Instance;
+	public IDisposable RegisterChangeCallback(Action<object?> callback, object? state) => EmptyDisposable.Instance;
 	#endregion
 }

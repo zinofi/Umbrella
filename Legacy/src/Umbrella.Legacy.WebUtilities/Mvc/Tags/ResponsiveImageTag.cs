@@ -36,7 +36,7 @@ public class ResponsiveImageTag : IHtmlString
 	/// <summary>
 	/// Gets the pixel densities.
 	/// </summary>
-	protected HashSet<int> PixelDensities { get; } = new HashSet<int> { 1 };
+	protected HashSet<int> PixelDensities { get; } = [1];
 
 	/// <summary>
 	/// Gets the HTML attributes.
@@ -55,10 +55,10 @@ public class ResponsiveImageTag : IHtmlString
 	public ResponsiveImageTag(string path, string altText, IDictionary<string, object>? htmlAttributes, Func<string, string> mapVirtualPath)
 	{
 		Path = path;
-		MapVirtualPathFunc = mapVirtualPath;
+		MapVirtualPathFunc = mapVirtualPath ?? throw new ArgumentNullException(nameof(mapVirtualPath));
 
 		if (htmlAttributes is null)
-			HtmlAttributes = new Dictionary<string, string>();
+			HtmlAttributes = [];
 		else
 			HtmlAttributes = htmlAttributes.ToDictionary(x => x.Key, x => x.Value.ToString());
 
@@ -92,6 +92,9 @@ public class ResponsiveImageTag : IHtmlString
 	/// <returns>The current <see cref="ResponsiveImageTag"/> instance.</returns>
 	public ResponsiveImageTag WithDensities(params int[] densities)
 	{
+		if (densities is null)
+			throw new ArgumentNullException(nameof(densities));
+
 		foreach (int density in densities)
 			_ = PixelDensities.Add(density);
 
@@ -137,6 +140,9 @@ public class ResponsiveImageTag : IHtmlString
 	/// <param name="imgTag">The img tag.</param>
 	protected virtual void AddSrcsetAttribute(TagBuilder imgTag)
 	{
+		if (imgTag is null)
+			throw new ArgumentNullException(nameof(imgTag));
+
 		string path = HtmlAttributes["src"];
 
 		int densityIndex = path.LastIndexOf('.');

@@ -28,14 +28,14 @@ public class RequiredNonEmptyCollectionIfAttributeTest
 	[Fact]
 	public void IsValidTest()
 	{
-		var model = new Model() { Value1 = "hello", Value2 = new List<string> { "hello" } };
+		var model = new Model() { Value1 = "hello", Value2 = ["hello"] };
 		Assert.True(model.IsValid("Value2"));
 	}
 
 	[Fact]
 	public void IsValidTestComplex()
 	{
-		var model = new ComplexModel() { Value1 = new ComplexModel.SubModel() { InnerValue = "hello" }, Value2 = new List<string> { "bla" } };
+		var model = new ComplexModel() { Value1 = new ComplexModel.SubModel() { InnerValue = "hello" }, Value2 = ["bla"] };
 		Assert.True(model.IsValid("Value2"));
 	}
 

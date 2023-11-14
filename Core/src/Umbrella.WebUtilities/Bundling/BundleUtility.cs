@@ -76,7 +76,7 @@ public abstract class BundleUtility<TOptions> : IBundleUtility
 	/// <param name="hybridCache">The hybrid cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
-	public BundleUtility(
+	protected BundleUtility(
 		ILogger logger,
 		TOptions options,
 		IHybridCache hybridCache,

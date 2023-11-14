@@ -14,7 +14,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 	private readonly CancellationTokenSource _cancellationTokenSource = new();
 	private bool _disposedValue;
 	private bool _valueHasChanged;
-	private readonly HashSet<string> _options = new();
+	private readonly HashSet<string> _options = [];
 
 	/// <summary>
 	/// Gets or sets the label text.
@@ -85,7 +85,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 			{
 				if (Value is not null && Value.Length >= MinimumLength)
 				{
-					IEnumerable<string> lstResult = await SearchMethod!.Invoke(Value);
+					IEnumerable<string> lstResult = await SearchMethod!.Invoke(Value).ConfigureAwait(true);
 
 					_options.Clear();
 					_options.AddRange(lstResult.OrderBy(x => x).Take(MaximumSuggestions));
@@ -96,7 +96,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 
 			_valueHasChanged = false;
 		}
-		while (await timer.WaitForNextTickAsync(_cancellationTokenSource.Token));
+		while (await timer.WaitForNextTickAsync(_cancellationTokenSource.Token).ConfigureAwait(true));
 	}
 
 	private void OnInput(ChangeEventArgs args)
@@ -111,7 +111,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 	{
 		_valueHasChanged = false;
 
-		await ValueChanged.InvokeAsync(Value);
+		await ValueChanged.InvokeAsync(Value).ConfigureAwait(true);
 	}
 
 	/// <summary>

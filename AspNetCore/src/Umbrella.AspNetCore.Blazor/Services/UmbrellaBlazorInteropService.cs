@@ -14,7 +14,7 @@ public class UmbrellaBlazorInteropService : IUmbrellaBlazorInteropService
 	private readonly ILogger _logger;
 	private readonly IJSRuntime _jsRuntime;
 	private readonly DotNetObjectReference<UmbrellaBlazorInteropService> _interopReference;
-	private readonly List<AwaitableBlazorEventHandler> _windowScrolledTopEventHandlerList = new();
+	private readonly List<AwaitableBlazorEventHandler> _windowScrolledTopEventHandlerList = [];
 
 	/// <inheritdoc />
 	public event AwaitableBlazorEventHandler OnWindowScrolledTop

@@ -41,7 +41,7 @@ public abstract class DynamicImageCache
 	/// <param name="cache">The cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
 	/// <param name="cacheOptions">The cache options.</param>
-	public DynamicImageCache(
+	protected DynamicImageCache(
 		ILogger logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,

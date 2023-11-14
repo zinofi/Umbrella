@@ -18,7 +18,7 @@ public abstract class UmbrellaPageModel : PageModel
 	/// Initializes a new instance of the <see cref="UmbrellaPageModel"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
-	public UmbrellaPageModel(
+	protected UmbrellaPageModel(
 		ILogger logger)
 	{
 		Logger = logger;

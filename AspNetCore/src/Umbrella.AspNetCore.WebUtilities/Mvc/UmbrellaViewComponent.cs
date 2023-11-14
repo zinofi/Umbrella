@@ -20,7 +20,7 @@ public abstract class UmbrellaViewComponent : ViewComponent
 	/// Initializes a new instance of the <see cref="UmbrellaViewComponent"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
-	public UmbrellaViewComponent(ILogger logger)
+	protected UmbrellaViewComponent(ILogger logger)
 	{
 		Logger = logger;
 	}

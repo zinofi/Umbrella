@@ -29,7 +29,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	/// Initializes a new instance of the <see cref="ContingentValidationAttribute"/> class.
 	/// </summary>
 	/// <param name="dependentPropertyName">The dependent property name.</param>
-	public ContingentValidationAttribute(string dependentPropertyName)
+	protected ContingentValidationAttribute(string dependentPropertyName)
 	{
 		DependentPropertyName = dependentPropertyName;
 	}
@@ -51,7 +51,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	/// </summary>
 	/// <param name="container">The container.</param>
 	/// <returns>The value of the dependent property from the container.</returns>
-	private object GetDependentPropertyValue(object container)
+	private object? GetDependentPropertyValue(object container)
 	{
 		var currentType = container.GetType();
 		object? value = container;
@@ -94,5 +94,5 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public abstract bool IsValid(object value, object actualDependentPropertyValue, object model);
+	public abstract bool IsValid(object value, object? actualDependentPropertyValue, object model);
 }

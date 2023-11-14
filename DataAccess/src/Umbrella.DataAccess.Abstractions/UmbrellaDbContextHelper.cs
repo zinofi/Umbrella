@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.DataAccess.Abstractions.Exceptions;
@@ -22,7 +23,7 @@ public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 	/// <summary>
 	/// Gets the dictionary containing the pending actions to be executed after <see cref="SaveChanges(Func{int})"/> or <see cref="SaveChangesAsync(Func{CancellationToken, Task{int}}, CancellationToken)"/> is called.
 	/// </summary>
-	protected Dictionary<object, Func<CancellationToken, Task>> PostSaveChangesSaveActionDictionary { get; } = new Dictionary<object, Func<CancellationToken, Task>>();
+	protected Dictionary<object, Func<CancellationToken, Task>> PostSaveChangesSaveActionDictionary { get; } = [];
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDbContextHelper"/> class.
@@ -96,6 +97,8 @@ public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 	[SuppressMessage("Usage", "VSTHRD002:Avoid problematic synchronous waits", Justification = "Unavoidable here but this method should never be being called anyway!")]
 	public int SaveChanges(Func<int> baseSaveChanges)
 	{
+		Guard.IsNotNull(baseSaveChanges);
+
 		try
 		{
 			if (Logger.IsEnabled(LogLevel.Debug))
@@ -122,6 +125,8 @@ public class UmbrellaDbContextHelper : IUmbrellaDbContextHelper
 	/// <inheritdoc />
 	public async Task<int> SaveChangesAsync(Func<CancellationToken, Task<int>> baseSaveChangesAsync, CancellationToken cancellationToken = default)
 	{
+		Guard.IsNotNull(baseSaveChangesAsync);
+
 		try
 		{
 			if (Logger.IsEnabled(LogLevel.Debug))

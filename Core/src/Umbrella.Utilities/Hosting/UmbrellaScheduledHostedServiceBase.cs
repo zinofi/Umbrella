@@ -47,7 +47,7 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	/// <param name="serviceScopeFactory">The service scope factory.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public UmbrellaScheduledHostedServiceBase(
+	protected UmbrellaScheduledHostedServiceBase(
 		ILogger logger,
 		IServiceScopeFactory serviceScopeFactory,
 		ISynchronizationManager synchronizationManager,

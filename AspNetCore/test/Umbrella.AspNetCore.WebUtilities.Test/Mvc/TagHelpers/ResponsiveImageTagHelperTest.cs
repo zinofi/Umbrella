@@ -23,17 +23,17 @@ public class ResponsiveImageTagHelperTest
 		var tagHelper = CreateTagHelper();
 		tagHelper.MaxPixelDensity = maxPixelDensity;
 
-		var ctx = Mocks.CreateTagHelperContext(new TagHelperAttributeList
-		{
+		var ctx = Mocks.CreateTagHelperContext(
+		[
 			new TagHelperAttribute("src", path),
 			new TagHelperAttribute("alt", "hello"),
 			new TagHelperAttribute("max-pixel-density", maxPixelDensity)
-		});
+		]);
 
-		var output = Mocks.CreateImageTagHelperOutput(new TagHelperAttributeList
-		{
+		var output = Mocks.CreateImageTagHelperOutput(
+		[
 			new TagHelperAttribute("alt", "hello")
-		}, "img");
+		], "img");
 
 		await tagHelper.ProcessAsync(ctx, output);
 

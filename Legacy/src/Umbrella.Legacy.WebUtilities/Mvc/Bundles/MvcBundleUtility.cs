@@ -85,7 +85,7 @@ public abstract class MvcBundleUtility<TBundleUtility, TOptions> : IMvcBundleUti
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
 	/// <param name="bundleUtility">The bundle utility.</param>
 	/// <param name="options">The options.</param>
-	public MvcBundleUtility(
+	protected MvcBundleUtility(
 		ILogger<MvcBundleUtility> logger,
 		IHybridCache hybridCache,
 		ICacheKeyUtility cacheKeyUtility,

@@ -151,7 +151,7 @@ public class ConcurrentRandomGeneratorTest
 	[InlineData(0)] // Zero not allowed
 	[InlineData(3)] // Greater than the source size
 	public void TakeRandom_Count_Invalid(int count)
-		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.TakeRandom(new[] { 1, 2 }, count).ToArray());
+		=> Assert.Throws<ArgumentOutOfRangeException>(() => _concurrentRandomGenerator.TakeRandom([1, 2], count).ToArray());
 
 	[Theory]
 	[InlineData(1, false)]

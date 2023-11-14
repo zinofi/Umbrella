@@ -20,7 +20,7 @@ public abstract class UmbrellaController : Controller
 	/// Initializes a new instance of the <see cref="UmbrellaController"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
-	public UmbrellaController(ILogger logger)
+	protected UmbrellaController(ILogger logger)
 	{
 		Logger = logger;
 	}

@@ -99,7 +99,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
 	/// <param name="responsiveImageHelper">The responsive image helper.</param>
 	/// <param name="dynamicImageTagHelperOptions">The dynamic image tag helper options.</param>
-	public DynamicImageTagHelperBase(
+	protected DynamicImageTagHelperBase(
 		ILogger<DynamicImageTagHelperBase> logger,
 		IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
 		IHybridCache cache,

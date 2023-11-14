@@ -14,10 +14,7 @@ public static class HttpRequestBaseExtensions
 	/// <value>
 	/// The ajax or fetch request header keys.
 	/// </value>
-	public static HashSet<string> AjaxOrFetchRequestHeaderKeys { get; } = new HashSet<string>
-	{
-		"X-Is-Ajax-Request"
-	};
+	public static HashSet<string> AjaxOrFetchRequestHeaderKeys { get; } = ["X-Is-Ajax-Request"];
 
 	/// <summary>
 	/// Determines whether the request is an Ajax or Fetch request by checking the <see cref="AjaxOrFetchRequestHeaderKeys"/> collection and seeing
@@ -34,6 +31,9 @@ public static class HttpRequestBaseExtensions
 	/// </returns>
 	public static bool IsAjaxOrFetchRequest(this HttpRequestBase request)
 	{
+		if (request is null)
+			throw new ArgumentNullException(nameof(request));
+
 		foreach (string key in AjaxOrFetchRequestHeaderKeys.Where(x => !string.IsNullOrWhiteSpace(x)))
 		{
 			if (bool.TryParse(request.Headers[key], out bool result))
@@ -52,6 +52,9 @@ public static class HttpRequestBaseExtensions
 	/// <param name="request">The request.</param>
 	public static bool IsInternetExplorer(this HttpRequestBase request)
 	{
+		if (request is null)
+			throw new ArgumentNullException(nameof(request));
+
 		string userAgent = request.Headers["User-Agent"];
 
 		if (string.IsNullOrWhiteSpace(userAgent))

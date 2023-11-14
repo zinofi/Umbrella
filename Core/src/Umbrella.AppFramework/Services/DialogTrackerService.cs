@@ -1,4 +1,5 @@
-﻿using Umbrella.AppFramework.Services.Abstractions;
+﻿using CommunityToolkit.Diagnostics;
+using Umbrella.AppFramework.Services.Abstractions;
 
 namespace Umbrella.AppFramework.Services;
 
@@ -7,7 +8,7 @@ namespace Umbrella.AppFramework.Services;
 /// </summary>
 public class DialogTrackerService : IDialogTrackerService
 {
-	private readonly HashSet<int> _dialogList = new();
+	private readonly HashSet<int> _dialogList = [];
 
 	/// <inheritdoc />
 	public bool TrackOpen(int code) => _dialogList.Add(code);
@@ -18,6 +19,8 @@ public class DialogTrackerService : IDialogTrackerService
 	/// <inheritdoc />
 	public int GenerateCode(string message, string title, string? subTitle, params string[] buttonText)
 	{
+		Guard.IsNotNull(buttonText);
+
 		int hashCode = -281079646;
 
 		hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(message);

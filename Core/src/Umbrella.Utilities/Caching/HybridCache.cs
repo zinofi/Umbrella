@@ -123,9 +123,6 @@ public class HybridCache : IHybridCache, IDisposable
 							}
 							else
 							{
-								if (exception is null)
-									throw new HybridCacheException("There has been an unknown problem");
-
 								throw exception;
 							}
 						}
@@ -147,7 +144,7 @@ public class HybridCache : IHybridCache, IDisposable
 						if (TrackKeys)
 							_ = MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out cacheMetaEntry);
 
-						T cacheItem = MemoryCache.GetOrCreate(cacheKeyInternal, entry =>
+						T? cacheItem = MemoryCache.GetOrCreate(cacheKeyInternal, entry =>
 						{
 							MemoryCacheEntryOptions options = BuildMemoryCacheEntryOptions(expirationTimeSpan, slidingExpiration, priority, expirationTokensBuilder);
 							_ = entry.SetOptions(options);
@@ -167,7 +164,7 @@ public class HybridCache : IHybridCache, IDisposable
 						if (cacheMetaEntry is not null && TrackKeysAndHits)
 							cacheMetaEntry.AddHit();
 
-						return cacheItem;
+						return cacheItem ?? default!;
 					}
 					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 					{
@@ -267,7 +264,7 @@ public class HybridCache : IHybridCache, IDisposable
 						// We can use the new SynchronizationManager we have created to implement granular locking.
 						// We could also potentially provide a new argument to specify a condition that would force eviction
 						// of the item from the cache, e.g. there is a property on the cached item, e.g. expiration date
-						T cacheItem = await MemoryCache.GetOrCreateAsync(cacheKeyInternal, async entry =>
+						T? cacheItem = await MemoryCache.GetOrCreateAsync(cacheKeyInternal, async entry =>
 						{
 							TimeSpan expirationTimeSpan = expirationTimeSpanBuilder?.Invoke() ?? Options.DefaultCacheTimeout;
 
@@ -290,7 +287,7 @@ public class HybridCache : IHybridCache, IDisposable
 						if (cacheMetaEntry is not null && TrackKeysAndHits)
 							cacheMetaEntry.AddHit();
 
-						return cacheItem;
+						return cacheItem ?? default!;
 					}
 					catch (Exception exc) when (Logger.WriteError(exc, new { cacheKey, cacheKeyInternal, cacheMode, slidingExpiration, throwOnCacheFailure, priority, cacheEnabledOverride }))
 					{
@@ -336,7 +333,7 @@ public class HybridCache : IHybridCache, IDisposable
 			}
 			else
 			{
-				bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
+				bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T? value);
 
 				if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry? cacheMetaEntry))
 					cacheMetaEntry.AddHit();
@@ -374,7 +371,7 @@ public class HybridCache : IHybridCache, IDisposable
 			}
 			else
 			{
-				bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T value);
+				bool found = MemoryCache.TryGetValue(cacheKeyInternal, out T? value);
 
 				if (found && TrackKeysAndHits && MemoryCacheMetaEntryDictionary.TryGetValue(cacheKeyInternal, out HybridCacheMetaEntry? cacheMetaEntry))
 					cacheMetaEntry.AddHit();

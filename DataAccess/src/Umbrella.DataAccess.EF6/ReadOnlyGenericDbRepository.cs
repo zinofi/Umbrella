@@ -33,7 +33,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext> : ReadOnl
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
-	public ReadOnlyGenericDbRepository(
+	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -63,7 +63,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
-	public ReadOnlyGenericDbRepository(
+	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -95,7 +95,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
-	public ReadOnlyGenericDbRepository(
+	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -171,7 +171,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
-	public ReadOnlyGenericDbRepository(
+	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,

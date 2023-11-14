@@ -24,7 +24,7 @@ public static class IEnumerableExtensions
 		if (sortExpressionDescriptor is null)
 			return;
 
-		var lstSorter = sorters?.ToList() ?? new List<SortExpression<T>>();
+		var lstSorter = sorters?.ToList() ?? [];
 		lstSorter.Add(new SortExpression<T>(expression, sortExpressionDescriptor.Direction));
 		sorters = lstSorter.ToArray();
 	}

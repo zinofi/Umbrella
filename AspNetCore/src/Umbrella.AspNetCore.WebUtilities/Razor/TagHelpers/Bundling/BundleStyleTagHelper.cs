@@ -20,7 +20,7 @@ public class BundleStyleTagHelper : BundleStyleTagHelper<IBundleUtility>
 	/// <param name="logger">The logger.</param>
 	/// <param name="bundleUtility">The bundle utility.</param>
 	/// <param name="nonceContext">The nonce context.</param>
-	public BundleStyleTagHelper(
+	protected BundleStyleTagHelper(
 		ILogger<WebpackScriptTagHelper> logger,
 		IBundleUtility bundleUtility,
 		Lazy<NonceContext> nonceContext)
@@ -69,7 +69,7 @@ public abstract class BundleStyleTagHelper<TBundleUtility> : TagHelper
 	/// <param name="logger">The logger.</param>
 	/// <param name="bundleUtility">The bundle utility.</param>
 	/// <param name="nonceContext">The nonce context.</param>
-	public BundleStyleTagHelper(
+	protected BundleStyleTagHelper(
 		ILogger<WebpackScriptTagHelper> logger,
 		TBundleUtility bundleUtility,
 		Lazy<NonceContext> nonceContext)

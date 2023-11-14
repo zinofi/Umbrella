@@ -34,7 +34,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="dynamicImageCache">The dynamic image cache.</param>
-	public DynamicImageResizerBase(
+	protected DynamicImageResizerBase(
 		ILogger logger,
 		IDynamicImageCache dynamicImageCache)
 	{

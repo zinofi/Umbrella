@@ -35,7 +35,7 @@ public abstract class UmbrellaRazorEmailSender
 	/// <param name="logger">The logger.</param>
 	/// <param name="emailSender">The email sender.</param>
 	/// <param name="viewToStringRenderer">The Razor view to string renderer.</param>
-	public UmbrellaRazorEmailSender(
+	protected UmbrellaRazorEmailSender(
 		ILogger logger,
 		IEmailSender emailSender,
 		IRazorViewToStringRenderer viewToStringRenderer)

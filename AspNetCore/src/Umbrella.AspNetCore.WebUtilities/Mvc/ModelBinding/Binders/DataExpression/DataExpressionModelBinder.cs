@@ -52,7 +52,7 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="dataExpressionFactory">The data expression factory.</param>
-	public DataExpressionModelBinder(
+	protected DataExpressionModelBinder(
 		ILogger logger,
 		IDataExpressionFactory dataExpressionFactory)
 	{

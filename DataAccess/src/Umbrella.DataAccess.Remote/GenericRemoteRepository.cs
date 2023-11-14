@@ -50,7 +50,7 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 	/// <param name="httpService">The HTTP service.</param>
 	/// <param name="httpServiceUtility">The HTTP service utility.</param>
 	/// <param name="validator">The validator.</param>
-	public GenericRemoteRepository(
+	protected GenericRemoteRepository(
 		ILogger logger,
 		IGenericHttpService httpService,
 		IGenericHttpServiceUtility httpServiceUtility,

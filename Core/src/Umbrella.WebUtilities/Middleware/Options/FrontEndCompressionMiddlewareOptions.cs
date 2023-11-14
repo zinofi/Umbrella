@@ -21,14 +21,14 @@ public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions,
 	/// <summary>
 	/// Gets or sets the mappings.
 	/// </summary>
-	public List<FrontEndCompressionMiddlewareMapping> Mappings { get; set; } = new()
-	{
+	public List<FrontEndCompressionMiddlewareMapping> Mappings { get; set; } =
+	[
 		new FrontEndCompressionMiddlewareMapping
 		{
-			AppRelativeFolderPaths = new[] { "/dist" },
+			AppRelativeFolderPaths = ["/dist"],
 			WatchFiles = false
 		}
-	};
+	];
 
 	/// <summary>
 	/// Gets or sets the Accept-Encoding header key. Defaults to "Accept-Encoding".

@@ -113,7 +113,7 @@ public abstract class ViewModelBase : UmbrellaUIHandlerBase
 	/// <param name="authHelper">The authentication helper.</param>
 	/// <param name="commandFactory">The command factory.</param>
 	/// <param name="dialogUtility">The dialog utility.</param>
-	public ViewModelBase(
+	protected ViewModelBase(
 		ILogger logger,
 		IDialogService dialogUtility,
 		IAppAuthHelper authHelper,

@@ -127,6 +127,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 	public async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(destinationFile);
 		Guard.IsOfType<UmbrellaDiskFileInfo>(destinationFile);
 
 		try
@@ -193,6 +194,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 	public async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(destinationFile);
 		Guard.IsOfType<UmbrellaDiskFileInfo>(destinationFile);
 
 		try
@@ -611,7 +613,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 			if (!File.Exists(_metadataFullFileName))
 			{
-				_metadataDictionary = new Dictionary<string, string>();
+				_metadataDictionary = [];
 				return;
 			}
 
@@ -623,7 +625,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 			if (string.IsNullOrWhiteSpace(json))
 			{
-				_metadataDictionary = new Dictionary<string, string>();
+				_metadataDictionary = [];
 				return;
 			}
 
@@ -633,7 +635,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 			}
 			catch (Exception exc) when (Logger.WriteError(exc, new { json }, "The JSON value stored in the metadata file could not be deserialized to a Dictionary. This error has been handled silently."))
 			{
-				_metadataDictionary = new Dictionary<string, string>();
+				_metadataDictionary = [];
 			}
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))

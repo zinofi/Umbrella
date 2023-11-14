@@ -79,7 +79,7 @@ public class TestChildClass
 	public List<string>? TestStringList { get; set; }
 
 	[TypeScriptOverride(typeof(string))]
-	public List<int> TestIntList { get; set; } = new List<int>();
+	public List<int> TestIntList { get; set; } = [];
 
 	public bool NeedAddress { get; set; }
 

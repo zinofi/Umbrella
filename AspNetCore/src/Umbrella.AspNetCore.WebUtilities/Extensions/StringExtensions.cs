@@ -44,7 +44,7 @@ public static class StringExtensions
 		}
 
 		int? currentPort = currentRequest.Host.Port;
-		string? port = portOverride > 0 ? portOverride.ToString() : (currentPort.HasValue && currentPort.Value != 80 ? (":" + currentPort) : string.Empty);
+		string? port = portOverride > 0 ? portOverride.Value.ToString(CultureInfo.InvariantCulture) : (currentPort.HasValue && currentPort.Value != 80 ? (":" + currentPort) : string.Empty);
 
 		return string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride ?? currentRequest.Host.Value, port, absoluteVirtualPath);
 	}

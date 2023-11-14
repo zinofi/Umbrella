@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace Umbrella.Legacy.WebUtilities.Mvc.Results;
@@ -37,13 +36,14 @@ public class TransferToRouteResult : ActionResult
 	public TransferToRouteResult(string? routeName, RouteValueDictionary routeValues)
 	{
 		RouteName = routeName ?? string.Empty;
-		RouteValues = routeValues ?? new RouteValueDictionary();
+		RouteValues = routeValues ?? [];
 	}
 
 	/// <inheritdoc />
 	public override void ExecuteResult(ControllerContext context)
 	{
-		Guard.IsNotNull(context);
+		if (context is null)
+			throw new ArgumentNullException(nameof(context));
 
 		var urlHelper = new UrlHelper(context.RequestContext);
 		string url = urlHelper.RouteUrl(RouteName, RouteValues);

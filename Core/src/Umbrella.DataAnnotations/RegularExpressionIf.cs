@@ -41,7 +41,7 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 	}
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object actualDependentPropertyValue, object model)
+	public override bool IsValid(object value, object? actualDependentPropertyValue, object model)
 		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
 
 	/// <inheritdoc />

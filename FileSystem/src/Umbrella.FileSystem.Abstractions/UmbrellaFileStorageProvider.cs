@@ -65,7 +65,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	/// <param name="loggerFactory">The logger factory.</param>
 	/// <param name="mimeTypeUtility">The MIME type utility.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public UmbrellaFileStorageProvider(
+	protected UmbrellaFileStorageProvider(
 		ILogger logger,
 		ILoggerFactory loggerFactory,
 		IMimeTypeUtility mimeTypeUtility,

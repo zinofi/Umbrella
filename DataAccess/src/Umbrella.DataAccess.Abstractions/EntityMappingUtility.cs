@@ -49,7 +49,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 		{
 			// If there is nothing to process, just return an empty list for the target entity type
 			if (modelItems is null)
-				return new List<TEntity>();
+				return [];
 
 			var updatedList = new List<TEntity>();
 

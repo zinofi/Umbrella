@@ -16,7 +16,7 @@ internal sealed class BrowserEventAggregator : IAsyncDisposable, IBrowserEventAg
 {
 	private readonly ILogger _logger;
 	private readonly IJSRuntime _jsruntime;
-	private readonly Dictionary<string, Func<ValueTask>> _callbackDictionary = new();
+	private readonly Dictionary<string, Func<ValueTask>> _callbackDictionary = [];
 	private readonly DotNetObjectReference<BrowserEventAggregator> _dotNetObjectReference;
 	private readonly string _id = Guid.NewGuid().ToString();
 
@@ -80,6 +80,8 @@ internal sealed class BrowserEventAggregator : IAsyncDisposable, IBrowserEventAg
 	{
 		try
 		{
+			_dotNetObjectReference?.Dispose();
+
 			foreach (string eventName in _callbackDictionary.Keys)
 			{
 				if (_logger.IsEnabled(LogLevel.Debug))

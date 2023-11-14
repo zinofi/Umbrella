@@ -41,7 +41,7 @@ public class PermissionsUtility : IPermissionsUtility
 		[PermissionType.File] = Array.Empty<Permissions.BasePermission>()
 	};
 
-	private readonly HashSet<Type> _previousFailuresMappings = new();
+	private readonly HashSet<Type> _previousFailuresMappings = [];
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PermissionsUtility"/> type.

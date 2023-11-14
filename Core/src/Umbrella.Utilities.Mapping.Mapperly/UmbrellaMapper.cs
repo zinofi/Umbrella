@@ -22,9 +22,9 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 	private readonly ILogger _logger;
 	private readonly UmbrellaMapperOptions _options;
-	private readonly Dictionary<(Type, Type), object> _newInstanceMapperDictionary = new();
-	private readonly Dictionary<(Type, Type), object> _newCollectionmapperDictionary = new();
-	private readonly Dictionary<(Type, Type), object> _existingInstanceMapperDictionary = new();
+	private readonly Dictionary<(Type, Type), object> _newInstanceMapperDictionary = [];
+	private readonly Dictionary<(Type, Type), object> _newCollectionmapperDictionary = [];
+	private readonly Dictionary<(Type, Type), object> _existingInstanceMapperDictionary = [];
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaMapper"/> class.
@@ -36,6 +36,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 		UmbrellaMapperOptions options)
 	{
 		// TODO: Add a new ctor parameter for IServiceProvider.
+		Guard.IsNotNull(options);
 
 		_logger = logger;
 		_options = options;
@@ -183,6 +184,8 @@ public class UmbrellaMapper : IUmbrellaMapper
 	/// <inheritdoc/>
 	public ValueTask<IReadOnlyCollection<TDestination>> MapAllAsync<TDestination>(IEnumerable<object> source, CancellationToken cancellationToken = default)
 	{
+		Guard.IsNotNull(source);
+
 		try
 		{
 			var (isEnumerable, elementType) = source.GetType().GetIEnumerableTypeData();

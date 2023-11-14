@@ -16,7 +16,7 @@ public abstract class DataExpressionDescriptorModelBinder<TDescriptor> : DataExp
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="dataExpressionFactory">The data expression factory.</param>
-	public DataExpressionDescriptorModelBinder(
+	protected DataExpressionDescriptorModelBinder(
 		ILogger logger,
 		IDataExpressionFactory dataExpressionFactory)
 		: base(logger, dataExpressionFactory)

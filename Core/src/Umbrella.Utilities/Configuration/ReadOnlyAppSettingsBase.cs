@@ -25,7 +25,7 @@ public abstract class ReadOnlyAppSettingsBase : ReadOnlyAppSettingsBase<IReadOnl
 	/// <param name="cache">The cache.</param>
 	/// <param name="appSettingsSource">The application settings source.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public ReadOnlyAppSettingsBase(ILogger logger,
+	protected ReadOnlyAppSettingsBase(ILogger logger,
 		IMemoryCache cache,
 		IReadOnlyAppSettingsSource appSettingsSource,
 		IGenericTypeConverter genericTypeConverter)
@@ -78,7 +78,8 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 	/// <param name="cache">The cache.</param>
 	/// <param name="appSettingsSource">The application settings source.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public ReadOnlyAppSettingsBase(ILogger logger,
+	protected ReadOnlyAppSettingsBase(
+		ILogger logger,
 		IMemoryCache cache,
 		TAppSettingsSource appSettingsSource,
 		IGenericTypeConverter genericTypeConverter)
@@ -123,7 +124,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 	/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallback"/> is returned.</param>
 	/// <param name="customValueConverter">The custom value converter.</param>
 	/// <returns>The app setting value or the fallback.</returns>
-	protected virtual T GetSetting<T>(T fallback = default!, [CallerMemberName] string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
+	protected virtual T? GetSetting<T>(T fallback = default!, [CallerMemberName] string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 	{
 		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
 
@@ -162,7 +163,7 @@ public abstract class ReadOnlyAppSettingsBase<TAppSettingsSource>
 	/// <param name="throwException">if set to <see langword="true"/>, thows an exception if the app setting could not be found, otherwise the <paramref name="fallbackCreator"/> is used to build the returned value.</param>
 	/// <param name="customValueConverter">The custom value converter.</param>
 	/// <returns>The app setting value or the fallback.</returns>
-	protected virtual T GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName] string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
+	protected virtual T? GetSetting<T>(Func<T> fallbackCreator, [CallerMemberName] string key = "", bool useCache = true, bool throwException = false, Func<string?, T>? customValueConverter = null)
 	{
 		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
 

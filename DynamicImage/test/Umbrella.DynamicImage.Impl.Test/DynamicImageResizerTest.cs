@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -41,8 +43,8 @@ public class DynamicImageResizerTest
 		}
 	}
 
-	private static readonly List<(DynamicImageOptions Options, Size TargetSize)> _optionsList = new()
-	{
+	private static readonly List<(DynamicImageOptions Options, Size TargetSize)> _optionsList =
+	[
 		//These images are smaller than the original image dimensions of 300 x 193
 		//(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(50, 150)),
 		//(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(50, 32)),
@@ -115,15 +117,15 @@ public class DynamicImageResizerTest
 		//(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Avif), new Size(50, 150)),
 		//(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Avif), new Size(233, 150)),
 		//(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Avif), new Size(50, 32)),
-	};
+	];
 
-	public static List<object[]> OptionsList = new();
+	public static Collection<object[]> OptionsList = [];
 
-	public static List<object[]> ResizersList = new()
-	{
-		new object[] { CreateDynamicImageResizer<FreeImageResizer>() },
-		new object[] { CreateDynamicImageResizer<SkiaSharpResizer>() },
-	};
+	public static IReadOnlyCollection<object[]> ResizersList =
+	[
+		[CreateDynamicImageResizer<FreeImageResizer>()],
+		[CreateDynamicImageResizer<SkiaSharpResizer>()],
+	];
 
 	static DynamicImageResizerTest()
 	{
@@ -131,11 +133,11 @@ public class DynamicImageResizerTest
 		{
 			// FreeImage does not support Avif yet
 			// TODO AVIF: if(option.Options.Format is not DynamicImageFormat.Avif)
-			OptionsList.Add(new object[] { CreateDynamicImageResizer<FreeImageResizer>(), option, TestPNG });
+			OptionsList.Add([CreateDynamicImageResizer<FreeImageResizer>(), option, TestPNG]);
 
 			// TODO: SkiaSharp has issues converting PNG to BMP and GIF
 			if (option.Options.Format is not DynamicImageFormat.Bmp and not DynamicImageFormat.Gif)
-				OptionsList.Add(new object[] { CreateDynamicImageResizer<SkiaSharpResizer>(), option, TestPNG });
+				OptionsList.Add([CreateDynamicImageResizer<SkiaSharpResizer>(), option, TestPNG]);
 		}
 
 		if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -161,6 +163,8 @@ public class DynamicImageResizerTest
 	[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "This is a unit test")]
 	public async Task GenerateImageAsync_FromFuncAsync(DynamicImageResizerBase resizer, (DynamicImageOptions Options, Size TargetSize) item, string base64Image)
 	{
+		Guard.IsNotNull(resizer);
+
 		byte[] bytes = Convert.FromBase64String(base64Image);
 
 		var fileMock = new Mock<IUmbrellaFileInfo>();
@@ -237,6 +241,8 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void ResizeImage_DodgyImage(IDynamicImageResizer imageResizer)
 	{
+		Guard.IsNotNull(imageResizer);
+
 		byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\test-dodgy-image.jpg"));
 
 		var (resizedBytes, _, _) = imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg);
@@ -248,7 +254,7 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void ResizeImage_EmptyImage(IDynamicImageResizer imageResizer)
 	{
-		byte[] bytes = Array.Empty<byte>();
+		byte[] bytes = [];
 
 		_ = Assert.Throws<ArgumentException>(() => imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
 	}
@@ -266,6 +272,8 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void IsImage_InvalidImage(IDynamicImageResizer imageResizer)
 	{
+		Guard.IsNotNull(imageResizer);
+
 		byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\IkeaManual.pdf"));
 
 		bool isValid = imageResizer.IsImage(bytes);
@@ -277,7 +285,9 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void IsImage_EmptyImage(IDynamicImageResizer imageResizer)
 	{
-		byte[] bytes = Array.Empty<byte>();
+		Guard.IsNotNull(imageResizer);
+
+		byte[] bytes = [];
 
 		bool isValid = imageResizer.IsImage(bytes);
 
@@ -288,6 +298,8 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void IsImage_NullImage(IDynamicImageResizer imageResizer)
 	{
+		Guard.IsNotNull(imageResizer);
+
 		byte[]? bytes = null;
 
 		bool isValid = imageResizer.IsImage(bytes!);
@@ -299,6 +311,8 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void IsImage_ValidImage(IDynamicImageResizer imageResizer)
 	{
+		Guard.IsNotNull(imageResizer);
+
 		byte[] bytes = Convert.FromBase64String(TestPNG);
 
 		bool isValid = imageResizer.IsImage(bytes);
@@ -310,6 +324,8 @@ public class DynamicImageResizerTest
 	[MemberData(nameof(ResizersList))]
 	public void GetImageDimensions_ValidImage(IDynamicImageResizer imageResizer)
 	{
+		Guard.IsNotNull(imageResizer);
+
 		byte[] bytes = Convert.FromBase64String(TestPNG);
 
 		var (width, height) = imageResizer.GetImageDimensions(bytes);

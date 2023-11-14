@@ -21,7 +21,7 @@ public class OperatorMetadata
 	/// This check is to ensure that the comparison between the comparison value matches the actual dependent property value
 	/// before validation is actually performed on the value of the current property.
 	/// </remarks>
-	public Func<object, object, bool, bool> IsValid { get; private set; } = null!;
+	public Func<object?, object?, bool, bool> IsValid { get; private set; } = null!;
 
 	/// <summary>
 	/// Initializes the <see cref="OperatorMetadata"/> class.

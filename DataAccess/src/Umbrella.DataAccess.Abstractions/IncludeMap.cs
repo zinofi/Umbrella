@@ -9,25 +9,25 @@ namespace Umbrella.DataAccess.Abstractions;
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 public class IncludeMap<TEntity>
 {
-	#region Public Properties
 	/// <summary>
 	/// Gets the includes as expressions.
 	/// </summary>
-	public HashSet<Expression<Func<TEntity, object?>>> Includes { get; } = new HashSet<Expression<Func<TEntity, object?>>>();
+	public HashSet<Expression<Func<TEntity, object?>>> Includes { get; } = [];
 
 	/// <summary>
 	/// Gets the includes as string paths, e.g. Parent -> Child -> Name will be Parent.Child.Name.
 	/// </summary>
-	public HashSet<string> PropertyPaths { get; } = new HashSet<string>();
-	#endregion
-
-	#region Constructors		
+	public HashSet<string> PropertyPaths { get; } = [];
+	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="IncludeMap{TEntity}"/> class.
 	/// </summary>
 	/// <param name="paths">The property paths.</param>
 	public IncludeMap(params Expression<Func<TEntity, object?>>[] paths)
 	{
+		if (paths is null)
+			return;
+
 		foreach (var path in paths)
 		{
 			_ = Includes.Add(path);
@@ -38,10 +38,7 @@ public class IncludeMap<TEntity>
 				_ = PropertyPaths.Add(propertyPath);
 		}
 	}
-	#endregion
 
-	#region Overridden Methods
 	/// <inheritdoc />
 	public override string ToString() => string.Join(", ", PropertyPaths);
-	#endregion
 }

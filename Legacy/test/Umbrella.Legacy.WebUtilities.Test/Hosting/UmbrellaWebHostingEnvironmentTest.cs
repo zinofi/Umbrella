@@ -11,13 +11,13 @@ namespace Umbrella.Legacy.WebUtilities.Test.Hosting;
 
 public class UmbrellaWebHostingEnvironmentTest
 {
-	public static List<object[]> UrlsToTest = new()
-	{
-		new object[] { "/path/to/a/resource.jpg" },
-		new object[] { "path/to/a/resource.jpg" },
-		new object[] { "~/path/to/a/resource.jpg" },
-		new object[] { "//path////to/a/resource.jpg" }
-	};
+	public static IReadOnlyCollection<object[]> UrlsToTest =
+	[
+		["/path/to/a/resource.jpg"],
+		["path/to/a/resource.jpg"],
+		["~/path/to/a/resource.jpg"],
+		["//path////to/a/resource.jpg"]
+	];
 
 	[Theory]
 	[MemberData(nameof(UrlsToTest))]

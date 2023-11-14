@@ -70,10 +70,9 @@ public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
 
 			_ = sbOutput.AppendLine(strOutput);
 
-			using (StreamWriter sw = File.CreateText(toolOptions.OutputPath!))
-			{
-				sw.Write(sbOutput.ToString());
-			}
+			using StreamWriter sw = File.CreateText(toolOptions.OutputPath!);
+			
+			sw.Write(sbOutput.ToString());
 
 			return 0;
 		});
@@ -92,6 +91,8 @@ public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
 
 	protected virtual StringBuilder CreateOutputBuilder(TOptions toolOptions)
 	{
+		Guard.IsNotNull(toolOptions);
+
 		var builder = new StringBuilder()
 			.AppendLine("/* eslint-disable */")
 			.AppendLine("//------------------------------------------------------------------------------")
@@ -135,6 +136,9 @@ public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
 
 	protected virtual void SetupGenerators(TypeScriptGenerator generator, TOptions options)
 	{
+		Guard.IsNotNull(generator);
+		Guard.IsNotNull(options);
+
 		if (options.GeneratorList?.Contains("standard") is true)
 		{
 			_ = generator.IncludeStandardGenerators();
@@ -226,7 +230,7 @@ public class UmbrellaTypeScriptApp<TOptions> : CommandLineApplication
 		Console.ForegroundColor = InitialConsoleColor;
 	}
 
-	private static List<string> CleanInput(List<string>? values) => values?.Select(x => x.Trim('"')).ToList() ?? new List<string>();
+	private static List<string> CleanInput(List<string>? values) => values?.Select(x => x.Trim('"')).ToList() ?? [];
 
 	private static string CleanInput(string input) => input?.Trim('"') ?? "";
 

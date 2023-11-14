@@ -15,14 +15,14 @@ public class RequiredNonEmptyCollectionIfTrueAttributeTest
 	[Fact]
 	public void IsValidTest()
 	{
-		var model = new Model() { Value1 = true, Value2 = new List<string> { "hello" } };
+		var model = new Model() { Value1 = true, Value2 = ["hello"] };
 		Assert.True(model.IsValid("Value2"));
 	}
 
 	[Fact]
 	public void IsNotValidTest()
 	{
-		var model = new Model() { Value1 = true, Value2 = new List<string>() };
+		var model = new Model() { Value1 = true, Value2 = [] };
 		Assert.False(model.IsValid("Value2"));
 	}
 

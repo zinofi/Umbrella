@@ -54,7 +54,7 @@ public abstract class UmbrellaHostingEnvironment : IUmbrellaHostingEnvironment
 	/// <param name="options">The options.</param>
 	/// <param name="cache">The cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
-	public UmbrellaHostingEnvironment(
+	protected UmbrellaHostingEnvironment(
 		ILogger logger,
 		UmbrellaHostingEnvironmentOptions options,
 		IHybridCache cache,

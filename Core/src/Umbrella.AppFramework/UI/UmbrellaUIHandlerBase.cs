@@ -40,7 +40,7 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	/// <param name="logger">The logger.</param>
 	/// <param name="dialogUtility">The dialog utility.</param>
 	/// <param name="authHelper">The authentication helper.</param>
-	public UmbrellaUIHandlerBase(
+	protected UmbrellaUIHandlerBase(
 		ILogger logger,
 		IDialogService dialogUtility,
 		IAppAuthHelper authHelper)

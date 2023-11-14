@@ -16,17 +16,17 @@ public class InternetExplorerCacheHeadersMiddlewareOptions : ISanitizableUmbrell
 	/// <summary>
 	/// Keywords to search the User-Agent header value for.
 	/// </summary>
-	public List<string> UserAgentKeywords { get; set; } = new List<string> { "MSIE", "Trident" };
+	public List<string> UserAgentKeywords { get; set; } = ["MSIE", "Trident"];
 
 	/// <summary>
 	/// HTTP Methods that the middleware will act on.
 	/// </summary>
-	public List<string> Methods { get; set; } = new List<string> { "GET", "HEAD" };
+	public List<string> Methods { get; set; } = ["GET", "HEAD"];
 
 	/// <summary>
 	/// Content-Type header values that the middleware will act on.
 	/// </summary>
-	public List<string> ContentTypes { get; set; } = new List<string> { "application/json" };
+	public List<string> ContentTypes { get; set; } = ["application/json"];
 
 	/// <summary>
 	/// Sanitizes this instance.

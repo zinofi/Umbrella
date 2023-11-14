@@ -24,7 +24,7 @@ public abstract class AppSettingsBase : ReadOnlyAppSettingsBase<IAppSettingsSour
 	/// <param name="cache">The cache.</param>
 	/// <param name="appSettingsSource">The application settings source.</param>
 	/// <param name="genericTypeConverter">The generic type converter.</param>
-	public AppSettingsBase(ILogger logger,
+	protected AppSettingsBase(ILogger logger,
 		IMemoryCache cache,
 		IAppSettingsSource appSettingsSource,
 		IGenericTypeConverter genericTypeConverter)

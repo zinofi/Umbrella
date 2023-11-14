@@ -13,7 +13,7 @@ public partial class CascadingUmbrellaBreadcrumb
 	/// <summary>
 	/// Gets the breadcrumb item list.
 	/// </summary>
-	private List<UmbrellaBreadcrumbItem> BreadcrumbItemList { get; } = new();
+	private List<UmbrellaBreadcrumbItem> BreadcrumbItemList { get; } = [];
 
 	/// <summary>
 	/// Gets or sets the child content of this component.

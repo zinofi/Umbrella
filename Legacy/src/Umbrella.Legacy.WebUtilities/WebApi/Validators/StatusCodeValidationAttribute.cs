@@ -26,7 +26,7 @@ public abstract class StatusCodeValidationAttribute : ValidationAttribute
 	/// <summary>
 	/// Initializes a new instance of the <see cref="StatusCodeValidationAttribute"/> class.
 	/// </summary>
-	public StatusCodeValidationAttribute()
+	protected StatusCodeValidationAttribute()
 	{
 	}
 
@@ -34,7 +34,7 @@ public abstract class StatusCodeValidationAttribute : ValidationAttribute
 	/// Initializes a new instance of the <see cref="StatusCodeValidationAttribute"/> class.
 	/// </summary>
 	/// <param name="context">The context.</param>
-	public StatusCodeValidationAttribute(HttpContext context)
+	protected StatusCodeValidationAttribute(HttpContext context)
 	{
 		_httpContext = context;
 	}

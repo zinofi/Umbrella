@@ -15,7 +15,7 @@ public abstract class UmbrellaIdentityDbContext : UmbrellaIdentityDbContext<Iden
 	/// </summary>
 	/// <param name="dbContextOptions">The database context options.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaIdentityDbContext(
+	protected UmbrellaIdentityDbContext(
 		DbContextOptions dbContextOptions,
 		IUmbrellaDbContextHelper dbContextHelper)
 		: base(dbContextOptions, dbContextHelper)
@@ -35,7 +35,7 @@ public abstract class UmbrellaIdentityDbContext<TUser> : UmbrellaIdentityDbConte
 	/// </summary>
 	/// <param name="dbContextOptions">The database context options.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaIdentityDbContext(
+	protected UmbrellaIdentityDbContext(
 		DbContextOptions dbContextOptions,
 		IUmbrellaDbContextHelper dbContextHelper)
 		: base(dbContextOptions, dbContextHelper)
@@ -59,7 +59,7 @@ public abstract class UmbrellaIdentityDbContext<TUser, TRole, TKey> : UmbrellaId
 	/// </summary>
 	/// <param name="dbContextOptions">The database context options.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaIdentityDbContext(
+	protected UmbrellaIdentityDbContext(
 		DbContextOptions dbContextOptions,
 		IUmbrellaDbContextHelper dbContextHelper)
 		: base(dbContextOptions, dbContextHelper)
@@ -100,7 +100,7 @@ public abstract class UmbrellaIdentityDbContext<TUser, TRole, TKey, TUserClaim, 
 	/// Initializes a new instance of the <see cref="UmbrellaIdentityDbContext{TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken}"/> class.
 	/// </summary>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaIdentityDbContext(
+	protected UmbrellaIdentityDbContext(
 		IUmbrellaDbContextHelper dbContextHelper)
 	{
 		ContextHelper = dbContextHelper;
@@ -111,7 +111,7 @@ public abstract class UmbrellaIdentityDbContext<TUser, TRole, TKey, TUserClaim, 
 	/// </summary>
 	/// <param name="dbContextOptions">The database context options.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
-	public UmbrellaIdentityDbContext(
+	protected UmbrellaIdentityDbContext(
 		DbContextOptions dbContextOptions,
 		IUmbrellaDbContextHelper dbContextHelper)
 		: base(dbContextOptions)

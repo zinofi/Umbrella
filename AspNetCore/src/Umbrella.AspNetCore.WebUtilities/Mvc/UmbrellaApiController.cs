@@ -44,7 +44,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
-	public UmbrellaApiController(
+	protected UmbrellaApiController(
 		ILogger logger,
 		IWebHostEnvironment hostingEnvironment)
 	{

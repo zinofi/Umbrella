@@ -12,7 +12,7 @@ namespace Umbrella.Xamarin.Utilities;
 public class XamarinLocalStorageService : IAppLocalStorageService, IAppSessionStorageService
 {
 	private readonly ILogger _logger;
-	private readonly Dictionary<string, string> _virtualStorage = new();
+	private readonly Dictionary<string, string> _virtualStorage = [];
 	private readonly bool _useVirtualStorage = DeviceInfo.DeviceType == DeviceType.Virtual && DeviceInfo.Platform == DevicePlatform.iOS;
 
 	/// <summary>

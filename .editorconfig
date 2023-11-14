@@ -165,6 +165,14 @@ dotnet_diagnostic.VSTHRD111.severity = silent
 dotnet_diagnostic.CA2208.severity = error
 dotnet_diagnostic.CA2237.severity = error
 dotnet_diagnostic.CA1806.severity = error
+dotnet_style_prefer_collection_expression = true:suggestion
+dotnet_diagnostic.CA1861.severity = error
+dotnet_diagnostic.CA1062.severity = warning
+dotnet_diagnostic.CA2007.severity = none
+dotnet_diagnostic.CA2227.severity = silent
+dotnet_diagnostic.CA1308.severity = suggestion
+dotnet_diagnostic.CA2213.severity = error
+dotnet_diagnostic.CA1012.severity = error
 
 ###############################
 # C# Code Style Rules         #
@@ -308,3 +316,8 @@ dotnet_diagnostic.IDE0051.severity = error
 dotnet_diagnostic.IDE0005.severity = error
 dotnet_diagnostic.IDE0270.severity = suggestion
 dotnet_diagnostic.CA1507.severity = error
+dotnet_diagnostic.CA1720.severity = none
+csharp_style_prefer_primary_constructors = true:suggestion
+dotnet_diagnostic.IDE0251.severity = error
+dotnet_diagnostic.CA1865.severity = none
+dotnet_diagnostic.CA1802.severity = error

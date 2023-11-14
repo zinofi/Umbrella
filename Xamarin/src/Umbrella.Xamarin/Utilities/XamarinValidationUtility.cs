@@ -41,6 +41,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 	/// <inheritdoc />
 	public (bool isValid, IReadOnlyCollection<ValidationResult> results) ValidateProperty(object model, object? property, string propertyName, Page? page, Func<List<ValidationResult>, IReadOnlyCollection<ValidationResult>>? resultsModifier = null, bool attachInlineValiation = true)
 	{
+		Guard.IsNotNull(model);
 		Guard.IsNotNull(page);
 
 		try

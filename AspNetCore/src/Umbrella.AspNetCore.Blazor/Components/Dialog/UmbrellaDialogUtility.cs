@@ -25,7 +25,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 /// <seealso cref="IUmbrellaDialogService" />
 public class UmbrellaDialogService : IUmbrellaDialogService
 {
-	private static readonly ModalParameters _emptyModalParameters = new();
+	private static readonly ModalParameters _emptyModalParameters = [];
 
 	private readonly ConcurrentDictionary<Type, IReadOnlyCollection<AuthorizeAttribute>> _authorizationAttributeCache = new();
 
@@ -126,7 +126,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Primary) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons).ConfigureAwait(false);
 
 			_dialogTracker.Close(code);
 		}
@@ -150,7 +150,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultDangerMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons).ConfigureAwait(false);
 
 			_dialogTracker.Close(code);
 		}
@@ -176,7 +176,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 
 			_logger.WriteInformation(message: "Opening info dialog");
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-info", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-info", buttons).ConfigureAwait(false);
 
 			_dialogTracker.Close(code);
 		}
@@ -200,7 +200,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultSuccessMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Success) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-success", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-success", buttons).ConfigureAwait(false);
 
 			_dialogTracker.Close(code);
 		}
@@ -224,7 +224,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultWarningMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Warning) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-warning", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-warning", buttons).ConfigureAwait(false);
 
 			_dialogTracker.Close(code);
 		}
@@ -241,7 +241,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 		{
 			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Primary, _defaultConfirmButtons, acceptButtonText, cancelButtonText);
 
-			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm", buttons);
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm", buttons).ConfigureAwait(false);
 
 			return !result.Cancelled;
 		}
@@ -258,7 +258,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 		{
 			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Danger, _defaultConfirmDangerButtons, acceptButtonText, cancelButtonText);
 
-			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-danger", buttons);
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-danger", buttons).ConfigureAwait(false);
 
 			return !result.Cancelled;
 		}
@@ -275,7 +275,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 		{
 			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Success, _defaultConfirmSuccessButtons, acceptButtonText, cancelButtonText);
 
-			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-success", buttons);
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-success", buttons).ConfigureAwait(false);
 
 			return !result.Cancelled;
 		}
@@ -292,7 +292,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 		{
 			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Info, _defaultConfirmInfoButtons, acceptButtonText, cancelButtonText);
 
-			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-info", buttons);
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-info", buttons).ConfigureAwait(false);
 
 			return !result.Cancelled;
 		}
@@ -309,7 +309,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 		{
 			var buttons = GetConfirmButtons(UmbrellaDialogButtonType.Warning, _defaultConfirmWarningButtons, acceptButtonText, cancelButtonText);
 
-			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-warning", buttons);
+			ModalResult result = await ShowDialogAsync(message, title, "u-dialog--confirm u-dialog--confirm-warning", buttons).ConfigureAwait(false);
 
 			return !result.Cancelled;
 		}
@@ -340,7 +340,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 
 			IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);
 
-			return await modal.Result;
+			return await modal.Result.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { message, title, cssClass, buttons, subTitle }))
 		{
@@ -364,7 +364,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultDangerMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Danger) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message u-dialog--message-danger", buttons).ConfigureAwait(false);
 
 			_dialogTracker.Close(code);
 		}
@@ -397,7 +397,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 					throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
 				}
 
-				ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync();
+				ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync().ConfigureAwait(false);
 
 				if (claimsPrincipal.Identity?.IsAuthenticated is false)
 					ThrowAccessDeniedException();
@@ -405,7 +405,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				// We will now check all authorization attributes. The first one that fails will throw an exception.
 				foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
 				{
-					bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, authorizeAttribute.Roles, authorizeAttribute.Policy);
+					bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, authorizeAttribute.Roles, authorizeAttribute.Policy).ConfigureAwait(false);
 
 					if (!authorized)
 						ThrowAccessDeniedException();
@@ -423,7 +423,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _modalService.Show<T>(title, modalParameters, options)
 				: _modalService.Show<T>(title, _emptyModalParameters, options);
 
-			return (TResult)await modal.Result;
+			return (TResult)await modal.Result.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { title, cssClass }))
 		{

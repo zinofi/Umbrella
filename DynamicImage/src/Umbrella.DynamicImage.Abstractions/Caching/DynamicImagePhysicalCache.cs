@@ -36,7 +36,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
 	/// <param name="cacheOptions">The cache options.</param>
 	/// <param name="fileProvider">The file provider.</param>
-	public DynamicImagePhysicalCache(
+	protected DynamicImagePhysicalCache(
 		ILogger logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,

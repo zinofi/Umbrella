@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.DynamicImage.Abstractions.Caching;
@@ -19,18 +20,20 @@ namespace Umbrella.DynamicImage.Test.Caching;
 public class DynamicImageCacheTest
 {
 #if AZUREDEVOPS
-	private static readonly string _storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
+#pragma warning disable IDE1006 // Naming Styles
+	private static readonly string StorageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString")!;
+#pragma warning restore IDE1006 // Naming Styles
 #else
-	private static readonly string _storageConnectionString = "UseDevelopmentStorage=true";
+	private const string StorageConnectionString = "UseDevelopmentStorage=true";
 #endif
 	private const string TestFileName = "aspnet-mvc-logo.png";
 
-	private static readonly List<IDynamicImageCache> _cacheList = new()
-	{
+	private static readonly List<IDynamicImageCache> _cacheList =
+	[
 		CreateDynamicImageMemoryCache(),
 		CreateDynamicImageDiskCache(),
 		CreateDynamicImageAzureBlobStorageCache()
-	};
+	];
 
 	public static List<object[]> CacheListMemberData = _cacheList.Select(x => new object[] { x }).ToList();
 
@@ -55,6 +58,8 @@ public class DynamicImageCacheTest
 	[MemberData(nameof(CacheListMemberData))]
 	public async Task AddAsync_RemoveAsync_BytesAsync(IDynamicImageCache cache)
 	{
+		Guard.IsNotNull(cache);
+
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 		var item = new DynamicImageItem
@@ -63,7 +68,7 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		byte[] sourceBytes = File.ReadAllBytes(physicalPath);
+		byte[] sourceBytes = await File.ReadAllBytesAsync(physicalPath);
 
 		item.Content = sourceBytes;
 
@@ -91,6 +96,8 @@ public class DynamicImageCacheTest
 	[MemberData(nameof(CacheListMemberData))]
 	public async Task AddAsync_RemoveAsync_StreamAsync(IDynamicImageCache cache)
 	{
+		Guard.IsNotNull(cache);
+
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 		var item = new DynamicImageItem
@@ -99,7 +106,7 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		byte[] sourceBytes = File.ReadAllBytes(physicalPath);
+		byte[] sourceBytes = await File.ReadAllBytesAsync(physicalPath);
 
 		item.Content = sourceBytes;
 
@@ -132,6 +139,8 @@ public class DynamicImageCacheTest
 	[MemberData(nameof(CacheListMemberData))]
 	public async Task GetAsync_NotExistsAsync(IDynamicImageCache cache)
 	{
+		Guard.IsNotNull(cache);
+
 		string path = PathHelper.PlatformNormalize($@"{BaseDirectory}\doesnotexist.png");
 
 		var item = new DynamicImageItem
@@ -149,6 +158,8 @@ public class DynamicImageCacheTest
 	[MemberData(nameof(CacheListMemberData))]
 	public async Task AddAsync_GetAsync_ExpiredAsync(IDynamicImageCache cache)
 	{
+		Guard.IsNotNull(cache);
+
 		string path = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
 		var item = new DynamicImageItem
@@ -157,7 +168,7 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		byte[] sourceBytes = File.ReadAllBytes(path);
+		byte[] sourceBytes = await File.ReadAllBytesAsync(path);
 
 		item.Content = sourceBytes;
 
@@ -206,7 +217,7 @@ public class DynamicImageCacheTest
 	{
 		var options = new UmbrellaAzureBlobStorageFileProviderOptions
 		{
-			StorageConnectionString = _storageConnectionString,
+			StorageConnectionString = StorageConnectionString,
 			AllowUnhandledFileAuthorizationChecks = true
 		};
 

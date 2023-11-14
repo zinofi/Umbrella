@@ -29,7 +29,7 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext> : Mult
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public MultiTenantGenericDbRepository(
+	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
@@ -65,7 +65,7 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public MultiTenantGenericDbRepository(
+	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
@@ -103,7 +103,7 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public MultiTenantGenericDbRepository(
+	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
@@ -142,7 +142,7 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public MultiTenantGenericDbRepository(
+	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
@@ -188,7 +188,7 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="dbAppTenantSessionContext">The database application tenant session context.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public MultiTenantGenericDbRepository(
+	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 		ILogger logger,

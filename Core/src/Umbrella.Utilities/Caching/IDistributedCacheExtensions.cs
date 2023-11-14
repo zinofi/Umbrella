@@ -42,7 +42,7 @@ public static class IDistributedCacheExtensions
 		{
 			string? result = null;
 
-			List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
+			List<Exception>? lstException = throwOnCacheFailure ? [] : null;
 
 			try
 			{
@@ -113,7 +113,7 @@ public static class IDistributedCacheExtensions
 		{
 			string? result = null;
 
-			List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
+			List<Exception>? lstException = throwOnCacheFailure ? [] : null;
 
 			try
 			{
@@ -309,7 +309,7 @@ public static class IDistributedCacheExtensions
 
 		try
 		{
-			List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
+			List<Exception>? lstException = throwOnCacheFailure ? [] : null;
 
 			var (itemFound, cacheItem, exception) = cache.TryGetValue<TItem>(key);
 
@@ -369,14 +369,14 @@ public static class IDistributedCacheExtensions
 	public static async Task<(TItem cacheItem, UmbrellaDistributedCacheException? exception)> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, Func<DistributedCacheEntryOptions> optionsBuilder, bool throwOnCacheFailure = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(cache, nameof(cache));
-		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
-		Guard.IsNotNull(factory, nameof(factory));
-		Guard.IsNotNull(optionsBuilder, nameof(optionsBuilder));
+		Guard.IsNotNull(cache);
+		Guard.IsNotNullOrWhiteSpace(key);
+		Guard.IsNotNull(factory);
+		Guard.IsNotNull(optionsBuilder);
 
 		try
 		{
-			List<Exception>? lstException = throwOnCacheFailure ? new List<Exception>() : null;
+			List<Exception>? lstException = throwOnCacheFailure ? [] : null;
 
 			var (itemFound, cacheItem, exception) = await cache.TryGetValueAsync<TItem>(key, cancellationToken).ConfigureAwait(false);
 
@@ -423,7 +423,7 @@ public static class IDistributedCacheExtensions
 
 		try
 		{
-			string result = cache.GetString(key);
+			string? result = cache.GetString(key);
 
 			if (!string.IsNullOrWhiteSpace(result))
 			{
@@ -451,7 +451,7 @@ public static class IDistributedCacheExtensions
 
 		try
 		{
-			string result = await cache.GetStringAsync(key, cancellationToken).ConfigureAwait(false);
+			string? result = await cache.GetStringAsync(key, cancellationToken).ConfigureAwait(false);
 
 			if (!string.IsNullOrWhiteSpace(result))
 			{

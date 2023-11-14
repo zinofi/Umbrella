@@ -26,7 +26,7 @@ public class DynamicImageMiddlewareMapping : IValidatableUmbrellaOptions, ISanit
 	/// <summary>
 	/// Gets or sets the valid mappings.
 	/// </summary>
-	public HashSet<DynamicImageMapping> ValidMappings { get; set; } = new HashSet<DynamicImageMapping>();
+	public HashSet<DynamicImageMapping> ValidMappings { get; set; } = [];
 
 	/// <summary>
 	/// Gets or sets the cacheability. Defaults to <see cref="MiddlewareHttpCacheability.NoCache" />.
@@ -44,7 +44,7 @@ public class DynamicImageMiddlewareMapping : IValidatableUmbrellaOptions, ISanit
 	/// <inheritdoc />
 	public void Validate()
 	{
-		Guard.IsNotNull(FileProviderMapping, nameof(FileProviderMapping));
+		Guard.IsNotNull(FileProviderMapping);
 		FileProviderMapping.Validate();
 
 		switch (Cacheability)

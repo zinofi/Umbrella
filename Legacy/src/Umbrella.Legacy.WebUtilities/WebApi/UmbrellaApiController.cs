@@ -26,7 +26,7 @@ public abstract class UmbrellaApiController : ApiController
 	/// Initializes a new instance of the <see cref="UmbrellaApiController"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
-	public UmbrellaApiController(ILogger logger)
+	protected UmbrellaApiController(ILogger logger)
 	{
 		Logger = logger;
 	}

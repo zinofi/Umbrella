@@ -41,7 +41,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbReposi
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider"></param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -75,7 +75,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : G
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider"></param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -111,7 +111,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider"></param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -166,7 +166,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -284,7 +284,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 			if (!bypassSaveLogic)
 			{
-				lstSaveResult = new List<OperationResult<TEntity>>();
+				lstSaveResult = [];
 
 				foreach (TEntity entity in entities)
 				{
@@ -397,7 +397,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// </para>
 	/// </remarks>
 	protected bool IsConcurrencyTokenMismatch(TEntity entity)
-		=> !entity.Id.Equals(default!) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Value.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
+	{
+		Guard.IsNotNull(entity);
+
+		return !entity.Id.Equals(default!) && entity is IConcurrencyStamp concurrencyStampEntity && Context.Value.Entry(concurrencyStampEntity).Property(x => x.ConcurrencyStamp).OriginalValue != concurrencyStampEntity.ConcurrencyStamp;
+	}
 
 	/// <summary>
 	/// Throws an exception if there is a concurrency token mismatch.
@@ -656,6 +660,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	public virtual async Task RemoveEmptyEntitiesAsync(ICollection<TEntity> entities, CancellationToken cancellationToken, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(entities);
 
 		var lstToRemove = new List<TEntity>();
 
@@ -672,7 +677,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			// Make sure it is removed from the Context if it has just been added - make it detached
 			EntityEntry<TEntity> dbEntityEntry = Context.Value.Entry(entity);
 
-			if (dbEntityEntry.State == EntityState.Added)
+			if (dbEntityEntry.State is EntityState.Added)
 				dbEntityEntry.State = EntityState.Detached;
 		}
 	}

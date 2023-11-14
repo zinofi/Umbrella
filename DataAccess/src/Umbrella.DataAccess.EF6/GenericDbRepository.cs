@@ -39,7 +39,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbReposi
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -73,7 +73,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : G
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -109,7 +109,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -164,7 +164,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
-	public GenericDbRepository(
+	protected GenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
@@ -258,7 +258,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 			if (!bypassSaveLogic)
 			{
-				lstSaveResult = new List<OperationResult<TEntity>>();
+				lstSaveResult = [];
 
 				foreach (TEntity entity in entities)
 				{

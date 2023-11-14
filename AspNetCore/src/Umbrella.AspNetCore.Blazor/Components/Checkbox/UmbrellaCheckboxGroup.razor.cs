@@ -11,7 +11,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Checkbox;
 public partial class UmbrellaCheckboxGroup<TOption>
 {
 	private UmbrellaCheckboxGroupItem<TOption>? ShowAllOptionItem { get; set; }
-	private List<UmbrellaCheckboxGroupItem<TOption>> OptionsToRender { get; } = new();
+	private List<UmbrellaCheckboxGroupItem<TOption>> OptionsToRender { get; } = [];
 
 	/// <summary>
 	/// Gets or sets the options.

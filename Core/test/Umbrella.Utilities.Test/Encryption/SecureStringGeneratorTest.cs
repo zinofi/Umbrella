@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Umbrella.Utilities.Encryption;
-using Umbrella.Utilities.Encryption.Abstractions;
 using Umbrella.Utilities.Encryption.Options;
 using Xunit;
 
@@ -9,23 +8,23 @@ namespace Umbrella.Utilities.Test.Encryption;
 
 public class SecureStringGeneratorTest
 {
-	public static List<object[]> OptionsList = new()
-	{
-		new object[] { 8, 3, 2, 0 },
-		new object[] { 16, 5, 3, 0 },
-		new object[] { 32, 14, 5, 0 },
-		new object[] { 32, 5, 14, 0 },
-		new object[] { 8, 0, 0, 0 },
-		new object[] { 8, 3, 0, 0 },
-		new object[] { 8, 0, 3, 0 },
-		new object[] { 8, 3, 2, 1 },
-		new object[] { 16, 5, 3, 2 },
-		new object[] { 32, 14, 5, 3 },
-		new object[] { 32, 5, 14, 4 },
-		new object[] { 8, 0, 0, 5 },
-		new object[] { 8, 3, 0, 2 },
-		new object[] { 8, 0, 3, 3 }
-	};
+	public static IReadOnlyCollection<object[]> OptionsList =
+	[
+		[8, 3, 2, 0],
+		[16, 5, 3, 0],
+		[32, 14, 5, 0],
+		[32, 5, 14, 0],
+		[8, 0, 0, 0],
+		[8, 3, 0, 0],
+		[8, 0, 3, 0],
+		[8, 3, 2, 1],
+		[16, 5, 3, 2],
+		[32, 14, 5, 3],
+		[32, 5, 14, 4],
+		[8, 0, 0, 5],
+		[8, 3, 0, 2],
+		[8, 0, 3, 3]
+	];
 
 	private static readonly SecureRandomStringGeneratorOptions _options = new();
 
@@ -116,7 +115,7 @@ public class SecureStringGeneratorTest
 		_ = Assert.Throws<ArgumentOutOfRangeException>(() => generator.Generate(10, 6, 6, 6));
 	}
 
-	private static ISecureRandomStringGenerator CreateSecureStringGenerator()
+	private static SecureRandomStringGenerator CreateSecureStringGenerator()
 	{
 		var logger = new Mock<ILogger<SecureRandomStringGenerator>>();
 

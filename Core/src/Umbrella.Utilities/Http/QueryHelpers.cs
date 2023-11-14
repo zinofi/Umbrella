@@ -66,7 +66,7 @@ public static class QueryHelpers
 		Guard.IsNotNull(uri);
 		Guard.IsNotNull(queryString);
 
-		return AddQueryString(uri, queryString.SelectMany(kvp => kvp.Value, (kvp, v) => new KeyValuePair<string, string>(kvp.Key, v)));
+		return AddQueryString(uri, queryString.SelectMany(kvp => kvp.Value, (kvp, v) => new KeyValuePair<string, string>(kvp.Key, v ?? "")));
 	}
 
 	/// <summary>
@@ -130,7 +130,7 @@ public static class QueryHelpers
 	/// </summary>
 	/// <param name="queryString">The raw query string value, with or without the leading '?'.</param>
 	/// <returns>A collection of parsed keys and values.</returns>
-	public static Dictionary<string, StringValues> ParseQuery(string queryString) => ParseNullableQuery(queryString) ?? new Dictionary<string, StringValues>();
+	public static Dictionary<string, StringValues> ParseQuery(string queryString) => ParseNullableQuery(queryString) ?? [];
 
 	/// <summary>
 	/// Parse a query string into its component key and value parts.
@@ -230,7 +230,7 @@ internal struct KeyValueAccumulator
 			else if (values.Count == 1)
 			{
 				// Second value for this key
-				_accumulator[key] = new string[] { values[0], value };
+				_accumulator[key] = new string?[] { values[0], value };
 			}
 			else
 			{
@@ -242,10 +242,10 @@ internal struct KeyValueAccumulator
 
 				// Already 3 entries so use starting allocated as 8; then use List's expansion mechanism for more
 				var list = new List<string>(8);
-				string[] array = values.ToArray();
+				string?[] array = values.ToArray();
 
-				list.Add(array[0]);
-				list.Add(array[1]);
+				list.Add(array[0] ?? "");
+				list.Add(array[1] ?? "");
 				list.Add(value);
 
 				_expandingAccumulator[key] = list;
@@ -266,7 +266,7 @@ internal struct KeyValueAccumulator
 
 	public int ValueCount { get; private set; }
 
-	public Dictionary<string, StringValues> GetResults()
+	public readonly Dictionary<string, StringValues> GetResults()
 	{
 		if (_expandingAccumulator is not null)
 		{

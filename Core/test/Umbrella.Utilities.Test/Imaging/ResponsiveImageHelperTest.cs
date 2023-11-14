@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Umbrella.Utilities.Test.Imaging;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Unit Tests")]
 public class ResponsiveImageHelperTest
 {
 	[Theory]

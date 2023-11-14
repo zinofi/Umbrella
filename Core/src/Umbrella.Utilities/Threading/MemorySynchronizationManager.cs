@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.HighPerformance.Buffers;
+﻿using CommunityToolkit.Diagnostics;
+using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Exceptions;
@@ -14,7 +15,9 @@ namespace Umbrella.Utilities.Threading;
 public class MemorySynchronizationManager : ISynchronizationManager
 {
 	private readonly StringPool _stringPool = new();
+#pragma warning disable IDE0028 // Simplify collection initialization
 	private readonly ConditionalWeakTable<string, SemaphoreSlim> _items = new();
+#pragma warning restore IDE0028 // Simplify collection initialization
 	private readonly ILogger<MemorySynchronizationManager> _logger;
 
 	/// <summary>
@@ -30,6 +33,7 @@ public class MemorySynchronizationManager : ISynchronizationManager
 	public async ValueTask<ISynchronizationRoot> GetSynchronizationRootAndWaitAsync(Type type, string key, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(type);
 
 		try
 		{

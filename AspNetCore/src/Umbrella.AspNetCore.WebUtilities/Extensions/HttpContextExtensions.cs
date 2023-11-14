@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.WebUtilities.Security;
@@ -18,7 +19,12 @@ public static class HttpContextExtensions
 	/// </summary>
 	/// <param name="httpContext">The current HTTP context.</param>
 	/// <returns>The value of <see cref="NonceContext.Current"/> stored on the current HTTP context.</returns>
-	public static string? GetCurrentRequestNonce(this HttpContext httpContext) => httpContext.Features.Get<NonceContext>()?.Current;
+	public static string? GetCurrentRequestNonce(this HttpContext httpContext)
+	{
+		Guard.IsNotNull(httpContext);
+
+		return httpContext.Features.Get<NonceContext>()?.Current;
+	}
 
 	/// <summary>
 	/// Tracks an <see cref="IDataExpressionDescriptor"/> that could not be matched during the model binding process performed
@@ -29,6 +35,8 @@ public static class HttpContextExtensions
 	/// <param name="dataExpressionDescriptor">The data expression descriptor.</param>
 	public static void TrackUnmatchedDataExpressionDescriptor(this HttpContext httpContext, IDataExpressionDescriptor dataExpressionDescriptor)
 	{
+		Guard.IsNotNull(httpContext);
+
 		List<IDataExpressionDescriptor> lstDescriptor = GetDataExpressionDescriptors(httpContext);
 		lstDescriptor.Add(dataExpressionDescriptor);
 	}
@@ -42,6 +50,8 @@ public static class HttpContextExtensions
 	/// <param name="dataExpressionDescriptors">The data expression descriptors.</param>
 	public static void TrackUnmatchedDataExpressionDescriptors(this HttpContext httpContext, IEnumerable<IDataExpressionDescriptor> dataExpressionDescriptors)
 	{
+		Guard.IsNotNull(httpContext);
+
 		List<IDataExpressionDescriptor> lstDescriptor = GetDataExpressionDescriptors(httpContext);
 		lstDescriptor.AddRange(dataExpressionDescriptors);
 	}
@@ -53,13 +63,18 @@ public static class HttpContextExtensions
 	/// </summary>
 	/// <param name="httpContext">The HTTP context.</param>
 	/// <returns>A collection of the unmatched <see cref="IDataExpressionDescriptor"/> instances.</returns>
-	public static IReadOnlyCollection<IDataExpressionDescriptor> GetUnmatchedDataExpressionDescriptors(this HttpContext httpContext) => GetDataExpressionDescriptors(httpContext);
+	public static IReadOnlyCollection<IDataExpressionDescriptor> GetUnmatchedDataExpressionDescriptors(this HttpContext httpContext)
+	{
+		Guard.IsNotNull(httpContext);
+
+		return GetDataExpressionDescriptors(httpContext);
+	}
 
 	private static List<IDataExpressionDescriptor> GetDataExpressionDescriptors(HttpContext httpContext)
 	{
 		if (!httpContext.Items.TryGetValue(UnmatchedDataExpressionDescriptorKey, out object? objValue) || objValue is not List<IDataExpressionDescriptor> lstDescriptor)
 		{
-			lstDescriptor = new List<IDataExpressionDescriptor>();
+			lstDescriptor = [];
 			httpContext.Items[UnmatchedDataExpressionDescriptorKey] = lstDescriptor;
 		}
 

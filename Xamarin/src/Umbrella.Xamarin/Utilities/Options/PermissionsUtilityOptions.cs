@@ -27,17 +27,17 @@ public class PermissionsUtilityOptions : ISanitizableUmbrellaOptions, IValidatab
 	/// <summary>
 	/// Gets a dictionary containing Android permission-specific error messages when a permission has been denied.
 	/// </summary>
-	public Dictionary<PermissionType, string> AndroidDeniedErrorMessages { get; } = new Dictionary<PermissionType, string>();
+	public Dictionary<PermissionType, string> AndroidDeniedErrorMessages { get; } = [];
 
 	/// <summary>
 	/// Gets a dictionary containing iOS permission-specific error messages when a permission has been denied.
 	/// </summary>
-	public Dictionary<PermissionType, string> IOSDeniedErrorMessages { get; } = new Dictionary<PermissionType, string>();
+	public Dictionary<PermissionType, string> IOSDeniedErrorMessages { get; } = [];
 
 	/// <summary>
 	/// Gets a dictionary containing permission-specific explanation messages as to why a permission has been requested.
 	/// </summary>
-	public Dictionary<PermissionType, string> ExplanationMessages { get; } = new Dictionary<PermissionType, string>();
+	public Dictionary<PermissionType, string> ExplanationMessages { get; } = [];
 
 	/// <inheritdoc />
 	public void Sanitize()

@@ -11,5 +11,5 @@ public class RequestNotificationHandlerOptions
 	/// <summary>
 	/// Gets the paths that should be ignored by the <see cref="RequestNotificationHandler"/>.
 	/// </summary>
-	public HashSet<RequestNotificationHandlerExclusion> Exclusions { get; } = new HashSet<RequestNotificationHandlerExclusion>();
+	public HashSet<RequestNotificationHandlerExclusion> Exclusions { get; } = [];
 }

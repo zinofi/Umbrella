@@ -46,7 +46,7 @@ public static class Mocks
 
 	public static TagHelperOutput CreateImageTagHelperOutput(TagHelperAttributeList attributes, string tagName)
 	{
-		attributes ??= new TagHelperAttributeList();
+		attributes ??= [];
 
 		return new TagHelperOutput(
 			tagName,
