@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Filters;
@@ -9,7 +10,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Filters;
 /// <seealso cref="Attribute" />
 /// <seealso cref="IResourceFilter" />
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-public class OnlyAnonymousRedirectToActionAttribute : Attribute, IResourceFilter
+public sealed class OnlyAnonymousRedirectToActionAttribute : Attribute, IResourceFilter
 {
 	/// <summary>
 	/// Gets or sets the name of the action.
@@ -29,6 +30,8 @@ public class OnlyAnonymousRedirectToActionAttribute : Attribute, IResourceFilter
 	/// <inheritdoc />
 	public void OnResourceExecuting(ResourceExecutingContext context)
 	{
+		Guard.IsNotNull(context);
+
 		if (context.HttpContext.User.Identity?.IsAuthenticated is true)
 			context.Result = new RedirectToActionResult(ActionName, ControllerName, null);
 	}

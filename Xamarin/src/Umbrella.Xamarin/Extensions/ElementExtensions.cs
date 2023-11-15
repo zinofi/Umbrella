@@ -42,7 +42,7 @@ public static class ElementExtensions
 	{
 		ILayoutController? layoutController = container.FindRootLayout();
 
-		return layoutController?.FindControls(elementSelector).ToArray() ?? Array.Empty<T>();
+		return layoutController?.FindControls(elementSelector).ToArray() ?? [];
 	}
 
 	/// <summary>

@@ -140,7 +140,7 @@ public class ConcurrentRandomGeneratorTest
 	[Fact]
 	public void TakeRandom_Source_Empty()
 	{
-		string[] items = Array.Empty<string>();
+		string[] items = [];
 
 		var result = _concurrentRandomGenerator.TakeRandom(items, 1);
 
@@ -176,7 +176,7 @@ public class ConcurrentRandomGeneratorTest
 	[InlineData(10, true)]
 	public void TakeRandom_Valid(int count, bool shuffle)
 	{
-		int[] items = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		int[] items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 		int[] result = _concurrentRandomGenerator.TakeRandom(items, count, shuffle).ToArray();
 

@@ -7,7 +7,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.ModelBinding;
 /// </summary>
 /// <seealso cref="ModelBinderAttribute" />
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
-public class ArrayWrapperModelBinderAttribute : ModelBinderAttribute
+public sealed class ArrayWrapperModelBinderAttribute : ModelBinderAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ArrayWrapperModelBinderAttribute"/> class.

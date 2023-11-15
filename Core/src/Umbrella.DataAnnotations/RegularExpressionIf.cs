@@ -9,12 +9,12 @@ namespace Umbrella.DataAnnotations;
 /// Specifies that a data field is required to match a specified regular expression contingent on whether another property
 /// on the same object as the property this attribute is being used on matches conditions specified
 /// using the constructor.
-public class RegularExpressionIfAttribute : RequiredIfAttribute
+public sealed class RegularExpressionIfAttribute : RequiredIfAttribute
 {
 	/// <summary>
 	/// Gets or sets the regex pattern.
 	/// </summary>
-	public string Pattern { get; set; }
+	public string Pattern { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RegularExpressionIfAttribute"/> class.
@@ -22,9 +22,9 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 	/// <param name="pattern">The pattern.</param>
 	/// <param name="dependentProperty">The dependent property.</param>
 	/// <param name="operator">The operator.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RegularExpressionIfAttribute(string pattern, string dependentProperty, EqualityOperator @operator, object dependentValue)
-		: base(dependentProperty, @operator, dependentValue)
+	/// <param name="comparisonValue">The dependent value.</param>
+	public RegularExpressionIfAttribute(string pattern, string dependentProperty, EqualityOperator @operator, object comparisonValue)
+		: base(dependentProperty, @operator, comparisonValue)
 	{
 		Pattern = pattern;
 	}
@@ -34,14 +34,14 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 	/// </summary>
 	/// <param name="pattern">The pattern.</param>
 	/// <param name="dependentProperty">The dependent property.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RegularExpressionIfAttribute(string pattern, string dependentProperty, object dependentValue)
-		: this(pattern, dependentProperty, EqualityOperator.EqualTo, dependentValue)
+	/// <param name="comparisonValue">The dependent value.</param>
+	public RegularExpressionIfAttribute(string pattern, string dependentProperty, object comparisonValue)
+		: this(pattern, dependentProperty, EqualityOperator.EqualTo, comparisonValue)
 	{
 	}
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object? actualDependentPropertyValue, object model)
+	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
 		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
 
 	/// <inheritdoc />
@@ -58,7 +58,7 @@ public class RegularExpressionIfAttribute : RequiredIfAttribute
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentPropertyName, ComparisonValue, Pattern);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty, ComparisonValue, Pattern);
 	}
 
 	/// <inheritdoc />

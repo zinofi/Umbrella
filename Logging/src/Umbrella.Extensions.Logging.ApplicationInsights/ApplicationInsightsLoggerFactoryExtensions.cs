@@ -25,7 +25,9 @@ public static class ApplicationInsightsLoggerFactoryExtensions
 		bool trackExceptionsAsExceptionTelemetry = true,
 		bool includeEventId = false)
 	{
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		factory.AddProvider(new ApplicationInsightsLoggerProvider(telemetryClient, minLevel, trackExceptionsAsExceptionTelemetry, includeEventId));
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 		return factory;
 	}
@@ -46,7 +48,9 @@ public static class ApplicationInsightsLoggerFactoryExtensions
 		bool trackExceptionsAsExceptionTelemetry = true,
 		bool includeEventId = false)
 	{
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		_ = loggingBuilder.AddProvider(new ApplicationInsightsLoggerProvider(telemetryClient, minLevel, trackExceptionsAsExceptionTelemetry, includeEventId));
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 		return loggingBuilder;
 	}

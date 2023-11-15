@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Umbrella.Utilities.Mime;
-using Umbrella.Utilities.Mime.Abstractions;
 using Xunit;
 
 namespace Umbrella.Utilities.Test.Mime;
@@ -70,5 +69,5 @@ public class MimeTypeUtilityTest
 		Assert.Equal("image/png", mimeType);
 	}
 
-	private static IMimeTypeUtility CreateMimeTypeUtility() => new MimeTypeUtility(new Mock<ILogger<MimeTypeUtility>>().Object);
+	private static MimeTypeUtility CreateMimeTypeUtility() => new(new Mock<ILogger<MimeTypeUtility>>().Object);
 }

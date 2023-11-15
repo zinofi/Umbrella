@@ -6,7 +6,7 @@ namespace Umbrella.Utilities.Dating;
 /// Represents a date time range.
 /// </summary>
 [StructLayout(LayoutKind.Auto)]
-public struct DateTimeRange
+public record struct DateTimeRange
 {
 	/// <summary>
 	/// Gets or sets the Start Date.

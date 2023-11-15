@@ -10,7 +10,7 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Filters;
 /// This works by looking for the token inside the HTTP Headers with the key "X-Request-Verification-Token"
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-public class ValidateAntiForgeryTokenAttribute : ActionFilterAttribute
+public sealed class ValidateAntiForgeryTokenAttribute : ActionFilterAttribute
 {
 	/// <inheritdoc/>
 	public override void OnActionExecuting(System.Web.Http.Controllers.HttpActionContext actionContext)

@@ -30,8 +30,8 @@ public class IncludeMapTest
 		Assert.True(expressions.SequenceEqual(map.Includes));
 
 		// Property Paths
-		string[] propertyPaths = new[]
-		{
+		string[] propertyPaths =
+		[
 			"Name",
 			"Assembly",
 			"Assembly.Location",
@@ -42,7 +42,7 @@ public class IncludeMapTest
 			"GenericTypeArguments.Assembly.FullName.Length",
 			//"GenericTypeArguments.GenericTypeArguments.FullName.Length",
 			//"GenericTypeArguments.GenericTypeArguments.FullName.Length"
-		};
+		];
 
 		Assert.Equal(propertyPaths.Length, map.PropertyPaths.Count);
 		Assert.True(propertyPaths.SequenceEqual(map.PropertyPaths));

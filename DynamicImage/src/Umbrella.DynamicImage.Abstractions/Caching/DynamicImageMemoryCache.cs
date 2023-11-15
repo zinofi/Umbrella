@@ -64,7 +64,7 @@ public class DynamicImageMemoryCache : DynamicImageCache, IDynamicImageCache
 			string fileKey = GenerateCacheKey(options);
 			string cacheKey = GenerateMemoryCacheKey(fileKey);
 
-			var (itemFound, cacheItem) = Cache.TryGetValue<DynamicImageItem>(cacheKey);
+			var (itemFound, cacheItem) = await Cache.TryGetValueAsync<DynamicImageItem>(cacheKey, cancellationToken: cancellationToken);
 
 			if (cacheItem is not null)
 			{

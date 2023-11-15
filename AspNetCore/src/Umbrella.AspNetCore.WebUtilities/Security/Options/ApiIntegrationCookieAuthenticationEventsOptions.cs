@@ -15,7 +15,7 @@ public class ApiIntegrationCookieAuthenticationEventsOptions : ISanitizableUmbre
 	/// Gets or sets the API path prefixes. Paths must begin with the leading forward slash '/'.
 	/// This defaults to an array with a single item: "/api"
 	/// </summary>
-	public string[] ApiPathPrefixes { get; set; } = new[] { "/api" };
+	public IReadOnlyCollection<string> ApiPathPrefixes { get; set; } = ["/api"];
 
 	/// <inheritdoc />
 	public void Sanitize() => ApiPathPrefixes = ApiPathPrefixes.Select(x => x.TrimToLowerInvariant()).SkipWhile(x => x is null).Distinct().ToArray();

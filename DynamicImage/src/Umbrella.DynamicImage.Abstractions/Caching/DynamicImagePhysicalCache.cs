@@ -62,10 +62,10 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 			string subPath = GetSubPath(key, dynamicImage.ImageOptions.Format.ToFileExtensionString());
 
 			//Read the image content to save to the underlying file store
-			byte[]? bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
+			ReadOnlyMemory<byte> bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
 
-			if (bytes is not null)
-				_ = await FileProvider.SaveAsync(subPath, bytes, false, cancellationToken: cancellationToken).ConfigureAwait(false);
+			if (bytes.Length > 0)
+				_ = await FileProvider.SaveAsync(subPath, bytes.ToArray(), false, cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))
 		{

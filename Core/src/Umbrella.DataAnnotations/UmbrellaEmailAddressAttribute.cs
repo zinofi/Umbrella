@@ -8,7 +8,7 @@
 /// </summary>
 /// <seealso cref="ValidationAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class UmbrellaEmailAddressAttribute : ValidationAttribute
+public sealed class UmbrellaEmailAddressAttribute : ValidationAttribute
 {
 	private const string DefaultErrorMessage = "{0} must be a valid email address";
 	private readonly EmailAddressAttribute _validator = new();

@@ -9,23 +9,23 @@ namespace Umbrella.Utilities.Mapping.Mapperly.Test;
 
 public class UmbrellaMapperTest
 {
-	public static object[][] MapAsync_Source_Data { get; } = new[]
-	{
-		new object[] { CreateMapper(MapperlyEnvironmentType.Client), CreateSource(1), CreateDestination(1) },
-		new object[] { CreateMapper(MapperlyEnvironmentType.Server), CreateSource(1), CreateDestination(1) },
-	};
+	public static object[][] MapAsync_Source_Data { get; } =
+	[
+		[CreateMapper(MapperlyEnvironmentType.Client), CreateSource(1), CreateDestination(1)],
+		[CreateMapper(MapperlyEnvironmentType.Server), CreateSource(1), CreateDestination(1)],
+	];
 
-	public static object[][] MapAsync_SourceDestination_Data { get; } = new[]
-	{
-		new object[] { CreateMapper(MapperlyEnvironmentType.Client), CreateSource(1), CreateDestination(100), CreateDestination(1) },
-		new object[] { CreateMapper(MapperlyEnvironmentType.Server), CreateSource(1), CreateDestination(100), CreateDestination(1) }
-	};
+	public static object[][] MapAsync_SourceDestination_Data { get; } =
+	[
+		[CreateMapper(MapperlyEnvironmentType.Client), CreateSource(1), CreateDestination(100), CreateDestination(1)],
+		[CreateMapper(MapperlyEnvironmentType.Server), CreateSource(1), CreateDestination(100), CreateDestination(1)]
+	];
 
-	public static object[][] MapAsync_SourceCollection_Data { get; } = new[]
-	{
-		new object[] { CreateMapper(MapperlyEnvironmentType.Client), Enumerable.Range(0, 100).Select(x => CreateSource(x)), Enumerable.Range(0, 100).Select(x => CreateDestination(x)) },
-		new object[] { CreateMapper(MapperlyEnvironmentType.Server), Enumerable.Range(0, 100).Select(x => CreateSource(x)), Enumerable.Range(0, 100).Select(x => CreateDestination(x)) }
-	};
+	public static object[][] MapAsync_SourceCollection_Data { get; } =
+	[
+		[CreateMapper(MapperlyEnvironmentType.Client), Enumerable.Range(0, 100).Select(x => CreateSource(x)), Enumerable.Range(0, 100).Select(x => CreateDestination(x))],
+		[CreateMapper(MapperlyEnvironmentType.Server), Enumerable.Range(0, 100).Select(x => CreateSource(x)), Enumerable.Range(0, 100).Select(x => CreateDestination(x))]
+	];
 
 	[Theory]
 	[MemberData(nameof(MapAsync_Source_Data))]

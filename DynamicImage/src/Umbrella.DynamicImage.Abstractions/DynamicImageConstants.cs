@@ -6,7 +6,7 @@ namespace Umbrella.DynamicImage.Abstractions;
 /// <summary>
 /// DynamicImage Constants
 /// </summary>
-public class DynamicImageConstants
+public static class DynamicImageConstants
 {
 	/// <summary>
 	/// The default path prefix used when generating dynamic image paths. This is primarily of use in web applications in conjunction with

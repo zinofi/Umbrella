@@ -5,7 +5,7 @@
 /// on the same object as the property this attribute is being used on is <see langword="true"/>.
 /// </summary>
 /// <seealso cref="RequiredNonEmptyCollectionIfAttribute" />
-public class RequiredNonEmptyCollectionIfTrueAttribute : RequiredNonEmptyCollectionIfAttribute
+public sealed class RequiredNonEmptyCollectionIfTrueAttribute : RequiredNonEmptyCollectionIfAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RequiredNonEmptyCollectionIfTrueAttribute"/> class.

@@ -7,7 +7,7 @@ namespace Umbrella.DataAnnotations;
 /// </summary>
 /// <seealso cref="RegularExpressionAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class UmbrellaPhoneAttribute : RegularExpressionAttribute
+public sealed class UmbrellaPhoneAttribute : RegularExpressionAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaPhoneAttribute"/> class.

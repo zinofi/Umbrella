@@ -7,7 +7,7 @@ namespace Umbrella.DataAnnotations;
 /// </summary>
 /// <seealso cref="RegularExpressionAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class UmbrellaUrlAttribute : RegularExpressionAttribute
+public sealed class UmbrellaUrlAttribute : RegularExpressionAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaUrlAttribute"/> class.

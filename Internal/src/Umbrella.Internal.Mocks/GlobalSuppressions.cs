@@ -5,5 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit test project.")]
-[assembly: SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "Unit test project.")]
+[assembly: SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Unit test project")]

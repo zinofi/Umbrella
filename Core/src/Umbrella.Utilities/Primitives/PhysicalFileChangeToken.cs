@@ -45,7 +45,9 @@ public class PhysicalFileChangeToken : IChangeToken
 		bool notifyOnDeleted = true,
 		bool notifyOnRenamed = true)
 	{
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		var fsw = new FileSystemWatcher(directoryPath, fileName);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 		if (notifyOnChanged)
 			fsw.Changed += (sender, args) => HasChanged = true;

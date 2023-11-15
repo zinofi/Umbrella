@@ -94,7 +94,9 @@ public class DynamicImageResizer : DynamicImageResizerBase
 				{
 					var cropRect = SKRectI.Create(result.offsetX, result.offsetY, result.cropWidth, result.cropHeight);
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
 					imageToResize = new SKBitmap(cropRect.Width, cropRect.Height);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 					_ = image.ExtractSubset(imageToResize, cropRect);
 				}
 
@@ -130,8 +132,10 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		using var codec = SKCodec.Create(skData);
 
 		var info = codec.Info;
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		var bitmap = new SKBitmap(new SKImageInfo(info.Width, info.Height, info.ColorType, info.AlphaType, info.ColorSpace));
-		
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
 		var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels(out IntPtr length));
 
 		return result switch

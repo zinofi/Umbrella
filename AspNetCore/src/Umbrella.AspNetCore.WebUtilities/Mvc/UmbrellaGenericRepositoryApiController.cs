@@ -311,7 +311,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// such as the PetRepository automatically.
 	/// </para>
 	/// </remarks>
-	protected virtual RepoOptions[] SearchSlimChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual IReadOnlyCollection<RepoOptions> SearchSlimChildRepoOptions { get; } = [];
 
 	/// <summary>
 	/// Gets the child <see cref="RepoOptions"/> used by the <see cref="GetAsync"/> endpoint when loading entities from the repository.
@@ -328,7 +328,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// such as the PetRepository automatically.
 	/// </para>
 	/// </remarks>
-	protected virtual RepoOptions[] GetChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual IReadOnlyCollection<RepoOptions> GetChildRepoOptions { get; } = [];
 
 	/// <summary>
 	/// Gets the child <see cref="RepoOptions"/> used by the <c>Post</c> endpoint when loading entities from the repository.
@@ -345,7 +345,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// such as the PetRepository automatically.
 	/// </para>
 	/// </remarks>
-	protected virtual RepoOptions[] PostChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual IReadOnlyCollection<RepoOptions> PostChildRepoOptions { get; } = [];
 
 	/// <summary>
 	/// Gets the child <see cref="RepoOptions"/> used by the <c>Put</c> endpoint when loading entities from the repository.
@@ -362,7 +362,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// such as the PetRepository automatically.
 	/// </para>
 	/// </remarks>
-	protected virtual RepoOptions[] PutChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual IReadOnlyCollection<RepoOptions> PutChildRepoOptions { get; } = [];
 
 	/// <summary>
 	/// Gets the child <see cref="RepoOptions"/> used by the <c>Delete</c> endpoint when loading entities from the repository.
@@ -379,7 +379,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// such as the PetRepository automatically.
 	/// </para>
 	/// </remarks>
-	protected virtual RepoOptions[] DeleteChildRepoOptions { get; } = Array.Empty<RepoOptions>();
+	protected virtual IReadOnlyCollection<RepoOptions> DeleteChildRepoOptions { get; } = [];
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaGenericRepositoryApiController{TSlimModel, TPaginatedResultModel, TModel, TCreateModel, TCreateResultModel, TUpdateModel, TUpdateResultModel, TRepository, TEntity, TRepositoryOptions, TEntityKey}"/> class.

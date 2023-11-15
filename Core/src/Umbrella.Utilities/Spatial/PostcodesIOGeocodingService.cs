@@ -354,7 +354,9 @@ public class PostcodesIOGeocodingService : IGeocodingService
 				Postcodes = lstCleanedPostcode
 			};
 
-			HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/postcodes", JsonContent.Create(model), cancellationToken).ConfigureAwait(false);
+			using var jsonContent = JsonContent.Create(model);
+
+            HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/postcodes", jsonContent, cancellationToken).ConfigureAwait(false);
 
 			if (response.IsSuccessStatusCode && response.Content.Headers.ContentType?.MediaType?.Equals("application/json", StringComparison.Ordinal) is true)
 			{

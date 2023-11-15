@@ -92,7 +92,7 @@ public static class ControlExtensions
 	{
 		var sb = new StringBuilder();
 		var tw = new StringWriter(sb);
-		var hw = new HtmlTextWriter(tw);
+		using var hw = new HtmlTextWriter(tw);
 
 		ctrl.RenderControl(hw);
 

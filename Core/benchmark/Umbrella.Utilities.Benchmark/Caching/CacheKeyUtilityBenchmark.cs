@@ -85,8 +85,8 @@ namespace Umbrella.Utilities.Benchmark.Caching;
 [SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.NetCoreApp31)]
 public class CacheKeyUtilityBenchmark
 {
-	private static readonly string[] _keyItems = new[] { "part1", "part2", "part3", "part4", "part5" };
-	private static readonly string[] _keyItemsLong = new[] { "part1", "part2", "part3", "part4", "part5", "part6", "part7", "part8", "part9", "part10", "part11", "part12", "part13", "part14" };
+	private static readonly string[] _keyItems = ["part1", "part2", "part3", "part4", "part5"];
+	private static readonly string[] _keyItemsLong = ["part1", "part2", "part3", "part4", "part5", "part6", "part7", "part8", "part9", "part10", "part11", "part12", "part13", "part14"];
 	private readonly CacheKeyUtility _cacheKeyUtility;
 
 	public CacheKeyUtilityBenchmark()

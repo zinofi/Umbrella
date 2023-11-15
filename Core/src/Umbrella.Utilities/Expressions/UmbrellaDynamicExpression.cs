@@ -75,8 +75,8 @@ public static class UmbrellaDynamicExpression
 	/// <returns>The dynamic member access expression.</returns>
 	public static MemberExpression? CreateMemberAccess(ParameterExpression target, string selector, bool throwOnError = true)
 	{
-		Guard.IsNotNull(target, nameof(target));
-		Guard.IsNotNullOrWhiteSpace(selector, nameof(selector));
+		Guard.IsNotNull(target);
+		Guard.IsNotNullOrWhiteSpace(selector);
 
 		try
 		{
@@ -134,12 +134,12 @@ public static class UmbrellaDynamicExpression
 
 		var expression = (Expression)target;
 
-		var ordinalParse = underlyingType.GetMethod("Parse", new[] { typeof(string) });
+		var ordinalParse = underlyingType.GetMethod("Parse", [typeof(string)]);
 
 		if (ordinalParse is not null)
 			expression = Expression.Call(ordinalParse, target);
 
-		var cultureParse = underlyingType.GetMethod("Parse", new[] { typeof(string), typeof(IFormatProvider) });
+		var cultureParse = underlyingType.GetMethod("Parse", [typeof(string), typeof(IFormatProvider)]);
 
 		if (cultureParse is not null)
 			expression = Expression.Call(cultureParse, target, format);

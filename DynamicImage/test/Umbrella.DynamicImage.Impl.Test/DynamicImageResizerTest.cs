@@ -180,16 +180,15 @@ public class DynamicImageResizerTest
 
 		DynamicImageItem? result = await resizer.GenerateImageAsync(fileProviderMock.Object, options);
 
-		byte[]? resizedImageBytes = result is not null ? await result.GetContentAsync() : null;
+		ReadOnlyMemory<byte> resizedImageBytes = result is not null ? await result.GetContentAsync() : default;
 
-		Assert.NotNull(resizedImageBytes);
-		Assert.NotEmpty(resizedImageBytes!);
+		Assert.True(resizedImageBytes.Length > 0);
 
 		// Using the System.Drawing APIs from the full framework, i.e. not a library being used for resizing, to check the output image sizes are correct
 		// We can only do this for older formats though.
 		if (options.Format is not DynamicImageFormat.WebP)// TODO AVIF:  and not DynamicImageFormat.Avif)
 		{
-			using var ms = new MemoryStream(resizedImageBytes!);
+			using var ms = new MemoryStream(resizedImageBytes.ToArray());
 			using var image = Image.FromStream(ms);
 			//Assert.Equal(targetSize, image.Size);
 
@@ -216,7 +215,7 @@ public class DynamicImageResizerTest
 
 		// Only output the images to disk when building in debug mode. This ensure that when running in release mode on the build server this doesn't waste
 		// unneccessary build resources.
-		if (DebugUtility.IsDebug && resizedImageBytes is not null)
+		if (DebugUtility.IsDebug && !resizedImageBytes.IsEmpty)
 		{
 			string outputDirectory = PathHelper.PlatformNormalize($@"{BaseDirectory}\Output\{resizer.GetType().Namespace}");
 			string outputPath = PathHelper.PlatformNormalize($@"{outputDirectory}\{options.Width}w-{options.Height}h-{options.ResizeMode}.{options.Format.ToFileExtensionString()}");

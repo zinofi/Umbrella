@@ -3,7 +3,7 @@
 /// <summary>
 /// Common error messages used by EF repositories.
 /// </summary>
-public class ErrorMessages
+public static class ErrorMessages
 {
 	/// <summary>
 	/// The invalid property string length error message format

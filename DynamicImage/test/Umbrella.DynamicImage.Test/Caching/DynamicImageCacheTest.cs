@@ -79,9 +79,8 @@ public class DynamicImageCacheTest
 		Assert.NotNull(cachedItem);
 		Assert.Equal(item.ImageOptions, cachedItem!.ImageOptions);
 
-		byte[]? cachedBytes = await cachedItem.GetContentAsync();
+		ReadOnlyMemory<byte> cachedBytes = await cachedItem.GetContentAsync();
 
-		Assert.NotNull(cachedBytes);
 		Assert.Equal(sourceBytes.Length, cachedBytes!.Length);
 
 		//Perform cleanup by removing the file from the cache

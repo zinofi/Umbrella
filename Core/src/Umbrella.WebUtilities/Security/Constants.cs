@@ -3,7 +3,7 @@
 /// <summary>
 /// Default web based security constants.
 /// </summary>
-public class SecurityConstants
+public static class SecurityConstants
 {
 	/// <summary>
 	/// The default nonce key used primarily by security middleware.

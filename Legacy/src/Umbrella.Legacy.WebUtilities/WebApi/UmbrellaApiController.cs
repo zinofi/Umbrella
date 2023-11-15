@@ -107,9 +107,11 @@ public abstract class UmbrellaApiController : ApiController
 	/// <param name="statusCode">The reason.</param>
 	/// <param name="reason">The reason.</param>
 	/// <returns>A <see cref="ResponseMessageResult"/>.</returns>
+#pragma warning disable CA2000 // Dispose objects before losing scope
 	protected virtual ResponseMessageResult CreateStringContentResult(HttpStatusCode statusCode, string reason) => new(new HttpResponseMessage(statusCode)
 	{
 		Content = new StringContent(reason, Encoding.UTF8, "text/plain")
 	});
+#pragma warning restore CA2000 // Dispose objects before losing scope
 	#endregion
 }

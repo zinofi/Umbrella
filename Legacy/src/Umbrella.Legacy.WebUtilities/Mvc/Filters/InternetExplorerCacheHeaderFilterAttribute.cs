@@ -9,7 +9,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Filters;
 /// This involves User Agent sniffing to ensure only IE is targeted.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public class InternetExplorerCacheHeaderFilterAttribute : ActionFilterAttribute
+public sealed class InternetExplorerCacheHeaderFilterAttribute : ActionFilterAttribute
 {
 	/// <inheritdoc />
 	public override void OnResultExecuted(ResultExecutedContext filterContext)

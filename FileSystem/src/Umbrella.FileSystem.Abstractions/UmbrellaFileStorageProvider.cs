@@ -21,7 +21,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	where TOptions : UmbrellaFileStorageProviderOptionsBase
 {
 	#region Private Static Members
-	private static readonly char[] _subpathTrimCharacters = new[] { ' ', '\\', '/', '~', ' ' };
+	private static readonly char[] _subpathTrimCharacters = [' ', '\\', '/', '~', ' '];
 	private static readonly Regex _multipleSlashSelector = new("/+", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 	#endregion
 
@@ -183,6 +183,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(sourceFile);
 		Guard.IsOfType<TFileInfo>(sourceFile);
 		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
@@ -204,7 +205,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> CopyAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsOfType<TFileInfo>(sourceFile);
+        Guard.IsNotNull(sourceFile);
+        Guard.IsOfType<TFileInfo>(sourceFile);
 		Guard.IsOfType<TFileInfo>(destinationFile);
 
 		try
@@ -242,7 +244,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo sourceFile, string destinationSubpath, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsOfType<TFileInfo>(sourceFile);
+        Guard.IsNotNull(sourceFile);
+        Guard.IsOfType<TFileInfo>(sourceFile);
 		Guard.IsNotNullOrWhiteSpace(destinationSubpath);
 
 		try
@@ -263,7 +266,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	public virtual async Task<IUmbrellaFileInfo> MoveAsync(IUmbrellaFileInfo sourceFile, IUmbrellaFileInfo destinationFile, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsOfType<TFileInfo>(sourceFile);
+        Guard.IsNotNull(sourceFile);
+        Guard.IsOfType<TFileInfo>(sourceFile);
 		Guard.IsOfType<TFileInfo>(destinationFile);
 
 		try

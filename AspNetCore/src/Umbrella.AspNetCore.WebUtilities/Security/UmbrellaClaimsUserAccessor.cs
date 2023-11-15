@@ -75,7 +75,7 @@ public class UmbrellaClaimsUserAccessor<TUserId, TRole> : ICurrentUserIdAccessor
 	public virtual IReadOnlyCollection<TRole> Roles => HttpContextAccessor.HttpContext?.User.GetRoles<TRole>() ?? Array.Empty<TRole>();
 
 	/// <inheritdoc />
-	public IReadOnlyCollection<Claim> Claims => HttpContextAccessor.HttpContext?.User.Claims.ToArray() ?? Array.Empty<Claim>();
+	public IReadOnlyCollection<Claim> Claims => HttpContextAccessor.HttpContext?.User.Claims.ToArray() ?? [];
 
 	/// <inheritdoc />
 	public ClaimsPrincipal? CurrentPrincipal => HttpContextAccessor.HttpContext?.User;

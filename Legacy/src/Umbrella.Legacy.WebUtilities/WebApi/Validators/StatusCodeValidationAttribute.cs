@@ -47,6 +47,9 @@ public abstract class StatusCodeValidationAttribute : ValidationAttribute
 	/// <exception cref="HttpResponseException"></exception>
 	protected ValidationResult HandleInvalidResult(ValidationContext validationContext)
 	{
+		if (validationContext is null)
+			throw new ArgumentNullException(nameof(validationContext));
+
 		// Ensure we have the HttpContext - always re-assign the instance variable if not testing
 		// because these validation attributes get cached by the framework
 		HttpContext context = _httpContext ?? HttpContext.Current;
@@ -68,15 +71,15 @@ public abstract class StatusCodeValidationAttribute : ValidationAttribute
 			var message = new HttpResponseMessage
 			{
 				StatusCode = StatusCode,
-				ReasonPhrase = FormatErrorMessage(validationContext?.DisplayName),
+				ReasonPhrase = FormatErrorMessage(validationContext.DisplayName),
 				Content = new ObjectContent<ValidationResponse>(response, new JsonMediaTypeFormatter())
 			};
 
 			throw new HttpResponseException(message);
 		}
 
-		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext?.MemberName) ? new[] { validationContext!.MemberName } : Array.Empty<string>();
+		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext.MemberName) ? [validationContext!.MemberName] : [];
 
-		return new ValidationResult(FormatErrorMessage(validationContext?.DisplayName), memberNames);
+		return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), memberNames);
 	}
 }

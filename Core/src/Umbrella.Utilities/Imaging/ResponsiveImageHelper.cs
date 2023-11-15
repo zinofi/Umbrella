@@ -14,7 +14,7 @@ namespace Umbrella.Utilities.Imaging;
 /// </summary>
 public class ResponsiveImageHelper : IResponsiveImageHelper
 {
-	private static readonly char[] _separatorCharacterArray = new[] { ',' };
+	private static readonly char[] _separatorCharacterArray = [','];
 
 	private readonly ILogger<ResponsiveImageHelper> _logger;
 	private readonly ConcurrentDictionary<int, int[]> _pixelDensityDictionary = new();

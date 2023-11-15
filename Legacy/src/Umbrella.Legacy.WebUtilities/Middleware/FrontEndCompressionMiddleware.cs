@@ -23,7 +23,7 @@ namespace Umbrella.Legacy.WebUtilities.Middleware;
 public class FrontEndCompressionMiddleware : OwinMiddleware
 {
 	#region Private Static Members
-	private static readonly char[] _headerValueSplitters = new[] { ',' };
+	private static readonly char[] _headerValueSplitters = [','];
 	private static readonly ConcurrentDictionary<string, IFileInfo?> _fileInfoDictionary = new();
 	#endregion
 

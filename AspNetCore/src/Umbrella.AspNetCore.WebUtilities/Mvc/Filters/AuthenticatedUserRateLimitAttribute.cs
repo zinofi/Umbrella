@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Concurrent;
 using System.Security.Principal;
@@ -12,14 +13,14 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc.Filters;
 /// <seealso cref="Attribute" />
 /// <seealso cref="IResourceFilter" />
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-public class AuthenticatedUserRateLimitAttribute : Attribute, IResourceFilter
+public sealed class AuthenticatedUserRateLimitAttribute : Attribute, IResourceFilter
 {
 	private readonly ConcurrentDictionary<string, DateTime> _rateLimitTrackingDictionary = new();
 
 	/// <summary>
 	/// Gets or sets the limit per minute per authenticated user.
 	/// </summary>
-	public double LimitPerMinute { get; set; }
+	public double LimitPerMinute { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AuthenticatedUserRateLimitAttribute"/> class.
@@ -38,6 +39,8 @@ public class AuthenticatedUserRateLimitAttribute : Attribute, IResourceFilter
 	/// <inheritdoc />
 	public void OnResourceExecuting(ResourceExecutingContext context)
 	{
+		Guard.IsNotNull(context);
+
 		if (context.HttpContext.User.Identity?.IsAuthenticated is true)
 		{
 			string? userName = context.HttpContext.User.Identity.Name;

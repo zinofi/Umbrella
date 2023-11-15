@@ -3,7 +3,7 @@
 /// <summary>
 /// Constants used with the Umbrella file system.
 /// </summary>
-public class UmbrellaFileSystemConstants
+public static class UmbrellaFileSystemConstants
 {
 	/// <summary>
 	/// A constant representing a kilo-byte (Non-SI version).

@@ -8,16 +8,18 @@ namespace Umbrella.DataAnnotations;
 /// using the constructor.
 /// </summary>
 /// <seealso cref="RequiredIfAttribute" />
+#pragma warning disable CA1813 // Avoid unsealed attributes
 public class RequiredNonEmptyCollectionIfAttribute : RequiredIfAttribute
+#pragma warning restore CA1813 // Avoid unsealed attributes
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RequiredNonEmptyCollectionIfAttribute"/> class.
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
 	/// <param name="operator">The operator.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RequiredNonEmptyCollectionIfAttribute(string dependentProperty, EqualityOperator @operator, object dependentValue)
-		: base(dependentProperty, @operator, dependentValue)
+	/// <param name="comparisonValue">The dependent value.</param>
+	public RequiredNonEmptyCollectionIfAttribute(string dependentProperty, EqualityOperator @operator, object comparisonValue)
+		: base(dependentProperty, @operator, comparisonValue)
 	{
 	}
 
@@ -25,13 +27,13 @@ public class RequiredNonEmptyCollectionIfAttribute : RequiredIfAttribute
 	/// Initializes a new instance of the <see cref="RequiredNonEmptyCollectionIfAttribute"/> class.
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RequiredNonEmptyCollectionIfAttribute(string dependentProperty, object dependentValue)
-		: this(dependentProperty, EqualityOperator.EqualTo, dependentValue)
+	/// <param name="comparisonValue">The dependent value.</param>
+	public RequiredNonEmptyCollectionIfAttribute(string dependentProperty, object comparisonValue)
+		: this(dependentProperty, EqualityOperator.EqualTo, comparisonValue)
 	{
 	}
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object? actualDependentPropertyValue, object model)
+	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
 		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || ValidationHelper.IsNonEmptyCollection(value);
 }

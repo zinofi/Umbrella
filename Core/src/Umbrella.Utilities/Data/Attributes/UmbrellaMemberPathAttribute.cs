@@ -27,5 +27,5 @@ public sealed class UmbrellaMemberPathAttribute : Attribute
 	/// <summary>
 	/// Gets the value.
 	/// </summary>
-	public required string Value { get; init; }
+	public string Value { get; }
 }

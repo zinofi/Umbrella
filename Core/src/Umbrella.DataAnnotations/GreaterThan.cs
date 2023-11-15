@@ -4,7 +4,7 @@
 /// Specifies that the value of a property should be greater than the value of another named property on the same type.
 /// </summary>
 /// <seealso cref="IsAttribute" />
-public class GreaterThanAttribute : IsAttribute
+public sealed class GreaterThanAttribute : IsAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GreaterThanAttribute"/> class.

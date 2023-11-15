@@ -1,12 +1,15 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Runtime.InteropServices;
+
 namespace Umbrella.AspNetCore.Blazor.Components.FileUpload;
 
 /// <summary>
 /// The event arguments for file upload events raised by the <see cref="UmbrellaFileUpload"/> component.
 /// </summary>
-public readonly struct UmbrellaFileUploadRequestEventArgs
+[StructLayout(LayoutKind.Auto)]
+public readonly record struct UmbrellaFileUploadRequestEventArgs
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaFileUploadRequestEventArgs"/> struct.

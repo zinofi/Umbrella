@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Umbrella.DataAnnotations.BaseClasses;
 
 namespace Umbrella.DataAnnotations;
@@ -8,7 +9,8 @@ namespace Umbrella.DataAnnotations;
 /// </summary>
 /// <seealso cref="ModelAwareValidationAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class MinDateAttribute : ModelAwareValidationAttribute
+[SuppressMessage("Design", "CA1019:Define accessors for attribute arguments", Justification = "Not required.")]
+public sealed class MinDateAttribute : ModelAwareValidationAttribute
 {
 	private readonly DateTime? _minDate;
 	private readonly int? _offSetDays;
@@ -33,9 +35,9 @@ public class MinDateAttribute : ModelAwareValidationAttribute
 	/// <summary>
 	/// Minimum date based on the exact date specified
 	/// </summary>
-	/// <param name="year"></param>
-	/// <param name="month"></param>
-	/// <param name="day"></param>
+	/// <param name="year">The year.</param>
+	/// <param name="month">The month.</param>
+	/// <param name="day">The day.</param>
 	public MinDateAttribute(int year, int month, int day)
 	{
 		_minDate = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc);

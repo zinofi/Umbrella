@@ -1,9 +1,9 @@
-﻿namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript.Annotations.Attributes;
 
 /// <summary>
 /// Used to mark enum types to be output by the TypeScript generator.
 /// </summary>
 [AttributeUsage(AttributeTargets.Enum)]
-public class TypeScriptEnumAttribute : Attribute
+public sealed class TypeScriptEnumAttribute : Attribute
 {
 }

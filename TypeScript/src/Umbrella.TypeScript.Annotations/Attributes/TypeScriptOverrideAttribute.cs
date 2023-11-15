@@ -6,12 +6,12 @@
 /// to null. This attribute inherits from the <see cref="TypeScriptNullAttribute"/> to accomplish this.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class TypeScriptOverrideAttribute : TypeScriptNullAttribute
+public sealed class TypeScriptOverrideAttribute : TypeScriptNullAttribute
 {
 	/// <summary>
 	/// Gets or sets the type override.
 	/// </summary>
-	public Type TypeOverride { get; set; }
+	public Type TypeOverride { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TypeScriptOverrideAttribute"/> class.

@@ -7,7 +7,7 @@ namespace Umbrella.DataAnnotations;
 /// object is null, an empty string or only whitespace.
 /// </summary>
 /// <seealso cref="ContingentValidationAttribute" />
-public class RequiredIfEmptyAttribute : ContingentValidationAttribute
+public sealed class RequiredIfEmptyAttribute : ContingentValidationAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RequiredIfEmptyAttribute"/> class.

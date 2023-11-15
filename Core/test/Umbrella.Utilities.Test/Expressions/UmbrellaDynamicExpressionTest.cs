@@ -1,6 +1,6 @@
 ﻿namespace Umbrella.Utilities.Test.Expressions;
 
-public class UmbrellaDynamicExpressionTest
+public static class UmbrellaDynamicExpressionTest
 {
 	private class TestType
 	{

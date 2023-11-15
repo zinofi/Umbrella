@@ -91,7 +91,7 @@ public class GenericHttpService : IGenericHttpService
 			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
 			string json = UmbrellaStatics.SerializeJson(item!);
-			var request = new HttpRequestMessage(HttpMethod.Post, targetUrl)
+			using var request = new HttpRequestMessage(HttpMethod.Post, targetUrl)
 			{
 				Content = new StringContent(json, Encoding.UTF8, "application/json")
 			};
@@ -130,7 +130,7 @@ public class GenericHttpService : IGenericHttpService
 			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
 			string json = UmbrellaStatics.SerializeJson(item!);
-			var request = new HttpRequestMessage(HttpMethod.Put, targetUrl)
+			using var request = new HttpRequestMessage(HttpMethod.Put, targetUrl)
 			{
 				Content = new StringContent(json, Encoding.UTF8, "application/json")
 			};
@@ -169,7 +169,7 @@ public class GenericHttpService : IGenericHttpService
 			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
 			string json = UmbrellaStatics.SerializeJson(item!);
-			var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl)
+			using var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl)
 			{
 				Content = new StringContent(json, Encoding.UTF8, "application/json")
 			};
@@ -202,7 +202,7 @@ public class GenericHttpService : IGenericHttpService
 		{
 			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
 
-			var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl);
+			using var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl);
 
 			HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -255,6 +255,8 @@ public class GenericHttpService : IGenericHttpService
 	/// <param name="result">The result of the Http server call.</param>
 	protected static void ThrowIfConcurrencyStampMismatchResponse(IHttpCallResult result)
 	{
+		Guard.IsNotNull(result);
+
 		if (result.ProblemDetails?.Code?.Equals(HttpProblemCodes.ConcurrencyStampMismatch, StringComparison.OrdinalIgnoreCase) == true)
 			throw new UmbrellaHttpServiceConcurrencyException("The server has reported a concurrency stamp mismatch.");
 	}

@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 using Umbrella.DataAnnotations;
+using Umbrella.TypeScript.Annotations.Attributes;
 using Xunit;
 
 namespace Umbrella.TypeScript.Test;

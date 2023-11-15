@@ -79,7 +79,7 @@ public class UmbrellaFileProviderTest
 		{
 			foreach (string path in PathsToTest)
 			{
-				ProvidersAndPathsMemberData.Add(new object[] { provider, path });
+				ProvidersAndPathsMemberData.Add([provider, path]);
 			}
 		}
 	}
@@ -164,7 +164,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}").ConfigureAwait(true);
 
@@ -265,7 +265,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}").ConfigureAwait(true);
 
@@ -357,7 +357,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -389,7 +389,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -419,7 +419,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		Stream stream = File.OpenRead(physicalPath);
+		using Stream stream = File.OpenRead(physicalPath);
 		stream.Position = 20;
 
 		string subpath = $"/images/{TestFileName}";
@@ -450,7 +450,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -478,7 +478,7 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		Stream stream = File.OpenRead(physicalPath);
+		using Stream stream = File.OpenRead(physicalPath);
 		stream.Position = 20;
 
 		string subpath = $"/images/{TestFileName}";
@@ -518,7 +518,7 @@ public class UmbrellaFileProviderTest
 
 			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-			byte[] bytes = File.ReadAllBytes(physicalPath);
+			byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 			string subpath = $"/images/{TestFileName}";
 
@@ -564,7 +564,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -603,7 +603,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -642,7 +642,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -684,7 +684,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -730,7 +730,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -776,7 +776,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -849,7 +849,7 @@ public class UmbrellaFileProviderTest
 
 			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-			byte[] bytes = File.ReadAllBytes(physicalPath);
+			byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 			string subpath = $"/images/{TestFileName}";
 
@@ -895,7 +895,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -934,7 +934,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -973,7 +973,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -1015,7 +1015,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -1061,7 +1061,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -1107,7 +1107,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -1184,7 +1184,7 @@ public class UmbrellaFileProviderTest
 		// Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -1224,7 +1224,7 @@ public class UmbrellaFileProviderTest
 		// Create a top level file at the root of the directory.
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/tempfolder/{TestFileName}";
 		_ = await provider.SaveAsync(subpath, bytes, false).ConfigureAwait(true);
@@ -1246,7 +1246,7 @@ public class UmbrellaFileProviderTest
 		// Create a top level file at the root of the directory.
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 		_ = await provider.SaveAsync(subpath, bytes, false).ConfigureAwait(true);
@@ -1331,7 +1331,7 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = File.ReadAllBytes(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
 
@@ -1361,7 +1361,7 @@ public class UmbrellaFileProviderTest
 		Assert.Equal("Man", metaDescription);
 	}
 
-	private static IUmbrellaFileStorageProvider CreateAzureBlobFileProvider()
+	private static UmbrellaAzureBlobStorageFileProvider CreateAzureBlobFileProvider()
 	{
 		var options = new UmbrellaAzureBlobStorageFileProviderOptions
 		{
@@ -1372,17 +1372,19 @@ public class UmbrellaFileProviderTest
 		if (options is IServicesResolverUmbrellaOptions servicesOptions)
 			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		var provider = new UmbrellaAzureBlobStorageFileProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaAzureBlobStorageFileProvider>(),
 			CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg,", "image/jpg")),
 			CoreUtilitiesMocks.CreateGenericTypeConverter());
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 		provider.InitializeOptions(options);
 
 		return provider;
 	}
 
-	private static IUmbrellaFileStorageProvider CreateDiskFileProvider()
+	private static UmbrellaDiskFileStorageProvider CreateDiskFileProvider()
 	{
 		var options = new UmbrellaDiskFileStorageProviderOptions
 		{
@@ -1393,10 +1395,12 @@ public class UmbrellaFileProviderTest
 		if (options is IServicesResolverUmbrellaOptions servicesOptions)
 			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		var provider = new UmbrellaDiskFileStorageProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileStorageProvider>(),
 			CoreUtilitiesMocks.CreateMimeTypeUtility(("png", "image/png"), ("jpg", "image/jpg")),
 			CoreUtilitiesMocks.CreateGenericTypeConverter());
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 		provider.InitializeOptions(options);
 

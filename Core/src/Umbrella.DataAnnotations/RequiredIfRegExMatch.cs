@@ -5,7 +5,7 @@
 /// on the same object as the property this attribute is being used on matches the specified regular expression.
 /// </summary>
 /// <seealso cref="RequiredIfAttribute" />
-public class RequiredIfRegExMatchAttribute : RequiredIfAttribute
+public sealed class RequiredIfRegExMatchAttribute : RequiredIfAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RequiredIfRegExMatchAttribute"/> class.
@@ -15,5 +15,11 @@ public class RequiredIfRegExMatchAttribute : RequiredIfAttribute
 	public RequiredIfRegExMatchAttribute(string dependentProperty, string pattern)
 		: base(dependentProperty, EqualityOperator.RegExMatch, pattern)
 	{
+		Pattern = pattern;
 	}
+
+	/// <summary>
+	/// The pattern.
+	/// </summary>
+	public string Pattern { get; }
 }

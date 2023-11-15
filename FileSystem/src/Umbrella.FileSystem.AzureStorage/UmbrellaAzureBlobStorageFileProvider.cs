@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Concurrent;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.FileSystem.AzureStorage.Extensions;
 using Umbrella.Utilities.Extensions;
@@ -49,7 +49,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 	#endregion
 
 	#region Private Static Members
-	private static readonly char[] _directorySeparatorArray = new[] { '/' };
+	private static readonly char[] _directorySeparatorArray = ['/'];
 	#endregion
 
 	#region Private Members
@@ -232,7 +232,7 @@ public class UmbrellaAzureBlobStorageFileProvider<TOptions> : UmbrellaFileStorag
 
 			try
 			{
-				if (ContainerResolutionCache is not null && !ContainerResolutionCache.ContainsKey(containerName))
+				if (!ContainerResolutionCache.ContainsKey(containerName))
 				{
 					_ = await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 

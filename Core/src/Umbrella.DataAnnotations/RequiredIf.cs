@@ -10,7 +10,9 @@ namespace Umbrella.DataAnnotations;
 /// using the constructor.
 /// </summary>
 /// <seealso cref="ContingentValidationAttribute" />
+#pragma warning disable CA1813 // Avoid unsealed attributes
 public class RequiredIfAttribute : ContingentValidationAttribute
+#pragma warning restore CA1813 // Avoid unsealed attributes
 {
 	/// <summary>
 	/// Gets the operator.
@@ -18,7 +20,7 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 	public EqualityOperator Operator { get; }
 
 	/// <summary>
-	/// Gets the value that will be compared against the value of the <see cref="ContingentValidationAttribute.DependentPropertyName"/>
+	/// Gets the value that will be compared against the value of the <see cref="ContingentValidationAttribute.DependentProperty"/>
 	/// </summary>
 	public object ComparisonValue { get; }
 
@@ -57,7 +59,7 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentPropertyName, ComparisonValue);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty, ComparisonValue);
 	}
 
 	/// <inheritdoc />
@@ -73,7 +75,7 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 			});
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object? actualDependentPropertyValue, object model)
+	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
 		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || (value is not null && !string.IsNullOrEmpty(value?.ToString()?.Trim()));
 
 	/// <inheritdoc />

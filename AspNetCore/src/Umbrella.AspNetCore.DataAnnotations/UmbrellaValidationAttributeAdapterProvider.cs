@@ -13,7 +13,7 @@ namespace Umbrella.AspNetCore.DataAnnotations;
 internal class UmbrellaValidationAttributeAdapterProvider : IValidationAttributeAdapterProvider
 {
 	#region Private Members
-	private readonly IValidationAttributeAdapterProvider _mvcFrameworkImplementation = new ValidationAttributeAdapterProvider();
+	private readonly ValidationAttributeAdapterProvider _mvcFrameworkImplementation = new();
 	#endregion
 
 	#region IValidationAttributeAdapterProvider Members

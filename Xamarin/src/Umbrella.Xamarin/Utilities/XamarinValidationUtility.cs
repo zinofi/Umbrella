@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Xamarin.Controls;
@@ -46,7 +46,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 
 		try
 		{
-			var properties = GetValidatablePropertyNames(model);
+			string[] properties = GetValidatablePropertyNames(model);
 			var qualifiedPropertyNames = properties.Where(x => x.EndsWith(propertyName, StringComparison.OrdinalIgnoreCase));
 			qualifiedPropertyNames.ForEach(x => HideValidationField(x, page!));
 
@@ -57,7 +57,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 			if (!isValid)
 			{
 				if (resultsModifier is not null)
-					lstError = resultsModifier(lstError.ToList());
+					lstError = resultsModifier([.. lstError]);
 
 				ShowValidationFields(lstError, model, page!, false, resultsModifier, attachInlineValiation);
 			}
@@ -96,7 +96,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 			if (!isValid)
 			{
 				if (resultsModifier is not null)
-					lstError = resultsModifier(lstError.ToList());
+					lstError = resultsModifier([.. lstError]);
 
 				ShowValidationFields(lstError, model, page!, deep, resultsModifier, attachInlineValiation);
 			}
@@ -131,7 +131,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 		if (model is null)
 			return;
 
-		var properties = GetValidatablePropertyNames(model);
+		string[] properties = GetValidatablePropertyNames(model);
 		properties.ForEach(x => HideValidationField(x, page));
 	}
 
@@ -241,7 +241,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 	protected virtual void AttachViewChangedEventHandler(string propertyName, View view, object model, Page page, bool deep, Func<List<ValidationResult>, IReadOnlyCollection<ValidationResult>>? resultsModifier)
 		=> throw new NotSupportedException($"The specified view cannot be handled by the Xamarin Validation Utility. Please override the {nameof(AttachViewChangedEventHandler)} method and handle explicitly.");
 
-	private static IEnumerable<string> GetValidatablePropertyNames(object model)
+	private static string[] GetValidatablePropertyNames(object model)
 	{
 		var validatableProperties = new List<string>();
 

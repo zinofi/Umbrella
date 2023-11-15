@@ -1,11 +1,13 @@
-﻿using Umbrella.AppFramework.Shared.Enumerations;
+﻿using System.Runtime.InteropServices;
+using Umbrella.AppFramework.Shared.Enumerations;
 
 namespace Umbrella.AppFramework.Shared.Primitives;
 
 /// <summary>
 /// Represents information on a client application.
 /// </summary>
-public readonly struct AppClientInfo
+[StructLayout(LayoutKind.Auto)]
+public readonly record struct AppClientInfo
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AppClientInfo"/> struct.

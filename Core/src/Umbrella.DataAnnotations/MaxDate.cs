@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Umbrella.DataAnnotations.BaseClasses;
 
 namespace Umbrella.DataAnnotations;
@@ -8,7 +9,8 @@ namespace Umbrella.DataAnnotations;
 /// </summary>
 /// <seealso cref="ModelAwareValidationAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class MaxDateAttribute : ModelAwareValidationAttribute
+[SuppressMessage("Design", "CA1019:Define accessors for attribute arguments", Justification = "Not required.")]
+public sealed class MaxDateAttribute : ModelAwareValidationAttribute
 {
 	private readonly DateTime? _maxDate;
 	private readonly int? _offSetDays;
@@ -35,9 +37,9 @@ public class MaxDateAttribute : ModelAwareValidationAttribute
 	/// <summary>
 	/// Maximum date based on the exact date specified at the end of the day, i.e. 23:59:59
 	/// </summary>
-	/// <param name="year"></param>
-	/// <param name="month"></param>
-	/// <param name="day"></param>
+	/// <param name="year">The year.</param>
+	/// <param name="month">The month.</param>
+	/// <param name="day">The day.</param>
 	public MaxDateAttribute(int year, int month, int day)
 	{
 		_maxDate = new DateTime(year, month, day, 23, 59, 59, DateTimeKind.Utc);

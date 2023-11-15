@@ -48,5 +48,5 @@ public class HttpProblemDetails
 	/// <returns>The <see cref="ValidationResult"/> collection.</returns>
 	public IReadOnlyCollection<ValidationResult> ToValidationResults() => Errors?.Count > 0
 			? Errors.SelectMany(x => x.Value.Select(y => new ValidationResult(y, new[] { x.Key }))).ToArray()
-			: Array.Empty<ValidationResult>();
+			: [];
 }

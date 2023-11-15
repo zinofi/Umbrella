@@ -6,7 +6,7 @@
 /// </summary>
 /// <seealso cref="CompareAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class UmbrellaCompareAttribute : CompareAttribute
+public sealed class UmbrellaCompareAttribute : CompareAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaCompareAttribute"/> class.
@@ -20,6 +20,9 @@ public class UmbrellaCompareAttribute : CompareAttribute
 	/// <inheritdoc />
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
+		if (validationContext is null)
+			throw new ArgumentNullException(nameof(validationContext));
+
 		ValidationResult? result = base.IsValid(value, validationContext);
 
 		if (result is null)

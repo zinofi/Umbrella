@@ -8,7 +8,9 @@ namespace Umbrella.DataAnnotations;
 /// using the specified <see cref="Operator"/>.
 /// </summary>
 /// <seealso cref="ContingentValidationAttribute" />
+#pragma warning disable CA1813 // Avoid unsealed attributes
 public class IsAttribute : ContingentValidationAttribute
+#pragma warning restore CA1813 // Avoid unsealed attributes
 {
 	private readonly OperatorMetadata _metadata;
 

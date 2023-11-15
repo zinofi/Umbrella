@@ -20,7 +20,9 @@ public static class AppCenterLoggerFactoryExtensions
 		LogLevel minLevel = LogLevel.Information,
 		bool includeEventId = false)
 	{
+#pragma warning disable CA2000 // Dispose objects before losing scope
 		_ = loggingBuilder.AddProvider(new AppCenterLoggerProvider(minLevel, includeEventId));
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 		return loggingBuilder;
 	}

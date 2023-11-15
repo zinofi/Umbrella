@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using CommunityToolkit.Diagnostics;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -28,9 +29,11 @@ public static class HttpClientExtensions
 	/// </remarks>
 	public static async Task<HttpResponseMessage> PostAsJsonWithCalculatedContentLengthAsync<T>(this HttpClient httpClient, string url, T value, CancellationToken cancellationToken = default)
 	{
+		Guard.IsNotNull(httpClient);
+
 		string json = JsonSerializer.Serialize(value, _options);
 
-		StringContent content = new(json, Encoding.UTF8, "application/json");
+		using StringContent content = new(json, Encoding.UTF8, "application/json");
 		content.Headers.ContentType!.CharSet = "utf-8";
 
 		return await httpClient.PostAsync(url, content, cancellationToken).ConfigureAwait(false);

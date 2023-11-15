@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,7 @@ namespace Umbrella.AspNetCore.WebUtilities.Middleware;
 public class FrontEndCompressionMiddleware
 {
 	#region Private Static Members
-	private static readonly char[] _headerValueSplitters = new[] { ',' };
+	private static readonly char[] _headerValueSplitters = [','];
 	private static readonly ConcurrentDictionary<string, IFileInfo?> _fileInfoDictionary = new();
 	#endregion
 
@@ -74,6 +75,8 @@ public class FrontEndCompressionMiddleware
 		_mimeTypeUtility = mimeTypeUtility;
 		_options = options;
 
+		Guard.IsNotNull(hostingEnvironment);
+
 		// File Provider
 		FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/", false));
 	}
@@ -86,6 +89,8 @@ public class FrontEndCompressionMiddleware
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	public async Task InvokeAsync(HttpContext context)
 	{
+		Guard.IsNotNull(context);
+
 		context.RequestAborted.ThrowIfCancellationRequested();
 
 		try

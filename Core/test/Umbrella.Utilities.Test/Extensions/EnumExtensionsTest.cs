@@ -16,20 +16,20 @@ public class EnumExtensionsTest
 		All = 0b1111
 	}
 
-	public static object[][] ToFlagsStringTestData = new[]
-	{
-		new object[] { () => (TestType.Type1 | TestType.Type2 | TestType.Type4).ToFlagsString(), "Type1,Type2,Type4" },
-		new object[] { () => (TestType.Type1 | TestType.Type4).ToFlagsString(), "Type1,Type4" },
-		new object[] { () => (TestType.Type1 | TestType.Type4).ToFlagsString(x => x.ToUpperInvariant()), "TYPE1,TYPE4" },
-		new object[] { () => (TestType.Type1 | TestType.Type4).ToFlagsString(separator: "+"), "Type1+Type4" },
-	};
+	public static object[][] ToFlagsStringTestData =
+	[
+		[() => (TestType.Type1 | TestType.Type2 | TestType.Type4).ToFlagsString(), "Type1,Type2,Type4"],
+		[() => (TestType.Type1 | TestType.Type4).ToFlagsString(), "Type1,Type4"],
+		[() => (TestType.Type1 | TestType.Type4).ToFlagsString(x => x.ToUpperInvariant()), "TYPE1,TYPE4"],
+		[() => (TestType.Type1 | TestType.Type4).ToFlagsString(separator: "+"), "Type1+Type4"],
+	];
 
-	public static object[][] ToFlagsDisplayStringTestData = new[]
-	{
-		new object[] { () => (TestType.Type1 | TestType.Type2 | TestType.Type4).ToFlagsDisplayString(), "Type 1,Type 2,Type 4" },
-		new object[] { () => (TestType.Type1 | TestType.Type4).ToFlagsDisplayString(), "Type 1,Type 4" },
-		new object[] { () => (TestType.Type1 | TestType.Type4).ToFlagsDisplayString(separator: " + "), "Type 1 + Type 4" },
-	};
+	public static object[][] ToFlagsDisplayStringTestData =
+	[
+		[() => (TestType.Type1 | TestType.Type2 | TestType.Type4).ToFlagsDisplayString(), "Type 1,Type 2,Type 4"],
+		[() => (TestType.Type1 | TestType.Type4).ToFlagsDisplayString(), "Type 1,Type 4"],
+		[() => (TestType.Type1 | TestType.Type4).ToFlagsDisplayString(separator: " + "), "Type 1 + Type 4"],
+	];
 
 	[Fact]
 	public void ToFlagsString_NullSeparator() => Assert.Throws<ArgumentNullException>(() => TestType.Type1.ToFlagsString(separator: null!));

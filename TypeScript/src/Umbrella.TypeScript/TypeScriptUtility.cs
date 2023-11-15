@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using System.Collections;
 using System.Reflection;
+using Umbrella.TypeScript.Annotations.Attributes;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript;

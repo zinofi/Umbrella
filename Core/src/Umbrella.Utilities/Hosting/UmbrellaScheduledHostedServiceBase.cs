@@ -107,13 +107,17 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	}
 
 	/// <inheritdoc />
-	public Task StopAsync(CancellationToken cancellationToken)
+	public async Task StopAsync(CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
+#if NET8_0_OR_GREATER
+		if(_cancellationTokenSource is not null)
+			await _cancellationTokenSource.CancelAsync();
+#else
 		_cancellationTokenSource?.Cancel();
-
-		return Task.CompletedTask;
+		await Task.Yield();
+#endif
 	}
 
 	/// <inheritdoc />

@@ -1,9 +1,9 @@
-﻿namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript.Annotations.Attributes;
 
 /// <summary>
 /// Used to mark model properties that should be ignored by the TypeScript generator.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class TypeScriptIgnoreAttribute : Attribute
+public sealed class TypeScriptIgnoreAttribute : Attribute
 {
 }

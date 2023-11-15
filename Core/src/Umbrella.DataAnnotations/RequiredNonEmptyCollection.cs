@@ -8,12 +8,15 @@ namespace Umbrella.DataAnnotations;
 /// and <see cref="MinLengthAttribute"/> in a single attritbute.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class RequiredNonEmptyCollectionAttribute : ValidationAttribute
+public sealed class RequiredNonEmptyCollectionAttribute : ValidationAttribute
 {
 	/// <inheritdoc />
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
-		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext.MemberName) ? new[] { validationContext.MemberName } : Array.Empty<string>();
+		if (validationContext is null)
+			throw new ArgumentNullException(nameof(validationContext));
+
+		string[] memberNames = !string.IsNullOrWhiteSpace(validationContext.MemberName) ? [validationContext.MemberName] : [];
 
 		if (value is null)
 			return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), memberNames);

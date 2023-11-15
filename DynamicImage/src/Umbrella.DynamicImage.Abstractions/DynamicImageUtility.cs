@@ -24,7 +24,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) _invalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
 	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) _skipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
 	private static readonly Regex _densityRegex = new("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-	private static readonly char[] _segmentSeparatorArray = new[] { '/' };
+	private static readonly char[] _segmentSeparatorArray = ['/'];
 	#endregion
 
 	#region Protected Properties		

@@ -260,7 +260,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 
 					string @operator = GetOperatorTranslation(attr.Operator);
 					string otherValue = GetDependentValueTranslation(attr.ComparisonValue);
-					string dependentPropertyName = GetDependentPropertyName(attr.DependentPropertyName);
+					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
 					_ = sbRule.Append($"(this.{dependentPropertyName} {@operator} {otherValue})");
 				}
@@ -276,7 +276,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					if (i > 0)
 						_ = sbRule.Append(" || ");
 
-					string dependentPropertyName = GetDependentPropertyName(attr.DependentPropertyName);
+					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
 					_ = sbRule.Append($"(this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0))");
 				}
@@ -292,7 +292,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					if (i > 0)
 						_ = sbRule.Append(" || ");
 
-					string dependentPropertyName = GetDependentPropertyName(attr.DependentPropertyName);
+					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
 					_ = sbRule.Append($"(this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)))");
 				}
@@ -326,7 +326,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					}
 
 					string @operator = GetOperatorTranslation(attr.Operator);
-					string dependentPropertyName = GetDependentPropertyName(attr.DependentPropertyName);
+					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
 					_ = sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
 				}

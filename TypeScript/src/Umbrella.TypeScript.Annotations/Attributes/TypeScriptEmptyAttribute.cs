@@ -1,4 +1,4 @@
-﻿namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript.Annotations.Attributes;
 
 /// <summary>
 /// Used to specify that if the type of the property has been translated into a TypeScript array, e.g. <see cref="List{T}"/> has been transleted to T[],
@@ -7,6 +7,6 @@
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class TypeScriptEmptyAttribute : Attribute
+public sealed class TypeScriptEmptyAttribute : Attribute
 {
 }

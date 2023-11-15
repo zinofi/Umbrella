@@ -6,6 +6,8 @@
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Property)]
+#pragma warning disable CA1813 // Avoid unsealed attributes
 public class TypeScriptNullAttribute : Attribute
+#pragma warning restore CA1813 // Avoid unsealed attributes
 {
 }

@@ -25,7 +25,7 @@ public class DynamicImageItem
 	/// <summary>
 	/// Gets the length of the image.
 	/// </summary>
-	public long Length => UmbrellaFileInfo?.Length ?? Content?.Length ?? -1;
+	public long Length => UmbrellaFileInfo?.Length ?? Content.Length;
 
 	/// <summary>
 	/// Gets or sets the image options.
@@ -35,7 +35,7 @@ public class DynamicImageItem
 	/// <summary>
 	/// Gets or sets the content.
 	/// </summary>
-	public byte[]? Content { private get; set; }
+	public ReadOnlyMemory<byte> Content { private get; set; }
 
 	// TODO: Need to be able to set these and retain their values using metadata.
 	///// <summary>
@@ -58,11 +58,11 @@ public class DynamicImageItem
 	/// </summary>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The image file content.</returns>
-	public async Task<byte[]?> GetContentAsync(CancellationToken cancellationToken = default)
+	public async Task<ReadOnlyMemory<byte>> GetContentAsync(CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		if (Content is null && UmbrellaFileInfo is not null)
+		if (Content.Length is 0 && UmbrellaFileInfo is not null)
 			Content = await UmbrellaFileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 		
 		return Content;
@@ -80,14 +80,20 @@ public class DynamicImageItem
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(target);
 
-		if (Content is null && UmbrellaFileInfo is not null)
+		if (Content.Length is 0 && UmbrellaFileInfo is not null)
 		{
 			await UmbrellaFileInfo.WriteToStreamAsync(target, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			return;
 		}
 
-		if (Content is not null)
-			await target.WriteAsync(Content, 0, Content.Length, cancellationToken).ConfigureAwait(false);
+		if (Content.Length > 0)
+		{
+#if NET6_0_OR_GREATER
+			await target.WriteAsync(Content, cancellationToken).ConfigureAwait(false);
+#else
+			await target.WriteAsync(Content.ToArray(), 0, Content.Length, cancellationToken).ConfigureAwait(false);
+#endif
+		}
 	}
 }

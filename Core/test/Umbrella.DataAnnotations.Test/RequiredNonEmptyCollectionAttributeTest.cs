@@ -1,6 +1,6 @@
 ﻿namespace Umbrella.DataAnnotations.Test;
 
-public class RequiredNonEmptyCollectionAttributeTest
+public static class RequiredNonEmptyCollectionAttributeTest
 {
 	private class Model : ValidationModelBase<RequiredNonEmptyCollectionAttribute>
 	{

@@ -19,12 +19,12 @@ public class FrontEndCompressionMiddlewareMapping : CacheableUmbrellaOptions, IS
 	/// <summary>
 	/// Gets or sets the front end root folder application relative paths.
 	/// </summary>
-	public string[] AppRelativeFolderPaths { get; set; } = null!;
+	public IReadOnlyCollection<string> AppRelativeFolderPaths { get; set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the target file extensions. Defaults to .css and .js files.
 	/// </summary>
-	public string[] TargetFileExtensions { get; set; } = new string[] { ".css", ".js" };
+	public IReadOnlyCollection<string> TargetFileExtensions { get; set; } = [".css", ".js"];
 
 	/// <summary>
 	/// Gets or sets a value indicating whether to watch the source files. Defaults to <see langword="false"/>.
@@ -73,9 +73,9 @@ public class FrontEndCompressionMiddlewareMapping : CacheableUmbrellaOptions, IS
 			// Clean the paths
 			var lstCleanedPath = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-			for (int i = 0; i < AppRelativeFolderPaths.Length; i++)
+			for (int i = 0; i < AppRelativeFolderPaths.Count; i++)
 			{
-				string path = AppRelativeFolderPaths[i];
+				string path = AppRelativeFolderPaths.ElementAt(i);
 
 				if (string.IsNullOrWhiteSpace(path))
 				{

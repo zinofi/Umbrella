@@ -16,22 +16,22 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	/// This name can match a property with the same name on the model, e.g. FirstName, or can be a path to a nested property,
 	/// e.g. Car.Model
 	/// </remarks>
-	public string DependentPropertyName { get; private set; }
+	public string DependentProperty { get; private set; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether validation will succeed if either
 	/// the value on which this attrubute has been applied is null or the value of
-	/// the <see cref="DependentPropertyName"/> is null.
+	/// the <see cref="DependentProperty"/> is null.
 	/// </summary>
 	public bool ReturnTrueOnEitherNull { get; set; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ContingentValidationAttribute"/> class.
 	/// </summary>
-	/// <param name="dependentPropertyName">The dependent property name.</param>
-	protected ContingentValidationAttribute(string dependentPropertyName)
+	/// <param name="dependentProperty">The dependent property name.</param>
+	protected ContingentValidationAttribute(string dependentProperty)
 	{
-		DependentPropertyName = dependentPropertyName;
+		DependentProperty = dependentProperty;
 	}
 
 	/// <inheritdoc />
@@ -40,7 +40,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 		if (string.IsNullOrEmpty(ErrorMessageResourceName) && string.IsNullOrEmpty(ErrorMessage))
 			ErrorMessage = DefaultErrorMessageFormat;
 
-		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentPropertyName);
+		return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, DependentProperty);
 	}
 
 	/// <inheritdoc />
@@ -67,7 +67,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 		// var memberAccess = UmbrellaDynamicExpression.CreateMemberAccess(parameter, DependentPropertyName, false);
 		// var x = Expression.Lambda<Func<object, object>>(Expression.Convert(memberAccess, typeof(object)), parameter).Compile();
 
-		foreach (string propertyName in DependentPropertyName.Split('.'))
+		foreach (string propertyName in DependentProperty.Split('.'))
 		{
 			var property = currentType?.GetProperty(propertyName);
 			value = property?.GetValue(value, null);
@@ -79,13 +79,13 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 
 	/// <inheritdoc />
 	protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
-		=> base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentPropertyName) });
+		=> base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
 
 	/// <inheritdoc />
 	public override bool IsValid(object value, object model) => IsValid(value, GetDependentPropertyValue(model), model);
 
 	/// <summary>
-	/// If the value of <paramref name="actualDependentPropertyValue" /> is such that it matches the value of the <see cref="DependentPropertyName"/> value on
+	/// If the value of <paramref name="actualDependentPropertyValue" /> is such that it matches the value of the <see cref="DependentProperty"/> value on
 	/// the <paramref name="model"/>, validation will take place on the supplied <paramref name="value"/>.
 	/// </summary>
 	/// <param name="value">The value.</param>

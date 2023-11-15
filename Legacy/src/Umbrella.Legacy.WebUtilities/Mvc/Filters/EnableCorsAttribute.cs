@@ -8,7 +8,7 @@ namespace Umbrella.Legacy.WebUtilities.Mvc.Filters;
 /// </summary>
 /// <seealso cref="ActionFilterAttribute" />
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class EnableCorsAttribute : ActionFilterAttribute
+public sealed class EnableCorsAttribute : ActionFilterAttribute
 {
 	/// <summary>
 	/// Gets or sets a value indicating whether to output the "Access-Control-Allow-Credentials" header with a value of <see langword="true"/>.

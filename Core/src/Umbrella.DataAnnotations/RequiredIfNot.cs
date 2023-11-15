@@ -5,15 +5,15 @@
 /// on the same object as the property this attribute is being used on does not match the specified dependent value.
 /// </summary>
 /// <seealso cref="RequiredIfAttribute" />
-public class RequiredIfNotAttribute : RequiredIfAttribute
+public sealed class RequiredIfNotAttribute : RequiredIfAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RequiredIfNotAttribute"/> class.
 	/// </summary>
 	/// <param name="dependentProperty">The dependent property.</param>
-	/// <param name="dependentValue">The dependent value.</param>
-	public RequiredIfNotAttribute(string dependentProperty, object dependentValue)
-		: base(dependentProperty, EqualityOperator.NotEqualTo, dependentValue)
+	/// <param name="comparisonValue">The comparison value.</param>
+	public RequiredIfNotAttribute(string dependentProperty, object comparisonValue)
+		: base(dependentProperty, EqualityOperator.NotEqualTo, comparisonValue)
 	{
 	}
 }

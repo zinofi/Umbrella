@@ -1,9 +1,12 @@
-﻿namespace Umbrella.AspNetCore.Blazor.Components.Pagination;
+﻿using System.Runtime.InteropServices;
+
+namespace Umbrella.AspNetCore.Blazor.Components.Pagination;
 
 /// <summary>
 /// The event arguments for pagination events raised by the <see cref="UmbrellaPagination"/> component.
 /// </summary>
-public readonly struct UmbrellaPaginationEventArgs
+[StructLayout(LayoutKind.Auto)]
+public readonly record struct UmbrellaPaginationEventArgs
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaPaginationEventArgs"/> struct.

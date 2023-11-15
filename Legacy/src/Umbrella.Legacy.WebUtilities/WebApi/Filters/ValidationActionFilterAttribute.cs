@@ -8,11 +8,14 @@ namespace Umbrella.Legacy.WebUtilities.WebApi.Filters;
 /// A Web API action filter that return a 400 BadRequest response containing model state errors if the model state is not valid.
 /// </summary>
 /// <seealso cref="ActionFilterAttribute" />
-public class ValidationActionFilterAttribute : ActionFilterAttribute
+public sealed class ValidationActionFilterAttribute : ActionFilterAttribute
 {
 	/// <inheritdoc />
 	public override void OnActionExecuting(HttpActionContext actionContext)
 	{
+		if (actionContext is null)
+			throw new ArgumentNullException(nameof(actionContext));
+
 		var modelState = actionContext.ModelState;
 
 		if (!modelState.IsValid)

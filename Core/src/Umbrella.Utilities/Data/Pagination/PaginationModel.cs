@@ -6,13 +6,13 @@ namespace Umbrella.Utilities.Data.Pagination;
 /// A model that encapsulates available pagination options that can be applied to a collection.
 /// </summary>
 [StructLayout(LayoutKind.Auto)]
-public readonly struct PaginationModel
+public readonly record struct PaginationModel
 {
 	/// <summary>
 	/// An individual paginated page.
 	/// </summary>
 	[StructLayout(LayoutKind.Auto)]
-	public readonly struct PageItem
+	public readonly record struct PageItem
 	{
 		/// <summary>
 		/// Gets the page number.
@@ -132,7 +132,7 @@ public readonly struct PaginationModel
 			}
 		}
 
-		PageNumbers = pageItems ?? Array.Empty<PageItem>();
+		PageNumbers = pageItems ?? [];
 		EnablePageSizeSelection = enablePageSizeSelection;
 	}
 }

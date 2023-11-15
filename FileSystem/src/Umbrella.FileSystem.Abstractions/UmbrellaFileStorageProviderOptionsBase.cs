@@ -18,21 +18,21 @@ public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolver
 	private readonly object _syncRoot = new();
 	private IServiceCollection? _services;
 	private IServiceProvider? _serviceProvider;
-	private IReadOnlyDictionary<string, IUmbrellaFileAuthorizationHandler>? _authorizationHandlerMappings;
+	private Dictionary<string, IUmbrellaFileAuthorizationHandler>? _authorizationHandlerMappings;
 
 	/// <summary>
 	/// Gets or sets a value indicating whether access to files that do not have a registered <see cref="IUmbrellaFileAuthorizationHandler"/> should be permitted.
 	/// </summary>
 	/// <remarks>Defaults to <see langword="false"/>.</remarks>
 	public bool AllowUnhandledFileAuthorizationChecks { get; set; }
-	
+
 	/// <inheritdoc/>
 	public string TempFilesDirectoryName { get; set; } = UmbrellaFileSystemConstants.DefaultTempFilesDirectoryName;
 
 	/// <inheritdoc/>
 	public string WebFilesDirectoryName { get; set; } = UmbrellaFileSystemConstants.DefaultWebFilesDirectoryName;
 
-	void IServicesResolverUmbrellaOptions.Initialize(IServiceCollection services, IServiceProvider serviceProvider)
+	public void Initialize(IServiceCollection services, IServiceProvider serviceProvider)
 	{
 		Guard.IsNotNull(services);
 		Guard.IsNotNull(serviceProvider);
@@ -57,7 +57,7 @@ public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolver
 		fileSubPathSpan = fileSubPathSpan.TrimStart('/');
 
 		int idxFirstSlash = fileSubPathSpan.IndexOf('/');
-		fileSubPathSpan = fileSubPathSpan.Slice(0, idxFirstSlash);
+		fileSubPathSpan = fileSubPathSpan[..idxFirstSlash];
 
 		Span<char> directoryNameSpanLowered = fileSubPathSpan.Length <= StackAllocConstants.MaxCharSize
 			? stackalloc char[fileSubPathSpan.Length]
