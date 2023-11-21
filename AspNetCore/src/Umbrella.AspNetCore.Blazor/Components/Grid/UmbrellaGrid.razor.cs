@@ -1008,7 +1008,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 		{
 			if (disposing)
 			{
+#if NET8_0_OR_GREATER
+				await _cts.CancelAsync();
+#else
 				_cts.Cancel();
+#endif
 				_cts.Dispose();
 
 				if (BrowserEventAggregator.IsValueCreated)

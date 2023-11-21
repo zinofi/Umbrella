@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
@@ -67,6 +68,7 @@ public class DynamicImageMiddleware
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	public async Task InvokeAsync(HttpContext context)
 	{
+		Guard.IsNotNull(context);
 		context.RequestAborted.ThrowIfCancellationRequested();
 
 		var cts = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
@@ -113,7 +115,11 @@ public class DynamicImageMiddleware
 
 			if (status == DynamicImageParseUrlResult.Invalid)
 			{
+#if NET8_0_OR_GREATER
+				await cts.CancelAsync();
+#else
 				cts.Cancel();
+#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
@@ -122,7 +128,11 @@ public class DynamicImageMiddleware
 
 			if (mapping is null || (mapping.EnableValidation && !_dynamicImageUtility.ImageOptionsValid(imageOptions, mapping.ValidMappings)))
 			{
+#if NET8_0_OR_GREATER
+				await cts.CancelAsync();
+#else
 				cts.Cancel();
+#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
@@ -131,7 +141,11 @@ public class DynamicImageMiddleware
 
 			if (image is null)
 			{
+#if NET8_0_OR_GREATER
+				await cts.CancelAsync();
+#else
 				cts.Cancel();
+#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
@@ -139,7 +153,11 @@ public class DynamicImageMiddleware
 			//Check the cache headers
 			if (image.LastModified.HasValue && context.Request.IfModifiedSinceHeaderMatched(image.LastModified.Value))
 			{
+#if NET8_0_OR_GREATER
+				await cts.CancelAsync();
+#else
 				cts.Cancel();
+#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotModified);
 				return;
 			}
@@ -150,7 +168,11 @@ public class DynamicImageMiddleware
 
 			if (eTagValue is not null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
 			{
+#if NET8_0_OR_GREATER
+				await cts.CancelAsync();
+#else
 				cts.Cancel();
+#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotModified);
 				return;
 			}
@@ -182,7 +204,11 @@ public class DynamicImageMiddleware
 			}
 			else
 			{
+#if NET8_0_OR_GREATER
+				await cts.CancelAsync();
+#else
 				cts.Cancel();
+#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
@@ -190,19 +216,31 @@ public class DynamicImageMiddleware
 		catch (UmbrellaFileSystemException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
 			// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
+#if NET8_0_OR_GREATER
+			await cts.CancelAsync();
+#else
 			cts.Cancel();
+#endif
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
 		catch (UmbrellaFileAccessDeniedException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
 			// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
+#if NET8_0_OR_GREATER
+			await cts.CancelAsync();
+#else
 			cts.Cancel();
+#endif
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
 		catch (UmbrellaDynamicImageException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
 			// Just return a 404 NotFound.
+#if NET8_0_OR_GREATER
+			await cts.CancelAsync();
+#else
 			cts.Cancel();
+#endif
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }))

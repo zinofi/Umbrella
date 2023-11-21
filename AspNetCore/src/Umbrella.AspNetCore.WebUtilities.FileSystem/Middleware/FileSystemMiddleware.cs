@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.FileSystem.Abstractions;
@@ -45,6 +46,7 @@ public class FileSystemMiddleware
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	public async Task InvokeAsync(HttpContext context)
 	{
+		Guard.IsNotNull(context);
 		context.RequestAborted.ThrowIfCancellationRequested();
 
 		try
@@ -72,7 +74,11 @@ public class FileSystemMiddleware
 
 				if (fileInfo is null)
 				{
+#if NET8_0_OR_GREATER
+					await cts.CancelAsync();
+#else
 					cts.Cancel();
+#endif
 					context.Response.SendStatusCode(HttpStatusCode.NotFound);
 
 					return;
@@ -85,7 +91,11 @@ public class FileSystemMiddleware
 				{
 					if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified.Value.UtcDateTime))
 					{
+#if NET8_0_OR_GREATER
+						await cts.CancelAsync();
+#else
 						cts.Cancel();
+#endif
 						context.Response.SendStatusCode(HttpStatusCode.NotModified);
 
 						return;
@@ -95,7 +105,11 @@ public class FileSystemMiddleware
 
 					if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 					{
+#if NET8_0_OR_GREATER
+						await cts.CancelAsync();
+#else
 						cts.Cancel();
+#endif
 						context.Response.SendStatusCode(HttpStatusCode.NotModified);
 
 						return;

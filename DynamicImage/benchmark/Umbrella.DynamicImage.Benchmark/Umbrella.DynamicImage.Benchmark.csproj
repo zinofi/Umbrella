@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net6.0;net461</TargetFrameworks>
+		<TargetFrameworks>net6.0;net461;net8.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>

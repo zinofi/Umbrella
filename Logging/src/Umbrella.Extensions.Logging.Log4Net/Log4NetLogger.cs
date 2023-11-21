@@ -32,7 +32,11 @@ public class Log4NetLogger : ILogger
 
 	#region ILogger Members
 	/// <inheritdoc />
+#if NET8_0_OR_GREATER
+	public IDisposable? BeginScope<TState>(TState state) where TState : notnull => EmptyDisposable.Instance;
+#else
 	public IDisposable BeginScope<TState>(TState state) => EmptyDisposable.Instance;
+#endif
 
 	/// <inheritdoc />
 	public bool IsEnabled(LogLevel logLevel) => logLevel switch
@@ -74,10 +78,17 @@ public class Log4NetLogger : ILogger
 			? string.IsNullOrWhiteSpace(eventId.Name) ? "Correlation Id: " + DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture) : eventId.Name!
 			: eventId.Id.ToString(CultureInfo.InvariantCulture);
 
+#if NET6_0_OR_GREATER
+		var messageBuider = new StringBuilder()
+			.AppendLine(CultureInfo.InvariantCulture, $"{messageId}")
+			.AppendLine(CultureInfo.InvariantCulture, $"{DateTime.UtcNow} UTC")
+			.Append(formatter(state, exception));
+#else
 		var messageBuider = new StringBuilder()
 			.AppendLine(messageId)
 			.AppendLine($"{DateTime.UtcNow} UTC")
 			.Append(formatter(state, exception));
+#endif
 
 		if (state is IEnumerable<KeyValuePair<string, string>> stateDictionary)
 		{
@@ -91,7 +102,11 @@ public class Log4NetLogger : ILogger
 			{
 				foreach (var entry in stateDictionary)
 				{
+#if NET6_0_OR_GREATER
+					_ = messageBuider.AppendLine(CultureInfo.InvariantCulture, $"{entry.Key}: {entry.Value}");
+#else
 					_ = messageBuider.AppendLine($"{entry.Key}: {entry.Value}");
+#endif
 				}
 			}
 
@@ -144,5 +159,5 @@ public class Log4NetLogger : ILogger
 			}
 		}
 	}
-	#endregion
+#endregion
 }

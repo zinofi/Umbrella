@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Umbrella.AspNetCore.WebUtilities.Security;
 
@@ -14,7 +15,9 @@ public class AppJwtBearer2FAEvents : JwtBearerEvents
 	/// <inheritdoc />
 	public override Task MessageReceived(MessageReceivedContext context)
 	{
-		string authorization = context.Request.Headers["Authorization"];
+		Guard.IsNotNull(context);
+
+		string? authorization = context.Request.Headers.Authorization;
 
 		// If no authorization header found, nothing to process further
 		if (string.IsNullOrEmpty(authorization))

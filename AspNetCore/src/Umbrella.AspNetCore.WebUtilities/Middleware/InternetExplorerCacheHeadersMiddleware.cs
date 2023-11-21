@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.WebUtilities.Middleware.Options;
 
@@ -42,6 +43,8 @@ public class InternetExplorerCacheHeadersMiddleware
 	/// <returns>An awaitable <see cref="Task" />.</returns>
 	public async Task InvokeAsync(HttpContext context)
 	{
+		Guard.IsNotNull(context);
+
 		try
 		{
 			string method = context.Request.Method;
@@ -57,7 +60,7 @@ public class InternetExplorerCacheHeadersMiddleware
 				{
 					var response = (HttpResponse)state;
 
-					string contentType = response.ContentType;
+					string? contentType = response.ContentType;
 
 					// Apply the headers when no response content type - this may be the case when a 204 code is sent for a GET request that issues no content
 					// If no content types have been specified in the options apply the headers to all response for the configured HTTP methods
@@ -66,13 +69,13 @@ public class InternetExplorerCacheHeadersMiddleware
 					{
 						// Set standard HTTP/1.0 no-cache header (no-store, no-cache, must-revalidate)
 						// Set IE extended HTTP/1.1 no-cache headers (post-check, pre-check)
-						response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+						response.Headers.CacheControl = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0";
 
 						// Set standard HTTP/1.0 no-cache header.
-						response.Headers.Add("Pragma", "no-cache");
+						response.Headers.Pragma = "no-cache";
 
 						// Set the Expires header.
-						response.Headers.Add("Expires", "0");
+						response.Headers.Expires = "0";
 					}
 
 					return Task.CompletedTask;

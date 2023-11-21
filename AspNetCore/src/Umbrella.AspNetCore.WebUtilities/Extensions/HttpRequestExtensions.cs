@@ -23,7 +23,7 @@ public static class HttpRequestExtensions
 	{
 		Guard.IsNotNull(request);
 
-		string ifModifiedSince = request.Headers["If-Modified-Since"];
+		string? ifModifiedSince = request.Headers.IfModifiedSince;
 
 		if (!string.IsNullOrWhiteSpace(ifModifiedSince))
 		{
@@ -43,10 +43,10 @@ public static class HttpRequestExtensions
 	/// <returns><see langword="true" /> if it can be matched, otherwise <see langword="false" /></returns>
 	public static bool IfNoneMatchHeaderMatched(this HttpRequest request, string valueToMatch)
 	{
-		Guard.IsNotNull(request, nameof(request));
-		Guard.IsNotNullOrWhiteSpace(valueToMatch, nameof(valueToMatch));
+		Guard.IsNotNull(request);
+		Guard.IsNotNullOrWhiteSpace(valueToMatch);
 
-		string ifNoneMatch = request.Headers["If-None-Match"];
+		string? ifNoneMatch = request.Headers.IfNoneMatch;
 
 		return !string.IsNullOrWhiteSpace(ifNoneMatch) && string.Equals(ifNoneMatch, valueToMatch, StringComparison.OrdinalIgnoreCase);
 	}
@@ -56,16 +56,28 @@ public static class HttpRequestExtensions
 	/// </summary>
 	/// <param name="request">The request.</param>
 	/// <returns><see langword="true" /> if they are supported, otherwise <see langword="false" /></returns>
-	public static bool AcceptsWebP(this HttpRequest request) => request.Headers.TryGetValue("Accept", out StringValues values)
-		&& values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/webp", StringComparison.OrdinalIgnoreCase));
+	public static bool AcceptsWebP(this HttpRequest request)
+	{
+		Guard.IsNotNull(request);
+
+		return request.Headers.TryGetValue("Accept", out StringValues values)
+			&& values.Any(x => !string.IsNullOrEmpty(x)
+			&& x.Contains("image/webp", StringComparison.OrdinalIgnoreCase));
+	}
 
 	/// <summary>
 	/// Determines if the client will accept avif image types.
 	/// </summary>
 	/// <param name="request">The request.</param>
 	/// <returns><see langword="true" /> if they are supported, otherwise <see langword="false" /></returns>
-	public static bool AcceptsAvif(this HttpRequest request) => request.Headers.TryGetValue("Accept", out StringValues values)
-		&& values.Any(x => !string.IsNullOrEmpty(x) && x.Contains("image/avif", StringComparison.OrdinalIgnoreCase));
+	public static bool AcceptsAvif(this HttpRequest request)
+	{
+		Guard.IsNotNull(request);
+
+		return request.Headers.TryGetValue("Accept", out StringValues values)
+			&& values.Any(x => !string.IsNullOrEmpty(x)
+			&& x.Contains("image/avif", StringComparison.OrdinalIgnoreCase));
+	}
 
 	/// <summary>
 	/// Determines whether the requesting client is IE by checking the User-Agent header to see if it contains
@@ -74,9 +86,10 @@ public static class HttpRequestExtensions
 	/// <param name="request">The request.</param>
 	public static bool IsInternetExplorer(this HttpRequest request)
 	{
-		string userAgent = request.Headers["User-Agent"];
+		Guard.IsNotNull(request);
 
-		return !string.IsNullOrWhiteSpace(userAgent)
-&& (userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase));
+		string? userAgent = request.Headers.UserAgent;
+
+		return !string.IsNullOrWhiteSpace(userAgent) && (userAgent.Contains("MSIE", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Trident", StringComparison.OrdinalIgnoreCase));
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Primitives;
 using Umbrella.AppFramework.Shared.Constants;
 
@@ -17,7 +18,9 @@ public class AppJwtBearerFATEvents : JwtBearerEvents
 	/// <inheritdoc />
 	public override Task MessageReceived(MessageReceivedContext context)
 	{
-		string authorization = context.Request.Headers["Authorization"];
+		Guard.IsNotNull(context);
+
+		string? authorization = context.Request.Headers["Authorization"];
 
 		if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith(TokenPrefix, StringComparison.OrdinalIgnoreCase))
 		{
@@ -25,7 +28,7 @@ public class AppJwtBearerFATEvents : JwtBearerEvents
 		}
 		else if (context.Request.Query.TryGetValue(AppQueryStringKeys.FileAccessToken, out StringValues values))
 		{
-			context.Token = values.First().Trim();
+			context.Token = values.First()?.Trim();
 		}
 
 		// If no token found, no further work possible

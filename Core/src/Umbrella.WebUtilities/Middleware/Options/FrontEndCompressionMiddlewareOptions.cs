@@ -40,7 +40,7 @@ public class FrontEndCompressionMiddlewareOptions : ISanitizableUmbrellaOptions,
 	/// Gets or sets a transformation applied to the "Accept-Encoding" header values based on the headers of the current request.
 	/// This is useful for last resort scenarios where, e.g. User Agent sniffing is needed to refine the encoding values.
 	/// </summary>
-	public Action<IReadOnlyDictionary<string, IEnumerable<string>>, HashSet<string>>? AcceptEncodingModifier { get; set; }
+	public Action<IReadOnlyDictionary<string, IEnumerable<string?>>, HashSet<string>>? AcceptEncodingModifier { get; set; }
 
 	/// <summary>
 	/// Gets or sets the buffer size in bytes when copying data between streams during compression. Defaults to 81920.

@@ -620,7 +620,11 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 			using (var fs = new FileStream(_metadataFullFileName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
 			{
 				using var sr = new StreamReader(fs);
+#if NET8_0_OR_GREATER
+				json = await sr.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
+#else
 				json = await sr.ReadToEndAsync().ConfigureAwait(false);
+#endif
 			}
 
 			if (string.IsNullOrWhiteSpace(json))
@@ -649,5 +653,5 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 		if (IsNew)
 			throw new InvalidOperationException("Cannot read the contents of a newly created file. The file must first be written to.");
 	}
-	#endregion
+#endregion
 }

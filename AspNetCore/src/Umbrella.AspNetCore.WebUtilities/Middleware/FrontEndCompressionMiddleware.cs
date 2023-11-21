@@ -78,7 +78,7 @@ public class FrontEndCompressionMiddleware
 		Guard.IsNotNull(hostingEnvironment);
 
 		// File Provider
-		FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/", false));
+		FileProvider = new PhysicalFileProvider(hostingEnvironment.MapPath("~/", false) ?? throw new InvalidOperationException("The output from the call to .MapPath is null."));
 	}
 	#endregion
 
@@ -121,7 +121,11 @@ public class FrontEndCompressionMiddleware
 
 				if (fileInfo is null)
 				{
+#if NET8_0_OR_GREATER
+					await cts.CancelAsync();
+#else
 					cts.Cancel();
+#endif
 					context.Response.SendStatusCode(HttpStatusCode.NotFound);
 					return;
 				}
@@ -135,7 +139,11 @@ public class FrontEndCompressionMiddleware
 						// Check Request headers
 						if (context.Request.IfModifiedSinceHeaderMatched(fileInfo.LastModified))
 						{
+#if NET8_0_OR_GREATER
+							await cts.CancelAsync();
+#else
 							cts.Cancel();
+#endif
 							context.Response.SendStatusCode(HttpStatusCode.NotModified);
 							return;
 						}
@@ -144,7 +152,11 @@ public class FrontEndCompressionMiddleware
 
 						if (context.Request.IfNoneMatchHeaderMatched(eTagValue))
 						{
+#if NET8_0_OR_GREATER
+							await cts.CancelAsync();
+#else
 							cts.Cancel();
+#endif
 							context.Response.SendStatusCode(HttpStatusCode.NotModified);
 							return;
 						}
@@ -190,7 +202,7 @@ public class FrontEndCompressionMiddleware
 					// Parse the headers
 					var lstEncodingValue = new HashSet<string>();
 
-					foreach (string value in encodingValues)
+					foreach (string? value in encodingValues)
 					{
 						if (string.IsNullOrWhiteSpace(value))
 							continue;
@@ -350,7 +362,7 @@ public class FrontEndCompressionMiddleware
 			throw;
 		}
 	}
-	#endregion
+#endregion
 
 	#region Private Methods
 	private IFileInfo? GetFileInfo(string path, bool watchFiles)

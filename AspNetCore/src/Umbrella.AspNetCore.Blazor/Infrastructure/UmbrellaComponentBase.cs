@@ -170,7 +170,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	/// Releases unmanaged and - optionally - managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-	protected virtual ValueTask DisposeAsync(bool disposing)
+	protected virtual async ValueTask DisposeAsync(bool disposing)
 	{
 		if (!_disposedValue)
 		{
@@ -178,15 +178,18 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 			{
 				if (_cancellationTokenSource.IsValueCreated)
 				{
+#if NET8_0_OR_GREATER
+					await _cancellationTokenSource.Value.CancelAsync();
+#else
+					await Task.Yield();
 					_cancellationTokenSource.Value.Cancel();
+#endif
 					_cancellationTokenSource.Value.Dispose();
 				}
 			}
 
 			_disposedValue = true;
 		}
-
-		return default;
 	}
 
 	/// <inheritdoc/>

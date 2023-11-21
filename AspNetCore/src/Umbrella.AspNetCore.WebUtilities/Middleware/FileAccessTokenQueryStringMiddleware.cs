@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Security.Claims;
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -44,13 +45,26 @@ public class FileAccessTokenQueryStringMiddleware
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	public async Task InvokeAsync(HttpContext context)
 	{
+		Guard.IsNotNull(context);
+
 		try
 		{
-			string jwt = context.Request.Query[AppQueryStringKeys.FileAccessToken];
+			string? jwt = context.Request.Query[AppQueryStringKeys.FileAccessToken];
+
+			if(string.IsNullOrEmpty(jwt))
+			{
+				await _next(context);
+
+				return;
+			}
 
 			JsonWebTokenHandler jwtHandler = new();
 
+#if NET8_0_OR_GREATER
+			TokenValidationResult validationResult = await jwtHandler.ValidateTokenAsync(jwt, _options.ValidationParameters);
+#else
 			TokenValidationResult validationResult = jwtHandler.ValidateToken(jwt, _options.ValidationParameters);
+#endif
 
 			if (validationResult.IsValid)
 				context.User = new ClaimsPrincipal(validationResult.ClaimsIdentity);
