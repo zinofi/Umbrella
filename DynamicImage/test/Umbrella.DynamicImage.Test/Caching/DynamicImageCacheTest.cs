@@ -46,7 +46,7 @@ public class DynamicImageCacheTest
 			if (string.IsNullOrEmpty(_baseDirectory))
 			{
 				string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net6.0"), StringComparison.Ordinal);
+				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net8.0"), StringComparison.Ordinal);
 				_baseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 			}
 
