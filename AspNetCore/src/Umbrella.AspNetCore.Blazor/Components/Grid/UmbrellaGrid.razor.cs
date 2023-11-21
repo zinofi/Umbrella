@@ -393,7 +393,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	/// <inheritdoc/>
 	protected override async Task OnInitializedAsync()
 	{
-		await base.OnInitializedAsync().ConfigureAwait(false);
+		await base.OnInitializedAsync();
 
 		IsSearchOptionStateEnabled = Options.IsSearchOptionStateEnabled && ModalInstance is null;
 
@@ -403,7 +403,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 			_sessionStorageSearchStateKey = HashCode.Combine(QueryStringStateDiscriminator, typeof(TItem).FullName, url).ToString(CultureInfo.InvariantCulture);
 
-			await BrowserEventAggregator.Value.SubscribeAsync("popstate", async () => await InvokeAsync(async () => await ApplyQueryStringSortersAndFiltersAsync(false).ConfigureAwait(false)).ConfigureAwait(false), _cts.Token).ConfigureAwait(false);
+			await BrowserEventAggregator.Value.SubscribeAsync("popstate", async () => await InvokeAsync(async () => await ApplyQueryStringSortersAndFiltersAsync(false)), _cts.Token);
 		}
 	}
 
@@ -492,7 +492,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { FilterableColumnsCount = FilterableColumns.Count });
 
-			await ApplyQueryStringSortersAndFiltersAsync(true).ConfigureAwait(false);
+			await ApplyQueryStringSortersAndFiltersAsync(true);
 
 			StateHasChanged();
 		}
@@ -505,9 +505,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	public async Task RefreshAsync(bool resetState = false)
 	{
 		if (resetState)
-			await ResetFiltersAndSortersAsync().ConfigureAwait(false);
+			await ResetFiltersAndSortersAsync();
 
-		await UpdateGridAsync(resetState ? QueryStringStateUpdateMode.Reset : QueryStringStateUpdateMode.None).ConfigureAwait(false);
+		await UpdateGridAsync(resetState ? QueryStringStateUpdateMode.Reset : QueryStringStateUpdateMode.None);
 	}
 
 	/// <summary>
@@ -537,11 +537,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 		if (!firstRender)
 		{
 			if (PaginationInstance is not null)
-				await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize).ConfigureAwait(false);
+				await PaginationInstance.UpdateAsync(TotalCount, PageNumber, PageSize);
 		}
 		else
 		{
-			await SetColumnScanCompletedAsync().ConfigureAwait(false);
+			await SetColumnScanCompletedAsync();
 		}
 	}
 
@@ -549,7 +549,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	/// The click event handler for the apply filters button.
 	/// </summary>
 	/// <returns>An awaitable Task that completes when the operation has completed.</returns>
-	private async Task ApplyFiltersClickAsync() => await UpdateGridAsync(QueryStringStateUpdateMode.Update).ConfigureAwait(false);
+	private async Task ApplyFiltersClickAsync() => await UpdateGridAsync(QueryStringStateUpdateMode.Update);
 
 	/// <summary>
 	/// The click event handler for the reset filters button.
@@ -557,8 +557,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	/// <returns>An awaitable Task that completes when the operation has completed.</returns>
 	private async Task ResetFiltersClickAsync()
 	{
-		await ResetFiltersAndSortersAsync().ConfigureAwait(false);
-		await UpdateGridAsync(QueryStringStateUpdateMode.Reset).ConfigureAwait(false);
+		await ResetFiltersAndSortersAsync();
+		await UpdateGridAsync(QueryStringStateUpdateMode.Reset);
 	}
 
 	/// <summary>
@@ -580,7 +580,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 				: null;
 		}
 
-		await UpdateGridAsync(QueryStringStateUpdateMode.Update).ConfigureAwait(false);
+		await UpdateGridAsync(QueryStringStateUpdateMode.Update);
 	}
 
 	/// <summary>
@@ -589,8 +589,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	/// <returns>A <see cref="Task"/> that completes when the grid has been reloaded.</returns>
 	private async Task ReloadButtonClickAsync()
 	{
-		await ResetFiltersAndSortersAsync().ConfigureAwait(false);
-		await UpdateGridAsync(QueryStringStateUpdateMode.None, PageNumber, PageSize).ConfigureAwait(false);
+		await ResetFiltersAndSortersAsync();
+		await UpdateGridAsync(QueryStringStateUpdateMode.None, PageNumber, PageSize);
 	}
 
 	private static async Task FilterTextAddonButtonClickAsync(IUmbrellaColumnDefinition<TItem> columnDefinition)
@@ -598,7 +598,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 		if (columnDefinition.OnAddOnButtonClickedAsync is null)
 			throw new UmbrellaBlazorException($"The {nameof(columnDefinition.OnAddOnButtonClickedAsync)} has not been specified.");
 
-		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue).ConfigureAwait(false);
+		columnDefinition.FilterValue = await columnDefinition.OnAddOnButtonClickedAsync(columnDefinition.FilterValue);
 	}
 
 	/// <summary>
@@ -625,7 +625,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 		}
 
 		if (OnResetFiltersAndSorters.HasDelegate)
-			await OnResetFiltersAndSorters.InvokeAsync().ConfigureAwait(false);
+			await OnResetFiltersAndSorters.InvokeAsync();
 	}
 
 	private async Task UpdateGridAsync(QueryStringStateUpdateMode queryStringStateUpdateMode, int? pageNumber = null, int? pageSize = null)
@@ -788,17 +788,17 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 					// Before navigating, store the url in SessionStorage, the intention being that if the user has navigated
 					// away from the screen containing the grid, we can restore state by loading it from there.
 					if (!string.IsNullOrEmpty(_sessionStorageSearchStateKey))
-						await SessionStorageService.SetItemAsStringAsync(_sessionStorageSearchStateKey, url, _cts.Token).ConfigureAwait(false);
+						await SessionStorageService.SetItemAsStringAsync(_sessionStorageSearchStateKey, url, _cts.Token);
 
 					Navigation.NavigateTo(url);
 				}
 			}
 
-			UmbrellaGridDataResponse<TItem>? response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token).ConfigureAwait(false);
+			UmbrellaGridDataResponse<TItem>? response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
 
 			if (response is null)
 			{
-				await DialogService.ShowDangerMessageAsync("There has been a problem loading the data. Please try again.").ConfigureAwait(false);
+				await DialogService.ShowDangerMessageAsync("There has been a problem loading the data. Please try again.");
 				return;
 			}
 
@@ -813,7 +813,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 			CheckboxSelectColumnSelected = false;
 
 			if (AutoScrollTop && _autoScrollEnabled)
-				await BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset).ConfigureAwait(false);
+				await BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
 
 			// Only enable auto-scrolling after the initial page load.
 			_autoScrollEnabled = true;
@@ -829,7 +829,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	{
 		try
 		{
-			var result = await DialogService.ShowDialogAsync<DateRangeDialog>("Select Dates", "").ConfigureAwait(false);
+			var result = await DialogService.ShowDialogAsync<DateRangeDialog>("Select Dates", "");
 
 			if (result.Cancelled)
 				return;
@@ -847,13 +847,13 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
-			await DialogService.ShowDangerMessageAsync().ConfigureAwait(false);
+			await DialogService.ShowDangerMessageAsync();
 		}
 	}
 
 	private async ValueTask ApplyQueryStringSortersAndFiltersAsync(bool tryRestoreFromSessionStorage)
 	{
-		await ResetFiltersAndSortersAsync().ConfigureAwait(false);
+		await ResetFiltersAndSortersAsync();
 
 		if (IsSearchOptionStateEnabled)
 		{
@@ -875,7 +875,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 				&& !pageSizeResult.success
 				&& !string.IsNullOrEmpty(_sessionStorageSearchStateKey))
 			{
-				string url = await SessionStorageService.GetItemAsStringAsync(_sessionStorageSearchStateKey, _cts.Token).ConfigureAwait(false);
+				string url = await SessionStorageService.GetItemAsStringAsync(_sessionStorageSearchStateKey, _cts.Token);
 
 				if (!string.IsNullOrEmpty(url) && url != Navigation.Uri)
 				{
@@ -994,7 +994,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 			}
 		}
 
-		await UpdateGridAsync(QueryStringStateUpdateMode.None, PageNumber, PageSize).ConfigureAwait(false);
+		await UpdateGridAsync(QueryStringStateUpdateMode.None, PageNumber, PageSize);
 	}
 
 	/// <summary>
@@ -1012,7 +1012,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 				_cts.Dispose();
 
 				if (BrowserEventAggregator.IsValueCreated)
-					await BrowserEventAggregator.Value.DisposeAsync().ConfigureAwait(false);
+					await BrowserEventAggregator.Value.DisposeAsync();
 			}
 
 			_disposedValue = true;
@@ -1023,7 +1023,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	public async ValueTask DisposeAsync()
 	{
 		// Do not change this code. Put cleanup code in 'DisposeAsync(bool disposing)' method
-		await DisposeAsync(disposing: true).ConfigureAwait(false);
+		await DisposeAsync(disposing: true);
 		GC.SuppressFinalize(this);
 	}
 }

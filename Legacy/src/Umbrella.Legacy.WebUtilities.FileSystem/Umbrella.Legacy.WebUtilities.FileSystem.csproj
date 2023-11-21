@@ -13,8 +13,8 @@
 		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.FileSystem\Umbrella.WebUtilities.FileSystem.csproj" />
 		<ProjectReference Include="..\..\..\FileSystem\src\Umbrella.FileSystem.Abstractions\Umbrella.FileSystem.Abstractions.csproj" />
 		<ProjectReference Include="..\Umbrella.Legacy.WebUtilities\Umbrella.Legacy.WebUtilities.csproj" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

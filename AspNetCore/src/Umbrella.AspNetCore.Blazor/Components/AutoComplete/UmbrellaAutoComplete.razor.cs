@@ -85,7 +85,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 			{
 				if (Value is not null && Value.Length >= MinimumLength)
 				{
-					IEnumerable<string> lstResult = await SearchMethod!.Invoke(Value).ConfigureAwait(true);
+					IEnumerable<string> lstResult = await SearchMethod!.Invoke(Value);
 
 					_options.Clear();
 					_options.AddRange(lstResult.OrderBy(x => x).Take(MaximumSuggestions));
@@ -96,7 +96,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 
 			_valueHasChanged = false;
 		}
-		while (await timer.WaitForNextTickAsync(_cancellationTokenSource.Token).ConfigureAwait(true));
+		while (await timer.WaitForNextTickAsync(_cancellationTokenSource.Token));
 	}
 
 	private void OnInput(ChangeEventArgs args)
@@ -111,7 +111,7 @@ public partial class UmbrellaAutoComplete : IDisposable
 	{
 		_valueHasChanged = false;
 
-		await ValueChanged.InvokeAsync(Value).ConfigureAwait(true);
+		await ValueChanged.InvokeAsync(Value);
 	}
 
 	/// <summary>
