@@ -1,7 +1,5 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using BlazorApplicationInsights;
+﻿using BlazorApplicationInsights.Interfaces;
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -87,6 +85,8 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 	/// <inheritdoc />
 	public async Task MarkUserAsAuthenticatedAsync(ClaimsPrincipal principal)
 	{
+		Guard.IsNotNull(principal);
+
 		try
 		{
 			var authState = Task.FromResult(new AuthenticationState(principal));
