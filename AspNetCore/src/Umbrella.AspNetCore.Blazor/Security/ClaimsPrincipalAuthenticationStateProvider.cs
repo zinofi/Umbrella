@@ -1,4 +1,4 @@
-﻿using BlazorApplicationInsights.Interfaces;
+﻿using BlazorApplicationInsights;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
