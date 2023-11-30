@@ -80,8 +80,6 @@ internal sealed class BrowserEventAggregator : IAsyncDisposable, IBrowserEventAg
 	{
 		try
 		{
-			_dotNetObjectReference?.Dispose();
-
 			foreach (string eventName in _callbackDictionary.Keys)
 			{
 				if (_logger.IsEnabled(LogLevel.Debug))
@@ -89,6 +87,8 @@ internal sealed class BrowserEventAggregator : IAsyncDisposable, IBrowserEventAg
 
 				await _jsruntime.InvokeVoidAsync("UmbrellaBlazorInterop.browserEventAggregator.removeEventListener", _id, eventName, _dotNetObjectReference);
 			}
+
+			_dotNetObjectReference.Dispose();
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
