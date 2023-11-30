@@ -1,4 +1,6 @@
-﻿namespace Umbrella.DataAnnotations.BaseClasses;
+﻿using System.Runtime.Versioning;
+
+namespace Umbrella.DataAnnotations.BaseClasses;
 
 /// <summary>
 /// Serves as the base class for all model aware validation attributes.
@@ -65,9 +67,12 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// <inheritdoc />
 	protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 	{
+		if (validationContext is null)
+			throw new ArgumentNullException(nameof(validationContext));
+
 		if (value is null)
 			return null;
-
+		
 		object model = validationContext.ObjectInstance;
 
 		if (!IsValid(value, model))

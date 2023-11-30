@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
@@ -118,6 +119,8 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	protected static void SetValueFromInputSelectString<TValue>(object? model, string? value, Action<TValue?> assignor)
 		where TValue : struct
 	{
+		Guard.IsNotNull(assignor);
+
 		if (model is null)
 			return;
 

@@ -40,8 +40,8 @@ public class CacheKeyUtility : ICacheKeyUtility
 	/// <inheritdoc />
 	public string Create(Type type, string key)
 	{
-		Guard.IsNotNull(type, nameof(type));
-		Guard.IsNotNullOrWhiteSpace(key, nameof(key));
+		Guard.IsNotNull(type);
+		Guard.IsNotNullOrWhiteSpace(key);
 
 		char[]? rentedArray = null;
 
