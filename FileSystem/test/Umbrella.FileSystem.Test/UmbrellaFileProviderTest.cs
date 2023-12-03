@@ -10,7 +10,6 @@ using Umbrella.FileSystem.Disk;
 using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Helpers;
-using Umbrella.Utilities.Options.Abstractions;
 using Xunit;
 using Xunit.Extensions.Ordering;
 
@@ -1369,8 +1368,7 @@ public class UmbrellaFileProviderTest
 			AllowUnhandledFileAuthorizationChecks = true
 		};
 
-		if (options is IServicesResolverUmbrellaOptions servicesOptions)
-			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
+		options.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
 		var provider = new UmbrellaAzureBlobStorageFileProvider(
@@ -1392,8 +1390,7 @@ public class UmbrellaFileProviderTest
 			AllowUnhandledFileAuthorizationChecks = true
 		};
 
-		if (options is IServicesResolverUmbrellaOptions servicesOptions)
-			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
+		options.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
 		var provider = new UmbrellaDiskFileStorageProvider(

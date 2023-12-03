@@ -32,6 +32,7 @@ public abstract class UmbrellaFileStorageProviderOptionsBase : IServicesResolver
 	/// <inheritdoc/>
 	public string WebFilesDirectoryName { get; set; } = UmbrellaFileSystemConstants.DefaultWebFilesDirectoryName;
 
+	/// <inheritdoc/>
 	public void Initialize(IServiceCollection services, IServiceProvider serviceProvider)
 	{
 		Guard.IsNotNull(services);

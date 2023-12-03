@@ -1,6 +1,4 @@
-﻿using System.Runtime.Versioning;
-
-namespace Umbrella.DataAnnotations.BaseClasses;
+﻿namespace Umbrella.DataAnnotations.BaseClasses;
 
 /// <summary>
 /// Serves as the base class for all model aware validation attributes.
@@ -44,7 +42,7 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// <summary>
 	/// Gets the name of the type for use in client scenarios, e.g. jQuery Validation, when used with web projects.
 	/// </summary>
-	#if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
 	public virtual string ClientTypeName => GetType().Name.Replace("Attribute", "", StringComparison.Ordinal);
 #else
 	public virtual string ClientTypeName => GetType().Name.Replace("Attribute", "");
@@ -72,7 +70,7 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 
 		if (value is null)
 			return null;
-		
+
 		object model = validationContext.ObjectInstance;
 
 		if (!IsValid(value, model))

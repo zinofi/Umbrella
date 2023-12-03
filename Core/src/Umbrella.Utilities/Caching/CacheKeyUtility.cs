@@ -82,7 +82,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 	/// <inheritdoc />
 	public string Create(Type type, in ReadOnlySpan<string> keyParts, int? keyPartsLength = null)
 	{
-		Guard.IsNotNull(type, nameof(type));
+		Guard.IsNotNull(type);
 
 		if (keyPartsLength is not null)
 			Guard.IsInRange(keyPartsLength.Value, 1, keyParts.Length, nameof(keyPartsLength));

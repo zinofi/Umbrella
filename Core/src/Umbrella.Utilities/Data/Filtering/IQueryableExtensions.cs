@@ -66,7 +66,7 @@ public static class IQueryableExtensions
 						{
 							filterPredicate = predicate;
 						}
-						else if (predicate is not null)
+						else
 						{
 							filterPredicate = combinator switch
 							{

@@ -192,6 +192,7 @@ dotnet_diagnostic.CA1819.severity = error
 dotnet_diagnostic.CA1860.severity = silent
 dotnet_diagnostic.CA1055.severity = silent
 dotnet_diagnostic.CA1815.severity = error
+dotnet_diagnostic.CA1721.severity = none
 
 ###############################
 # C# Code Style Rules         #
@@ -343,3 +344,4 @@ dotnet_diagnostic.CA1802.severity = error
 dotnet_diagnostic.IDE0300.severity = error
 dotnet_diagnostic.IDE0301.severity = error
 dotnet_diagnostic.CA2234.severity = silent
+dotnet_diagnostic.CA1508.severity = error

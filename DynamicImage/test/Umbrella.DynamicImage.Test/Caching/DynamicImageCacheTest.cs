@@ -12,7 +12,6 @@ using Umbrella.FileSystem.Disk;
 using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Helpers;
-using Umbrella.Utilities.Options.Abstractions;
 using Xunit;
 
 namespace Umbrella.DynamicImage.Test.Caching;
@@ -186,8 +185,7 @@ public class DynamicImageCacheTest
 			AllowUnhandledFileAuthorizationChecks = true
 		};
 
-		if (options is IServicesResolverUmbrellaOptions servicesOptions)
-			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
+		options.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 		var provider = new UmbrellaDiskFileStorageProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaDiskFileStorageProvider>(),
@@ -220,8 +218,7 @@ public class DynamicImageCacheTest
 			AllowUnhandledFileAuthorizationChecks = true
 		};
 
-		if (options is IServicesResolverUmbrellaOptions servicesOptions)
-			servicesOptions.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
+		options.Initialize(new ServiceCollection(), new ServiceCollection().BuildServiceProvider());
 
 		var provider = new UmbrellaAzureBlobStorageFileProvider(
 			CoreUtilitiesMocks.CreateLoggerFactory<UmbrellaAzureBlobStorageFileProvider>(),

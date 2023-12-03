@@ -47,6 +47,15 @@ public class KnockoutClassGenerator : BaseClassGenerator
 	/// <inheritdoc />
 	protected override void WriteProperty(PropertyInfo pi, TypeScriptMemberInfo tsInfo, StringBuilder typeBuilder)
 	{
+		if (pi is null)
+			throw new ArgumentNullException(nameof(pi));
+
+		if (tsInfo is null)
+			throw new ArgumentNullException(nameof(tsInfo));
+
+		if (typeBuilder is null)
+			throw new ArgumentNullException(nameof(typeBuilder));
+
 		if (!string.IsNullOrEmpty(tsInfo.TypeName))
 		{
 			string strInitialOutputValue = PropertyMode switch
@@ -79,6 +88,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 			{
 				_ = formatString.Append($"\t\t{tsInfo.Name}: ");
 
+#pragma warning disable CA1508 // Avoid dead conditional code
 				if (tsInfo.TypeName?.EndsWith("[]", StringComparison.Ordinal) is true)
 				{
 					tsInfo.TypeName = tsInfo.TypeName.TrimEnd('[', ']');
@@ -88,6 +98,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 				{
 					_ = formatString.Append($"KnockoutObservable<{tsInfo.TypeName}{strStrictNullCheck}> = ko.observable<{tsInfo.TypeName}{strStrictNullCheck}>({strInitialOutputValue});");
 				}
+#pragma warning restore CA1508 // Avoid dead conditional code
 			}
 
 			_ = typeBuilder.AppendLine(formatString.ToString());
@@ -97,6 +108,12 @@ public class KnockoutClassGenerator : BaseClassGenerator
 	/// <inheritdoc />
 	protected override void WriteValidationRules(PropertyInfo propertyInfo, TypeScriptMemberInfo tsInfo, StringBuilder? validationBuilder)
 	{
+		if (propertyInfo is null)
+			throw new ArgumentNullException(nameof(propertyInfo));
+
+		if (tsInfo is null)
+			throw new ArgumentNullException(nameof(tsInfo));
+
 		StringBuilder? ctorExtendBuilder = CreateConstructorValidationRules(propertyInfo);
 
 		(string thisVariable, string exposePrefix) = _useDecorators && ctorExtendBuilder?.Length > 0
@@ -341,6 +358,9 @@ public class KnockoutClassGenerator : BaseClassGenerator
 	/// <inheritdoc />
 	protected override void WriteEnd(Type modelType, StringBuilder typeBuilder, StringBuilder? validationBuilder)
 	{
+		if (typeBuilder is null)
+			throw new ArgumentNullException(nameof(typeBuilder));
+
 		// Only write the validation rules if some validation rules have been generated
 		// and we are not using decorators
 		if (validationBuilder?.Length > 0)

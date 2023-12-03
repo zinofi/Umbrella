@@ -119,7 +119,7 @@ public static class StringExtensions
 	///   or <see langword="true"/> if the <paramref name="value"/> is <see langword="null"/> or whitespace and <paramref name="allowNull"/> is <see langword="true"/>.
 	///   All other conditions will return <see langword="false"/>.
 	/// </returns>
-	public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true) => string.IsNullOrWhiteSpace(value) ? allowNull : value?.Length >= minLength && value.Length <= maxLength;
+	public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true) => string.IsNullOrWhiteSpace(value) ? allowNull : value.Length >= minLength && value.Length <= maxLength;
 
 	/// <summary>
 	/// Strips HTML tags from the specified <paramref name="value"/>.
@@ -129,7 +129,7 @@ public static class StringExtensions
 	[Obsolete("Use the dotnet toolkit when released.")]
 	public static string StripHtml(this string value)
 	{
-		Guard.IsNotNull(value, nameof(value));
+		Guard.IsNotNull(value);
 
 		return _htmlTagPatternRegex.Replace(value, string.Empty);
 	}
@@ -271,7 +271,13 @@ public static class StringExtensions
 	/// <returns>
 	///   <see langword="true"/> if the <paramref name="url"/> is absolute; otherwise, <see langword="false"/>.
 	/// </returns>
-	public static bool IsAbsoluteUrl(this string url) => url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+	public static bool IsAbsoluteUrl(this string url)
+	{
+		if (string.IsNullOrWhiteSpace(url))
+			return false;
+
+		return url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+	}
 
 	/// <summary>
 	/// Remaps the international characters in the to their to their ASCII equaivalents, if they can be.
@@ -280,6 +286,8 @@ public static class StringExtensions
 	/// <returns>A string with all non-ASCII characters remapped</returns>
 	public static string RemapInternationalCharactersToAscii(this string value)
 	{
+		Guard.IsNotNull(value);
+
 		int initialLength = value.Length * 2;
 
 		Span<char> span = initialLength <= StackAllocConstants.MaxCharSize ? stackalloc char[initialLength] : new char[initialLength];

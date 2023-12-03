@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.Common;
@@ -63,6 +65,8 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 	/// <inheritdoc />
 	public virtual Task BindModelAsync(ModelBindingContext bindingContext)
 	{
+		Guard.IsNotNull(bindingContext);
+
 		ValueProviderResult result = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
 		if (result == ValueProviderResult.None)
@@ -86,7 +90,7 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 
 			if (model is TDescriptor descriptor)
 			{
-				if (descriptor?.IsValid() == true)
+				if (descriptor.IsValid())
 				{
 					if (DescriptorTransformer is not null)
 					{
@@ -173,8 +177,12 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 	/// <param name="descriptors">The descriptors.</param>
 	/// <returns>The transformation output which serves as the result of the model binding process.</returns>
 	/// <exception cref="UmbrellaWebException">The type being dealt with is not an enumerable. This should not be possible based on earlier checks.</exception>
+	[SuppressMessage("Performance", "CA1851:Possible multiple enumerations of 'IEnumerable' collection", Justification = "Unavoidable")]
 	protected virtual (object? modelResult, IReadOnlyCollection<TDescriptor> unmatchedItems) TransformDescriptors(Type underlyingOrModelType, IEnumerable<TDescriptor> descriptors)
 	{
+		Guard.IsNotNull(underlyingOrModelType);
+		Guard.IsNotNull(descriptors);
+
 		var (isEnumerable, elementType) = _enumerableTypeDataCache.GetOrAdd(underlyingOrModelType, type => type.GetIEnumerableTypeData());
 
 		if (!isEnumerable || elementType is null)
@@ -187,7 +195,10 @@ public abstract class DataExpressionModelBinder<TDescriptor> : IModelBinder
 
 		try
 		{
-			lstExpression = ArrayPool<object>.Shared.Rent(descriptors.Count());
+			if (!descriptors.TryGetNonEnumeratedCount(out int descriptorCount))
+				descriptorCount = descriptors.Count();
+
+			lstExpression = ArrayPool<object>.Shared.Rent(descriptorCount);
 
 			foreach (TDescriptor descriptor in descriptors)
 			{
