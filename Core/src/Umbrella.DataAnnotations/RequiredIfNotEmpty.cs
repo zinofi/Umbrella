@@ -19,7 +19,7 @@ public sealed class RequiredIfNotEmptyAttribute : ContingentValidationAttribute
 	}
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object? actualDependentPropertyValue, object model)
+	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
 	{
 		if (!string.IsNullOrWhiteSpace((actualDependentPropertyValue ?? string.Empty).ToString()))
 			return value is not null && !string.IsNullOrWhiteSpace(value.ToString());

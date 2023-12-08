@@ -60,7 +60,7 @@ public sealed class MaxDateAttribute : ModelAwareValidationAttribute
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public override bool IsValid(object value, object model)
+	public override bool IsValid(object? value, object model)
 	{
 		// TODO: Consider enforcing the value to be specified as DateTimeKind.Utc to avoid issues.
 

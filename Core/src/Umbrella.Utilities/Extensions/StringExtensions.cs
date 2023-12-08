@@ -119,7 +119,7 @@ public static class StringExtensions
 	///   or <see langword="true"/> if the <paramref name="value"/> is <see langword="null"/> or whitespace and <paramref name="allowNull"/> is <see langword="true"/>.
 	///   All other conditions will return <see langword="false"/>.
 	/// </returns>
-	public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true) => string.IsNullOrWhiteSpace(value) ? allowNull : value.Length >= minLength && value.Length <= maxLength;
+	public static bool IsValidLength(this string? value, int minLength, int maxLength, bool allowNull = true) => string.IsNullOrWhiteSpace(value) ? allowNull : value!.Length >= minLength && value.Length <= maxLength;
 
 	/// <summary>
 	/// Strips HTML tags from the specified <paramref name="value"/>.

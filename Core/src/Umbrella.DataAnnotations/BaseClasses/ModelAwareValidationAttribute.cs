@@ -37,7 +37,7 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public abstract bool IsValid(object value, object model);
+	public abstract bool IsValid(object? value, object model);
 
 	/// <summary>
 	/// Gets the name of the type for use in client scenarios, e.g. jQuery Validation, when used with web projects.
@@ -67,9 +67,6 @@ public abstract class ModelAwareValidationAttribute : ValidationAttribute
 	{
 		if (validationContext is null)
 			throw new ArgumentNullException(nameof(validationContext));
-
-		if (value is null)
-			return null;
 
 		object model = validationContext.ObjectInstance;
 

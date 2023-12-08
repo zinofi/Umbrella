@@ -82,7 +82,7 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 		=> base.GetClientValidationParameters().Union(new[] { new KeyValuePair<string, object>("DependentProperty", DependentProperty) });
 
 	/// <inheritdoc />
-	public override bool IsValid(object value, object model) => IsValid(value, GetDependentPropertyValue(model), model);
+	public override bool IsValid(object? value, object model) => IsValid(value, GetDependentPropertyValue(model), model);
 
 	/// <summary>
 	/// If the value of <paramref name="actualDependentPropertyValue" /> is such that it matches the value of the <see cref="DependentProperty"/> value on
@@ -94,5 +94,5 @@ public abstract class ContingentValidationAttribute : ModelAwareValidationAttrib
 	/// <returns>
 	///   <c>true</c> if the specified value is valid; otherwise, <c>false</c>.
 	/// </returns>
-	public abstract bool IsValid(object value, object? actualDependentPropertyValue, object model);
+	public abstract bool IsValid(object? value, object? actualDependentPropertyValue, object model);
 }

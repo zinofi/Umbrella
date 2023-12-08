@@ -21,6 +21,9 @@ public static class TypeScriptUtility
 	/// <returns>The name of the type to be generated.</returns>
 	public static string GenerateTypeName(string memberName, Type memberType, TypeScriptOutputModelType outputModelType)
 	{
+		if (memberType is null)
+			throw new ArgumentNullException(nameof(memberType));
+
 		string generatedName = memberName;
 
 		if (!memberType.IsInterface && (outputModelType == TypeScriptOutputModelType.Interface
@@ -55,6 +58,15 @@ public static class TypeScriptUtility
 	[Obsolete("This is obsolete for some reason.")]
 	public static TypeScriptMemberInfo GetTypeScriptMemberInfo(Type modelType, Type memberType, PropertyInfo propertyInfo, TypeScriptOutputModelType outputType, bool strictNullChecks, TypeScriptPropertyMode propertyMode)
 	{
+		if (modelType is null)
+			throw new ArgumentNullException(nameof(modelType));
+
+		if (memberType is null)
+			throw new ArgumentNullException(nameof(memberType));
+
+		if (propertyInfo is null)
+			throw new ArgumentNullException(nameof(propertyInfo));
+
 		string memberName = propertyInfo.Name.Camelize();
 
 		var info = new TypeScriptMemberInfo(memberName, memberType);
@@ -214,6 +226,7 @@ public static class TypeScriptUtility
 
 				if (propertyValue is null)
 				{
+#pragma warning disable CA1508 // Avoid dead conditional code
 					if (info.TypeName?.EndsWith("[]", StringComparison.Ordinal) is true && propertyInfo.GetCustomAttribute<TypeScriptEmptyAttribute>() is not null)
 					{
 						info.InitialOutputValue = "[]";
@@ -223,6 +236,7 @@ public static class TypeScriptUtility
 						info.InitialOutputValue = "null";
 						info.IsNullable = true;
 					}
+#pragma warning restore CA1508 // Avoid dead conditional code
 				}
 				else if (info.CLRType.IsEnum)
 				{
@@ -253,6 +267,7 @@ public static class TypeScriptUtility
 						info.InitialOutputValue = $"\"{dtPropertyValue.ToUniversalTime():O}\"";
 					}
 				}
+#pragma warning disable CA1508 // Avoid dead conditional code
 				else if (info.CLRType == typeof(bool))
 				{
 					info.InitialOutputValue = propertyValue.ToString().ToLowerInvariant();
@@ -276,6 +291,7 @@ public static class TypeScriptUtility
 					// For all other cases just output the property value
 					info.InitialOutputValue = propertyValue.ToString();
 				}
+#pragma warning restore CA1508 // Avoid dead conditional code
 			}
 		}
 
@@ -291,6 +307,9 @@ public static class TypeScriptUtility
 	/// <returns>The interface names.</returns>
 	public static List<string> GetInterfaceNames(Type modelType, TypeScriptOutputModelType outputType, bool includeSelf)
 	{
+		if (modelType is null)
+			throw new ArgumentNullException(nameof(modelType));
+
 		var lstInterfaceName = new List<string>();
 
 		// This interface is the primary interface which corresponds exactly to the modelType
