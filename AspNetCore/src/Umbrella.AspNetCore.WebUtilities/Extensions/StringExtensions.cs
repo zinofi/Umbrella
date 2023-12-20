@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using System.Text.Encodings.Web;
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Umbrella.Utilities.Constants;
@@ -22,11 +23,15 @@ public static class StringExtensions
 	/// <param name="currentRequest">The current request.</param>
 	/// <param name="schemeOverride">The scheme override.</param>
 	/// <param name="hostOverride">The host override.</param>
-	/// <param name="portOverride">The port override.</param>
 	/// <returns>Provided relativeUrl parameter as fully qualified Url.</returns>
 	/// <example>~/path/to/foo or /path/to/foo to http://www.web.com/path/to/foo</example>
-	public static string ToAbsoluteUrl(this string relativeUrl, HttpRequest currentRequest, string? schemeOverride = null, string? hostOverride = null, int? portOverride = null)
+	public static string ToAbsoluteUrl(this string relativeUrl, HttpRequest currentRequest, string? schemeOverride = null, in HostString? hostOverride = null)
 	{
+		Guard.IsNotNullOrWhiteSpace(relativeUrl);
+		Guard.IsNotNull(currentRequest);
+
+		relativeUrl = relativeUrl.Replace("~/", "/", StringComparison.Ordinal);
+
 		PathString applicationPath = currentRequest.PathBase;
 
 		// Prefix the path with the virtual application segment but only if the cleanedPath doesn't already start with the segment
@@ -43,10 +48,10 @@ public static class StringExtensions
 			throw exception;
 		}
 
-		int? currentPort = currentRequest.Host.Port;
-		string? port = portOverride > 0 ? portOverride.Value.ToString(CultureInfo.InvariantCulture) : (currentPort.HasValue && currentPort.Value != 80 ? (":" + currentPort) : string.Empty);
+		int? currentPort = hostOverride?.Port ?? currentRequest.Host.Port;
+		string? port = currentPort is not 80 and not 443 ? $":{currentPort}" : string.Empty;
 
-		return string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride ?? currentRequest.Host.Value, port, absoluteVirtualPath);
+		return string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride?.Host ?? currentRequest.Host.Host, port, absoluteVirtualPath);
 	}
 
 	/// <summary>

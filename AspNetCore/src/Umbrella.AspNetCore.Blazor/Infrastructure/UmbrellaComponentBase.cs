@@ -170,6 +170,12 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	protected virtual Task ReloadAsync() => OnInitializedAsync();
 
 	/// <summary>
+	/// Shows a generic validation error message.
+	/// </summary>
+	/// <returns>An awaitable Task that completed when this operation has completed.</returns>
+	protected virtual async Task ShowValidationErrorMessageAsync() => await DialogUtility.ShowDangerMessageAsync("Please correct all validation errors.");
+
+	/// <summary>
 	/// Releases unmanaged and - optionally - managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
