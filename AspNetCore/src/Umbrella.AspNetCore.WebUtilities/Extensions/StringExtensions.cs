@@ -49,7 +49,7 @@ public static class StringExtensions
 		}
 
 		int? currentPort = hostOverride?.Port ?? currentRequest.Host.Port;
-		string? port = currentPort is not 80 and not 443 ? $":{currentPort}" : string.Empty;
+		string? port = currentPort is null or 80 or 443 ? string.Empty : $":{currentPort}";
 
 		return string.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", schemeOverride ?? currentRequest.Scheme, hostOverride?.Host ?? currentRequest.Host.Host, port, absoluteVirtualPath);
 	}
