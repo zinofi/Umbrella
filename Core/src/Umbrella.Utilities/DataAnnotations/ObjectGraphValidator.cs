@@ -42,15 +42,14 @@ public class ObjectGraphValidator : IObjectGraphValidator
 	}
 
 	/// <inheritdoc />
-	public (bool isValid, IReadOnlyCollection<ValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false)
+	public (bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false)
 	{
 		Guard.IsNotNull(instance, nameof(instance));
 
 		try
 		{
-
 			var lstVisited = new HashSet<object>();
-			var lstValidationResult = new List<ValidationResult>();
+			var lstValidationResult = new List<ObjectGraphValidationResult>();
 
 			void ValidateObject(object value, ValidationContext? context = null)
 			{
@@ -76,7 +75,11 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				}
 
 				// Validate the object
-				_ = Validator.TryValidateObject(value, context ?? new ValidationContext(value), lstValidationResult, validateAllProperties);
+				List<ValidationResult> lstInnerValidationResult = [];
+
+				_ = Validator.TryValidateObject(value, context ?? new ValidationContext(value), lstInnerValidationResult, validateAllProperties);
+
+				lstValidationResult.AddRange(lstInnerValidationResult.Select(x => new ObjectGraphValidationResult(x, value)));
 
 				// Now go through each public property on the object and apply validation
 				foreach (PropertyInfo pi in value.GetType().GetProperties())

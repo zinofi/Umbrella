@@ -17,5 +17,5 @@ public interface IObjectGraphValidator
 	/// Otherwise it will only validate <see cref="RequiredAttribute"/>s. Defaults to <see langword="false"/> to keep things consistent with the <see cref="Validator.TryValidateObject(object, ValidationContext, ICollection{ValidationResult}, bool)" /> method.
 	/// </param>
 	/// <returns>A tuple containing value indicating if the object graph is valid together with a flatted collection of <see cref="ValidationResult"/> instances representing any errors.</returns>
-	(bool isValid, IReadOnlyCollection<ValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false);
+	(bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false);
 }
