@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 
-namespace Ultimedia.Rtms.Web.Client.Components;
+namespace Umbrella.AspNetCore.Blazor.Components.Validation;
 
 /// <summary>
 /// A component that performs validation of an entire object graph internally using the <see cref="IObjectGraphValidator"/>.
@@ -25,9 +25,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	protected override void OnInitialized()
 	{
 		if (EditContext is null)
-		{
 			return;
-		}
 
 		_validationMessageStore = new ValidationMessageStore(EditContext);
 
@@ -41,9 +39,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	private void ValidateObject(object value)
 	{
 		if (value is null)
-		{
 			return;
-		}
 
 		var (_, results) = ObjectGraphValidator.TryValidateObject(value, validateAllProperties: true);
 
@@ -105,9 +101,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	private void HandleOnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
 	{
 		if (EditContext is not null && _validationMessageStore is not null)
-		{
 			ValidateField(EditContext, _validationMessageStore, eventArgs.FieldIdentifier);
-		}
 	}
 
 	/// <summary>
