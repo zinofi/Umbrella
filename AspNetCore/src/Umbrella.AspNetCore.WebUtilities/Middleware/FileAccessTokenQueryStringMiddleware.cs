@@ -60,11 +60,7 @@ public class FileAccessTokenQueryStringMiddleware
 
 			JsonWebTokenHandler jwtHandler = new();
 
-#if NET8_0_OR_GREATER
 			TokenValidationResult validationResult = await jwtHandler.ValidateTokenAsync(jwt, _options.ValidationParameters);
-#else
-			TokenValidationResult validationResult = jwtHandler.ValidateToken(jwt, _options.ValidationParameters);
-#endif
 
 			if (validationResult.IsValid)
 				context.User = new ClaimsPrincipal(validationResult.ClaimsIdentity);
