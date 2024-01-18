@@ -22,4 +22,22 @@ public static class PropertyBuilderExtensions
 	/// <returns>The property builder.</returns>
 	public static PropertyBuilder<DateTime?> EnsureUtc(this PropertyBuilder<DateTime?> builder)
 		=> builder.HasConversion(x => x.HasValue ? x.Value.ToUniversalTime() : x, x => x.HasValue ? DateTime.SpecifyKind(x.Value, DateTimeKind.Utc) : x);
+
+	/// <summary>
+	/// Applies a precision to the specified <paramref name="builder"/> with a precision of <c>19</c> and a scale of <c>4</c>.
+	/// Internally, this calls <see cref="PropertyBuilder.HasPrecision(int, int)" />.
+	/// </summary>
+	/// <typeparam name="TProperty">The type of the property.</typeparam>
+	/// <param name="builder">The <see cref="PropertyBuilder{TProperty}"/></param>
+	/// <returns>The same instance of <see cref="PropertyBuilder{TProperty}"/> as was passed into the method.</returns>
+	public static PropertyBuilder<TProperty> HasCurrencyPrecisionScale4<TProperty>(this PropertyBuilder<TProperty> builder) => builder.HasPrecision(19, 4);
+
+	/// <summary>
+	/// Applies a precision to the specified <paramref name="builder"/> with a precision of <c>17</c> and a scale of <c>2</c>.
+	/// Internally, this calls <see cref="PropertyBuilder.HasPrecision(int, int)" />.
+	/// </summary>
+	/// <typeparam name="TProperty">The type of the property.</typeparam>
+	/// <param name="builder">The <see cref="PropertyBuilder{TProperty}"/></param>
+	/// <returns>The same instance of <see cref="PropertyBuilder{TProperty}"/> as was passed into the method.</returns>
+	public static PropertyBuilder<TProperty> HasCurrencyPrecisionScale2<TProperty>(this PropertyBuilder<TProperty> builder) => builder.HasPrecision(17, 2);
 }
