@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Umbrella.Utilities.Threading.Redis</PackageId>
+		<Description>This package contains implementations of the threading interfaces under the Umbrella.Utilities.Threading namespace.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DistributedLock.Redis" Version="1.0.2" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="StackExchange.Redis" Version="2.7.17" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>

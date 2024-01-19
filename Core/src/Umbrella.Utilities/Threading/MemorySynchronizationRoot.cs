@@ -3,7 +3,7 @@
 namespace Umbrella.Utilities.Threading;
 
 /// <summary>
-/// An implementation of <see cref="ISynchronizationRoot"/> that used a <see cref="SemaphoreSlim"/> internally to perform synchronization.
+/// An implementation of <see cref="ISynchronizationRoot"/> that uses a <see cref="SemaphoreSlim"/> internally to perform synchronization.
 /// </summary>
 /// <seealso cref="ISynchronizationRoot" />
 public sealed class MemorySynchronizationRoot : ISynchronizationRoot
