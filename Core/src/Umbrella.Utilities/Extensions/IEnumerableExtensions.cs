@@ -66,12 +66,13 @@ public static class IEnumerableExtensions
 	}
 
 	/// <summary>
-	/// Projects each element of a sequence into a new form asynchronously.
+	/// Projects each element of a sequence into a new form asynchronously, either in parallel or sequentially depending on the <paramref name="ensureSequentialExecution"/> parameter.
 	/// </summary>
 	/// <typeparam name="TSource">The type of the elements of source.</typeparam>
 	/// <typeparam name="TResult">The type of the value returned by selector.</typeparam>
 	/// <param name="source">A sequence of values to invoke a transform function on.</param>
 	/// <param name="selector">A transform function to apply to each element.</param>
+	/// <param name="ensureSequentialExecution">Ensures that each <paramref name="selector"/> is executed sequentially.</param>
 	/// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
 	/// <returns>
 	/// An awaitable Task whose result contains an <see cref="IEnumerable{TResult}"/> whose elements are the result of 
@@ -79,11 +80,23 @@ public static class IEnumerableExtensions
 	/// </returns>
 	/// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is null.</exception>
 	/// <exception cref="ArgumentNullException">Thrown if <paramref name="selector"/> is null.</exception>
-	public static async Task<IEnumerable<TResult>> SelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, Task<TResult>> selector, CancellationToken cancellationToken = default)
+	public static async Task<IEnumerable<TResult>> SelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, CancellationToken, Task<TResult>> selector, bool ensureSequentialExecution = false, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(source);
 		Guard.IsNotNull(selector);
+
+		if (ensureSequentialExecution)
+		{
+			List<TResult> lstResult = [];
+
+			foreach(var item in source)
+			{
+				lstResult.Add(await selector(item, cancellationToken).ConfigureAwait(false));
+			}
+
+			return lstResult;
+		}
 
 		return await Task.WhenAll(source.Select(x => selector(x, cancellationToken))).ConfigureAwait(false);
 	}

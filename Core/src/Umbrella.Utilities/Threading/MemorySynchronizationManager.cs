@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
-using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
+using System.Collections.Concurrent;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Threading.Abstractions;
 
@@ -14,10 +13,7 @@ namespace Umbrella.Utilities.Threading;
 /// <seealso cref="ISynchronizationManager" />
 public class MemorySynchronizationManager : ISynchronizationManager
 {
-	private readonly StringPool _stringPool = new();
-#pragma warning disable IDE0028 // Simplify collection initialization
-	private readonly ConditionalWeakTable<string, SemaphoreSlim> _items = new();
-#pragma warning restore IDE0028 // Simplify collection initialization
+	private readonly ConcurrentDictionary<string, SemaphoreSlim> _items = new();
 	private readonly ILogger<MemorySynchronizationManager> _logger;
 
 	/// <summary>
@@ -34,10 +30,11 @@ public class MemorySynchronizationManager : ISynchronizationManager
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(type);
+		Guard.IsNotNullOrEmpty(key);
 
 		try
 		{
-			var semaphoreSlim = _items.GetValue(_stringPool.GetOrAdd($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
+			var semaphoreSlim = _items.GetOrAdd(string.Intern($"{type.FullName}:{key}"), x => new SemaphoreSlim(1, 1));
 
 			var syncRoot = new MemorySynchronizationRoot(semaphoreSlim);
 
