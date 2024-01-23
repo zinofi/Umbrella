@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
@@ -10,7 +11,7 @@ namespace Ultimedia.Rtms.Web.Server.Middleware;
 /// using the <see cref="LinkHeaderMiddlewareOptions"/>.
 /// </summary>
 /// <remarks>
-/// URLs are appended as headers as a list with rel=preconnect and rel=dns-prefetch values output for each URL.
+/// URLs are appended as headers as a list with rel=dns-prefetch and rel=preconnect values output for each URL.
 /// </remarks>
 public class LinkHeaderMiddleware
 {
@@ -48,11 +49,13 @@ public class LinkHeaderMiddleware
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	public async Task InvokeAsync(HttpContext context)
     {
+		Guard.IsNotNull(context);
+
         try
         {
             context.Response.OnStarting(() =>
             {
-				if (_options.Urls.Count is 0)
+				if (_options.PreconnectUrls.Count is 0)
 					return Task.CompletedTask;
 
                 bool isHtmlResponse = context.Response.ContentType?.Contains("text/html", StringComparison.OrdinalIgnoreCase) is true;
@@ -64,7 +67,7 @@ public class LinkHeaderMiddleware
 
 					static string FormatUrl(string url, string rel) => $"<{url}>; crossorigin; rel={rel}";
 
-					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.Urls.Select(x => FormatUrl(x, "preconnect")).Concat(_options.Urls.Select(x => FormatUrl(x, "dns-prefetch")))).ToArray();
+					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.PreconnectUrls.Select(x => FormatUrl(x, "preconnect")).Concat(_options.PreconnectUrls.Select(x => FormatUrl(x, "dns-prefetch")))).ToArray();
 
                     context.Response.Headers.AppendList("Link", cachedValue);
                 }
