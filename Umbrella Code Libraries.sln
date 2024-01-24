@@ -201,7 +201,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Mapping.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Mapping.Mapperly.Benchmark", "Core\benchmark\Umbrella.Utilities.Mapping.Mapperly.Benchmark\Umbrella.Utilities.Mapping.Mapperly.Benchmark.csproj", "{358A2EC3-B9DB-4042-B960-232DD9E6318B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Utilities.Threading.Redis", "Core\src\Umbrella.Utilities.Threading.Redis\Umbrella.Utilities.Threading.Redis.csproj", "{42C94538-4301-4811-AF84-2E9474654D99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Utilities.Threading.Redis", "Core\src\Umbrella.Utilities.Threading.Redis\Umbrella.Utilities.Threading.Redis.csproj", "{42C94538-4301-4811-AF84-2E9474654D99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messaging", "Messaging", "{DB6CAB6F-AE86-47EA-9C5E-8190EF5D4ED8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B75BAF63-4BC5-4339-9570-52FEADC5FC0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{D8FD4841-C706-41B7-A74E-51F7291C75C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E46DA7C3-C661-465D-BCE8-97A19B46F192}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AzureServiceBus", "Messaging\src\Umbrella.AzureServiceBus\Umbrella.AzureServiceBus.csproj", "{29FA06F3-CF69-4122-9847-F918C71F405A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AzureServiceBus.Test", "Messaging\test\Umbrella.AzureServiceBus.Test\Umbrella.AzureServiceBus.Test.csproj", "{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -564,6 +576,18 @@ Global
 		{42C94538-4301-4811-AF84-2E9474654D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42C94538-4301-4811-AF84-2E9474654D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42C94538-4301-4811-AF84-2E9474654D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29FA06F3-CF69-4122-9847-F918C71F405A}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{29FA06F3-CF69-4122-9847-F918C71F405A}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{29FA06F3-CF69-4122-9847-F918C71F405A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29FA06F3-CF69-4122-9847-F918C71F405A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29FA06F3-CF69-4122-9847-F918C71F405A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29FA06F3-CF69-4122-9847-F918C71F405A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -653,6 +677,11 @@ Global
 		{4089A25B-BB7E-4F1B-B1B4-FE84678B58B1} = {D8B05C3A-5AAC-41F7-99C8-3279378B68AB}
 		{358A2EC3-B9DB-4042-B960-232DD9E6318B} = {B35C85E1-B2C5-4F0B-9975-6E86DF7F5BE9}
 		{42C94538-4301-4811-AF84-2E9474654D99} = {84D45264-D944-4A17-A230-AAEECE889301}
+		{B75BAF63-4BC5-4339-9570-52FEADC5FC0E} = {DB6CAB6F-AE86-47EA-9C5E-8190EF5D4ED8}
+		{D8FD4841-C706-41B7-A74E-51F7291C75C6} = {DB6CAB6F-AE86-47EA-9C5E-8190EF5D4ED8}
+		{E46DA7C3-C661-465D-BCE8-97A19B46F192} = {DB6CAB6F-AE86-47EA-9C5E-8190EF5D4ED8}
+		{29FA06F3-CF69-4122-9847-F918C71F405A} = {B75BAF63-4BC5-4339-9570-52FEADC5FC0E}
+		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA} = {E46DA7C3-C661-465D-BCE8-97A19B46F192}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

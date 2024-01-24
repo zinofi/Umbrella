@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Umbrella.AzureServiceBus</PackageId>
+		<Description>This package contains contains extended implementations of core Azure Service Bus types with support for custom plugins.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.2" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
+	</ItemGroup>
+
+</Project>
