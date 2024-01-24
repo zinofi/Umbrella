@@ -1,6 +1,8 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
+#if !AZUREDEVOPS
 using Microsoft.Extensions.Configuration;
+#endif
 using Umbrella.AzureServiceBus;
 using Umbrella.AzureServiceBus.Abstractions;
 using Umbrella.AzureServiceBus.Plugins;
