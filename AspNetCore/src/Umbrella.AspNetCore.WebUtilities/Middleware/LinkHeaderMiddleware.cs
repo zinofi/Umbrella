@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.WebUtilities.Middleware.Options;
+using Umbrella.WebUtilities.Middleware.Options.LinkHeader;
 
 namespace Ultimedia.Rtms.Web.Server.Middleware;
 
@@ -11,7 +11,7 @@ namespace Ultimedia.Rtms.Web.Server.Middleware;
 /// using the <see cref="LinkHeaderMiddlewareOptions"/>.
 /// </summary>
 /// <remarks>
-/// URLs are appended as headers as a list with rel=dns-prefetch and rel=preconnect values output for each URL.
+/// URLs are appended as headers as a list with rel=preconnect and rel=dns-prefetch values output for each URL.
 /// </remarks>
 public class LinkHeaderMiddleware
 {
@@ -50,12 +50,13 @@ public class LinkHeaderMiddleware
 	public async Task InvokeAsync(HttpContext context)
     {
 		Guard.IsNotNull(context);
+		context.RequestAborted.ThrowIfCancellationRequested();
 
         try
         {
             context.Response.OnStarting(() =>
             {
-				if (_options.PreconnectUrls.Count is 0)
+				if (_options.DnsPrefetchPreconnectUrls.Count is 0 && _options.PreloadUrls.Count is 0)
 					return Task.CompletedTask;
 
                 bool isHtmlResponse = context.Response.ContentType?.Contains("text/html", StringComparison.OrdinalIgnoreCase) is true;
@@ -65,9 +66,7 @@ public class LinkHeaderMiddleware
                 {
                     string cacheKey = _cacheKeyUtility.Create<LinkHeaderMiddleware>("LinkHeaders");
 
-					static string FormatUrl(string url, string rel) => $"<{url}>; crossorigin; rel={rel}";
-
-					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.PreconnectUrls.Select(x => FormatUrl(x, "preconnect")).Concat(_options.PreconnectUrls.Select(x => FormatUrl(x, "dns-prefetch")))).ToArray();
+					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.DnsPrefetchPreconnectUrls.SelectMany(x => x.ToLinkHeaderStrings()).Concat(_options.PreloadUrls.Select(x => x.ToLinkHeaderString()))).ToArray();
 
                     context.Response.Headers.AppendList("Link", cachedValue);
                 }

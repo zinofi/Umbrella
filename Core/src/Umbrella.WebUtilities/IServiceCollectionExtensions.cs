@@ -10,6 +10,7 @@ using Umbrella.WebUtilities.Hosting.Options;
 using Umbrella.WebUtilities.Http;
 using Umbrella.WebUtilities.Http.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options;
+using Umbrella.WebUtilities.Middleware.Options.LinkHeader;
 using Umbrella.WebUtilities.Security;
 using Umbrella.WebUtilities.Versioning;
 using Umbrella.WebUtilities.Versioning.Abstractions;
