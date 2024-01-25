@@ -1,6 +1,7 @@
 ﻿using Azure.Core.Extensions;
 using Azure.Messaging.ServiceBus;
 using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbrella.AzureServiceBus;
 using Umbrella.AzureServiceBus.Abstractions;
@@ -18,22 +19,22 @@ public static class AzureClientFactoryBuilderExtensions
 	/// Adds the Umbrella Azure Service Bus client to the <see cref="AzureClientFactoryBuilder"/> builder.
 	/// </summary>
 	/// <param name="builder">The builder.</param>
-	/// <param name="loggerFactory">The logger factory.</param>
 	/// <param name="claimCheckStorageConnectionString">The claim check storage connection string.</param>
 	/// <param name="claimCheckStorageContainerName">The claim check storage container name.</param>
 	/// <param name="serviceBusConnectionString">The service bus connection string.</param>
 	/// <returns>The <see cref="IAzureClientBuilder{UmbrellaAzureServiceBusClient, ServiceBusClientOptions}"/> client builder.</returns>
 	public static IAzureClientBuilder<UmbrellaAzureServiceBusClient, ServiceBusClientOptions> AddUmbrellaAzureServiceBusClient(
 		this AzureClientFactoryBuilder builder,
-		ILoggerFactory loggerFactory,
 		string claimCheckStorageConnectionString,
 		string claimCheckStorageContainerName,
 		string serviceBusConnectionString)
 	{
 		Guard.IsNotNull(builder);
 
-		return builder.AddClient<UmbrellaAzureServiceBusClient, ServiceBusClientOptions>(options =>
+		return builder.AddClient((ServiceBusClientOptions options, IServiceProvider services) =>
 		{
+			ILoggerFactory loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
 			// Define Plugins
 			IReadOnlyCollection<IUmbrellaAzureServiceBusPlugin> plugins =
 			[
