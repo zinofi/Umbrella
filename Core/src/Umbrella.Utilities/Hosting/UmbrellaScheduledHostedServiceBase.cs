@@ -19,6 +19,7 @@ namespace Umbrella.Utilities.Hosting;
 public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisposable
 {
 	private CancellationTokenSource? _cancellationTokenSource;
+	private bool _disposedValue;
 
 	/// <summary>
 	/// Gets the logger.
@@ -39,6 +40,11 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	/// Gets the date time provider.
 	/// </summary>
 	protected IDateTimeProvider DateTimeProvider { get; }
+
+	/// <summary>
+	/// Gets the next run date and time.
+	/// </summary>
+	protected DateTime NextRun { get; private set; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaScheduledHostedServiceBase"/> class.
@@ -70,15 +76,15 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 
 			string scheduleString = await GetCrontabScheduleUtcStringAsync(cancellationToken);
 			var crontabSchedule = CrontabSchedule.Parse(scheduleString, new CrontabSchedule.ParseOptions { IncludingSeconds = true });
-			DateTime nextRun = crontabSchedule.GetNextOccurrence(DateTimeProvider.UtcNow);
+			NextRun = crontabSchedule.GetNextOccurrence(DateTimeProvider.UtcNow);
 
-			Logger.WriteInformation(new { nextRun }, "First run is scheduled.");
+			Logger.WriteInformation(new { NextRun }, "First run is scheduled.");
 
 			_ = Task.Run(async () =>
 			{
 				while (!cancellationToken.IsCancellationRequested)
 				{
-					await Task.Delay(Math.Max(0, (int)nextRun.Subtract(DateTimeProvider.UtcNow).TotalMilliseconds));
+					await Task.Delay(Math.Max(0, (int)NextRun.Subtract(DateTimeProvider.UtcNow).TotalMilliseconds));
 
 					Logger.WriteInformation(new { Date = DateTimeProvider.UtcNow }, "Running.");
 
@@ -93,9 +99,9 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 						// Mask the exception to allow the job to retry on the next run
 					}
 
-					nextRun = crontabSchedule.GetNextOccurrence(DateTimeProvider.UtcNow);
+					NextRun = crontabSchedule.GetNextOccurrence(DateTimeProvider.UtcNow);
 
-					Logger.WriteInformation(new { nextRun }, "Next run is scheduled.");
+					Logger.WriteInformation(new { NextRun }, "Next run is scheduled.");
 				}
 			},
 			cancellationToken);
@@ -120,13 +126,6 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 #endif
 	}
 
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		_cancellationTokenSource?.Dispose();
-		GC.SuppressFinalize(this);
-	}
-
 	/// <summary>
 	/// Executes the core logic for this service.
 	/// </summary>
@@ -149,4 +148,26 @@ public abstract class UmbrellaScheduledHostedServiceBase : IHostedService, IDisp
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> used to await execution.</returns>
 	private protected virtual Task ExecuteInternalAsync(IServiceScope serviceScope, CancellationToken cancellationToken) => ExecuteAsync(serviceScope, cancellationToken);
+
+	/// <inheritdoc />
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!_disposedValue)
+		{
+			if (disposing)
+			{
+				_cancellationTokenSource?.Dispose();
+			}
+
+			_disposedValue = true;
+		}
+	}
+
+	/// <inheritdoc />
+	public void Dispose()
+	{
+		// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
 }
