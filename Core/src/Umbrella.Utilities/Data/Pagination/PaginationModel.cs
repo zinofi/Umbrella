@@ -85,7 +85,7 @@ public readonly record struct PaginationModel
 		TotalCount = totalItems;
 		PageItem[]? pageItems = null;
 
-		if (pageSize.HasValue)
+		if (pageSize > 0)
 		{
 			int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
