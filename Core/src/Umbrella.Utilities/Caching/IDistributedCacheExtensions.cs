@@ -400,7 +400,7 @@ public static class IDistributedCacheExtensions
 			}
 			catch (Exception exc)
 			{
-				if (throwOnCacheFailure && exception is not null)
+				if (throwOnCacheFailure)
 					throw;
 
 				lstException?.Add(exc);

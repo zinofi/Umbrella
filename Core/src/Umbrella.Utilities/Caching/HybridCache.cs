@@ -71,7 +71,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 	#region Constructors		
 	/// <summary>
-	/// Initializes a new instance of the <see cref="HybridCache"/> class.
+	/// Initializes a new instance of the <see cref="FixedHybridCache"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="options">The options.</param>
@@ -226,7 +226,7 @@ public class HybridCache : IHybridCache, IDisposable
 				{
 					try
 					{
-						(T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), false, cancellationToken).ConfigureAwait(false);
+						(T cacheItem, UmbrellaDistributedCacheException? exception) = await DistributedCache.GetOrCreateAsync(cacheKeyInternal, actionFunction, () => BuildDistributedCacheEntryOptions(expirationTimeSpan, slidingExpiration), throwOnCacheFailure, cancellationToken).ConfigureAwait(false);
 
 						if (!throwOnCacheFailure)
 						{
@@ -563,7 +563,7 @@ public class HybridCache : IHybridCache, IDisposable
 		=> DetermineExpirationTimeSpan(expirationTimeSpanBuilder?.Invoke(), cacheItemPriority);
 
 	private TimeSpan DetermineExpirationTimeSpan(TimeSpan? expirationTimeSpan, CacheItemPriority cacheItemPriority)
-		=> cacheItemPriority is CacheItemPriority.NeverRemove ? TimeSpan.MaxValue : expirationTimeSpan ?? Options.DefaultCacheTimeout;
+		=> cacheItemPriority is CacheItemPriority.NeverRemove ? TimeSpan.FromDays(365 * 10) : expirationTimeSpan ?? Options.DefaultCacheTimeout;
 
 	private static DistributedCacheEntryOptions BuildDistributedCacheEntryOptions(in TimeSpan expirationTimeSpan, bool slidingExpiration)
 	{
