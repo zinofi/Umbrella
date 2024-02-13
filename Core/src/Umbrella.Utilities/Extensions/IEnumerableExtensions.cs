@@ -111,7 +111,7 @@ public static class IEnumerableExtensions
 	/// <returns>An awaitabe <see cref="Task"/>.</returns>
 	public static Task ParallelForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> funcBody, int degreeOfParallelism = 4)
 	{
-		async Task AwaitPartition(IEnumerator<T> partition)
+		async Task AwaitPartitionAsync(IEnumerator<T> partition)
 		{
 			using (partition)
 			{
@@ -128,7 +128,7 @@ public static class IEnumerableExtensions
 				.Create(source)
 				.GetPartitions(degreeOfParallelism)
 				.AsParallel()
-				.Select(AwaitPartition));
+				.Select(AwaitPartitionAsync));
 	}
 
 	/// <summary>
@@ -138,6 +138,8 @@ public static class IEnumerableExtensions
 	/// <returns>The parsed integers.</returns>
 	public static IEnumerable<int> ParseIntegers(this IEnumerable<string> items)
 	{
+		Guard.IsNotNull(items);
+
 		foreach (string item in items)
 		{
 			if (int.TryParse(item, out int value))
