@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "components": [
+  ]//,
+	//"extensions": [
+	//	"https://marketplace.visualstudio.com/items?itemName=ProjectReunion.MicrosoftSingleProjectMSIXPackagingToolsDev17",
+	//	"https://marketplace.visualstudio.com/items?itemName=MLNET.ModelBuilder2022",
+	//	"https://marketplace.visualstudio.com/items?itemName=ms-azuretools.visualstudiobicep",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.CommandTaskRunner64",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.DummyTextGenerator",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.FileIcons",
+	//	"https://marketplace.visualstudio.com/items?itemName=GitHub.copilotvs",
+	//	"https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.VSGitHubCopilot",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.GulpSnippetPack",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.HTMLSnippetPack",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.JavaScriptSnippetPack",
+	//	"https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsls-vs-2022",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.NpmTaskRunner64",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.OpenCommandLine64",
+	//	"https://marketplace.visualstudio.com/items?itemName=Failwyn.WebCompiler64",
+	//	"https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ZenCoding"
+	//]
+}

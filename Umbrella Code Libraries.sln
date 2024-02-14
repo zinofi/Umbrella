@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.filenesting.json = .filenesting.json
 		.gitignore = .gitignore
+		.vsconfig = .vsconfig
 		commands.json = commands.json
 		Directory.Build.props = Directory.Build.props
 		icon.png = icon.png
@@ -211,9 +212,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E46DA7C3-C661-465D-BCE8-97A19B46F192}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AzureServiceBus", "Messaging\src\Umbrella.AzureServiceBus\Umbrella.AzureServiceBus.csproj", "{29FA06F3-CF69-4122-9847-F918C71F405A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AzureServiceBus", "Messaging\src\Umbrella.AzureServiceBus\Umbrella.AzureServiceBus.csproj", "{29FA06F3-CF69-4122-9847-F918C71F405A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AzureServiceBus.Test", "Messaging\test\Umbrella.AzureServiceBus.Test\Umbrella.AzureServiceBus.Test.csproj", "{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AzureServiceBus.Test", "Messaging\test\Umbrella.AzureServiceBus.Test\Umbrella.AzureServiceBus.Test.csproj", "{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
