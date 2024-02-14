@@ -97,7 +97,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			// TODO: We need to cache the generic method we have created above and then use cached compiled expressions
 			// to invoke this method instead of using the raw reflection APIs which are slow in comparison.
-			return (ValueTask<TDestination>)miGeneric.Invoke(this, new object[] { source, cancellationToken })!;
+			return (ValueTask<TDestination>)miGeneric.Invoke(this, [source, cancellationToken])!;
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { SourceTypeName = source.GetType().FullName }))
 		{
@@ -223,7 +223,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			// TODO: We need to cache the generic method we have created above and then use cached compiled expressions
 			// to invoke this method instead of using the raw reflection APIs which are slow in comparison.
-			return (ValueTask<IReadOnlyCollection<TDestination>>)miGeneric.Invoke(this, new object[] { source, cancellationToken })!;
+			return (ValueTask<IReadOnlyCollection<TDestination>>)miGeneric.Invoke(this, [source, cancellationToken])!;
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { SourceTypeName = source.GetType().FullName }))
 		{
