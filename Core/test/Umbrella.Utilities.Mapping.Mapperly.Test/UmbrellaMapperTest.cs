@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Mapping.Mapperly.Enumerations;
@@ -107,7 +108,10 @@ public class UmbrellaMapperTest
 
 		var logger = CoreUtilitiesMocks.CreateLogger<UmbrellaMapper>();
 
-		return new UmbrellaMapper(logger, options);
+		ServiceCollection services = new();
+		var provider = services.BuildServiceProvider();
+
+		return new UmbrellaMapper(logger, options, provider);
 	}
 
 	private static Source CreateSource(int seed, bool createChildren = true)

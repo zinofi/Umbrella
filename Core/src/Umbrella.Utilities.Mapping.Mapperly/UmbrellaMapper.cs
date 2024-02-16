@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Umbrella.Utilities.Exceptions;
@@ -22,6 +23,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 	private readonly ILogger _logger;
 	private readonly UmbrellaMapperOptions _options;
+	private readonly IServiceProvider _serviceProvider;
 	private readonly Dictionary<(Type, Type), object> _newInstanceMapperDictionary = [];
 	private readonly Dictionary<(Type, Type), object> _newCollectionmapperDictionary = [];
 	private readonly Dictionary<(Type, Type), object> _existingInstanceMapperDictionary = [];
@@ -31,21 +33,24 @@ public class UmbrellaMapper : IUmbrellaMapper
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="options">The options.</param>
+	/// <param name="serviceProvider">The service provider.</param>
 	public UmbrellaMapper(
 		ILogger<UmbrellaMapper> logger,
-		UmbrellaMapperOptions options)
+		UmbrellaMapperOptions options,
+		IServiceProvider serviceProvider)
 	{
-		// TODO: Add a new ctor parameter for IServiceProvider.
 		Guard.IsNotNull(options);
+		Guard.IsNotNull(serviceProvider);
 
 		_logger = logger;
 		_options = options;
+		_serviceProvider = serviceProvider;
 
 		IReadOnlyCollection<Assembly> assembliesToScan = options.TargetAssemblies;
 
 		foreach (Type type in assembliesToScan.SelectMany(x => x.GetExportedTypes()))
 		{
-			static void PopulateMapperCache(Type type, Type interfaceType, Dictionary<(Type, Type), object> cache)
+			void PopulateMapperCache(Type type, Type interfaceType, Dictionary<(Type, Type), object> cache)
 			{
 				Type[] mapperlyInterfaces = type.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == interfaceType).ToArray();
 
@@ -66,7 +71,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 						throw new InvalidOperationException($"A registration already exists for the source and destination types. The type being registered is {existingType.FullName} but the type named {type.FullName} has already been registered.");
 					}
 
-					cache.Add(key, Activator.CreateInstance(type)!);
+					cache.Add(key, ActivatorUtilities.CreateInstance(_serviceProvider, type));
 				}
 			}
 
