@@ -95,4 +95,9 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
 	Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
+	// TODO: Add the following methods
+	//Task DeleteByIdAsync(TEntityKey id, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
+	//Task DeleteAllByIdListAsync(IEnumerable<TEntityKey> ids, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 }
