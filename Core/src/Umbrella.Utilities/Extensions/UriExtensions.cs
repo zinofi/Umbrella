@@ -83,7 +83,7 @@ public static class UriExtensions
 
         // Rebuild the query string from the remaining parameters
         string newQueryString = string.Join("&", queryParameters.Keys
-            .Where(key => !string.IsNullOrEmpty(key))
+            .Where(key => !string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(queryParameters[key]))
             .Select(key => $"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(queryParameters[key]!)}"));
 
         // Reconstruct the URI without the removed query parameters
