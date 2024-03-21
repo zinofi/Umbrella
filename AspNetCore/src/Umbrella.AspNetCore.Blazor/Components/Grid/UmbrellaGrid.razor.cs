@@ -630,6 +630,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 	private async Task UpdateGridAsync(QueryStringStateUpdateMode queryStringStateUpdateMode, int? pageNumber = null, int? pageSize = null)
 	{
+		Logger.WriteDebug(message: "***********************************************************Updating Grid***************************************************");
+
 		PageNumber = pageNumber ?? 1;
 
 		if (pageSize.HasValue)
@@ -774,13 +776,18 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 				}
 				else if (queryStringStateUpdateMode is QueryStringStateUpdateMode.Reset)
 				{
-					url = new Uri(url).GetComponents(UriComponents.Path, UriFormat.Unescaped);
+					//All Grid query string values such as filter are removed, we need to ensure any changes to the page size are preserved.
+					string[] queryStringKeysToRemove = [SortByQueryStringParamKey, SortDirectionQueryStringParamKey, FiltersQueryStringParamKey, PageNumberQueryStringParamKey];
 
-					// We need to ensure any changes to the page size are preserved.
-					url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
-					{
-						[PageSizeQueryStringParamKey] = PageSize != UmbrellaPaginationDefaults.PageSize ? PageSize : null
-					});
+					var uri = new Uri(url);
+					Uri? newUri = uri.GetUriWithoutQueryStringParameters(queryStringKeysToRemove);
+
+					if (newUri is not null)
+						url = uri.AbsoluteUri;
+
+					Logger.WriteDebug(message: "Url after reset.");
+					if (Logger.IsEnabled(LogLevel.Debug))
+						Logger.WriteDebug(new { url });
 				}
 
 				if (url != Navigation.Uri)
@@ -792,6 +799,81 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 					Navigation.NavigateTo(url);
 				}
+
+				//Uri GetUriWithoutQueryStringParameters(Uri uri, params string[] keysToRemove)
+				//{
+				//	Logger.WriteDebug(message: "***keysToRemove***");
+				//	if (Logger.IsEnabled(LogLevel.Debug))
+				//		Logger.WriteDebug(new { keysToRemove });
+
+				//	var query = QueryHelpers.ParseQuery(uri.Query);
+
+				//	foreach((string queryKey, StringValues queryValue) in query)
+				//	{
+				//		Logger.WriteDebug(message: "$$$$$$$$$");
+				//		Logger.WriteDebug(new { queryKey, queryValue });
+				//	}
+
+				//	Logger.WriteDebug(message: "***Query***");
+				//	if (Logger.IsEnabled(LogLevel.Debug))
+				//		Logger.WriteDebug(new { query });
+
+				//	foreach (string key in keysToRemove)
+				//	{
+				//		query.Remove(key);
+
+				//		Logger.WriteDebug(message: "***foreach key***");
+				//		if (Logger.IsEnabled(LogLevel.Debug))
+				//			Logger.WriteDebug(new { key, keysToRemove });
+				//	}
+
+				//	Logger.WriteDebug(message: "***Query2***");
+				//	if (Logger.IsEnabled(LogLevel.Debug))
+				//		Logger.WriteDebug(new { query });
+
+				//	string queryStr = "";
+
+				//	foreach(var item in query)
+				//	{
+
+				//	}
+
+				//	var uriBuilder = new UriBuilder(uri)
+				//	{
+				//		Query = query.Count > 0 ? QueryHelpers. : string.Empty
+				//	};
+
+				//	Logger.WriteDebug(message: "***UriBuilder***");
+				//	if (Logger.IsEnabled(LogLevel.Debug))
+				//		Logger.WriteDebug(new { uriBuilder });
+
+				//	return uriBuilder.Uri;
+				//}
+
+				//Uri GetUriWithoutQueryStringParameters(Uri uri, string[] keysToRemove)
+				//{
+				//	// Parse the query string into a name-value collection
+				//	NameValueCollection queryParameters = HttpUtility.ParseQueryString(uri.Query);
+
+				//	// Remove the specified keys from the collection
+				//	foreach (string key in keysToRemove)
+				//	{
+				//		queryParameters.Remove(key);
+				//	}
+
+				//	// Rebuild the query string from the remaining parameters
+				//	string newQueryString = string.Join("&", queryParameters.AllKeys
+				//		.Where(key => !string.IsNullOrEmpty(key))
+				//		.Select(key => $"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(queryParameters[key])}"));
+
+				//	// Reconstruct the URI without the removed query parameters
+				//	var uriBuilder = new UriBuilder(uri)
+				//	{
+				//		Query = newQueryString
+				//	};
+
+				//	return uriBuilder.Uri;
+				//}
 			}
 
 			UmbrellaGridDataResponse<TItem>? response = await OnDataRequestedAsync(new UmbrellaGridDataRequest(PageNumber, PageSize, EnsureCollection(lstSorters), EnsureCollection(lstFilters)), _cts.Token);
