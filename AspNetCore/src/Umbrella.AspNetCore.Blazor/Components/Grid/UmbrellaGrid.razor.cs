@@ -630,8 +630,6 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 	private async Task UpdateGridAsync(QueryStringStateUpdateMode queryStringStateUpdateMode, int? pageNumber = null, int? pageSize = null)
 	{
-		Logger.WriteDebug(message: "***********************************************************Updating Grid***************************************************");
-
 		PageNumber = pageNumber ?? 1;
 
 		if (pageSize.HasValue)
