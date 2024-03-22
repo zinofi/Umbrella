@@ -774,13 +774,16 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 				}
 				else if (queryStringStateUpdateMode is QueryStringStateUpdateMode.Reset)
 				{
-					url = new Uri(url).GetComponents(UriComponents.Path, UriFormat.Unescaped);
+					//All Grid query string values such as filter are removed, we need to ensure any changes to the page size are preserved.
+					string[] queryStringKeysToRemove = [SortByQueryStringParamKey, SortDirectionQueryStringParamKey, FiltersQueryStringParamKey, PageNumberQueryStringParamKey];
 
-					// We need to ensure any changes to the page size are preserved.
-					url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
-					{
-						[PageSizeQueryStringParamKey] = PageSize != UmbrellaPaginationDefaults.PageSize ? PageSize : null
-					});
+					var uri = new Uri(url);
+					uri = uri.GetUriWithoutQueryStringParameters(queryStringKeysToRemove);
+					url = uri.AbsoluteUri;
+
+					Logger.WriteDebug(message: "Url after reset.");
+					if (Logger.IsEnabled(LogLevel.Debug))
+						Logger.WriteDebug(new { url });
 				}
 
 				if (url != Navigation.Uri)
