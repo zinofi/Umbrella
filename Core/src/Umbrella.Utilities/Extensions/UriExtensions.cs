@@ -1,4 +1,5 @@
-﻿using Umbrella.Utilities.Http;
+﻿using CommunityToolkit.Diagnostics;
+using Umbrella.Utilities.Http;
 
 namespace Umbrella.Utilities.Extensions;
 
@@ -67,10 +68,10 @@ public static class UriExtensions
     /// <param name="uri">The URI.</param>
     /// <param name="keysToRemove">The keys of the query string parameters to remove.</param>
     /// <returns>Returns the input <see cref="Uri"/> with the specified query string parameters removed.</returns>
-    public static Uri? GetUriWithoutQueryStringParameters(this Uri uri, string[] keysToRemove)
+    public static Uri GetUriWithoutQueryStringParameters(this Uri uri, string[] keysToRemove)
     {
-        if (uri is null || keysToRemove is null || keysToRemove.Length is 0)
-            return null;
+		Guard.IsNotNull(uri, nameof(uri));
+		Guard.IsNotNull(keysToRemove, nameof(keysToRemove));
 
         // Parse the query string into a name-value collection
         var queryParameters = QueryHelpers.ParseQuery(uri.Query);

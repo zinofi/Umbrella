@@ -778,10 +778,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 					string[] queryStringKeysToRemove = [SortByQueryStringParamKey, SortDirectionQueryStringParamKey, FiltersQueryStringParamKey, PageNumberQueryStringParamKey];
 
 					var uri = new Uri(url);
-					Uri? newUri = uri.GetUriWithoutQueryStringParameters(queryStringKeysToRemove);
-
-					if (newUri is not null)
-						url = newUri.AbsoluteUri;
+					uri = uri.GetUriWithoutQueryStringParameters(queryStringKeysToRemove);
+					url = uri.AbsoluteUri;
 
 					Logger.WriteDebug(message: "Url after reset.");
 					if (Logger.IsEnabled(LogLevel.Debug))
