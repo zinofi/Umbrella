@@ -382,6 +382,15 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	[Parameter]
 	public string? QueryStringStateDiscriminator { get; set; }
 
+	/// <summary>
+	/// Gets or sets a value indicating whether the search options state should be enabled. By default, this is <see langword="null" />
+	/// and the value of <see cref="UmbrellaGridOptions.IsSearchOptionStateEnabled"/> is used. If this property has a value, it will override the
+	/// value of <see cref="UmbrellaGridOptions.IsSearchOptionStateEnabled"/>.
+	/// If this is set to <see langword="true" />, the grid will attempt to maintain its state across navigation events.
+	/// </summary>
+	[Parameter]
+	public bool? IsSearchOptionStateEnabledOverride { get; set; }
+
 	private string PageNumberQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:pageNumber" : "pageNumber";
 	private string PageSizeQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:pageSize" : "pageSize";
 	private string SortByQueryStringParamKey => !string.IsNullOrEmpty(QueryStringStateDiscriminator) ? $"{QueryStringStateDiscriminator}:sortBy" : "sortBy";
@@ -395,7 +404,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	{
 		await base.OnInitializedAsync();
 
-		IsSearchOptionStateEnabled = Options.IsSearchOptionStateEnabled && ModalInstance is null;
+		IsSearchOptionStateEnabled = (IsSearchOptionStateEnabledOverride ?? Options.IsSearchOptionStateEnabled) && ModalInstance is null;
 
 		if (IsSearchOptionStateEnabled)
 		{
