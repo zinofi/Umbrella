@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Xunit;
 using System.ComponentModel.DataAnnotations;
 using Umbrella.DataAnnotations;
+using JRS.Web.CMS.Models.Api.PensionBuddyCalculator;
 
 namespace Umbrella.TypeScript.Test
 {
@@ -62,6 +63,11 @@ namespace Umbrella.TypeScript.Test
         public string? ConfirmEmailAddress { get; set; }
 
         public DateTime CreatedDate { get; set; }
+
+		public double CurrentSalary { get; set; }
+
+		[MaxPercentageOf(nameof(CurrentSalary), 0.2, ErrorMessage = "Please enter a value no more than 20% of the current salary.")]
+		public double LumpSumOfCurrentSalary { get; set; }
     }
 
     [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using JRS.Web.CMS.Models.Api.PensionBuddyCalculator;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,7 +12,7 @@ namespace Umbrella.TypeScript.Generators
 	/// <summary>
 	/// A TypeScript generator implementation for generating Knockout classes.
 	/// </summary>
-	/// <seealso cref="Umbrella.TypeScript.Generators.BaseClassGenerator" />
+	/// <seealso cref="BaseClassGenerator" />
 	public class KnockoutClassGenerator : BaseClassGenerator
 	{
 		#region Private Constants
@@ -210,6 +209,7 @@ namespace Umbrella.TypeScript.Generators
 				Operator.LessThan => "<",
 				Operator.LessThanOrEqualTo => "<=",
 				Operator.NotEqualTo => "!==",
+				Operator.MaxPercentageOf => "<=",
 				Operator.NotRegExMatch => throw new NotImplementedException(),
 				Operator.RegExMatch => throw new NotImplementedException(),
 				_ => throw new NotSupportedException()
@@ -325,7 +325,14 @@ namespace Umbrella.TypeScript.Generators
 						string @operator = GetOperatorTranslation(attr.Operator);
 						string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-						sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
+						if (attr is MaxPercentageOfAttribute maxPercentageOfAttribute)
+						{
+							sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}! * {maxPercentageOfAttribute.MaxPercentage})");
+						}
+						else
+						{
+							sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
+						}
 					}
 
 					validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => {sbRule}, message: {message} }},", indent);

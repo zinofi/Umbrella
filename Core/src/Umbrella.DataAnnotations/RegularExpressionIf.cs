@@ -37,7 +37,7 @@ namespace Umbrella.DataAnnotations
 
 		/// <inheritdoc />
 		public override bool IsValid(object value, object dependentValue, object container)
-			=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(Operator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
+			=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull, this) || OperatorMetadata.Get(Operator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull, this);
 
 		/// <inheritdoc />
 		protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()

@@ -75,7 +75,7 @@ namespace Umbrella.DataAnnotations
 
 		/// <inheritdoc />
 		public override bool IsValid(object value, object dependentValue, object container)
-			=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull) || value != null && !string.IsNullOrEmpty(value.ToString().Trim());
+			=> !Metadata.IsValid(dependentValue, DependentValue, ReturnTrueOnEitherNull, this) || value != null && !string.IsNullOrEmpty(value.ToString().Trim());
 
 		/// <inheritdoc />
 		public override string DefaultErrorMessageFormat => "{0} is required due to {1} being " + Metadata.ErrorMessage + " {2}";
