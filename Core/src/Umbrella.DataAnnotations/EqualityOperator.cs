@@ -43,5 +43,10 @@ public enum EqualityOperator
 	/// <summary>
 	/// Checks for inequality using the specified regular expression.
 	/// </summary>
-	NotRegExMatch
+	NotRegExMatch,
+
+	/// <summary>
+	/// Checks that the property is a maximum percentage of the named dependent property.
+	/// </summary>
+	MaxPercentageOf
 }

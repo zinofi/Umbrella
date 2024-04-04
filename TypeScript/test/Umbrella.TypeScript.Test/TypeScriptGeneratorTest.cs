@@ -61,6 +61,16 @@ public class TestClass : ITestInterface
 	public string? ConfirmEmailAddress { get; set; }
 
 	public DateTime CreatedDate { get; set; }
+
+	public double CurrentSalary { get; set; }
+
+	[MaxPercentageOf(nameof(CurrentSalary), 0.2, ErrorMessage = "Please enter a value no more than 20% of the current salary.")]
+	public double LumpSumOfCurrentSalary { get; set; }
+
+	public double? CurrentSalaryNullable { get; set; }
+
+	[MaxPercentageOf(nameof(CurrentSalaryNullable), 0.2, ErrorMessage = "Please enter a value no more than 20% of the current salary.")]
+	public double? LumpSumOfCurrentSalaryNullable { get; set; }
 }
 
 [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]

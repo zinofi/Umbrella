@@ -76,7 +76,7 @@ public class RequiredIfAttribute : ContingentValidationAttribute
 
 	/// <inheritdoc />
 	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
-		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || (value is not null && !string.IsNullOrEmpty(value.ToString()?.Trim()));
+		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull, this) || (value is not null && !string.IsNullOrEmpty(value.ToString()?.Trim()));
 
 	/// <inheritdoc />
 	public override string DefaultErrorMessageFormat => "{0} is required due to {1} being " + Metadata.ErrorMessage + " {2}";

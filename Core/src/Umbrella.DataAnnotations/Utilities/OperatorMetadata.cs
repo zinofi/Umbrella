@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using Umbrella.DataAnnotations.BaseClasses;
 
 namespace Umbrella.DataAnnotations.Utilities;
 
@@ -21,7 +23,7 @@ public class OperatorMetadata
 	/// This check is to ensure that the comparison between the comparison value matches the actual dependent property value
 	/// before validation is actually performed on the value of the current property.
 	/// </remarks>
-	public Func<object?, object?, bool, bool> IsValid { get; private set; } = null!;
+	public Func<object?, object?, bool, ContingentValidationAttribute, bool> IsValid { get; private set; } = null!;
 
 	/// <summary>
 	/// Initializes the <see cref="OperatorMetadata"/> class.
@@ -34,7 +36,7 @@ public class OperatorMetadata
 				EqualityOperator.EqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "equal to",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -52,7 +54,7 @@ public class OperatorMetadata
 				EqualityOperator.NotEqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "not equal to",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -70,7 +72,7 @@ public class OperatorMetadata
 				EqualityOperator.GreaterThan, new OperatorMetadata()
 				{
 					ErrorMessage = "greater than",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -86,7 +88,7 @@ public class OperatorMetadata
 				EqualityOperator.LessThan, new OperatorMetadata()
 				{
 					ErrorMessage = "less than",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -102,7 +104,7 @@ public class OperatorMetadata
 				EqualityOperator.GreaterThanOrEqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "greater than or equal to",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -113,7 +115,7 @@ public class OperatorMetadata
 						if (value is null || dependentValue is null)
 							return false;
 
-						return Get(EqualityOperator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) >= 1;
+						return Get(EqualityOperator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull, validationAttribute) || Comparer<object>.Default.Compare(value, dependentValue) >= 1;
 					}
 				}
 			},
@@ -121,7 +123,7 @@ public class OperatorMetadata
 				EqualityOperator.LessThanOrEqualTo, new OperatorMetadata()
 				{
 					ErrorMessage = "less than or equal to",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -132,7 +134,7 @@ public class OperatorMetadata
 						if (value is null || dependentValue is null)
 							return false;
 
-						return Get(EqualityOperator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull) || Comparer<object>.Default.Compare(value, dependentValue) <= -1;
+						return Get(EqualityOperator.EqualTo).IsValid(value, dependentValue, returnTrueOnEitherNull, validationAttribute) || Comparer<object>.Default.Compare(value, dependentValue) <= -1;
 					}
 				}
 			},
@@ -140,7 +142,7 @@ public class OperatorMetadata
 				EqualityOperator.RegExMatch, new OperatorMetadata()
 				{
 					ErrorMessage = "a match to",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
@@ -153,12 +155,36 @@ public class OperatorMetadata
 				EqualityOperator.NotRegExMatch, new OperatorMetadata()
 				{
 					ErrorMessage = "not a match to",
-					IsValid = (value, dependentValue, returnTrueOnEitherNull) =>
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
 					{
 						if((value is null || dependentValue is null) && returnTrueOnEitherNull)
 							return true;
 
 						return !Regex.Match((value ?? "").ToString() ?? "", dependentValue?.ToString() ?? "").Success;
+					}
+				}
+			},
+			{
+				EqualityOperator.MaxPercentageOf, new OperatorMetadata()
+				{
+					ErrorMessage = "a maximum percentage of",
+					IsValid = (value, dependentValue, returnTrueOnEitherNull, validationAttribute) =>
+					{
+						if(validationAttribute is MaxPercentageOfAttribute maxPercentageOfAttribute)
+						{
+							if((value is null || dependentValue is null) && returnTrueOnEitherNull)
+								return true;
+
+							if (value is null || dependentValue is null)
+								return false;
+
+							double dblValue = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+							double dblDependentValue = Convert.ToDouble(dependentValue, CultureInfo.InvariantCulture);
+
+							return dblValue <= dblDependentValue * maxPercentageOfAttribute.MaxPercentage;
+						}
+
+						return false;
 					}
 				}
 			}

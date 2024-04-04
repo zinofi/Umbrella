@@ -226,7 +226,8 @@ public class KnockoutClassGenerator : BaseClassGenerator
 				EqualityOperator.LessThan => "<",
 				EqualityOperator.LessThanOrEqualTo => "<=",
 				EqualityOperator.NotEqualTo => "!==",
-				EqualityOperator.NotRegExMatch => throw new NotImplementedException(),
+                EqualityOperator.MaxPercentageOf => "<=",
+                EqualityOperator.NotRegExMatch => throw new NotImplementedException(),
 				EqualityOperator.RegExMatch => throw new NotImplementedException(),
 				_ => throw new NotSupportedException()
 			};
@@ -345,8 +346,15 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					string @operator = GetOperatorTranslation(attr.Operator);
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					_ = sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
-				}
+						if (attr is MaxPercentageOfAttribute maxPercentageOfAttribute)
+						{
+							sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}! * {maxPercentageOfAttribute.MaxPercentage})");
+						}
+						else
+						{
+							sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
+						}
+					}
 
 				_ = validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => {sbRule}, message: {message} }},", indent);
 			}

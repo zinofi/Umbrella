@@ -54,7 +54,7 @@ public class IsAttribute : ContingentValidationAttribute
 		if (PassOnNull && (value is null || actualDependentPropertyValue is null))
 			return true;
 
-		return _metadata.IsValid(value, actualDependentPropertyValue, ReturnTrueOnEitherNull);
+		return _metadata.IsValid(value, actualDependentPropertyValue, ReturnTrueOnEitherNull, this);
 	}
 
 	/// <inheritdoc />

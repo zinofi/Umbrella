@@ -35,5 +35,5 @@ public class RequiredNonEmptyCollectionIfAttribute : RequiredIfAttribute
 
 	/// <inheritdoc />
 	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
-		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || ValidationHelper.IsNonEmptyCollection(value);
+		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull, this) || ValidationHelper.IsNonEmptyCollection(value);
 }

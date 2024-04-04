@@ -18,5 +18,5 @@ public sealed class RequiredTrueIfAttribute : RequiredIfAttribute
 
 	/// <inheritdoc />
 	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
-		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || value is true;
+		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull, this) || value is true;
 }

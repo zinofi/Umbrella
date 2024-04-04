@@ -42,7 +42,7 @@ public sealed class RegularExpressionIfAttribute : RequiredIfAttribute
 
 	/// <inheritdoc />
 	public override bool IsValid(object? value, object? actualDependentPropertyValue, object model)
-		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull);
+		=> !Metadata.IsValid(actualDependentPropertyValue, ComparisonValue, ReturnTrueOnEitherNull, this) || OperatorMetadata.Get(EqualityOperator.RegExMatch).IsValid(value, Pattern, ReturnTrueOnEitherNull, this);
 
 	/// <inheritdoc />
 	protected override IEnumerable<KeyValuePair<string, object>> GetClientValidationParameters()
