@@ -1,5 +1,6 @@
 ﻿using JRS.Web.CMS.Models.Api.PensionBuddyCalculator;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -236,6 +237,7 @@ namespace Umbrella.TypeScript.Generators
 				return null;
 
 			var validationBuilder = new StringBuilder();
+			var lstCustomValidationRule = new List<string>();
 
 			foreach (var group in lstValidationAttributeGroup)
 			{
@@ -335,8 +337,22 @@ namespace Umbrella.TypeScript.Generators
 						}
 					}
 
-					validationBuilder.AppendLineWithTabIndent($"validation: {{ validator: (value: {tsType}) => {sbRule}, message: {message} }},", indent);
+					lstCustomValidationRule.Add($"{{ validator: (value: {tsType}) => {sbRule}, message: {message} }},");
 				}
+			}
+
+			if (lstCustomValidationRule.Count > 0)
+			{
+				var sbCustomValidationBuilder = new StringBuilder();
+
+				foreach(string rule in lstCustomValidationRule)
+				{
+					sbCustomValidationBuilder.AppendLineWithTabIndent(rule, indent);
+				}
+
+				validationBuilder.AppendLineWithTabIndent("[", indent);
+				validationBuilder.AppendLineWithTabIndent(sbCustomValidationBuilder.ToString(), indent);
+				validationBuilder.AppendLineWithTabIndent("]", indent);
 			}
 
 			return validationBuilder;

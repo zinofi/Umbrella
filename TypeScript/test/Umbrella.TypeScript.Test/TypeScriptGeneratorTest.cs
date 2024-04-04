@@ -66,9 +66,16 @@ namespace Umbrella.TypeScript.Test
 
 		public double CurrentSalary { get; set; }
 
+		[LessThanOrEqualTo(nameof(CurrentSalary), ReturnTrueOnEitherNull = true, ErrorMessage = "Please enter an amount less than or equal to your current salary.")]
 		[MaxPercentageOf(nameof(CurrentSalary), 0.2, ErrorMessage = "Please enter a value no more than 20% of the current salary.")]
 		public double LumpSumOfCurrentSalary { get; set; }
-    }
+
+		public double? CurrentSalaryNullable { get; set; }
+
+		[LessThanOrEqualTo(nameof(CurrentSalaryNullable), ReturnTrueOnEitherNull = true, ErrorMessage = "Please enter an amount less than or equal to your current salary.")]
+		[MaxPercentageOf(nameof(CurrentSalaryNullable), 0.2, ErrorMessage = "Please enter a value no more than 20% of the current salary.")]
+		public double? LumpSumOfCurrentSalaryNullable { get; set; }
+	}
 
     [TypeScriptModel(TypeScriptOutputModelType.Class | TypeScriptOutputModelType.KnockoutClass)]
     public class TestChildClass
