@@ -350,7 +350,7 @@ namespace Umbrella.TypeScript.Generators
 					sbCustomValidationBuilder.AppendLineWithTabIndent(rule, indent);
 				}
 
-				validationBuilder.AppendLineWithTabIndent("[", indent);
+				validationBuilder.AppendLineWithTabIndent("validation: [", indent);
 				validationBuilder.AppendLineWithTabIndent(sbCustomValidationBuilder.ToString(), indent);
 				validationBuilder.AppendLineWithTabIndent("]", indent);
 			}
