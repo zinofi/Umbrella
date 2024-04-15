@@ -22,10 +22,10 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" />
 		<PackageReference Include="System.Drawing.Common" Version="8.0.4" />
-		<PackageReference Include="xunit" Version="2.7.0" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
+		<PackageReference Include="xunit" Version="2.7.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.5.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
