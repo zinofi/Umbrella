@@ -11,8 +11,8 @@ public static class DirectoryHelper
 	/// <param name="sourceDir">The source directory.</param>
 	/// <param name="targetDir">The target directory.</param>
 	/// <param name="recursive">Whether to copy recursively.</param>
-	/// <param name="overwrite">Whether to overwrite existing files.</param>
-	private static void Copy(string sourceDir, string targetDir, bool recursive, bool overwrite)
+	/// <param name="overwriteFiles">Whether to overwrite existing files.</param>
+	public static void Copy(string sourceDir, string targetDir, bool recursive, bool overwriteFiles)
 	{
 		Directory.CreateDirectory(targetDir);
 
@@ -21,7 +21,7 @@ public static class DirectoryHelper
 			string fileName = Path.GetFileName(file);
 			string destFile = Path.Combine(targetDir, fileName);
 
-			File.Copy(file, destFile, overwrite);
+			File.Copy(file, destFile, overwriteFiles);
 		}
 
 		foreach (string subDir in Directory.GetDirectories(sourceDir))
@@ -30,7 +30,7 @@ public static class DirectoryHelper
 			string destDir = Path.Combine(targetDir, dirName);
 
 			if (recursive)
-				Copy(subDir, destDir, true, overwrite);
+				Copy(subDir, destDir, true, overwriteFiles);
 		}
 	}
 }
