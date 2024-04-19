@@ -216,6 +216,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AzureServiceBus", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AzureServiceBus.Test", "Messaging\test\Umbrella.AzureServiceBus.Test\Umbrella.AzureServiceBus.Test.csproj", "{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNetCore.WebUtilities.DataProtection", "AspNetCore\src\Umbrella.AspNetCore.WebUtilities.DataProtection\Umbrella.AspNetCore.WebUtilities.DataProtection.csproj", "{D56BE114-7286-4491-8EFC-FCFEB8D755EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -589,6 +591,12 @@ Global
 		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -683,6 +691,7 @@ Global
 		{E46DA7C3-C661-465D-BCE8-97A19B46F192} = {DB6CAB6F-AE86-47EA-9C5E-8190EF5D4ED8}
 		{29FA06F3-CF69-4122-9847-F918C71F405A} = {B75BAF63-4BC5-4339-9570-52FEADC5FC0E}
 		{7FE7FF94-18BB-4E63-BBBF-D80873C9CCAA} = {E46DA7C3-C661-465D-BCE8-97A19B46F192}
+		{D56BE114-7286-4491-8EFC-FCFEB8D755EE} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
