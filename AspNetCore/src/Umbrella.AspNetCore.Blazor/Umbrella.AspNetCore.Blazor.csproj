@@ -27,7 +27,7 @@
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28">
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.10.48">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
