@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore.Extensions;
@@ -19,6 +20,8 @@ public static class PropertyEntryExtensions
 	/// </remarks>
 	public static bool HasChanged(this PropertyEntry property)
 	{
+		Guard.IsNotNull(property);
+
 		object? currentValue = property.CurrentValue;
 		object? originalValue = property.OriginalValue;
 

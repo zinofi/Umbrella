@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,11 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	protected ISynchronizationManager SynchronizationManager { get; }
 
 	/// <summary>
+	/// Gets the data access unit of work.
+	/// </summary>
+	protected IDataAccessUnitOfWork DataAccessUnitOfWork { get; }
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDataAccessApiController"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
@@ -74,19 +80,22 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <param name="mapper">The mapper.</param>
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
+	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
 	protected UmbrellaDataAccessApiController(
 		ILogger logger,
 		IWebHostEnvironment hostingEnvironment,
 		UmbrellaDataAccessApiControllerOptions options,
 		IUmbrellaMapper mapper,
 		IAuthorizationService authorizationService,
-		ISynchronizationManager synchronizationManager)
+		ISynchronizationManager synchronizationManager,
+		IDataAccessUnitOfWork dataAccessUnitOfWork)
 		: base(logger, hostingEnvironment)
 	{
 		Options = options;
 		Mapper = mapper;
 		AuthorizationService = authorizationService;
 		SynchronizationManager = synchronizationManager;
+		DataAccessUnitOfWork = dataAccessUnitOfWork;
 	}
 
 	/// <summary>
@@ -147,6 +156,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(loadReadAllDataAsyncDelegate);
 
 		try
 		{
@@ -255,6 +265,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TRepositoryOptions : RepoOptions, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(repository);
 
 		ISynchronizationRoot? syncRoot = null;
 
@@ -378,6 +389,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TResultModel : ICreateResultModel<TEntityKey>, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(repository);
 
 		ISynchronizationRoot? syncRoot = null;
 
@@ -415,7 +427,8 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("You do not have permission to access the specified item.");
 			}
 
-			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+			OperationResult<TEntity> saveResult = await repository.Value.SaveEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+			await DataAccessUnitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
 
 			if (saveResult.Status is OperationResultStatus.Success)
 			{
@@ -542,6 +555,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		cancellationToken.ThrowIfCancellationRequested();
 
 		ISynchronizationRoot? syncRoot = null;
+		Guard.IsNotNull(repository);
 
 		try
 		{
@@ -587,7 +601,8 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 					return Forbidden("You do not have the permissions to update the specified item.");
 			}
 
-			OperationResult<TEntity> saveResult = await repository.Value.SaveAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+			OperationResult<TEntity> saveResult = await repository.Value.SaveEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+			await DataAccessUnitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
 
 			if (saveResult.Status is OperationResultStatus.Success)
 			{
@@ -691,6 +706,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TRepositoryOptions : RepoOptions, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(repository);
+		Guard.IsNotNull(beforeDeleteEntityAsyncCallback);
+		Guard.IsNotNull(afterDeleteEntityAsyncCallback);
 
 		ISynchronizationRoot? syncRoot = null;
 
@@ -717,7 +735,8 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (result is not null)
 				return result;
 
-			await repository.Value.DeleteAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+			await repository.Value.DeleteEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+			await DataAccessUnitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
 			await afterDeleteEntityAsyncCallback(entity, cancellationToken).ConfigureAwait(false);
 
 			return NoContent();

@@ -60,7 +60,23 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// <param name="forceAdd">if set to <c>true</c> forces the entity to be added to the database. This is useful when the repository cannot determine if the item is new or not.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the save operation.</returns>
+	[Obsolete($"Use the {nameof(SaveEntityAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	Task<OperationResult<TEntity>> SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Saves the entity.
+	/// </summary>
+	/// <param name="entity">The entity.</param>
+	/// <param name="addToContext">if set to <c>true</c> adds the entity to the database context.</param>
+	/// <param name="repoOptions">The repo options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="forceAdd">if set to <c>true</c> forces the entity to be added to the database. This is useful when the repository cannot determine if the item is new or not.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The result of the save operation.</returns>
+	/// <remarks>
+	/// If changes need to be pushed to the database, the <see cref="IDataAccessUnitOfWork.CommitAsync"/> method should be called afterwards.
+	/// </remarks>
+	Task<OperationResult<TEntity>> SaveEntityAsync(TEntity entity, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Saves all entities in the specified collection.
@@ -72,7 +88,22 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// <param name="childOptions">The child options.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the save operation.</returns>
+	[Obsolete($"Use the {nameof(SaveAllEntitiesAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Saves all entities in the specified collection.
+	/// </summary>
+	/// <param name="entities">The entities.</param>
+	/// <param name="bypassSaveLogic">if set to <c>true</c> bypasses the default save logic.</param>
+	/// <param name="repoOptions">The repo options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The result of the save operation.</returns>
+	/// <remarks>
+	/// If changes need to be pushed to the database, the <see cref="IDataAccessUnitOfWork.CommitAsync"/> method should be called afterwards.
+	/// </remarks>
+	Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllEntitiesAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes the entity.
@@ -83,7 +114,21 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// <param name="childOptions">The child options.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
+	[Obsolete($"Use the {nameof(DeleteEntityAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Deletes the entity.
+	/// </summary>
+	/// <param name="entity">The entity.</param>
+	/// <param name="repoOptions">The repo options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
+	/// <remarks>
+	/// If changes need to be pushed to the database, the <see cref="IDataAccessUnitOfWork.CommitAsync"/> method should be called afterwards.
+	/// </remarks>
+	Task DeleteEntityAsync(TEntity entity, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Deletes all of the entities in the specified collection.
@@ -94,9 +139,22 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// <param name="childOptions">The child options.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
+	[Obsolete($"Use the {nameof(DeleteAllEntitiesAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
-	// TODO: Add the following methods
+	/// <summary>
+	/// Deletes all of the entities in the specified collection.
+	/// </summary>
+	/// <param name="entities">The entities.</param>
+	/// <param name="repoOptions">The repo options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
+	/// <remarks>
+	/// If changes need to be pushed to the database, the <see cref="IDataAccessUnitOfWork.CommitAsync"/> method should be called afterwards.
+	/// </remarks>
+	Task DeleteAllEntitiesAsync(IEnumerable<TEntity> entities, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
 	//Task DeleteByIdAsync(TEntityKey id, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
 
 	//Task DeleteAllByIdListAsync(IEnumerable<TEntityKey> ids, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);

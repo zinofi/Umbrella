@@ -184,6 +184,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 	#region Save
 	/// <inheritdoc />
+	[Obsolete($"Use the {nameof(SaveEntityAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	public virtual async Task<OperationResult<TEntity>> SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -272,6 +273,13 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
+	public virtual Task<OperationResult<TEntity>> SaveEntityAsync(TEntity entity, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
+#pragma warning disable CS0618 // Type or member is obsolete
+		=> SaveAsync(entity, false, addToContext, repoOptions, childOptions, forceAdd, cancellationToken);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+	/// <inheritdoc />
+	[Obsolete($"Use the {nameof(SaveAllEntitiesAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	public virtual async Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -307,10 +315,18 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			throw new UmbrellaDataAccessException("There has been a problem saving the specified entities.", exc);
 		}
 	}
+
+	/// <inheritdoc/>
+	public virtual Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllEntitiesAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
+#pragma warning disable CS0618 // Type or member is obsolete
+		=> SaveAllAsync(entities, false, bypassSaveLogic, repoOptions, childOptions, cancellationToken);
+#pragma warning restore CS0618 // Type or member is obsolete
 	#endregion
 
 	#region Delete
+	
 	/// <inheritdoc />
+	[Obsolete($"Use the {nameof(DeleteEntityAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	public virtual async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -350,6 +366,13 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
+	public virtual Task DeleteEntityAsync(TEntity entity, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
+#pragma warning disable CS0618 // Type or member is obsolete
+		=> DeleteAsync(entity, false, repoOptions, childOptions, cancellationToken);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+	/// <inheritdoc />
+	[Obsolete($"Use the {nameof(DeleteAllEntitiesAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -374,6 +397,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			throw new UmbrellaDataAccessException("There has been a problem deleting the specified entities.", exc);
 		}
 	}
+
+	/// <inheritdoc/>
+	public virtual Task DeleteAllEntitiesAsync(IEnumerable<TEntity> entities, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
+#pragma warning disable CS0618 // Type or member is obsolete
+		=> DeleteAllAsync(entities, false, repoOptions, childOptions, cancellationToken);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 	#endregion
 

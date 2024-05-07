@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
@@ -465,6 +466,8 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="filters">The filters.</param>
 	protected static void InitializeValidFilters(params Expression<Func<TEntity, object>>[] filters)
 	{
+		Guard.IsNotNull(filters);
+
 		var lstValidFilter = new HashSet<string>();
 
 		foreach (var filter in filters)
@@ -546,6 +549,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	protected async Task FilterByAccessAsync(List<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(entities);
 
 		for (int i = 0; i < entities.Count; i++)
 		{

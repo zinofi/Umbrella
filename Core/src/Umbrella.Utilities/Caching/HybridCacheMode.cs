@@ -1,10 +1,12 @@
-﻿using Umbrella.Utilities.Caching.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Umbrella.Utilities.Caching.Abstractions;
 
 namespace Umbrella.Utilities.Caching;
 
 /// <summary>
 /// The caching mode for the <see cref="IHybridCache"/>.
 /// </summary>
+[SuppressMessage("Design", "CA1027:Mark enums with FlagsAttribute", Justification = "This enum does not support flags.")]
 public enum HybridCacheMode
 {
 	/// <summary>

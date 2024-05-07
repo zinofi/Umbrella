@@ -391,6 +391,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="repository">The repository.</param>
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
+	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
 	protected UmbrellaGenericRepositoryApiController(
 		ILogger logger,
 		IWebHostEnvironment hostingEnvironment,
@@ -398,8 +399,9 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		IUmbrellaMapper mapper,
 		Lazy<TRepository> repository,
 		IAuthorizationService authorizationService,
-		ISynchronizationManager synchronizationManager)
-		: base(logger, hostingEnvironment, options, mapper, authorizationService, synchronizationManager)
+		ISynchronizationManager synchronizationManager,
+		IDataAccessUnitOfWork dataAccessUnitOfWork)
+		: base(logger, hostingEnvironment, options, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork)
 	{
 		Repository = repository;
 	}
