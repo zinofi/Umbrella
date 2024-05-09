@@ -13,10 +13,7 @@ namespace Umbrella.Analyzers;
 public class UmbrellaAnalyzersCodeFixProvider : CodeFixProvider
 {
 	/// <inheritdoc/>
-	public sealed override ImmutableArray<string> FixableDiagnosticIds
-	{
-		get { return ImmutableArray.Create(UmbrellaAnalyzersAnalyzer.DiagnosticId); }
-	}
+	public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = [UmbrellaAnalyzersAnalyzer.DiagnosticId];
 
 	/// <inheritdoc/>
 	public sealed override FixAllProvider GetFixAllProvider()
@@ -35,7 +32,7 @@ public class UmbrellaAnalyzersCodeFixProvider : CodeFixProvider
 		var diagnosticSpan = diagnostic.Location.SourceSpan;
 
 		// Find the type declaration identified by the diagnostic.
-		var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
+		var declaration = (root?.FindToken(diagnosticSpan.Start).Parent?.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First()) ?? throw new InvalidOperationException("Unable to find the type declaration.");
 
 		// Register a code action that will invoke the fix.
 		context.RegisterCodeFix(
@@ -54,7 +51,7 @@ public class UmbrellaAnalyzersCodeFixProvider : CodeFixProvider
 
 		// Get the symbol representing the type to be renamed.
 		var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-		var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken);
+		var typeSymbol = semanticModel.GetDeclaredSymbol(typeDecl, cancellationToken) ?? throw new InvalidOperationException("Unable to find the type symbol.");
 
 		// Produce a new solution that has all references to that type renamed, including the declaration.
 		var originalSolution = document.Project.Solution;
