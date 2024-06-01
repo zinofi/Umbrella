@@ -1,5 +1,8 @@
 ﻿namespace Umbrella.DataAccess.Abstractions;
 
+/// <summary>
+/// Represents a unit of work for data access operations.
+/// </summary>
 public interface IDataAccessUnitOfWork
 {
 	/// <summary>

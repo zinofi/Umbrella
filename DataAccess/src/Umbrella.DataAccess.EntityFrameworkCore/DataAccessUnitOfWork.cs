@@ -5,6 +5,10 @@ using Umbrella.DataAccess.Abstractions.Exceptions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
+/// <summary>
+/// Represents a unit of work for data access operations.
+/// </summary>
+/// <typeparam name="TDbContext">The type of the database context.</typeparam>
 public class DataAccessUnitOfWork<TDbContext> : IDataAccessUnitOfWork
 	where TDbContext : DbContext
 {
@@ -31,7 +35,7 @@ public class DataAccessUnitOfWork<TDbContext> : IDataAccessUnitOfWork
 
 		try
 		{
-			await _dbContext.SaveChangesAsync(cancellationToken);
+			_ = await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{

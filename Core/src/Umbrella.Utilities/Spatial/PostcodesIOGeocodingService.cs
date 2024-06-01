@@ -46,7 +46,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 	private class BulkPostcodeLookupRequest
 	{
 		[JsonPropertyName("postcodes")]
-		public IEnumerable<string> Postcodes { get; set; } = Enumerable.Empty<string>();
+		public IEnumerable<string> Postcodes { get; set; } = [];
 	}
 
 	private class BulkPostcodeLookupResult
@@ -63,7 +63,7 @@ public class PostcodesIOGeocodingService : IGeocodingService
 	private class BulkReverseGeocodingRequest
 	{
 		[JsonPropertyName("geolocations")]
-		public IEnumerable<ReverseGeocodingRequest> GeoLocations { get; set; } = Enumerable.Empty<ReverseGeocodingRequest>();
+		public IEnumerable<ReverseGeocodingRequest> GeoLocations { get; set; } = [];
 	}
 
 	private readonly struct ReverseGeocodingRequest

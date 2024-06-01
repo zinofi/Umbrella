@@ -269,16 +269,16 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					var attr = (RequiredIfAttribute)lstValidationAttribute[i];
 
 					if (i > 0)
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 
 					string @operator = GetOperatorTranslation(attr.Operator);
 					string otherValue = GetDependentValueTranslation(attr.ComparisonValue);
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(this.{dependentPropertyName} {@operator} {otherValue})");
+					_ = sbRule.Append($"(this.{dependentPropertyName} {@operator} {otherValue})");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 			}
 			else if (typeof(RequiredIfEmptyAttribute).IsAssignableFrom(group.Key))
 			{
@@ -287,14 +287,14 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					var attr = (RequiredIfEmptyAttribute)lstValidationAttribute[i];
 
 					if (i > 0)
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0))");
+					_ = sbRule.Append($"(this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || (typeof this.{dependentPropertyName} === \"number\" && isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length === 0))");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 			}
 			else if (typeof(RequiredIfNotEmptyAttribute).IsAssignableFrom(group.Key))
 			{
@@ -303,14 +303,14 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					var attr = (RequiredIfNotEmptyAttribute)lstValidationAttribute[i];
 
 					if (i > 0)
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 
 					string dependentPropertyName = GetDependentPropertyName(attr.DependentProperty);
 
-					sbRule.Append($"(this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)))");
+					_ = sbRule.Append($"(this.{dependentPropertyName} !== undefined && this.{dependentPropertyName} !== null && ((typeof this.{dependentPropertyName} === \"number\" && !isNaN(this.{dependentPropertyName}!)) || (typeof this.{dependentPropertyName} === \"string\" && (this.{dependentPropertyName}! as any).trim().length > 0)))");
 				}
 
-				validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
+				_ = validationBuilder.AppendLineWithTabIndent($"required: {{ onlyIf: () => {sbRule}, message: {message} }},", indent);
 			}
 			else if (typeof(IsAttribute).IsAssignableFrom(group.Key))
 			{
@@ -335,7 +335,7 @@ public class KnockoutClassGenerator : BaseClassGenerator
 					}
 					else
 					{
-						sbRule.Append(" || ");
+						_ = sbRule.Append(" || ");
 					}
 
 					string @operator = GetOperatorTranslation(attr.Operator);
@@ -343,11 +343,11 @@ public class KnockoutClassGenerator : BaseClassGenerator
 
 					if (attr is MaxPercentageOfAttribute maxPercentageOfAttribute)
 					{
-						sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}! * {maxPercentageOfAttribute.MaxPercentage})");
+						_ = sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}! * {maxPercentageOfAttribute.MaxPercentage})");
 					}
 					else
 					{
-						sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
+						_ = sbRule.Append($"(value === undefined || value === null || this.{dependentPropertyName} === undefined || this.{dependentPropertyName} === null || value {@operator} this.{dependentPropertyName}!)");
 					}
 				}
 
@@ -361,12 +361,12 @@ public class KnockoutClassGenerator : BaseClassGenerator
 
 			foreach (string rule in lstCustomValidationRule)
 			{
-				sbCustomValidationBuilder.AppendLineWithTabIndent(rule, indent);
+				_ = sbCustomValidationBuilder.AppendLineWithTabIndent(rule, indent);
 			}
 
-			validationBuilder.AppendLineWithTabIndent("validation: [", indent);
-			validationBuilder.AppendLineWithTabIndent(sbCustomValidationBuilder.ToString(), indent);
-			validationBuilder.AppendLineWithTabIndent("]", indent);
+			_ = validationBuilder.AppendLineWithTabIndent("validation: [", indent);
+			_ = validationBuilder.AppendLineWithTabIndent(sbCustomValidationBuilder.ToString(), indent);
+			_ = validationBuilder.AppendLineWithTabIndent("]", indent);
 		}
 
 		return validationBuilder;

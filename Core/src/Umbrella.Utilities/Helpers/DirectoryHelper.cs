@@ -14,7 +14,7 @@ public static class DirectoryHelper
 	/// <param name="overwriteFiles">Whether to overwrite existing files.</param>
 	public static void Copy(string sourceDir, string targetDir, bool recursive, bool overwriteFiles)
 	{
-		Directory.CreateDirectory(targetDir);
+		_ = Directory.CreateDirectory(targetDir);
 
 		foreach (string file in Directory.GetFiles(sourceDir))
 		{

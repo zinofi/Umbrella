@@ -45,7 +45,7 @@ public class UmbrellaConsoleHostingEnvironment : UmbrellaHostingEnvironment
 
 		try
 		{
-			string key = CacheKeyUtility.Create<UmbrellaConsoleHostingEnvironment>(new string[] { virtualPath });
+			string key = CacheKeyUtility.Create<UmbrellaConsoleHostingEnvironment>([virtualPath]);
 
 			return Cache.GetOrCreate(key, () =>
 			{

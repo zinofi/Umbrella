@@ -79,7 +79,7 @@ public static class UriExtensions
         // Remove the specified keys from the collection
         foreach (string key in keysToRemove)
         {
-            queryParameters.Remove(key);
+			_ = queryParameters.Remove(key);
         }
 
         // Rebuild the query string from the remaining parameters

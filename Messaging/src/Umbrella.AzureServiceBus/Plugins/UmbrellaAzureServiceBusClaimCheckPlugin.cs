@@ -16,7 +16,7 @@ namespace Umbrella.AzureServiceBus.Plugins;
 /// </summary>
 public class UmbrellaAzureServiceBusClaimCheckPlugin : IUmbrellaAzureServiceBusPlugin
 {
-	private static readonly BinaryData _emptyBinaryData = new(Array.Empty<byte>());
+	private static readonly BinaryData _emptyBinaryData = new([]);
 
 	private readonly ILogger _logger;
 	private readonly string _storageConnectionString;
