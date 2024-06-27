@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System.Net.Mail;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
@@ -72,9 +73,11 @@ public abstract class UmbrellaRazorEmailSender
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> which completes when the email has been sent to the system which ultimately sends the email.</returns>
 	/// <exception cref="UmbrellaWebException">Thrown if there is an error sending the email.</exception>
+	// TODO: [Obsolete("This method is obsolete. Use the version of the SendEmailAsync method which uses the UmbrellaEmailAttachment class instead.")]
 	protected async Task SendEmailAsync<T>(T model, string email, string subject, string viewNameOrPath, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, IEnumerable<string>? ccList = null, IEnumerable<string>? bccList = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrEmpty(viewNameOrPath);
 
 		try
 		{
