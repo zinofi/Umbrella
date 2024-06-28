@@ -59,11 +59,11 @@ public class EmailSender : IEmailSender
 					{
 						if (!string.IsNullOrWhiteSpace(part))
 						{
-							if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => x.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
+							if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => part.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 							{
 								lstRecipientEmail.AddRange(_options.RedirectRecipientEmailsList);
 							}
-							else if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => x.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
+							else if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => part.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 							{
 								lstRecipientEmail.Add(part);
 							}
