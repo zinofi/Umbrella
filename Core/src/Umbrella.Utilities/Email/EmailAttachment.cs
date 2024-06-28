@@ -8,6 +8,7 @@ namespace Umbrella.Utilities.Email;
 /// </summary>
 public class EmailAttachment : IDisposable
 {
+	private const string DefaultContentType = "application/octet-stream";
 	private bool _disposedValue;
 
 	/// <summary>
@@ -31,11 +32,11 @@ public class EmailAttachment : IDisposable
 	/// <param name="fileName">The file name.</param>
 	/// <param name="content">The content.</param>
 	/// <param name="contentType">The content type.</param>
-	public EmailAttachment(string fileName, Stream content, string contentType = "application/octet-stream")
+	public EmailAttachment(string fileName, Stream content, string? contentType)
 	{
 		FileName = fileName;
 		Content = content;
-		ContentType = contentType;
+		ContentType = contentType ?? DefaultContentType;
 	}
 
 	/// <summary>
@@ -44,11 +45,11 @@ public class EmailAttachment : IDisposable
 	/// <param name="fileName">The file name.</param>
 	/// <param name="content">The content.</param>
 	/// <param name="contentType">The content type.</param>
-	public EmailAttachment(string fileName, byte[] content, string contentType = "application/octet-stream")
+	public EmailAttachment(string fileName, byte[] content, string? contentType)
 	{
 		FileName = fileName;
 		Content = new MemoryStream(content);
-		ContentType = contentType;
+		ContentType = contentType ?? DefaultContentType;
 	}
 
 	/// <summary>

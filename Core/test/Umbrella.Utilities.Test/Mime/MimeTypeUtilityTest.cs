@@ -69,5 +69,40 @@ public class MimeTypeUtilityTest
 		Assert.Equal("image/png", mimeType);
 	}
 
+	[Fact]
+	public void GetFileExtension_Null()
+	{
+		string? fileExtension = CreateMimeTypeUtility().GetFileExtension(null);
+		Assert.Null(fileExtension);
+	}
+
+	[Fact]
+	public void GetFileExtension_Empty()
+	{
+		string? fileExtension = CreateMimeTypeUtility().GetFileExtension("");
+		Assert.Null(fileExtension);
+	}
+
+	[Fact]
+	public void GetFileExtension_Whitespace()
+	{
+		string? fileExtension = CreateMimeTypeUtility().GetFileExtension("    ");
+		Assert.Null(fileExtension);
+	}
+
+	[Fact]
+	public void GetFileExtension_Invalid()
+	{
+		string? fileExtension = CreateMimeTypeUtility().GetFileExtension("test");
+		Assert.Null(fileExtension);
+	}
+
+	[Fact]
+	public void GetFileExtension_Valid()
+	{
+		string? fileExtension = CreateMimeTypeUtility().GetFileExtension("image/png");
+		Assert.Equal(".png", fileExtension);
+	}
+
 	private static MimeTypeUtility CreateMimeTypeUtility() => new(new Mock<ILogger<MimeTypeUtility>>().Object);
 }

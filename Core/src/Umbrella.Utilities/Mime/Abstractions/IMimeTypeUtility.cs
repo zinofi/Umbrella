@@ -5,7 +5,12 @@
 /// </summary>
 public interface IMimeTypeUtility
 {
-	string? GetFileExtension(string mimeType);
+	/// <summary>
+	/// Gets the file extension for the specified mime type. If the extension cannot be identified then null will be returned.
+	/// </summary>
+	/// <param name="mimeType">The mime type.</param>
+	/// <returns>The file extension or null if the extension cannot be identified.</returns>
+	string? GetFileExtension(string? mimeType);
 
 	/// <summary>
 	/// Gets the MIME Type of the specified filename or extension.

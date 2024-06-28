@@ -24,12 +24,7 @@ public class MimeTypeUtility : IMimeTypeUtility
 		_logger = logger;
 	}
 
-	/// <summary>
-	/// Gets the MIME Type of the specified filename or extension.
-	/// If the extension cannot be identified then the default type of application/octet-stream will be returned.
-	/// </summary>
-	/// <param name="fileNameOrExtension">The file name or extension.</param>
-	/// <exception cref="UmbrellaException">Thrown if there is a problem identifying the mime type.</exception>
+	/// <inheritdoc />
 	public string GetMimeType(string fileNameOrExtension)
 	{
 		Guard.IsNotNullOrWhiteSpace(fileNameOrExtension);
@@ -72,19 +67,12 @@ public class MimeTypeUtility : IMimeTypeUtility
 		}
 	}
 
-	/// <summary>
-	/// Gets the file extension for the specified mime type. If the extension cannot be identified then null will be returned.
-	/// </summary>
-	/// <param name="mimeType">The mime type.</param>
-	/// <returns>The file extension or null if the extension cannot be identified.</returns>
-	/// <exception cref="UmbrellaException">Thrown if there is a problem identifying the file extension.</exception>
-	public string? GetFileExtension(string mimeType)
+	/// <inheritdoc />
+	public string? GetFileExtension(string? mimeType)
 	{
-		Guard.IsNotNullOrWhiteSpace(mimeType);
-
 		try
 		{
-			return MimeTypes.TryGetExtension(mimeType, out string? extension) ? extension : null;
+			return !string.IsNullOrWhiteSpace(mimeType) && MimeTypes.TryGetExtension(mimeType, out string? extension) ? extension : null;
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { mimeType }))
 		{
