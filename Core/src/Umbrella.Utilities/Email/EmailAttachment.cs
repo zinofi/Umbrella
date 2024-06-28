@@ -32,7 +32,7 @@ public class EmailAttachment : IDisposable
 	/// <param name="fileName">The file name.</param>
 	/// <param name="content">The content.</param>
 	/// <param name="contentType">The content type.</param>
-	public EmailAttachment(string fileName, Stream content, string? contentType)
+	public EmailAttachment(string fileName, Stream content, string? contentType = null)
 	{
 		FileName = fileName;
 		Content = content;
@@ -45,7 +45,7 @@ public class EmailAttachment : IDisposable
 	/// <param name="fileName">The file name.</param>
 	/// <param name="content">The content.</param>
 	/// <param name="contentType">The content type.</param>
-	public EmailAttachment(string fileName, byte[] content, string? contentType)
+	public EmailAttachment(string fileName, byte[] content, string? contentType = null)
 	{
 		FileName = fileName;
 		Content = new MemoryStream(content);
