@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using Umbrella.Utilities.Exceptions;
+using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Mime.Abstractions;
 
 namespace Umbrella.Utilities.Mime;
@@ -35,7 +36,35 @@ public class MimeTypeUtility : IMimeTypeUtility
 
 		try
 		{
-			return MimeTypes.GetMimeType(fileNameOrExtension);
+			ReadOnlySpan<char> span = fileNameOrExtension.AsSpan().Trim();
+			Span<char> destinationSpan = stackalloc char[span.Length];
+			span.ToLowerInvariantSlim(destinationSpan);
+
+			int idxPeriod = destinationSpan.IndexOf('.');
+
+			if (destinationSpan.IndexOf('.') is -1)
+			{
+				Span<char> periodSpan = stackalloc char[span.Length + 1];
+				periodSpan[0] = '.';
+
+				for (int i = 1; i < periodSpan.Length; i++)
+				{
+					periodSpan[i] = destinationSpan[i - 1];
+				}
+
+				destinationSpan = periodSpan;
+			}
+			else
+			{
+				int idxLastPeriod = destinationSpan.LastIndexOf('.');
+
+				if (idxLastPeriod > 0)
+				{
+					destinationSpan = destinationSpan[idxLastPeriod..];
+				}
+			}
+
+			return MimeTypes.GetMimeType(destinationSpan.ToString());
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { fileNameOrExtension }))
 		{
