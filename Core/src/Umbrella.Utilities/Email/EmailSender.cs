@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Net.Mail;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.Net.Mail;
 using Umbrella.Utilities.Email.Abstractions;
 using Umbrella.Utilities.Email.Options;
 using Umbrella.Utilities.Exceptions;
@@ -62,11 +62,16 @@ public class EmailSender : IEmailSender
 							if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => part.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 							{
 								lstRecipientEmail.AddRange(_options.RedirectRecipientEmailsList);
+								continue;
 							}
-							else if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => part.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
+
+							if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => part.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
 							{
-								lstRecipientEmail.Add(part);
+								// We don't want to send the email to this recipient
+								continue;
 							}
+
+							lstRecipientEmail.Add(part);
 						}
 					}
 				}
@@ -89,6 +94,9 @@ public class EmailSender : IEmailSender
 							client.Credentials = new NetworkCredential { UserName = _options.UserName, Password = _options.Password };
 
 						email = string.Join(",", DetermineRecipients(new[] { email }));
+
+						if (string.IsNullOrEmpty(email))
+							return;
 
 						if (ccList is not null)
 							ccList = DetermineRecipients(ccList);
