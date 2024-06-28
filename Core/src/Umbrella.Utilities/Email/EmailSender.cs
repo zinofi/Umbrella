@@ -38,7 +38,7 @@ public class EmailSender : IEmailSender
 	}
 
 	/// <inheritdoc />
-	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, IEnumerable<string>? ccList = null, IEnumerable<string>? bccList = null, CancellationToken cancellationToken = default)
+	public async Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<EmailAttachment>? attachments = null, IEnumerable<string>? ccList = null, IEnumerable<string>? bccList = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(email);
@@ -47,6 +47,33 @@ public class EmailSender : IEmailSender
 
 		try
 		{
+			IReadOnlyCollection<string> DetermineRecipients(IEnumerable<string> emails)
+			{
+				HashSet<string> lstRecipientEmail = new(StringComparer.OrdinalIgnoreCase);
+
+				foreach (string email in emails)
+				{
+					string[] emailParts = email.Split(',');
+
+					foreach (string part in emailParts)
+					{
+						if (!string.IsNullOrWhiteSpace(part))
+						{
+							if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => x.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
+							{
+								lstRecipientEmail.AddRange(_options.RedirectRecipientEmailsList);
+							}
+							else if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => x.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
+							{
+								lstRecipientEmail.Add(part);
+							}
+						}
+					}
+				}
+
+				return lstRecipientEmail;
+			}
+
 			using var client = new SmtpClient();
 
 			switch (_options.DeliveryMethod)
@@ -61,14 +88,13 @@ public class EmailSender : IEmailSender
 						if (!string.IsNullOrWhiteSpace(_options.UserName))
 							client.Credentials = new NetworkCredential { UserName = _options.UserName, Password = _options.Password };
 
-						if (_options.RedirectRecipientEmailsList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => email.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
-						{
-							email = _options.GetRedirectRecipientEmails();
-						}
-						else if (_options.EmailRecipientDomainWhiteList.Count > 0 && !_options.EmailRecipientDomainWhiteList.Any(x => email.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
-						{
-							return;
-						}
+						email = string.Join(",", DetermineRecipients(new[] { email }));
+
+						if (ccList is not null)
+							ccList = DetermineRecipients(ccList);
+
+						if (bccList is not null)
+							bccList = DetermineRecipients(bccList);
 
 						break;
 					}
@@ -94,7 +120,15 @@ public class EmailSender : IEmailSender
 				IsBodyHtml = true
 			};
 
-			attachments?.ForEach(message.Attachments.Add);
+			if (attachments is not null)
+			{
+				foreach (EmailAttachment attachment in attachments)
+				{
+					if (attachment.Content.Length > 0 && !string.IsNullOrEmpty(attachment.FileName) && !string.IsNullOrEmpty(attachment.ContentType))
+						message.Attachments.Add(new Attachment(attachment.Content, attachment.FileName, attachment.ContentType));
+				}
+			}
+
 			ccList?.ForEach(message.CC.Add);
 			bccList?.ForEach(message.Bcc.Add);
 
@@ -104,7 +138,7 @@ public class EmailSender : IEmailSender
 			await client.SendMailAsync(message).ConfigureAwait(false);
 #endif
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress }))
+		catch (Exception exc) when (_logger.WriteError(exc, new { email, subject, body, fromAddress, ccList, bccList }))
 		{
 			throw new UmbrellaException("There has been a problem sending the email.", exc);
 		}

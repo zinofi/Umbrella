@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using Umbrella.Utilities.Email.Options;
+﻿using Umbrella.Utilities.Email.Options;
 
 namespace Umbrella.Utilities.Email.Abstractions;
 
@@ -23,5 +22,5 @@ public interface IEmailSender
 	/// <param name="bccList">The list of email addresses to be added as BCCs.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable task which will complete when the email has been sent.</returns>
-	Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<Attachment>? attachments = null, IEnumerable<string>? ccList = null, IEnumerable<string>? bccList = null, CancellationToken cancellationToken = default);
+	Task SendEmailAsync(string email, string subject, string body, string? fromAddress = null, IEnumerable<EmailAttachment>? attachments = null, IEnumerable<string>? ccList = null, IEnumerable<string>? bccList = null, CancellationToken cancellationToken = default);
 }

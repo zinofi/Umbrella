@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using CommunityToolkit.Diagnostics;
+﻿using CommunityToolkit.Diagnostics;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Options.Abstractions;
 
@@ -12,8 +9,6 @@ namespace Umbrella.Utilities.Email.Options;
 /// </summary>
 public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
-	private string? _redirectRecipientEmailsString;
-
 	/// <summary>
 	/// The method of delivery. Defaults to <see cref="EmailSenderDeliveryMode.Network" />.
 	/// </summary>
@@ -107,10 +102,4 @@ public class EmailSenderOptions : ISanitizableUmbrellaOptions, IValidatableUmbre
 				break;
 		}
 	}
-
-	/// <summary>
-	/// Gets the redirect recipient emails.
-	/// </summary>
-	/// <returns>A comma delimited string of the email addresses.</returns>
-	public string GetRedirectRecipientEmails() => _redirectRecipientEmailsString ??= string.Join(",", RedirectRecipientEmailsList);
 }
