@@ -193,9 +193,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-			ThrowIfConcurrencyTokenMismatch(entity);
 
 			repoOptions ??= DefaultRepoOptions;
+
+			if (repoOptions.ThrowIfConcurrencyTokenMismatch)
+				ThrowIfConcurrencyTokenMismatch(entity);
 
 			if (repoOptions.SanitizeEntity)
 				await SanitizeEntityAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
@@ -324,7 +326,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	#endregion
 
 	#region Delete
-	
+
 	/// <inheritdoc />
 	[Obsolete($"Use the {nameof(DeleteEntityAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	public virtual async Task DeleteAsync(TEntity entity, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
@@ -335,9 +337,11 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-			ThrowIfConcurrencyTokenMismatch(entity);
 
 			repoOptions ??= DefaultRepoOptions;
+
+			if (repoOptions.ThrowIfConcurrencyTokenMismatch)
+				ThrowIfConcurrencyTokenMismatch(entity);
 
 			await BeforeContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
@@ -349,7 +353,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			await AfterContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, repoOptions, childOptions, cancellationToken));
-			
+
 			UpdateOriginalConcurrencyStamp(entity);
 
 			if (pushChangesToDb)

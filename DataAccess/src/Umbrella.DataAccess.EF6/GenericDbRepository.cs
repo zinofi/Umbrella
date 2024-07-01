@@ -188,10 +188,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-			ThrowIfConcurrencyTokenMismatch(entity);
 
 			// Ensure the default options are used when not explicitly provided.
 			repoOptions ??= DefaultRepoOptions;
+
+			if (repoOptions.ThrowIfConcurrencyTokenMismatch)
+				ThrowIfConcurrencyTokenMismatch(entity);
 
 			if (repoOptions.SanitizeEntity)
 				await SanitizeEntityAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
@@ -299,7 +301,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			throw new UmbrellaDataAccessException("There has been a problem saving the specified entities.", exc);
 		}
 	}
-	
+
 	/// <inheritdoc/>
 	public virtual Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllEntitiesAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -318,10 +320,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-			ThrowIfConcurrencyTokenMismatch(entity);
 
 			// Ensure the default options are used when not explicitly provided.
 			repoOptions ??= DefaultRepoOptions;
+
+			if (repoOptions.ThrowIfConcurrencyTokenMismatch)
+				ThrowIfConcurrencyTokenMismatch(entity);
 
 			await BeforeContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
