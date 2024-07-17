@@ -222,7 +222,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analyzers", "Analyzers", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D8FC59AF-00A0-4187-8622-15AF5457E48F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers", "Analyzers\Umbrella.Analyzers\Umbrella.Analyzers\Umbrella.Analyzers.csproj", "{6C8C4A89-1D02-4D33-92D9-3B0E9EDF9C7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Analyzers", "Analyzers\Umbrella.Analyzers\Umbrella.Analyzers\Umbrella.Analyzers.csproj", "{6C8C4A89-1D02-4D33-92D9-3B0E9EDF9C7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
