@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
@@ -22,6 +23,11 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// </summary>
 	protected const string MaxPixelDensityAttributeName = "max-pixel-density";
 
+	/// <summary>
+	/// The enable lazy loading attribute name.
+	/// </summary>
+	protected const string EnableLazyLoadingAttributeName = "enable-lazy-loading";
+
 	#region Public Properties
 	/// <summary>
 	/// Gets or sets the maximum pixel density. All values below the maximum inclusive will have corresponding image URLs
@@ -30,6 +36,12 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// <remarks>Defaults to 4.</remarks>
 	[HtmlAttributeName(MaxPixelDensityAttributeName)]
 	public int MaxPixelDensity { get; set; } = 4;
+
+	/// <summary>
+	/// Gets or sets a value indicating whether lazy loading is enabled. Defaults to true.
+	/// </summary>
+	[HtmlAttributeName(EnableLazyLoadingAttributeName)]
+	public bool EnableLazyLoading { get; set; } = true;
 	#endregion
 
 	#region Protected Properties		
@@ -87,6 +99,9 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// <inheritdoc />
 	public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 	{
+		Guard.IsNotNull(context);
+		Guard.IsNotNull(output);
+
 		await base.ProcessAsync(context, output);
 
 		string? path = output.Attributes["src"]?.Value as string ?? context.AllAttributes["src"]?.Value?.ToString();
@@ -104,6 +119,9 @@ public class ResponsiveImageTagHelper : TagHelper
 
 			if (!string.IsNullOrWhiteSpace(srcsetValue))
 				output.Attributes.Add("srcset", srcsetValue);
+
+			if (EnableLazyLoading)
+				output.Attributes.Add("loading", "lazy");
 		}
 	}
 	#endregion
@@ -116,6 +134,8 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// <returns>The resolved image url.</returns>
 	protected virtual string ResolveImageUrl(string url)
 	{
+		Guard.IsNotNullOrWhiteSpace(url);
+
 		if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
 			return url;
 

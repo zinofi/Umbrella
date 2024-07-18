@@ -25,7 +25,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <summary>
 	/// The required attribute names
 	/// </summary>
-	protected const string RequiredAttributeNames = "src," + WidthRequestAttributeName + "," + HeightRequestAttributeName + "," + ResizeModeAttributeName;
+	protected const string RequiredAttributeNames = "src," + WidthRequestAttributeName + "," + HeightRequestAttributeName;
 
 	/// <summary>
 	/// The width request attribute name
@@ -73,10 +73,13 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	public int HeightRequest { get; set; }
 
 	/// <summary>
-	/// Gets or sets the <see cref="DynamicResizeMode"/>.
+	/// Gets or sets the resize mode. Defaults to <see cref="DynamicResizeMode.UniformFill"/>.
 	/// </summary>
+	/// <remarks>
+	/// For more information on how these resize modes work, please refer to the <see cref="DynamicResizeMode"/> code documentation.
+	/// </remarks>
 	[HtmlAttributeName(ResizeModeAttributeName)]
-	public DynamicResizeMode ResizeMode { get; set; }
+	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
 
 	/// <summary>
 	/// Gets or sets the string that is prepended onto the value of the "src" attribute.
@@ -132,6 +135,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <returns>The 'src' attribute of the tag.</returns>
 	protected string BuildCoreTag(TagHelperOutput output)
 	{
+		Guard.IsNotNull(output);
 		Guard.IsGreaterThan(WidthRequest, 0);
 		Guard.IsGreaterThan(HeightRequest, 0);
 
@@ -156,6 +160,8 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <inheritdoc/>
 	protected override string ResolveImageUrl(string url)
 	{
+		Guard.IsNotNullOrWhiteSpace(url);
+
 		if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
 			return url;
 

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -59,6 +60,9 @@ public class DynamicImageTagHelper : DynamicImageTagHelperBase
 	/// <param name="output">A stateful HTML element used to generate an HTML tag.</param>
 	public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 	{
+		Guard.IsNotNull(context);
+		Guard.IsNotNull(output);
+
 		//If we don't have any size information just call into the base method
 		IReadOnlyCollection<int>? lstSizeWidth = SizeWidths is not null ? ResponsiveImageHelper.GetParsedIntegerItems(SizeWidths) : null;
 
