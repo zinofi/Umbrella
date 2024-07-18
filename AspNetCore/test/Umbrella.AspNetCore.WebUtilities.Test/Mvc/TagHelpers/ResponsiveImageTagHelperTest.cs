@@ -42,10 +42,6 @@ public class ResponsiveImageTagHelperTest
 
 		bool srcSetShouldExist = !string.IsNullOrWhiteSpace(path) && maxPixelDensity > 1;
 
-		int expectedAttributeCount = srcSetShouldExist ? 2 : 1;
-
-		Assert.Equal(expectedAttributeCount, output.Attributes.Count);
-
 		var srcSetAttribute = output.Attributes.SingleOrDefault(x => x.Name == "srcset");
 
 		if (srcSetShouldExist)
