@@ -293,6 +293,12 @@
                                 </tr>
                             }
                         </tbody>
+                        @if (FooterContent is not null)
+                        {
+                            <tfoot>
+                                @FooterContent
+                            </tfoot>
+                        }
                     </table>
                 </div>
 

@@ -165,6 +165,12 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	public RenderFragment? AdditionalFilterContent { get; set; }
 
 	/// <summary>
+	/// Gets or sets the additional content to be displayed inside the <![CDATA[<tfoot>]]> element of the grid.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? FooterContent { get; set; }
+
+	/// <summary>
 	/// Gets or sets the columns to be displayed inside this grid component. This should be a collection of columns components.
 	/// </summary>
 	[Parameter]
