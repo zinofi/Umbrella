@@ -101,4 +101,13 @@ public interface IGenericHttpService
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the operation.</returns>
 	Task<IHttpCallResult> PatchAsync(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// PATCH the resource to the server.
+	/// </summary>
+	/// <param name="url">The URL.</param>
+	/// <param name="parameters">The parameters.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The result of the operation.</returns>
+	Task<IHttpCallResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
 }

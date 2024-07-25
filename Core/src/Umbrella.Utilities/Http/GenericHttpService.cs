@@ -223,6 +223,36 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
+	public virtual async Task<IHttpCallResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
+
+		try
+		{
+			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+
+			using var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl);
+
+			HttpResponseMessage response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+			var (processed, result) = await HttpServiceUtility.ProcessResponseAsync<TResult>(response, cancellationToken).ConfigureAwait(false);
+
+			var retVal = processed
+				? result
+				: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+
+			ThrowIfConcurrencyStampMismatchResponse(retVal);
+
+			return retVal;
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { url, parameters }) && exc is not UmbrellaHttpServiceConcurrencyException)
+		{
+			throw CreateServiceAccessException(exc);
+		}
+	}
+
+	/// <inheritdoc />
 	public virtual async Task<IHttpCallResult> DeleteAsync(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
