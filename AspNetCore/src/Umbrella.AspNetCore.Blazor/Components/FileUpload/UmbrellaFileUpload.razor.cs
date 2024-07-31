@@ -4,7 +4,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.Http.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileUpload;
@@ -20,10 +22,10 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	private CancellationTokenSource? _cancellationTokenSource;
 
 	[Inject]
-	private ILogger<UmbrellaFileUpload> Logger { get; set; } = null!;
+	private ILogger<UmbrellaFileUpload> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private IUmbrellaDialogService DialogUtility { get; set; } = null!;
+	private IUmbrellaDialogService DialogUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	private int UploadPercentage { get; set; }
 

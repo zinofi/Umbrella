@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Validation;
@@ -16,7 +18,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	private bool _disposedValue;
 
 	[Inject]
-	private IObjectGraphValidator ObjectGraphValidator { get; set; } = null!;
+	private IObjectGraphValidator ObjectGraphValidator { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[CascadingParameter]
 	private EditContext? EditContext { get; set; }

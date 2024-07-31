@@ -3,6 +3,8 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.Imaging;
 
 namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
@@ -17,7 +19,7 @@ public partial class UmbrellaResponsiveImage : ComponentBase
 	/// Gets or sets the responsive image helper.
 	/// </summary>
 	[Inject]
-	protected IResponsiveImageHelper ResponsiveImageHelper { get; set; } = null!;
+	protected IResponsiveImageHelper ResponsiveImageHelper { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the CSS class that is applied to the div that wraps the generated img tag.

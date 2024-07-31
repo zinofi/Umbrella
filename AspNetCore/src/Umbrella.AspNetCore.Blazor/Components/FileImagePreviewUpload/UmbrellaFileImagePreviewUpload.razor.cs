@@ -3,8 +3,10 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.FileUpload;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Imaging;
@@ -19,10 +21,10 @@ namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload;
 public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 {
 	[Inject]
-	private ILogger<UmbrellaFileImagePreviewUpload> Logger { get; set; } = null!;
+	private ILogger<UmbrellaFileImagePreviewUpload> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private IUmbrellaDialogService DialogUtility { get; set; } = null!;
+	private IUmbrellaDialogService DialogUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the message shown when a new image has been uploaded in place of an existing one.

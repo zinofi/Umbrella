@@ -5,6 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
@@ -13,6 +14,7 @@ using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AppFramework.Shared.Security;
 using Umbrella.AppFramework.Shared.Security.Extensions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Http;
@@ -31,7 +33,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	private readonly Lazy<CancellationTokenSource> _cancellationTokenSource = new(() => new());
 
 	[Inject]
-	private ILoggerFactory LoggerFactory { get; set; } = null!;
+	private ILoggerFactory LoggerFactory { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets the navigation manager.
@@ -40,25 +42,25 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	/// Useful extension methods can be found inside <see cref="NavigationManagerExtensions"/>.
 	/// </remarks>
 	[Inject]
-	protected NavigationManager Navigation { get; private set; } = null!;
+	protected NavigationManager Navigation { get; [RequiresUnreferencedCode(TrimConstants.DI)] private set; } = null!;
 
 	/// <summary>
 	/// Gets the dialog utility.
 	/// </summary>
 	[Inject]
-	protected IUmbrellaDialogService DialogUtility { get; private set; } = null!;
+	protected IUmbrellaDialogService DialogUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] private set; } = null!;
 
 	/// <summary>
 	/// Gets the authentication helper.
 	/// </summary>
 	[Inject]
-	protected IAppAuthHelper AuthHelper { get; private set; } = null!;
+	protected IAppAuthHelper AuthHelper { get; [RequiresUnreferencedCode(TrimConstants.DI)] private set; } = null!;
 
 	/// <summary>
 	/// Gets the mapper.
 	/// </summary>
 	[Inject]
-	protected IUmbrellaMapper Mapper { get; private set; } = null!;
+	protected IUmbrellaMapper Mapper { get; [RequiresUnreferencedCode(TrimConstants.DI)] private set; } = null!;
 
 	/// <summary>
 	/// Gets the logger.

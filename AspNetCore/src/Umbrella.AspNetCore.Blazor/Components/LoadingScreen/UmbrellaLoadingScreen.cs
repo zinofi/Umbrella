@@ -3,8 +3,10 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Enumerations;
+using Umbrella.AspNetCore.Blazor.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.LoadingScreen;
 
@@ -18,7 +20,7 @@ public class UmbrellaLoadingScreen : ComponentBase, IDisposable
 	private bool _visible;
 
 	[Inject]
-	private ILoadingScreenService LoadingScreenUtility { get; set; } = null!;
+	private ILoadingScreenService LoadingScreenUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <inheritdoc />
 	protected override void BuildRenderTree(RenderTreeBuilder builder)

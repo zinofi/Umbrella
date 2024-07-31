@@ -2,7 +2,9 @@
 // Licensed under the MIT License.
 
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
@@ -28,7 +30,7 @@ public abstract class UmbrellaReadOnlyRemoteDataAccessGridComponentBase<TItemMod
 	/// Gets or sets the repository.
 	/// </summary>
 	[Inject]
-	protected TRepository Repository { get; set; } = null!;
+	protected TRepository Repository { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <inheritdoc/>
 	protected override Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, CancellationToken cancellationToken = default) => Repository.FindAllSlimAsync(pageNumber, pageSize, sorters: sorters, filters: filters, cancellationToken: cancellationToken);

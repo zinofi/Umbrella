@@ -3,7 +3,9 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Imaging;
 
@@ -19,7 +21,7 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 	/// Gets or sets the dynamic image utility.
 	/// </summary>
 	[Inject]
-	protected IDynamicImageUtility DynamicImageUtility { get; set; } = null!;
+	protected IDynamicImageUtility DynamicImageUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the dynamic image path prefix. Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix"/>.

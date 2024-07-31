@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Umbrella.AspNetCore.Blazor.Components.Checkbox;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.Helpers;
 
 namespace Umbrella.AspNetCore.Blazor.Components.EnumFlags;
@@ -18,7 +19,7 @@ public partial class UmbrellaEnumFlagsCheckboxGroup<TEnum> : InputBase<TEnum>
 	where TEnum : struct, Enum
 {
 	[Inject]
-	private ILogger<UmbrellaEnumFlagsCheckboxGroup<TEnum>> Logger { get; set; } = null!;
+	private ILogger<UmbrellaEnumFlagsCheckboxGroup<TEnum>> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	private UmbrellaEnumFlagsCheckboxGroupItem<TEnum>? ShowAllOptionItem { get; set; }
 

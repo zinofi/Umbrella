@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Security.Abstractions;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
@@ -32,13 +33,13 @@ public partial class UmbrellaColumn<TItem, TValue>
 	private Func<TItem, TValue?>? _propertyDelegate;
 
 	[Inject]
-	private IAuthorizationService AuthorizationService { get; set; } = null!;
+	private IAuthorizationService AuthorizationService { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private IAppAuthHelper AuthHelper { get; set; } = null!;
+	private IAppAuthHelper AuthHelper { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private ILogger<UmbrellaColumn<TItem, TValue>> Logger { get; set; } = null!;
+	private ILogger<UmbrellaColumn<TItem, TValue>> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the <see cref="IUmbrellaGrid{TItem}"/> instance that contains this column.

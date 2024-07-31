@@ -1,7 +1,9 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Umbrella.AspNetCore.Blazor.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 
@@ -12,7 +14,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 public partial class UmbrellaDialog
 {
 	[Inject]
-	private NavigationManager Navigation { get; set; } = null!;
+	private NavigationManager Navigation { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the modal instance as a cascading parameter.

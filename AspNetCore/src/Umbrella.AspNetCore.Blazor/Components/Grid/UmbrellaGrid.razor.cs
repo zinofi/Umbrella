@@ -3,6 +3,7 @@ using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -11,6 +12,7 @@ using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Dialogs.Models;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Options;
 using Umbrella.AspNetCore.Blazor.Components.Pagination;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
@@ -78,25 +80,25 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	private EditContext EditContext { get; } = new(new object());
 
 	[Inject]
-	private ILogger<UmbrellaGrid<TItem>> Logger { get; set; } = null!;
+	private ILogger<UmbrellaGrid<TItem>> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private IUmbrellaBlazorInteropService BlazorInteropUtility { get; set; } = null!;
+	private IUmbrellaBlazorInteropService BlazorInteropUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private IUmbrellaDialogService DialogService { get; set; } = null!;
+	private IUmbrellaDialogService DialogService { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private NavigationManager Navigation { get; set; } = null!;
+	private NavigationManager Navigation { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private UmbrellaGridOptions Options { get; set; } = null!;
+	private UmbrellaGridOptions Options { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private Lazy<IBrowserEventAggregator> BrowserEventAggregator { get; set; } = null!;
+	private Lazy<IBrowserEventAggregator> BrowserEventAggregator { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
-	private ISessionStorageService SessionStorageService { get; set; } = null!;
+	private ISessionStorageService SessionStorageService { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the instance of the associated <see cref="UmbrellaPagination"/> component.

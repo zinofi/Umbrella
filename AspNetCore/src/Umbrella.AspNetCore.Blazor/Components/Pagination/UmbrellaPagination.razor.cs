@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
+using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.Data.Pagination;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Pagination;
@@ -15,7 +17,7 @@ public partial class UmbrellaPagination
 	/// Gets or sets the logger.
 	/// </summary>
 	[Inject]
-	public ILogger<UmbrellaPagination> Logger { get; set; } = null!;
+	public ILogger<UmbrellaPagination> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the total count.

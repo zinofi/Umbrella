@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.CodeAnalysis;
+using Umbrella.AspNetCore.Blazor.Constants;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Breadcrumb;
 
@@ -10,7 +12,7 @@ namespace Umbrella.AspNetCore.Blazor.Components.Breadcrumb;
 public partial class UmbrellaBreadcrumbRenderer
 {
 	[Inject]
-	private NavigationManager Navigation { get; set; } = null!;
+	private NavigationManager Navigation { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	/// <summary>
 	/// Gets or sets the root for the breadcrumb displayed as the first item in the breadcrumb, e.g. Home
