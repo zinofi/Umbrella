@@ -23,7 +23,7 @@ public static class IServiceCollectionExtensions
 	{
 		Guard.IsNotNull(services);
 
-		_ = services.AddSingleton<IUmbrellaMapper, UmbrellaMapper>();
+		_ = services.ReplaceSingleton<IUmbrellaMapper, UmbrellaMapper>();
 
 		return services;
 	}

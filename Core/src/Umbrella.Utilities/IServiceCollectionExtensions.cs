@@ -32,6 +32,8 @@ using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Extensions;
 using Umbrella.Utilities.Http.Options;
 using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Mapping;
+using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Mime;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.Numerics;
@@ -126,6 +128,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddSingleton<IOptionsInitializer, OptionsInitializer>();
 
 		_ = services.AddSingleton<ISynchronizationManager, MemorySynchronizationManager>();
+		_ = services.AddSingleton<IUmbrellaMapper, UmbrellaNoopMapper>();
 
 		if (httpServicesBuilder is not null)
 		{
