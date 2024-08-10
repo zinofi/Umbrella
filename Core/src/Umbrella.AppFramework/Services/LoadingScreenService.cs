@@ -25,12 +25,12 @@ public class LoadingScreenService : ILoadingScreenService, IDisposable
 	{
 		add
 		{
-			Guard.IsNotNull(value.Target);
+			Guard.IsNotNull(value?.Target);
 			WeakReferenceMessenger.Default.TryRegister<LoadingScreenStateChangedMessage>(value.Target, (_, args) => value(args.Value));
 		}
 		remove
 		{
-			Guard.IsNotNull(value.Target);
+			Guard.IsNotNull(value?.Target);
 			WeakReferenceMessenger.Default.Unregister<LoadingScreenStateChangedMessage>(value.Target);
 		}
 	}

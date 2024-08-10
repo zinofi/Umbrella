@@ -36,12 +36,12 @@ public class AppAuthHelper : IAppAuthHelper
 	{
 		add
 		{
-			Guard.IsNotNull(value.Target);
+			Guard.IsNotNull(value?.Target);
 			WeakReferenceMessenger.Default.TryRegister<AuthenticationStateChangedMessage>(value.Target, (sender, args) => _ = value(args.Value));
 		}
 		remove
 		{
-			Guard.IsNotNull(value.Target);
+			Guard.IsNotNull(value?.Target);
 			WeakReferenceMessenger.Default.Unregister<AuthenticationStateChangedMessage>(value.Target);
 		}
 	}
