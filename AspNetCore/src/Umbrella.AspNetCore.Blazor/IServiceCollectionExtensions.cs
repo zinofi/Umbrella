@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using Blazored.LocalStorage;
+using Blazored.Modal;
+using Blazored.SessionStorage;
 using CommunityToolkit.Diagnostics;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
@@ -40,6 +43,11 @@ public static class IServiceCollectionExtensions
 		_ = services.AddTransient<IBrowserEventAggregator, BrowserEventAggregator>();
 
 		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
+
+		// Add the Blazored Services here too to avoid the user having to add them manually
+		_ = services.AddBlazoredModal();
+		_ = services.AddBlazoredLocalStorage();
+		_ = services.AddBlazoredSessionStorage();
 
 		return services;
 	}
