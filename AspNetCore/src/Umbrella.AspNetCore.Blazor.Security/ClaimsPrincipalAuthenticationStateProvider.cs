@@ -1,4 +1,4 @@
-﻿using BlazorApplicationInsights;
+﻿//using BlazorApplicationInsights;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
@@ -6,7 +6,8 @@ using System.Security.Claims;
 using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Shared.Security.Extensions;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
-using Umbrella.AspNetCore.Blazor.Security.Options;
+using Umbrella.AspNetCore.Blazor.Security.Exceptions;
+//using Umbrella.AspNetCore.Blazor.Security.Options;
 using Umbrella.Utilities.Dating.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Security;
@@ -21,9 +22,9 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 {
 	private readonly ILogger _logger;
 	private readonly IAppAuthHelper _authHelper;
-	private readonly IApplicationInsights _applicationInsights;
+	//private readonly IApplicationInsights _applicationInsights;
 	private readonly IDateTimeProvider _dateTimeProvider;
-	private readonly ClaimsPrincipalAuthenticationStateProviderOptions _options;
+	//private readonly ClaimsPrincipalAuthenticationStateProviderOptions _options;
 
 	/// <inheritdoc />
 	public event EventHandler? AuthenticatedStateHasChanged;
@@ -39,15 +40,15 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 	public ClaimsPrincipalAuthenticationStateProvider(
 		ILogger<ClaimsPrincipalAuthenticationStateProvider> logger,
 		IAppAuthHelper authHelper,
-		IApplicationInsights applicationInsights,
-		IDateTimeProvider dateTimeProvider,
-		ClaimsPrincipalAuthenticationStateProviderOptions options)
+		//IApplicationInsights applicationInsights,
+		IDateTimeProvider dateTimeProvider)
+		//ClaimsPrincipalAuthenticationStateProviderOptions options)
 	{
 		_logger = logger;
 		_authHelper = authHelper;
-		_applicationInsights = applicationInsights;
+		//_applicationInsights = applicationInsights;
 		_dateTimeProvider = dateTimeProvider;
-		_options = options;
+		//_options = options;
 		_authHelper.OnAuthenticationStateChanged += MarkUserAsAuthenticatedAsync;
 	}
 
@@ -63,22 +64,22 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 
 			if (refreshTokenExpiration > _dateTimeProvider.UtcNow)
 			{
-				if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
-					await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);
+				//if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
+				//	await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);
 
 				return new AuthenticationState(principal);
 			}
 			else
 			{
-				if (_options.IsApplicationInsightsEnabled)
-					await _applicationInsights.ClearAuthenticatedUserContext();
+				//if (_options.IsApplicationInsightsEnabled)
+				//	await _applicationInsights.ClearAuthenticatedUserContext();
 
 				return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 			}
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
-			throw new UmbrellaBlazorException("There has been a problem getting the authentication state.", exc);
+			throw new UmbrellaBlazorSecurityException("There has been a problem getting the authentication state.", exc);
 		}
 	}
 
@@ -93,12 +94,12 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 			NotifyAuthenticationStateChanged(authState);
 			AuthenticatedStateHasChanged?.Invoke(this, EventArgs.Empty);
 
-			if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
-				await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);
+			//if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
+			//	await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { principal.Identity?.Name }))
 		{
-			throw new UmbrellaBlazorException("There has been a problem marking the user as authenticated.", exc);
+			throw new UmbrellaBlazorSecurityException("There has been a problem marking the user as authenticated.", exc);
 		}
 	}
 
@@ -111,12 +112,12 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 			NotifyAuthenticationStateChanged(authState);
 			AuthenticatedStateHasChanged?.Invoke(this, EventArgs.Empty);
 
-			if (_options.IsApplicationInsightsEnabled)
-				await _applicationInsights.ClearAuthenticatedUserContext();
+			//if (_options.IsApplicationInsightsEnabled)
+			//	await _applicationInsights.ClearAuthenticatedUserContext();
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
-			throw new UmbrellaBlazorException("There has been a problem marking the user as logged out.", exc);
+			throw new UmbrellaBlazorSecurityException("There has been a problem marking the user as logged out.", exc);
 		}
 	}
 }

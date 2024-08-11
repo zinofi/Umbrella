@@ -18,17 +18,25 @@ public interface IAppAuthHelper
 	event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged;
 
 	/// <summary>
-	/// Gets the current claims principal.
+	/// Set the current claims principal using the specified authentication token.
 	/// </summary>
-	/// <param name="token">An optional token used to construct the claims principal.
-	/// If this is not provided, the principal is constructed based on existing ambient state.</param>
+	/// <param name="token">A token used to construct the claims principal.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
-	ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null);
+	ValueTask<ClaimsPrincipal> SetCurrentClaimsPrincipalAsync(string token, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Logs out the current user from the app locally, i.e. without telling the server.
 	/// </summary>
 	/// <param name="executeDefaultPostLogoutAction">if set to <c>true</c> executes any additional registered post logout actions.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An task used to await completion of the operation.</returns>
-	ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true);
+	ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true, CancellationToken cancellationToken = default);
+	
+	/// <summary>
+	/// Gets the current <see cref="ClaimsPrincipal"/> asynchronously based on ambient state.
+	/// </summary>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
+	ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(CancellationToken cancellationToken = default);
 }

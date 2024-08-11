@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.Utilities.Http;
 
@@ -30,31 +29,29 @@ public abstract class UmbrellaUIHandlerBase : INotifyPropertyChanged
 	protected IDialogService DialogUtility { get; }
 
 	/// <summary>
-	/// Gets the authentication helper.
-	/// </summary>
-	protected IAppAuthHelper AuthHelper { get; }
-
-	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaUIHandlerBase"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="dialogUtility">The dialog utility.</param>
-	/// <param name="authHelper">The authentication helper.</param>
 	protected UmbrellaUIHandlerBase(
 		ILogger logger,
-		IDialogService dialogUtility,
-		IAppAuthHelper authHelper)
+		IDialogService dialogUtility)
 	{
 		Logger = logger;
 		DialogUtility = dialogUtility;
-		AuthHelper = authHelper;
 	}
 
 	/// <summary>
 	/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
 	/// </summary>
 	/// <returns>The <see cref="ClaimsPrincipal"/>.</returns>
-	protected async ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => await AuthHelper.GetCurrentClaimsPrincipalAsync().ConfigureAwait(false);
+	[Obsolete($"Use the {nameof(User)} property instead. This will be removed in a future version.")]
+	protected ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => new(Task.FromResult(User ?? new ClaimsPrincipal(new ClaimsIdentity())));
+
+	/// <summary>
+	/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
+	/// </summary>
+	protected static ClaimsPrincipal? User => ClaimsPrincipal.Current;
 
 	/// <summary>
 	/// Shows a friendly error message for the specified <paramref name="problemDetails"/> using the <see cref="DialogUtility"/>.

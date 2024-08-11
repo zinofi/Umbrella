@@ -17,19 +17,12 @@ namespace Umbrella.AppFramework.Security;
 /// A base class which application specific authentication helpers can extend.
 /// </summary>
 /// <seealso cref="IAppAuthHelper" />
-public class AppAuthHelper : IAppAuthHelper
+public class JwtAppAuthHelper : IAppAuthHelper
 {
-	private static readonly ClaimsPrincipal _emptyPrincipal = new(new ClaimsIdentity());
-
 	private readonly ILogger _logger;
 	private readonly IJwtUtility _jwtUtility;
 	private readonly IAppAuthTokenStorageService _tokenStorageService;
 	private readonly AppAuthHelperOptions _options;
-
-	// Declaring this as static but can't really be avoided because we can't declare this service as a singleton.
-	// Could wrap this in a singleton service but not much point.
-	// TODO: Try and remove this in favour of setting on the current thread.
-	private static volatile ClaimsPrincipal? _claimsPrincipal;
 
 	/// <inheritdoc />
 	public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
@@ -47,14 +40,14 @@ public class AppAuthHelper : IAppAuthHelper
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AppAuthHelper"/> class.
+	/// Initializes a new instance of the <see cref="JwtAppAuthHelper"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="jwtUtility">The JWT utility.</param>
 	/// <param name="tokenStorageService">The token storage service.</param>
 	/// <param name="options">The app auth helper options.</param>
-	public AppAuthHelper(
-		ILogger<AppAuthHelper> logger,
+	public JwtAppAuthHelper(
+		ILogger<JwtAppAuthHelper> logger,
 		IJwtUtility jwtUtility,
 		IAppAuthTokenStorageService tokenStorageService,
 		AppAuthHelperOptions options)
@@ -66,45 +59,44 @@ public class AppAuthHelper : IAppAuthHelper
 	}
 
 	/// <inheritdoc />
-	public async ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(string? token = null)
+	public async ValueTask<ClaimsPrincipal> SetCurrentClaimsPrincipalAsync(string token, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNullOrWhiteSpace(token);
+
 		try
 		{
-			if (!string.IsNullOrEmpty(token))
-			{
-				await _tokenStorageService.SetTokenAsync(token).ConfigureAwait(false);
-				_claimsPrincipal = null;
-			}
-			else if (_claimsPrincipal is not null)
-			{
-				return _claimsPrincipal;
-			}
-			else
-			{
-				token = await _tokenStorageService.GetTokenAsync().ConfigureAwait(false);
-			}
+			await _tokenStorageService.SetTokenAsync(token).ConfigureAwait(false);
+
+			ClaimsPrincipal claimsPrincipal = await InitializeClaimsPrincipalAsync(token, cancellationToken).ConfigureAwait(false);
+			Thread.CurrentPrincipal = claimsPrincipal;
+
+			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(claimsPrincipal));
+
+			return claimsPrincipal;
+		}
+		catch (Exception exc) when (_logger.WriteError(exc))
+		{
+			throw new UmbrellaAppFrameworkException("There has been a problem setting the ClaimsPrincipal.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask<ClaimsPrincipal> GetCurrentClaimsPrincipalAsync(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			if (ClaimsPrincipal.Current is not null)
+				return ClaimsPrincipal.Current;
+
+			string? token = await _tokenStorageService.GetTokenAsync().ConfigureAwait(false);
 
 			if (string.IsNullOrWhiteSpace(token))
-				return _emptyPrincipal;
+				return new ClaimsPrincipal(new ClaimsIdentity());
 
-			IReadOnlyCollection<Claim>? claims = null;
-
-			try
-			{
-				claims = _jwtUtility.ParseClaimsFromJwt(token!);
-			}
-			catch (Exception)
-			{
-				// There was a problem parsing the token. To ensure the user can get a new token,
-				// remove it from storage.
-				await _tokenStorageService.SetTokenAsync(null).ConfigureAwait(false);
-				throw;
-			}
-
-			_claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(_claimsPrincipal));
-
-			return _claimsPrincipal;
+			return await InitializeClaimsPrincipalAsync(token!, cancellationToken);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -113,14 +105,19 @@ public class AppAuthHelper : IAppAuthHelper
 	}
 
 	/// <inheritdoc />
-	public async ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true)
+	public async ValueTask LocalLogoutAsync(bool executeDefaultPostLogoutAction = true, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+
 		try
 		{
 			await _tokenStorageService.SetTokenAsync(null).ConfigureAwait(false);
-			_claimsPrincipal = null;
 
-			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(new ClaimsPrincipal(new ClaimsIdentity())));
+			var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+
+			Thread.CurrentPrincipal = claimsPrincipal;
+
+			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(claimsPrincipal));
 
 			if (executeDefaultPostLogoutAction && _options.PostLogoutAction is not null)
 				await _options.PostLogoutAction().ConfigureAwait(false);
@@ -128,6 +125,25 @@ public class AppAuthHelper : IAppAuthHelper
 		catch (Exception exc) when (_logger.WriteError(exc, new { executeDefaultPostLogoutAction }))
 		{
 			throw new UmbrellaAppFrameworkException("There has been a problem logging out the user locally.", exc);
+		}
+	}
+
+	private async ValueTask<ClaimsPrincipal> InitializeClaimsPrincipalAsync(string token, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			IReadOnlyCollection<Claim> claims = _jwtUtility.ParseClaimsFromJwt(token!);
+
+			return new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
+		}
+		catch (Exception)
+		{
+			// There was a problem parsing the token. To ensure the user can get a new token,
+			// remove it from storage.
+			await _tokenStorageService.SetTokenAsync(null).ConfigureAwait(false);
+			throw;
 		}
 	}
 }

@@ -34,7 +34,7 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services);
 
 		// NB: These needs to be scoped for use with Blazor.
-		_ = services.AddScoped<IAppAuthHelper, AppAuthHelper>();
+		_ = services.AddScoped<IAppAuthHelper, JwtAppAuthHelper>();
 		_ = services.AddScoped<IAppUpdateMessageService, AppUpdateMessageService>();
 		_ = services.AddScoped<IAppAuthTokenStorageService, AppAuthTokenStorageService>();
 

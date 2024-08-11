@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using Umbrella.AppFramework.Security.Abstractions;
@@ -33,22 +34,23 @@ public class RefreshedAuthTokenHandler : DelegatingHandler
 	protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(request);
 
 		var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
+		
 		if (response.Headers.TryGetValues(AppHttpHeaderName.NewAuthToken, out var values))
 		{
 			string? token = values.FirstOrDefault()?.Trim();
 
 			if (!string.IsNullOrWhiteSpace(token))
-				_ = await _authHelper.GetCurrentClaimsPrincipalAsync(token).ConfigureAwait(false);
+				_ = await _authHelper.SetCurrentClaimsPrincipalAsync(token!, cancellationToken).ConfigureAwait(false);
 		}
 		else if (response.StatusCode is HttpStatusCode.Unauthorized && request.RequestUri?.ToString().EndsWith("/auth/login", StringComparison.OrdinalIgnoreCase) is false)
 		{
 			string json = UmbrellaStatics.SerializeJson(new HttpProblemDetails { Title = "Logged Out", Detail = "You have been logged out due to inactivity. Please login again to continue." });
 			response.Content = new StringContent(json, Encoding.UTF8, "application/problem+json");
 
-			await _authHelper.LocalLogoutAsync().ConfigureAwait(false);
+			await _authHelper.LocalLogoutAsync(true, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;

@@ -85,13 +85,17 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 		Logger = LoggerFactory.CreateLogger(GetType());
 	}
 
-	// TODO: Deprecate this with a view to removing in a future version.
-	// Add a new property called User that wraps ClaimsPrincipal.Current
 	/// <summary>
 	/// Gets the claims principal for the current user.
 	/// </summary>
 	/// <returns>The claims principal.</returns>
-	protected ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => AuthHelper.GetCurrentClaimsPrincipalAsync();
+	[Obsolete($"Use the {nameof(User)} property instead. This will be removed in a future version.")]
+	protected ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => new(Task.FromResult(User ?? new ClaimsPrincipal(new ClaimsIdentity())));
+
+	/// <summary>
+	/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
+	/// </summary>
+	protected static ClaimsPrincipal? User => ClaimsPrincipal.Current;
 
 	/// <summary>
 	/// Shows the problem details error message. If this does not exist, the error message defaults to <see cref="DialogDefaults.UnknownErrorMessage"/>.

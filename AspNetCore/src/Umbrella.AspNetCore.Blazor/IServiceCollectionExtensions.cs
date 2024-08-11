@@ -2,14 +2,10 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
-using Microsoft.AspNetCore.Components.Authorization;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Options;
-using Umbrella.AspNetCore.Blazor.Security;
-using Umbrella.AspNetCore.Blazor.Security.Abstractions;
-using Umbrella.AspNetCore.Blazor.Security.Options;
 using Umbrella.AspNetCore.Blazor.Services;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Services.Grid;
@@ -30,7 +26,6 @@ public static class IServiceCollectionExtensions
 	/// <returns>The services builder.</returns>
 	public static IServiceCollection AddUmbrellaBlazor(
 		this IServiceCollection services,
-		Action<IServiceProvider, ClaimsPrincipalAuthenticationStateProviderOptions>? jwtAuthenticationStateProviderOptionsBuilder = null,
 		Action<IServiceProvider, UmbrellaGridOptions>? umbrellaGridOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services);
@@ -44,10 +39,6 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 		_ = services.AddTransient<IBrowserEventAggregator, BrowserEventAggregator>();
 
-		// Security
-		_ = services.AddScoped<AuthenticationStateProvider, ClaimsPrincipalAuthenticationStateProvider>();
-		_ = services.AddScoped<IClaimsPrincipalAuthenticationStateProvider>(x => (ClaimsPrincipalAuthenticationStateProvider)x.GetRequiredService<AuthenticationStateProvider>());
-		_ = services.ConfigureUmbrellaOptions(jwtAuthenticationStateProviderOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
 
 		return services;

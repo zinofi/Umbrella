@@ -26,12 +26,12 @@ public class AppUpdateMessageService : IAppUpdateMessageService
 	{
 		add
 		{
-			Guard.IsNotNull(value.Target);
+			Guard.IsNotNull(value?.Target);
 			WeakReferenceMessenger.Default.TryRegister<AppUpdateStateChangedMessage>(value.Target, (_, args) => _ = value.Invoke(args.Value.updateRequired, args.Value.message));
 		}
 		remove
 		{
-			Guard.IsNotNull(value.Target);
+			Guard.IsNotNull(value?.Target);
 			WeakReferenceMessenger.Default.Unregister<AppUpdateStateChangedMessage>(value.Target);
 		}
 	}

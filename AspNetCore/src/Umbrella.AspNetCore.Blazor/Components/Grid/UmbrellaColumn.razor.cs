@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.AspNetCore.Blazor.Extensions;
 using Umbrella.Utilities.Data.Filtering;
@@ -33,10 +33,7 @@ public partial class UmbrellaColumn<TItem, TValue>
 	private Func<TItem, TValue?>? _propertyDelegate;
 
 	[Inject]
-	private IAuthorizationService AuthorizationService { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
-
-	[Inject]
-	private IAppAuthHelper AuthHelper { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
+	private IServiceProvider ServiceProvider { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
 	[Inject]
 	private ILogger<UmbrellaColumn<TItem, TValue>> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
@@ -313,9 +310,16 @@ public partial class UmbrellaColumn<TItem, TValue>
 	/// <inheritdoc />
 	protected override async Task OnInitializedAsync()
 	{
-		ClaimsPrincipal claimsPrincipal = await AuthHelper.GetCurrentClaimsPrincipalAsync();
+		ClaimsPrincipal claimsPrincipal = ClaimsPrincipal.Current ?? new ClaimsPrincipal(new ClaimsIdentity());
 
-		if (!await AuthorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
+		// Manually resolve the service here from the provider as the service may not have been registered in the DI container
+		// if the component is being used in a project that doesn't require authorization.
+		IAuthorizationService? authorizationService = ServiceProvider.GetService<IAuthorizationService>();
+
+		if (authorizationService is null && (!string.IsNullOrWhiteSpace(Roles) || !string.IsNullOrWhiteSpace(Policy)))
+			throw new InvalidOperationException("The IAuthorizationService service must be registered in the DI container to use the Roles or Policy properties.");
+
+		if (authorizationService is not null && !await authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, Roles, Policy))
 			DisplayMode = UmbrellaColumnDisplayMode.None;
 
 		if (Logger.IsEnabled(LogLevel.Debug))

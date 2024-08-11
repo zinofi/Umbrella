@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
@@ -21,6 +22,8 @@ public static class IAuthorizationServiceExtensions
 	/// <returns>An awaitable <see cref="Task"/> containing the result.</returns>
 	public static async Task<bool> AuthorizeRolesAndPolicyAsync(this IAuthorizationService authorizationService, ClaimsPrincipal user, string? roles, string? policyName)
 	{
+		Guard.IsNotNull(user);
+
 		if (string.IsNullOrEmpty(roles) && string.IsNullOrEmpty(policyName))
 		{
 			// No roles or policy specified so just return true.

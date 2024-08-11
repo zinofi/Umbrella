@@ -10,7 +10,6 @@ using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Claims;
-using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
@@ -87,7 +86,6 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	private readonly ILogger _logger;
 	private readonly IDialogTrackerService _dialogTracker;
 	private readonly IModalService _modalService;
-	private readonly IAppAuthHelper _appAuthHelper;
 	private readonly IAuthorizationService _authorizationService;
 
 	/// <summary>
@@ -96,19 +94,16 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	/// <param name="logger">The logger.</param>
 	/// <param name="dialogTracker">The dialog tracker.</param>
 	/// <param name="modalService">The modal service.</param>
-	/// <param name="appAuthHelper">The auth helper.</param>
 	/// <param name="authorizationService">The authorization service.</param>
 	public UmbrellaDialogService(
 		ILogger<UmbrellaDialogService> logger,
 		IDialogTrackerService dialogTracker,
 		IModalService modalService,
-		IAppAuthHelper appAuthHelper,
 		IAuthorizationService authorizationService)
 	{
 		_logger = logger;
 		_dialogTracker = dialogTracker;
 		_modalService = modalService;
-		_appAuthHelper = appAuthHelper;
 		_authorizationService = authorizationService;
 	}
 
@@ -392,20 +387,17 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 
 			if (authorizeAttributes.Count > 0)
 			{
-				static void ThrowAccessDeniedException()
-				{
-					throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
-				}
+				static void ThrowAccessDeniedException() => throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
 
-				ClaimsPrincipal claimsPrincipal = await _appAuthHelper.GetCurrentClaimsPrincipalAsync();
+				ClaimsPrincipal? claimsPrincipal = ClaimsPrincipal.Current;
 
-				if (claimsPrincipal.Identity?.IsAuthenticated is false)
+				if (claimsPrincipal?.Identity?.IsAuthenticated is not true)
 					ThrowAccessDeniedException();
 
 				// We will now check all authorization attributes. The first one that fails will throw an exception.
 				foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
 				{
-					bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal, authorizeAttribute.Roles, authorizeAttribute.Policy);
+					bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal!, authorizeAttribute.Roles, authorizeAttribute.Policy).ConfigureAwait(false);
 
 					if (!authorized)
 						ThrowAccessDeniedException();
