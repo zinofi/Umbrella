@@ -5,6 +5,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
@@ -86,7 +87,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	private readonly ILogger _logger;
 	private readonly IDialogTrackerService _dialogTracker;
 	private readonly IModalService _modalService;
-	private readonly IAuthorizationService _authorizationService;
+	private readonly IServiceProvider _serviceProvider;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDialogService"/> class.
@@ -94,17 +95,17 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	/// <param name="logger">The logger.</param>
 	/// <param name="dialogTracker">The dialog tracker.</param>
 	/// <param name="modalService">The modal service.</param>
-	/// <param name="authorizationService">The authorization service.</param>
+	/// <param name="serviceProvider">The service provider.</param>
 	public UmbrellaDialogService(
 		ILogger<UmbrellaDialogService> logger,
 		IDialogTrackerService dialogTracker,
 		IModalService modalService,
-		IAuthorizationService authorizationService)
+		IServiceProvider serviceProvider)
 	{
 		_logger = logger;
 		_dialogTracker = dialogTracker;
 		_modalService = modalService;
-		_authorizationService = authorizationService;
+		_serviceProvider = serviceProvider;
 	}
 
 	/// <inheritdoc />
@@ -394,13 +395,23 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				if (claimsPrincipal?.Identity?.IsAuthenticated is not true)
 					ThrowAccessDeniedException();
 
-				// We will now check all authorization attributes. The first one that fails will throw an exception.
-				foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
-				{
-					bool authorized = await _authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal!, authorizeAttribute.Roles, authorizeAttribute.Policy).ConfigureAwait(false);
+				// Manually resolve the service here from the provider as the service may not have been registered in the DI container
+				// if the component is being used in a project that doesn't require authorization.
+				IAuthorizationService? authorizationService = _serviceProvider.GetService<IAuthorizationService>();
 
-					if (!authorized)
-						ThrowAccessDeniedException();
+				if (authorizationService is null && authorizeAttributes.Count > 0)
+					throw new InvalidOperationException("The AuthorizationService service has not been registered in the DI container but the dialog component requires authorization.");
+
+				if (authorizationService is not null && authorizeAttributes.Count > 0)
+				{
+					// We will now check all authorization attributes. The first one that fails will throw an exception.
+					foreach (AuthorizeAttribute authorizeAttribute in authorizeAttributes)
+					{
+						bool authorized = await authorizationService.AuthorizeRolesAndPolicyAsync(claimsPrincipal!, authorizeAttribute.Roles, authorizeAttribute.Policy).ConfigureAwait(false);
+
+						if (!authorized)
+							ThrowAccessDeniedException();
+					}
 				}
 			}
 
