@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression.Filtering;
 using Umbrella.AspNetCore.WebUtilities.Mvc.ModelBinding.Binders.DataExpression.Sorting;
@@ -29,6 +30,8 @@ public static class MvcOptionsExtensions
 		DataExpressionTransformer<SortExpressionDescriptor>? sortExpressionTransformer = null,
 		DataExpressionTransformer<FilterExpressionDescriptor>? filterExpressionTransformer = null)
 	{
+		Guard.IsNotNull(options);
+
 		options.ModelBinderProviders.Insert(startIndex, new SortExpressionDescriptorModelBinderProvider());
 		options.ModelBinderProviders.Insert(++startIndex, new SortExpressionModelBinderProvider());
 		options.ModelBinderProviders.Insert(++startIndex, new FilterExpressionDescriptorModelBinderProvider());
