@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Umbrella.DataAccess.Abstractions;
@@ -21,7 +22,11 @@ public static class EntityTypeBuilderExtensions
 	/// <returns>The builder.</returns>
 	public static PropertyBuilder<string> SetupConcurrencyToken<TEntity>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, IConcurrencyStamp
-		=> builder.Property(x => x.ConcurrencyStamp).HasMaxLength(36).IsRequired().IsConcurrencyToken();
+	{
+		Guard.IsNotNull(builder);
+
+		return builder.Property(x => x.ConcurrencyStamp).HasMaxLength(36).IsRequired().IsConcurrencyToken();
+	}
 
 	/// <summary>
 	/// Setups the <see cref="ICreatedDateAuditEntity.CreatedDateUtc"/> audit property and ensure that values are converted to and from UTC when storing and retrieving.
@@ -31,7 +36,11 @@ public static class EntityTypeBuilderExtensions
 	/// <returns>The builder.</returns>
 	public static PropertyBuilder<DateTime> SetupCreatedDateUtcAuditProperty<TEntity>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, ICreatedDateAuditEntity
-		=> builder.Property(x => x.CreatedDateUtc).EnsureUtc();
+	{
+		Guard.IsNotNull(builder);
+
+		return builder.Property(x => x.CreatedDateUtc).EnsureUtc();
+	}
 
 	/// <summary>
 	/// Setups the <see cref="IUpdatedDateAuditEntity.UpdatedDateUtc"/> audit property and ensure that values are converted to and from UTC when storing and retrieving.
@@ -41,7 +50,11 @@ public static class EntityTypeBuilderExtensions
 	/// <returns>The builder.</returns>
 	public static PropertyBuilder<DateTime> SetupUpdatedDateUtcAuditProperty<TEntity>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, IUpdatedDateAuditEntity
-		=> builder.Property(x => x.UpdatedDateUtc).EnsureUtc();
+	{
+		Guard.IsNotNull(builder);
+
+		return builder.Property(x => x.UpdatedDateUtc).EnsureUtc();
+	}
 
 	/// <summary>
 	/// Setups the <see cref="ICreatedUserAuditEntity{TUserId}.CreatedById"/> audit property including foreign key relationships to the <typeparamref name="TAppUserEntity"/>
@@ -55,7 +68,11 @@ public static class EntityTypeBuilderExtensions
 	public static ReferenceCollectionBuilder<TAppUserEntity, TEntity> SetupCreatedByIdAuditProperty<TEntity, TAppUserEntity, TUserId>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, ICreatedUserAuditEntity<TUserId>
 		where TAppUserEntity : class
-		=> builder.HasOne<TAppUserEntity>().WithMany().HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.Restrict);
+	{
+		Guard.IsNotNull(builder);
+
+		return builder.HasOne<TAppUserEntity>().WithMany().HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.Restrict);
+	}
 
 	/// <summary>
 	/// Setups the <see cref="IUpdatedUserAuditEntity{TUserId}.UpdatedById"/> audit property including foreign key relationships to the <typeparamref name="TAppUserEntity"/>
@@ -69,7 +86,11 @@ public static class EntityTypeBuilderExtensions
 	public static ReferenceCollectionBuilder<TAppUserEntity, TEntity> SetupUpdatedByIdAuditProperty<TEntity, TAppUserEntity, TUserId>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, IUpdatedUserAuditEntity<TUserId>
 		where TAppUserEntity : class
-		=> builder.HasOne<TAppUserEntity>().WithMany().HasForeignKey(x => x.UpdatedById).OnDelete(DeleteBehavior.Restrict);
+	{
+		Guard.IsNotNull(builder);
+
+		return builder.HasOne<TAppUserEntity>().WithMany().HasForeignKey(x => x.UpdatedById).OnDelete(DeleteBehavior.Restrict);
+	}
 
 	/// <summary>
 	/// Applies the setup to all audit properties specified on the <see cref="IAuditEntity{TEntityKey, TAuditKey}"/> interface.

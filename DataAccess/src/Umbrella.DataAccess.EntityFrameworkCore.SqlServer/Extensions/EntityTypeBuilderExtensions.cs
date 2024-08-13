@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Umbrella.DataAccess.Abstractions;
 
@@ -29,5 +30,9 @@ public static class EntityTypeBuilderExtensions
 	public static KeyBuilder SetupNonClusteredPrimaryKey<TEntity, TEntityKey>(this EntityTypeBuilder<TEntity> builder)
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
-		=> builder.HasKey(x => x.Id).IsClustered(false);
+	{
+		Guard.IsNotNull(builder);
+
+		return builder.HasKey(x => x.Id).IsClustered(false);
+	}
 }

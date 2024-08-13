@@ -480,7 +480,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		ICollection<ValidationResult> lstValidationResult = new List<ValidationResult>();
+		ICollection<ValidationResult> lstValidationResult = [];
 
 		var ctx = new ValidationContext(entity);
 

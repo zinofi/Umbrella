@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -27,13 +28,19 @@ public static class DbContextExtensions
 	public static async Task<int> GetNextIntegerSequenceValueAsync(this DbContext dbContext, string sequenceName, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(dbContext);
 
 		var parameter = new SqlParameter("@result", SqlDbType.Int)
 		{
 			Direction = ParameterDirection.Output
 		};
 
-		_ = await dbContext.Database.ExecuteSqlRawAsync($"SET @result = NEXT VALUE FOR {sequenceName}", new[] { parameter }, cancellationToken).ConfigureAwait(false);
+		var sequenceNameParameter = new SqlParameter("@sequenceName", SqlDbType.NVarChar)
+		{
+			Value = sequenceName
+		};
+
+		_ = await dbContext.Database.ExecuteSqlRawAsync("SET @result = NEXT VALUE FOR @sequenceName", new[] { parameter, sequenceNameParameter }, cancellationToken).ConfigureAwait(false);
 
 		return (int)parameter.Value;
 	}
@@ -47,6 +54,7 @@ public static class DbContextExtensions
 	public static async Task<string?> GetDatabaseVersionAsync(this DbContext dbContext, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(dbContext);
 
 		var lstMigration = await dbContext.Database.GetAppliedMigrationsAsync(cancellationToken).ConfigureAwait(false);
 
@@ -79,6 +87,7 @@ public static class DbContextExtensions
 		where TEntityKey : IEquatable<TEntityKey>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(dbContext);
 
 		var query = dbContext.Set<TEntity>()
 			.TemporalAll()
@@ -113,6 +122,7 @@ public static class DbContextExtensions
 		where TEntityKey : IEquatable<TEntityKey>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(dbContext);
 
 		var lstId = idList.Distinct().ToArray();
 
