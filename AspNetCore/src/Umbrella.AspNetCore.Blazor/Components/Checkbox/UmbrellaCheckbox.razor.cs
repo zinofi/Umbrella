@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Humanizer;
+﻿using Humanizer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -41,9 +38,7 @@ public abstract class UmbrellaCheckboxBase : InputBase<bool>
 		base.OnInitialized();
 
 		if (_text is null && ChildContent is null)
-		{
 			_text = ValueExpression?.GetDisplayText() ?? FieldIdentifier.FieldName.Humanize(LetterCasing.Title);
-		}
 	}
 
 	/// <inheritdoc />

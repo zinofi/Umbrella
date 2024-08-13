@@ -49,6 +49,12 @@ public partial class UmbrellaCheckboxGroup<TOption>
 	[Parameter]
 	public Func<TOption, string>? OptionDisplayNameSelector { get; set; }
 
+	/// <summary>
+	/// Gets or sets the callback that is invoked when an option is selected or deselected.
+	/// </summary>
+	[Parameter]
+	public EventCallback OnSelectionChanged { get; set; }
+
 	/// <inheritdoc />
 	protected override void OnInitialized()
 	{
@@ -79,7 +85,7 @@ public partial class UmbrellaCheckboxGroup<TOption>
 		}
 	}
 
-	private void OnOptionSelectionChanged(UmbrellaCheckboxGroupItem<TOption> option)
+	private async Task OnOptionSelectionChangedAsync(UmbrellaCheckboxGroupItem<TOption> option)
 	{
 		option.Option.IsSelected = !option.Option.IsSelected;
 
@@ -97,6 +103,9 @@ public partial class UmbrellaCheckboxGroup<TOption>
 				item.Option.IsSelected = option.Option.IsSelected;
 			}
 		}
+
+		if (OnSelectionChanged.HasDelegate)
+			await OnSelectionChanged.InvokeAsync();
 	}
 }
 

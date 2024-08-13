@@ -5,7 +5,7 @@
         @foreach(var option in OptionsToRender)
         {
             <li class="u-checkbox-group__item" @key="option">
-                <UmbrellaCheckbox Value="option.Option.IsSelected" ValueExpression="() => option.Option.IsSelected" ValueChanged="() => OnOptionSelectionChanged(option)" Text="@option.Text" />
+                <UmbrellaCheckbox Value="option.Option.IsSelected" ValueExpression="() => option.Option.IsSelected" ValueChanged="async () => await OnOptionSelectionChangedAsync(option)" Text="@option.Text" />
             </li>
         }
     </ul>
