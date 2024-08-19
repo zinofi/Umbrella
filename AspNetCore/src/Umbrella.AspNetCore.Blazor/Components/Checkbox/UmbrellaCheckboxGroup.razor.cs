@@ -55,6 +55,12 @@ public partial class UmbrellaCheckboxGroup<TOption>
 	[Parameter]
 	public EventCallback OnSelectionChanged { get; set; }
 
+	/// <summary>
+	/// Gets or sets a value indicating whether the checkbox group is disabled. This has the effect of setting all checkboxes to disabled.
+	/// </summary>
+	[Parameter]
+	public bool Disabled { get; set; }
+
 	/// <inheritdoc />
 	protected override void OnInitialized()
 	{

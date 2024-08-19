@@ -27,6 +27,12 @@ public abstract class UmbrellaCheckboxBase : InputBase<bool>
 	}
 
 	/// <summary>
+	/// Gets or sets the disabled state of the checkbox.
+	/// </summary>
+	[Parameter]
+	public bool Disabled { get; set; }
+
+	/// <summary>
 	/// Gets or sets the custom content of the label. If this is null, the <see cref="Text"/> is used as the label content if it exists.
 	/// </summary>
 	[Parameter]
