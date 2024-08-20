@@ -7,6 +7,9 @@ namespace Umbrella.Utilities.ObjectModel;
 /// where a user can select from a range of options using, e.g. checkboxes.
 /// </summary>
 /// <typeparam name="TOption">The type of the option.</typeparam>
+#if NET6_0_OR_GREATER
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
 public record UmbrellaSelectableOption<TOption>
 {
 	/// <summary>
