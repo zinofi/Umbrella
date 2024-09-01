@@ -51,6 +51,8 @@ public class DisplayNameText : ComponentBase
 	/// <inheritdoc />
 	protected override void BuildRenderTree(RenderTreeBuilder builder)
 	{
+		Guard.IsNotNull(builder);
+
 		base.BuildRenderTree(builder);
 
 		var expressionBody = ForTarget.Body;
