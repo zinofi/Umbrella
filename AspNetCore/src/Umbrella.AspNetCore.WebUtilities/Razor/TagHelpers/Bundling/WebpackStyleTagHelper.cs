@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
-using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Security;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Bundling;
+namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Bundling;
 
 /// <summary>
 /// A tag helper used to output link elements for named Webpack css bundles which either point to those bundles or render them inline.

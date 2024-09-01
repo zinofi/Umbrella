@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Logging;
-using Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Bundling;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Security;
@@ -92,6 +91,8 @@ public abstract class BundleStyleTagHelper<TBundleUtility> : TagHelper
 	/// <inheritdoc />
 	public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 	{
+		Guard.IsNotNull(output);
+
 		try
 		{
 			if (RenderInline)
