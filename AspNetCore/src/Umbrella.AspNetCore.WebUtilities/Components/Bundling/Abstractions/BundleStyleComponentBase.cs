@@ -1,17 +1,17 @@
-﻿using CommunityToolkit.Diagnostics;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using Umbrella.AspNetCore.WebUtilities.Components.Abstractions;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Security;
+using CommunityToolkit.Diagnostics;
 
 namespace Umbrella.AspNetCore.WebUtilities.Components.Bundling.Abstractions;
 
 /// <summary>
-/// The base class for components that render a bundle of script files.
+/// A base class for components that render a bundle of style files.
 /// </summary>
 /// <typeparam name="TBundleUtility">The type of the bundle utility.</typeparam>
-public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaComponentBase
+public abstract class BundleStyleComponentBase<TBundleUtility> : UmbrellaComponentBase
 	where TBundleUtility : class, IBundleUtility
 {
 	private string? _contentOrPath;
@@ -56,7 +56,7 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 	{
 		await base.OnInitializedAsync();
 
-		_contentOrPath = RenderInline ? await BundleUtility.GetScriptContentAsync(Name) : await BundleUtility.GetScriptPathAsync(Name);
+		_contentOrPath = RenderInline ? await BundleUtility.GetStyleSheetContentAsync(Name) : await BundleUtility.GetStyleSheetPathAsync(Name);
 	}
 
 	/// <inheritdoc/>
@@ -69,16 +69,17 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 		if (string.IsNullOrEmpty(_contentOrPath))
 			throw new InvalidOperationException("The content or path does not exist.");
 
-		builder.OpenElement(0, "script");
-
 		if (RenderInline)
 		{
+			builder.OpenElement(0, "style");
 			builder.AddAttribute(1, "nonce", NonceContext.Current);
 			builder.AddContent(2, _contentOrPath);
 		}
 		else
 		{
-			builder.AddAttribute(1, "src", _contentOrPath);
+			builder.OpenElement(0, "link");
+			builder.AddAttribute(1, "rel", "stylesheet");
+			builder.AddAttribute(2, "href", _contentOrPath);
 		}
 
 		builder.CloseElement();

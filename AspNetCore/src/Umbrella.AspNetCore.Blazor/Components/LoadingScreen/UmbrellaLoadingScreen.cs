@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using System.Diagnostics.CodeAnalysis;
@@ -25,6 +26,8 @@ public class UmbrellaLoadingScreen : ComponentBase, IDisposable
 	/// <inheritdoc />
 	protected override void BuildRenderTree(RenderTreeBuilder builder)
 	{
+		Guard.IsNotNull(builder);
+
 		base.BuildRenderTree(builder);
 
 		if (_visible)
