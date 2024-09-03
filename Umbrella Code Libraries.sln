@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
+# 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
@@ -227,6 +227,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Blazor.Security", "AspNetCore\src\Umbrella.AspNetCore.Blazor.Security\Umbrella.AspNetCore.Blazor.Security.csproj", "{695FC680-E71A-4D95-84DF-393E180527A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{7AF95332-7782-44A3-A367-57D30A39517F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C2ECB654-D38E-403C-BCCF-71BE09909A3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Maui", "Maui\src\Umbrella.Maui\Umbrella.Maui.csproj", "{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -619,6 +623,12 @@ Global
 		{695FC680-E71A-4D95-84DF-393E180527A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{695FC680-E71A-4D95-84DF-393E180527A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{695FC680-E71A-4D95-84DF-393E180527A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -717,6 +727,8 @@ Global
 		{D8FC59AF-00A0-4187-8622-15AF5457E48F} = {5520A82E-280B-485D-AF42-0FF5B8E72CB3}
 		{6C8C4A89-1D02-4D33-92D9-3B0E9EDF9C7B} = {D8FC59AF-00A0-4187-8622-15AF5457E48F}
 		{695FC680-E71A-4D95-84DF-393E180527A1} = {A592A2ED-763F-4172-95DB-316662A0A42E}
+		{C2ECB654-D38E-403C-BCCF-71BE09909A3A} = {7AF95332-7782-44A3-A367-57D30A39517F}
+		{2D1AC9EE-A8C8-4764-BDB3-322E9D7A1B1B} = {C2ECB654-D38E-403C-BCCF-71BE09909A3A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
