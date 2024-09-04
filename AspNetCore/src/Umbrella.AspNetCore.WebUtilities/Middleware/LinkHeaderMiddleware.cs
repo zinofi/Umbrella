@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.WebUtilities.Middleware.Options.LinkHeader;
 
-namespace Ultimedia.Rtms.Web.Server.Middleware;
+namespace Umbrella.AspNetCore.WebUtilities.Middleware;
 
 /// <summary>
 /// Middleware that adds Link headers to outgoing HTML responses for a list of URLs specified
@@ -15,10 +15,10 @@ namespace Ultimedia.Rtms.Web.Server.Middleware;
 /// </remarks>
 public class LinkHeaderMiddleware
 {
-    private readonly ILogger _log;
-    private readonly IHybridCache _cache;
-    private readonly ICacheKeyUtility _cacheKeyUtility;
-    private readonly RequestDelegate _next;
+	private readonly ILogger _log;
+	private readonly IHybridCache _cache;
+	private readonly ICacheKeyUtility _cacheKeyUtility;
+	private readonly RequestDelegate _next;
 	private readonly LinkHeaderMiddlewareOptions _options;
 
 	/// <summary>
@@ -48,36 +48,36 @@ public class LinkHeaderMiddleware
 	/// </summary>
 	/// <param name="context">The current <see cref="HttpContext"/>.</param>
 	public async Task InvokeAsync(HttpContext context)
-    {
+	{
 		Guard.IsNotNull(context);
 		context.RequestAborted.ThrowIfCancellationRequested();
 
-        try
-        {
-            context.Response.OnStarting(() =>
-            {
+		try
+		{
+			context.Response.OnStarting(() =>
+			{
 				if (_options.DnsPrefetchPreconnectUrls.Count is 0 && _options.PreloadUrls.Count is 0)
 					return Task.CompletedTask;
 
-                bool isHtmlResponse = context.Response.ContentType?.Contains("text/html", StringComparison.OrdinalIgnoreCase) is true;
+				bool isHtmlResponse = context.Response.ContentType?.Contains("text/html", StringComparison.OrdinalIgnoreCase) is true;
 
-                // Don't bother setting the Link header for non-HTML responses.
-                if (isHtmlResponse)
-                {
-                    string cacheKey = _cacheKeyUtility.Create<LinkHeaderMiddleware>("LinkHeaders");
+				// Don't bother setting the Link header for non-HTML responses.
+				if (isHtmlResponse)
+				{
+					string cacheKey = _cacheKeyUtility.Create<LinkHeaderMiddleware>("LinkHeaders");
 
 					string[] cachedValue = _cache.GetOrCreate(cacheKey, () => _options.DnsPrefetchPreconnectUrls.SelectMany(x => x.ToLinkHeaderStrings()).Concat(_options.PreloadUrls.Select(x => x.ToLinkHeaderString()))).ToArray();
 
-                    context.Response.Headers.AppendList("Link", cachedValue);
-                }
+					context.Response.Headers.AppendList("Link", cachedValue);
+				}
 
-                return Task.CompletedTask;
-            });
-        }
-        catch (Exception exc) when (_log.WriteError(exc))
-        {
-            throw;
-        }
+				return Task.CompletedTask;
+			});
+		}
+		catch (Exception exc) when (_log.WriteError(exc))
+		{
+			throw;
+		}
 
 		await _next.Invoke(context);
 	}

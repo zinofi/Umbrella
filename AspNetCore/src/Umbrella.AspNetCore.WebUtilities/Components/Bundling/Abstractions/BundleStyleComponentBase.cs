@@ -15,6 +15,7 @@ public abstract class BundleStyleComponentBase<TBundleUtility> : UmbrellaCompone
 	where TBundleUtility : class, IBundleUtility
 {
 	private string? _contentOrPath;
+	private bool _shouldRender = true;
 
 	/// <summary>
 	/// Gets the bundle utility.
@@ -67,7 +68,7 @@ public abstract class BundleStyleComponentBase<TBundleUtility> : UmbrellaCompone
 		base.BuildRenderTree(builder);
 
 		if (string.IsNullOrEmpty(_contentOrPath))
-			throw new InvalidOperationException("The content or path does not exist.");
+			return;
 
 		if (RenderInline)
 		{
@@ -83,5 +84,10 @@ public abstract class BundleStyleComponentBase<TBundleUtility> : UmbrellaCompone
 		}
 
 		builder.CloseElement();
+
+		_shouldRender = false;
 	}
+
+	/// <inheritdoc/>
+	protected override bool ShouldRender() => _shouldRender;
 }

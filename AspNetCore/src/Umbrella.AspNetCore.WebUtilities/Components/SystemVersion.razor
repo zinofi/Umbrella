@@ -2,13 +2,13 @@
 
 @if (Model is not null)
 {
-    <!-- Version: @Model.Version -->
+    @:<!-- Version: @Model.Version -->
     @if (!string.IsNullOrEmpty(Model.DatabaseVersion))
     {
-        <!-- Database Version: @Model.DatabaseVersion -->
+        @:<!-- Database Version: @Model.DatabaseVersion -->
     }
 }
 else
 {
-    <!-- System version unavailable -->
+    @:<!-- System version unavailable -->
 }

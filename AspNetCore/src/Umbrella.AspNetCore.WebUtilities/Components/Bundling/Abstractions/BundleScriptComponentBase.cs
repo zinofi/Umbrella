@@ -15,6 +15,7 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 	where TBundleUtility : class, IBundleUtility
 {
 	private string? _contentOrPath;
+	private bool _shouldRender = true;
 
 	/// <summary>
 	/// Gets the bundle utility.
@@ -67,7 +68,7 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 		base.BuildRenderTree(builder);
 
 		if (string.IsNullOrEmpty(_contentOrPath))
-			throw new InvalidOperationException("The content or path does not exist.");
+			return;
 
 		builder.OpenElement(0, "script");
 
@@ -82,5 +83,10 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 		}
 
 		builder.CloseElement();
+
+		_shouldRender = false;
 	}
+
+	/// <inheritdoc/>
+	protected override bool ShouldRender() => _shouldRender;
 }
