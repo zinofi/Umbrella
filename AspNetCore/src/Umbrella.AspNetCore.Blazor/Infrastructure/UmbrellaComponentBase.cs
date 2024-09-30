@@ -22,6 +22,7 @@ using Umbrella.Utilities.Mapping.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 
+// TODO: Rename this to UmbrellaClientComponentBase and extend UmbrellaComponentBase which will need to reside in a shared project instead of the WebUtilities project.
 /// <summary>
 /// A base component to be used with Blazor components which contain commonly used functionality.
 /// </summary>

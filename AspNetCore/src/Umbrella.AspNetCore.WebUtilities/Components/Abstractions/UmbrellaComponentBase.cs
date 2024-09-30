@@ -38,7 +38,7 @@ public abstract class UmbrellaComponentBase : ComponentBase
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
-
+		
 		Logger = LoggerFactory.CreateLogger(GetType());
 	}
 
