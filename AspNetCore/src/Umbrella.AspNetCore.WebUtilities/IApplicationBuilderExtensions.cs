@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using System.Globalization;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
@@ -94,6 +96,8 @@ public static class IApplicationBuilderExtensions
 	/// <returns>The <see cref="WebApplication"/> instance.</returns>
 	public static WebApplication EnsureBlazorDevelopmentPaths(this WebApplication app, string clientProjectSuffix = "Client", string serverProjectSuffix = "Server")
 	{
+		Guard.IsNotNull(app);
+
 		if (app.Environment.ContentRootPath.LastIndexOf(clientProjectSuffix, StringComparison.InvariantCulture) > 0)
 		{
 			string contentRootPath = $@"{app.Environment.ContentRootPath[..app.Environment.ContentRootPath.LastIndexOf(clientProjectSuffix, StringComparison.InvariantCulture)]}{serverProjectSuffix}";
@@ -131,4 +135,55 @@ public static class IApplicationBuilderExtensions
 	/// <param name="builder">The builder.</param>
 	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
 	public static IApplicationBuilder UseUmbrellaLinkHeader(this IApplicationBuilder builder) => builder.UseMiddleware<LinkHeaderMiddleware>();
+
+	/// <summary>
+	/// Adds middleware to the pipeline that will set the current culture based on the Accept-Language header for all requests that have the specified <paramref name="pathPrefix"/>
+	/// using the specified <paramref name="fallbackLanguageCode"/> if no Accept-Language header is present.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <param name="pathPrefix">The path prefix for API endpoints.</param>
+	/// <param name="fallbackLanguageCode">The fallback language code.</param>
+	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	public static IApplicationBuilder UseUmbrellaApiAcceptLanguage(this IApplicationBuilder builder, string pathPrefix = "/api", string fallbackLanguageCode = "en")
+	{
+		return builder.UseWhen(x => x.Request.Path.StartsWithSegments(pathPrefix, StringComparison.OrdinalIgnoreCase), app => app.Use((context, next) =>
+		{
+			var lstAcceptLanguages = context.Request.Headers.GetOrderedAcceptLanguages();
+
+			string languageCode = lstAcceptLanguages.FirstOrDefault() ?? fallbackLanguageCode;
+
+			var cultureInfo = CultureInfo.GetCultureInfo(languageCode);
+
+			CultureInfo.CurrentCulture = cultureInfo;
+			CultureInfo.CurrentUICulture = cultureInfo;
+
+			return next(context);
+		}));
+	}
+
+	/// <summary>
+	/// Adds middleware to the pipeline that will set the Content-Language response header based on the current culture with a value of either the two-letter ISO language name or the full culture name
+	/// depending on the value of <paramref name="useTwoLetterISOLanguageName"/> for all requests.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <param name="useTwoLetterISOLanguageName">Set to <see langword="true" /> to use the two-letter ISO language name; otherwise the full culture name will be used.</param>
+	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	public static IApplicationBuilder UseUmbrellaContentLanguage(this IApplicationBuilder builder, bool useTwoLetterISOLanguageName = true)
+	{
+		return builder.Use((context, next) =>
+		{
+			context.Response.OnStarting(() =>
+			{
+				string value = useTwoLetterISOLanguageName
+					? CultureInfo.CurrentCulture.TwoLetterISOLanguageName
+					: CultureInfo.CurrentCulture.Name;
+
+				context.Response.Headers.ContentLanguage = value;
+
+				return Task.CompletedTask;
+			});
+
+			return next(context);
+		});
+	}
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AppFramework.Shared.Enumerations;
 using Umbrella.AppFramework.Shared.Primitives;
@@ -36,5 +37,25 @@ public static class IHeaderDictionaryExtensions
 			return null;
 
 		return new AppClientInfo(strClientId, clientType, version);
+	}
+
+	/// <summary>
+	/// Gets a collection of language codes from the Accept-Language header ordered by quality.
+	/// </summary>
+	/// <param name="headers">The headers.</param>
+	/// <returns>A collection of language codes ordered by quality.</returns>
+	public static IReadOnlyCollection<string> GetOrderedAcceptLanguages(this IHeaderDictionary headers)
+	{
+		string? acceptLanguage = headers?.AcceptLanguage.FirstOrDefault();
+
+		if (string.IsNullOrEmpty(acceptLanguage))
+			return [];
+
+		return acceptLanguage.Split(',')
+			.Select(x => StringWithQualityHeaderValue.Parse(x))
+			.OrderByDescending(lang => lang.Quality ?? 1.0)
+			.Select(lang => lang.Value.ToString())
+			.Where(lang => !string.IsNullOrWhiteSpace(lang))
+			.ToArray();
 	}
 }
