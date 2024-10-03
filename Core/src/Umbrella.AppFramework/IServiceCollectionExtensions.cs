@@ -50,6 +50,9 @@ public static class IServiceCollectionExtensions
 		_ = services.ConfigureUmbrellaOptions(appAuthHelperOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(appAuthTokenStorageServiceOptionsBuilder);
 
+		// Default call to configure the RequestNotificationHandlerOptions
+		_ = services.ConfigureUmbrellaAppFramework();
+
 		return services;
 	}
 

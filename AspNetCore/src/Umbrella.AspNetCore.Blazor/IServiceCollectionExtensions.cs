@@ -38,7 +38,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUmbrellaDialogService, UmbrellaDialogService>();
 		_ = services.AddScoped<IUriNavigatorService, UriNavigatorService>();
 		_ = services.AddTransient<IDialogService>(x => x.GetRequiredService<IUmbrellaDialogService>());
-		_ = services.AddSingleton<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
+		_ = services.AddScoped<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 		_ = services.AddTransient<IBrowserEventAggregator, BrowserEventAggregator>();
 
