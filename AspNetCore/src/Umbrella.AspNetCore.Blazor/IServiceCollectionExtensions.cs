@@ -13,6 +13,7 @@ using Umbrella.AspNetCore.Blazor.Services;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Services.Grid;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
+using Umbrella.AspNetCore.Shared.Services.Abstractions;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 		_ = services.AddTransient<IBrowserEventAggregator, BrowserEventAggregator>();
+		_ = services.AddScoped<IHttpRequestAbortedService, NoopHttpRequestAbortedService>();
 
 		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
 

@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using Umbrella.AspNetCore.Shared.Services.Abstractions;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
 using Umbrella.AspNetCore.WebUtilities.Hosting.Options;
 using Umbrella.AspNetCore.WebUtilities.Identity;
@@ -14,6 +15,7 @@ using Umbrella.AspNetCore.WebUtilities.Razor;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
 using Umbrella.AspNetCore.WebUtilities.Security;
 using Umbrella.AspNetCore.WebUtilities.Security.Options;
+using Umbrella.AspNetCore.WebUtilities.Services;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
@@ -84,6 +86,8 @@ public static class IServiceCollectionExtensions
 
 		_ = services.AddSingleton<ApiIntegrationCookieAuthenticationEvents>();
 		_ = services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+
+		_ = services.AddScoped<IHttpRequestAbortedService, HttpRequestAbortedService>();
 
 		_ = services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaClaimsUserAccessorOptionsOptionsBuilder);

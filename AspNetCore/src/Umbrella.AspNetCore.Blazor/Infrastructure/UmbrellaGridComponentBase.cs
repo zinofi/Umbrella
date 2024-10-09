@@ -10,8 +10,8 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// <summary>
 /// A base component to be used with Blazor components that contain a single <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
-/// <seealso cref="UmbrellaComponentBase" />
-public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel> : UmbrellaComponentBase
+/// <seealso cref="UmbrellaClientComponentBase" />
+public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultModel> : UmbrellaClientComponentBase
 	where TItemModel : notnull
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
 {

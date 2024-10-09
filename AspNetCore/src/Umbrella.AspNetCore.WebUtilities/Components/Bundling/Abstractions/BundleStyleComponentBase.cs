@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.Rendering;
+﻿using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
-using Umbrella.AspNetCore.WebUtilities.Components.Abstractions;
+using Microsoft.AspNetCore.Components.Rendering;
+using Umbrella.AspNetCore.Shared.Components.Abstractions;
 using Umbrella.WebUtilities.Bundling.Abstractions;
 using Umbrella.WebUtilities.Security;
-using CommunityToolkit.Diagnostics;
 
 namespace Umbrella.AspNetCore.WebUtilities.Components.Bundling.Abstractions;
 

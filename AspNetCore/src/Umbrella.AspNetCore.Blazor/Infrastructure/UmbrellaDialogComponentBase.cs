@@ -10,8 +10,8 @@ namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 /// <summary>
 /// A base component to be used with custom dialogs.
 /// </summary>
-/// <seealso cref="UmbrellaComponentBase" />
-public abstract class UmbrellaDialogComponentBase : UmbrellaComponentBase
+/// <seealso cref="UmbrellaClientComponentBase" />
+public abstract class UmbrellaDialogComponentBase : UmbrellaClientComponentBase
 {
 	/// <summary>
 	/// Gets or sets the dialog instance.

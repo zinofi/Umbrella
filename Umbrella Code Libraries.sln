@@ -230,6 +230,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{7AF95332-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C2ECB654-D38E-403C-BCCF-71BE09909A3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNetCore.Shared", "AspNetCore\src\Umbrella.AspNetCore.Shared\Umbrella.AspNetCore.Shared.csproj", "{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -621,6 +623,12 @@ Global
 		{695FC680-E71A-4D95-84DF-393E180527A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{695FC680-E71A-4D95-84DF-393E180527A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{695FC680-E71A-4D95-84DF-393E180527A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -720,6 +728,7 @@ Global
 		{6C8C4A89-1D02-4D33-92D9-3B0E9EDF9C7B} = {D8FC59AF-00A0-4187-8622-15AF5457E48F}
 		{695FC680-E71A-4D95-84DF-393E180527A1} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 		{C2ECB654-D38E-403C-BCCF-71BE09909A3A} = {7AF95332-7782-44A3-A367-57D30A39517F}
+		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D} = {A592A2ED-763F-4172-95DB-316662A0A42E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

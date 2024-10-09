@@ -64,6 +64,7 @@
 		<ProjectReference Include="..\..\..\Core\src\Umbrella.DataAnnotations\Umbrella.DataAnnotations.csproj" />
 		<ProjectReference Include="..\..\..\DataAccess\src\Umbrella.DataAccess.Remote\Umbrella.DataAccess.Remote.csproj" />
 		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
+		<ProjectReference Include="..\Umbrella.AspNetCore.Shared\Umbrella.AspNetCore.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
