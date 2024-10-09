@@ -1,5 +1,4 @@
-﻿//using BlazorApplicationInsights;
-using CommunityToolkit.Diagnostics;
+﻿using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -7,7 +6,7 @@ using Umbrella.AppFramework.Security.Abstractions;
 using Umbrella.AppFramework.Shared.Security.Extensions;
 using Umbrella.AspNetCore.Blazor.Security.Abstractions;
 using Umbrella.AspNetCore.Blazor.Security.Exceptions;
-//using Umbrella.AspNetCore.Blazor.Security.Options;
+using Umbrella.AspNetCore.Blazor.Security.Options;
 using Umbrella.Utilities.Dating.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Security;
@@ -22,9 +21,8 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 {
 	private readonly ILogger _logger;
 	private readonly IAppAuthHelper _authHelper;
-	//private readonly IApplicationInsights _applicationInsights;
 	private readonly IDateTimeProvider _dateTimeProvider;
-	//private readonly ClaimsPrincipalAuthenticationStateProviderOptions _options;
+	private readonly ClaimsPrincipalAuthenticationStateProviderOptions _options;
 
 	/// <inheritdoc />
 	public event EventHandler? AuthenticatedStateHasChanged;
@@ -34,21 +32,18 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="authHelper">The authentication helper.</param>
-	/// <param name="applicationInsights">The application insights.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
 	/// <param name="options">The options.</param>
 	public ClaimsPrincipalAuthenticationStateProvider(
 		ILogger<ClaimsPrincipalAuthenticationStateProvider> logger,
 		IAppAuthHelper authHelper,
-		//IApplicationInsights applicationInsights,
-		IDateTimeProvider dateTimeProvider)
-		//ClaimsPrincipalAuthenticationStateProviderOptions options)
+		IDateTimeProvider dateTimeProvider,
+		ClaimsPrincipalAuthenticationStateProviderOptions options)
 	{
 		_logger = logger;
 		_authHelper = authHelper;
-		//_applicationInsights = applicationInsights;
 		_dateTimeProvider = dateTimeProvider;
-		//_options = options;
+		_options = options;
 		_authHelper.OnAuthenticationStateChanged += MarkUserAsAuthenticatedAsync;
 	}
 
@@ -64,15 +59,15 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 
 			if (refreshTokenExpiration > _dateTimeProvider.UtcNow)
 			{
-				//if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
-				//	await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);
+				if(_options.OnSetAuthenticatedUserContext is not null)
+					await _options.OnSetAuthenticatedUserContext(principal);
 
 				return new AuthenticationState(principal);
 			}
 			else
 			{
-				//if (_options.IsApplicationInsightsEnabled)
-				//	await _applicationInsights.ClearAuthenticatedUserContext();
+				if (_options.OnClearAuthenticatedUserContext is not null)
+					await _options.OnClearAuthenticatedUserContext();
 
 				return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 			}
@@ -94,8 +89,8 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 			NotifyAuthenticationStateChanged(authState);
 			AuthenticatedStateHasChanged?.Invoke(this, EventArgs.Empty);
 
-			//if (_options.IsApplicationInsightsEnabled && principal.Identity?.Name is not null)
-			//	await _applicationInsights.SetAuthenticatedUserContext(principal.Identity.Name);
+			if (_options.OnSetAuthenticatedUserContext is not null)
+				await _options.OnSetAuthenticatedUserContext(principal);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { principal.Identity?.Name }))
 		{
@@ -112,8 +107,8 @@ public class ClaimsPrincipalAuthenticationStateProvider : AuthenticationStatePro
 			NotifyAuthenticationStateChanged(authState);
 			AuthenticatedStateHasChanged?.Invoke(this, EventArgs.Empty);
 
-			//if (_options.IsApplicationInsightsEnabled)
-			//	await _applicationInsights.ClearAuthenticatedUserContext();
+			if (_options.OnClearAuthenticatedUserContext is not null)
+				await _options.OnClearAuthenticatedUserContext();
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{

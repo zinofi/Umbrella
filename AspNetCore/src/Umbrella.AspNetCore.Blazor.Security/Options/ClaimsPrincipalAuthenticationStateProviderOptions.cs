@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.Security.Claims;
+
 namespace Umbrella.AspNetCore.Blazor.Security.Options;
 
 /// <summary>
@@ -9,8 +11,18 @@ namespace Umbrella.AspNetCore.Blazor.Security.Options;
 public class ClaimsPrincipalAuthenticationStateProviderOptions
 {
 	/// <summary>
-	/// Gets or sets a value indicating whether Application Insights should have the authentication context
-	/// set to the currently authenticated user.
+	/// Gets or sets the callback that will be invoked when the authenticated user context is set.
 	/// </summary>
-	public bool IsApplicationInsightsEnabled { get; set; }
+	/// <remarks>
+	/// This should be used to set the context on a logging provider, e.g. Application Insights, so that telemetry can be associated with the authenticated user.
+	/// </remarks>
+	public Func<ClaimsPrincipal, Task>? OnSetAuthenticatedUserContext { get; set; }
+
+	/// <summary>
+	/// Gets or sets the callback that will be invoked when the authenticated user context is cleared.
+	/// </summary>
+	/// <remarks>
+	/// This should be used to clear the context on a logging provider, e.g. Application Insights, so that telemetry is no longer associated with a specific user.
+	/// </remarks>
+	public Func<Task>? OnClearAuthenticatedUserContext { get; set; }
 }
