@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Umbrella.AspNetCore.Shared.Services.Abstractions;
 using Umbrella.Utilities.Mapping.Abstractions;
@@ -12,11 +11,9 @@ namespace Umbrella.AspNetCore.Shared.Components.Abstractions;
 /// </summary>
 /// <seealso cref="ComponentBase" />
 /// <seealso cref="IAsyncDisposable"/>
-[SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "False positive. The fields are disposed correctly.")]
 public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 {
-	private CancellationTokenSource? _componentCancellationTokenSource;
-	private CancellationTokenSource? _linkedCancellationTokenSource;
+	private Lazy<CancellationTokenSource>? _cancellationTokenSource;
 	private bool _disposedValue;
 
 	[Inject]
@@ -64,13 +61,12 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	{
 		get
 		{
-			if (_linkedCancellationTokenSource is not null)
-				return _linkedCancellationTokenSource.Token;
+			if (_cancellationTokenSource is not null)
+				return _cancellationTokenSource.Value.Token;
 
-			_componentCancellationTokenSource = new CancellationTokenSource();
-			_linkedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_componentCancellationTokenSource.Token, HttpRequestAbortedService.RequestAborted);
+			_cancellationTokenSource = new Lazy<CancellationTokenSource>(() => CancellationTokenSource.CreateLinkedTokenSource(HttpRequestAbortedService.RequestAborted));
 
-			return _linkedCancellationTokenSource.Token;
+			return _cancellationTokenSource.Value.Token;
 		}
 	}
 
@@ -92,34 +88,19 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 		{
 			if (disposing)
 			{
-				if (_componentCancellationTokenSource is not null)
+				if (_cancellationTokenSource is { IsValueCreated: true })
 				{
-					if (_componentCancellationTokenSource.IsCancellationRequested)
+					if (_cancellationTokenSource.Value.IsCancellationRequested)
 					{
 #if NET8_0_OR_GREATER
-						await _componentCancellationTokenSource.CancelAsync();
+						await _cancellationTokenSource.Value.CancelAsync();
 #else
 						await Task.Yield();
-						_componentCancellationTokenSource.Cancel();
+						_cancellationTokenSource.Value.Cancel();
 #endif
 					}
 
-					_componentCancellationTokenSource.Dispose();
-				}
-
-				if (_linkedCancellationTokenSource is not null)
-				{
-					if (_linkedCancellationTokenSource.IsCancellationRequested)
-					{
-#if NET8_0_OR_GREATER
-						await _linkedCancellationTokenSource.CancelAsync();
-#else
-						await Task.Yield();
-						_linkedCancellationTokenSource.Cancel();
-#endif
-					}
-
-					_linkedCancellationTokenSource.Dispose();
+					_cancellationTokenSource.Value.Dispose();
 				}
 			}
 
