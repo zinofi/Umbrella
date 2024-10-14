@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.vsconfig = .vsconfig
 		commands.json = commands.json
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		icon.png = icon.png
 		NuGet.Config = NuGet.Config
 		PackLocal.cmd = PackLocal.cmd
@@ -230,7 +231,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{7AF95332-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C2ECB654-D38E-403C-BCCF-71BE09909A3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.AspNetCore.Shared", "AspNetCore\src\Umbrella.AspNetCore.Shared\Umbrella.AspNetCore.Shared.csproj", "{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Shared", "AspNetCore\src\Umbrella.AspNetCore.Shared\Umbrella.AspNetCore.Shared.csproj", "{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

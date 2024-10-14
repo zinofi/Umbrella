@@ -13,14 +13,6 @@
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.22.1" />
 		<PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.6" />
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.11.20">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="PolySharp" Version="1.14.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

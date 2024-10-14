@@ -14,18 +14,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.11.20">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="PolySharp" Version="1.14.1">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\..\..\Core\src\Umbrella.WebUtilities.DynamicImage\Umbrella.WebUtilities.DynamicImage.csproj" />
 		<ProjectReference Include="..\Umbrella.AspNetCore.WebUtilities\Umbrella.AspNetCore.WebUtilities.csproj" />
 	</ItemGroup>
