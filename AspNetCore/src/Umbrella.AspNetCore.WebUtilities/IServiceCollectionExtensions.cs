@@ -87,7 +87,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddSingleton<ApiIntegrationCookieAuthenticationEvents>();
 		_ = services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
-		_ = services.AddScoped<IHttpRequestAbortedService, HttpRequestAbortedService>();
+		_ = services.AddScoped<IHttpContextService, HttpContextService>();
 
 		_ = services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaClaimsUserAccessorOptionsOptionsBuilder);

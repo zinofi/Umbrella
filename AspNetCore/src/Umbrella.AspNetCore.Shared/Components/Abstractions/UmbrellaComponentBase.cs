@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Umbrella.AspNetCore.Shared.Services.Abstractions;
@@ -38,21 +39,22 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	/// Gets the HTTP request aborted service.
 	/// </summary>
 	/// <remarks>
-	/// When this component is running on server, this service will provide the <see cref="System.Threading.CancellationToken"/> for the current HTTP request.
-	/// In Blazor WebAssembly, this service will provide a no-op implementation as there is no request to abort.
+	/// When this component is running on server, this service will provide data about the current HttpContext.
+	/// In Blazor WebAssembly, this service will provide a no-op implementation as there is no context.
 	/// </remarks>
 	[Inject]
-	protected IHttpRequestAbortedService HttpRequestAbortedService { get; private set; } = null!;
+	protected IHttpContextService HttpContextService { get; private set; } = null!;
+
+	/// <summary>
+	/// Gets the authentication state provider.
+	/// </summary>
+	[CascadingParameter]
+	protected AuthenticationStateProvider? AuthenticationStateProvider { get; set; } = null!;
 
 	/// <summary>
 	/// Gets the logger.
 	/// </summary>
 	protected ILogger Logger { get; private set; } = null!;
-
-	/// <summary>
-	/// Gets the <see cref="ClaimsPrincipal"/> for the current user.
-	/// </summary>
-	protected static ClaimsPrincipal? User => ClaimsPrincipal.Current;
 
 	/// <summary>
 	/// Gets the cancellation token.
@@ -64,7 +66,7 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 			if (_cancellationTokenSource is not null)
 				return _cancellationTokenSource.Value.Token;
 
-			_cancellationTokenSource = new Lazy<CancellationTokenSource>(() => CancellationTokenSource.CreateLinkedTokenSource(HttpRequestAbortedService.RequestAborted));
+			_cancellationTokenSource = new Lazy<CancellationTokenSource>(() => CancellationTokenSource.CreateLinkedTokenSource(HttpContextService.RequestAborted));
 
 			return _cancellationTokenSource.Value.Token;
 		}
@@ -76,6 +78,22 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 		base.OnInitialized();
 
 		Logger = LoggerFactory.CreateLogger(GetType());
+	}
+
+	/// <summary>
+	/// Gets the claims principal for the current user.
+	/// </summary>
+	/// <returns>The claims principal.</returns>
+	protected async ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync()
+	{
+		if (AuthenticationStateProvider is not null)
+		{
+			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+			return authState.User;
+		}
+
+		return HttpContextService.User ?? new ClaimsPrincipal(new ClaimsIdentity());
 	}
 
 	/// <summary>

@@ -42,7 +42,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUmbrellaBlazorInteropService, UmbrellaBlazorInteropService>();
 		_ = services.AddScoped<IUmbrellaGridComponentServiceFactory, UmbrellaGridComponentServiceFactory>();
 		_ = services.AddTransient<IBrowserEventAggregator, BrowserEventAggregator>();
-		_ = services.AddScoped<IHttpRequestAbortedService, NoopHttpRequestAbortedService>();
+		_ = services.AddScoped<IHttpContextService, NoopHttpContextService>();
 
 		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
 

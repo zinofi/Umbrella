@@ -33,6 +33,7 @@ public abstract class UmbrellaClientComponentBase : UmbrellaComponentBase
 	/// <summary>
 	/// Gets the authentication helper.
 	/// </summary>
+	// TODO: Need to get rid of this somehow.
 	[Inject]
 	protected IAppAuthHelper AuthHelper { get; private set; } = null!;
 
@@ -40,13 +41,6 @@ public abstract class UmbrellaClientComponentBase : UmbrellaComponentBase
 	/// Gets or sets the current layout state. The initial state is <see cref="LayoutState.Loading"/>.
 	/// </summary>
 	protected LayoutState CurrentState { get; set; } = LayoutState.Loading;
-
-	/// <summary>
-	/// Gets the claims principal for the current user.
-	/// </summary>
-	/// <returns>The claims principal.</returns>
-	[Obsolete($"Use the {nameof(User)} property instead. This will be removed in a future version.")]
-	protected ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync() => new(Task.FromResult(User ?? new ClaimsPrincipal(new ClaimsIdentity())));
 
 	/// <summary>
 	/// Shows the problem details error message. If this does not exist, the error message defaults to <see cref="DialogDefaults.UnknownErrorMessage"/>.
@@ -111,13 +105,14 @@ public abstract class UmbrellaClientComponentBase : UmbrellaComponentBase
 	/// </summary>
 	/// <param name="uri">The URI to append the token to.</param>
 	/// <returns>The URI with the appended token if the <see cref="UmbrellaAppClaimType.FileAccessToken" /> claim exists; otherwise the value of the <paramref name="uri"/> parameter.</returns>
-	public static Task<string> AppendFileAccessTokenAsync(string uri)
+	public async Task<string> AppendFileAccessTokenAsync(string uri)
 	{
-		string? accessToken = User?.GetFileAccessToken();
+		var authState = await GetClaimsPrincipalAsync();
+		string? accessToken = authState.GetFileAccessToken();
 
 		string updatedUrl = string.IsNullOrWhiteSpace(accessToken) ? uri : QueryHelpers.AddQueryString(uri, AppQueryStringKeys.FileAccessToken, accessToken);
 
-		return Task.FromResult(updatedUrl);
+		return updatedUrl;
 	}
 
 	/// <summary>

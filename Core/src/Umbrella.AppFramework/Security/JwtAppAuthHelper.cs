@@ -19,10 +19,13 @@ namespace Umbrella.AppFramework.Security;
 /// <seealso cref="IAppAuthHelper" />
 public class JwtAppAuthHelper : IAppAuthHelper
 {
+	private static readonly ClaimsPrincipal _emptyPrincipal = new(new ClaimsIdentity());
+
 	private readonly ILogger _logger;
 	private readonly IJwtUtility _jwtUtility;
 	private readonly IAppAuthTokenStorageService _tokenStorageService;
 	private readonly AppAuthHelperOptions _options;
+	private ClaimsPrincipal? _claimsPrincipal;
 
 	/// <inheritdoc />
 	public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged
@@ -68,12 +71,11 @@ public class JwtAppAuthHelper : IAppAuthHelper
 		{
 			await _tokenStorageService.SetTokenAsync(token).ConfigureAwait(false);
 
-			ClaimsPrincipal claimsPrincipal = await InitializeClaimsPrincipalAsync(token, cancellationToken).ConfigureAwait(false);
-			Thread.CurrentPrincipal = claimsPrincipal;
+			_claimsPrincipal = await InitializeClaimsPrincipalAsync(token, cancellationToken).ConfigureAwait(false);
 
-			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(claimsPrincipal));
+			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(_claimsPrincipal));
 
-			return claimsPrincipal;
+			return _claimsPrincipal;
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -88,15 +90,17 @@ public class JwtAppAuthHelper : IAppAuthHelper
 
 		try
 		{
-			if (ClaimsPrincipal.Current is not null)
-				return ClaimsPrincipal.Current;
+			if (_claimsPrincipal is not null)
+				return _claimsPrincipal;
 
 			string? token = await _tokenStorageService.GetTokenAsync().ConfigureAwait(false);
 
 			if (string.IsNullOrWhiteSpace(token))
-				return new ClaimsPrincipal(new ClaimsIdentity());
+				return _emptyPrincipal;
 
-			return await InitializeClaimsPrincipalAsync(token!, cancellationToken);
+			_claimsPrincipal = await InitializeClaimsPrincipalAsync(token!, cancellationToken);
+
+			return _claimsPrincipal;
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -113,11 +117,9 @@ public class JwtAppAuthHelper : IAppAuthHelper
 		{
 			await _tokenStorageService.SetTokenAsync(null).ConfigureAwait(false);
 
-			var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+			_claimsPrincipal = _emptyPrincipal;
 
-			Thread.CurrentPrincipal = claimsPrincipal;
-
-			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(claimsPrincipal));
+			_ = WeakReferenceMessenger.Default.Send(new AuthenticationStateChangedMessage(_claimsPrincipal));
 
 			if (executeDefaultPostLogoutAction && _options.PostLogoutAction is not null)
 				await _options.PostLogoutAction().ConfigureAwait(false);
