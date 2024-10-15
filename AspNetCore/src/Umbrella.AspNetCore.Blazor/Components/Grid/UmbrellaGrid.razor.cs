@@ -130,7 +130,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	/// <summary>
 	/// Gets the filterable columns.
 	/// </summary>
-	private IReadOnlyCollection<IUmbrellaColumnDefinition<TItem>>? FilterableColumns { get; set; }
+	private List<IUmbrellaColumnDefinition<TItem>>? FilterableColumns { get; set; }
 
 	/// <summary>
 	/// Gets the current <see cref="LayoutState"/> of the component.

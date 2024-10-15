@@ -25,7 +25,7 @@ public class JwtAppAuthHelper : IAppAuthHelper
 	private readonly IJwtUtility _jwtUtility;
 	private readonly IAppAuthTokenStorageService _tokenStorageService;
 	private readonly AppAuthHelperOptions _options;
-	private ClaimsPrincipal? _claimsPrincipal;
+	private static volatile ClaimsPrincipal? _claimsPrincipal;
 
 	/// <inheritdoc />
 	public event Func<ClaimsPrincipal, Task> OnAuthenticationStateChanged

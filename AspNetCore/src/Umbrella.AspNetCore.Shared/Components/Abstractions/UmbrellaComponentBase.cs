@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Umbrella.AspNetCore.Shared.Services.Abstractions;
@@ -45,11 +46,8 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	[Inject]
 	protected IHttpContextService HttpContextService { get; private set; } = null!;
 
-	/// <summary>
-	/// Gets the authentication state provider.
-	/// </summary>
-	[CascadingParameter]
-	protected AuthenticationStateProvider? AuthenticationStateProvider { get; set; } = null!;
+	[Inject]
+	private protected IServiceProvider ServiceProvider { get; set; } = null!;
 
 	/// <summary>
 	/// Gets the logger.
@@ -86,9 +84,11 @@ public abstract class UmbrellaComponentBase : ComponentBase, IAsyncDisposable
 	/// <returns>The claims principal.</returns>
 	protected async ValueTask<ClaimsPrincipal> GetClaimsPrincipalAsync()
 	{
-		if (AuthenticationStateProvider is not null)
+		AuthenticationStateProvider? authenticationStateProvider = ServiceProvider.GetService<AuthenticationStateProvider>();
+
+		if (authenticationStateProvider is not null)
 		{
-			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
 
 			return authState.User;
 		}
