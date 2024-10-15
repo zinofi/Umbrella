@@ -42,6 +42,12 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 	[Parameter]
 	public bool RenderInline { get; set; }
 
+	/// <summary>
+	/// Gets or sets the additional attributes to be added to the script tag.
+	/// </summary>
+	[Parameter(CaptureUnmatchedValues = true)]
+	public IDictionary<string, object> AdditionalAttributes { get; set; } = null!;
+
 	/// <inheritdoc/>
 	protected override void OnParametersSet()
 	{
@@ -76,10 +82,12 @@ public abstract class BundleScriptComponentBase<TBundleUtility> : UmbrellaCompon
 		{
 			builder.AddAttribute(1, "nonce", NonceContext.Current);
 			builder.AddContent(2, _contentOrPath);
+			builder.AddMultipleAttributes(3, AdditionalAttributes);
 		}
 		else
 		{
 			builder.AddAttribute(1, "src", _contentOrPath);
+			builder.AddMultipleAttributes(2, AdditionalAttributes);
 		}
 
 		builder.CloseElement();

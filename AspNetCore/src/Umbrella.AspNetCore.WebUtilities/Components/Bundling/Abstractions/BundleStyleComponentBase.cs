@@ -42,6 +42,12 @@ public abstract class BundleStyleComponentBase<TBundleUtility> : UmbrellaCompone
 	[Parameter]
 	public bool RenderInline { get; set; }
 
+	/// <summary>
+	/// Gets or sets the additional attributes to be added to the style tag.
+	/// </summary>
+	[Parameter(CaptureUnmatchedValues = true)]
+	public IDictionary<string, object> AdditionalAttributes { get; set; } = null!;
+
 	/// <inheritdoc/>
 	protected override void OnParametersSet()
 	{
@@ -75,12 +81,14 @@ public abstract class BundleStyleComponentBase<TBundleUtility> : UmbrellaCompone
 			builder.OpenElement(0, "style");
 			builder.AddAttribute(1, "nonce", NonceContext.Current);
 			builder.AddContent(2, _contentOrPath);
+			builder.AddMultipleAttributes(3, AdditionalAttributes);
 		}
 		else
 		{
 			builder.OpenElement(0, "link");
 			builder.AddAttribute(1, "rel", "stylesheet");
 			builder.AddAttribute(2, "href", _contentOrPath);
+			builder.AddMultipleAttributes(4, AdditionalAttributes);
 		}
 
 		builder.CloseElement();
