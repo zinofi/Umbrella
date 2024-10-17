@@ -19,7 +19,7 @@ public static class IQueryableExtensions
 	/// <param name="sortExpressions">The sort expressions.</param>
 	/// <param name="defaultSortOrderExpression">The default sort order expression when <paramref name="sortExpressions"/> is null or empty.</param>
 	/// <returns>The query with the sort expressions applied to it.</returns>
-	public static IQueryable<TItem> ApplySortExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<SortExpression<TItem>>? sortExpressions, in SortExpression<TItem> defaultSortOrderExpression = default)
+	public static IQueryable<TItem> ApplySortExpressions<TItem>(this IQueryable<TItem> items, IEnumerable<SortExpression<TItem>>? sortExpressions, in SortExpression<TItem> defaultSortOrderExpression)
 	{
 		IOrderedQueryable<TItem>? orderedQuery = null;
 
@@ -40,9 +40,9 @@ public static class IQueryableExtensions
 						: orderedQuery!.ThenByDescending(expression);
 			}
 		}
-		else if (defaultSortOrderExpression == default)
+		else
 		{
-			var expression = defaultSortOrderExpression.Expression ?? throw new InvalidOperationException("The expression cannot be found.");
+			var expression = defaultSortOrderExpression.Expression ?? throw new InvalidOperationException("The expression for the defaultSortOrderExpression cannot be found.");
 
 			orderedQuery = defaultSortOrderExpression.Direction == SortDirection.Ascending
 						? items.OrderBy(expression)
