@@ -40,7 +40,9 @@ public static class DbContextExtensions
 			Value = sequenceName
 		};
 
-		_ = await dbContext.Database.ExecuteSqlRawAsync("SET @result = NEXT VALUE FOR @sequenceName", new[] { parameter, sequenceNameParameter }, cancellationToken).ConfigureAwait(false);
+		string sql = $"SET @result = NEXT VALUE FOR {sequenceName}";
+
+		_ = await dbContext.Database.ExecuteSqlRawAsync(sql, new[] { parameter, sequenceNameParameter }, cancellationToken).ConfigureAwait(false);
 
 		return (int)parameter.Value;
 	}
