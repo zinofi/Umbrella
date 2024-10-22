@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Components;
+using Umbrella.AspNetCore.Shared.Extensions;
+using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.AspNetCore.Blazor.Extensions;
+namespace Umbrella.AspNetCore.Shared.Extensions;
 
 /// <summary>
 /// Extension methods for use with the <see cref="NavigationManager" /> class.
@@ -17,6 +20,8 @@ public static class NavigationManagerExtensions
 	/// <exception cref="NotSupportedException">Query Paramaters of type {typeof(T).Name} cannot be converted.</exception>
 	public static (bool success, T value) TryGetQueryStringValue<T>(this NavigationManager navManager, string key)
 	{
+		Guard.IsNotNull(navManager);
+
 		var uri = navManager.ToAbsoluteUri(navManager.Uri);
 
 		return uri.TryGetQueryStringValue<T>(key);
@@ -32,6 +37,8 @@ public static class NavigationManagerExtensions
 	public static (bool success, T value) TryGetQueryStringEnumValue<T>(this NavigationManager navManager, string key)
 		where T : struct, Enum
 	{
+		Guard.IsNotNull(navManager);
+
 		var uri = navManager.ToAbsoluteUri(navManager.Uri);
 
 		return uri.TryGetQueryStringEnumValue<T>(key);

@@ -5,7 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-namespace Umbrella.AspNetCore.Blazor.Extensions;
+namespace Umbrella.AspNetCore.Shared.Extensions;
 
 /// <summary>
 /// Extension methods for the <see cref="IAuthorizationService" /> type.

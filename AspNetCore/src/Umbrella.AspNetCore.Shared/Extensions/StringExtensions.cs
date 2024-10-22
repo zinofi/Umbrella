@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Components;
+using System.Text.Encodings.Web;
 using Umbrella.Utilities.Constants;
+using Umbrella.Utilities.Extensions;
 
-namespace Umbrella.AspNetCore.Blazor.Extensions;
+namespace Umbrella.AspNetCore.Shared.Extensions;
 
 /// <summary>
 /// Blazor specific extension methods for use with strings.

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Constants;
-using Umbrella.AspNetCore.Blazor.Extensions;
+using Umbrella.AspNetCore.Shared.Extensions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 
