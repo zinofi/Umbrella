@@ -69,7 +69,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <summary>
 	/// Gets the data access unit of work.
 	/// </summary>
-	protected IDataAccessUnitOfWork DataAccessUnitOfWork { get; }
+	protected IDataAccessUnitOfWork DataAccessUnitOfWork { get; } // TODO: Lazy
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDataAccessApiController"/> class.
@@ -88,7 +88,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		IUmbrellaMapper mapper,
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
-		IDataAccessUnitOfWork dataAccessUnitOfWork)
+		IDataAccessUnitOfWork dataAccessUnitOfWork) // TODO: Lazy
 		: base(logger, hostingEnvironment)
 	{
 		Options = options;
