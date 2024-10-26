@@ -5,15 +5,16 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EntityFrameworkCore.Extensions;
-using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Security.Extensions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
@@ -35,13 +36,11 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext> : ReadOnl
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
-		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<int> currentUserIdAccessor)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		IDataLookupNormalizer lookupNormalizer)
+		: base(dbContext, logger, lookupNormalizer)
 	{
 	}
 }
@@ -64,13 +63,11 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
-		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<int> currentUserIdAccessor)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		IDataLookupNormalizer lookupNormalizer)
+		: base(dbContext, logger, lookupNormalizer)
 	{
 	}
 }
@@ -95,13 +92,11 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
-		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<int> currentUserIdAccessor)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		IDataLookupNormalizer lookupNormalizer)
+		: base(dbContext, logger, lookupNormalizer)
 	{
 	}
 }
@@ -159,13 +154,7 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <summary>
 	/// Gets the current user identifier.
 	/// </summary>
-	protected TUserAuditKey CurrentUserId => CurrentUserIdAccessor.CurrentUserId;
-
-	/// <summary>
-	/// Gets the current user identifier accessor.
-	/// </summary>
-	protected ICurrentUserIdAccessor<TUserAuditKey> CurrentUserIdAccessor { get; }
-
+	protected TUserAuditKey? CurrentUserId => ClaimsPrincipal.Current is not null ? ClaimsPrincipal.Current.GetId<TUserAuditKey>() : default;
 	#endregion
 
 	#region Constructors
@@ -175,17 +164,14 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	protected ReadOnlyGenericDbRepository(
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
-		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor)
+		IDataLookupNormalizer lookupNormalizer)
 	{
 		Context = dbContext;
 		Logger = logger;
 		LookupNormalizer = lookupNormalizer;
-		CurrentUserIdAccessor = currentUserIdAccessor;
 	}
 	#endregion
 

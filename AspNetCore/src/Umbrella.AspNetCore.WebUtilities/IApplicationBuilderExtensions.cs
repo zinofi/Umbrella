@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using System.Globalization;
+using System.Security.Claims;
 using Umbrella.AppFramework.Shared.Constants;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Middleware;
@@ -186,4 +187,17 @@ public static class IApplicationBuilderExtensions
 			return next(context);
 		});
 	}
+
+	/// <summary>
+	/// Ensures that the <see cref="ClaimsPrincipal"/> on the current <see cref="HttpContext"/> is propagated to <see cref="Thread.CurrentPrincipal"/>.
+	/// </summary>
+	/// <param name="builder">The builder.</param>
+	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	/// <remarks>This needs to be done manually and is not done automatically by ASP.NET Core.</remarks>
+	public static IApplicationBuilder UseUmbrellaPropagateClaimsPrincipal(this IApplicationBuilder builder) => builder.Use((context, next) =>
+	{
+		Thread.CurrentPrincipal = context.User;
+
+		return next(context);
+	});
 }

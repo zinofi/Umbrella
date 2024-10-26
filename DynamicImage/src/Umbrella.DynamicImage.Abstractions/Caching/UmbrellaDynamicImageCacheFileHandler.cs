@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Context.Abstractions;
 
 namespace Umbrella.DynamicImage.Abstractions.Caching;
 
@@ -20,7 +19,6 @@ public class UmbrellaDynamicImageCacheFileHandler : UmbrellaFileHandler<int>, IU
 	/// <param name="logger">The logger.</param>
 	/// <param name="cache">The cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
-	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
 	/// <param name="fileProvider">The file provider.</param>
 	/// <param name="options">The options.</param>
 	/// <param name="cacheCoreOptions">The cache core options.</param>
@@ -28,11 +26,10 @@ public class UmbrellaDynamicImageCacheFileHandler : UmbrellaFileHandler<int>, IU
 		ILogger<UmbrellaDynamicImageCacheFileHandler> logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
-		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
 		IUmbrellaFileStorageProvider fileProvider,
 		IUmbrellaFileStorageProviderOptions options,
 		DynamicImageCacheCoreOptions cacheCoreOptions)
-		: base(logger, cache, cacheKeyUtility, currentUserClaimsPrincipalAccessor, fileProvider, options)
+		: base(logger, cache, cacheKeyUtility, fileProvider, options)
 	{
 		_cacheCoreOptions = cacheCoreOptions;
 	}

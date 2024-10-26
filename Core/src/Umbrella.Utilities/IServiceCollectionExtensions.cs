@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.Runtime.CompilerServices;
 using CommunityToolkit.Diagnostics;
+using System.Runtime.CompilerServices;
 using Umbrella.Utilities.Caching;
 using Umbrella.Utilities.Caching.Abstractions;
 using Umbrella.Utilities.Caching.Options;
-using Umbrella.Utilities.Context;
-using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.DataAnnotations;
@@ -100,10 +98,6 @@ public static class IServiceCollectionExtensions
 	{
 		Guard.IsNotNull(services, nameof(services));
 
-		_ = services.AddSingleton(typeof(ICurrentUserIdAccessor<>), typeof(DefaultUserIdAccessor<>));
-		_ = services.AddSingleton(typeof(ICurrentUserRolesAccessor<>), typeof(DefaultUserRolesAccessor<>));
-		_ = services.AddSingleton<ICurrentUserClaimsAccessor, DefaultUserClaimsAccessor>();
-		_ = services.AddSingleton<ICurrentUserClaimsPrincipalAccessor, DefaultUserClaimsPrincipalAccessor>();
 		_ = services.AddSingleton<ICacheKeyUtility, CacheKeyUtility>();
 		_ = services.AddSingleton<ICertificateUtility, CertificateUtility>();
 		_ = services.AddSingleton<IConcurrentRandomGenerator, ConcurrentRandomGenerator>();
@@ -195,65 +189,6 @@ public static class IServiceCollectionExtensions
 				throw new UmbrellaOptionsException("An error has occurred during options configuration.", exc);
 			}
 		});
-
-		return services;
-	}
-
-	/// <summary>
-	/// Configures the current user identifier accessor.
-	/// </summary>
-	/// <typeparam name="TCurrentUserIdAccessor">The type of the current user identifier accessor.</typeparam>
-	/// <typeparam name="TKey">The type of the key.</typeparam>
-	/// <param name="services">The services.</param>
-	/// <returns>The services.</returns>
-	public static IServiceCollection ConfigureCurrentUserIdAccessor<TCurrentUserIdAccessor, TKey>(this IServiceCollection services)
-		where TCurrentUserIdAccessor : class, ICurrentUserIdAccessor<TKey>
-	{
-		_ = services.ReplaceSingleton<ICurrentUserIdAccessor<TKey>, TCurrentUserIdAccessor>();
-
-		return services;
-	}
-
-	/// <summary>
-	/// Configures the current user claims accessor.
-	/// </summary>
-	/// <typeparam name="TCurrentUserClaimsAccessor">The type of the current user claims accessor.</typeparam>
-	/// <param name="services">The services.</param>
-	/// <returns>The services.</returns>
-	public static IServiceCollection ConfigureCurrentUserClaimsAccessor<TCurrentUserClaimsAccessor>(this IServiceCollection services)
-		where TCurrentUserClaimsAccessor : class, ICurrentUserClaimsAccessor
-	{
-		_ = services.ReplaceSingleton<ICurrentUserClaimsAccessor, TCurrentUserClaimsAccessor>();
-
-		return services;
-	}
-
-	/// <summary>
-	/// Configures the current user claims principal accessor.
-	/// </summary>
-	/// <typeparam name="TCurrentUserClaimsPrincipalAccessor">The type of the current user claims principal accessor.</typeparam>
-	/// <param name="services">The services.</param>
-	/// <returns>The services.</returns>
-	public static IServiceCollection ConfigureCurrentUserClaimsPrincipalAccessor<TCurrentUserClaimsPrincipalAccessor>(this IServiceCollection services)
-		where TCurrentUserClaimsPrincipalAccessor : class, ICurrentUserClaimsPrincipalAccessor
-	{
-		_ = services.ReplaceSingleton<ICurrentUserClaimsPrincipalAccessor, TCurrentUserClaimsPrincipalAccessor>();
-
-		return services;
-	}
-
-	/// <summary>
-	/// Configures the current user roles accessor.
-	/// </summary>
-	/// <typeparam name="TCurrentUserRolesAccessor">The type of the current user roles accessor.</typeparam>
-	/// <typeparam name="TRoleType">The type of the role type.</typeparam>
-	/// <param name="services">The services.</param>
-	/// <returns>The services.</returns>
-	public static IServiceCollection ConfigureCurrentUserRolesAccessor<TCurrentUserRolesAccessor, TRoleType>(this IServiceCollection services)
-		where TCurrentUserRolesAccessor : class, ICurrentUserRolesAccessor<TRoleType>
-		where TRoleType : struct, Enum
-	{
-		_ = services.ReplaceSingleton<ICurrentUserRolesAccessor<TRoleType>, TCurrentUserRolesAccessor>();
 
 		return services;
 	}

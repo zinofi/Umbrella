@@ -3,8 +3,8 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Security.Extensions;
 
 namespace Umbrella.FileSystem.Abstractions;
@@ -32,11 +32,6 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	protected ICacheKeyUtility CacheKeyUtility { get; }
 
 	/// <summary>
-	/// Gets the current user claims principal accessor.
-	/// </summary>
-	public ICurrentUserClaimsPrincipalAccessor CurrentUserClaimsPrincipalAccessor { get; }
-
-	/// <summary>
 	/// Gets the file provider.
 	/// </summary>
 	protected IUmbrellaFileStorageProvider FileProvider { get; }
@@ -55,21 +50,18 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	/// <param name="logger">The logger.</param>
 	/// <param name="cache">The cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
-	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
 	/// <param name="fileProvider">The file provider.</param>
 	/// <param name="options">The options.</param>
 	protected UmbrellaFileHandler(
 		ILogger logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
-		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
 		IUmbrellaFileStorageProvider fileProvider,
 		IUmbrellaFileStorageProviderOptions options)
 	{
 		Logger = logger;
 		Cache = cache;
 		CacheKeyUtility = cacheKeyUtility;
-		CurrentUserClaimsPrincipalAccessor = currentUserClaimsPrincipalAccessor;
 		FileProvider = fileProvider;
 		Options = options;
 	}
@@ -213,8 +205,8 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 
 		try
 		{
-			if (CurrentUserClaimsPrincipalAccessor.CurrentPrincipal is not null)
-				await fileInfo.SetCreatedByIdAsync(CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>(), false, cancellationToken).ConfigureAwait(false);
+			if (ClaimsPrincipal.Current is not null)
+				await fileInfo.SetCreatedByIdAsync(ClaimsPrincipal.Current.GetId<string>(), false, cancellationToken).ConfigureAwait(false);
 
 			if (writeChanges)
 				await fileInfo.WriteMetadataChangesAsync(cancellationToken).ConfigureAwait(false);

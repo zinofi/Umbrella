@@ -33,7 +33,6 @@ public static class IServiceCollectionExtensions
 	/// </summary>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 	/// <param name="apiIntegrationCookieAuthenticationEventsOptionsBuilder">The optional <see cref="ApiIntegrationCookieAuthenticationEventsOptions"/> builder.</param>
-	/// <param name="umbrellaClaimsUserAccessorOptionsOptionsBuilder">The optional <see cref="UmbrellaClaimsUserAccessorOptions"/> builder.</param>
 	/// <param name="umbrellaDataAccessApiControllerOptionsBuilder">The optional <see cref="UmbrellaDataAccessApiControllerOptions"/> builder.</param>
 	/// <param name="umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder">The optional <see cref="UmbrellaScheduledHostedServiceWithViewSupportOptions"/> builder.</param>
 	/// <param name="fileAccessTokenQueryStringMiddlewareOptions">The optional <see cref="FileAccessTokenQueryStringMiddlewareOptions"/> builder.</param>
@@ -42,13 +41,11 @@ public static class IServiceCollectionExtensions
 	public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities(
 		this IServiceCollection services,
 		Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null,
-		Action<IServiceProvider, UmbrellaClaimsUserAccessorOptions>? umbrellaClaimsUserAccessorOptionsOptionsBuilder = null,
 		Action<IServiceProvider, UmbrellaDataAccessApiControllerOptions>? umbrellaDataAccessApiControllerOptionsBuilder = null,
 		Action<IServiceProvider, UmbrellaScheduledHostedServiceWithViewSupportOptions>? umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder = null,
 		Action<IServiceProvider, FileAccessTokenQueryStringMiddlewareOptions>? fileAccessTokenQueryStringMiddlewareOptions = null)
 		=> services.AddUmbrellaAspNetCoreWebUtilities<UmbrellaWebHostingEnvironment>(
 			apiIntegrationCookieAuthenticationEventsOptionsBuilder,
-			umbrellaClaimsUserAccessorOptionsOptionsBuilder,
 			umbrellaDataAccessApiControllerOptionsBuilder,
 			umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder,
 			fileAccessTokenQueryStringMiddlewareOptions);
@@ -62,7 +59,6 @@ public static class IServiceCollectionExtensions
 	/// </typeparam>
 	/// <param name="services">The services dependency injection container builder to which the services will be added.</param>
 	/// <param name="apiIntegrationCookieAuthenticationEventsOptionsBuilder">The optional <see cref="ApiIntegrationCookieAuthenticationEventsOptions"/> builder.</param>
-	/// <param name="umbrellaClaimsUserAccessorOptionsOptionsBuilder">The optional <see cref="UmbrellaClaimsUserAccessorOptions"/> builder.</param>
 	/// <param name="umbrellaDataAccessApiControllerOptionsBuilder">The optional <see cref="UmbrellaDataAccessApiControllerOptions"/> builder.</param>
 	/// <param name="umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder">The optional <see cref="UmbrellaScheduledHostedServiceWithViewSupportOptions"/> builder.</param>
 	/// <param name="fileAccessTokenQueryStringMiddlewareOptions">The optional <see cref="FileAccessTokenQueryStringMiddlewareOptions"/> builder.</param>
@@ -71,7 +67,6 @@ public static class IServiceCollectionExtensions
 	public static IServiceCollection AddUmbrellaAspNetCoreWebUtilities<TUmbrellaWebHostingEnvironment>(
 		this IServiceCollection services,
 		Action<IServiceProvider, ApiIntegrationCookieAuthenticationEventsOptions>? apiIntegrationCookieAuthenticationEventsOptionsBuilder = null,
-		Action<IServiceProvider, UmbrellaClaimsUserAccessorOptions>? umbrellaClaimsUserAccessorOptionsOptionsBuilder = null,
 		Action<IServiceProvider, UmbrellaDataAccessApiControllerOptions>? umbrellaDataAccessApiControllerOptionsBuilder = null,
 		Action<IServiceProvider, UmbrellaScheduledHostedServiceWithViewSupportOptions>? umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder = null,
 		Action<IServiceProvider, FileAccessTokenQueryStringMiddlewareOptions>? fileAccessTokenQueryStringMiddlewareOptions = null)
@@ -90,7 +85,6 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IHttpContextService, HttpContextService>();
 
 		_ = services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
-		_ = services.ConfigureUmbrellaOptions(umbrellaClaimsUserAccessorOptionsOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaDataAccessApiControllerOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(fileAccessTokenQueryStringMiddlewareOptions);

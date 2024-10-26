@@ -8,7 +8,6 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
-using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.Dating.Abstractions;
@@ -32,7 +31,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbReposi
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
@@ -40,11 +38,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext> : GenericDbReposi
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<int> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
 		IEntityValidator entityValidator,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 	}
 }
@@ -66,7 +63,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : G
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
@@ -74,11 +70,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions> : G
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<int> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
 		IEntityValidator entityValidator,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 	}
 }
@@ -102,7 +97,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
@@ -110,11 +104,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<int> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
 		IEntityValidator entityValidator,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 	}
 }
@@ -157,7 +150,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="dbContext">The database context.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="dbContextHelper">The database context helper.</param>
 	/// <param name="entityValidator">The entity validator.</param>
 	/// <param name="dateTimeProvider">The date time provider.</param>
@@ -165,11 +157,10 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		Lazy<TDbContext> dbContext,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
-		ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 		IUmbrellaDbContextHelper dbContextHelper,
 		IEntityValidator entityValidator,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor)
+		: base(dbContext, logger, lookupNormalizer)
 	{
 		DbContextHelper = dbContextHelper;
 		EntityValidator = entityValidator;

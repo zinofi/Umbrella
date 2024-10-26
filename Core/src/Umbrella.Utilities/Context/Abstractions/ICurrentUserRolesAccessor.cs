@@ -4,6 +4,7 @@
 /// Used to allow access to the roles of the current user.
 /// </summary>
 /// <typeparam name="TRole">The type of the role.</typeparam>
+[Obsolete("Please use ClaimsPrincipal.Current to access.", true)]
 public interface ICurrentUserRolesAccessor<TRole>
 	where TRole : struct, Enum
 {

@@ -3,7 +3,6 @@
 
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Dating.Abstractions;
 
@@ -22,7 +21,6 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext> : Mult
 	/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext}"/> class.
 	/// </summary>
 	/// <param name="dbContext">The database context.</param>
-	/// <param name="userAuditDataFactory"></param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="entityValidator">The entity validator.</param>
@@ -31,14 +29,13 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext> : Mult
 	/// <param name="dateTimeProvider">The date time provider.</param>
 	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
-		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		IEntityValidator entityValidator,
 		IUmbrellaDbContextHelper dbContextHelper,
 		DbAppTenantSessionContext<int> dbAppTenantSessionContext,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
 	{
 	}
 }
@@ -58,7 +55,6 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions}"/> class.
 	/// </summary>
 	/// <param name="dbContext">The database context.</param>
-	/// <param name="userAuditDataFactory"></param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="entityValidator">The entity validator.</param>
@@ -67,14 +63,13 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dateTimeProvider">The date time provider.</param>
 	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
-		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		IEntityValidator entityValidator,
 		IUmbrellaDbContextHelper dbContextHelper,
 		DbAppTenantSessionContext<int> dbAppTenantSessionContext,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
 	{
 	}
 }
@@ -96,7 +91,6 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey}"/> class.
 	/// </summary>
 	/// <param name="dbContext">The database context.</param>
-	/// <param name="userAuditDataFactory"></param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="entityValidator">The entity validator.</param>
@@ -105,14 +99,13 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dateTimeProvider">The date time provider.</param>
 	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
-		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		IEntityValidator entityValidator,
 		IUmbrellaDbContextHelper dbContextHelper,
 		DbAppTenantSessionContext<int> dbAppTenantSessionContext,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
 	{
 	}
 }
@@ -135,7 +128,6 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey}"/> class.
 	/// </summary>
 	/// <param name="dbContext">The database context.</param>
-	/// <param name="userAuditDataFactory"></param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="entityValidator">The entity validator.</param>
@@ -144,14 +136,13 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dateTimeProvider">The date time provider.</param>
 	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
-		ICurrentUserIdAccessor<int> userAuditDataFactory,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		IEntityValidator entityValidator,
 		IUmbrellaDbContextHelper dbContextHelper,
 		DbAppTenantSessionContext<int> dbAppTenantSessionContext,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, userAuditDataFactory, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, entityValidator, dbContextHelper, dbAppTenantSessionContext, dateTimeProvider)
 	{
 	}
 }
@@ -181,7 +172,6 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// Initializes a new instance of the <see cref="MultiTenantGenericDbRepository{TEntity, TDbContext, TRepoOptions, TEntityKey, TUserAuditKey, TAppTenantKey}"/> class.
 	/// </summary>
 	/// <param name="dbContext">The database context.</param>
-	/// <param name="currentUserIdAccessor">The current user identifier accessor.</param>
 	/// <param name="logger">The logger.</param>
 	/// <param name="lookupNormalizer">The lookup normalizer.</param>
 	/// <param name="entityValidator">The entity validator.</param>
@@ -190,14 +180,13 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	/// <param name="dateTimeProvider">The date time provider.</param>
 	protected MultiTenantGenericDbRepository(
 		Lazy<TDbContext> dbContext,
-		ICurrentUserIdAccessor<TUserAuditKey> currentUserIdAccessor,
 		ILogger logger,
 		IDataLookupNormalizer lookupNormalizer,
 		IEntityValidator entityValidator,
 		IUmbrellaDbContextHelper dbContextHelper,
 		DbAppTenantSessionContext<TAppTenantKey> dbAppTenantSessionContext,
 		IDateTimeProvider dateTimeProvider)
-		: base(dbContext, logger, lookupNormalizer, currentUserIdAccessor, dbContextHelper, entityValidator, dateTimeProvider)
+		: base(dbContext, logger, lookupNormalizer, dbContextHelper, entityValidator, dateTimeProvider)
 	{
 		AppTenantSessionContext = dbAppTenantSessionContext;
 	}

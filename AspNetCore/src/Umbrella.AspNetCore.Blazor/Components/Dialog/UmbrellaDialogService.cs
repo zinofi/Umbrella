@@ -16,6 +16,7 @@ using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Constants;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Shared.Extensions;
+using Umbrella.AspNetCore.Shared.Services.Abstractions;
 using Umbrella.Utilities.Http;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog;

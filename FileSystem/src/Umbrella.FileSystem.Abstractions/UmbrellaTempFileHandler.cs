@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Context.Abstractions;
 using Umbrella.Utilities.Security.Extensions;
 
 namespace Umbrella.FileSystem.Abstractions;
@@ -19,17 +19,15 @@ public class UmbrellaTempFileHandler : UmbrellaFileHandler<int>, IUmbrellaTempFi
 	/// <param name="logger">The logger.</param>
 	/// <param name="cache">The cache.</param>
 	/// <param name="cacheKeyUtility">The cache key utility.</param>
-	/// <param name="currentUserClaimsPrincipalAccessor">The current user claims principal accessor.</param>
 	/// <param name="fileProvider">The file provider.</param>
 	/// <param name="options">The options.</param>
 	public UmbrellaTempFileHandler(
 		ILogger<UmbrellaTempFileHandler> logger,
 		IHybridCache cache,
 		ICacheKeyUtility cacheKeyUtility,
-		ICurrentUserClaimsPrincipalAccessor currentUserClaimsPrincipalAccessor,
 		IUmbrellaFileStorageProvider fileProvider,
 		IUmbrellaFileStorageProviderOptions options)
-		: base(logger, cache, cacheKeyUtility, currentUserClaimsPrincipalAccessor, fileProvider, options)
+		: base(logger, cache, cacheKeyUtility, fileProvider, options)
 	{
 	}
 
@@ -49,10 +47,10 @@ public class UmbrellaTempFileHandler : UmbrellaFileHandler<int>, IUmbrellaTempFi
 			if (string.IsNullOrEmpty(fileInfoCreatedById))
 				return true;
 
-			if (CurrentUserClaimsPrincipalAccessor.CurrentPrincipal is null)
+			if (ClaimsPrincipal.Current is null)
 				return false;
 
-			string currentUserId = CurrentUserClaimsPrincipalAccessor.CurrentPrincipal.GetId<string>();
+			string currentUserId = ClaimsPrincipal.Current.GetId<string>();
 
 			if (string.IsNullOrEmpty(currentUserId))
 				return false;
