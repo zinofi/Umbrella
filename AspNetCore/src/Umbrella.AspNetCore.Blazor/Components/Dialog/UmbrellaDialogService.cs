@@ -5,6 +5,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
@@ -88,6 +89,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	private readonly IDialogTrackerService _dialogTracker;
 	private readonly IModalService _modalService;
 	private readonly IServiceProvider _serviceProvider;
+	private readonly IHttpContextService _httpContextService;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDialogService"/> class.
@@ -96,16 +98,19 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	/// <param name="dialogTracker">The dialog tracker.</param>
 	/// <param name="modalService">The modal service.</param>
 	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="httpContextService">The HTTP context service.</param>
 	public UmbrellaDialogService(
 		ILogger<UmbrellaDialogService> logger,
 		IDialogTrackerService dialogTracker,
 		IModalService modalService,
-		IServiceProvider serviceProvider)
+		IServiceProvider serviceProvider,
+		IHttpContextService httpContextService)
 	{
 		_logger = logger;
 		_dialogTracker = dialogTracker;
 		_modalService = modalService;
 		_serviceProvider = serviceProvider;
+		_httpContextService = httpContextService;
 	}
 
 	/// <inheritdoc />
@@ -390,7 +395,18 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 			{
 				static void ThrowAccessDeniedException() => throw new UnauthorizedAccessException("The current user is not permitted to access the specified dialog.");
 
-				ClaimsPrincipal? claimsPrincipal = ClaimsPrincipal.Current;
+				AuthenticationStateProvider? authenticationStateProvider = _serviceProvider.GetService<AuthenticationStateProvider>();
+
+				ClaimsPrincipal? claimsPrincipal = null;
+
+				if (authenticationStateProvider is not null)
+				{
+					var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+					claimsPrincipal = authState.User;
+				}
+
+				claimsPrincipal ??= _httpContextService.User ?? new ClaimsPrincipal(new ClaimsIdentity());
 
 				if (claimsPrincipal?.Identity?.IsAuthenticated is not true)
 					ThrowAccessDeniedException();
