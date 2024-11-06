@@ -769,7 +769,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 						url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
 						{
 #if NET8_0_OR_GREATER
-							[FiltersQueryStringParamKey] = JsonSerializer.Serialize(dicFilters, typeof(UmbrellaKeyValuePair<,>), UmbrellaKeyValuePairJsonSerializerContext.Default)
+							[FiltersQueryStringParamKey] = JsonSerializer.Serialize(dicFilters, UmbrellaKeyValuePairJsonSerializerContext.Default.IEnumerableUmbrellaKeyValuePairStringString)
 #else
 							[FiltersQueryStringParamKey] = JsonSerializer.Serialize(dicFilters, _jsonSerializerOptions)
 #endif
