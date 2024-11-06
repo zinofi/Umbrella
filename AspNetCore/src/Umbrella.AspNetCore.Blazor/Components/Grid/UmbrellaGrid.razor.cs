@@ -20,6 +20,7 @@ using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Dating;
 using Umbrella.Utilities.Dating.Json;
+using Umbrella.Utilities.Primitives;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Grid;
 
@@ -67,7 +68,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 	private enum QueryStringStateUpdateMode { None, Reset, Update }
 
+#if !NET8_0_OR_GREATER
 	private static readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
+#endif
 #pragma warning disable CA2213 // Disposable fields should be disposed
 	private readonly CancellationTokenSource _cts = new();
 #pragma warning restore CA2213 // Disposable fields should be disposed
@@ -761,11 +764,15 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 					if (lstFilters is { Count: > 0 })
 					{
-						var dicFilters = lstFilters.Where(x => !string.IsNullOrEmpty(x.MemberPath) && !string.IsNullOrEmpty(x.Value)).Select(x => new KeyValuePair<string, string>(x.MemberPath!, x.Value!));
+						var dicFilters = lstFilters.Where(x => !string.IsNullOrEmpty(x.MemberPath) && !string.IsNullOrEmpty(x.Value)).Select(x => new UmbrellaKeyValuePair<string, string>(x.MemberPath!, x.Value!));
 
 						url = Navigation.GetUriWithQueryParameters(url, new Dictionary<string, object?>
 						{
+#if NET8_0_OR_GREATER
+							[FiltersQueryStringParamKey] = JsonSerializer.Serialize(dicFilters, typeof(UmbrellaKeyValuePair<,>), UmbrellaKeyValuePairJsonSerializerContext.Default)
+#else
 							[FiltersQueryStringParamKey] = JsonSerializer.Serialize(dicFilters, _jsonSerializerOptions)
+#endif
 						});
 					}
 					else
@@ -936,13 +943,17 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 			if (filtersResult.success)
 			{
-				List<KeyValuePair<string, string>>? dicFilters = JsonSerializer.Deserialize<List<KeyValuePair<string, string>>>(filtersResult.value, _jsonSerializerOptions);
+#if NET8_0_OR_GREATER
+				List<UmbrellaKeyValuePair<string, string>>? dicFilters = JsonSerializer.Deserialize(filtersResult.value, UmbrellaKeyValuePairJsonSerializerContext.Default.ListUmbrellaKeyValuePairStringString);
+#else
+				List<UmbrellaKeyValuePair<string, string>>? dicFilters = JsonSerializer.Deserialize<List<UmbrellaKeyValuePair<string, string>>>(filtersResult.value, _jsonSerializerOptions);
+#endif
 
 				if (dicFilters is { Count: > 0 })
 				{
 					for (int i = 0; i < dicFilters.Count; i++)
 					{
-						KeyValuePair<string, string> kvp = dicFilters[i];
+						UmbrellaKeyValuePair<string, string> kvp = dicFilters[i];
 						IUmbrellaColumnDefinition<TItem>? filterableColumn = FilterableColumns?.FirstOrDefault(x => x.Filterable && (x.PropertyName?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true || x.FilterMemberPathOverride?.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase) is true));
 
 						if (filterableColumn is not null)
@@ -954,7 +965,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 							else if (filterableColumn.FilterControlType is UmbrellaColumnFilterType.DateRange)
 							{
 								// There should be another filter with the same name so we need to find that before we can assign the filter value correctly.
-								KeyValuePair<string, string> otherFilter = dicFilters.LastOrDefault(x => x.Key == kvp.Key);
+								UmbrellaKeyValuePair<string, string> otherFilter = dicFilters.LastOrDefault(x => x.Key == kvp.Key);
 
 								// If the other value can't be found, just skip it.
 								if (otherFilter is { Key: null, Value: null })
