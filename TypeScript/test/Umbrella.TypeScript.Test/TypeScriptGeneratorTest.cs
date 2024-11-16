@@ -14,7 +14,7 @@ public class TypeScriptGeneratorTest
 	{
 		var testAssembly = AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("Umbrella.TypeScript.Test"));
 
-		TypeScriptGenerator generator = new TypeScriptGenerator(new List<Assembly> { testAssembly })
+		TypeScriptGenerator generator = new TypeScriptGenerator([testAssembly])
 			.IncludeStandardGenerators()
 			.IncludeKnockoutGenerators(true);
 

@@ -22,7 +22,7 @@ public static class Log4NetExtensions
 #pragma warning disable CA2000 // Dispose objects before losing scope
 		loggerFactory.AddProvider(new Log4NetProvider(contentRootPath, configFileRelativePath));
 #pragma warning restore CA2000 // Dispose objects before losing scope
-		
+
 		return loggerFactory;
 	}
 

@@ -4,6 +4,8 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Umbrella.AspNetCore.Shared.Services.Abstractions;
+using Umbrella.AspNetCore.WebUtilities.Cookie.Abstractions;
+using Umbrella.AspNetCore.WebUtilities.Cookie;
 using Umbrella.AspNetCore.WebUtilities.Hosting;
 using Umbrella.AspNetCore.WebUtilities.Hosting.Options;
 using Umbrella.AspNetCore.WebUtilities.Identity;
@@ -83,6 +85,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
 		_ = services.AddScoped<IHttpContextService, HttpContextService>();
+		_ = services.AddScoped<IJsonCookieService, JsonCookieService>();
 
 		_ = services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaDataAccessApiControllerOptionsBuilder);

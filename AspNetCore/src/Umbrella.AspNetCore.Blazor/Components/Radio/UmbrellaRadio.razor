@@ -2,6 +2,6 @@
 @inherits UmbrellaRadioBase<TValue>
 
 <div class="u-radio @CssClass">
-	<input @attributes="AdditionalAttributes" type="radio" value="@SelectedValue" checked="@(SelectedValue.Equals(Value))" @onchange="OnValueChange" name="@GroupName" class="u-radio__input" id="@Id" />
+	<input @attributes="AdditionalAttributes" type="radio" value="@SelectedValue" checked="@(SelectedValue?.Equals(Value) is true)" @onchange="OnValueChange" name="@GroupName" class="u-radio__input" id="@Id" />
 	<label class="u-radio__label" for="@Id">@((MarkupString)Text)</label>
 </div>
