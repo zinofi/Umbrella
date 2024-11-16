@@ -1,15 +1,15 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
+
 #if !AZUREDEVOPS
 using Microsoft.Extensions.Configuration;
 #endif
-using Umbrella.AzureServiceBus;
 using Umbrella.AzureServiceBus.Abstractions;
 using Umbrella.AzureServiceBus.Plugins;
 using Umbrella.Internal.Mocks;
 using Xunit;
 
-namespace Hawcroft.RiskManagementSystem.Logic.Test.Umbrella.AzureServiceBus;
+namespace Umbrella.AzureServiceBus.Test;
 
 public class UmbrellaAzureServiceBusClientTest
 {
