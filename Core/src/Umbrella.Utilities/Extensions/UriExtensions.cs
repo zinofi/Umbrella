@@ -34,7 +34,7 @@ public static class UriExtensions
 
             if (typeof(T) == typeof(double) && double.TryParse(valueFromQueryString, out double valueAsDouble))
             {
-                var value = (T)(object)valueAsDouble;
+				var value = (T)(object)valueAsDouble;
                 return (true, value);
             }
 
