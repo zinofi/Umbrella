@@ -24,9 +24,9 @@ public class UmbrellaMapper : IUmbrellaMapper
 	private readonly ILogger _logger;
 	private readonly UmbrellaMapperOptions _options;
 	private readonly IServiceProvider _serviceProvider;
-	private readonly Dictionary<(Type, Type), Func<object>> _newInstanceMapperDictionary = [];
-	private readonly Dictionary<(Type, Type), Func<object>> _newCollectionmapperDictionary = [];
-	private readonly Dictionary<(Type, Type), Func<object>> _existingInstanceMapperDictionary = [];
+	private readonly Dictionary<(Type, Type), object> _newInstanceMapperDictionary = [];
+	private readonly Dictionary<(Type, Type), object> _newCollectionmapperDictionary = [];
+	private readonly Dictionary<(Type, Type), object> _existingInstanceMapperDictionary = [];
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaMapper"/> class.
@@ -50,7 +50,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 		foreach (Type type in assembliesToScan.SelectMany(x => x.GetExportedTypes()))
 		{
-			void PopulateMapperCache(Type type, Type interfaceType, Dictionary<(Type, Type), Func<object>> cache)
+			void PopulateMapperCache(Type type, Type interfaceType, Dictionary<(Type, Type), object> cache)
 			{
 				Type[] mapperlyInterfaces = type.GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == interfaceType).ToArray();
 
@@ -64,14 +64,14 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 					var key = (param1, param2);
 
-					if (cache.TryGetValue(key, out Func<object>? value))
+					if (cache.TryGetValue(key, out object? value))
 					{
 						Type existingType = value.GetType().GenericTypeArguments[0];
 
 						throw new InvalidOperationException($"A registration already exists for the source and destination types. The type being registered is {existingType.FullName} but the type named {type.FullName} has already been registered.");
 					}
 
-					cache.Add(key, () => ActivatorUtilities.CreateInstance(_serviceProvider, type));
+					cache.Add(key, ActivatorUtilities.CreateInstance(_serviceProvider, type));
 				}
 			}
 
@@ -126,7 +126,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			var key = (param1, param2);
 
-			if (!_newInstanceMapperDictionary.TryGetValue(key, out Func<object>? value))
+			if (!_newInstanceMapperDictionary.TryGetValue(key, out object? value))
 			{
 				var (isEnumerable, _) = param1.GetIEnumerableTypeData();
 
@@ -141,8 +141,8 @@ public class UmbrellaMapper : IUmbrellaMapper
 				throw new InvalidOperationException($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found when trying to map to a new instance.");
 			}
 
-			if (value is Func<IUmbrellaMapperlyNewInstanceMapper<TSource, TDestination>> mapper)
-				return new ValueTask<TDestination>(mapper().Map(source));
+			if (value is IUmbrellaMapperlyNewInstanceMapper<TSource, TDestination> mapper)
+				return new ValueTask<TDestination>(mapper.Map(source));
 
 			throw new InvalidOperationException("A mapper for the specified source and destination types could not be found.");
 		}
@@ -168,12 +168,12 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			var key = (param1, param2);
 
-			if (!_existingInstanceMapperDictionary.TryGetValue(key, out Func<object>? value))
+			if (!_existingInstanceMapperDictionary.TryGetValue(key, out object? value))
 				throw new InvalidOperationException($"A mapper implementation for the specified source type {param1.FullName} and destination type {param2.FullName} cannot be found when trying to map to an existing instance.");
 
-			if (value is Func<IUmbrellaMapperlyExistingInstanceMapper<TSource, TDestination>> mapper)
+			if (value is IUmbrellaMapperlyExistingInstanceMapper<TSource, TDestination> mapper)
 			{
-				mapper().Map(source, destination);
+				mapper.Map(source, destination);
 
 				return new ValueTask<TDestination>(destination);
 			}
@@ -262,11 +262,11 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			var key = (elementType, param2);
 
-			if (!_newCollectionmapperDictionary.TryGetValue(key, out Func<object>? value))
+			if (!_newCollectionmapperDictionary.TryGetValue(key, out object? value))
 				throw new InvalidOperationException($"A mapper implementation for the specified source type {elementType.FullName} and destination type {param2.FullName} cannot be found when trying to map to a new collection.");
 
-			if (value is Func<IUmbrellaMapperlyNewCollectionMapper<TSource, TDestination>> mapper)
-				return new ValueTask<IReadOnlyCollection<TDestination>>(mapper().MapAll(source));
+			if (value is IUmbrellaMapperlyNewCollectionMapper<TSource, TDestination> mapper)
+				return new ValueTask<IReadOnlyCollection<TDestination>>(mapper.MapAll(source));
 
 			throw new InvalidOperationException("A mapper for the specified source and destination types could not be found.");
 		}
