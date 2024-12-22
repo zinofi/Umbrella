@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 using Umbrella.DataAnnotations;
+using Umbrella.TypeScript.Annotations.Enumerations;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript.Generators;

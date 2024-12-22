@@ -581,9 +581,6 @@ public class UmbrellaFileProviderTest
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
 
-		//Read the file into memory and cache for our comparison
-		_ = await copy.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
-
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
@@ -619,9 +616,6 @@ public class UmbrellaFileProviderTest
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
-
-		//Read the file into memory and cache for our comparison
-		_ = await copy.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
@@ -661,9 +655,6 @@ public class UmbrellaFileProviderTest
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
-
-		//Read the file into memory and cache for our comparison
-		_ = await copy.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
@@ -708,9 +699,6 @@ public class UmbrellaFileProviderTest
 		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
 		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
 
-		//Read the file into memory and cache for our comparison
-		_ = await copy.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
-
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
@@ -753,9 +741,6 @@ public class UmbrellaFileProviderTest
 		Assert.Equal(bytes.Length, copy.Length);
 		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
 		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
-
-		//Read the file into memory and cache for our comparison
-		_ = await copy.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
@@ -802,9 +787,6 @@ public class UmbrellaFileProviderTest
 		Assert.Equal(bytes.Length, copy.Length);
 		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
 		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
-
-		//Read the file into memory and cache for our comparison
-		_ = await copy.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
@@ -912,9 +894,6 @@ public class UmbrellaFileProviderTest
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
 
-		//Read the file into memory and cache for our comparison
-		_ = await move.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
-
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
@@ -950,9 +929,6 @@ public class UmbrellaFileProviderTest
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
-
-		//Read the file into memory and cache for our comparison
-		_ = await move.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
@@ -992,9 +968,6 @@ public class UmbrellaFileProviderTest
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
-
-		//Read the file into memory and cache for our comparison
-		_ = await move.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
@@ -1039,9 +1012,6 @@ public class UmbrellaFileProviderTest
 		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
 		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
 
-		//Read the file into memory and cache for our comparison
-		_ = await move.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
-
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
@@ -1084,9 +1054,6 @@ public class UmbrellaFileProviderTest
 		Assert.Equal(bytes.Length, move.Length);
 		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
 		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
-
-		//Read the file into memory and cache for our comparison
-		_ = await move.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
@@ -1133,9 +1100,6 @@ public class UmbrellaFileProviderTest
 		Assert.Equal(bytes.Length, move.Length);
 		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
 		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
-
-		//Read the file into memory and cache for our comparison
-		_ = await move.ReadAsByteArrayAsync(cacheContents: true).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
@@ -1226,7 +1190,7 @@ public class UmbrellaFileProviderTest
 		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/tempfolder/{TestFileName}";
-		_ = await provider.SaveAsync(subpath, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
 
 		await provider.DeleteDirectoryAsync("/tempfolder").ConfigureAwait(true);
 
@@ -1248,20 +1212,20 @@ public class UmbrellaFileProviderTest
 		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
 
 		string subpath = $"/images/{TestFileName}";
-		_ = await provider.SaveAsync(subpath, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
 
 		// Now create another 2 file in a nested subdirectories
 		string downLevelSubPath1 = $"/images/sub-images/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath1, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath1, bytes).ConfigureAwait(true);
 
 		string downLevelSubPath2 = $"/images/sub-images/nested/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath2, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath2, bytes).ConfigureAwait(true);
 
 		string downLevelSubPath3 = $"/images/sub-images/nested2/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath3, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath3, bytes).ConfigureAwait(true);
 
 		string downLevelSubPath4 = $"/images/sub-images/nested2/nestedmore/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath4, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath4, bytes).ConfigureAwait(true);
 
 		// Now delete only the down level file directory, i.e. /images/sub-images
 		// which should also delete the nested directory
@@ -1292,14 +1256,14 @@ public class UmbrellaFileProviderTest
 		byte[] bytes = await File.ReadAllBytesAsync(physicalPath).ConfigureAwait(true);
 
 		string subpath = $"/images/{TestFileName}";
-		_ = await provider.SaveAsync(subpath, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
 
 		// Now create another 2 files in a subdirectory
 		string downLevelSubPath1 = $"/images/sub-images/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath1, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath1, bytes).ConfigureAwait(true);
 
 		string downLevelSubPath2 = $"/images/sub-images/the-other-file.png";
-		_ = await provider.SaveAsync(downLevelSubPath2, bytes, false).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath2, bytes).ConfigureAwait(true);
 
 		// Now enumerate the files
 		var topLevelResults = await provider.EnumerateDirectoryAsync("/images").ConfigureAwait(true);

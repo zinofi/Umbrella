@@ -6,6 +6,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Extensions;
+using Umbrella.Utilities.Imaging.Abstractions;
 
 namespace Umbrella.Utilities.Imaging;
 

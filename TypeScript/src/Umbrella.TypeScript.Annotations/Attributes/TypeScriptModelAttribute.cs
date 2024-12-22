@@ -1,4 +1,6 @@
-﻿namespace Umbrella.TypeScript;
+﻿using Umbrella.TypeScript.Annotations.Enumerations;
+
+namespace Umbrella.TypeScript.Annotations.Attributes;
 
 /// <summary>
 /// Used to mark models (classes or interfaces) to be output by the TypeScript generator.

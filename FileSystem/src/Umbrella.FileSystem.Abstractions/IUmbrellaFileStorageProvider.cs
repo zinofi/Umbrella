@@ -78,11 +78,10 @@ public interface IUmbrellaFileStorageProvider
 	/// </summary>
 	/// <param name="subpath">The subpath.</param>
 	/// <param name="bytes">The bytes.</param>
-	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The saved file.</returns>
-	Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
+	Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Saves the file content from the Stream to the specified <paramref name="subpath"/>.

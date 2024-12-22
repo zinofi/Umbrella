@@ -18,7 +18,6 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 {
 	#region Private Members
 	private readonly string _metadataFullFileName;
-	private byte[]? _contents;
 	private Dictionary<string, string>? _metadataDictionary;
 	#endregion
 
@@ -258,7 +257,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 	}
 
 	/// <inheritdoc />
-	public async Task<byte[]> ReadAsByteArrayAsync(bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	public async Task<byte[]> ReadAsByteArrayAsync(int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -268,9 +267,6 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (cacheContents && _contents is not null)
-				return _contents;
-
 			byte[] bytes = new byte[PhysicalFileInfo.Length];
 
 			using (var fs = new FileStream(PhysicalFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSizeOverride ?? UmbrellaFileSystemConstants.SmallBufferSize, true))
@@ -282,11 +278,9 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 #endif
 			}
 
-			_contents = cacheContents ? bytes : null;
-
 			return bytes;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}
@@ -316,7 +310,7 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 	}
 
 	/// <inheritdoc />
-	public async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	public async Task WriteFromByteArrayAsync(byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(bytes);
@@ -341,10 +335,9 @@ public record UmbrellaDiskFileInfo : IUmbrellaFileInfo
 #endif
 			}
 
-			_contents = cacheContents ? bytes : null;
 			IsNew = false;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException(exc.Message, exc);
 		}

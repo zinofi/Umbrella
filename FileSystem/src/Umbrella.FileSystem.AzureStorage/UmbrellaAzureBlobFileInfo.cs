@@ -20,7 +20,6 @@ namespace Umbrella.FileSystem.AzureStorage;
 public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 {
 	#region Private Members
-	private byte[]? _content;
 	private long _length = -1;
 	private string? _contentType;
 	private BlobProperties? _blobProperties;
@@ -159,7 +158,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<byte[]> ReadAsByteArrayAsync(bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	public virtual async Task<byte[]> ReadAsByteArrayAsync(int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		ThrowIfIsNew();
@@ -169,9 +168,6 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 
 		try
 		{
-			if (cacheContents && _content is not null)
-				return _content;
-
 			if (!await ExistsAsync(cancellationToken).ConfigureAwait(false))
 				throw new UmbrellaFileNotFoundException(SubPath);
 
@@ -182,11 +178,9 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 
 			byte[] bytes = ms.ToArray();
 
-			_content = cacheContents ? bytes : null;
-
 			return bytes;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem reading the file to a byte array.", exc);
 		}
@@ -213,7 +207,7 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 	}
 
 	/// <inheritdoc />
-	public virtual async Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	public virtual async Task WriteFromByteArrayAsync(byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(bytes);
@@ -226,10 +220,8 @@ public record UmbrellaAzureBlobFileInfo : IUmbrellaFileInfo
 		{
 			using var ms = new MemoryStream(bytes);
 			await WriteFromStreamAsync(ms, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
-
-			_content = cacheContents ? bytes : null;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { cacheContents, bufferSizeOverride }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem writing to the file from the specified bytes.", exc);
 		}

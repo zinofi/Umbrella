@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Imaging.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 
 namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;

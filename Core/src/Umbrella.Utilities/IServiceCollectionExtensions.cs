@@ -30,6 +30,7 @@ using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Extensions;
 using Umbrella.Utilities.Http.Options;
 using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Imaging.Abstractions;
 using Umbrella.Utilities.Mapping;
 using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Mime;

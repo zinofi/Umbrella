@@ -65,7 +65,7 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 			ReadOnlyMemory<byte> bytes = await dynamicImage.GetContentAsync(cancellationToken).ConfigureAwait(false);
 
 			if (bytes.Length > 0)
-				_ = await FileProvider.SaveAsync(subPath, bytes.ToArray(), false, cancellationToken: cancellationToken).ConfigureAwait(false);
+				_ = await FileProvider.SaveAsync(subPath, bytes.ToArray(), cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { dynamicImage.ImageOptions }))
 		{

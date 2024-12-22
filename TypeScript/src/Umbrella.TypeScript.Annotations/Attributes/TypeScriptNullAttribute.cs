@@ -1,4 +1,4 @@
-﻿namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript.Annotations.Attributes;
 
 /// <summary>
 /// When the TypeScriptPropertyMode is set to 'Model', this is used to ensure that the property value in the generated TypeScript model is always set to <see langword="null"/>

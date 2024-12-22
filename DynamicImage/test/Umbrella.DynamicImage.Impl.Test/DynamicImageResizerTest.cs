@@ -168,7 +168,7 @@ public class DynamicImageResizerTest
 		byte[] bytes = Convert.FromBase64String(base64Image);
 
 		var fileMock = new Mock<IUmbrellaFileInfo>();
-		_ = fileMock.Setup(x => x.ReadAsByteArrayAsync(true, null, default)).Returns(Task.FromResult(bytes));
+		_ = fileMock.Setup(x => x.ReadAsByteArrayAsync(null, default)).Returns(Task.FromResult(bytes));
 		_ = fileMock.Setup(x => x.LastModified).Returns(DateTimeOffset.UtcNow);
 		_ = fileMock.Setup(x => x.ExistsAsync(default)).Returns(Task.FromResult(true));
 		_ = fileMock.Setup(x => x.Length).Returns(bytes.LongLength);

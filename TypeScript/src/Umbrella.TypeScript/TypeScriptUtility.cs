@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using Umbrella.TypeScript.Annotations.Attributes;
+using Umbrella.TypeScript.Annotations.Enumerations;
 using Umbrella.Utilities.Extensions;
 
 namespace Umbrella.TypeScript;

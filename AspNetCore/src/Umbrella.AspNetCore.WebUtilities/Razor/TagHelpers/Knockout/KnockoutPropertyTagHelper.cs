@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Umbrella.WebUtilities.Exceptions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.TagHelpers.Knockout;
+namespace Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers.Knockout;
 
 /// <summary>
 /// A tag helper that output Knockout bindings inside the 'data-bind' attribute.

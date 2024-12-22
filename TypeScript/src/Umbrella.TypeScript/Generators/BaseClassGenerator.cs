@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Text;
+using Umbrella.TypeScript.Annotations.Enumerations;
 
 namespace Umbrella.TypeScript.Generators;
 

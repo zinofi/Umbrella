@@ -281,7 +281,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IUmbrellaFileInfo> SaveAsync(string subpath, byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(subpath);
@@ -289,12 +289,8 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 
 		try
 		{
-			IUmbrellaFileInfo? file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
-
-			if (file is null)
-				throw new UmbrellaFileNotFoundException(subpath);
-
-			await file.WriteFromByteArrayAsync(bytes, cacheContents, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
+			IUmbrellaFileInfo? file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false) ?? throw new UmbrellaFileNotFoundException(subpath);
+			await file.WriteFromByteArrayAsync(bytes, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 
 			return file;
 		}
@@ -313,11 +309,7 @@ public abstract class UmbrellaFileStorageProvider<TFileInfo, TOptions>
 
 		try
 		{
-			IUmbrellaFileInfo? file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false);
-
-			if (file is null)
-				throw new UmbrellaFileNotFoundException(subpath);
-
+			IUmbrellaFileInfo? file = await CreateAsync(subpath, cancellationToken).ConfigureAwait(false) ?? throw new UmbrellaFileNotFoundException(subpath);
 			await file.WriteFromStreamAsync(stream, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
 
 			return file;

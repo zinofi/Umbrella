@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 using Umbrella.TypeScript.Annotations.Attributes;
+using Umbrella.TypeScript.Annotations.Enumerations;
 using Umbrella.TypeScript.Generators.Abstractions;
 
 namespace Umbrella.TypeScript.Generators;

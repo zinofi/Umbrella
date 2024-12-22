@@ -73,6 +73,7 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// <param name="groupId">The group identifier.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The web relative path to the file if one exists; otherwise <see langword="null"/>.</returns>
+	[Obsolete("This method is not recommended for use and will be removed in a future version as it can negatively impact performance.")]
 	Task<string?> GetMostRecentUrlByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken = default);
 
 	/// <summary>
@@ -142,11 +143,10 @@ public interface IUmbrellaFileHandler<TGroupId> : IUmbrellaFileAuthorizationHand
 	/// <param name="groupId">The group id.</param>
 	/// <param name="fileName">The file name.</param>
 	/// <param name="bytes">The bytes.</param>
-	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The saved file.</returns>
-	Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
+	Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Gets the file from the underlying storage provider.

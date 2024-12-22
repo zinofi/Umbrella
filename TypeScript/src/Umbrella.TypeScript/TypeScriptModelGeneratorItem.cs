@@ -1,4 +1,6 @@
-﻿namespace Umbrella.TypeScript;
+﻿using Umbrella.TypeScript.Annotations.Attributes;
+
+namespace Umbrella.TypeScript;
 
 /// <summary>
 /// Represents an input type used by the TypeScript generator.

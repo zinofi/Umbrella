@@ -5,7 +5,7 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Constants;
-using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Imaging.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
 

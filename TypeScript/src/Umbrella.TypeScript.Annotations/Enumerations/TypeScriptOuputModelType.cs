@@ -1,4 +1,4 @@
-﻿namespace Umbrella.TypeScript;
+﻿namespace Umbrella.TypeScript.Annotations.Enumerations;
 
 /// <summary>
 /// The type of the model that will be generated. Flags can be used to specify multiple types.

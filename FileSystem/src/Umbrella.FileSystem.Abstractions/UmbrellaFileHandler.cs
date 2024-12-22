@@ -67,6 +67,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	}
 
 	/// <inheritdoc />
+	[Obsolete("This method is not recommended for use and will be removed in a future version as it can negatively impact performance.")]
 	public async Task<string?> GetMostRecentUrlByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
@@ -145,6 +146,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 
 			IUmbrellaFileInfo fileInfo = await FileProvider.MoveAsync(tempPath, permPath, cancellationToken).ConfigureAwait(false);
 
+			await AfterSavingAsync(fileInfo, groupId, cancellationToken).ConfigureAwait(false);
 			await ApplyPermissionsAsync(fileInfo, groupId, true, cancellationToken).ConfigureAwait(false);
 
 			return GetWebFilePath(permFileName, groupId);
@@ -202,6 +204,7 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	public virtual async Task ApplyPermissionsAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, bool writeChanges = true, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(fileInfo);
 
 		try
 		{
@@ -218,17 +221,21 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 	}
 
 	/// <inheritdoc />
-	public async Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
+	public async Task<IUmbrellaFileInfo> SaveAsync(TGroupId groupId, string fileName, byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
 		try
 		{
 			string subPath = GetFilePath(fileName, groupId);
-			
-			return await FileProvider.SaveAsync(subPath, bytes, cacheContents, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
+
+			IUmbrellaFileInfo fileInfo = await FileProvider.SaveAsync(subPath, bytes, bufferSizeOverride, cancellationToken).ConfigureAwait(false);
+
+			await AfterSavingAsync(fileInfo, groupId, cancellationToken).ConfigureAwait(false);
+
+			return fileInfo;
 		}
-		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName, cacheContents, bufferSizeOverride }))
+		catch (Exception exc) when (Logger.WriteError(exc, new { groupId, fileName, bufferSizeOverride }))
 		{
 			throw new UmbrellaFileSystemException("There has been a problem saving the file.", exc);
 		}
@@ -251,6 +258,21 @@ public abstract class UmbrellaFileHandler<TGroupId> : IUmbrellaFileHandler<TGrou
 		}
 	}
 
+	/// <summary>
+	/// Called after the file has been saved. This method is called after the file write operation has been completed when the following methods are called:
+	/// <list type="bullet">
+	/// <item><see cref="CreateByGroupIdAndTempFileNameAsync(TGroupId, string, string?, CancellationToken)"/></item>
+	/// <item><see cref="SaveAsync(TGroupId, string, byte[], int?, CancellationToken)"/></item>
+	/// </list>
+	/// This allows for any additional processing to be performed after the file has been saved, e.g. resizing an image.
+	/// </summary>
+	/// <param name="fileInfo">The file.</param>
+	/// <param name="groupId">The group identifier.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that represents the asynchronous operation.</returns>
+	protected virtual Task AfterSavingAsync(IUmbrellaFileInfo fileInfo, TGroupId groupId, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+	[Obsolete("This method is not recommended for use and will be removed in a future version as it can negatively impact performance.")]
 	private async Task<IUmbrellaFileInfo?> GetMostRecentExistingFileByGroupIdAsync(TGroupId groupId, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();

@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.DataAccess.EntityFrameworkCore.Repositories;
+using Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Repositories;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;

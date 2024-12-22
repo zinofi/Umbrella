@@ -9,6 +9,7 @@ using Umbrella.Utilities.Caching.Options;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Imaging.Abstractions;
 using Umbrella.Utilities.Mime.Abstractions;
 using Umbrella.Utilities.TypeConverters.Abstractions;
 

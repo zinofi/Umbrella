@@ -1,4 +1,6 @@
-﻿namespace Umbrella.TypeScript.Generators;
+﻿using Umbrella.TypeScript.Annotations.Enumerations;
+
+namespace Umbrella.TypeScript.Generators;
 
 /// <summary>
 /// A TypeScript generator implementation for generating POTO classes.

@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Umbrella.DataAnnotations;
 using Umbrella.TypeScript.Annotations.Attributes;
+using Umbrella.TypeScript.Annotations.Enumerations;
 using Xunit;
 
 namespace Umbrella.TypeScript.Test;

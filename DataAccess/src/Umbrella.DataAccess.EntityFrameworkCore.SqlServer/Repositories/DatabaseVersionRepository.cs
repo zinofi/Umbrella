@@ -4,7 +4,7 @@ using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Extensions;
 
-namespace Umbrella.DataAccess.EntityFrameworkCore.Repositories;
+namespace Umbrella.DataAccess.EntityFrameworkCore.SqlServer.Repositories;
 
 /// <summary>
 /// A repository used to access database version information for the specified <typeparamref name="TDbContext"/>.

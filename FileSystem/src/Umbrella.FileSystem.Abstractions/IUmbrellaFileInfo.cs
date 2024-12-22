@@ -49,11 +49,10 @@ public interface IUmbrellaFileInfo
 	/// <summary>
 	/// Reads the file content as a byte array.
 	/// </summary>
-	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The file content as byte array.</returns>
-	Task<byte[]> ReadAsByteArrayAsync(bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
+	Task<byte[]> ReadAsByteArrayAsync(int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Writes the content of the file to the specified target stream.
@@ -68,11 +67,10 @@ public interface IUmbrellaFileInfo
 	/// Writes to the file using the specified byte array.
 	/// </summary>
 	/// <param name="bytes">The bytes.</param>
-	/// <param name="cacheContents">if <see langword="true" />, the byte array is stored internally and re-used the next time this method is called.</param>
 	/// <param name="bufferSizeOverride">The buffer size override.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An awaitable <see cref="Task"/> which completes when the operation has been completed.</returns>
-	Task WriteFromByteArrayAsync(byte[] bytes, bool cacheContents = true, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
+	Task WriteFromByteArrayAsync(byte[] bytes, int? bufferSizeOverride = null, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Writes to the file by reading from the specified stream.

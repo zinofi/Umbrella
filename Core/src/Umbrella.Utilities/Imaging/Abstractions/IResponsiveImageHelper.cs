@@ -1,4 +1,4 @@
-﻿namespace Umbrella.Utilities.Imaging;
+﻿namespace Umbrella.Utilities.Imaging.Abstractions;
 
 /// <summary>
 /// A helper used to support the generation of responsive images.

@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Imaging.Abstractions;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 

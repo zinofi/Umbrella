@@ -1,4 +1,6 @@
-﻿namespace Umbrella.TypeScript.Generators.Abstractions;
+﻿using Umbrella.TypeScript.Annotations.Enumerations;
+
+namespace Umbrella.TypeScript.Generators.Abstractions;
 
 /// <summary>
 /// Specifies the behaviour of a TypeScript generator.
