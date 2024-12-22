@@ -94,8 +94,11 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 	[Inject]
 	private NavigationManager Navigation { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
+	/// <summary>
+	/// Gets or sets the options.
+	/// </summary>
 	[Inject]
-	private UmbrellaGridOptions Options { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
+	protected UmbrellaGridOptions Options { get; private set; } = null!;
 
 	[Inject]
 	private Lazy<IBrowserEventAggregator> BrowserEventAggregator { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;

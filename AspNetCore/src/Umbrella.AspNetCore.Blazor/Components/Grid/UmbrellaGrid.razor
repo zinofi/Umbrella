@@ -25,12 +25,12 @@
                 <form id="@filterContainerId" class="collapse @(ExpandFiltersOnLoad ? "show" : "")" method="get" novalidate>
                     @if (FilterableColumns is { Count: > 0 })
                     {
-                        <div class="row">
+                        <div class="@(Options.UseBootstrapCssGrid ? "grid" : "row")">
                             @foreach (var column in FilterableColumns!)
                             {
                                 string id = Guid.NewGuid().ToString("N");
 
-                                <div class="col-md-4">
+                                <div class="@(Options.UseBootstrapCssGrid ? "g-" : "")col-md-4">
 
                                     @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
                                     {
@@ -137,7 +137,7 @@
 
                     @if (AdditionalFilterContent is not null)
                     {
-                        <div class="row">
+                        <div class="@(Options.UseBootstrapCssGrid ? "grid" : "row")">
                             @AdditionalFilterContent
                         </div>
                     }

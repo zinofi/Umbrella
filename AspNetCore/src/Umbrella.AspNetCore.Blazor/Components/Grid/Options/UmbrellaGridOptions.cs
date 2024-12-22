@@ -9,4 +9,9 @@ public class UmbrellaGridOptions
 	/// Specifies whether support for Search Option state is enabled.
 	/// </summary>
 	public bool IsSearchOptionStateEnabled { get; set; }
+
+	/// <summary>
+	/// Specifies whether the Bootstrap CSS Grid should be used.
+	/// </summary>
+	public bool UseBootstrapCssGrid { get; set; }
 }
