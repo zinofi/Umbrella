@@ -16,7 +16,6 @@ namespace Umbrella.DynamicImage.Abstractions;
 /// <seealso cref="IDynamicImageResizer" />
 public abstract class DynamicImageResizerBase : IDynamicImageResizer
 {
-	#region Protected Properties		
 	/// <summary>
 	/// Gets the log.
 	/// </summary>
@@ -26,9 +25,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	/// Gets the cache.
 	/// </summary>
 	protected IDynamicImageCache Cache { get; }
-	#endregion
 
-	#region Constructors		
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageResizerBase"/> class.
 	/// </summary>
@@ -41,34 +38,46 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 		Logger = logger;
 		Cache = dynamicImageCache;
 	}
-	#endregion
 
-	#region IDynamicImageResizer Members
+	/// <inheritdoc />
+	public async Task<DynamicImageItem?> GetCachedItemAsync(IUmbrellaFileInfo sourceFile, DynamicImageOptions options, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(sourceFile);
+
+		try
+		{
+			if (!sourceFile.LastModified.HasValue)
+				throw new UmbrellaDynamicImageException("The fileInfo must have a last modified value.");
+
+			return await Cache.GetAsync(options, sourceFile.LastModified.Value, options.Format.ToFileExtensionString(), cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && exc is not UmbrellaDynamicImageException)
+		{
+			throw new UmbrellaDynamicImageException("An error has occurred trying to find the cached item.", exc, options);
+		}
+	}
+
 	/// <inheritdoc />
 	public async Task<DynamicImageItem?> GenerateImageAsync(IUmbrellaFileStorageProvider sourceFileProvider, DynamicImageOptions options, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(sourceFileProvider, nameof(sourceFileProvider));
+		Guard.IsNotNull(sourceFileProvider);
 
 		try
 		{
 			var fileInfo = await sourceFileProvider.GetAsync(options.SourcePath, cancellationToken).ConfigureAwait(false);
 
-			if (fileInfo is null)
+			if (fileInfo is null || !await fileInfo.ExistsAsync(cancellationToken).ConfigureAwait(false))
 				return null;
 
-			if (await fileInfo.ExistsAsync(cancellationToken).ConfigureAwait(false))
-			{
-				return !fileInfo.LastModified.HasValue
-					? throw new UmbrellaDynamicImageException("The fileInfo must have a last modified value.")
-					: await GenerateImageAsync(async () => await fileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false),
-					fileInfo.LastModified.Value,
-					options,
-					cancellationToken)
-					.ConfigureAwait(false);
-			}
-
-			return null;
+			return !fileInfo.LastModified.HasValue
+				? throw new UmbrellaDynamicImageException("The fileInfo must have a last modified value.")
+				: await GenerateImageAsync(async () => await fileInfo.ReadAsByteArrayAsync(cancellationToken: cancellationToken).ConfigureAwait(false),
+				fileInfo.LastModified.Value,
+				options,
+				cancellationToken)
+				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { options }) && exc is not UmbrellaDynamicImageException)
 		{
@@ -84,6 +93,9 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 		try
 		{
+			// TODO: Consider building in stampede protection in this method for use cases where this method is called multiple times in quick succession.
+			// We have implemented stampede protection in the ASP.NET Core middleware already.
+
 			if (Logger.IsEnabled(LogLevel.Debug))
 				Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
 
@@ -137,9 +149,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 	/// <inheritdoc />
 	public abstract (int width, int height) GetImageDimensions(byte[] bytes);
-	#endregion
 
-	#region Protected Methods		
 	/// <summary>
 	/// Gets the destination dimensions.
 	/// </summary>
@@ -243,9 +253,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 
 		return (width, height, offsetX, offsetY, cropWidth, cropHeight);
 	}
-	#endregion
 
-	#region Private Methods
 	private static (int width, int height) CalculateOutputDimensions(int nInputWidth, int nInputHeight, int? nRequestedWidth, int? nRequestedHeight)
 	{
 		// both width and height are specified - squash image
@@ -270,5 +278,4 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			throw new UmbrellaDynamicImageException("Width or height, or both, must be specified");
 		}
 	}
-	#endregion
 }

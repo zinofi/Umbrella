@@ -61,4 +61,13 @@ public interface IDynamicImageResizer
 	/// <param name="bytes">The bytes.</param>
 	/// <returns>The width and height of the image in pixels.</returns>
 	(int width, int height) GetImageDimensions(byte[] bytes);
+
+	/// <summary>
+	/// Gets the cached item if it exists.
+	/// </summary>
+	/// <param name="sourceFile">The source file.</param>
+	/// <param name="options">The options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The cached image item.</returns>
+	Task<DynamicImageItem?> GetCachedItemAsync(IUmbrellaFileInfo sourceFile, DynamicImageOptions options, CancellationToken cancellationToken = default);
 }

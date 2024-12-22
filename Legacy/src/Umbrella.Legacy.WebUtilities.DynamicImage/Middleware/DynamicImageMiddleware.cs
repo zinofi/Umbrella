@@ -16,6 +16,7 @@ namespace Umbrella.Legacy.WebUtilities.DynamicImage.Middleware;
 /// are determined by parsing the incoming request URL.
 /// </summary>
 /// <seealso cref="OwinMiddleware" />
+// TODO: This has become out of sync with the ASP.NET Core version. Need to update this to match the new version.
 public class DynamicImageMiddleware : OwinMiddleware
 {
 	#region Private Members

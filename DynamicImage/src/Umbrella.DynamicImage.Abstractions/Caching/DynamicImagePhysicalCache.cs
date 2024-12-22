@@ -84,10 +84,10 @@ public abstract class DynamicImagePhysicalCache<TFileProvider> : DynamicImageCac
 
 			string subPath = GetSubPath(cacheKey, fileExtension);
 
-			//Find the cached file
+			// Find the cached file
 			IUmbrellaFileInfo? fileInfo = await FileProvider.GetAsync(subPath, cancellationToken).ConfigureAwait(false);
 
-			//No cached image available
+			// No cached image available
 			if (fileInfo is null)
 				return null;
 

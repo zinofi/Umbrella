@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using CommunityToolkit.Diagnostics;
+﻿using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
@@ -19,9 +16,8 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Middleware;
 /// Middleware that is used to return a dynamically resized version of a source image. The source image and resizing options
 /// are determined by parsing the incoming request URL.
 /// </summary>
-public class DynamicImageMiddleware
+public class DynamicImageMiddleware : IDisposable
 {
-	#region Private Members
 	private readonly RequestDelegate _next;
 	private readonly ILogger _log;
 	private readonly IDynamicImageUtility _dynamicImageUtility;
@@ -29,9 +25,9 @@ public class DynamicImageMiddleware
 	private readonly IHttpHeaderValueUtility _headerValueUtility;
 	private readonly IMimeTypeUtility _mimeTypeUtility;
 	private readonly DynamicImageMiddlewareOptions _options;
-	#endregion
+	private readonly SemaphoreSlim? _requestConcurrencySemaphore;
+	private bool _disposedValue;
 
-	#region Constructors		
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageMiddleware"/> class.
 	/// </summary>
@@ -51,6 +47,8 @@ public class DynamicImageMiddleware
 		IMimeTypeUtility mimeTypeUtility,
 		DynamicImageMiddlewareOptions options)
 	{
+		Guard.IsNotNull(options);
+
 		_next = next;
 		_log = logger;
 		_dynamicImageUtility = dynamicImageUtility;
@@ -58,10 +56,11 @@ public class DynamicImageMiddleware
 		_headerValueUtility = headerValueUtility;
 		_mimeTypeUtility = mimeTypeUtility;
 		_options = options;
-	}
-	#endregion
 
-	#region Public Methods						
+		if (_options.MaxConcurrentResizingRequests > 0)
+			_requestConcurrencySemaphore = new SemaphoreSlim(_options.MaxConcurrentResizingRequests);
+	}
+
 	/// <summary>
 	/// Process an individual request.
 	/// </summary>
@@ -70,9 +69,6 @@ public class DynamicImageMiddleware
 	{
 		Guard.IsNotNull(context);
 		context.RequestAborted.ThrowIfCancellationRequested();
-
-		var cts = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
-		CancellationToken token = cts.Token;
 
 		try
 		{
@@ -107,19 +103,14 @@ public class DynamicImageMiddleware
 
 			var (status, imageOptions) = _dynamicImageUtility.TryParseUrl(_options.DynamicImagePathPrefix, path, overrideFormat);
 
-			if (status == DynamicImageParseUrlResult.Skip)
+			if (status is DynamicImageParseUrlResult.Skip)
 			{
 				await _next.Invoke(context);
 				return;
 			}
 
-			if (status == DynamicImageParseUrlResult.Invalid)
+			if (status is DynamicImageParseUrlResult.Invalid)
 			{
-#if NET8_0_OR_GREATER
-				await cts.CancelAsync();
-#else
-				cts.Cancel();
-#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
@@ -128,129 +119,137 @@ public class DynamicImageMiddleware
 
 			if (mapping is null || (mapping.EnableValidation && !_dynamicImageUtility.ImageOptionsValid(imageOptions, mapping.ValidMappings)))
 			{
-#if NET8_0_OR_GREATER
-				await cts.CancelAsync();
-#else
-				cts.Cancel();
-#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
 
-			DynamicImageItem? image = await _dynamicImageResizer.GenerateImageAsync(mapping.FileProviderMapping.FileProvider, imageOptions, token);
+			IUmbrellaFileInfo? sourceFile = await mapping.FileProviderMapping.FileProvider.GetAsync(imageOptions.SourcePath, context.RequestAborted);
 
-			if (image is null)
+			if (sourceFile is null)
 			{
-#if NET8_0_OR_GREATER
-				await cts.CancelAsync();
-#else
-				cts.Cancel();
-#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotFound);
 				return;
 			}
 
-			//Check the cache headers
-			if (image.LastModified.HasValue && context.Request.IfModifiedSinceHeaderMatched(image.LastModified.Value))
+			// Check the cache headers
+			if (sourceFile.LastModified.HasValue && context.Request.IfModifiedSinceHeaderMatched(sourceFile.LastModified.Value))
 			{
-#if NET8_0_OR_GREATER
-				await cts.CancelAsync();
-#else
-				cts.Cancel();
-#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotModified);
 				return;
 			}
 
-			string? eTagValue = image.LastModified.HasValue
-				? _headerValueUtility.CreateETagHeaderValue(image.LastModified.Value, image.Length)
+			string? eTagValue = sourceFile.LastModified.HasValue
+				? _headerValueUtility.CreateETagHeaderValue(sourceFile.LastModified.Value, sourceFile.Length)
 				: null;
 
 			if (eTagValue is not null && context.Request.IfNoneMatchHeaderMatched(eTagValue))
 			{
-#if NET8_0_OR_GREATER
-				await cts.CancelAsync();
-#else
-				cts.Cancel();
-#endif
 				context.Response.SendStatusCode(HttpStatusCode.NotModified);
 				return;
 			}
 
-			if (image.Length > 0)
+			async Task ApplyCacheHeadersAndFlushAsync(DynamicImageItem image)
 			{
 				context.Response.ContentType = _mimeTypeUtility.GetMimeType(image.ImageOptions.Format.ToFileExtensionString());
 				context.Response.ContentLength = image.Length;
 
-				if (mapping.Cacheability == MiddlewareHttpCacheability.NoCache && image.LastModified.HasValue)
+				if (mapping.Cacheability is MiddlewareHttpCacheability.NoCache && image.LastModified.HasValue)
 				{
-					context.Response.Headers["Last-Modified"] = _headerValueUtility.CreateLastModifiedHeaderValue(image.LastModified.Value);
-					context.Response.Headers["ETag"] = eTagValue;
-					context.Response.Headers["Cache-Control"] = "no-cache";
+					context.Response.Headers.LastModified = _headerValueUtility.CreateLastModifiedHeaderValue(image.LastModified.Value);
+					context.Response.Headers.ETag = eTagValue;
+					context.Response.Headers.CacheControl = "no-cache";
 				}
 				else
 				{
-					context.Response.Headers["Cache-Control"] = "no-store";
+					context.Response.Headers.CacheControl = "no-store";
 				}
 
-				await image.WriteContentToStreamAsync(context.Response.Body, token);
+				await image.WriteContentToStreamAsync(context.Response.Body, context.RequestAborted);
 
 				// Ensure the response stream is flushed async immediately here. If not, there could be content
 				// still buffered which will not be sent out until the stream is disposed at which point
 				// the IO will happen synchronously!
-				await context.Response.Body.FlushAsync(token);
+				await context.Response.Body.FlushAsync(context.RequestAborted);
+			}
 
-				return;
-			}
-			else
+			// Check if the image is already cached
+			DynamicImageItem? image = await _dynamicImageResizer.GetCachedItemAsync(sourceFile, imageOptions, context.RequestAborted);
+
+			if (image is { Length: > 0 })
 			{
-#if NET8_0_OR_GREATER
-				await cts.CancelAsync();
-#else
-				cts.Cancel();
-#endif
-				context.Response.SendStatusCode(HttpStatusCode.NotFound);
+				await ApplyCacheHeadersAndFlushAsync(image);
 				return;
 			}
+
+			if (_requestConcurrencySemaphore is not null)
+				await _requestConcurrencySemaphore.WaitAsync(context.RequestAborted);
+
+			// No image in cache, need to create
+			try
+			{
+				image = await _dynamicImageResizer.GenerateImageAsync(mapping.FileProviderMapping.FileProvider, imageOptions, context.RequestAborted);
+			}
+			finally
+			{
+				_ = _requestConcurrencySemaphore?.Release();
+			}
+
+			if (image is { Length: > 0 })
+			{
+				await ApplyCacheHeadersAndFlushAsync(image);
+				return;
+			}
+
+			context.Response.SendStatusCode(HttpStatusCode.NotFound);
+			return;
+		}
+		catch (OperationCanceledException)
+		{
+			// Handle the cancellation
+			context.Response.SendStatusCode(HttpStatusCode.RequestTimeout);
 		}
 		catch (UmbrellaFileSystemException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
-			// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
-#if NET8_0_OR_GREATER
-			await cts.CancelAsync();
-#else
-			cts.Cancel();
-#endif
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
 		catch (UmbrellaFileAccessDeniedException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
 			// Just return a 404 NotFound so that any potential attacker isn't even aware the file exists.
-#if NET8_0_OR_GREATER
-			await cts.CancelAsync();
-#else
-			cts.Cancel();
-#endif
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
 		catch (UmbrellaDynamicImageException exc) when (_log.WriteWarning(exc, new { Path = context.Request.Path.Value }))
 		{
 			// Just return a 404 NotFound.
-#if NET8_0_OR_GREATER
-			await cts.CancelAsync();
-#else
-			cts.Cancel();
-#endif
 			context.Response.SendStatusCode(HttpStatusCode.NotFound);
 		}
 		catch (Exception exc) when (_log.WriteError(exc, new { Path = context.Request.Path.Value }))
 		{
 			throw new UmbrellaWebException("An error has occurred whilst executing the request.", exc);
 		}
-		finally
+	}
+
+	/// <summary>
+	/// Releases the unmanaged resources used by the <see cref="DynamicImageMiddleware" /> and optionally releases the managed resources.
+	/// </summary>
+	/// <param name="disposing">A value indicating whether the managed resources should be released.</param>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!_disposedValue)
 		{
-			cts.Dispose();
+			if (disposing)
+			{
+				_requestConcurrencySemaphore?.Dispose();
+			}
+
+			_disposedValue = true;
 		}
 	}
-	#endregion
+
+	/// <inheritdoc/>
+	public void Dispose()
+	{
+		// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
 }

@@ -35,6 +35,11 @@ public class DynamicImageMiddlewareOptions : IValidatableUmbrellaOptions, ISanit
 	public bool EnableJpgPngWebPOrAvifOverride { get; set; } = true;
 
 	/// <summary>
+	/// Gets or sets the maximum concurrent resizing requests that can be processed at any one time. Defaults to 0 which means unlimited.
+	/// </summary>
+	public int MaxConcurrentResizingRequests { get; set; }
+
+	/// <summary>
 	/// Gets the file provider for the specified <paramref name="searchPath"/>.
 	/// </summary>
 	/// <param name="searchPath">The search path.</param>
