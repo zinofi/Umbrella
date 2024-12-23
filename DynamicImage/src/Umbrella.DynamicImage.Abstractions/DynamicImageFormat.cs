@@ -30,10 +30,10 @@ public enum DynamicImageFormat
 	/// </summary>
 	WebP = 4,
 
-	///// <summary>
-	///// An avif file.
-	///// </summary>
-	// TODO AVIF: Avif = 5
+	/// <summary>
+	/// An avif file.
+	/// </summary>
+	Avif = 5
 	// Some weird issue where SkiaSharp return null when changing the file encoding from PNG to AVIF. Works for WebP though.
 	// Needs more investigation so can't support for now.
 }
@@ -55,7 +55,7 @@ public static class DynamicImageFormatExtensions
 		DynamicImageFormat.Gif => "gif",
 		DynamicImageFormat.Png => "png",
 		DynamicImageFormat.WebP => "webp",
-		// TODO AVIF: DynamicImageFormat.Avif => "avif",
+		DynamicImageFormat.Avif => "avif",
 		_ => throw new NotSupportedException($"The specified format: {value} is not supported.")
 	};
 }

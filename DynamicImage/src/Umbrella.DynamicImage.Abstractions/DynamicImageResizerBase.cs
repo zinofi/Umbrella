@@ -150,6 +150,9 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 	/// <inheritdoc />
 	public abstract (int width, int height) GetImageDimensions(byte[] bytes);
 
+	/// <inheritdoc />
+	public abstract bool SupportsFormat(DynamicImageFormat format);
+
 	/// <summary>
 	/// Gets the destination dimensions.
 	/// </summary>

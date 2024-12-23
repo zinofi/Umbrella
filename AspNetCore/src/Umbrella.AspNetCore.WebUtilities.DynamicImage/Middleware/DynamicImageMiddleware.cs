@@ -85,20 +85,12 @@ public class DynamicImageMiddleware : IDisposable
 			if (_options.EnableJpgPngWebPOrAvifOverride
 				&& (path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".png", StringComparison.OrdinalIgnoreCase)))
 			{
-				if (context.Request.AcceptsWebP())
+				overrideFormat = context switch
 				{
-					overrideFormat = DynamicImageFormat.WebP;
-				}
-
-				// TODO AVIF:
-				//if (context.Request.AcceptsAvif())
-				//{
-				//	overrideFormat = DynamicImageFormat.Avif;
-				//}
-				//else if (context.Request.AcceptsWebP())
-				//{
-				//	overrideFormat = DynamicImageFormat.WebP;
-				//}
+					var _ when context.Request.AcceptsAvif() && _dynamicImageResizer.SupportsFormat(DynamicImageFormat.Avif) => DynamicImageFormat.Avif,
+					var _ when context.Request.AcceptsWebP() && _dynamicImageResizer.SupportsFormat(DynamicImageFormat.WebP) => DynamicImageFormat.WebP,
+					_ => null
+				};
 			}
 
 			var (status, imageOptions) = _dynamicImageUtility.TryParseUrl(_options.DynamicImagePathPrefix, path, overrideFormat);

@@ -70,4 +70,11 @@ public interface IDynamicImageResizer
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The cached image item.</returns>
 	Task<DynamicImageItem?> GetCachedItemAsync(IUmbrellaFileInfo sourceFile, DynamicImageOptions options, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Determines whether the resizer supports the specified format.
+	/// </summary>
+	/// <param name="format">The format.</param>
+	/// <returns>Whether the resizer supports the specified format.</returns>
+	bool SupportsFormat(DynamicImageFormat format);
 }
