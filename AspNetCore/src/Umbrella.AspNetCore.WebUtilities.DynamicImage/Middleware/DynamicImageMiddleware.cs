@@ -58,7 +58,7 @@ public class DynamicImageMiddleware : IDisposable
 		_options = options;
 
 		if (_options.MaxConcurrentResizingRequests > 0)
-			_requestConcurrencySemaphore = new SemaphoreSlim(_options.MaxConcurrentResizingRequests);
+			_requestConcurrencySemaphore = new SemaphoreSlim(_options.MaxConcurrentResizingRequests, _options.MaxConcurrentResizingRequests);
 	}
 
 	/// <summary>

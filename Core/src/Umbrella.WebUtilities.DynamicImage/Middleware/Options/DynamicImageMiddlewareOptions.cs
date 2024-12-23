@@ -72,5 +72,6 @@ public class DynamicImageMiddlewareOptions : IValidatableUmbrellaOptions, ISanit
 		Guard.IsNotNullOrWhiteSpace(DynamicImagePathPrefix);
 		Guard.IsNotNull(_flattenedMappings);
 		Guard.IsGreaterThan(_flattenedMappings.Count, 0);
+		Guard.IsGreaterThanOrEqualTo(MaxConcurrentResizingRequests, 0);
 	}
 }
