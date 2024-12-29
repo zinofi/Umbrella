@@ -4,6 +4,7 @@
 @{
     string groupName = Guid.NewGuid().ToString("N");
     string filterContainerId = "a" + Guid.NewGuid().ToString("N")[1..];
+    string filterColumnInputCssClass = Options.UseBootstrapCssGrid ? "g-col-12 g-col-md-4" : "col-12 col-md-4";
 }
 
 <CascadingValue Value="this">
@@ -30,7 +31,7 @@
                             {
                                 string id = Guid.NewGuid().ToString("N");
 
-                                <div class="@(Options.UseBootstrapCssGrid ? "g-" : "")col-md-4">
+                                <div class="@filterColumnInputCssClass">
 
                                     @if (column.FilterControlType is UmbrellaColumnFilterType.Options)
                                     {
