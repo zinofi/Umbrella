@@ -11,7 +11,7 @@ using Umbrella.Utilities.Hosting.Options;
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Hosting;
 
 [MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.Net461)]
+[SimpleJob(RuntimeMoniker.Net462)]
 public class UmbrellaWebHostingEnvironmentBenchmark
 {
 	private readonly UmbrellaWebHostingEnvironment _umbrellaWebHostingEnvironment;

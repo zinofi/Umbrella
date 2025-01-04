@@ -9,7 +9,7 @@ using Umbrella.Utilities.Mapping.Mapperly.Options;
 namespace Umbrella.Utilities.Mapping.Mapperly.Benchmark;
 
 [MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.Net60)]
+[SimpleJob(RuntimeMoniker.Net60), SimpleJob(RuntimeMoniker.Net80), SimpleJob(RuntimeMoniker.Net90)]
 public class UmbrellaMapperBenchmark
 {
 	private readonly Source _source = CreateSource(1);

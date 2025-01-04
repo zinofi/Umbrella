@@ -8,7 +8,7 @@ using Umbrella.Utilities.Encryption.Options;
 namespace Umbrella.Utilities.Benchmark.Encryption;
 
 [MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.NetCoreApp31)]
+[SimpleJob(RuntimeMoniker.Net462), SimpleJob(RuntimeMoniker.NetCoreApp31)]
 public class SecureStringGeneratorBenchmark
 {
 	private readonly SecureRandomStringGenerator _secureStringGenerator;

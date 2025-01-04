@@ -23,7 +23,7 @@ public static class SpanExtensions
 	/// </returns>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int Write(this in Span<char> span, int startIndex, string value) =>
-#if NET461 || DEBUG
+#if NET462 || DEBUG
 		WriteInternalNetClr(span, startIndex, value);
 #else
             WriteInternalCoreClr(span, startIndex, value);
@@ -63,7 +63,7 @@ public static class SpanExtensions
 	/// </returns>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]	
 	public static int Write(this in Span<char> span, int startIndex, in ReadOnlySpan<char> value) =>
-#if NET461 || DEBUG
+#if NET462 || DEBUG
 		WriteInternalNetClr(span, startIndex, value);
 #else
             WriteInternalCoreClr(span, startIndex, value);
@@ -98,7 +98,7 @@ public static class SpanExtensions
 	/// <remarks>If the <paramref name="culture"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> is used.</remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToLower(this in Span<char> source, CultureInfo? culture = null) =>
-#if NET461 || DEBUG
+#if NET462 || DEBUG
 		ToLowerNetClr(source, culture ?? CultureInfo.CurrentCulture);
 #else
             ToLowerCoreClr(source, culture ?? CultureInfo.CurrentCulture);
@@ -139,7 +139,7 @@ public static class SpanExtensions
 	/// <remarks>If the <paramref name="culture"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> is used.</remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToUpper(this in Span<char> source, CultureInfo? culture = null) =>
-#if NET461 || DEBUG
+#if NET462 || DEBUG
 		ToUpperNetClr(source, culture ?? CultureInfo.CurrentCulture);
 #else
             ToUpperCoreClr(source, culture ?? CultureInfo.CurrentCulture);

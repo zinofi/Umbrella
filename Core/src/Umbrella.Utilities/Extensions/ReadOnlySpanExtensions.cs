@@ -23,7 +23,7 @@ public static class ReadOnlySpanExtensions
 	/// <remarks>If the <paramref name="culture"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> is used.</remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToLowerSlim(this in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo? culture = null) =>
-#if NET461 || DEBUG
+#if NET462 || DEBUG
 		ToLowerSlimNetClr(source, destination, culture ?? CultureInfo.CurrentCulture);
 #else
             ToLowerSlimCoreClr(source, destination, culture ?? CultureInfo.CurrentCulture);
@@ -62,7 +62,7 @@ public static class ReadOnlySpanExtensions
 	/// <remarks>If the <paramref name="culture"/> is not specified, <see cref="CultureInfo.CurrentCulture"/> is used.</remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ToUpperSlim(this in ReadOnlySpan<char> source, in Span<char> destination, CultureInfo? culture = null) =>
-#if NET461 || DEBUG
+#if NET462 || DEBUG
 		ToUpperSlimNetClr(source, destination, culture ?? CultureInfo.CurrentCulture);
 #else
             ToUpperSlimCoreClr(source, destination, culture ?? CultureInfo.CurrentCulture);

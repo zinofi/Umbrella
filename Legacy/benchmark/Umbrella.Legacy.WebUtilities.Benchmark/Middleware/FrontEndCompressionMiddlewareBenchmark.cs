@@ -15,7 +15,7 @@ using Umbrella.WebUtilities.Middleware.Options;
 namespace Umbrella.Legacy.WebUtilities.Benchmark.Middleware;
 
 [MemoryDiagnoser]
-[SimpleJob(RuntimeMoniker.Net461)]
+[SimpleJob(RuntimeMoniker.Net462)]
 public class FrontEndCompressionMiddlewareBenchmark
 {
 	private readonly FrontEndCompressionMiddleware _frontEndCompressionMiddleware;

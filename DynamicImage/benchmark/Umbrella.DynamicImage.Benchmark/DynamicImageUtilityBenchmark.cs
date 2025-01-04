@@ -11,7 +11,7 @@ namespace Umbrella.DynamicImage.Benchmark;
 
 [MemoryDiagnoser]
 [BenchmarkCategory(nameof(DynamicImageUtility))]
-[SimpleJob(RuntimeMoniker.Net461), SimpleJob(RuntimeMoniker.NetCoreApp31)]
+[SimpleJob(RuntimeMoniker.Net462), SimpleJob(RuntimeMoniker.Net60), SimpleJob(RuntimeMoniker.Net70), SimpleJob(RuntimeMoniker.Net90)]
 public class DynamicImageUtilityBenchmark
 {
 	private readonly DynamicImageUtility _dynamicImageUtility;
