@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 17
+# Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4D52673-742B-4204-9B7B-7A63F5F2863E}"
@@ -227,11 +227,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.Analyzers", "Analy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Blazor.Security", "AspNetCore\src\Umbrella.AspNetCore.Blazor.Security\Umbrella.AspNetCore.Blazor.Security.csproj", "{695FC680-E71A-4D95-84DF-393E180527A1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{7AF95332-7782-44A3-A367-57D30A39517F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C2ECB654-D38E-403C-BCCF-71BE09909A3A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbrella.AspNetCore.Shared", "AspNetCore\src\Umbrella.AspNetCore.Shared\Umbrella.AspNetCore.Shared.csproj", "{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{EADD22B3-5225-4892-87D2-B664228E3E1A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4D6FE2AB-99BF-4DC0-9A9B-A13B4B056AAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Maui", "Maui\src\Umbrella.Maui\Umbrella.Maui.csproj", "{CF62FACB-263A-42D0-8617-4D57C0D69851}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -630,6 +632,12 @@ Global
 		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF62FACB-263A-42D0-8617-4D57C0D69851}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{CF62FACB-263A-42D0-8617-4D57C0D69851}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{CF62FACB-263A-42D0-8617-4D57C0D69851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF62FACB-263A-42D0-8617-4D57C0D69851}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF62FACB-263A-42D0-8617-4D57C0D69851}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF62FACB-263A-42D0-8617-4D57C0D69851}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -728,8 +736,9 @@ Global
 		{D8FC59AF-00A0-4187-8622-15AF5457E48F} = {5520A82E-280B-485D-AF42-0FF5B8E72CB3}
 		{6C8C4A89-1D02-4D33-92D9-3B0E9EDF9C7B} = {D8FC59AF-00A0-4187-8622-15AF5457E48F}
 		{695FC680-E71A-4D95-84DF-393E180527A1} = {A592A2ED-763F-4172-95DB-316662A0A42E}
-		{C2ECB654-D38E-403C-BCCF-71BE09909A3A} = {7AF95332-7782-44A3-A367-57D30A39517F}
 		{A4EC787C-3BF9-4B31-9184-BD7F9B1BB17D} = {A592A2ED-763F-4172-95DB-316662A0A42E}
+		{4D6FE2AB-99BF-4DC0-9A9B-A13B4B056AAB} = {EADD22B3-5225-4892-87D2-B664228E3E1A}
+		{CF62FACB-263A-42D0-8617-4D57C0D69851} = {4D6FE2AB-99BF-4DC0-9A9B-A13B4B056AAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}
