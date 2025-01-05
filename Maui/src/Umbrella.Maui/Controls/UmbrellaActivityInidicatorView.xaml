@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Umbrella.Maui.Controls.UmbrellaActivityInidicatorView">
+	<ContentView.ControlTemplate>
+		<ControlTemplate>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<ContentPresenter Grid.Row="0" />
+				<BoxView Grid.Row="0" BackgroundColor="{TemplateBinding LoadingBackgroundColor}" IsVisible="{TemplateBinding IsLoading}" />
+				<ActivityIndicator Grid.Row="0" IsRunning="True" Color="{TemplateBinding LoadingForegroundColor}" IsVisible="{TemplateBinding IsLoading}" VerticalOptions="Center" HorizontalOptions="Center" />
+			</Grid>
+		</ControlTemplate>
+	</ContentView.ControlTemplate>
+</ContentView>
