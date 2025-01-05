@@ -23,4 +23,7 @@
 		<ProjectReference Include="..\..\..\DynamicImage\src\Umbrella.DynamicImage.Abstractions\Umbrella.DynamicImage.Abstractions.csproj" />
 		<ProjectReference Include="..\..\..\Core\src\Umbrella.Utilities\Umbrella.Utilities.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<MauiXaml Include="**\*.xaml" />
+	</ItemGroup>
 </Project>

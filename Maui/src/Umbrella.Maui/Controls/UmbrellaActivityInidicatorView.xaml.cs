@@ -66,7 +66,7 @@ public partial class UmbrellaActivityInidicatorView : ContentView
 	/// </summary>
 	public UmbrellaActivityInidicatorView()
 	{
-		// InitializeComponent();
+		InitializeComponent();
 
 		ILoadingScreenService loadingScreenUtility = UmbrellaMauiServices.GetService<ILoadingScreenService>();
 
