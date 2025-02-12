@@ -22,7 +22,6 @@ public class UmbrellaMapper : IUmbrellaMapper
 	}
 
 	private readonly ILogger _logger;
-	private readonly UmbrellaMapperOptions _options;
 	private readonly IServiceProvider _serviceProvider;
 	private readonly Dictionary<(Type, Type), object> _newInstanceMapperDictionary = [];
 	private readonly Dictionary<(Type, Type), object> _newCollectionmapperDictionary = [];
@@ -43,7 +42,6 @@ public class UmbrellaMapper : IUmbrellaMapper
 		Guard.IsNotNull(serviceProvider);
 
 		_logger = logger;
-		_options = options;
 		_serviceProvider = serviceProvider;
 
 		IReadOnlyCollection<Assembly> assembliesToScan = options.TargetAssemblies;

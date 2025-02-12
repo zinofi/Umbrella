@@ -606,7 +606,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		// but the problem is that when that happens, the alteredColl parameter is a reference to the same underlying collection. This means
 		// any items that have been removed from the incoming alteredColl will be added back to it. To get around this, we need to copy all the items from alteredColl
 		// to a new List first to stop this from happening.
-		alteredColl = new List<TTargetEntity>(alteredColl);
+		alteredColl = [.. alteredColl];
 
 		// Ensure we have deleted the dependencies (children) we no longer need
 		foreach (TTargetEntity entity in Context.Value.Set<TTargetEntity>().Where(predicate))

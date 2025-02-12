@@ -30,7 +30,7 @@ public class LinkHeaderMiddlewareOptions : ISanitizableUmbrellaOptions
 	/// <inheritdoc/>
 	public void Sanitize()
 	{
-		HashSet<LinkHeaderDnsPrefetchPreconnectUrl> lstSanitizedDnsPrefetchPreconnectUrl = new(DnsPrefetchPreconnectUrls.Select(x => x with { Url = x.Url.TrimToLowerInvariant() }));
+		HashSet<LinkHeaderDnsPrefetchPreconnectUrl> lstSanitizedDnsPrefetchPreconnectUrl = [.. DnsPrefetchPreconnectUrls.Select(x => x with { Url = x.Url.TrimToLowerInvariant() })];
 
 		if (AddApplicationInsightsEndpoints)
 		{
@@ -41,7 +41,7 @@ public class LinkHeaderMiddlewareOptions : ISanitizableUmbrellaOptions
 		DnsPrefetchPreconnectUrls.Clear();
 		DnsPrefetchPreconnectUrls.AddRange(lstSanitizedDnsPrefetchPreconnectUrl);
 
-		HashSet<LinkHeaderPreloadUrl> lstSanitizedPreloadUrl = new(PreloadUrls.Select(x => x with { Url = x.Url.TrimToLowerInvariant() }));
+		HashSet<LinkHeaderPreloadUrl> lstSanitizedPreloadUrl = [.. PreloadUrls.Select(x => x with { Url = x.Url.TrimToLowerInvariant() })];
 
 		PreloadUrls.Clear();
 		PreloadUrls.AddRange(lstSanitizedPreloadUrl);

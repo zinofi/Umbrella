@@ -7,6 +7,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using CommunityToolkit.Diagnostics;
 
 namespace Umbrella.Utilities.ObjectModel;
 
@@ -48,11 +49,10 @@ public class UmbrellaObservableRangeCollection<T> : ObservableCollection<T>
 	/// <exception cref="ArgumentNullException">collection</exception>
 	public void AddRange(IEnumerable<T> collection, NotifyCollectionChangedAction notificationMode = NotifyCollectionChangedAction.Add)
 	{
+		Guard.IsNotNull(collection);
+
 		if (notificationMode is not NotifyCollectionChangedAction.Add and not NotifyCollectionChangedAction.Reset)
 			throw new ArgumentException("Mode must be either Add or Reset for AddRange.", nameof(notificationMode));
-
-		if (collection is null)
-			throw new ArgumentNullException(nameof(collection));
 
 		CheckReentrancy();
 
@@ -63,13 +63,13 @@ public class UmbrellaObservableRangeCollection<T> : ObservableCollection<T>
 		if (!itemsAdded)
 			return;
 
-		if (notificationMode == NotifyCollectionChangedAction.Reset)
+		if (notificationMode is NotifyCollectionChangedAction.Reset)
 		{
 			RaiseChangeNotificationEvents(NotifyCollectionChangedAction.Reset);
 			return;
 		}
 
-		var changedItems = collection is List<T> list ? list : new List<T>(collection);
+		var changedItems = collection is List<T> list ? list : [.. collection];
 
 		RaiseChangeNotificationEvents(NotifyCollectionChangedAction.Add, changedItems, startIndex);
 	}
@@ -83,15 +83,14 @@ public class UmbrellaObservableRangeCollection<T> : ObservableCollection<T>
 	/// <exception cref="ArgumentNullException">collection</exception>
 	public void RemoveRange(IEnumerable<T> collection, NotifyCollectionChangedAction notificationMode = NotifyCollectionChangedAction.Remove)
 	{
+		Guard.IsNotNull(collection);
+
 		if (notificationMode is not NotifyCollectionChangedAction.Remove and not NotifyCollectionChangedAction.Reset)
 			throw new ArgumentException("Mode must be either Remove or Reset for RemoveRange.", nameof(notificationMode));
 
-		if (collection is null)
-			throw new ArgumentNullException(nameof(collection));
-
 		CheckReentrancy();
 
-		if (notificationMode == NotifyCollectionChangedAction.Reset)
+		if (notificationMode is NotifyCollectionChangedAction.Reset)
 		{
 			bool raiseEvents = false;
 
