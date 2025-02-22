@@ -1,16 +1,13 @@
-﻿using Microsoft.Maui;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Maui.Controls;
-using Umbrella.Maui.Extensions;
-using Umbrella.Utilities.Extensions;
 
-// TODO: Remove GroupName support here. ??? Why have I added this TODO comment???
 namespace Umbrella.Maui.Controls;
 
 /// <summary>
 /// A control that extends the <see cref="Button"/> control to provide checkbox and radiobutton behaviour.
 /// </summary>
 /// <seealso cref="Button" />
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Xamarin's conventions.")]
+[SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Required by Maui's conventions.")]
 public class ToggleButton : Button
 {
 	/// <summary>
@@ -29,17 +26,9 @@ public class ToggleButton : Button
 	public static BindableProperty IsToggledProperty = BindableProperty.Create(nameof(IsToggled), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay, propertyChanged: OnIsToggledChanged);
 
 	/// <summary>
-	/// The group name property
-	/// </summary>
-	public static BindableProperty GroupNameProperty = BindableProperty.Create(nameof(GroupName), typeof(string), typeof(ToggleButton));
-
-	/// <summary>
 	/// Initializes a new instance of the <see cref="ToggleButton"/> class.
 	/// </summary>
-	public ToggleButton()
-	{
-		Clicked += (sender, args) => ToggleState();
-	}
+	public ToggleButton() => Clicked += (sender, args) => ToggleState();
 
 	/// <summary>
 	/// Gets or sets the <see cref="Label"/> that is associated with this control.
@@ -59,25 +48,16 @@ public class ToggleButton : Button
 		get => (bool)GetValue(IsToggledProperty);
 	}
 
-	/// <summary>
-	/// Gets or sets the name of the group. This is used to provide radio button behaviour.
-	/// </summary>
-	public string? GroupName
-	{
-		get => (string?)GetValue(GroupNameProperty);
-		set => SetValue(GroupNameProperty, value);
-	}
-
 	/// <inheritdoc />
 	protected override void OnParentSet()
 	{
 		base.OnParentSet();
 
-		_ = VisualStateManager.GoToState(this, "ToggledOff");
+		_ = VisualStateManager.GoToState(this, IsToggled ? "ToggledOn" : "ToggledOff");
 
 		if (LabelledBy is not null)
 		{
-			_ = VisualStateManager.GoToState(LabelledBy, "ToggledOff");
+			_ = VisualStateManager.GoToState(LabelledBy, IsToggled ? "ToggledOn" : "ToggledOff");
 
 			var grTap = new TapGestureRecognizer
 			{
@@ -89,31 +69,7 @@ public class ToggleButton : Button
 		}
 	}
 
-	private void ToggleState()
-	{
-		if (!string.IsNullOrEmpty(GroupName))
-		{
-			IReadOnlyCollection<ToggleButton> lstToggleButton = this.FindPageControls<ToggleButton>(x => x.GroupName == GroupName);
-
-			bool newValue = !IsToggled;
-
-			if (newValue)
-			{
-				// Ensure others in the group are deselected
-				lstToggleButton.Where(x => x != this).ForEach(x => x.IsToggled = false);
-				IsToggled = newValue;
-			}
-			else
-			{
-				// Never allow deselection for grouped items as we need to ensure 1 is always selected
-				// once an initial selection has been made.
-			}
-		}
-		else
-		{
-			IsToggled = !IsToggled;
-		}
-	}
+	private void ToggleState() => IsToggled = !IsToggled;
 
 	private static void OnIsToggledChanged(BindableObject bindable, object oldValue, object newValue)
 	{
