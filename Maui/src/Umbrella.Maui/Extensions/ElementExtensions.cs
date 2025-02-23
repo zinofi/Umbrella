@@ -8,41 +8,46 @@ namespace Umbrella.Maui.Extensions;
 public static class ElementExtensions
 {
 	/// <summary>
-	/// Finds the root <see cref="ILayoutController" /> for the specified <paramref name="element"/>.
+	/// Finds all the controls of type <typeparamref name="T"/> on the current page that the specified <paramref name="element"/> exists on.
 	/// </summary>
+	/// <typeparam name="T">The type of element to find.</typeparam>
 	/// <param name="element">The element.</param>
-	/// <returns>The root <see cref="ILayoutController"/>.</returns>
-	public static ILayoutController? FindRootLayout(this Element element)
+	/// <param name="elementSelector">The optional element selector.</param>
+	/// <returns>An <see cref="IReadOnlyCollection{T}"/> of elements of type <typeparamref name="T"/>.</returns>
+	public static IReadOnlyCollection<T> FindPageControls<T>(this Element element, Func<T, bool>? elementSelector = null)
+		where T : Element
 	{
-		Element root = element;
-		ILayoutController? rootLayoutContainer = null;
+		var page = element.FindCurrentPage();
 
-		do
-		{
-			if (root is ILayoutController vc)
-				rootLayoutContainer = vc;
+		if (page is null)
+			return [];
 
-			root = root.Parent;
-		}
-		while (root is not null);
-
-		return rootLayoutContainer;
+		return [.. GetDescendants(page, elementSelector)];
 	}
 
 	/// <summary>
-	/// Finds the all controls on the page on which the specified <paramref name="container"/> exists.
-	/// The root <see cref="ILayoutController"/> for the <paramref name="container"/> is first located, and then all controls
-	/// of type <typeparamref name="T"/> are located, optionally filtering them using the specified <paramref name="elementSelector"/>.
+	/// Gets all the descendants of the specified <paramref name="root"/> element that are of type <typeparamref name="T"/>.
 	/// </summary>
-	/// <typeparam name="T">The type of control to find.</typeparam>
-	/// <param name="container">The container.</param>
-	/// <param name="elementSelector">The element selector.</param>
-	/// <returns>The collection of controls that have been found.</returns>
-	public static IReadOnlyCollection<T> FindPageControls<T>(this Element container, Func<T, bool>? elementSelector = null)
+	/// <typeparam name="T">The type of element to find.</typeparam>
+	/// <param name="root">The root element.</param>
+	/// <param name="elementSelector">The optional element selector.</param>
+	/// <returns>An <see cref="IEnumerable{T}"/> of elements of type <typeparamref name="T"/>.</returns>
+	public static IEnumerable<T> GetDescendants<T>(Element root, Func<T, bool>? elementSelector = null)
+		where T : Element
 	{
-		ILayoutController? layoutController = container.FindRootLayout();
+		if (root is IElementController elementController)
+		{
+			foreach (var child in elementController.LogicalChildren.OfType<Element>())
+			{
+				if (child is T typedChild && (elementSelector is null || elementSelector(typedChild)))
+					yield return typedChild;
 
-		return layoutController?.FindControls(elementSelector).ToArray() ?? [];
+				foreach (var descendant in GetDescendants<T>(child))
+				{
+					yield return descendant;
+				}
+			}
+		}
 	}
 
 	/// <summary>
