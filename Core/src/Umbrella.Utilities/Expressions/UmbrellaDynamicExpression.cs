@@ -87,16 +87,16 @@ public static class UmbrellaDynamicExpression
 			// Maybe we can have an additional parameter specifying how dates should be dealt, i.e. do nothing so we can match times
 			// and another so we only match the date.
 			// Maybe remove this code after DateOnly is fully supported by all layers of the stack in .NET 8
-			string? dateTimeDateAccessor = expression switch
-			{
-				null => null,
-				var _ when expression.Type == typeof(DateTime) => selector + ".Date",
-				var _ when expression.Type == typeof(DateTime?) => selector + ".Value.Date",
-				_ => null
-			};
+			//string? dateTimeDateAccessor = expression switch
+			//{
+			//	null => null,
+			//	//var _ when expression.Type == typeof(DateTime) => selector + ".Date",
+			//	//var _ when expression.Type == typeof(DateTime?) => selector + ".Value.Date",
+			//	_ => null
+			//};
 
-			if (!string.IsNullOrEmpty(dateTimeDateAccessor))
-				expression = dateTimeDateAccessor!.Split('.').Aggregate((Expression)target, Expression.PropertyOrField) as MemberExpression;
+			//if (!string.IsNullOrEmpty(dateTimeDateAccessor))
+			//	expression = dateTimeDateAccessor!.Split('.').Aggregate((Expression)target, Expression.PropertyOrField) as MemberExpression;
 
 			return expression;
 		}
