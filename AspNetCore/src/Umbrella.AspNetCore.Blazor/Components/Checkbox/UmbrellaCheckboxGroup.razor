@@ -1,12 +1,33 @@
 ﻿@typeparam TOption
 
-<div class="u-checkbox-group @CssClass">
-    <ul class="u-checkbox-group__items">
-        @foreach(var option in OptionsToRender)
+@if (OptionsToRender is { Count: > 0 })
+{
+    <ul class="u-checkbox-group @CssClass">
+        @foreach (var option in OptionsToRender)
         {
-            <li class="u-checkbox-group__item" @key="option">
-                <UmbrellaCheckbox Value="option.Option.IsSelected" ValueExpression="() => option.Option.IsSelected" ValueChanged="async () => await OnOptionSelectionChangedAsync(option)" Text="@option.Text" Disabled="@Disabled" />
+            string guid = Guid.NewGuid().ToString("N");
+            bool isCollapsible = option.Children is { Count: > 0 } && option.IsCollapsible;
+            bool isCollapsed = isCollapsible && option.IsCollapsed;
+
+            <li class="u-checkbox-group__item @(isCollapsed ? "u-checkbox-group__item--collapsed" : "")" @key="option">
+                <div class="u-checkbox-group__checkbox-container">
+                    <UmbrellaCheckbox Value="option.IsSelected" ValueExpression="() => option.IsSelected" ValueChanged="async () => await OnOptionSelectionChangedAsync(option)" Text="@option.Text" Disabled="@Disabled" />
+                    @if (isCollapsible)
+                    {
+                        string buttonText = isCollapsed ? CollapsedToggleText : ExpandedToggleText;
+
+                        <button type="button" class="u-checkbox-group__collapse-toggle" title="@buttonText" aria-expanded="@(!option.IsCollapsed ? "true" : "false")" aria-controls="@guid" @onclick="() => CollapseToggleClick(option)">
+                            <span class="u-checkbox-group__collapse-toggle-text">@buttonText</span>
+                        </button>
+                    }
+                </div>
+                @if (option.Children is { Count: > 0 })
+                {
+                    <div class="u-checkbox-group__nested" id="@guid">
+                        <UmbrellaCheckboxGroup Options="option.Children" OnSelectionChanged="OnSelectionChanged" Disabled="Disabled" />
+                    </div>
+                }
             </li>
         }
     </ul>
-</div>
+}

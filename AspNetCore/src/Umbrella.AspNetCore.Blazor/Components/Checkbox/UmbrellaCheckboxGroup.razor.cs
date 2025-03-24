@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Globalization;
 using Umbrella.Utilities.ObjectModel;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Checkbox;
@@ -10,15 +9,15 @@ namespace Umbrella.AspNetCore.Blazor.Components.Checkbox;
 /// <typeparam name="TOption">The type of the option.</typeparam>
 public partial class UmbrellaCheckboxGroup<TOption>
 {
-	private UmbrellaCheckboxGroupItem<TOption>? ShowAllOptionItem { get; set; }
-	private List<UmbrellaCheckboxGroupItem<TOption>> OptionsToRender { get; } = [];
+	private UmbrellaSelectableOption<TOption>? ShowAllOptionItem { get; set; }
+	private List<UmbrellaSelectableOption<TOption>> OptionsToRender { get; } = [];
 
 	/// <summary>
 	/// Gets or sets the options.
 	/// </summary>
 	[Parameter]
 	[EditorRequired]
-	public IEnumerable<UmbrellaSelectableOption<TOption>> Options { get; set; } = Array.Empty<UmbrellaSelectableOption<TOption>>();
+	public IEnumerable<UmbrellaSelectableOption<TOption>> Options { get; set; } = [];
 
 	/// <summary>
 	/// Gets or sets the CSS class.
@@ -43,13 +42,6 @@ public partial class UmbrellaCheckboxGroup<TOption>
 	public string AllOptionDisplayName { get; set; } = "All";
 
 	/// <summary>
-	/// Gets or sets an optional callback that can be used to determine how the option value
-	/// is displayed as a string in the UI if the <see cref="UmbrellaSelectableOption{TOption}.Text" /> is <see langword="null"/>.
-	/// </summary>
-	[Parameter]
-	public Func<TOption, string>? OptionDisplayNameSelector { get; set; }
-
-	/// <summary>
 	/// Gets or sets the callback that is invoked when an option is selected or deselected.
 	/// </summary>
 	[Parameter]
@@ -61,91 +53,123 @@ public partial class UmbrellaCheckboxGroup<TOption>
 	[Parameter]
 	public bool Disabled { get; set; }
 
+	/// <summary>
+	/// Gets or sets the text to display when the option is collapsed. Defaults to <c>Show</c>.
+	/// </summary>
+	[Parameter]
+	public string CollapsedToggleText { get; set; } = "Show";
+
+	/// <summary>
+	/// Gets or sets the text to display when the option is expanded. Defaults to <c>Hide</c>.
+	/// </summary>
+	[Parameter]
+	public string ExpandedToggleText { get; set; } = "Hide";
+
 	/// <inheritdoc />
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
 
-		foreach (var option in Options)
-		{
-			string? optionText = option.Text ?? OptionDisplayNameSelector?.Invoke(option.Value);
-
-			if (string.IsNullOrEmpty(optionText) && typeof(TOption).IsEnum)
-			{
-				var enumValue = Convert.ChangeType(option.Value, typeof(Enum), CultureInfo.InvariantCulture) as Enum;
-
-				if (enumValue is not null)
-					optionText = enumValue.ToDisplayString();
-			}
-
-			optionText ??= option.Text?.ToString() ?? "Unknown";
-
-			OptionsToRender.Add(new UmbrellaCheckboxGroupItem<TOption>(option, optionText, false));
-		}
+		OptionsToRender.AddRange(Options);
 
 		if (ShowAllOption)
 		{
-			ShowAllOptionItem = new UmbrellaCheckboxGroupItem<TOption>(new UmbrellaSelectableOption<TOption>() { Value = default!, IsSelected = OptionsToRender.All(x => x.Option.IsSelected) }, AllOptionDisplayName, true);
+			ShowAllOptionItem = new UmbrellaSelectableOption<TOption>()
+			{
+				Value = default!,
+				Text = AllOptionDisplayName,
+				IsSelected = OptionsToRender.All(x => x.IsSelected)
+			};
 
 			OptionsToRender.Insert(0, ShowAllOptionItem);
 		}
 	}
 
-	private async Task OnOptionSelectionChangedAsync(UmbrellaCheckboxGroupItem<TOption> option)
+	public async Task ClearAsync()
 	{
-		option.Option.IsSelected = !option.Option.IsSelected;
+		Options.Clear();
 
-		if (ShowAllOptionItem is not null && !option.IsAllOption)
+		if (OnSelectionChanged.HasDelegate)
+			await OnSelectionChanged.InvokeAsync();
+	}
+
+	public async Task ResetAsync()
+	{
+		Options.Reset();
+
+		if (OnSelectionChanged.HasDelegate)
+			await OnSelectionChanged.InvokeAsync();
+	}
+
+	public void Collapse() => Options.Collapse();
+
+	private async Task OnOptionSelectionChangedAsync(UmbrellaSelectableOption<TOption> option)
+	{
+		option.IsSelected = !option.IsSelected;
+
+		if (ShowAllOptionItem is not null && option != ShowAllOptionItem)
 		{
-			ShowAllOptionItem.Option.IsSelected = OptionsToRender.Where(x => !x.IsAllOption).All(x => x.Option.IsSelected);
+			ShowAllOptionItem.IsSelected = OptionsToRender.Where(x => x != ShowAllOptionItem).All(x => x.IsSelected);
 		}
 		else if (ShowAllOptionItem is not null)
 		{
 			foreach (var item in OptionsToRender)
 			{
-				if (item.IsAllOption)
+				if (item == ShowAllOptionItem)
 					continue;
 
-				item.Option.IsSelected = option.Option.IsSelected;
+				item.IsSelected = option.IsSelected;
 			}
 		}
+
+		// TODO: The below behaviour is very specific. This could be included in the UmbrellaSelectableOption class itself
+		// but need to consider if this is the best approach. What if a different client wants different behaviour?
+		// Just give it a descriptive method name and then we'll know what it does.
+		// Need some way of overriding this behaviour if needed. We could have a delegate that is called when the selection changes.
+		// and default it.
+
+		// Need to recursively go up and down the tree to update the parent and children.
+		// When doing down the tree, select / deselect all children to match this.
+		static void UpdateDescendants(UmbrellaSelectableOption<TOption> parent, bool isSelected)
+		{
+			foreach (var child in parent.Children)
+			{
+				child.IsSelected = isSelected;
+				UpdateDescendants(child, isSelected);
+			}
+		}
+
+		static void UpdateAncestors(UmbrellaSelectableOption<TOption> child, bool isSelected)
+		{
+			if (child.Parent is not null)
+			{
+				child.Parent.IsSelected = child.Parent.AllDescendantSelected();
+				UpdateAncestors(child.Parent, isSelected);
+			}
+		}
+
+		UpdateDescendants(option, option.IsSelected);
+		UpdateAncestors(option, option.IsSelected);
 
 		if (OnSelectionChanged.HasDelegate)
 			await OnSelectionChanged.InvokeAsync();
 	}
-}
 
-/// <summary>
-/// A data item which is used to render items in the <see cref="UmbrellaCheckboxGroup{TEnum}"/> component.
-/// </summary>
-/// <typeparam name="TOption">The type of the option.</typeparam>
-internal sealed record UmbrellaCheckboxGroupItem<TOption>
-{
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaCheckboxGroupItem{TOption}"/> class.
-	/// </summary>
-	/// <param name="option">The option.</param>
-	/// <param name="text">The text.</param>
-	/// <param name="isAllOption">Specifies whether this item is the one that can be used to select or deselect all other items.</param>
-	public UmbrellaCheckboxGroupItem(UmbrellaSelectableOption<TOption> option, string text, bool isAllOption)
+	private static void CollapseToggleClick(UmbrellaSelectableOption<TOption> option)
 	{
-		Option = option;
-		Text = text;
-		IsAllOption = isAllOption;
+		option.IsCollapsed = !option.IsCollapsed;
+
+		// TODO: Consider moving to an instance method on the UmbrellaSelectableOption class
+		static void CollapseAllDescendants(UmbrellaSelectableOption<TOption> parent)
+		{
+			foreach (var child in parent.Children)
+			{
+				child.IsCollapsed = true;
+				CollapseAllDescendants(child);
+			}
+		}
+
+		if (option.IsCollapsed)
+			CollapseAllDescendants(option);
 	}
-
-	/// <summary>
-	/// Gets the value.
-	/// </summary>
-	public UmbrellaSelectableOption<TOption> Option { get; }
-
-	/// <summary>
-	/// Gets the text shown in the UI.
-	/// </summary>
-	public string Text { get; }
-
-	/// <summary>
-	/// Gets a value indicating whether this instance is the option used to select or deselect all other items.
-	/// </summary>
-	public bool IsAllOption { get; }
 }
