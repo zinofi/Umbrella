@@ -34,9 +34,12 @@ public class RazorViewToStringRendererOptions : ISanitizableUmbrellaOptions, IVa
 	/// Creates a new <see cref="HttpContext"/> instance based on the property values specified in this instance.
 	/// </summary>
 	/// <returns>The <see cref="HttpContext"/> instance.</returns>
-	public HttpContext CreateHttpContext()
+	public HttpContext CreateHttpContext(IServiceProvider serviceProvider)
 	{
-		DefaultHttpContext httpContext = new();
+		DefaultHttpContext httpContext = new()
+		{
+			RequestServices = serviceProvider
+		};
 
 		httpContext.Request.Scheme = Scheme;
 

@@ -25,14 +25,25 @@ public record UmbrellaSelectableOption<TOption>
 	/// <param name="value">The value.</param>
 	/// <param name="text">The text.</param>
 	/// <param name="isSelected">Specifies whether or not the option is initially selected.</param>
+	/// <param name="isCollapsible">Specifies whether or not the option is collapsible.</param>
+	/// <param name="isCollapsed">Specifies whether or not the option is initially collapsed.</param>
 	/// <param name="children">The child options.</param>
 	/// <param name="parent">The parent, if one exists.</param>
 	[SetsRequiredMembers]
-	public UmbrellaSelectableOption(TOption value, string text, bool isSelected = false, IEnumerable<UmbrellaSelectableOption<TOption>>? children = null, UmbrellaSelectableOption<TOption>? parent = null)
+	public UmbrellaSelectableOption(
+		TOption value,
+		string text,
+		bool isSelected = false,
+		bool isCollapsible = false,
+		bool isCollapsed = true,
+		IEnumerable<UmbrellaSelectableOption<TOption>>? children = null,
+		UmbrellaSelectableOption<TOption>? parent = null)
 	{
 		Value = value;
 		Text = text;
 		IsSelected = isSelected;
+		IsCollapsible = isCollapsible;
+		IsCollapsed = isCollapsed;
 		Parent = parent;
 
 		if (children is not null)
@@ -75,7 +86,7 @@ public record UmbrellaSelectableOption<TOption>
 	/// <summary>
 	/// Gets or sets the child options.
 	/// </summary>
-	public IReadOnlyCollection<UmbrellaSelectableOption<TOption>> Children { get; internal set; } = [];
+	public IReadOnlyCollection<UmbrellaSelectableOption<TOption>> Children { get; init; } = [];
 
 	/// <summary>
 	/// Gets a value indicating whether all descendant options are selected.

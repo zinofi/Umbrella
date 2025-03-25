@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Umbrella.AspNetCore.WebUtilities.Hosting.Options;
 using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.Hosting;
@@ -66,7 +67,7 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 
 		httpContext.Request.Scheme = Options.ContentUrlScheme;
 		httpContext.Request.Host = new HostString(Options.ContentUrlHost);
-		httpContext.Request.Headers.Add("Accept-Language", Options.DefaultLanguageCultureCode);
+		httpContext.Request.Headers.AcceptLanguage = new StringValues(Options.DefaultLanguageCultureCode);
 
 		// We need to manually set these values to ensure correct formatting of values inside views.
 		Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Options.DefaultLanguageCultureCode);

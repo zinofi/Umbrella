@@ -24,6 +24,7 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 	private readonly IRazorViewEngine _viewEngine;
 	private readonly ITempDataProvider _tempDataProvider;
 	private readonly IHttpContextAccessor _httpContextAccessor;
+	private readonly IServiceProvider _serviceProvider;
 	private readonly RazorViewToStringRendererOptions _options;
 
 	/// <summary>
@@ -33,18 +34,21 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 	/// <param name="viewEngine">The view engine.</param>
 	/// <param name="tempDataProvider">The temp data provider.</param>
 	/// <param name="httpContextAccessor">The HTTP context accessor.</param>
+	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="options">The options.</param>
 	public RazorViewToStringRenderer(
 		ILogger<RazorViewToStringRenderer> logger,
 		IRazorViewEngine viewEngine,
 		ITempDataProvider tempDataProvider,
 		IHttpContextAccessor httpContextAccessor,
+		IServiceProvider serviceProvider,
 		RazorViewToStringRendererOptions options)
 	{
 		_logger = logger;
 		_viewEngine = viewEngine;
 		_tempDataProvider = tempDataProvider;
 		_httpContextAccessor = httpContextAccessor;
+		_serviceProvider = serviceProvider;
 		_options = options;
 	}
 
@@ -55,7 +59,7 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 
 		try
 		{
-			httpContext ??= _httpContextAccessor.HttpContext ?? _options.CreateHttpContext();
+			httpContext ??= _httpContextAccessor.HttpContext ?? _options.CreateHttpContext(_serviceProvider);
 
 			if (httpContext is null)
 				throw new UmbrellaWebException("The current httpContext is not available.");
