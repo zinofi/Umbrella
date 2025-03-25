@@ -18,7 +18,7 @@ public interface IRazorViewToStringRenderer
 	/// <param name="httpContext">
 	/// The <see cref="HttpContext"/>. If this is not specified, the HttpContext for the currently executing request will be used.
 	/// Allowing this to be specified is useful in cases where the View is being rendered outside of a HTTP request,
-	/// e.g. when executed from an <see cref="IHostedService"/>, meaning there is no ambient HTTPContext.
+	/// e.g. when executed from an <see cref="IHostedService"/>, meaning there is no ambient HttpContext.
 	/// </param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The view as a string.</returns>

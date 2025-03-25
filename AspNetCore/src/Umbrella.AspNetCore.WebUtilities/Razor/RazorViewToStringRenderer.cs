@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.Razor.Abstractions;
+using Umbrella.AspNetCore.WebUtilities.Razor.Options;
 using Umbrella.WebUtilities.Exceptions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Razor;
@@ -23,6 +24,7 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 	private readonly IRazorViewEngine _viewEngine;
 	private readonly ITempDataProvider _tempDataProvider;
 	private readonly IHttpContextAccessor _httpContextAccessor;
+	private readonly RazorViewToStringRendererOptions _options;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="RazorViewToStringRenderer"/> class.
@@ -31,16 +33,19 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 	/// <param name="viewEngine">The view engine.</param>
 	/// <param name="tempDataProvider">The temp data provider.</param>
 	/// <param name="httpContextAccessor">The HTTP context accessor.</param>
+	/// <param name="options">The options.</param>
 	public RazorViewToStringRenderer(
 		ILogger<RazorViewToStringRenderer> logger,
 		IRazorViewEngine viewEngine,
 		ITempDataProvider tempDataProvider,
-		IHttpContextAccessor httpContextAccessor)
+		IHttpContextAccessor httpContextAccessor,
+		RazorViewToStringRendererOptions options)
 	{
 		_logger = logger;
 		_viewEngine = viewEngine;
 		_tempDataProvider = tempDataProvider;
 		_httpContextAccessor = httpContextAccessor;
+		_options = options;
 	}
 
 	/// <inheritdoc />
@@ -50,7 +55,7 @@ public class RazorViewToStringRenderer : IRazorViewToStringRenderer
 
 		try
 		{
-			httpContext ??= _httpContextAccessor.HttpContext;
+			httpContext ??= _httpContextAccessor.HttpContext ?? _options.CreateHttpContext();
 
 			if (httpContext is null)
 				throw new UmbrellaWebException("The current httpContext is not available.");
