@@ -86,7 +86,7 @@ public record UmbrellaSelectableOption<TOption>
 	/// <summary>
 	/// Gets or sets the child options.
 	/// </summary>
-	public IReadOnlyCollection<UmbrellaSelectableOption<TOption>> Children { get; init; } = [];
+	public IReadOnlyCollection<UmbrellaSelectableOption<TOption>> Children { get; set; } = [];
 
 	/// <summary>
 	/// Gets a value indicating whether all descendant options are selected.
