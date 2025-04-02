@@ -28,6 +28,7 @@ using Umbrella.Utilities.Hosting.Options;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Extensions;
+using Umbrella.Utilities.Http.Handlers;
 using Umbrella.Utilities.Http.Options;
 using Umbrella.Utilities.Imaging;
 using Umbrella.Utilities.Imaging.Abstractions;
@@ -124,6 +125,9 @@ public static class IServiceCollectionExtensions
 
 		_ = services.AddSingleton<ISynchronizationManager, MemorySynchronizationManager>();
 		_ = services.AddSingleton<IUmbrellaMapper, UmbrellaNoopMapper>();
+
+		// HTTP Delegating Handlers
+		_ = services.AddScoped<AcceptCurrentCultureLanguageHandler>();
 
 		if (httpServicesBuilder is not null)
 		{
