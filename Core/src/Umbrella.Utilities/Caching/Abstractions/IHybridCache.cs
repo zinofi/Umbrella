@@ -11,6 +11,7 @@ namespace Umbrella.Utilities.Caching.Abstractions;
 /// The cache includes the option to allow internal errors that occur when adding or retrieving items to be masked so that transient errors with the cache, e.g. a Redis error where
 /// the service is being restarted, does not cause a hard application failure.
 /// </summary>
+[Obsolete("This caching mechanism will be removed at a future date with a version that implements a proper multi-tiered cache. Ask Rich if you have any questions.")]
 public interface IHybridCache
 {
 	/// <summary>
