@@ -699,8 +699,9 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 
 							if (dateRange.StartDate != DateTime.MinValue && dateRange.EndDate != DateTime.MaxValue)
 							{
-								string dtStartValue = dateRange.StartDate.ToString("O");
-								string dtEndValue = dateRange.EndDate.ToString("O");
+								// Ensure we filter on the start and end of the day range.
+								string dtStartValue = new DateTime(dateRange.StartDate.Year, dateRange.StartDate.Month, dateRange.StartDate.Day, 0, 0, 0, dateRange.StartDate.Kind).ToString("O");
+								string dtEndValue = new DateTime(dateRange.EndDate.Year, dateRange.EndDate.Month, dateRange.EndDate.Day, 23, 59, 59, dateRange.EndDate.Kind).ToString("O");
 
 								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dtStartValue.EndsWith("Z", StringComparison.InvariantCulture) ? dtStartValue : dtStartValue + "Z", FilterType.GreaterThanOrEqual));
 								lstFilters.Add(new FilterExpressionDescriptor(column.FilterMemberPathOverride ?? column.PropertyName, dtEndValue.EndsWith("Z", StringComparison.InvariantCulture) ? dtEndValue : dtEndValue + "Z", FilterType.LessThanOrEqual));
@@ -716,7 +717,8 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 							}
 							else if (DateTime.TryParse(filterValue, out DateTime dtFilter))
 							{
-								string dtValue = dtFilter.ToString("O");
+								// Ensure we filter on the start and end of the day.
+								string dtValue = new DateTime(dtFilter.Year, dtFilter.Month, dtFilter.Day, 23, 59, 59, dtFilter.Kind).ToString("O");
 
 								filterValue = dtValue.EndsWith("Z", StringComparison.InvariantCulture) ? dtValue : dtValue + "Z";
 							}
