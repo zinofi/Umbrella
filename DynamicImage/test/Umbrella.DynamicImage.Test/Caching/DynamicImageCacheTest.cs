@@ -63,7 +63,7 @@ public class DynamicImageCacheTest
 
 		var item = new DynamicImageItem
 		{
-			ImageOptions = new DynamicImageOptions("/sometestpath/image.png", 100, 100, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg),
+			ImageOptions = new DynamicImageOptions("/sometestpath/image.png", 100, 100, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg),
 			LastModified = DateTime.UtcNow
 		};
 
@@ -100,7 +100,7 @@ public class DynamicImageCacheTest
 
 		var item = new DynamicImageItem
 		{
-			ImageOptions = new DynamicImageOptions("/sometestpath/image.png", 100, 100, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg),
+			ImageOptions = new DynamicImageOptions("/sometestpath/image.png", 100, 100, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg),
 			LastModified = DateTime.UtcNow
 		};
 
@@ -143,7 +143,7 @@ public class DynamicImageCacheTest
 
 		var item = new DynamicImageItem
 		{
-			ImageOptions = new DynamicImageOptions(path, 200, 200, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg),
+			ImageOptions = new DynamicImageOptions(path, 200, 200, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg),
 			LastModified = DateTime.UtcNow
 		};
 
@@ -162,7 +162,7 @@ public class DynamicImageCacheTest
 
 		var item = new DynamicImageItem
 		{
-			ImageOptions = new DynamicImageOptions(path, 100, 100, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg),
+			ImageOptions = new DynamicImageOptions(path, 100, 100, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg),
 			LastModified = DateTime.UtcNow
 		};
 

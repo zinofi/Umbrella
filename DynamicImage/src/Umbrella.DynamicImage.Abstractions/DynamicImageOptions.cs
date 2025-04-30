@@ -37,9 +37,9 @@ public readonly record struct DynamicImageOptions
 	/// Get the quality request.
 	/// </summary>
 	/// <remarks>
-	/// This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <c>75</c>.
+	/// This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <c>100</c>.
 	/// </remarks>
-	public int QualityRequest { get; } = 75;
+	public int QualityRequest { get; } = 100;
 	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageOptions"/> struct.

@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
@@ -73,13 +74,13 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	public int HeightRequest { get; set; }
 
 	/// <summary>
-	/// Gets or sets the resize mode. Defaults to <see cref="DynamicResizeMode.UniformFill"/>.
+	/// Gets or sets the resize mode. Defaults to <see cref="DynamicResizeMode.Crop"/>.
 	/// </summary>
 	/// <remarks>
 	/// For more information on how these resize modes work, please refer to the <see cref="DynamicResizeMode"/> code documentation.
 	/// </remarks>
 	[HtmlAttributeName(ResizeModeAttributeName)]
-	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
+	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.Crop;
 
 	/// <summary>
 	/// Gets or sets the string that is prepended onto the value of the "src" attribute.
@@ -105,7 +106,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	protected DynamicImageTagHelperBase(
 		ILogger<DynamicImageTagHelperBase> logger,
 		IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
-		IHybridCache cache,
+		IMemoryCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		IResponsiveImageHelper responsiveImageHelper,
 		IDynamicImageUtility dynamicImageUtility,

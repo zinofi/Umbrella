@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.DynamicImage.Abstractions;
@@ -34,7 +36,7 @@ public class DynamicImagePictureSourceTagHelper : DynamicImageTagHelperBase
 	public DynamicImagePictureSourceTagHelper(
 		ILogger<DynamicImagePictureSourceTagHelper> logger,
 		IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
-		IHybridCache cache,
+		IMemoryCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		IResponsiveImageHelper responsiveImageHelper,
 		IDynamicImageUtility dynamicImageUtility,
@@ -51,6 +53,8 @@ public class DynamicImagePictureSourceTagHelper : DynamicImageTagHelperBase
 	/// <returns>A <see cref="Task"/> that on completion updates the output.</returns>
 	public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 	{
+		Guard.IsNotNull(output);
+
 		await base.ProcessAsync(context, output).ConfigureAwait(false);
 
 		_ = output.Attributes.RemoveAll("alt");

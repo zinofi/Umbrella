@@ -92,7 +92,7 @@ public abstract class DynamicImageCache
 	/// <summary>
 	/// Gets the sub path.
 	/// </summary>
-	/// <param name="cacheKey">The cacke key.</param>
+	/// <param name="cacheKey">The cache key.</param>
 	/// <param name="fileExtension">The file extension.</param>
 	/// <returns>The sub path.</returns>
 	/// <exception cref="NotImplementedException"></exception>

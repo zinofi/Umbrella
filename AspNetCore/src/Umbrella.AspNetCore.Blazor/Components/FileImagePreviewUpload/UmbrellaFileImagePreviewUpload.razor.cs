@@ -93,10 +93,10 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// Gets or sets the mode to use when resizing images.
 	/// </summary>
 	/// <remarks>
-	/// Defaults to <see cref="DynamicResizeMode.UniformFill"/>
+	/// Defaults to <see cref="DynamicResizeMode.Crop"/>
 	/// </remarks>
 	[Parameter]
-	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
+	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.Crop;
 
 	/// <summary>
 	/// Gets or sets the image format of the resized image.

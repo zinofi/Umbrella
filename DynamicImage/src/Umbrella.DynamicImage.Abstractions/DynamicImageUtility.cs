@@ -16,25 +16,18 @@ namespace Umbrella.DynamicImage.Abstractions;
 /// <seealso cref="IDynamicImageUtility" />
 public class DynamicImageUtility : IDynamicImageUtility
 {
-	#region Private Constants
 	private const string VirtualPathFormat = "~/{0}/{1}/{2}/{3}/{4}/{5}";
-	#endregion
 
-	#region Private Static Members
 	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) _invalidParseUrlResult = (DynamicImageParseUrlResult.Invalid, default);
 	private static readonly (DynamicImageParseUrlResult, DynamicImageOptions) _skipParseUrlResult = (DynamicImageParseUrlResult.Skip, default);
 	private static readonly Regex _densityRegex = new("@([0-9]*)x$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 	private static readonly char[] _segmentSeparatorArray = ['/'];
-	#endregion
-
-	#region Protected Properties		
+	
 	/// <summary>
-	/// Gets the log.
+	/// Gets the logger.
 	/// </summary>
 	protected ILogger Logger { get; }
-	#endregion
 
-	#region Constructors		
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageUtility"/> class.
 	/// </summary>
@@ -43,9 +36,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 	{
 		Logger = logger;
 	}
-	#endregion
-
-	#region Public Methods		
+	
 	/// <inheritdoc />
 	public virtual DynamicImageFormat ParseImageFormat(string format)
 	{
@@ -230,5 +221,4 @@ public class DynamicImageUtility : IDynamicImageUtility
 			throw new UmbrellaDynamicImageException("An error has occurred whilst generating the virtual path.", exc);
 		}
 	}
-#endregion
 }

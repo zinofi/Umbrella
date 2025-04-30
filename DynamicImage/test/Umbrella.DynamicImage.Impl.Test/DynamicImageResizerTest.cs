@@ -46,75 +46,64 @@ public class DynamicImageResizerTest
 	private static readonly List<(DynamicImageOptions Options, Size TargetSize)> _optionsList =
 	[
 		//These images are smaller than the original image dimensions of 300 x 193
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(50, 150)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), new Size(50, 150)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg), new Size(50, 32)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg), new Size(50, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg), new Size(233, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(150, 50)),
-		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(77, 50)),
-		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), new Size(150, 50)),
+		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg), new Size(77, 50)),
+		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg), new Size(150, 50)),
 		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg), new Size(77, 50)),
 		(new DynamicImageOptions("/dummypath.png", 150, 50, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg), new Size(150, 96)),
 
 		// These images have a height larger than the original image size but the width is still under the original
-		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(100, 400)),
-		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(100, 64)),
-		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), new Size(100, 400)),
+		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg), new Size(100, 64)),
+		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg), new Size(100, 400)),
 		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg), new Size(300, 193)),
 		(new DynamicImageOptions("/dummypath.png", 100, 400, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg), new Size(100, 64)),
 
 		// These images have a width larger than the original image size but the height is still under the original
-		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(400, 100)),
-		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(155, 100)),
-		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), new Size(400, 100)),
+		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg), new Size(155, 100)),
+		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg), new Size(400, 100)),
 		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg), new Size(155, 100)),
 		(new DynamicImageOptions("/dummypath.png", 400, 100, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg), new Size(300, 193)),
 
 		// These images are larger than the original image dimensions of 300 x 193
-		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(500, 1500)),
-		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(300, 193)),
-		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), new Size(300, 193)),
+		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg), new Size(300, 193)),
+		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg), new Size(300, 193)),
 		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg), new Size(300, 193)),
 		(new DynamicImageOptions("/dummypath.png", 500, 1500, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg), new Size(300, 193)),
-		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg), new Size(1500, 500)),
-		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.Uniform, DynamicImageFormat.Jpeg), new Size(300, 193)),
-		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.UniformFill, DynamicImageFormat.Jpeg), new Size(300, 193)),
+		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg), new Size(300, 193)),
+		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.Crop, DynamicImageFormat.Jpeg), new Size(300, 193)),
 		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.UseHeight, DynamicImageFormat.Jpeg), new Size(300, 193)),
 		(new DynamicImageOptions("/dummypath.png", 1500, 500, DynamicResizeMode.UseWidth, DynamicImageFormat.Jpeg), new Size(300, 193)),
 
 		// PNG Tests
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Png), new Size(50, 150)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Png), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Png), new Size(50, 150)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.ScaleDown, DynamicImageFormat.Png), new Size(50, 32)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Crop, DynamicImageFormat.Png), new Size(50, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Png), new Size(233, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Png), new Size(50, 32)),
 
 		// BMP Tests
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Bmp), new Size(50, 150)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Bmp), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Bmp), new Size(50, 150)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.ScaleDown, DynamicImageFormat.Bmp), new Size(50, 32)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Crop, DynamicImageFormat.Bmp), new Size(50, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Bmp), new Size(233, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Bmp), new Size(50, 32)),
 
 		// GIF Tests
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Gif), new Size(50, 150)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Gif), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Gif), new Size(50, 150)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.ScaleDown, DynamicImageFormat.Gif), new Size(50, 32)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Crop, DynamicImageFormat.Gif), new Size(50, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Gif), new Size(233, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Gif), new Size(50, 32)),
 
 		// WebP Tests
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.WebP), new Size(50, 150)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.WebP), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.WebP), new Size(50, 150)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.ScaleDown, DynamicImageFormat.WebP), new Size(50, 32)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Crop, DynamicImageFormat.WebP), new Size(50, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.WebP), new Size(233, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.WebP), new Size(50, 32)),
 
 		// Avif Tests
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Fill, DynamicImageFormat.Avif), new Size(50, 150)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Uniform, DynamicImageFormat.Avif), new Size(50, 32)),
-		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UniformFill, DynamicImageFormat.Avif), new Size(50, 150)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.ScaleDown, DynamicImageFormat.Avif), new Size(50, 32)),
+		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.Crop, DynamicImageFormat.Avif), new Size(50, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseHeight, DynamicImageFormat.Avif), new Size(233, 150)),
 		(new DynamicImageOptions("/dummypath.png", 50, 150, DynamicResizeMode.UseWidth, DynamicImageFormat.Avif), new Size(50, 32)),
 	];
@@ -233,7 +222,7 @@ public class DynamicImageResizerTest
 	{
 		byte[] pdfBytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\IkeaManual.pdf"));
 
-		_ = Assert.Throws<UmbrellaDynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
+		_ = Assert.Throws<UmbrellaDynamicImageException>(() => imageResizer.ResizeImage(pdfBytes, 100, 100, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg));
 	}
 
 	[Theory]
@@ -244,7 +233,7 @@ public class DynamicImageResizerTest
 
 		byte[] bytes = File.ReadAllBytes(PathHelper.PlatformNormalize($@"{BaseDirectory}\test-dodgy-image.jpg"));
 
-		var (resizedBytes, _, _) = imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg);
+		var (resizedBytes, _, _) = imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg);
 
 		Assert.True(resizedBytes.Length > 0);
 	}
@@ -255,7 +244,7 @@ public class DynamicImageResizerTest
 	{
 		byte[] bytes = [];
 
-		_ = Assert.Throws<ArgumentException>(() => imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
+		_ = Assert.Throws<ArgumentException>(() => imageResizer.ResizeImage(bytes, 100, 100, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg));
 	}
 
 	[Theory]
@@ -264,7 +253,7 @@ public class DynamicImageResizerTest
 	{
 		byte[]? bytes = null;
 
-		_ = Assert.Throws<ArgumentNullException>(() => imageResizer.ResizeImage(bytes!, 100, 100, DynamicResizeMode.Fill, DynamicImageFormat.Jpeg));
+		_ = Assert.Throws<ArgumentNullException>(() => imageResizer.ResizeImage(bytes!, 100, 100, DynamicResizeMode.ScaleDown, DynamicImageFormat.Jpeg));
 	}
 
 	[Theory]

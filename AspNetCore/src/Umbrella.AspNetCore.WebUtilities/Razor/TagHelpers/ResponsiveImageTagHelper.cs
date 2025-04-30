@@ -53,7 +53,7 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// <summary>
 	/// Gets the cache.
 	/// </summary>
-	protected IHybridCache Cache { get; }
+	protected IMemoryCache Cache { get; }
 
 	/// <summary>
 	/// Gets the cache key utility.
@@ -83,7 +83,7 @@ public class ResponsiveImageTagHelper : TagHelper
 	public ResponsiveImageTagHelper(
 		ILogger<ResponsiveImageTagHelper> logger,
 		IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
-		IHybridCache cache,
+		IMemoryCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		IResponsiveImageHelper responsiveImageHelper)
 	{
@@ -111,11 +111,16 @@ public class ResponsiveImageTagHelper : TagHelper
 			// Cache this using the image src attribute value and PixelDensities
 			string key = CacheKeyUtility.Create<ResponsiveImageTagHelper>($"{path}:{MaxPixelDensity}");
 
-			string srcsetValue = Cache.GetOrCreate(
+			string? srcsetValue = Cache.GetOrCreate(
 				key,
-				() => ResponsiveImageHelper.GetPixelDensitySrcSetValue(path, MaxPixelDensity, ResolveImageUrl),
-				() => TimeSpan.FromHours(1),
-				priority: CacheItemPriority.Low);
+				entry =>
+				{
+					_ = entry
+						.SetAbsoluteExpiration(TimeSpan.FromHours(1))
+						.SetPriority(CacheItemPriority.Low);
+
+					return ResponsiveImageHelper.GetPixelDensitySrcSetValue(path, MaxPixelDensity, ResolveImageUrl);
+				});
 
 			if (!string.IsNullOrWhiteSpace(srcsetValue))
 				output.Attributes.Add("srcset", srcsetValue);

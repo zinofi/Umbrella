@@ -97,7 +97,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			// We have implemented stampede protection in the ASP.NET Core middleware already.
 
 			if (Logger.IsEnabled(LogLevel.Debug))
-				Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the recoreded state.");
+				Logger.WriteDebug(new { sourceLastModified, options }, "Started generating the image based on the state.");
 
 			//Check if the image exists in the cache
 			DynamicImageItem? dynamicImage = await Cache.GetAsync(options, sourceLastModified, options.Format.ToFileExtensionString(), cancellationToken).ConfigureAwait(false);
@@ -180,11 +180,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 			case DynamicResizeMode.UseHeight:
 				requestedHeight = targetHeight < originalHeight ? targetHeight : originalHeight;
 				break;
-			case DynamicResizeMode.Fill:
-				requestedWidth = targetWidth;
-				requestedHeight = targetHeight;
-				break;
-			case DynamicResizeMode.Uniform:
+			case DynamicResizeMode.ScaleDown:
 				// If both requested dimensions are greater than source image, we don't need to do any resizing.
 				if (targetWidth < originalWidth || targetHeight < originalHeight)
 				{
@@ -211,7 +207,7 @@ public abstract class DynamicImageResizerBase : IDynamicImageResizer
 				}
 
 				break;
-			case DynamicResizeMode.UniformFill:
+			case DynamicResizeMode.Crop:
 				// Resize based on width first. If this means that height is less than target height, we resize based on height.
 				if (targetWidth < originalWidth || targetHeight < originalHeight)
 				{

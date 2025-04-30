@@ -44,7 +44,7 @@ public class DynamicImageTagHelper : DynamicImageTagHelperBase
 	public DynamicImageTagHelper(
 		ILogger<DynamicImageTagHelper> logger,
 		IUmbrellaWebHostingEnvironment umbrellaHostingEnvironment,
-		IHybridCache cache,
+		IMemoryCache cache,
 		ICacheKeyUtility cacheKeyUtility,
 		IResponsiveImageHelper responsiveImageHelper,
 		IDynamicImageUtility dynamicImageUtility,
@@ -75,18 +75,23 @@ public class DynamicImageTagHelper : DynamicImageTagHelperBase
 			string src = BuildCoreTag(output);
 
 			string cacheKey = CacheKeyUtility.Create<DynamicImageTagHelper>($"{src}:{MaxPixelDensity}:{SizeWidths}");
-			string srcsetValue = Cache.GetOrCreate(
+			string? srcsetValue = Cache.GetOrCreate(
 				cacheKey,
-				() => ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, MaxPixelDensity, WidthRequest, HeightRequest, x =>
+				entry => 
 				{
-					var options = new DynamicImageOptions(src, x.imageWidth, x.imageHeight, ResizeMode, ImageFormat);
+					_ = entry
+						.SetAbsoluteExpiration(TimeSpan.FromHours(1))
+						.SetPriority(CacheItemPriority.Low);
 
-					string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
+					return ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, MaxPixelDensity, WidthRequest, HeightRequest, x =>
+					{
+						var options = new DynamicImageOptions(src, x.imageWidth, x.imageHeight, ResizeMode, ImageFormat);
 
-					return ResolveImageUrl(virtualPath);
-				}),
-				() => TimeSpan.FromHours(1),
-				priority: CacheItemPriority.Low);
+						string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
+
+						return ResolveImageUrl(virtualPath);
+					});
+				});
 
 			if (!string.IsNullOrWhiteSpace(srcsetValue))
 				output.Attributes.Add("srcset", srcsetValue);

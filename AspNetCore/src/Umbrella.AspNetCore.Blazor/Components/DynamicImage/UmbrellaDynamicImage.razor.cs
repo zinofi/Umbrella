@@ -42,13 +42,13 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 	public int HeightRequest { get; set; } = 1;
 
 	/// <summary>
-	/// Gets or sets the resize mode. Defaults to <see cref="DynamicResizeMode.UniformFill"/>.
+	/// Gets or sets the resize mode. Defaults to <see cref="DynamicResizeMode.Crop"/>.
 	/// </summary>
 	/// <remarks>
 	/// For more information on how these resize modes work, please refer to the <see cref="DynamicResizeMode"/> code documentation.
 	/// </remarks>
 	[Parameter]
-	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.UniformFill;
+	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.Crop;
 
 	/// <summary>
 	/// Gets or sets the image format. Defaults to <see cref="DynamicImageFormat.Jpeg"/>.

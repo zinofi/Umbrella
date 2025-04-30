@@ -59,7 +59,7 @@ public class ResponsiveImageTagHelperTest
 		=> new(
 			CoreUtilitiesMocks.CreateLogger<ResponsiveImageTagHelper>(),
 			Mocks.CreateUmbrellaWebHostingEnvironment(),
-			CoreUtilitiesMocks.CreateHybridCache(),
+			Mocks.CreateMemoryCache(),
 			CoreUtilitiesMocks.CreateCacheKeyUtility(),
 			CoreUtilitiesMocks.CreateResponsiveImageHelper());
 }
