@@ -29,10 +29,10 @@ public partial class UmbrellaResponsiveImage : ComponentBase
 	public string? CssClass { get; set; }
 
 	/// <summary>
-	/// Gets or sets the maximum pixel density. Defaults to 4.
+	/// Gets or sets the maximum pixel density. Defaults to 3.
 	/// </summary>
 	[Parameter]
-	public virtual int MaxPixelDensity { get; set; } = 4;
+	public virtual int MaxPixelDensity { get; set; } = 3;
 
 	/// <summary>
 	/// Gets or sets the URL.

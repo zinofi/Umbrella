@@ -27,9 +27,9 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// Gets or sets the maximum pixel density. All values below the maximum inclusive will have corresponding image URLs
 	/// generated for them.
 	/// </summary>
-	/// <remarks>Defaults to 4.</remarks>
+	/// <remarks>Defaults to 3.</remarks>
 	[HtmlAttributeName(MaxPixelDensityAttributeName)]
-	public int ImageMaxPixelDensity { get; set; } = 4;
+	public int ImageMaxPixelDensity { get; set; } = 3;
 
 	/// <summary>
 	/// Gets or sets a value indicating whether lazy loading is enabled for the image. Defaults to <see langword="true" />
