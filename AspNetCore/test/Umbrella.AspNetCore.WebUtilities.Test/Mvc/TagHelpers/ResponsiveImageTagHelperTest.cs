@@ -18,7 +18,7 @@ public class ResponsiveImageTagHelperTest
 	[InlineData("/path/to/image.png", 3, "/path/to/image.png 1x, /path/to/image@2x.png 2x, /path/to/image@3x.png 3x")]
 	[InlineData("http://www.google.com/path/to/image.png", 2, "http://www.google.com/path/to/image.png 1x, http://www.google.com/path/to/image@2x.png 2x")]
 	[InlineData("https://www.google.com/path/to/image.png", 2, "https://www.google.com/path/to/image.png 1x, https://www.google.com/path/to/image@2x.png 2x")]
-	public async Task GenerateSuccessAsync(string path, int maxPixelDensity, string expectedOutput)
+	public async Task GenerateSuccessAsync(string? path, int maxPixelDensity, string? expectedOutput)
 	{
 		var tagHelper = CreateTagHelper();
 		tagHelper.ImageMaxPixelDensity = maxPixelDensity;
@@ -27,7 +27,7 @@ public class ResponsiveImageTagHelperTest
 		[
 			new TagHelperAttribute("src", path),
 			new TagHelperAttribute("alt", "hello"),
-			new TagHelperAttribute("max-pixel-density", maxPixelDensity)
+			new TagHelperAttribute("image-density", maxPixelDensity)
 		]);
 
 		var output = Mocks.CreateImageTagHelperOutput(
@@ -37,12 +37,12 @@ public class ResponsiveImageTagHelperTest
 
 		await tagHelper.ProcessAsync(ctx, output);
 
-		Assert.True(output.Content.GetContent().Length == 0);
+		Assert.Equal(0, output.Content.GetContent().Length);
 		Assert.Equal("img", output.TagName);
 
 		bool srcSetShouldExist = !string.IsNullOrWhiteSpace(path) && maxPixelDensity > 1;
 
-		var srcSetAttribute = output.Attributes.SingleOrDefault(x => x.Name == "srcset");
+		var srcSetAttribute = output.Attributes.SingleOrDefault(x => x.Name is "srcset");
 
 		if (srcSetShouldExist)
 		{
@@ -63,7 +63,7 @@ public class ResponsiveImageTagHelperTest
 		[
 			new TagHelperAttribute("src", "/image/test"),
 			new TagHelperAttribute("alt", "hello"),
-			new TagHelperAttribute("max-pixel-density", 12)
+			new TagHelperAttribute("image-density", 12)
 		]);
 		
 		var output = Mocks.CreateImageTagHelperOutput(

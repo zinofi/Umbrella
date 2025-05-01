@@ -174,7 +174,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// </summary>
 	/// <param name="options">The options.</param>
 	/// <returns>The virtual path.</returns>
-	protected virtual string GenerateVirtualPath(DynamicImageOptions options)
+	protected virtual string GenerateVirtualPath(in DynamicImageOptions options)
 	{
 		Guard.IsNotNull(options);
 
