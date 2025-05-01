@@ -22,7 +22,6 @@ namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers;
 /// <seealso cref="ResponsiveImageTagHelper" />
 public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 {
-	#region Protected Constants
 	/// <summary>
 	/// The required attribute names
 	/// </summary>
@@ -41,10 +40,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <summary>
 	/// The resize mode attribute name
 	/// </summary>
-	protected const string ResizeModeAttributeName = "resize-mode";
-	#endregion
-
-	#region Protected Properties		
+	protected const string ResizeModeAttributeName = "resize-mode";	
 	/// <summary>
 	/// Gets the <see cref="IDynamicImageUtility"/>.
 	/// </summary>
@@ -59,7 +55,6 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// Gets the name of the output tag. This is abstract and always overridden.
 	/// </summary>
 	protected abstract string OutputTagName { get; }
-	#endregion
 
 	/// <summary>
 	/// Gets or sets the width request in pixels.
@@ -130,10 +125,10 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	}
 
 	/// <summary>
-	/// Builds the core tag and returns the 'src' attribute.
+	/// Builds the core tag and returns the <c>src</c> attribute.
 	/// </summary>
 	/// <param name="output">A stateful HTML element used to generate an HTML tag.</param>
-	/// <returns>The 'src' attribute of the tag.</returns>
+	/// <returns>The <c>src</c> attribute of the tag.</returns>
 	protected string BuildCoreTag(TagHelperOutput output)
 	{
 		Guard.IsNotNull(output);
@@ -148,7 +143,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 
 		var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
 
-		string x1Url = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
+		string x1Url = GenerateVirtualPath(options);
 
 		_ = output.Attributes.Remove(attrSrc);
 		output.Attributes.Add("src", ResolveImageUrl(x1Url));
@@ -172,5 +167,17 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 			output = SrcPrefix.TrimToLowerInvariant() + output;
 
 		return output;
+	}
+
+	/// <summary>
+	/// Generates the virtual path for the image.
+	/// </summary>
+	/// <param name="options">The options.</param>
+	/// <returns>The virtual path.</returns>
+	protected virtual string GenerateVirtualPath(DynamicImageOptions options)
+	{
+		Guard.IsNotNull(options);
+
+		return DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
 	}
 }

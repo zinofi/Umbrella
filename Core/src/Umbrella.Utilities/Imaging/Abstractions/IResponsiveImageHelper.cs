@@ -6,6 +6,14 @@
 public interface IResponsiveImageHelper
 {
 	/// <summary>
+	/// Applies the pixel density to the image URL. This is used to transform the image URL into a pixel density specific URL.
+	/// </summary>
+	/// <param name="sanitizedImageUrl">The sanitized image URL.</param>
+	/// <param name="pixelDensity">The pixel density.</param>
+	/// <returns>The transformed image URL.</returns>
+	string ApplyPixelDensity(string sanitizedImageUrl, int pixelDensity);
+
+	/// <summary>
 	/// Converts the <paramref name="itemsString"/> to a list of integers. Any items that cannot be parsed are discarded.
 	/// </summary>
 	/// <param name="itemsString">The items string.</param>
@@ -24,9 +32,10 @@ public interface IResponsiveImageHelper
 	/// </summary>
 	/// <param name="imageUrl">The image URL.</param>
 	/// <param name="pixelDensity">The pixel density.</param>
-	/// <param name="pathResolver">The path resolver.</param>
-	/// <returns></returns>
-	string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string>? pathResolver = null);
+	/// <param name="pixelDensityUrlTransformer">The optional pixel density URL transformer. If not provided, this will be applied using the <see cref="ApplyPixelDensity(string, int)"/> method.</param>
+	/// <param name="pathResolver">The optional path resolver.</param>
+	/// <returns>The image URL.</returns>
+	string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, int, string>? pixelDensityUrlTransformer = null, Func<string, string>? pathResolver = null);
 
 	/// <summary>
 	/// Takes the image URL and returns a collection of URLs containing pixel densities between 1 and the specified maximum <paramref name="maxPixelDensity"/>, e.g.
@@ -34,18 +43,20 @@ public interface IResponsiveImageHelper
 	/// </summary>
 	/// <param name="imageUrl">The image URL.</param>
 	/// <param name="maxPixelDensity">The maximum pixel density value inclusive.</param>
+	/// <param name="pixelDensityUrlTransformer">The optional pixel density URL transformer. If not provided, this will be applied using the <see cref="ApplyPixelDensity(string, int)"/> method.</param>
 	/// <param name="pathResolver">The path resolver.</param>
 	/// <returns>The list of image URLs.</returns>
-	IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null);
+	IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, int, string>? pixelDensityUrlTransformer = null, Func<string, string>? pathResolver = null);
 
 	/// <summary>
 	/// Gets a string containing pixel densities which can be used in the srcset attribute of an HTML img tag.
 	/// </summary>
 	/// <param name="imageUrl">The image URL.</param>
 	/// <param name="maxPixelDensity">The maximum pixel density value inclusive.</param>
+	/// <param name="pixelDensityUrlTransformer">The optional pixel density URL transformer. If not provided, this will be applied using the <see cref="ApplyPixelDensity(string, int)"/> method.</param>
 	/// <param name="pathResolver">The path resolver.</param>
 	/// <returns>The srcset string.</returns>
-	string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null);
+	string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, int, string>? pixelDensityUrlTransformer = null, Func<string, string>? pathResolver = null);
 
 	/// <summary>
 	/// Gets a string containing size data which can be used in the srcset attribute of an HTML img tag.

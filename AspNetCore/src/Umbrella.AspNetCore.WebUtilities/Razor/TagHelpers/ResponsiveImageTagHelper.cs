@@ -21,30 +21,22 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// <summary>
 	/// The pixel densities attribute name.
 	/// </summary>
-	protected const string MaxPixelDensityAttributeName = "max-pixel-density";
+	protected const string MaxPixelDensityAttributeName = "image-density";
 
-	/// <summary>
-	/// The enable lazy loading attribute name.
-	/// </summary>
-	protected const string EnableLazyLoadingAttributeName = "enable-lazy-loading";
-
-	#region Public Properties
 	/// <summary>
 	/// Gets or sets the maximum pixel density. All values below the maximum inclusive will have corresponding image URLs
 	/// generated for them.
 	/// </summary>
 	/// <remarks>Defaults to 4.</remarks>
 	[HtmlAttributeName(MaxPixelDensityAttributeName)]
-	public int MaxPixelDensity { get; set; } = 4;
+	public int ImageMaxPixelDensity { get; set; } = 4;
 
 	/// <summary>
-	/// Gets or sets a value indicating whether lazy loading is enabled. Defaults to true.
+	/// Gets or sets a value indicating whether lazy loading is enabled for the image. Defaults to <see langword="true" />
 	/// </summary>
-	[HtmlAttributeName(EnableLazyLoadingAttributeName)]
-	public bool EnableLazyLoading { get; set; } = true;
-	#endregion
-
-	#region Protected Properties		
+	[HtmlAttributeName("image-lazy-loading")]
+	public bool ImageLazyLoading { get; set; } = true;
+	
 	/// <summary>
 	/// Gets the logger.
 	/// </summary>
@@ -69,9 +61,7 @@ public class ResponsiveImageTagHelper : TagHelper
 	/// Gets the responsive image helper.
 	/// </summary>
 	public IResponsiveImageHelper ResponsiveImageHelper { get; }
-	#endregion
-
-	#region Constructors		
+	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ResponsiveImageTagHelper"/> class.
 	/// </summary>
@@ -93,9 +83,7 @@ public class ResponsiveImageTagHelper : TagHelper
 		CacheKeyUtility = cacheKeyUtility;
 		ResponsiveImageHelper = responsiveImageHelper;
 	}
-	#endregion
 
-	#region Overridden Methods
 	/// <inheritdoc />
 	public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
 	{
@@ -109,7 +97,7 @@ public class ResponsiveImageTagHelper : TagHelper
 		if (!string.IsNullOrWhiteSpace(path))
 		{
 			// Cache this using the image src attribute value and PixelDensities
-			string key = CacheKeyUtility.Create<ResponsiveImageTagHelper>($"{path}:{MaxPixelDensity}");
+			string key = CacheKeyUtility.Create<ResponsiveImageTagHelper>($"{path}:{ImageMaxPixelDensity}");
 
 			string? srcsetValue = Cache.GetOrCreate(
 				key,
@@ -119,19 +107,17 @@ public class ResponsiveImageTagHelper : TagHelper
 						.SetAbsoluteExpiration(TimeSpan.FromHours(1))
 						.SetPriority(CacheItemPriority.Low);
 
-					return ResponsiveImageHelper.GetPixelDensitySrcSetValue(path, MaxPixelDensity, ResolveImageUrl);
+					return ResponsiveImageHelper.GetPixelDensitySrcSetValue(path, ImageMaxPixelDensity, ApplyPixelDensity, ResolveImageUrl);
 				});
 
 			if (!string.IsNullOrWhiteSpace(srcsetValue))
 				output.Attributes.Add("srcset", srcsetValue);
 
-			if (EnableLazyLoading)
+			if (ImageLazyLoading)
 				output.Attributes.Add("loading", "lazy");
 		}
 	}
-	#endregion
 
-	#region Protected Methods		
 	/// <summary>
 	/// Resolves the image URL.
 	/// </summary>
@@ -146,5 +132,13 @@ public class ResponsiveImageTagHelper : TagHelper
 
 		return UmbrellaHostingEnvironment.MapWebPath(url);
 	}
-	#endregion
+
+	/// <summary>
+	/// Applies the pixel density to the image URL. This is used to transform the image URL into a pixel density specific URL.
+	/// </summary>
+	/// <param name="sanitizedImageUrl">The sanitized image URL.</param>
+	/// <param name="pixelDensity">The pixel density.</param>
+	/// <returns>The transformed image URL.</returns>
+	/// <remarks>This uses the <see cref="IResponsiveImageHelper.ApplyPixelDensity"/> method to apply the pixel density internally unless overridden.</remarks>
+	protected virtual string ApplyPixelDensity(string sanitizedImageUrl, int pixelDensity) => ResponsiveImageHelper.ApplyPixelDensity(sanitizedImageUrl, pixelDensity);
 }

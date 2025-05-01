@@ -21,7 +21,7 @@ public class ResponsiveImageTagHelperTest
 	public async Task GenerateSuccessAsync(string path, int maxPixelDensity, string expectedOutput)
 	{
 		var tagHelper = CreateTagHelper();
-		tagHelper.MaxPixelDensity = maxPixelDensity;
+		tagHelper.ImageMaxPixelDensity = maxPixelDensity;
 
 		var ctx = Mocks.CreateTagHelperContext(
 		[

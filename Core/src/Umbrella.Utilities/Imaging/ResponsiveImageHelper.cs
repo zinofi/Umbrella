@@ -35,7 +35,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 		try
 		{
 			if (string.IsNullOrWhiteSpace(itemsString))
-				return Array.Empty<int>();
+				return [];
 
 			string[] items = itemsString.Split(_separatorCharacterArray, StringSplitOptions.RemoveEmptyEntries);
 
@@ -54,7 +54,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 		try
 		{
-			return _pixelDensityDictionary.GetOrAdd(maxPixelDensity, key => Enumerable.Range(1, maxPixelDensity).ToArray());
+			return _pixelDensityDictionary.GetOrAdd(maxPixelDensity, key => [.. Enumerable.Range(1, maxPixelDensity)]);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { maxPixelDensity }))
 		{
@@ -63,7 +63,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	}
 
 	/// <inheritdoc />
-	public string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null)
+	public string GetPixelDensitySrcSetValue(string imageUrl, int maxPixelDensity, Func<string, int, string>? pixelDensityUrlTransformer = null, Func<string, string>? pathResolver = null)
 	{
 		Guard.IsNotNullOrWhiteSpace(imageUrl);
 		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1);
@@ -77,17 +77,11 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			var (sanitizedImageUrl, qs) = SplitImageUrl(imageUrl);
 
-			int densityIndex = sanitizedImageUrl.LastIndexOf('.');
-
-			if (densityIndex is -1)
-				return "Invalid image path";
-
 			IEnumerable<string> srcsetImagePaths =
 				from density in lstPixelDensity
 				orderby density
-				let densityX = $"{density}x"
-				let highResImagePath = density > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{densityX}") : sanitizedImageUrl
-				select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null) + " " + densityX;
+				let highResImagePath = density > 1 ? pixelDensityUrlTransformer?.Invoke(sanitizedImageUrl, density) ?? ApplyPixelDensity(sanitizedImageUrl, density) : sanitizedImageUrl
+				select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null) + " " + $"{density}x";
 
 			return string.Join(", ", srcsetImagePaths);
 		}
@@ -98,7 +92,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	}
 
 	/// <inheritdoc />
-	public IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, string>? pathResolver = null)
+	public IReadOnlyCollection<string> GetPixelDensityImageUrls(string imageUrl, int maxPixelDensity, Func<string, int, string>? pixelDensityUrlTransformer = null, Func<string, string>? pathResolver = null)
 	{
 		Guard.IsNotNullOrWhiteSpace(imageUrl);
 		Guard.IsGreaterThanOrEqualTo(maxPixelDensity, 1);
@@ -109,16 +103,10 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 
 			var (sanitizedImageUrl, qs) = SplitImageUrl(imageUrl);
 
-			int densityIndex = sanitizedImageUrl.LastIndexOf('.');
-
-			if (densityIndex is -1)
-				throw new UmbrellaException("The image URL must contain a '.'");
-
 			IEnumerable<string> paths =
 				from density in lstPixelDensity
 				orderby density
-				let densityX = $"{density}x"
-				let highResImagePath = density > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{densityX}") : sanitizedImageUrl
+				let highResImagePath = density > 1 ? pixelDensityUrlTransformer?.Invoke(sanitizedImageUrl, density) ?? ApplyPixelDensity(sanitizedImageUrl, density) : sanitizedImageUrl
 				select (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null);
 
 			return paths.ToArray();
@@ -130,7 +118,7 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 	}
 
 	/// <inheritdoc />
-	public string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, string>? pathResolver = null)
+	public string GetPixelDensityImageUrl(string imageUrl, int pixelDensity, Func<string, int, string>? pixelDensityUrlTransformer = null, Func<string, string>? pathResolver = null)
 	{
 		Guard.IsNotNullOrWhiteSpace(imageUrl);
 		Guard.IsGreaterThanOrEqualTo(pixelDensity, 1);
@@ -139,18 +127,34 @@ public class ResponsiveImageHelper : IResponsiveImageHelper
 		{
 			var (sanitizedImageUrl, qs) = SplitImageUrl(imageUrl);
 
-			int densityIndex = sanitizedImageUrl.LastIndexOf('.');
-
-			if (densityIndex is -1)
-				throw new UmbrellaException("The image URL must contain a '.'");
-
-			string highResImagePath = pixelDensity > 1 ? sanitizedImageUrl.Insert(densityIndex, $"@{pixelDensity}x") : sanitizedImageUrl;
+			string highResImagePath = pixelDensity > 1 ? pixelDensityUrlTransformer?.Invoke(sanitizedImageUrl, pixelDensity) ?? ApplyPixelDensity(sanitizedImageUrl, pixelDensity) : sanitizedImageUrl;
 
 			return (pathResolver?.Invoke(highResImagePath) ?? highResImagePath) + (!string.IsNullOrEmpty(qs) ? "?" + qs : null);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { imageUrl, pixelDensity }))
 		{
 			throw new UmbrellaException("There has been a problem creating the url.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public string ApplyPixelDensity(string sanitizedImageUrl, int pixelDensity)
+	{
+		Guard.IsNotNullOrEmpty(sanitizedImageUrl);
+		Guard.IsGreaterThanOrEqualTo(pixelDensity, 1);
+
+		try
+		{
+			int index = sanitizedImageUrl.LastIndexOf('.');
+
+			if (index is not >= 0)
+				throw new InvalidOperationException("The image URL does not contain a file extension.");
+
+			return sanitizedImageUrl.Insert(index, $"@{pixelDensity}x");
+		}
+		catch (Exception exc) when (_logger.WriteError(exc, new { sanitizedImageUrl, pixelDensity }))
+		{
+			throw new UmbrellaException("There has been a problem applying the pixel density", exc);
 		}
 	}
 

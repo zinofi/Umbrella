@@ -27,7 +27,7 @@ public enum DynamicResizeMode
 	/// <summary>
 	/// Similar to <see cref="ScaleDown"/>, but the image is resized to the target width or height regardless of the original size to be as large as possible.
 	/// </summary>
-	// TODO: Contain = 3,
+	// TODO: Contain = 3, - Bother?
 
 	/// <summary>
 	/// Resizes the image uniformly and tries to meet both the target height and width exactly by centrally cropping the image to maintain the aspect ratio.
@@ -40,5 +40,21 @@ public enum DynamicResizeMode
 	/// <summary>
 	/// Similar to <see cref="Crop"/>, but the image is resized to the target width or height regardless of the original size to be as large as possible.
 	/// </summary>
-	// TODO: Cover = 5
+	// TODO: Cover = 5 - Bother?
+
+	/// <summary>
+	/// Resizes the image uniformly and tries to meet both the target height and width exactly by cropping the image to maintain the aspect ratio.
+	/// Resizing is attempted using the target width first.
+	/// If that would result in the height exceeding the target height, resizing is done using the target height instead. The width is then cropped either side of an image focal point.
+	/// If not, the resizing is done using the target width with the height then being cropped either side of an image focal point.
+	/// </summary>
+	// TODO: CropFocalPoint = 6,
+
+	/// <summary>
+	/// Resizes the image uniformly and tries to meet both the target height and width exactly by cropping the image to maintain the aspect ratio.
+	/// Resizing is attempted using the target width first.
+	/// If that would result in the height exceeding the target height, resizing is done using the target height instead. The width is then cropped either side of an AI determined focal point.
+	/// If not, the resizing is done using the target width with the height then being cropped either side of an AI determined focal point.
+	/// </summary>
+	// TODO: CropAI = 7,
 }

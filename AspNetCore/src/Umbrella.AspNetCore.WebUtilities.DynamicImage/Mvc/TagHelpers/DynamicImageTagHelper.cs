@@ -74,7 +74,7 @@ public class DynamicImageTagHelper : DynamicImageTagHelperBase
 		{
 			string src = BuildCoreTag(output);
 
-			string cacheKey = CacheKeyUtility.Create<DynamicImageTagHelper>($"{src}:{MaxPixelDensity}:{SizeWidths}");
+			string cacheKey = CacheKeyUtility.Create<DynamicImageTagHelper>($"{src}:{ImageMaxPixelDensity}:{SizeWidths}");
 			string? srcsetValue = Cache.GetOrCreate(
 				cacheKey,
 				entry => 
@@ -83,11 +83,11 @@ public class DynamicImageTagHelper : DynamicImageTagHelperBase
 						.SetAbsoluteExpiration(TimeSpan.FromHours(1))
 						.SetPriority(CacheItemPriority.Low);
 
-					return ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, MaxPixelDensity, WidthRequest, HeightRequest, x =>
+					return ResponsiveImageHelper.GetSizeSrcSetValue(src, SizeWidths, ImageMaxPixelDensity, WidthRequest, HeightRequest, x =>
 					{
 						var options = new DynamicImageOptions(src, x.imageWidth, x.imageHeight, ResizeMode, ImageFormat);
 
-						string virtualPath = DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
+						string virtualPath = GenerateVirtualPath(options);
 
 						return ResolveImageUrl(virtualPath);
 					});
