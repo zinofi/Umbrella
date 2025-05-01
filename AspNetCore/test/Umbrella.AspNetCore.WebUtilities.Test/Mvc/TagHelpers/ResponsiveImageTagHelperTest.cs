@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.Internal.Mocks;
+using Umbrella.Utilities.Exceptions;
 using Xunit;
 
 namespace Umbrella.AspNetCore.WebUtilities.Test.Mvc.TagHelpers;
@@ -15,7 +16,6 @@ public class ResponsiveImageTagHelperTest
 	[InlineData("/path/to/image.png", 1, null)]
 	[InlineData("/path/to/image.png", 2, "/path/to/image.png 1x, /path/to/image@2x.png 2x")]
 	[InlineData("/path/to/image.png", 3, "/path/to/image.png 1x, /path/to/image@2x.png 2x, /path/to/image@3x.png 3x")]
-	[InlineData("/path/to/imagepng", 2, "Invalid image path")]
 	[InlineData("http://www.google.com/path/to/image.png", 2, "http://www.google.com/path/to/image.png 1x, http://www.google.com/path/to/image@2x.png 2x")]
 	[InlineData("https://www.google.com/path/to/image.png", 2, "https://www.google.com/path/to/image.png 1x, https://www.google.com/path/to/image@2x.png 2x")]
 	public async Task GenerateSuccessAsync(string path, int maxPixelDensity, string expectedOutput)
@@ -54,6 +54,25 @@ public class ResponsiveImageTagHelperTest
 			Assert.Null(srcSetAttribute);
 		}
 	}
+
+	[Fact]
+	public async Task GenerateFailedAsync() => await Assert.ThrowsAsync<UmbrellaException>(async () =>
+	{
+		var tagHelper = CreateTagHelper();
+		var ctx = Mocks.CreateTagHelperContext(
+		[
+			new TagHelperAttribute("src", "/image/test"),
+			new TagHelperAttribute("alt", "hello"),
+			new TagHelperAttribute("max-pixel-density", 12)
+		]);
+		
+		var output = Mocks.CreateImageTagHelperOutput(
+		[
+			new TagHelperAttribute("alt", "hello")
+		], "img");
+
+		await tagHelper.ProcessAsync(ctx, output);
+	});
 
 	private static ResponsiveImageTagHelper CreateTagHelper()
 		=> new(
