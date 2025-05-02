@@ -132,8 +132,12 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	protected string BuildCoreTag(TagHelperOutput output)
 	{
 		Guard.IsNotNull(output);
-		Guard.IsGreaterThan(WidthRequest, 0);
-		Guard.IsGreaterThan(HeightRequest, 0);
+
+		if (ResizeMode is not DynamicResizeMode.UseWidth && HeightRequest <= 0)
+			throw new InvalidOperationException($"A value for {nameof(HeightRequest)} must be provided when the resize mode is anything other than {nameof(DynamicResizeMode.UseWidth)}");
+
+		if (ResizeMode is not DynamicResizeMode.UseHeight && WidthRequest <= 0)
+			throw new InvalidOperationException($"A value for {nameof(WidthRequest)} must be provided when the resize mode is anything other than {nameof(DynamicResizeMode.UseHeight)}");
 
 		TagHelperAttribute attrSrc = output.Attributes["src"];
 		string? src = attrSrc?.Value?.ToString()?.Trim();
