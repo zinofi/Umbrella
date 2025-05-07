@@ -36,11 +36,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// The height request attribute name
 	/// </summary>
 	protected const string HeightRequestAttributeName = "height-request";
-
-	/// <summary>
-	/// The resize mode attribute name
-	/// </summary>
-	protected const string ResizeModeAttributeName = "resize-mode";	
+	
 	/// <summary>
 	/// Gets the <see cref="IDynamicImageUtility"/>.
 	/// </summary>
@@ -74,13 +70,26 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <remarks>
 	/// For more information on how these resize modes work, please refer to the <see cref="DynamicResizeMode"/> code documentation.
 	/// </remarks>
-	[HtmlAttributeName(ResizeModeAttributeName)]
 	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.Crop;
+
+	/// <summary>
+	/// Gets or sets the quality request. This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <see langword="100" />.
+	/// </summary>
+	public int QualityRequest { get; set; } = 100;
+
+	/// <summary>
+	/// Gets or sets the normalised X coordinate of the focal point for the image, between 0 and 1 starting from the left of the image.
+	/// </summary>
+	public float? FocalPointX { get; set; }
+
+	/// <summary>
+	/// Gets or sets the normalised Y coordinate of the focal point for the image, between 0 and 1 starting from the top of the image.
+	/// </summary>
+	public float? FocalPointY { get; set; }
 
 	/// <summary>
 	/// Gets or sets the string that is prepended onto the value of the "src" attribute.
 	/// </summary>
-	[HtmlAttributeName("src-prefix")]
 	public string? SrcPrefix { get; set; }
 
 	/// <summary>
@@ -145,7 +154,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 		if (string.IsNullOrEmpty(src))
 			throw new UmbrellaWebException("src cannot be null or empty.");
 
-		var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
+		var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat, QualityRequest, FocalPointX, FocalPointY);
 
 		string x1Url = GenerateVirtualPath(options);
 

@@ -45,12 +45,12 @@ public readonly record struct DynamicImageOptions
 	/// <summary>
 	/// Normalised X coordinate of the focal point for the image, between 0 and 1 starting from the left of the image.
 	/// </summary>
-	public int? FocalPointX { get; }
+	public float? FocalPointX { get; }
 
 	/// <summary>
 	/// Normalised Y coordinate of the focal point for the image, between 0 and 1 starting from the top of the image.
 	/// </summary>
-	public int? FocalPointY { get; }
+	public float? FocalPointY { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageOptions"/> struct.
@@ -70,8 +70,8 @@ public readonly record struct DynamicImageOptions
 		DynamicResizeMode resizeMode,
 		DynamicImageFormat format,
 		int qualityRequest = 100,
-		int? focalPointX = null,
-		int? focalPointY = null)
+		float? focalPointX = null,
+		float? focalPointY = null)
 	{
 		Guard.IsBetweenOrEqualTo(qualityRequest, 1, 100);
 
@@ -98,9 +98,7 @@ public readonly record struct DynamicImageOptions
 	/// Performs an explicit conversion from <see cref="DynamicImageOptions"/> to <see cref="DynamicImageMapping"/>.
 	/// </summary>
 	/// <param name="options">The options.</param>
-	/// <returns>
-	/// The result of the conversion.
-	/// </returns>
+	/// <returns>The <see cref="DynamicImageMapping"/> instance.</returns>
 	public static explicit operator DynamicImageMapping(in DynamicImageOptions options) => new(options.Width, options.Height, options.ResizeMode, options.Format);
 
 	/// <summary>
@@ -111,4 +109,11 @@ public readonly record struct DynamicImageOptions
 	///   <c>true</c> if the specified options is empty; otherwise, <c>false</c>.
 	/// </returns>
 	public static bool IsEmpty(in DynamicImageOptions options) => options == default;
+
+	/// <summary>
+	/// Converts the specified options to a <see cref="DynamicImageMapping"/> instance.
+	/// </summary>
+	/// <param name="options">The options.</param>
+	/// <returns>The <see cref="DynamicImageMapping"/> instance.</returns>
+	public static DynamicImageMapping ToDynamicImageMapping(in DynamicImageOptions options) => (DynamicImageMapping)options;
 }

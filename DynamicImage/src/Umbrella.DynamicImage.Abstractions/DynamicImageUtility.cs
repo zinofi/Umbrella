@@ -198,6 +198,7 @@ public class DynamicImageUtility : IDynamicImageUtility
 
 			string originalExtension = Path.GetExtension(path).ToLowerInvariant().Remove(0, 1);
 
+			// TODO: This needs to be extended to include the quality request and focal point
 			string virtualPath = string.Format(CultureInfo.InvariantCulture,
 				VirtualPathFormat,
 				dynamicImagePathPrefix,
