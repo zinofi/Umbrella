@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using CommunityToolkit.Diagnostics;
 
 namespace Umbrella.DynamicImage.Abstractions;
 
@@ -40,7 +41,17 @@ public readonly record struct DynamicImageOptions
 	/// This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <c>100</c>.
 	/// </remarks>
 	public int QualityRequest { get; } = 100;
-	
+
+	/// <summary>
+	/// Normalised X coordinate of the focal point for the image, between 0 and 1 starting from the left of the image.
+	/// </summary>
+	public int? FocalPointX { get; }
+
+	/// <summary>
+	/// Normalised Y coordinate of the focal point for the image, between 0 and 1 starting from the top of the image.
+	/// </summary>
+	public int? FocalPointY { get; }
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageOptions"/> struct.
 	/// </summary>
@@ -49,21 +60,35 @@ public readonly record struct DynamicImageOptions
 	/// <param name="height">The height.</param>
 	/// <param name="resizeMode">The resize mode.</param>
 	/// <param name="format">The format.</param>
+	/// <param name="qualityRequest"></param>
+	/// <param name="focalPointX"></param>
+	/// <param name="focalPointY"></param>
 	public DynamicImageOptions(
 		string path,
 		int width,
 		int height,
 		DynamicResizeMode resizeMode,
-		DynamicImageFormat format)
+		DynamicImageFormat format,
+		int qualityRequest = 100,
+		int? focalPointX = null,
+		int? focalPointY = null)
 	{
+		Guard.IsBetweenOrEqualTo(qualityRequest, 1, 100);
+
+		if (focalPointY.HasValue)
+			Guard.IsBetweenOrEqualTo(focalPointY.Value, 0, 1);
+
+		if (focalPointX.HasValue)
+			Guard.IsBetweenOrEqualTo(focalPointX.Value, 0, 1);
+
 		SourcePath = path;
 		Width = width;
 		Height = height;
 		ResizeMode = resizeMode;
 		Format = format;
-
-		// TODO: Wire up the QualityRequest property. Guard.
-		// Will take considerable work to make all the upstream changes to utilise correctly!!
+		QualityRequest = qualityRequest;
+		FocalPointX = focalPointX;
+		FocalPointY = focalPointY;
 	}
 
 	/// <summary>
@@ -74,7 +99,7 @@ public readonly record struct DynamicImageOptions
 	/// The result of the conversion.
 	/// </returns>
 	public static explicit operator DynamicImageMapping(in DynamicImageOptions options) => new(options.Width, options.Height, options.ResizeMode, options.Format);
-	
+
 	/// <summary>
 	/// Determines whether the specified options is empty.
 	/// </summary>

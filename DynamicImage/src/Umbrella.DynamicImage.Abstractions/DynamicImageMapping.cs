@@ -2,6 +2,8 @@
 
 namespace Umbrella.DynamicImage.Abstractions;
 
+// TODO: This will need to be updated to include quality, focal point, etc.
+
 /// <summary>
 /// Used to specify the details of a valid Dynamic Image mapping. One or more of these mapping are used to restrict what Dynamic Images can be generated.
 /// This is primarily a mechanism to prevent user tampering when parsing image URLs to ensure only image sizes the target application needs are generated.
