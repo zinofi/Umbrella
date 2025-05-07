@@ -75,6 +75,9 @@ public readonly record struct DynamicImageOptions
 	{
 		Guard.IsBetweenOrEqualTo(qualityRequest, 1, 100);
 
+		if (focalPointX.HasValue != focalPointY.HasValue)
+			throw new ArgumentException($"Both {nameof(FocalPointX)} and {nameof(FocalPointY)} must be defined if either is specified.");
+
 		if (focalPointY.HasValue)
 			Guard.IsBetweenOrEqualTo(focalPointY.Value, 0, 1);
 
