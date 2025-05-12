@@ -61,7 +61,7 @@ public static class IApplicationBuilderExtensions
 	/// </summary>
 	/// <param name="builder">The builder.</param>
 	/// <returns>The application builder.</returns>
-	[Obsolete("This will be removed in a future version.")]
+	[Obsolete("This will be removed in a future version.", true)]
 	public static IApplicationBuilder UseUmbrellaFrontEndCompression(this IApplicationBuilder builder) => builder.UseMiddleware<FrontEndCompressionMiddleware>();
 
 	/// <summary>
@@ -95,6 +95,7 @@ public static class IApplicationBuilderExtensions
 	/// <param name="clientProjectSuffix">The client project suffix.</param>
 	/// <param name="serverProjectSuffix">The server project suffix.</param>
 	/// <returns>The <see cref="WebApplication"/> instance.</returns>
+	[Obsolete("This issue has been fixed in ASP.NET meaning this workaround is no longer required.", true)]
 	public static WebApplication EnsureBlazorDevelopmentPaths(this WebApplication app, string clientProjectSuffix = "Client", string serverProjectSuffix = "Server")
 	{
 		Guard.IsNotNull(app);
@@ -145,6 +146,7 @@ public static class IApplicationBuilderExtensions
 	/// <param name="pathPrefix">The path prefix for API endpoints.</param>
 	/// <param name="fallbackLanguageCode">The fallback language code.</param>
 	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	[Obsolete("Use the Request Localization Middleware in ASP.NET")]
 	public static IApplicationBuilder UseUmbrellaApiAcceptLanguage(this IApplicationBuilder builder, string pathPrefix = "/api", string fallbackLanguageCode = "en")
 	{
 		return builder.UseWhen(x => x.Request.Path.StartsWithSegments(pathPrefix, StringComparison.OrdinalIgnoreCase), app => app.Use((context, next) =>
@@ -169,6 +171,7 @@ public static class IApplicationBuilderExtensions
 	/// <param name="builder">The builder.</param>
 	/// <param name="useTwoLetterISOLanguageName">Set to <see langword="true" /> to use the two-letter ISO language name; otherwise the full culture name will be used.</param>
 	/// <returns>The <see cref="IApplicationBuilder"/> instance.</returns>
+	[Obsolete("Use the Request Localization Middleware in ASP.NET")]
 	public static IApplicationBuilder UseUmbrellaContentLanguage(this IApplicationBuilder builder, bool useTwoLetterISOLanguageName = true)
 	{
 		return builder.Use((context, next) =>
