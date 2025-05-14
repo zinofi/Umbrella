@@ -118,8 +118,7 @@ public class MauiValidationUtility : IMauiValidationUtility
 		string errorControlName = $"{propertyName.Replace(".", "_", StringComparison.Ordinal)}{ValidationLabelSuffix}";
 		var control = page.FindByName<Label>(errorControlName);
 
-		if (control is not null)
-			control.IsVisible = false;
+		_ = control?.IsVisible = false;
 	}
 
 	/// <inheritdoc />

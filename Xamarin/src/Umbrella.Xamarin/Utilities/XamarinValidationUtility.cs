@@ -117,10 +117,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 		string errorControlName = $"{propertyName.Replace(".", "_")}{ValidationLabelSuffix}";
 		var control = page.FindByName<Label>(errorControlName);
 
-		if (control is not null)
-		{
-			control.IsVisible = false;
-		}
+		_ = control?.IsVisible = false;
 	}
 
 	/// <inheritdoc />
