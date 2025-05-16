@@ -45,12 +45,12 @@ public readonly record struct DynamicImageOptions
 	/// <summary>
 	/// Normalised X coordinate of the focal point for the image, between 0 and 1 starting from the left of the image.
 	/// </summary>
-	public float? FocalPointX { get; }
+	public double? FocalPointX { get; }
 
 	/// <summary>
 	/// Normalised Y coordinate of the focal point for the image, between 0 and 1 starting from the top of the image.
 	/// </summary>
-	public float? FocalPointY { get; }
+	public double? FocalPointY { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DynamicImageOptions"/> struct.
@@ -70,8 +70,8 @@ public readonly record struct DynamicImageOptions
 		DynamicResizeMode resizeMode,
 		DynamicImageFormat format,
 		int qualityRequest = 100,
-		float? focalPointX = null,
-		float? focalPointY = null)
+		double? focalPointX = null,
+		double? focalPointY = null)
 	{
 		Guard.IsBetweenOrEqualTo(qualityRequest, 1, 100);
 

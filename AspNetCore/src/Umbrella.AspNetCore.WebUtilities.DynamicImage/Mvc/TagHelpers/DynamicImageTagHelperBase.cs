@@ -80,12 +80,12 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// <summary>
 	/// Gets or sets the normalised X coordinate of the focal point for the image, between 0 and 1 starting from the left of the image.
 	/// </summary>
-	public float? FocalPointX { get; set; }
+	public double? FocalPointX { get; set; }
 
 	/// <summary>
 	/// Gets or sets the normalised Y coordinate of the focal point for the image, between 0 and 1 starting from the top of the image.
 	/// </summary>
-	public float? FocalPointY { get; set; }
+	public double? FocalPointY { get; set; }
 
 	/// <summary>
 	/// Gets or sets the string that is prepended onto the value of the "src" attribute.
