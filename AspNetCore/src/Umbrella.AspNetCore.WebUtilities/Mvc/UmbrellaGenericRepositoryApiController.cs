@@ -466,7 +466,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		=> ReadEndpointEnabled
 		? ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 			id,
-			Repository,
+			LoadReadEntityAsync,
 			cancellationToken,
 			null,
 			(entity, model) => AfterReadEntityAsync(entity, model, cancellationToken),
@@ -596,21 +596,33 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
     /// <returns>The paginated collection of entities from the <typeparamref name="TRepository"/>.</returns>
     protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
 
-    /// <summary>
-    /// This is called by the <c>SearchSlim</c> endpoint immediately after the <typeparamref name="TPaginatedResultModel"/> has been created containing the mapped
+	/// <summary>
+	/// Loads the entity with the specified <paramref name="id"/> from the <typeparamref name="TRepository"/> using the specified parameters.
+	/// </summary>
+	/// <param name="id">The identifier.</param>
+	/// <param name="trackChanges">Whether to track changes.</param>
+	/// <param name="includeMap">The include map.</param>
+	/// <param name="options">The options.</param>
+	/// <param name="childOptions">The child options.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The entity with the specified <paramref name="id"/>.</returns>
+	protected virtual Task<TEntity?> LoadReadEntityAsync(TEntityKey id, bool trackChanges, IncludeMap<TEntity>? includeMap, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindByIdAsync(id, trackChanges, includeMap, options, childOptions, cancellationToken);
+
+	/// <summary>
+	/// This is called by the <c>SearchSlim</c> endpoint immediately after the <typeparamref name="TPaginatedResultModel"/> has been created containing the mapped
 	/// entity instances onto <typeparamref name="TSlimModel"/> instances.
-    /// </summary>
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output model.
 	/// </remarks>
-    /// <param name="results">The results.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="sorters">The sorters.</param>
-    /// <param name="filters">The filters.</param>
-    /// <param name="filterCombinator">The filter combinator.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An Task that completes when the operation has completed.</returns>
-    protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
+	/// <param name="results">The results.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="sorters">The sorters.</param>
+	/// <param name="filters">The filters.</param>
+	/// <param name="filterCombinator">The filter combinator.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An Task that completes when the operation has completed.</returns>
+	protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
 
     /// <summary>
     /// This is called by the <c>SearchSlim</c> endpoint immediately after the <see cref="AfterCreateSearchSlimModelAsync"/> has been called and is called for each entity / model pair.

@@ -233,7 +233,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
 	/// <typeparam name="TModel">The type of the model.</typeparam>
 	/// <param name="id">The identifier.</param>
-	/// <param name="repository">The repository.</param>
+	/// <param name="loadReadEntityAsyncDelegate">The delegate used to load the entity.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="mapperCallback">The mapper callback. If not specified, <see cref="Mapper"/> is used to perform the mapping.</param>
 	/// <param name="afterReadEntityCallback">The after read entity callback.</param>
@@ -249,7 +249,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// </returns>
 	protected async Task<IActionResult> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 		TEntityKey id,
-		Lazy<TRepository> repository,
+		Func<TEntityKey, bool, IncludeMap<TEntity>?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<TEntity?>> loadReadEntityAsyncDelegate,
 		CancellationToken cancellationToken,
 		Func<TEntity, TModel>? mapperCallback = null,
 		Func<TEntity, TModel, Task<IActionResult?>>? afterReadEntityCallback = null,
@@ -265,7 +265,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TRepositoryOptions : RepoOptions, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(repository);
+		Guard.IsNotNull(loadReadEntityAsyncDelegate);
 
 		ISynchronizationRoot? syncRoot = null;
 
@@ -274,7 +274,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (synchronizeAccess && id.ToString() is string syncKey)
 				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
 
-			TEntity? item = await repository.Value.FindByIdAsync(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
+			TEntity? item = await loadReadEntityAsyncDelegate(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
 
 			if (item is null)
 				return NotFound("The item could not be found. Please go back to the listing screen and try again.");
