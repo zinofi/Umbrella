@@ -9,7 +9,7 @@
             bool isCollapsible = option.Children is { Count: > 0 } && option.IsCollapsible;
             bool isCollapsed = isCollapsible && option.IsCollapsed;
 
-            <li class="u-checkbox-group__item @(isCollapsed ? "u-checkbox-group__item--collapsed" : "")" @key="option">
+            <li class="u-checkbox-group__item @(isCollapsed ? "u-checkbox-group__item--collapsed" : "")">
                 <div class="u-checkbox-group__checkbox-container">
                     <UmbrellaCheckbox Value="option.IsSelected" ValueExpression="() => option.IsSelected" ValueChanged="async () => await OnOptionSelectionChangedAsync(option)" Text="@option.Text" Disabled="@Disabled" />
                     @if (isCollapsible)
