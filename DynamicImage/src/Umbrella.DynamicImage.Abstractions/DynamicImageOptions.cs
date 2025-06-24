@@ -34,6 +34,11 @@ public readonly record struct DynamicImageOptions
 	/// </summary>
 	public string SourcePath { get; }
 
+    /// <summary>
+    /// Gets the filter quality for resizing the image.
+    /// </summary>
+    public DynamicImageFilterQuality FilterQuality { get; } = DynamicImageFilterQuality.Medium;
+
 	/// <summary>
 	/// Get the quality request.
 	/// </summary>
@@ -60,6 +65,7 @@ public readonly record struct DynamicImageOptions
 	/// <param name="height">The height.</param>
 	/// <param name="resizeMode">The resize mode.</param>
 	/// <param name="format">The format.</param>
+	/// <param name="filterQuality">The options for filter quality when resizing.</param>
 	/// <param name="qualityRequest"></param>
 	/// <param name="focalPointX"></param>
 	/// <param name="focalPointY"></param>
@@ -69,6 +75,7 @@ public readonly record struct DynamicImageOptions
 		int height,
 		DynamicResizeMode resizeMode,
 		DynamicImageFormat format,
+		DynamicImageFilterQuality filterQuality = DynamicImageFilterQuality.Medium,
 		int qualityRequest = 100,
 		double? focalPointX = null,
 		double? focalPointY = null)
@@ -89,6 +96,7 @@ public readonly record struct DynamicImageOptions
 		Height = height;
 		ResizeMode = resizeMode;
 		Format = format;
+		FilterQuality = filterQuality;
 		QualityRequest = qualityRequest;
 		FocalPointX = focalPointX;
 		FocalPointY = focalPointY;

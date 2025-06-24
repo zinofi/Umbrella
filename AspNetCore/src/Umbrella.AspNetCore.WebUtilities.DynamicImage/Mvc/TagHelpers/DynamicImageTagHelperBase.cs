@@ -72,6 +72,15 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	/// </remarks>
 	public DynamicResizeMode ResizeMode { get; set; } = DynamicResizeMode.Crop;
 
+    /// <summary>
+    /// Gets or sets the filter quality for the dynamic image. Defaults to <see cref="DynamicImageFilterQuality.Medium"/>.
+    /// </summary>
+    /// <remarks>
+    /// The filter quality determines the level of filtering applied during image resizing.
+    /// Higher quality settings may result in better visual output but can increase processing time.
+    /// </remarks>
+    public DynamicImageFilterQuality FilterQuality { get; set; } = DynamicImageFilterQuality.Medium;
+
 	/// <summary>
 	/// Gets or sets the quality request. This is a value between 0-100. The quality is a suggestion, and not all formats (for example, PNG) or image libraries (e.g. FreeImage) respect or support it. Defaults to <see langword="100" />.
 	/// </summary>
@@ -154,7 +163,7 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 		if (string.IsNullOrEmpty(src))
 			throw new UmbrellaWebException("src cannot be null or empty.");
 
-		var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat, QualityRequest, FocalPointX, FocalPointY);
+		var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat, FilterQuality, QualityRequest, FocalPointX, FocalPointY);
 
 		string x1Url = GenerateVirtualPath(options);
 
