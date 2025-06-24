@@ -78,7 +78,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 	// into account the resize mode.
 	// TODO: Build in auto-rotate capability - see https://github.com/mono/SkiaSharp/issues/836
 	/// <inheritdoc />
-	public override (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, int qualityRequest = 75)
+	public override (byte[] resizedBytes, int resizedWidth, int resizedHeight) ResizeImage(byte[] originalImage, int width, int height, DynamicResizeMode resizeMode, DynamicImageFormat format, DynamicImageFilterQuality filterQuality = DynamicImageFilterQuality.Medium, int qualityRequest = 75)
 	{
 		Guard.IsNotNull(originalImage);
 		Guard.HasSizeGreaterThan(originalImage, 0);
@@ -109,7 +109,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 					_ = image.ExtractSubset(imageToResize, cropRect);
 				}
 
-				using var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), SKSamplingOptions.Default);
+				using var resizedImage = imageToResize.Resize(new SKImageInfo(result.width, result.height), filterQuality.ToSamplingOptions());
 				using var outputImage = SKImage.FromBitmap(resizedImage);
 
 				return (outputImage.Encode(GetImageFormat(format), qualityRequest).ToArray(), result.width, result.height);
@@ -163,4 +163,25 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		DynamicImageFormat.Avif => throw new NotSupportedException("Avif is not supported."),
 		_ => default,
 	};
+}
+
+/// <summary>
+/// Provides extension method for converting <see cref="DynamicImageFilterQuality"/> to <see cref="SKSamplingOptions"/>.
+/// </summary>
+public static partial class DynamicImageFilterQualityExtensions
+{
+	/// <summary>
+	/// Converts the specified <see cref="DynamicImageFilterQuality"/> to <see cref="SKSamplingOptions"/>.
+	/// </summary>
+	/// <param name="quality">The filter quality.</param>
+	/// <returns>The corresponding <see cref="SKSamplingOptions"/>.</returns>
+	public static SKSamplingOptions ToSamplingOptions(this DynamicImageFilterQuality quality) =>
+		quality switch
+		{
+			DynamicImageFilterQuality.None => new SKSamplingOptions(SKFilterMode.Nearest, SKMipmapMode.None),
+			DynamicImageFilterQuality.Low => new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None),
+			DynamicImageFilterQuality.Medium => new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear),
+			DynamicImageFilterQuality.High => new SKSamplingOptions(SKCubicResampler.Mitchell),
+			_ => throw new ArgumentOutOfRangeException(nameof(quality), $"Unknown filter quality: '{quality}'"),
+		};
 }
