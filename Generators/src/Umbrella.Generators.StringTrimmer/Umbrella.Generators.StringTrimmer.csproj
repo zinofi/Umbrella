@@ -2,44 +2,28 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>9.0</LangVersion>
-		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>StringTrimmer.SourceGenerator</PackageId>
-		<PackageVersion>1.2.0</PackageVersion>
-		<PackageAuthors>richieedwards</PackageAuthors>
-		<PackageDescription>A C# source generator that automatically implements string property trimming for types implementing ITrimmable interface. Uses modern C# pattern matching and null propagation operators for robust and efficient code generation.</PackageDescription>
-		<PackageTags>sourcegenerator;trimming;strings;codegen;csharp9;null-propagation;pattern-matching</PackageTags>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/richieedwards/StringTrimmer.SourceGenerator</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/richieedwards/StringTrimmer.SourceGenerator</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<IncludeBuildOutput>true</IncludeBuildOutput>
+		<IsPackable>true</IsPackable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>.dll;.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<PackageType>Analyzer</PackageType>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-		<IsRoslynComponent>true</IsRoslynComponent>
-		<PackageReleaseNotes>
-			v1.2.0:
-			- Added pattern matching with 'is not null' for robust null checking
-			- Enhanced safety against types that override equality operators
-			- Added collection support (arrays, lists, etc.)
-			- Improved performance with modern C# idioms
-			- Better handling of complex nested scenarios
-		</PackageReleaseNotes>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Umbrella.Generators.StringTrimmer</PackageId>
+		<Description>This package contains a source generator that generates a method on partial classes that implement the IStringTrimmable interface.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Analyzer Include="TrimmableSourceGenerator.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\" />
-		<None Include="build\StringTrimmer.SourceGenerator.props" Pack="true" PackagePath="build\" />
-		<None Include="buildTransitive\StringTrimmer.SourceGenerator.props" Pack="true" PackagePath="buildTransitive\" />
+		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 </Project>
