@@ -2,12 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<IncludeBuildOutput>true</IncludeBuildOutput>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<IsPackable>true</IsPackable>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>.dll;.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-		<PackageType>Analyzer</PackageType>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 
@@ -23,6 +19,7 @@
 
 	<ItemGroup>
 		<None Include="..\..\..\icon.png" Pack="true" PackagePath="\" />
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 </Project>
