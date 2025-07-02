@@ -21,6 +21,7 @@ namespace Umbrella.Utilities.Email;
 /// </summary>
 public class EmailSender : IEmailSender
 {
+	private static volatile bool _pickupDirectoryLocationCreated;
 	private readonly ILogger<EmailSender> _logger;
 	private readonly EmailSenderOptions _options;
 
@@ -110,6 +111,13 @@ public class EmailSender : IEmailSender
 					{
 						client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
 						client.PickupDirectoryLocation = _options.PickupDirectoryLocation;
+
+						if (!_pickupDirectoryLocationCreated && !string.IsNullOrEmpty(_options.PickupDirectoryLocation))
+						{
+							Directory.CreateDirectory(_options.PickupDirectoryLocation);
+							_pickupDirectoryLocationCreated = true;
+						}
+
 						break;
 					}
 				default:
