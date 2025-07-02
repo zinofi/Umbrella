@@ -3,14 +3,14 @@ using Umbrella.DynamicImage.Abstractions;
 using Umbrella.FileSystem.Abstractions;
 using Umbrella.Utilities.Options.Abstractions;
 
-namespace Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
+namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage.Options;
 
 /// <summary>
-/// Options for use with Dynamic Image Tag Helpers.
+/// Options for use with the <see cref="UmbrellaDynamicImage" /> component.
 /// </summary>
 /// <seealso cref="ISanitizableUmbrellaOptions" />
 /// <seealso cref="IValidatableUmbrellaOptions" />
-public class DynamicImageTagHelperOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaDynamicImageOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
 	/// Gets or sets the dynamic image path prefix. Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix"/>.
@@ -36,6 +36,6 @@ public class DynamicImageTagHelperOptions : ISanitizableUmbrellaOptions, IValida
 		Guard.IsNotNullOrWhiteSpace(StripPrefix);
 
 		if (!StripPrefix.StartsWith("/", StringComparison.Ordinal))
-			throw new ArgumentException($"The {nameof(StripPrefix)} must start with a forward slash ('/').", nameof(StripPrefix));
+			throw new ArgumentException($"The {nameof(StripPrefix)} must start with a forward slash '/'.", nameof(StripPrefix));
 	}
 }

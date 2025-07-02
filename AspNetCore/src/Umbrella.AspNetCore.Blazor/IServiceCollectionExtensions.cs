@@ -8,6 +8,7 @@ using CommunityToolkit.Diagnostics;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Dialog;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
+using Umbrella.AspNetCore.Blazor.Components.DynamicImage.Options;
 using Umbrella.AspNetCore.Blazor.Components.Grid.Options;
 using Umbrella.AspNetCore.Blazor.Services;
 using Umbrella.AspNetCore.Blazor.Services.Abstractions;
@@ -27,10 +28,14 @@ public static class IServiceCollectionExtensions
 	/// <summary>
 	/// Adds the <see cref="Umbrella.AspNetCore.Blazor"/> services to the specified <see cref="IServiceCollection"/> dependency injection container builder.
 	/// </summary>
+	/// <param name="services">The service collection.</param>
+	/// <param name="umbrellaGridOptionsBuilder">Optional action used to configure the <see cref="UmbrellaGridOptions"/>.</param>
+	/// <param name="umbrellaDynamicImageOptionsBuilder">Optional action used to configure the <see cref="UmbrellaDynamicImageOptions"/>.</param>
 	/// <returns>The services builder.</returns>
 	public static IServiceCollection AddUmbrellaBlazor(
 		this IServiceCollection services,
-		Action<IServiceProvider, UmbrellaGridOptions>? umbrellaGridOptionsBuilder = null)
+		Action<IServiceProvider, UmbrellaGridOptions>? umbrellaGridOptionsBuilder = null,
+		Action<IServiceProvider, UmbrellaDynamicImageOptions>? umbrellaDynamicImageOptionsBuilder = null)
 	{
 		Guard.IsNotNull(services);
 
@@ -45,6 +50,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IHttpContextService, NoopHttpContextService>();
 
 		_ = services.ConfigureUmbrellaOptions(umbrellaGridOptionsBuilder);
+		_ = services.ConfigureUmbrellaOptions(umbrellaDynamicImageOptionsBuilder);
 
 		// Add the Blazored Services here too to avoid the user having to add them manually
 		_ = services.AddBlazoredModal();

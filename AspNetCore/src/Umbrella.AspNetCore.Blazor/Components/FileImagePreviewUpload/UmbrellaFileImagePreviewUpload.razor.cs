@@ -67,15 +67,6 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	public Func<UmbrellaFileUploadRequestEventArgs, Task<IHttpCallResult>>? OnRequestUpload { get; set; }
 
 	/// <summary>
-	/// The path prefix used when generating dynamic image paths.
-	/// </summary>
-	/// <remarks>
-	/// Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix" />
-	/// </remarks>
-	[Parameter]
-	public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
-
-	/// <summary>
 	/// Gets or sets the target width of the resized image. The resized image width may be less than this value depending on the width of the uploaded source image.
 	/// </summary>
 	/// <remarks>Defaults to 1</remarks>
@@ -128,12 +119,6 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// </remarks>
 	[Parameter]
 	public int MaxPixelDensity { get; set; } = 4;
-
-	/// <summary>
-	/// Gets or sets the prefix to be stripped from the <see cref="Url"/>.
-	/// </summary>
-	[Parameter]
-	public string? StripPrefix { get; set; }
 
 	/// <summary>
 	/// Gets or sets the URL.

@@ -4,6 +4,7 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
+using Umbrella.AspNetCore.Blazor.Components.DynamicImage.Options;
 using Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;
 using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.DynamicImage.Abstractions;
@@ -18,16 +19,16 @@ namespace Umbrella.AspNetCore.Blazor.Components.DynamicImage;
 public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 {
 	/// <summary>
+	/// Gets or set the dynamic image options.
+	/// </summary>
+	[Inject]
+	protected UmbrellaDynamicImageOptions Options { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
+
+	/// <summary>
 	/// Gets or sets the dynamic image utility.
 	/// </summary>
 	[Inject]
 	protected IDynamicImageUtility DynamicImageUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
-
-	/// <summary>
-	/// Gets or sets the dynamic image path prefix. Defaults to <see cref="DynamicImageConstants.DefaultPathPrefix"/>.
-	/// </summary>
-	[Parameter]
-	public string DynamicImagePathPrefix { get; set; } = DynamicImageConstants.DefaultPathPrefix;
 
 	/// <summary>
 	/// Gets or sets the width request in pixels. Defaults to 1.
@@ -72,12 +73,6 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 	public string? SizeWidths { get; set; }
 
 	/// <summary>
-	/// Gets or sets the prefix to be stripped from the <see cref="UmbrellaResponsiveImage.Url"/>.
-	/// </summary>
-	[Parameter]
-	public string? StripPrefix { get; set; }
-
-	/// <summary>
 	/// Gets or sets the source value.
 	/// </summary>
 	protected string SrcValue { get; set; } = null!;
@@ -104,7 +99,7 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 
 		var options = new DynamicImageOptions(strippedUrl, WidthRequest, HeightRequest, ResizeMode, ImageFormat);
 
-		SrcValue = DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options).TrimStart('~').Replace("//", "/", StringComparison.Ordinal);
+		SrcValue = DynamicImageUtility.GenerateVirtualPath(Options.DynamicImagePathPrefix, options).TrimStart('~').Replace("//", "/", StringComparison.Ordinal);
 
 		// TODO: Can't we just check for an empty string here or null? This parsing is done internally as well so it's a waste of time.
 		IReadOnlyCollection<int> lstSizeWidth = ResponsiveImageHelper.GetParsedIntegerItems(SizeWidths ?? "");
@@ -115,9 +110,9 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 			{
 				var options = new DynamicImageOptions(strippedUrl, x.imageWidth, x.imageHeight, ResizeMode, ImageFormat);
 
-				return DynamicImageUtility.GenerateVirtualPath(DynamicImagePathPrefix, options).TrimStart('~').Replace("//", "/", StringComparison.Ordinal);
+				return DynamicImageUtility.GenerateVirtualPath(Options.DynamicImagePathPrefix, options).TrimStart('~').Replace("//", "/", StringComparison.Ordinal);
 			});
 	}
 
-	private string StripUrlPrefix(string url) => !string.IsNullOrEmpty(StripPrefix) ? url.Remove(0, StripPrefix.Length) : url;
+	protected string StripUrlPrefix(string url) => !string.IsNullOrEmpty(Options.StripPrefix) ? url[Options.StripPrefix.Length..] : url;
 }

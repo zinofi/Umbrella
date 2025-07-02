@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using CommunityToolkit.Diagnostics;
+﻿using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -9,7 +6,6 @@ using Umbrella.AspNetCore.WebUtilities.DynamicImage.Mvc.TagHelpers.Options;
 using Umbrella.AspNetCore.WebUtilities.Razor.TagHelpers;
 using Umbrella.DynamicImage.Abstractions;
 using Umbrella.Utilities.Caching.Abstractions;
-using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Imaging.Abstractions;
 using Umbrella.WebUtilities.Exceptions;
 using Umbrella.WebUtilities.Hosting;
@@ -97,11 +93,6 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 	public double? FocalPointY { get; set; }
 
 	/// <summary>
-	/// Gets or sets the string that is prepended onto the value of the "src" attribute.
-	/// </summary>
-	public string? SrcPrefix { get; set; }
-
-	/// <summary>
 	/// Gets or sets the <see cref="DynamicImageFormat"/>.
 	/// </summary>
 	public DynamicImageFormat ImageFormat { get; set; } = DynamicImageFormat.Jpeg;
@@ -163,7 +154,9 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 		if (string.IsNullOrEmpty(src))
 			throw new UmbrellaWebException("src cannot be null or empty.");
 
-		var options = new DynamicImageOptions(src, WidthRequest, HeightRequest, ResizeMode, ImageFormat, FilterQuality, QualityRequest, FocalPointX, FocalPointY);
+		string strippedUrl = StripUrlPrefix(src);
+
+		var options = new DynamicImageOptions(strippedUrl, WidthRequest, HeightRequest, ResizeMode, ImageFormat, FilterQuality, QualityRequest, FocalPointX, FocalPointY);
 
 		string x1Url = GenerateVirtualPath(options);
 
@@ -183,12 +176,9 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 		if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
 			return url;
 
-		string output = base.ResolveImageUrl(url);
+		url = StripUrlPrefix(url);
 
-		if(!string.IsNullOrWhiteSpace(SrcPrefix))
-			output = SrcPrefix.TrimToLowerInvariant() + output;
-
-		return output;
+		return base.ResolveImageUrl(url);
 	}
 
 	/// <summary>
@@ -202,4 +192,11 @@ public abstract class DynamicImageTagHelperBase : ResponsiveImageTagHelper
 
 		return DynamicImageUtility.GenerateVirtualPath(DynamicImageTagHelperOptions.DynamicImagePathPrefix, options);
 	}
+
+	/// <summary>
+	/// Strips the URL prefix from the provided URL if a strip prefix is configured in the options.
+	/// </summary>
+	/// <param name="url">The URL to strip the prefix from.</param>
+	/// <returns>The URL without the prefix.</returns>
+	protected string StripUrlPrefix(string url) => !string.IsNullOrEmpty(DynamicImageTagHelperOptions.StripPrefix) ? url[DynamicImageTagHelperOptions.StripPrefix.Length..] : url;
 }
