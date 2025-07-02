@@ -15,6 +15,7 @@ using Umbrella.Utilities.DataAnnotations.Enumerations;
 using Umbrella.Utilities.Http;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Exceptions;
+using Umbrella.Utilities.Text;
 
 namespace Umbrella.DataAccess.Remote;
 
@@ -349,6 +350,9 @@ public abstract class GenericRemoteDataService
 	protected virtual Task SanitizeItemAsync(object item, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+
+		if (item is IUmbrellaTrimmable trimmable)
+			trimmable.TrimAllStringProperties();
 
 		return Task.CompletedTask;
 	}

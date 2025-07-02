@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Linq.Expressions;
 using CommunityToolkit.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq.Expressions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Data.Abstractions;
@@ -664,6 +664,9 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	protected virtual Task SanitizeEntityAsync(TEntity entity, TRepoOptions options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(entity);
+
+		entity.TrimAllStringProperties();
 
 		return Task.CompletedTask;
 	}

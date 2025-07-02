@@ -742,6 +742,9 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	protected virtual Task SanitizeEntityAsync(TEntity entity, TRepoOptions repoOptions, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(entity);
+
+		entity.TrimAllStringProperties();
 
 		return Task.CompletedTask;
 	}

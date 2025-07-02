@@ -1,10 +1,12 @@
-﻿namespace Umbrella.DataAccess.Abstractions;
+﻿using Umbrella.Utilities.Text;
+
+namespace Umbrella.DataAccess.Abstractions;
 
 /// <summary>
 /// Adds support to an entity type for storing it's unique Id.
 /// </summary>
 /// <typeparam name="TEntityKey">The type of the entity Id.</typeparam>
-public interface IEntity<TEntityKey>
+public interface IEntity<TEntityKey> : IUmbrellaTrimmable
 	where TEntityKey : IEquatable<TEntityKey>
 {
 	/// <summary>
