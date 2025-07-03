@@ -36,7 +36,7 @@ public class NonceGenerator : INonceGenerator
 	/// <exception cref="UmbrellaException">An error has occurred whilst generating the nonce of {lengthInBytes}</exception>
 	public string Generate(int lengthInBytes)
 	{
-		Guard.IsInRange(lengthInBytes, 1, 1024, nameof(lengthInBytes));
+		Guard.IsBetweenOrEqualTo(lengthInBytes, 1, 1024, nameof(lengthInBytes));
 
 		byte[]? buffer = null;
 
