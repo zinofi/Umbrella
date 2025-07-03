@@ -84,7 +84,7 @@ public class DynamicImageResizer : DynamicImageResizerBase
 		Guard.HasSizeGreaterThan(originalImage, 0);
 		Guard.IsGreaterThan(width, 0);
 		Guard.IsGreaterThan(height, 0);
-		Guard.IsInRange(qualityRequest, 1, 101);
+		Guard.IsBetweenOrEqualTo(qualityRequest, 1, 100);
 
 		try
 		{

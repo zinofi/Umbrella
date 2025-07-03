@@ -85,7 +85,7 @@ public class CacheKeyUtility : ICacheKeyUtility
 		Guard.IsNotNull(type);
 
 		if (keyPartsLength is not null)
-			Guard.IsInRange(keyPartsLength.Value, 1, keyParts.Length, nameof(keyPartsLength));
+			Guard.IsBetweenOrEqualTo(keyPartsLength.Value, 1, keyParts.Length, nameof(keyPartsLength));
 
 		char[]? rentedArray = null;
 

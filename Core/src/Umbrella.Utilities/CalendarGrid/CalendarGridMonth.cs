@@ -49,8 +49,8 @@ public class CalendarGridMonth<TStatus, TData> : UmbrellaObservableRangeCollecti
 	public CalendarGridMonth(int month, int year, IEnumerable<CalendarGridDay<TStatus, TData>> collection)
 		: base(collection)
 	{
-		Guard.IsInRange(month, 1, 12, nameof(month));
-		Guard.IsInRange(year, 1, 9999, nameof(year));
+		Guard.IsBetweenOrEqualTo(month, 1, 12, nameof(month));
+		Guard.IsBetweenOrEqualTo(year, 1, 9999, nameof(year));
 
 		Month = month;
 		Year = year;
