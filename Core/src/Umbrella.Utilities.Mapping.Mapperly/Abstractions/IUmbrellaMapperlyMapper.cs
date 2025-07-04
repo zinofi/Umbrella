@@ -4,7 +4,7 @@
 namespace Umbrella.Utilities.Mapping.Mapperly.Abstractions;
 
 /// <summary>
-/// Specifies the contract for a mapperly mapping class.
+/// Specifies the contract for a Mapperly mapping class.
 /// </summary>
 /// <remarks>
 /// This interface encapsulates the following 3 interfaces:
