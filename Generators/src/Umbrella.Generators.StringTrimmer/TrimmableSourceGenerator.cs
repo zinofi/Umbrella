@@ -16,52 +16,78 @@ public class TrimmableSourceGenerator : IIncrementalGenerator
 	/// <inheritdoc />
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
+		// Handle classes
 		var classDeclarations = context.SyntaxProvider
 			.CreateSyntaxProvider(
-				predicate: static (syntaxNode, _) => IsCandidate(syntaxNode),
-				transform: static (ctx, _) => (ClassDeclarationSyntax)ctx.Node)
-			.Where(static cls => cls is not null);
+				predicate: static (syntaxNode, _) => IsClassCandidate(syntaxNode),
+				transform: static (ctx, _) => new { Node = (TypeDeclarationSyntax)ctx.Node, IsRecord = false })
+			.Where(static result => result.Node is not null);
 
-		var compilationAndClasses = context.CompilationProvider.Combine(classDeclarations.Collect());
+		// Handle records
+		var recordDeclarations = context.SyntaxProvider
+			.CreateSyntaxProvider(
+				predicate: static (syntaxNode, _) => IsRecordCandidate(syntaxNode),
+				transform: static (ctx, _) => new { Node = (TypeDeclarationSyntax)ctx.Node, IsRecord = true })
+			.Where(static result => result.Node is not null);
 
-		context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
+		// Combine both declaration types
+		var typeDeclarations = classDeclarations.Collect().Combine(recordDeclarations.Collect())
+			.Select((pair, _) => pair.Left.Concat(pair.Right).ToArray());
+
+		var compilationAndTypes = context.CompilationProvider.Combine(typeDeclarations);
+
+		context.RegisterSourceOutput(compilationAndTypes, static (spc, source) =>
 		{
-			var (compilation, classList) = source;
+			var (compilation, typeList) = source;
 			var trimmableSymbol = compilation.GetTypeByMetadataName(InterfaceName);
 
 			if (trimmableSymbol is null)
 				return;
 
-			foreach (var classDeclaration in classList.Distinct())
+			foreach (var typeInfo in typeList.Distinct())
 			{
-				var model = compilation.GetSemanticModel(classDeclaration.SyntaxTree);
+				var model = compilation.GetSemanticModel(typeInfo.Node.SyntaxTree);
 
-				if (model.GetDeclaredSymbol(classDeclaration) is not INamedTypeSymbol classSymbol)
+				if (model.GetDeclaredSymbol(typeInfo.Node) is not INamedTypeSymbol typeSymbol)
 					continue;
 
-				if (ImplementsInterface(classSymbol, trimmableSymbol))
+				if (ImplementsInterface(typeSymbol, trimmableSymbol))
 				{
-					string generated = GenerateTrimmableImplementation(classSymbol, trimmableSymbol);
-					spc.AddSource($"{classSymbol.Name}_UmbrellaTrimmable.g.cs", SourceText.From(generated, Encoding.UTF8));
+					string generated = GenerateTrimmableImplementation(typeSymbol, trimmableSymbol, typeInfo.IsRecord);
+					string namespaceSafeName = GetSafeNamespaceName(typeSymbol.ContainingNamespace.ToDisplayString());
+					spc.AddSource($"{namespaceSafeName}.{typeSymbol.Name}_UmbrellaTrimmable.g.cs", SourceText.From(generated, Encoding.UTF8));
 				}
 			}
 		});
 	}
 
-	private static bool IsCandidate(SyntaxNode node)
+	private static string GetSafeNamespaceName(string namespaceName)
+	{
+		// Replace illegal filename characters with underscore
+		return namespaceName.Replace('.', '_').Replace('<', '_').Replace('>', '_')
+			.Replace('(', '_').Replace(')', '_').Replace(',', '_')
+			.Replace(' ', '_').Replace('-', '_');
+	}
+
+	private static bool IsClassCandidate(SyntaxNode node)
 		=> node is ClassDeclarationSyntax cds && cds.BaseList?.Types.Any() == true;
 
-	private static bool ImplementsInterface(INamedTypeSymbol classSymbol, INamedTypeSymbol interfaceSymbol)
-		=> classSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, interfaceSymbol));
+	private static bool IsRecordCandidate(SyntaxNode node)
+		=> node is RecordDeclarationSyntax rds && rds.BaseList?.Types.Any() == true;
+
+	private static bool ImplementsInterface(INamedTypeSymbol typeSymbol, INamedTypeSymbol interfaceSymbol)
+		=> typeSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, interfaceSymbol));
 
 	private static string GenerateTrimmableImplementation(
-		INamedTypeSymbol classSymbol,
-		INamedTypeSymbol trimmableSymbol)
+		INamedTypeSymbol typeSymbol,
+		INamedTypeSymbol trimmableSymbol,
+		bool isRecord)
 	{
-		string namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
-		string className = classSymbol.Name;
+		string namespaceName = typeSymbol.ContainingNamespace.ToDisplayString();
+		string typeName = typeSymbol.Name;
+		string typeKeyword = isRecord ? "record" : "class";
 
-		var trimStatements = GenerateTrimStatements(classSymbol, "this", new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default), trimmableSymbol, 0);
+		var trimStatements = GenerateTrimStatements(typeSymbol, "this", new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default), trimmableSymbol, 0);
 
 		string statementsText = trimStatements.Any()
 			? string.Join("\n", trimStatements.Select(s => $"\t\t\t{s}"))
@@ -74,7 +100,7 @@ public class TrimmableSourceGenerator : IIncrementalGenerator
 		
 		namespace {{namespaceName}}
 		{
-			partial class {{className}}
+			partial {{typeKeyword}} {{typeName}}
 			{
 				private bool _isTrimmingInProgress;
 

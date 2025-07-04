@@ -1,8 +1,8 @@
 ﻿using Umbrella.Utilities.Text;
 
-namespace Umbrella.Generators.StringTrimmer.Test;
+namespace Umbrella.Generators.StringTrimmer.Test.Classes;
 
-public partial class Samples : IUmbrellaTrimmable
+public partial class TopLevel : IUmbrellaTrimmable
 {
 	public required string RequiredString { get; set; }
 	public string? NullableString { get; set; }
