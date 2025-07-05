@@ -51,7 +51,9 @@ public class UmbrellaMapper : IUmbrellaMapper
 		_logger = logger;
 		_serviceProvider = serviceProvider;
 
-		IReadOnlyCollection<Assembly> assembliesToScan = options.TargetAssemblies;
+		IReadOnlyCollection<Assembly> assembliesToScan = options.TargetAssemblies is { Count: > 0 }
+			? options.TargetAssemblies
+			: AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName?.StartsWith(options.TargetAssemblyNamePrefix ?? string.Empty, StringComparison.OrdinalIgnoreCase) ?? false).ToArray();
 
 		foreach (Type type in assembliesToScan.SelectMany(x => x.GetExportedTypes()))
 		{
@@ -154,7 +156,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			return value switch
 			{
-				IUmbrellaMapperlyNewInstanceAsyncMapper<TSource, TDestination> asyncMapper => await asyncMapper.MapAsync(source, cancellationToken),
+				IUmbrellaMapperlyNewInstanceAsyncMapper<TSource, TDestination> asyncMapper => await asyncMapper.MapAsync(source, cancellationToken).ConfigureAwait(false),
 				IUmbrellaMapperlyNewInstanceMapper<TSource, TDestination> mapper => mapper.Map(source),
 				_ => throw new InvalidOperationException("A mapper for the specified source and destination types could not be found.")
 			};
@@ -186,7 +188,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			if (value is IUmbrellaMapperlyExistingInstanceAsyncMapper<TSource, TDestination> asyncMapper)
 			{
-				await asyncMapper.MapAsync(source, destination, cancellationToken);
+				await asyncMapper.MapAsync(source, destination, cancellationToken).ConfigureAwait(false);
 
 				return destination;
 			}
@@ -287,7 +289,7 @@ public class UmbrellaMapper : IUmbrellaMapper
 
 			return value switch
 			{
-				IUmbrellaMapperlyNewCollectionAsyncMapper<TSource, TDestination> asyncMapper => await asyncMapper.MapAllAsync(source, cancellationToken),
+				IUmbrellaMapperlyNewCollectionAsyncMapper<TSource, TDestination> asyncMapper => await asyncMapper.MapAllAsync(source, cancellationToken).ConfigureAwait(false),
 				IUmbrellaMapperlyNewCollectionMapper<TSource, TDestination> mapper => mapper.MapAll(source),
 				_ => throw new InvalidOperationException("A mapper for the specified source and destination types could not be found.")
 			};
