@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.Utilities.Mapping.Abstractions;
@@ -15,7 +16,7 @@ namespace Umbrella.DataAccess.Abstractions;
 public class EntityMappingUtility : IEntityMappingUtility
 {
 	private readonly ILogger _log;
-	private readonly IUmbrellaMapper _mapper;
+	private readonly Lazy<IUmbrellaMapper> _mapper;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="EntityMappingUtility"/> class.
@@ -24,7 +25,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 	/// <param name="mapper">The mapper.</param>
 	public EntityMappingUtility(
 		ILogger<EntityMappingUtility> logger,
-		IUmbrellaMapper mapper)
+		Lazy<IUmbrellaMapper> mapper)
 	{
 		_log = logger;
 		_mapper = mapper;
@@ -44,6 +45,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 		where TEntityKey : IEquatable<TEntityKey>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(existingItems);
 
 		try
 		{
@@ -67,7 +69,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 				// No existing item with this id, so add a new one
 				if (entity is null)
 				{
-					entity = await _mapper.MapAsync<TEntity>(item, cancellationToken).ConfigureAwait(false);
+					entity = await _mapper.Value.MapAsync<TEntity>(item, cancellationToken).ConfigureAwait(false);
 
 					// Make sure the mapped entity has an default id value to avoid errors with having mapped an existing item that belongs
 					// to something like a different foreign key relationship
@@ -80,7 +82,7 @@ public class EntityMappingUtility : IEntityMappingUtility
 				}
 				else // Existing item found, so map to existing instance
 				{
-					_ = await _mapper.MapAsync(item, entity, cancellationToken).ConfigureAwait(false);
+					_ = await _mapper.Value.MapAsync(item, entity, cancellationToken).ConfigureAwait(false);
 					updatedList.Add(entity);
 				}
 
