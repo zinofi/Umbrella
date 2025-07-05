@@ -112,6 +112,8 @@ public class TrimmableSourceGenerator : IIncrementalGenerator
 		{{Indent(2)}}{
 		{{Indent(3)}}if (_isTrimmingInProgress)
 		{{Indent(3)}}	return;
+		
+		{{Indent(3)}}_isTrimmingInProgress = true;
 
 		{{Indent(3)}}try
 		{{Indent(3)}}{
