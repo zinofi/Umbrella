@@ -141,6 +141,21 @@ public class TrimmableSourceGenerator : IIncrementalGenerator
 
 		_ = visitedTypes.Add(typeSymbol);
 
+		// Process base type first to maintain property initialization order (base to derived)
+		if (typeSymbol.BaseType != null && 
+			!SymbolEqualityComparer.Default.Equals(typeSymbol.BaseType, typeSymbol.ContainingAssembly.GetTypeByMetadataName("System.Object")) &&
+			!IsSystemType(typeSymbol.BaseType))
+		{
+			var baseTypeStatements = GenerateTrimStatements(
+				typeSymbol.BaseType,
+				instanceName,
+				visitedTypes,
+				trimmableInterface,
+				depth);
+
+			statements.AddRange(baseTypeStatements);
+		}
+
 		foreach (var member in typeSymbol.GetMembers())
 		{
 			if (member is IPropertySymbol property &&
