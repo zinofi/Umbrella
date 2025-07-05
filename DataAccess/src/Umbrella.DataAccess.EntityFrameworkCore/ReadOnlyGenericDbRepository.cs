@@ -275,7 +275,6 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 		int totalCount = results.FirstOrDefault()?.TotalCount ?? await filteredQuery.CountAsync(cancellationToken).ConfigureAwait(false);
 		var entities = results.Select(x => x.Entity).ToList();
 
-		await FilterByAccessAsync(entities, false, cancellationToken).ConfigureAwait(false);
 		await AfterAllItemsLoadedAsync(entities, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 		return new PaginatedResultModel<TEntity>(entities, pageNumber, pageSize, totalCount);
@@ -403,7 +402,6 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 			if (entity is null)
 				return null;
 
-			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
 			await AfterItemLoadedAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			return entity;
@@ -496,66 +494,6 @@ public abstract class ReadOnlyGenericDbRepository<TEntity, TDbContext, TRepoOpti
 	/// <param name="query">The query.</param>
 	/// <returns>An updated query with the filter applied.</returns>
 	protected virtual IQueryable<TEntity> ApplyQueryFilter(IQueryable<TEntity> query) => query;
-
-	/// <summary>
-	/// Determines whether this entity can be accessed in the current context. By default this returns <see langword="true"/>
-	/// unless overridden by derived types.
-	/// </summary>
-	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns><see langword="true"/> if it can be accessed; otherwise <see langword="false"/>.</returns>
-	protected virtual Task<bool> CanAccessAsync(TEntity entity, CancellationToken cancellationToken)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		return Task.FromResult(true);
-	}
-
-	/// <summary>
-	/// Throws an exception if the specified entity cannot be accessed in the current context.
-	/// </summary>
-	/// <param name="entity">The entity.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <exception cref="UmbrellaDataAccessForbiddenException"></exception>
-	protected async Task ThrowIfCannotAcesssAsync(TEntity entity, CancellationToken cancellationToken)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-
-		if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
-			throw new UmbrellaDataAccessForbiddenException("The specified entity cannot be accessed in the current context.");
-	}
-
-	/// <summary>
-	/// Filters the a collection of entities by calling <see cref="CanAccessAsync(TEntity, CancellationToken)"/> internally and removing any the fail the check.
-	/// </summary>
-	/// <param name="entities">The entities.</param>
-	/// <param name="throwAccessException">if set to <c>true</c>, any items that fail the access check will result in an exception.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
-	protected async Task FilterByAccessAsync(List<TEntity> entities, bool throwAccessException, CancellationToken cancellationToken)
-	{
-		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(entities);
-
-		for (int i = 0; i < entities.Count; i++)
-		{
-			var entity = entities[i];
-
-			if (entity is null)
-				continue;
-
-			if (!await CanAccessAsync(entity, cancellationToken).ConfigureAwait(false))
-			{
-				_ = Logger.WriteWarning(state: new { Type = entity.GetType().FullName, entity.Id }, message: "The specified item failed the access check and has been filtered out. This should not happen and means that the query filter is not sufficient.");
-
-				if (throwAccessException)
-					throw new UmbrellaDataAccessForbiddenException("An entity in the specified collection cannot be accessed.");
-
-				entities.RemoveAt(i);
-				i--;
-			}
-		}
-	}
 
 	/// <summary>
 	/// Override this in a derived type to perform an operation on the entity after it has been loaded from the database.

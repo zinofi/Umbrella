@@ -183,8 +183,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 		try
 		{
-			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-
 			repoOptions ??= DefaultRepoOptions;
 
 			if (repoOptions.ThrowIfConcurrencyTokenMismatch)
@@ -327,8 +325,6 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 		try
 		{
-			await ThrowIfCannotAcesssAsync(entity, cancellationToken).ConfigureAwait(false);
-
 			repoOptions ??= DefaultRepoOptions;
 
 			if (repoOptions.ThrowIfConcurrencyTokenMismatch)
