@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Umbrella.DataAccess.Remote.Abstractions;
+﻿using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;

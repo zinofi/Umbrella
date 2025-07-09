@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Services.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services;

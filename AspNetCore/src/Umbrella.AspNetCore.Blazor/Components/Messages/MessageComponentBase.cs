@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace Umbrella.AspNetCore.Blazor.Components.Messages;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.Messages;
 
 /// <summary>
 /// A base class used to support implementations of message components.

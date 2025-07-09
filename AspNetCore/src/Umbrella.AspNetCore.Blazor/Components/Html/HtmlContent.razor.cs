@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace Umbrella.AspNetCore.Blazor.Components.Html;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.Html;
 
 /// <summary>
 /// A component that can be used to render raw HTML content.

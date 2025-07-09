@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace Umbrella.AspNetCore.Blazor.Components.StateViews;
+﻿namespace Umbrella.AspNetCore.Blazor.Components.StateViews;
 
 /// <summary>
 /// A state view component used to display an empty message when there is no data to display.

@@ -1,1 +1,33 @@
-﻿@ChildContent
+﻿<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>
+
+<SectionContent SectionName="@SectionOutletSectionName">
+    <nav class="breadcrumb-nav" aria-label="breadcrumb">
+        <ol class="u-breadcrumb breadcrumb">
+            @if (BreadcrumbItemList.Count is 0)
+            {
+                <li class="u-breadcrumb-item breadcrumb-item active" aria-current="page">@Options.RootName</li>
+            }
+            else
+            {
+                <li class="u-breadcrumb-item breadcrumb-item"><a class="u-breadcrumb-item__link breadcrumb-item__link" href="@Options.RootPath">@Options.RootName</a></li>
+            }
+
+            @for (int i = 0; i < BreadcrumbItemList.Count; i++)
+            {
+                var item = BreadcrumbItemList[i];
+                var isLastItem = i == BreadcrumbItemList.Count - 1;
+
+                @if (isLastItem)
+                {
+                    <li class="u-breadcrumb-item breadcrumb-item active" aria-current="page">@item.Name</li>
+                }
+                else
+                {
+                    <li class="u-breadcrumb-item breadcrumb-item"><a class="u-breadcrumb-item__link breadcrumb-item__link" href="@item.Url">@item.Name</a></li>
+                }
+            }
+        </ol>
+    </nav>
+</SectionContent>

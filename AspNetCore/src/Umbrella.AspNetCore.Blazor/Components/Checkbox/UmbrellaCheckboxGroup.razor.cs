@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Umbrella.Utilities.ObjectModel;
+﻿using Umbrella.Utilities.ObjectModel;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Checkbox;
 

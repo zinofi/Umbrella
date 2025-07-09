@@ -1,5 +1,4 @@
 ﻿using Humanizer;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Checkbox;

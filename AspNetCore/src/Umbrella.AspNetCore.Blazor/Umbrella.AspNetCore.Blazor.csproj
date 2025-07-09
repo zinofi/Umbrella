@@ -68,6 +68,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Using Include="Microsoft.AspNetCore.Components" />
 		<Using Include="Umbrella.Utilities.Extensions" />
 		<Using Include="Umbrella.AspNetCore.Blazor.Exceptions" />
 	</ItemGroup>

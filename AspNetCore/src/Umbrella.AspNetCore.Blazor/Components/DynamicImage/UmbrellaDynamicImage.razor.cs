@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
-using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.DynamicImage.Options;
 using Umbrella.AspNetCore.Blazor.Components.ResponsiveImage;

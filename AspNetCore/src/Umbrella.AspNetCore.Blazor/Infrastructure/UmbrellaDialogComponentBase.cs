@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using Blazored.Modal;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;

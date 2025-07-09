@@ -1,6 +1,5 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
-using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Umbrella.AspNetCore.Blazor.Constants;

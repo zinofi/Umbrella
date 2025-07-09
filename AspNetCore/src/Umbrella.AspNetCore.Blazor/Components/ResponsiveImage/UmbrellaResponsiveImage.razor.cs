@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
-using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.Imaging.Abstractions;

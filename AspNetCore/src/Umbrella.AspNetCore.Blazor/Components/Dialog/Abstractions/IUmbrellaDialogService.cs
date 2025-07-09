@@ -3,7 +3,6 @@
 
 using Blazored.Modal;
 using Blazored.Modal.Services;
-using Microsoft.AspNetCore.Components;
 using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Constants;
 

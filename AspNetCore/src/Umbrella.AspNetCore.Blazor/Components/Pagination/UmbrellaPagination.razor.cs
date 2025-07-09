@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.AspNetCore.Blazor.Constants;

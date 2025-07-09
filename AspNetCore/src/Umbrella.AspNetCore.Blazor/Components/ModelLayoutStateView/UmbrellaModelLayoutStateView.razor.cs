@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.StateViews;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 
