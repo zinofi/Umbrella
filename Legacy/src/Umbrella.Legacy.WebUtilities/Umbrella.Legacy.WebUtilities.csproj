@@ -23,8 +23,8 @@
 		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
 		<PackageReference Include="Microsoft.AspNet.WebApi" Version="5.3.0" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.3.0" />
-		<PackageReference Include="Microsoft.Owin" Version="4.2.2" />
-		<PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.2.2" />
+		<PackageReference Include="Microsoft.Owin" Version="4.2.3" />
+		<PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.2.3" />
 	</ItemGroup>
 
 	<ItemGroup>
