@@ -49,6 +49,21 @@ public partial class UmbrellaDialog
 	public bool ShowCloseButton { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether to render the close button icon. Set this to <see langword="false"/> if you want to use a custom close button icon instead of the default one.
+	/// </summary>
+	/// <remarks>
+	/// Defaults to <see langword="true"/>.
+	/// </remarks>
+	[Parameter]
+	public bool RenderCloseButtonIcon { get; set; } = true;
+
+	/// <summary>
+	/// An optional CSS class which will override the default close button icon CSS class.
+	/// </summary>
+	[Parameter]
+	public string? CloseButtonIconCssClassOverride { get; set; }
+
+	/// <summary>
 	/// Gets or sets the sub title.
 	/// </summary>
 	[Parameter]
@@ -67,10 +82,22 @@ public partial class UmbrellaDialog
 	public IReadOnlyCollection<UmbrellaDialogButton>? Buttons { get; set; }
 
 	/// <summary>
-	/// Gets or sets the custom content of the dialog.
+	/// Gets or sets the custom header content of the dialog.
 	/// </summary>
 	[Parameter]
-	public RenderFragment? ChildContent { get; set; }
+	public RenderFragment? Header { get; set; }
+
+	/// <summary>
+	/// Gets or sets the custom body content of the dialog.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? Body { get; set; }
+
+	/// <summary>
+	/// Gets or sets the custom footer content of the dialog.
+	/// </summary>
+	[Parameter]
+	public RenderFragment? Footer { get; set; }
 
 	/// <summary>
 	/// Gets the dialog size CSS class based on the value of the <see cref="Size"/> property.

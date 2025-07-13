@@ -1,4 +1,9 @@
 .u-dialog
 {
 	pointer-events: none;
+
+	.modal-header
+	{
+		justify-content: space-between;
+	}
 }
