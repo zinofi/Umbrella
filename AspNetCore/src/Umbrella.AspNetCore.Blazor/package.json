@@ -30,8 +30,5 @@
 		"webpack-bundle-analyzer": "4.8.0",
 		"webpack-cli": "5.0.2",
 		"webpack-node-externals": "3.0.0"
-	},
-	"dependencies": {
-		"animated-scroll-to": "2.3.0"
 	}
 }

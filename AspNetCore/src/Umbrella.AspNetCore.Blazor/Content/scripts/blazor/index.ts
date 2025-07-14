@@ -1,5 +1,4 @@
 ﻿/* eslint-disable */
-import animateScrollTo from 'animated-scroll-to';
 import { BrowserEventAggregator } from './browserEventAggregator';
 
 export class UmbrellaBlazorInterop
@@ -25,7 +24,7 @@ export class UmbrellaBlazorInterop
 		document.title = title;
 	}
 
-	public animateScrollToAsync(position: number | string, offset = 0): Promise<boolean>
+	public scrollTo(position: number | string, offset = 0): void
 	{
 		if (typeof position === "number")
 		{
@@ -34,7 +33,9 @@ export class UmbrellaBlazorInterop
 			if (offsetPosition < 0)
 				offsetPosition = 0;
 
-			return animateScrollTo(offsetPosition);
+			window.scrollTo(offsetPosition, 0);
+
+			return;
 		}
 
 		if (typeof position === "string")
@@ -48,18 +49,17 @@ export class UmbrellaBlazorInterop
 				if (offsetPosition < 0)
 					offsetPosition = 0;
 
-				return animateScrollTo(offsetPosition);
+				window.scrollTo(offsetPosition, 0);
+
+				return;
 			}
 		}
-
-		return Promise.resolve(true);
 	}
 
-	public animateScrollToBottomAsync(): Promise<boolean>
+	public scrollToBottom(): void
 	{
 		const bottom = window.outerHeight + 300;
-
-		return animateScrollTo(bottom);
+		window.scrollTo(0, bottom);
 	}
 
 	public initializeWindowScrolledTopAsync(blazorInteropUtility: any, threshold: number)

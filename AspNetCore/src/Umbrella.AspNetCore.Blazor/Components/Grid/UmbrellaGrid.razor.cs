@@ -844,7 +844,7 @@ public partial class UmbrellaGrid<TItem> : IUmbrellaGrid<TItem>, IAsyncDisposabl
 			CheckboxSelectColumnSelected = false;
 
 			if (AutoScrollTop && _autoScrollEnabled)
-				await BlazorInteropUtility.AnimateScrollToAsync(".u-grid", ScrollTopOffset);
+				await BlazorInteropUtility.ScrollToAsync(".u-grid", ScrollTopOffset);
 
 			// Only enable auto-scrolling after the initial page load.
 			_autoScrollEnabled = true;

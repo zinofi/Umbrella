@@ -63,11 +63,11 @@ public class UmbrellaBlazorInteropService : IUmbrellaBlazorInteropService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask AnimateScrollToAsync(int scrollY, int offset = 0)
+	public async ValueTask ScrollToAsync(int scrollY, int offset = 0)
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", scrollY, offset);
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.scrollTo", scrollY, offset);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { scrollY }))
 		{
@@ -76,11 +76,11 @@ public class UmbrellaBlazorInteropService : IUmbrellaBlazorInteropService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask AnimateScrollToAsync(string elementSelector, int offset = 0)
+	public async ValueTask ScrollToAsync(string elementSelector, int offset = 0)
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToAsync", elementSelector, offset);
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.scrollTo", elementSelector, offset);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { elementSelector }))
 		{
@@ -89,11 +89,11 @@ public class UmbrellaBlazorInteropService : IUmbrellaBlazorInteropService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask AnimateScrollToBottomAsync()
+	public async ValueTask ScrollToBottomAsync()
 	{
 		try
 		{
-			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.animateScrollToBottomAsync");
+			await _jsRuntime.InvokeVoidAsync("UmbrellaBlazorInterop.scrollToBottom");
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{

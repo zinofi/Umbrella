@@ -20,7 +20,7 @@ public interface IUmbrellaBlazorInteropService
 	/// <param name="scrollY">The vertical position.</param>
 	/// <param name="offset">The vertical offset.</param>
 	/// <returns>A <see cref="ValueTask"/> that completes when the operation has completed.</returns>
-	ValueTask AnimateScrollToAsync(int scrollY, int offset = 0);
+	ValueTask ScrollToAsync(int scrollY, int offset = 0);
 
 	/// <summary>
 	/// Animates the scroll position of the browser window to the specified element.
@@ -28,13 +28,13 @@ public interface IUmbrellaBlazorInteropService
 	/// <param name="elementSelector">The element selector specified using CSS selector syntax.</param>
 	/// <param name="offset">The vertical offset.</param>
 	/// <returns>A <see cref="ValueTask"/> that completes when the operation has completed.</returns>
-	ValueTask AnimateScrollToAsync(string elementSelector, int offset = 0);
+	ValueTask ScrollToAsync(string elementSelector, int offset = 0);
 
 	/// <summary>
 	/// Animates the scroll position of the browser window to the bottom of the document.
 	/// </summary>
 	/// <returns>A <see cref="ValueTask"/> that completes when the operation has completed.</returns>
-	ValueTask AnimateScrollToBottomAsync();
+	ValueTask ScrollToBottomAsync();
 
 	/// <summary>
 	/// Opens the specified <paramref name="url"/> using the specified <paramref name="target"/>.
