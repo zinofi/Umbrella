@@ -4,8 +4,7 @@
 /// A type that represents something that can be selected. Usually used in UI projects
 /// where a user can select from a range of options using, e.g. checkboxes.
 /// </summary>
-/// <typeparam name="TOption">The type of the option.</typeparam>
-public interface IUmbrellaSelectableOption<out TOption>
+public interface IUmbrellaSelectableOption
 {
 	/// <summary>
 	/// Specifies whether or not the option is collapsed. If <see langword="true"/>, the children will not be displayed.
@@ -26,15 +25,4 @@ public interface IUmbrellaSelectableOption<out TOption>
 	/// The text that describes the option. This is usually displayed in the UI to the user.
 	/// </summary>
 	string Text { get; }
-
-	/// <summary>
-	/// The value of the option. This is the actual data that is associated with the option and can be of any type.
-	/// </summary>
-	TOption Value { get; }
-
-	/// <summary>
-	/// Gets a value indicating whether all descendant options are selected.
-	/// </summary>
-	/// <returns>A value indicating whether all descendant options are selected.</returns>
-	bool AllDescendantSelected();
 }

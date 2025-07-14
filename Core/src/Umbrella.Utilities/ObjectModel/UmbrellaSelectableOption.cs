@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using Umbrella.Utilities.Helpers;
 using Umbrella.Utilities.ObjectModel.Abstractions;
 
 namespace Umbrella.Utilities.ObjectModel;
@@ -11,7 +13,7 @@ namespace Umbrella.Utilities.ObjectModel;
 #if NET6_0_OR_GREATER
 [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 #endif
-public record UmbrellaSelectableOption<TOption> : IUmbrellaSelectableOption<TOption>
+public record UmbrellaSelectableOption<TOption> : IUmbrellaSelectableOption, INotifyPropertyChanged
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaSelectableOption{TOption}"/> class.
@@ -58,13 +60,21 @@ public record UmbrellaSelectableOption<TOption> : IUmbrellaSelectableOption<TOpt
 	public required string Text { get; init; }
 
 	/// <inheritdoc	/>
-	public bool IsSelected { get; set; }
+	public bool IsSelected
+	{
+		get;
+		set => INotifyPropertyChangedHelper.SetProperty(ref field, value, this, PropertyChanged);
+	}
 
 	/// <inheritdoc	/>
 	public bool IsCollapsible { get; init; }
 
 	/// <inheritdoc	/>
-	public bool IsCollapsed { get; set; } = true;
+	public bool IsCollapsed
+	{
+		get;
+		set => INotifyPropertyChangedHelper.SetProperty(ref field, value, this, PropertyChanged);
+	}
 
 	/// <summary>
 	/// The parent option, if one exists. This is useful for hierarchical structures where options can have child options.
@@ -75,6 +85,9 @@ public record UmbrellaSelectableOption<TOption> : IUmbrellaSelectableOption<TOpt
 	/// The child options. This is useful for hierarchical structures where options can have child options.
 	/// </summary>
 	public IReadOnlyCollection<UmbrellaSelectableOption<TOption>> Children { get; set; } = [];
+
+	/// <inheritdoc	/>
+	public event PropertyChangedEventHandler? PropertyChanged;
 
 	/// <inheritdoc	/>
 	public bool AllDescendantSelected()
