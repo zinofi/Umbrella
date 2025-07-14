@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Umbrella.Utilities.ObjectModel.Abstractions;
 
 namespace Umbrella.Utilities.ObjectModel;
 
@@ -10,7 +11,7 @@ namespace Umbrella.Utilities.ObjectModel;
 #if NET6_0_OR_GREATER
 [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 #endif
-public record UmbrellaSelectableOption<TOption>
+public record UmbrellaSelectableOption<TOption> : IUmbrellaSelectableOption<TOption>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaSelectableOption{TOption}"/> class.
@@ -50,48 +51,32 @@ public record UmbrellaSelectableOption<TOption>
 			Children = children.ToArray();
 	}
 
-	/// <summary>
-	/// Gets the value.
-	/// </summary>
+	/// <inheritdoc	/>
 	public required TOption Value { get; init; }
 
-	/// <summary>
-	/// Gets or sets the text.
-	/// </summary>
+	/// <inheritdoc	/>
 	public required string Text { get; init; }
 
-	/// <summary>
-	/// Gets or sets a value indicating whether this instance is selected.
-	/// </summary>
+	/// <inheritdoc	/>
 	public bool IsSelected { get; set; }
 
-	/// <summary>
-	/// Gets or sets a value indicating whether this instance is collapsible. Defaults to <see langword="false"/>.
-	/// </summary>
+	/// <inheritdoc	/>
 	public bool IsCollapsible { get; init; }
 
-	/// <summary>
-	/// Gets or sets a value indicating whether this instance is collapsed. Defaults to <see langword="true"/>.
-	/// </summary>
+	/// <inheritdoc	/>
 	public bool IsCollapsed { get; set; } = true;
 
 	/// <summary>
-	/// Gets or sets the parent option.
+	/// The parent option, if one exists. This is useful for hierarchical structures where options can have child options.
 	/// </summary>
-	/// <remarks>
-	/// This is useful for when you need to know the parent of a child option.
-	/// </remarks>
 	public UmbrellaSelectableOption<TOption>? Parent { get; init; }
 
 	/// <summary>
-	/// Gets or sets the child options.
+	/// The child options. This is useful for hierarchical structures where options can have child options.
 	/// </summary>
 	public IReadOnlyCollection<UmbrellaSelectableOption<TOption>> Children { get; set; } = [];
 
-	/// <summary>
-	/// Gets a value indicating whether all descendant options are selected.
-	/// </summary>
-	/// <returns>A value indicating whether all descendant options are selected.</returns>
+	/// <inheritdoc	/>
 	public bool AllDescendantSelected()
 	{
 		if (Children.Count is 0)
