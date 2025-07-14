@@ -466,8 +466,9 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		=> ReadEndpointEnabled
 		? ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 			id,
-			LoadReadEntityAsync,
+			Repository,
 			cancellationToken,
+			LoadReadEntityAsync,
 			null,
 			(entity, model) => AfterReadEntityAsync(entity, model, cancellationToken),
 			GetTrackChanges,

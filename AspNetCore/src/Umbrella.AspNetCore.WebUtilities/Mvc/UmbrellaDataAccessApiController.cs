@@ -233,7 +233,8 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
 	/// <typeparam name="TModel">The type of the model.</typeparam>
 	/// <param name="id">The identifier.</param>
-	/// <param name="loadReadEntityAsyncDelegate">The delegate used to load the entity.</param>
+	/// <param name="repository">The repository.</param>
+	/// <param name="loadReadEntityAsyncDelegate">The optional delegate used to load the entity. If not specified, the <c>FindByIdAsync</c> method on the <paramref name="repository"/> will be used.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="mapperCallback">The mapper callback. If not specified, <see cref="Mapper"/> is used to perform the mapping.</param>
 	/// <param name="afterReadEntityCallback">The after read entity callback.</param>
@@ -249,8 +250,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// </returns>
 	protected async Task<IActionResult> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 		TEntityKey id,
-		Func<TEntityKey, bool, IncludeMap<TEntity>?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<TEntity?>> loadReadEntityAsyncDelegate,
+		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
+		Func<TEntityKey, bool, IncludeMap<TEntity>?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<TEntity?>>? loadReadEntityAsyncDelegate = null,
 		Func<TEntity, TModel>? mapperCallback = null,
 		Func<TEntity, TModel, Task<IActionResult?>>? afterReadEntityCallback = null,
 		bool trackChanges = false,
@@ -265,7 +267,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TRepositoryOptions : RepoOptions, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(loadReadEntityAsyncDelegate);
+		Guard.IsNotNull(repository);
 
 		ISynchronizationRoot? syncRoot = null;
 
@@ -274,7 +276,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 			if (synchronizeAccess && id.ToString() is string syncKey)
 				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
 
-			TEntity? item = await loadReadEntityAsyncDelegate(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
+			TEntity? item = loadReadEntityAsyncDelegate is not null
+				? await loadReadEntityAsyncDelegate(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false)
+				: await repository.Value.FindByIdAsync(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
 
 			if (item is null)
 				return NotFound("The item could not be found. Please go back to the listing screen and try again.");
@@ -361,7 +365,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
 	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using a key generated using the <see cref="GetCreateSynchronizationRootKey"/> method. This method must be overridden on the controller to make this work.</param>
 	/// <param name="enableOutputMapping">
-	/// Specifices whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
+	/// Specifies whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
 	/// or if this is done by this method internally by creating a new instance of <typeparamref name="TResultModel"/> and only assigning the <c>Id</c> and <c>ConcurrencyStamp</c> properties.
 	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.
 	/// </param>
@@ -522,7 +526,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities persisted to the repository.</param>
 	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <c>Id</c> and type name of the entity.</param>
 	/// <param name="enableOutputMapping">
-	/// Specifices whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
+	/// Specifies whether the newly created <typeparamref name="TEntity"/> is mapped to an instance of <typeparamref name="TResultModel"/> using the <see cref="Mapper"/>,
 	/// or if this is done by this method by creating a new instance of <typeparamref name="TResultModel"/> and only assigning the <c>ConcurrencyStamp</c> property.
 	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.
 	/// </param>
