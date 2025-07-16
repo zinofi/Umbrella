@@ -225,7 +225,8 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 					_ = Context.Value.Set<TEntity>().Add(entity);
 			}
 
-			UpdateOriginalConcurrencyStamp(entity);
+			if (repoOptions.UpdateOriginalConcurrencyStamp)
+				UpdateOriginalConcurrencyStamp(entity);
 
 			if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
 			{
@@ -341,11 +342,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			// TODO: Is this line redundant?
 			Context.Value.Entry(entity).State = EntityState.Deleted;
 
+			if (repoOptions.UpdateOriginalConcurrencyStamp)
+				UpdateOriginalConcurrencyStamp(entity);
+
 			await AfterContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, repoOptions, childOptions, cancellationToken));
-
-			UpdateOriginalConcurrencyStamp(entity);
 
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
