@@ -201,7 +201,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			}
 
 			// Common work
-			PreSaveWork(entity, addToContext, forceAdd, out bool isNew);
+			PreSaveWork(entity, addToContext, forceAdd, out bool isNew, repoOptions);
 
 			// Additional processing after changes have been reflected in the database context but not yet pushed to the database
 			await AfterContextSavingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
@@ -323,11 +323,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 			_ = Context.Value.Set<TEntity>().Remove(entity);
 			Context.Value.Entry(entity).State = EntityState.Deleted;
 
+			if (repoOptions.UpdateOriginalConcurrencyStamp)
+				UpdateOriginalConcurrencyStamp(entity);
+
 			await AfterContextDeletingAsync(entity, repoOptions, childOptions, cancellationToken).ConfigureAwait(false);
 
 			DbContextHelper.RegisterPostSaveChangesAction(entity, (cancellationToken) => AfterContextDeletedChangesAsync(entity, repoOptions, childOptions, cancellationToken));
-
-			UpdateOriginalConcurrencyStamp(entity);
 
 			if (pushChangesToDb)
 				_ = await Context.Value.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -440,8 +441,12 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	/// <param name="addToContext">if set to <c>true</c>, adds the entity to the context.</param>
 	/// <param name="forceAdd">Forces the entity to be added to the context in the <see cref="EntityState.Added"/> state.</param>
 	/// <param name="isNew">if set to <c>true</c>, specifies that the entity is new.</param>
-	protected virtual void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew)
+	/// <param name="repoOptions">The repository options.</param>
+	protected virtual void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew, RepoOptions repoOptions)
 	{
+		Guard.IsNotNull(entity);
+		Guard.IsNotNull(repoOptions);
+
 		// Assume the entity is not new initially
 		isNew = false;
 
@@ -466,7 +471,8 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 				_ = Context.Value.Set<TEntity>().Add(entity);
 		}
 
-		UpdateOriginalConcurrencyStamp(entity);
+		if (repoOptions.UpdateOriginalConcurrencyStamp)
+			UpdateOriginalConcurrencyStamp(entity);
 
 		if (dbEntity.State.HasFlag(EntityState.Added) || dbEntity.State.HasFlag(EntityState.Detached) || dbEntity.State.HasFlag(EntityState.Modified))
 		{
