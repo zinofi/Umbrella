@@ -788,3 +788,22 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <returns>A tuple containing the type and the key used to performing synchronization.</returns>
 	protected virtual (Type type, string key)? GetCreateSynchronizationRootKey(object model) => null;
 }
+
+// Design
+// We need an UmbrellaDataAccessService
+// This service should have the same async methods as the controller
+// i.e. ReadAsync, ReadAllAsync, CreateAsync, UpdateAsync, DeleteAsync
+// We should inject this service into the controller and use it to perform the operations
+// Can be abstract away the authorization service and use a custom abstraction for authorization checks?
+// The public methods should be simple. Create internal overloads that do a bit more work and take in the repository, options, etc.
+
+// The return types of the public methods should be OperationResult. Change OperationResult to be a record?
+// We need to extend the OperationResult to include any additional information we want to return
+
+// We need an IUmbrellaDataAccessService interface that defines the methods
+// We then need an implementation that use Http endpoints instead of repositories
+
+public abstract class UmbrellaDataAccessService
+{
+
+}
