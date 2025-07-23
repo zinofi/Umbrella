@@ -3,6 +3,7 @@
 /// <summary>
 /// Represents the result of a Http call.
 /// </summary>
+[Obsolete("To be removed", true)]
 public interface IHttpCallResult
 {
 	/// <summary>
@@ -20,6 +21,7 @@ public interface IHttpCallResult
 /// Represents the result of a Http call.
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
+[Obsolete("To be removed", true)]
 public interface IHttpCallResult<out TResult> : IHttpCallResult
 {
 	/// <summary>

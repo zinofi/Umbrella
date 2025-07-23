@@ -6,6 +6,7 @@ namespace Umbrella.Utilities.Http;
 /// Represents the result of a Http call.
 /// </summary>
 /// <seealso cref="IHttpCallResult"/>
+[Obsolete("To be removed", true)]
 public class HttpCallResult : IHttpCallResult
 {
 	/// <summary>
@@ -31,6 +32,7 @@ public class HttpCallResult : IHttpCallResult
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 /// <seealso cref="IHttpCallResult{TResult}"/>
+[Obsolete("To be removed", true)]
 public class HttpCallResult<TResult> : HttpCallResult, IHttpCallResult<TResult>
 {
 	/// <summary>
