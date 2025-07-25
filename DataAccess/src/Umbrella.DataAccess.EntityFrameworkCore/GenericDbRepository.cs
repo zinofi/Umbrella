@@ -16,6 +16,7 @@ using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.Dating.Abstractions;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Primitives;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.DataAccess.EntityFrameworkCore;
 
@@ -176,7 +177,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	#region Save
 	/// <inheritdoc />
 	[Obsolete($"Use the {nameof(SaveEntityAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
-	public virtual async Task<OperationResult<TEntity>> SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
+	public virtual async Task<IOperationResult<TEntity>> SaveAsync(TEntity entity, bool pushChangesToDb = true, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entity);
@@ -265,14 +266,14 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc />
-	public virtual Task<OperationResult<TEntity>> SaveEntityAsync(TEntity entity, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
+	public virtual Task<IOperationResult<TEntity>> SaveEntityAsync(TEntity entity, bool addToContext = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, bool forceAdd = false, CancellationToken cancellationToken = default)
 #pragma warning disable CS0618 // Type or member is obsolete
 		=> SaveAsync(entity, false, addToContext, repoOptions, childOptions, forceAdd, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete
 
 	/// <inheritdoc />
 	[Obsolete($"Use the {nameof(SaveAllEntitiesAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
-	public virtual async Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IReadOnlyCollection<IOperationResult<TEntity>>> SaveAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(entities);
@@ -280,7 +281,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		try
 		{
 			// Save all changes - do not push to the database yet
-			List<OperationResult<TEntity>>? lstSaveResult = null;
+			List<IOperationResult<TEntity>>? lstSaveResult = null;
 
 			if (!bypassSaveLogic)
 			{
@@ -288,7 +289,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 
 				foreach (TEntity entity in entities)
 				{
-					OperationResult<TEntity> saveResult = await SaveAsync(entity, false, true, repoOptions, childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
+					IOperationResult<TEntity> saveResult = await SaveAsync(entity, false, true, repoOptions, childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 					lstSaveResult.Add(saveResult);
 				}
 			}
@@ -309,7 +310,7 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 	}
 
 	/// <inheritdoc/>
-	public virtual Task<IReadOnlyCollection<OperationResult<TEntity>>> SaveAllEntitiesAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
+	public virtual Task<IReadOnlyCollection<IOperationResult<TEntity>>> SaveAllEntitiesAsync(IEnumerable<TEntity> entities, bool bypassSaveLogic = false, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)
 #pragma warning disable CS0618 // Type or member is obsolete
 		=> SaveAllAsync(entities, false, bypassSaveLogic, repoOptions, childOptions, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete

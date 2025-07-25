@@ -12,6 +12,7 @@ using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Enumerations;
 using Umbrella.AspNetCore.Shared.Components.Abstractions;
 using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 
@@ -50,11 +51,21 @@ public abstract class UmbrellaClientComponentBase : UmbrellaComponentBase
 		=> DialogUtility.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
 
 	/// <summary>
+	/// Shows a friendly error message for the specified <paramref name="operationResult"/>.
+	/// </summary>
+	/// <param name="operationResult">The erroneous operation result.</param>
+	/// <param name="title">The title.</param>
+	/// <returns>A task that completes when the dialog has been actioned.</returns>
+	protected ValueTask ShowOperationResultErrorMessageAsync(IOperationResult? operationResult, string title = "Error")
+		=> DialogUtility.ShowOperationResultErrorMessageAsync(operationResult, title);
+
+	/// <summary>
 	/// Gets the value as a string suitable for use as a value with <![CDATA[<option>]]> elements of a <see cref="InputSelect{TValue}"/> component.
 	/// </summary>
 	/// <typeparam name="TValue">The type of the value.</typeparam>
 	/// <param name="value">The value.</param>
 	/// <returns>The value converted to a string if not null; otherwise "-1"</returns>
+	[Obsolete("The InputSelect element support binding using integers now so this workaround can be removed.")]
 	protected static string GetValueAsInputSelectString<TValue>(TValue? value) where TValue : struct => value?.ToString() ?? "-1";
 
 	/// <summary>
@@ -66,6 +77,7 @@ public abstract class UmbrellaClientComponentBase : UmbrellaComponentBase
 	/// <param name="value">The value.</param>
 	/// <param name="assignor">The assignor.</param>
 	/// <remarks>The string <paramref name="value"/> is converted to <typeparamref name="TValue"/> before assignment to the property on the specified <paramref name="model"/>.</remarks>
+	[Obsolete("The InputSelect element support binding using integers now so this workaround can be removed.")]
 	protected static void SetValueFromInputSelectString<TValue>(object? model, string? value, Action<TValue?> assignor)
 		where TValue : struct
 	{

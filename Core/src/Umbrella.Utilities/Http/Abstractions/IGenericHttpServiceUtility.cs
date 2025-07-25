@@ -46,7 +46,7 @@ public interface IGenericHttpServiceUtility
 	/// <param name="url">The URL.</param>
 	/// <param name="parameters">The parameters.</param>
 	/// <returns>The URL.</returns>
-	string GetUrlWithParmeters(string url, IEnumerable<KeyValuePair<string, string>>? parameters);
+	string GetUrlWithParameters(string url, IEnumerable<KeyValuePair<string, string>>? parameters);
 
 	/// <summary>
 	/// Processes the response.
@@ -55,7 +55,7 @@ public interface IGenericHttpServiceUtility
 	/// <param name="response">The response.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A tuple containing the result.</returns>
-	Task<(bool processed, HttpCallResult<TResult?> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken);
+	Task<(bool processed, IHttpOperationResult<TResult?> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken);
 
 	/// <summary>
 	/// Processes the response.
@@ -63,5 +63,5 @@ public interface IGenericHttpServiceUtility
 	/// <param name="response">The response.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A tuple containing the result.</returns>
-	Task<(bool processed, HttpCallResult result)> ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken);
+	Task<(bool processed, IHttpOperationResult result)> ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken);
 }

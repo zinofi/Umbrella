@@ -7,7 +7,7 @@ using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Http;
-using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 
@@ -57,7 +57,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	public required Action StateHasChangedDelegate { get; init; }
 
 	/// <inheritdoc />
-	public Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; internal set; } = null!;
+	public Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IOperationResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; internal set; } = null!;
 
 	/// <summary>
 	/// Invoked by the <see cref="GridInstance"/> when it requests new data.
@@ -71,7 +71,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 		{
 			var result = await LoadPaginatedResultModelDelegate(args.PageNumber, args.PageSize, args.Sorters, args.Filters, cancellationToken);
 
-			if (result.Success && result.Result is not null)
+			if (result.IsSuccess && result.Result is not null)
 			{
 				if (!CallGridStateHasChangedOnRefresh)
 					StateHasChangedDelegate();
@@ -81,7 +81,7 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 			else
 			{
 				GridInstance.SetErrorState();
-				await ShowProblemDetailsErrorMessageAsync(result.ProblemDetails);
+				await ShowOperationResultErrorMessageAsync(result);
 			}
 		}
 		catch
@@ -104,6 +104,16 @@ public class UmbrellaGridComponentService<TItemModel, TPaginatedResultModel> : I
 	/// </summary>
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
+	/// <returns>A task that completes when the dialog has been actioned.</returns>
 	protected ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error")
 		=> DialogService.ShowProblemDetailsErrorMessageAsync(problemDetails, title);
+
+	/// <summary>
+	/// Shows a friendly error message for the specified <paramref name="operationResult"/>.
+	/// </summary>
+	/// <param name="operationResult">The erroneous operation result.</param>
+	/// <param name="title">The title.</param>
+	/// <returns>A task that completes when the dialog has been actioned.</returns>
+	protected ValueTask ShowOperationResultErrorMessageAsync(IOperationResult? operationResult, string title = "Error")
+		=> DialogService.ShowOperationResultErrorMessageAsync(operationResult, title);
 }

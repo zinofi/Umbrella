@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -15,6 +16,7 @@ using Umbrella.AppFramework.Shared.Security.Extensions;
 using Umbrella.AspNetCore.WebUtilities.Extensions;
 using Umbrella.Utilities.Http.Constants;
 using Umbrella.Utilities.Primitives;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 
@@ -67,50 +69,41 @@ public abstract class UmbrellaApiController : ControllerBase
 	}
 
 	/// <summary>
-	/// Creates a failure result based on the specified <see cref="OperationResult"/>.
+	/// Creates an <see cref="IActionResult"/> based on the specified <see cref="IOperationResult"/> instance.
 	/// </summary>
 	/// <param name="operationResult">The operation result.</param>
-	/// <returns>The action result.</returns>
-	protected IActionResult OperationResultFailure(in OperationResult operationResult)
+	/// <returns>The <see cref="IActionResult"/> based on the specified <see cref="IOperationResult"/>.</returns>
+	/// <exception cref="NotImplementedException"></exception>
+	protected IActionResult OperationResult(IOperationResult operationResult) => operationResult?.Status switch
 	{
-		switch (operationResult.Status)
-		{
-			case OperationResultStatus.GenericFailure:
-				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
-				return BadRequest(operationResult.ErrorMessage);
-			case OperationResultStatus.NotFound:
-				_ = Logger.WriteWarning(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
-				return NotFound(operationResult.ErrorMessage);
-			case OperationResultStatus.Conflict:
-				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.ErrorMessage);
-				return Conflict(operationResult.ErrorMessage);
-			default:
-				throw new SwitchExpressionException(operationResult.Status);
-		}
-	}
+		OperationResultStatus.GenericSuccess => Ok(),
+		OperationResultStatus.GenericFailure => InternalServerError(operationResult.PrimaryValidationMessage ?? "There has been a problem."),
+		OperationResultStatus.NotFound => NotFound(operationResult.PrimaryValidationMessage ?? "Not Found"),
+		OperationResultStatus.Conflict => Conflict(operationResult.PrimaryValidationMessage ?? "Conflict"),
+		OperationResultStatus.Forbidden => Forbidden(operationResult.PrimaryValidationMessage ?? "Forbidden"),
+		OperationResultStatus.NoContent => NoContent(),
+		OperationResultStatus.InvalidOperation when operationResult.ValidationResults is { Count: > 0 } => ValidationProblem(operationResult.ValidationResults.ToModelStateDictionary()),
+		OperationResultStatus.InvalidOperation => BadRequest(operationResult.PrimaryValidationMessage ?? "Invalid Operation"),
+		OperationResultStatus.Created => Created(),
+		_ => throw new SwitchExpressionException(operationResult?.Status)
+	};
 
 	/// <summary>
-	/// Creates a failure result based on the specified <see cref="OperationResult{T}"/>.
+	/// Creates an <see cref="IActionResult"/> based on the specified <see cref="IOperationResult"/>.
 	/// </summary>
-	/// <typeparam name="T">The type of the item associated with the operation.</typeparam>
+	/// <typeparam name="TModel">The type of the model.</typeparam>
 	/// <param name="operationResult">The operation result.</param>
-	/// <returns>The action result.</returns>
-	protected IActionResult OperationResultFailure<T>(in OperationResult<T> operationResult)
+	/// <returns>An <see cref="IActionResult"/> based on the specified <see cref="IOperationResult"/>.</returns>
+	protected IActionResult OperationResult<TModel>(IOperationResult operationResult)
 	{
-		switch (operationResult.Status)
+		Guard.IsNotNull(operationResult);
+
+		return (operationResult, operationResult.Status) switch
 		{
-			case OperationResultStatus.GenericFailure:
-				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
-				return ValidationProblem(operationResult.ValidationResults.ToModelStateDictionary());
-			case OperationResultStatus.NotFound:
-				_ = Logger.WriteWarning(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
-				return NotFound(operationResult.PrimaryValidationMessage ?? "Not Found");
-			case OperationResultStatus.Conflict:
-				_ = Logger.WriteError(state: new { operationResult.Status }, message: operationResult.PrimaryValidationMessage);
-				return Conflict(operationResult.PrimaryValidationMessage ?? "Conflict");
-			default:
-				throw new SwitchExpressionException(operationResult.Status);
-		}
+			(IOperationResult<TModel> typedResult, OperationResultStatus.GenericSuccess) => Ok(typedResult.Result),
+			(IOperationResult<TModel> typedResult, OperationResultStatus.Created) => typedResult.Result is not null ? Created(typedResult.Result) : Created(),
+			_ => OperationResult(operationResult),
+		};
 	}
 
 	/// <summary>
@@ -121,6 +114,8 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// <exception cref="SwitchExpressionException"></exception>
 	protected IActionResult OperationResultFailure(OperationResultException exception)
 	{
+		Guard.IsNotNull(exception);
+
 		switch(exception.Status)
 		{
 			case OperationResultStatus.GenericFailure when exception.ValidationResults is not { Count: > 0 }:

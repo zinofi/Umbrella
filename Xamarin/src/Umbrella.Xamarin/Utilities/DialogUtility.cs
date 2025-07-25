@@ -7,6 +7,8 @@ using Umbrella.AppFramework.Services.Abstractions;
 using Umbrella.AppFramework.Services.Constants;
 using Umbrella.Utilities.Extensions;
 using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Xamarin.Exceptions;
 using Xamarin.Forms;
 
@@ -150,6 +152,21 @@ public class DialogUtility : IDialogService
 
 	/// <inheritdoc />
 	public ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error") => ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+
+	/// <inheritdoc />
+	public async ValueTask ShowOperationResultErrorMessageAsync(IOperationResult? operationResult, string title = "Error")
+	{
+		string? message = operationResult switch
+		{
+			IHttpOperationResult httpOperationResult => httpOperationResult.ProblemDetails?.Detail ?? httpOperationResult.PrimaryValidationMessage,
+			not null => operationResult.PrimaryValidationMessage,
+			_ => null
+		};
+
+		message ??= DialogDefaults.UnknownErrorMessage;
+
+		await ShowDangerMessageAsync(message, title);
+	}
 
 	/// <inheritdoc />
 	public async ValueTask ShowWarningMessageAsync(string message, string title = "Warning", string closeButtonText = "Close")

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -76,7 +77,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 	}
 
 	/// <inheritdoc />
-	public string GetUrlWithParmeters(string url, IEnumerable<KeyValuePair<string, string>>? parameters)
+	public string GetUrlWithParameters(string url, IEnumerable<KeyValuePair<string, string>>? parameters)
 	{
 		try
 		{
@@ -89,8 +90,11 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 	}
 
 	/// <inheritdoc />
-	public async Task<(bool processed, HttpCallResult<TResult?> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
+	public async Task<(bool processed, IHttpOperationResult<TResult?> result)> ProcessResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(response);
+
 		try
 		{
 			if (response.IsSuccessStatusCode)
@@ -111,13 +115,13 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 						_ => throw new NotImplementedException($"Unsupported media type: {response.Content.Headers.ContentType?.MediaType}")
 					};
 
-					return (true, new HttpCallResult<TResult?>(true, result: result));
+					return (true, new HttpOperationResult<TResult?>(result));
 				}
 
 				// Now check for a 201 or 204 in cases where we didn't receive content as those are still valid responses.
 				// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
 				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
-					return (true, new HttpCallResult<TResult?>(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+					return (true, new HttpOperationResult<TResult?>(await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 			}
 
 			return default;
@@ -129,19 +133,22 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 	}
 
 	/// <inheritdoc />
-	public async Task<(bool processed, HttpCallResult result)> ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+	public Task<(bool processed, IHttpOperationResult result)> ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(response);
+
 		try
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
-					return (true, new HttpCallResult(true, await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+					return Task.FromResult((true, HttpOperationResult.Success()));
 
 				throw new NotSupportedException("Only 201 Created and 204 NoContent responses are supported when there is no result from the endpoint.");
 			}
 
-			return default;
+			return Task.FromResult<(bool, IHttpOperationResult)>(default);
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
@@ -152,6 +159,9 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 	/// <inheritdoc />
 	public async Task<HttpProblemDetails?> GetProblemDetailsAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
 	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(response);
+
 		try
 		{
 			HttpContentHeaders headers = response.Content.Headers;
@@ -169,6 +179,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 				return new HttpProblemDetails { Title = "Error", Detail = defaultMessage };
 			}
 
+			// TODO: Is it valid to even do this? Should we not just return null if the content type is not application/problem+json?
 #if NET6_0_OR_GREATER
 			string json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
@@ -179,7 +190,7 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 		}
 		catch (Exception exc) when (_logger.WriteError(exc))
 		{
-			throw new UmbrellaException("There has been a problem getting the problemdetails response.", exc);
+			throw new UmbrellaException("There has been a problem getting the ProblemDetails response.", exc);
 		}
 	}
 }

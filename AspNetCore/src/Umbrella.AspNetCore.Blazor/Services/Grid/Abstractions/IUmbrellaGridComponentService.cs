@@ -2,7 +2,7 @@
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 
@@ -39,7 +39,7 @@ public interface IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel
 	/// <summary>
 	/// Gets the delegate used to load the paginated results.
 	/// </summary>
-	Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; }
+	Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IOperationResult<TPaginatedResultModel?>>> LoadPaginatedResultModelDelegate { get; }
 
 	/// <summary>
 	/// Gets the StateHasChanged delegate. This should always be initialized to <see cref="ComponentBase.StateHasChanged"/>.

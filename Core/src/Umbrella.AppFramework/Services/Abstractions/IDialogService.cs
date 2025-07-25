@@ -4,6 +4,7 @@
 using System.ComponentModel.DataAnnotations;
 using Umbrella.AppFramework.Services.Constants;
 using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AppFramework.Services.Abstractions;
 
@@ -45,7 +46,16 @@ public interface IDialogService
 	/// </summary>
 	/// <param name="problemDetails">The problem details.</param>
 	/// <param name="title">The title.</param>
+	/// <returns>A task that completes when the dialog has been actioned.</returns>
 	ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error");
+
+	/// <summary>
+	/// Shows a friendly error message for the specified <paramref name="operationResult"/>.
+	/// </summary>
+	/// <param name="operationResult">The erroneous operation result.</param>
+	/// <param name="title">The title.</param>
+	/// <returns>A task that completes when the dialog has been actioned.</returns>
+	ValueTask ShowOperationResultErrorMessageAsync(IOperationResult? operationResult, string title = "Error");
 
 	/// <summary>
 	/// Shows a dialog with a message indicating a concurrency error.

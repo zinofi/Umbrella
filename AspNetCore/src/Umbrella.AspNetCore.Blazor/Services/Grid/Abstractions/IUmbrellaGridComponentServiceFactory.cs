@@ -1,9 +1,9 @@
-﻿using Umbrella.DataAccess.Remote.Abstractions;
-using Umbrella.Utilities.Data.Abstractions;
+﻿using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Abstractions;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 
@@ -26,7 +26,7 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// <param name="initialFilterExpressions">The initial filter expressions.</param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate, Action stateHasChangedDelegate, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
+	IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel> CreateUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>(Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IOperationResult<TPaginatedResultModel?>>> loadPaginatedResultModelDelegate, Action stateHasChangedDelegate, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : notnull
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>;
 
@@ -44,10 +44,10 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// <param name="initialFilterExpressions">The initial filter expressions.</param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> CreateUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>(Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
+	IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> CreateUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository>(Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IOperationResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null)
 		where TItemModel : class
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-		where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>;
+		where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>;
 
 	/// <summary>
 	/// Creates an instance of the <see cref="UmbrellaRemoteDataAccessGridComponentService{TItemModel, TIdentifier, TPaginatedResultModel, TRepository}"/>.
@@ -68,9 +68,9 @@ public interface IUmbrellaGridComponentServiceFactory
 	/// </param>
 	/// <returns>The created instance.</returns>
 	/// <exception cref="UmbrellaBlazorException">There has been a problem creating the service.</exception>
-	IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IHttpCallResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null, Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
+	IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository> CreateUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifier, TPaginatedResultModel, TRepository>(Action stateHasChangedDelegate, Func<int, int, IEnumerable<SortExpressionDescriptor>?, IEnumerable<FilterExpressionDescriptor>?, CancellationToken, Task<IOperationResult<TPaginatedResultModel?>>>? loadPaginatedResultModelDelegate = null, bool callGridStateHasChangedOnRefresh = true, IReadOnlyCollection<FilterExpressionDescriptor>? initialFilterExpressions = null, Func<TItemModel, ValueTask<bool>>? beforeDeletingDelegate = null)
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-		where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>;
+		where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>;
 }

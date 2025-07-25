@@ -1,6 +1,4 @@
-﻿using Umbrella.Utilities.Data.Abstractions;
-
-namespace Umbrella.DataAccess.Remote;
+﻿namespace Umbrella.Utilities.Data.Abstractions;
 
 /// <summary>
 /// A <see cref="IKeyedItem{TIdentifier}"/> implementation that doesn't do anything. The <see cref="Id"/>
@@ -8,7 +6,7 @@ namespace Umbrella.DataAccess.Remote;
 /// </summary>
 /// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
 /// <seealso cref="IKeyedItem{TIdentifier}" />
-public class NoopRemoteItem<TIdentifier> : IKeyedItem<TIdentifier>
+public class NoOpKeyedItem<TIdentifier> : IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 {
 	/// <inheritdoc />

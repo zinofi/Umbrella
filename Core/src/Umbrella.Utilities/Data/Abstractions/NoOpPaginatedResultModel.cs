@@ -1,14 +1,14 @@
 ﻿using Umbrella.Utilities.Data.Pagination;
 
-namespace Umbrella.DataAccess.Remote;
+namespace Umbrella.Utilities.Data.Abstractions;
 
 /// <summary>
 /// A <see cref="PaginatedResultModel{TItem}"/> implementation that doesn't do anything and whose items are of
-/// type <see cref="NoopRemoteItem{TIdentifier}" />.
+/// type <see cref="NoOpKeyedItem{TIdentifier}" />.
 /// </summary>
 /// <typeparam name="TIdentifier">The type of the item identifier.</typeparam>
 /// <seealso cref="PaginatedResultModel{TItem}" />
-public class NoopPaginatedResultModel<TIdentifier> : PaginatedResultModel<NoopRemoteItem<TIdentifier>>
+public class NoOpPaginatedResultModel<TIdentifier> : PaginatedResultModel<NoOpKeyedItem<TIdentifier>>
 	where TIdentifier : IEquatable<TIdentifier>
 {
 }

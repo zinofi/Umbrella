@@ -2,7 +2,7 @@
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 
@@ -46,7 +46,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 		{
 			var result = await LoadPaginatedResultModelAsync(args.PageNumber, args.PageSize, args.Sorters, args.Filters, cancellationToken);
 
-			if (result.Success && result.Result is not null)
+			if (result.IsSuccess && result.Result is not null)
 			{
 				if (!CallGridStateHasChangedOnRefresh)
 					StateHasChanged();
@@ -56,7 +56,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 			else
 			{
 				GridInstance.SetErrorState();
-				await ShowProblemDetailsErrorMessageAsync(result.ProblemDetails);
+				await ShowOperationResultErrorMessageAsync(result);
 			}
 		}
 		catch
@@ -77,7 +77,7 @@ public abstract class UmbrellaGridComponentBase<TItemModel, TPaginatedResultMode
 	/// <param name="filters">The filters.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The results from the server.</returns>
-	protected abstract Task<IHttpCallResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, CancellationToken cancellationToken = default);
+	protected abstract Task<IOperationResult<TPaginatedResultModel?>> LoadPaginatedResultModelAsync(int pageNumber, int pageSize, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, CancellationToken cancellationToken = default);
 
 	/// <inheritdoc />
 	protected override async Task ReloadAsync()

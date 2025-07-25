@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Shared.Models;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Options;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
@@ -386,22 +386,22 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
-	/// <param name="options">The options.</param>
 	/// <param name="mapper">The mapper.</param>
 	/// <param name="repository">The repository.</param>
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
 	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
+	/// <param name="dataAccessService">The data access service.</param>
 	protected UmbrellaGenericRepositoryApiController(
 		ILogger logger,
 		IWebHostEnvironment hostingEnvironment,
-		UmbrellaDataAccessApiControllerOptions options,
 		IUmbrellaMapper mapper,
 		Lazy<TRepository> repository,
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
-		IDataAccessUnitOfWork dataAccessUnitOfWork) // TODO: Lazy
-		: base(logger, hostingEnvironment, options, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork)
+		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
+		IUmbrellaDataAccessService dataAccessService)
+		: base(logger, hostingEnvironment, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork, dataAccessService)
 	{
 		Repository = repository;
 	}
@@ -625,42 +625,42 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <returns>An Task that completes when the operation has completed.</returns>
 	protected virtual Task AfterCreateSearchSlimModelAsync(PaginatedResultModel<TEntity> results, TPaginatedResultModel model, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, CancellationToken cancellationToken) => Task.CompletedTask;
 
-    /// <summary>
-    /// This is called by the <c>SearchSlim</c> endpoint immediately after the <see cref="AfterCreateSearchSlimModelAsync"/> has been called and is called for each entity / model pair.
-    /// </summary>
+	/// <summary>
+	/// This is called by the <c>SearchSlim</c> endpoint immediately after the <see cref="AfterCreateSearchSlimModelAsync"/> has been called and is called for each entity / model pair.
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-    protected virtual Task<IActionResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+	protected virtual Task<IOperationResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
-    /// <summary>
-    /// This is called by the <c>Get</c> endpoint after the entity has been read, auth checks have been completed, and the entity has been mapped to an <typeparamref name="TModel"/>.
-    /// </summary>
+	/// <summary>
+	/// This is called by the <c>Get</c> endpoint after the entity has been read, auth checks have been completed, and the entity has been mapped to an <typeparamref name="TModel"/>.
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output model.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-    protected virtual Task<IActionResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+	protected virtual Task<IOperationResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
-    /// <summary>
-    /// This is called by the <c>Post</c> endpoint after the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>
+	/// <summary>
+	/// This is called by the <c>Post</c> endpoint after the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>
 	/// but before auth checks are performed.
-    /// </summary>
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-    protected virtual Task<IActionResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+	protected virtual Task<IOperationResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
 	/// This is called by the <c>Put</c> endpoint before the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>.
@@ -669,7 +669,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IActionResult?> BeforeUpdateMappingModelToEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+	protected virtual Task<IOperationResult?> BeforeUpdateMappingModelToEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
 	/// This is called by the <c>Put</c> endpoint after the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>
@@ -682,7 +682,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IActionResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+	protected virtual Task<IOperationResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
     /// <summary>
     /// This is called by the <c>Delete</c> endpoint before the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
@@ -694,7 +694,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
     /// <param name="entity">The entity.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-    protected virtual Task<IActionResult?> BeforeDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.FromResult<IActionResult?>(null);
+    protected virtual Task<IOperationResult?> BeforeDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
     /// <summary>
     /// This is called by the <c>Post</c> endpoint after the <typeparamref name="TCreateModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>,

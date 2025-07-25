@@ -1,11 +1,11 @@
 ﻿using Umbrella.AspNetCore.Blazor.Components.Grid;
-using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 
 /// <summary>
-/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component in conjunction with the <see cref="DataAccess.Remote"/> infrastructure.
+/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component.
 /// Multiple instances of this service can be used to power multiple grids contained within a single Blazor component.
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
@@ -15,7 +15,7 @@ namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 public interface IUmbrellaReadOnlyRemoteDataAccessGridComponentService<TItemModel, TPaginatedResultModel, TRepository> : IUmbrellaGridComponentService<TItemModel, TPaginatedResultModel>
 	where TItemModel : class
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>
 {
 	/// <summary>
 	/// Gets the repository.

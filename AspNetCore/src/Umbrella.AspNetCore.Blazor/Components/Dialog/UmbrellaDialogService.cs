@@ -17,6 +17,8 @@ using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Shared.Extensions;
 using Umbrella.AspNetCore.Shared.Services.Abstractions;
 using Umbrella.Utilities.Http;
+using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Dialog;
 
@@ -377,6 +379,21 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 
 	/// <inheritdoc />
 	public ValueTask ShowProblemDetailsErrorMessageAsync(HttpProblemDetails? problemDetails, string title = "Error") => ShowDangerMessageAsync(problemDetails?.Detail ?? DialogDefaults.UnknownErrorMessage, title);
+
+	/// <inheritdoc />
+	public async ValueTask ShowOperationResultErrorMessageAsync(IOperationResult? operationResult, string title = "Error")
+	{
+		string? message = operationResult switch
+		{
+			IHttpOperationResult httpOperationResult => httpOperationResult.ProblemDetails?.Detail ?? httpOperationResult.PrimaryValidationMessage,
+			not null => operationResult.PrimaryValidationMessage,
+			_ => null
+		};
+
+		message ??= DialogDefaults.UnknownErrorMessage;
+
+		await ShowDangerMessageAsync(message, title);
+	}
 
 	/// <inheritdoc />
 	public ValueTask<ModalResult> ShowDialogAsync<T>(string title, string cssClass, ModalParameters? modalParameters = null)

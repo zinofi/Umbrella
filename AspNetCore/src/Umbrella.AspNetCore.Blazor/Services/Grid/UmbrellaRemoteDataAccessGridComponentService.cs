@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
-using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Abstractions;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 
 /// <summary>
-/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component in conjunction with the <see cref="DataAccess.Remote"/> infrastructure.
+/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component.
 /// Multiple instances of this service can be used to power multiple grids contained within a single Blazor component.
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
@@ -22,7 +23,7 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaRemoteDataAccessGridComponentService{TItemModel, TIdentifier, TPaginatedResultModel, TRepository}"/> class.
@@ -47,6 +48,8 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 	/// <inheritdoc />
 	public async Task DeleteItemClickAsync(TItemModel item)
 	{
+		Guard.IsNotNull(item);
+
 		try
 		{
 			string typeDisplayName = typeof(TItemModel).GetDisplayText();
@@ -65,14 +68,14 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 
 				var result = await Repository.DeleteAsync(item.Id);
 
-				if (result.Success)
+				if (result.IsSuccess)
 				{
 					await DialogService.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
 					await GridInstance.RefreshAsync();
 				}
 				else
 				{
-					await ShowProblemDetailsErrorMessageAsync(result.ProblemDetails, $"Delete {typeDisplayName}");
+					await ShowOperationResultErrorMessageAsync(result, $"Delete {typeDisplayName}");
 				}
 			}
 		}

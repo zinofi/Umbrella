@@ -1,12 +1,12 @@
 ﻿using Umbrella.AspNetCore.Blazor.Components.Grid;
-using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 
 /// <summary>
-/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component in conjunction with the <see cref="DataAccess.Remote"/> infrastructure.
+/// A service that can be used with Blazor components that contain a <see cref="UmbrellaGrid{TItem}"/> component.
 /// Multiple instances of this service can be used to power multiple grids contained within a single Blazor component.
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
@@ -18,7 +18,7 @@ public interface IUmbrellaRemoteDataAccessGridComponentService<TItemModel, TIden
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
 {
 	/// <summary>
 	/// The event handler invoked when an item in the grid is to be deleted.

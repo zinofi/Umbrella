@@ -5,33 +5,31 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Exceptions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.DataAnnotations.Enumerations;
-using Umbrella.Utilities.Http;
-using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Http.Exceptions;
 using Umbrella.Utilities.Text;
 
-namespace Umbrella.DataAccess.Remote;
+namespace Umbrella.Utilities.Http.Abstractions;
 
 /// <summary>
 /// A generic data service used to query and update resources using HTTP.
 /// </summary>
-public abstract class GenericRemoteDataService
+public abstract class GenericHttpDataService
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GenericRemoteDataService"/> class.
+	/// Initializes a new instance of the <see cref="GenericHttpDataService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="remoteService">The remote service.</param>
 	/// <param name="httpServiceUtility">The HTTP service utility.</param>
 	/// <param name="validator">The validator.</param>
-	protected GenericRemoteDataService(
+	protected GenericHttpDataService(
 		ILogger logger,
 		IGenericHttpService remoteService,
 		IGenericHttpServiceUtility httpServiceUtility,
@@ -84,8 +82,8 @@ public abstract class GenericRemoteDataService
 	/// <param name="afterAllItemsLoadedCallback">The optional callback to invoke on the results.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	/// <exception cref="UmbrellaRemoteDataAccessException" />
-	protected virtual async Task<IHttpCallResult<TPaginatedResultModel?>> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(
+	/// <exception cref="UmbrellaDataRepositoryException" />
+	protected virtual async Task<IHttpOperationResult<TPaginatedResultModel?>> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(
 		string endpointPath,
 		int pageNumber = 0,
 		int pageSize = 20,
@@ -104,16 +102,16 @@ public abstract class GenericRemoteDataService
 		{
 			var parameters = HttpServiceUtility.CreateSearchQueryParameters(pageNumber, pageSize, sorters, filters, filterCombinator);
 
-			IHttpCallResult<TPaginatedResultModel?> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
+			IHttpOperationResult<TPaginatedResultModel?> result = await RemoteService.GetAsync<TPaginatedResultModel>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
 
-			if (result.Success && result.Result is not null && afterAllItemsLoadedCallback is not null)
+			if (result.IsSuccess && result.Result is not null && afterAllItemsLoadedCallback is not null)
 				await afterAllItemsLoadedCallback(result.Result.Items, cancellationToken).ConfigureAwait(false);
 
 			return result;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { endpointPath, pageNumber, pageSize, sorters, filters, filterCombinator }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem finding the items using the specified parameters.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem finding the items using the specified parameters.", exc);
 		}
 	}
 
@@ -127,8 +125,8 @@ public abstract class GenericRemoteDataService
 	/// <param name="afterItemLoadedCallback">An optional callback to be invoked on the result.</param>
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
 	/// <returns>The result of the remote operation.</returns>
-	/// <exception cref="UmbrellaRemoteDataAccessException" />
-	protected async Task<IHttpCallResult<TItem?>> GetByIdAsync<TItem, TIdentifier>(
+	/// <exception cref="UmbrellaDataRepositoryException" />
+	protected async Task<IHttpOperationResult<TItem?>> GetByIdAsync<TItem, TIdentifier>(
 		TIdentifier id,
 		CancellationToken cancellationToken,
 		Func<TItem, CancellationToken, Task>? afterItemLoadedCallback = null,
@@ -151,16 +149,16 @@ public abstract class GenericRemoteDataService
 				["id"] = strId
 			};
 
-			IHttpCallResult<TItem?> result = await RemoteService.GetAsync<TItem>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
+			IHttpOperationResult<TItem?> result = await RemoteService.GetAsync<TItem>(ApiUrl + endpointPath, parameters, cancellationToken).ConfigureAwait(false);
 
-			if (result.Success && result.Result is not null && afterItemLoadedCallback is not null)
+			if (result.IsSuccess && result.Result is not null && afterItemLoadedCallback is not null)
 				await afterItemLoadedCallback(result.Result, cancellationToken).ConfigureAwait(false);
 
 			return result;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id, endpointPath }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem finding the specified item.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem finding the specified item.", exc);
 		}
 	}
 
@@ -176,9 +174,9 @@ public abstract class GenericRemoteDataService
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
-	/// <exception cref="UmbrellaRemoteDataAccessException" />
-	protected virtual async Task<(IHttpCallResult<TPostResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PostAsync<TItem, TPostResult>(
+	/// <exception cref="UmbrellaDataRepositoryConcurrencyException" />
+	/// <exception cref="UmbrellaDataRepositoryException" />
+	protected virtual async Task<IHttpOperationResult<TPostResult?>> PostAsync<TItem, TPostResult>(
 		TItem item,
 		bool sanitize = true,
 		ValidationType validationType = ValidationType.Shallow,
@@ -195,11 +193,11 @@ public abstract class GenericRemoteDataService
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
-			throw new UmbrellaRemoteDataAccessConcurrencyException("There has been a concurrency error whilst posting the specified item.", exc);
+			throw new UmbrellaDataRepositoryConcurrencyException("There has been a concurrency error whilst posting the specified item.", exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { endpointPath, sanitize, validationType }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem posting the specified item.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem posting the specified item.", exc);
 		}
 	}
 
@@ -216,9 +214,9 @@ public abstract class GenericRemoteDataService
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
-	/// <exception cref="UmbrellaRemoteDataAccessException" />
-	protected virtual async Task<(IHttpCallResult<TPutResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PutAsync<TItem, TIdentifier, TPutResult>(
+	/// <exception cref="UmbrellaDataRepositoryConcurrencyException" />
+	/// <exception cref="UmbrellaDataRepositoryException" />
+	protected virtual async Task<IHttpOperationResult<TPutResult?>> PutAsync<TItem, TIdentifier, TPutResult>(
 		TItem item,
 		bool sanitize = true,
 		ValidationType validationType = ValidationType.Shallow,
@@ -229,7 +227,7 @@ public abstract class GenericRemoteDataService
 		where TIdentifier : IEquatable<TIdentifier>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(item, nameof(item));
+		Guard.IsNotNull(item);
 
 		try
 		{
@@ -239,11 +237,11 @@ public abstract class GenericRemoteDataService
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
-			throw new UmbrellaRemoteDataAccessConcurrencyException("There has been a concurrency error whilst putting the specified item.", exc);
+			throw new UmbrellaDataRepositoryConcurrencyException("There has been a concurrency error whilst putting the specified item.", exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { item.Id, endpointPath, sanitize, validationType }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem putting the specified item.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem putting the specified item.", exc);
 		}
 	}
 
@@ -260,9 +258,9 @@ public abstract class GenericRemoteDataService
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
-	/// <exception cref="UmbrellaRemoteDataAccessException" />
-	protected virtual async Task<(IHttpCallResult<TPatchResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> PatchAsync<TItem, TIdentifier, TPatchResult>(
+	/// <exception cref="UmbrellaDataRepositoryConcurrencyException" />
+	/// <exception cref="UmbrellaDataRepositoryException" />
+	protected virtual async Task<IHttpOperationResult<TPatchResult?>> PatchAsync<TItem, TIdentifier, TPatchResult>(
 		TItem item,
 		bool sanitize = true,
 		ValidationType validationType = ValidationType.Shallow,
@@ -273,7 +271,7 @@ public abstract class GenericRemoteDataService
 		where TIdentifier : IEquatable<TIdentifier>
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		Guard.IsNotNull(item, nameof(item));
+		Guard.IsNotNull(item);
 
 		try
 		{
@@ -283,11 +281,11 @@ public abstract class GenericRemoteDataService
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
-			throw new UmbrellaRemoteDataAccessConcurrencyException("There has been a concurrency error whilst patching the specified item.", exc);
+			throw new UmbrellaDataRepositoryConcurrencyException("There has been a concurrency error whilst patching the specified item.", exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { item.Id, endpointPath }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem patching the specified item.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem patching the specified item.", exc);
 		}
 	}
 
@@ -300,9 +298,9 @@ public abstract class GenericRemoteDataService
 	/// <param name="endpointPath">The optional relative endpoint path to call. By default this is empty and is a RESTful API call.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	/// <exception cref="UmbrellaRemoteDataAccessConcurrencyException" />
-	/// <exception cref="UmbrellaRemoteDataAccessException" />
-	protected virtual async Task<IHttpCallResult> DeleteAsync<TIdentifier>(
+	/// <exception cref="UmbrellaDataRepositoryConcurrencyException" />
+	/// <exception cref="UmbrellaDataRepositoryException" />
+	protected virtual async Task<IHttpOperationResult> DeleteAsync<TIdentifier>(
 		TIdentifier id,
 		Func<TIdentifier, CancellationToken, Task>? afterItemDeletedCallback = null,
 		string endpointPath = "",
@@ -324,20 +322,20 @@ public abstract class GenericRemoteDataService
 				["id"] = strId
 			};
 
-			IHttpCallResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
+			IHttpOperationResult result = await RemoteService.DeleteAsync(ApiUrl, parameters, cancellationToken).ConfigureAwait(false);
 
-			if (result.Success && afterItemDeletedCallback is not null)
+			if (result.IsSuccess && afterItemDeletedCallback is not null)
 				await afterItemDeletedCallback(id, cancellationToken).ConfigureAwait(false);
 
 			return result;
 		}
 		catch (UmbrellaHttpServiceConcurrencyException exc)
 		{
-			throw new UmbrellaRemoteDataAccessConcurrencyException("There has been a concurrency error whilst deleting the specified item.", exc);
+			throw new UmbrellaDataRepositoryConcurrencyException("There has been a concurrency error whilst deleting the specified item.", exc);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id, endpointPath }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem deleting the specified item.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem deleting the specified item.", exc);
 		}
 	}
 
@@ -372,7 +370,7 @@ public abstract class GenericRemoteDataService
 		return Task.FromResult(Validator.ValidateItem(item, validationType));
 	}
 
-	private async Task<(IHttpCallResult<TResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<TItem, TResult>(
+	private async Task<IHttpOperationResult<TResult?>> SaveCoreAsync<TItem, TResult>(
 		HttpMethod method,
 		string endpointPath,
 		TItem item,
@@ -391,13 +389,13 @@ public abstract class GenericRemoteDataService
 				var (isValid, results) = await ValidateItemAsync(item, validationType, cancellationToken).ConfigureAwait(false);
 
 				if (!isValid)
-					return (new HttpCallResult<TResult>(false), results);
+					return new HttpOperationResult<TResult>(results);
 			}
 		}
 
 		string url = ApiUrl + endpointPath;
 
-		IHttpCallResult<TResult?> result = method switch
+		IHttpOperationResult<TResult?> result = method switch
 		{
 			var _ when method == HttpMethod.Post => await RemoteService.PostAsync<TItem, TResult>(url, item, cancellationToken: cancellationToken).ConfigureAwait(false),
 			var _ when method == HttpMethod.Put => await RemoteService.PutAsync<TItem, TResult>(url, item, cancellationToken: cancellationToken).ConfigureAwait(false),
@@ -405,9 +403,9 @@ public abstract class GenericRemoteDataService
 			_ => throw new NotSupportedException()
 		};
 
-		if (result.Success && item is not null && afterItemSavedCallback is not null)
+		if (result.IsSuccess && item is not null && afterItemSavedCallback is not null)
 			await afterItemSavedCallback(item, result.Result, cancellationToken).ConfigureAwait(false);
 
-		return (result, result.ProblemDetails?.ToValidationResults() ?? Array.Empty<ValidationResult>());
+		return result;
 	}
 }

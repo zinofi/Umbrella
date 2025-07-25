@@ -1,20 +1,20 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Umbrella.DataAccess.Remote.Abstractions;
-using Umbrella.DataAccess.Remote.Exceptions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Abstractions;
+using Umbrella.Utilities.Data.Repositories.Exceptions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.DataAnnotations.Enumerations;
 using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
-namespace Umbrella.DataAccess.Remote;
+namespace Umbrella.Utilities.Http.Repositories;
 
 /// <summary>
 /// A generic repository used to query and update a remote resource over HTTP.
@@ -27,7 +27,7 @@ namespace Umbrella.DataAccess.Remote;
 /// <typeparam name="TCreateResult">The type of the create result.</typeparam>
 /// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 /// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
-public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : GenericRemoteDataService, IGenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
+public abstract class GenericHttpDataRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : GenericHttpDataService, IGenericDataRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
 	where TItem : class, IKeyedItem<TIdentifier>
 	where TSlimItem : class, IKeyedItem<TIdentifier>
 	where TUpdateItem : class, IKeyedItem<TIdentifier>
@@ -44,13 +44,13 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 	protected virtual string FindAllSlimEndpoint { get; } = "/SearchSlim";
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GenericRemoteRepository{TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult}"/> class.
+	/// Initializes a new instance of the <see cref="GenericHttpDataRepository{TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult}"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="httpService">The HTTP service.</param>
 	/// <param name="httpServiceUtility">The HTTP service utility.</param>
 	/// <param name="validator">The validator.</param>
-	protected GenericRemoteRepository(
+	protected GenericHttpDataRepository(
 		ILogger logger,
 		IGenericHttpService httpService,
 		IGenericHttpServiceUtility httpServiceUtility,
@@ -59,15 +59,15 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 	}
 
 	/// <inheritdoc />
-	public virtual Task<IHttpCallResult<TItem?>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
-		=> GetByIdAsync<TItem, TIdentifier>(id, cancellationToken, AfterItemLoadedAsync);
+	public virtual async Task<IOperationResult<TItem?>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		=> await GetByIdAsync<TItem, TIdentifier>(id, cancellationToken, AfterItemLoadedAsync);
 
 	/// <inheritdoc />
-	public virtual Task<IHttpCallResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default)
-		=> GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync, cancellationToken);
+	public virtual async Task<IOperationResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default)
+		=> await GetAllSlimAsync<TPaginatedResultModel, TSlimItem, TIdentifier>(FindAllSlimEndpoint, pageNumber, pageSize, sorters, filters, filterCombinator, AfterAllItemsLoadedAsync, cancellationToken);
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
+	public virtual async Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
@@ -77,12 +77,12 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem finding the total count.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem finding the total count.", exc);
 		}
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
+	public virtual async Task<IOperationResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(id);
@@ -103,21 +103,21 @@ public abstract class GenericRemoteRepository<TItem, TIdentifier, TSlimItem, TPa
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
-			throw new UmbrellaRemoteDataAccessException("There was a problem determining if the specified item exists.", exc);
+			throw new UmbrellaDataRepositoryException("There was a problem determining if the specified item exists.", exc);
 		}
 	}
 
 	/// <inheritdoc />
-	public virtual Task<(IHttpCallResult<TCreateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> CreateAsync(TCreateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
-		=> PostAsync<TCreateItem, TCreateResult>(item, sanitize, validationType, AfterItemCreatedAsync, cancellationToken: cancellationToken);
+	public virtual async Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
+		=> await PostAsync<TCreateItem, TCreateResult>(item, sanitize, validationType, AfterItemCreatedAsync, cancellationToken: cancellationToken);
 
 	/// <inheritdoc />
-	public virtual Task<(IHttpCallResult<TUpdateResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> UpdateAsync(TUpdateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
-		=> PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, sanitize, validationType, AfterItemUpdatedAsync, cancellationToken: cancellationToken);
+	public virtual async Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
+		=> await PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, sanitize, validationType, AfterItemUpdatedAsync, cancellationToken: cancellationToken);
 
 	/// <inheritdoc />
-	public virtual Task<IHttpCallResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
-		=> DeleteAsync(id, AfterItemDeletedAsync, cancellationToken: cancellationToken);
+	public virtual async Task<IOperationResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
+		=> await DeleteAsync(id, AfterItemDeletedAsync, cancellationToken: cancellationToken);
 
 	/// <summary>
 	/// Override this in a derived type to perform an operation on the item after it has been loaded.

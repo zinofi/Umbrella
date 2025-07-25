@@ -48,14 +48,14 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<TResult?>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult<TResult?>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			HttpResponseMessage response = await Client.GetAsync(targetUrl, cancellationToken).ConfigureAwait(false);
 
@@ -63,7 +63,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -76,11 +76,11 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult> PostAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult> PostAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		=> await PostAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<TResult?>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult<TResult?>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -88,7 +88,7 @@ public class GenericHttpService : IGenericHttpService
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			string json = UmbrellaStatics.SerializeJson(item!);
 			using var request = new HttpRequestMessage(HttpMethod.Post, targetUrl)
@@ -102,7 +102,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -115,11 +115,11 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult> PutAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult> PutAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		=> await PutAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -127,7 +127,7 @@ public class GenericHttpService : IGenericHttpService
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			string json = UmbrellaStatics.SerializeJson(item!);
 			using var request = new HttpRequestMessage(HttpMethod.Put, targetUrl)
@@ -141,7 +141,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -154,11 +154,11 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult> PatchAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult> PatchAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 		=> await PatchAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -166,7 +166,7 @@ public class GenericHttpService : IGenericHttpService
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			string json = UmbrellaStatics.SerializeJson(item!);
 			using var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl)
@@ -180,7 +180,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -193,14 +193,14 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult> PatchAsync(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult> PatchAsync(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			using var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl);
 
@@ -210,7 +210,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpCallResult(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -223,14 +223,14 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			using var request = new HttpRequestMessage(HttpMethodExtras.Patch, targetUrl);
 
@@ -240,7 +240,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpCallResult<TResult?>(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -253,20 +253,20 @@ public class GenericHttpService : IGenericHttpService
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IHttpCallResult> DeleteAsync(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+	public virtual async Task<IHttpOperationResult> DeleteAsync(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
 
 		try
 		{
-			string targetUrl = HttpServiceUtility.GetUrlWithParmeters(url, parameters);
+			string targetUrl = HttpServiceUtility.GetUrlWithParameters(url, parameters);
 
 			HttpResponseMessage response = await Client.DeleteAsync(targetUrl, cancellationToken).ConfigureAwait(false);
 
 			var retVal = response.IsSuccessStatusCode
-				? new HttpCallResult(true)
-				: new HttpCallResult(false, await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				? HttpOperationResult.Success()
+				: new HttpOperationResult(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -283,7 +283,7 @@ public class GenericHttpService : IGenericHttpService
 	/// a <see cref="HttpProblemCodes.ConcurrencyStampMismatch"/> code in the problem details response.
 	/// </summary>
 	/// <param name="result">The result of the Http server call.</param>
-	protected static void ThrowIfConcurrencyStampMismatchResponse(IHttpCallResult result)
+	protected static void ThrowIfConcurrencyStampMismatchResponse(IHttpOperationResult result)
 	{
 		Guard.IsNotNull(result);
 

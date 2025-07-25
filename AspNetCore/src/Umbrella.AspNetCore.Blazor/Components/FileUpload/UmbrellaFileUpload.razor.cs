@@ -3,10 +3,8 @@
 
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
-using Umbrella.AspNetCore.Blazor.Constants;
-using Umbrella.Utilities.Http.Abstractions;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileUpload;
 
@@ -21,10 +19,10 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	private CancellationTokenSource? _cancellationTokenSource;
 
 	[Inject]
-	private ILogger<UmbrellaFileUpload> Logger { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
+	private ILogger<UmbrellaFileUpload> Logger { get; set; } = null!;
 
 	[Inject]
-	private IUmbrellaDialogService DialogUtility { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
+	private IUmbrellaDialogService DialogUtility { get; set; } = null!;
 
 	private int UploadPercentage { get; set; }
 
@@ -60,7 +58,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 	/// </summary>
 	[Parameter]
 	[EditorRequired]
-	public Func<UmbrellaFileUploadRequestEventArgs, Task<IHttpCallResult?>>? OnRequestUpload { get; set; }
+	public Func<UmbrellaFileUploadRequestEventArgs, Task<IOperationResult?>>? OnRequestUpload { get; set; }
 
 	private string Id { get; } = Guid.NewGuid().ToString();
 	private IBrowserFile? SelectedFile { get; set; }
@@ -152,9 +150,9 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 			TimeSpan.FromMilliseconds(500),
 			TimeSpan.FromMilliseconds(500));
 
-			IHttpCallResult? result = await OnRequestUpload(new UmbrellaFileUploadRequestEventArgs(stream, SelectedFile.Name, SelectedFile.ContentType, _cancellationTokenSource.Token));
+			IOperationResult? result = await OnRequestUpload(new UmbrellaFileUploadRequestEventArgs(stream, SelectedFile.Name, SelectedFile.ContentType, _cancellationTokenSource.Token));
 
-			if (result is { Success: true })
+			if (result is { IsSuccess: true })
 			{
 				Cleanup(UmbrellaFileUploadStatus.Uploaded);
 				await DialogUtility.ShowSuccessMessageAsync("Your file has been uploaded successfully.");
@@ -162,7 +160,7 @@ public partial class UmbrellaFileUpload : ComponentBase, IDisposable
 			else
 			{
 				Cleanup(UmbrellaFileUploadStatus.Selected);
-				await DialogUtility.ShowProblemDetailsErrorMessageAsync(result?.ProblemDetails);
+				await DialogUtility.ShowOperationResultErrorMessageAsync(result);
 			}
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))

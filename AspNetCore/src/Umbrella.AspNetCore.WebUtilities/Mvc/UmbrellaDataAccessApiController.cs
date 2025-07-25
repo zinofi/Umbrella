@@ -7,16 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Shared.Models;
-using Umbrella.AspNetCore.WebUtilities.Extensions;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Options;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
-using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Mapping.Abstractions;
-using Umbrella.Utilities.Primitives;
+using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
@@ -47,11 +43,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 {
 	/// <summary>
-	/// Gets the options.
-	/// </summary>
-	protected UmbrellaDataAccessApiControllerOptions Options { get; }
-
-	/// <summary>
 	/// Gets the mapper.
 	/// </summary>
 	protected IUmbrellaMapper Mapper { get; }
@@ -69,33 +60,38 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <summary>
 	/// Gets the data access unit of work.
 	/// </summary>
-	protected IDataAccessUnitOfWork DataAccessUnitOfWork { get; } // TODO: Lazy
+	protected Lazy<IDataAccessUnitOfWork> DataAccessUnitOfWork { get; }
+
+	/// <summary>
+	/// Gets the data access service used for database operations.
+	/// </summary>
+	protected IUmbrellaDataAccessService DataAccessService { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDataAccessApiController"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
-	/// <param name="options">The options.</param>
 	/// <param name="mapper">The mapper.</param>
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
 	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
+	/// <param name="dataAccessService">The data access service.</param>
 	protected UmbrellaDataAccessApiController(
 		ILogger logger,
 		IWebHostEnvironment hostingEnvironment,
-		UmbrellaDataAccessApiControllerOptions options,
 		IUmbrellaMapper mapper,
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
-		IDataAccessUnitOfWork dataAccessUnitOfWork) // TODO: Lazy
+		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
+		IUmbrellaDataAccessService dataAccessService)
 		: base(logger, hostingEnvironment)
 	{
-		Options = options;
 		Mapper = mapper;
 		AuthorizationService = authorizationService;
 		SynchronizationManager = synchronizationManager;
 		DataAccessUnitOfWork = dataAccessUnitOfWork;
+		DataAccessService = dataAccessService;
 	}
 
 	/// <summary>
@@ -145,7 +141,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		CancellationToken cancellationToken,
 		Func<IReadOnlyCollection<TEntityResult>, TItemModel[]>? mapReadAllEntitiesDelegate = null,
 		Func<PaginatedResultModel<TEntityResult>, TPaginatedResultModel, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, CancellationToken, Task>? afterCreateSearchSlimPaginatedModelAsyncDelegate = null,
-		Func<TEntityResult, TItemModel, CancellationToken, Task<IActionResult?>>? afterCreateSlimModelAsyncDelegate = null,
+		Func<TEntityResult, TItemModel, CancellationToken, Task<IOperationResult?>>? afterCreateSlimModelAsyncDelegate = null,
 		TRepositoryOptions? options = null,
 		IEnumerable<RepoOptions>? childOptions = null,
 		bool enableAuthorizationChecks = true)
@@ -162,50 +158,23 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		{
 			ClampPaginationParameters(ref pageNumber, ref pageSize);
 
-			PaginatedResultModel<TEntityResult> result = await loadReadAllDataAsyncDelegate(pageNumber, pageSize, sorters, filters, filterCombinator, options, childOptions, cancellationToken).ConfigureAwait(false);
+			IOperationResult result = await DataAccessService.ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(
+				pageNumber,
+				pageSize,
+				sorters,
+				filters,
+				filterCombinator,
+				loadReadAllDataAsyncDelegate,
+				cancellationToken,
+				mapReadAllEntitiesDelegate,
+				afterCreateSearchSlimPaginatedModelAsyncDelegate,
+				afterCreateSlimModelAsyncDelegate,
+				options,
+				childOptions,
+				enableAuthorizationChecks)
+				.ConfigureAwait(false);
 
-			// Authorization Checks
-			if (enableAuthorizationChecks)
-			{
-				bool authorized = await AuthorizationService.AuthorizeAllAsync(User, result.Items, Options.ReadPolicyName, cancellationToken).ConfigureAwait(false);
-
-				if (!authorized)
-					return Forbidden("There are items that are forbidden from being accessed in the results.");
-			}
-
-			var model = new TPaginatedResultModel
-			{
-				Items = mapReadAllEntitiesDelegate is null ? await Mapper.MapAllAsync<TItemModel>(result.Items, cancellationToken).ConfigureAwait(false) : mapReadAllEntitiesDelegate(result.Items),
-				PageNumber = pageNumber,
-				PageSize = pageSize,
-				TotalCount = result.TotalCount,
-				MoreItems = pageNumber * pageSize < result.TotalCount
-			};
-
-			if (afterCreateSearchSlimPaginatedModelAsyncDelegate is not null)
-				await afterCreateSearchSlimPaginatedModelAsyncDelegate(result, model, sorters, filters, filterCombinator, cancellationToken).ConfigureAwait(false);
-
-			if (afterCreateSlimModelAsyncDelegate is not null)
-			{
-				for (int i = 0; i < model.Items.Count; i++)
-				{
-					IActionResult? actionResult = await afterCreateSlimModelAsyncDelegate(result.Items.ElementAt(i), model.Items.ElementAt(i), cancellationToken).ConfigureAwait(false);
-
-					if (actionResult is not null)
-						return actionResult;
-				}
-			}
-
-			return Ok(model);
-		}
-		catch (Exception exc) when (Options.ReadAllExceptionFilter(exc))
-		{
-			IActionResult? result = await Options.HandleReadAllExceptionAsync(exc).ConfigureAwait(false);
-
-			if (result is not null)
-				return result;
-
-			throw;
+			return OperationResult<TPaginatedResultModel>(result);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, sorters = sorters?.ToSortExpressionDescriptors(), filters = filters?.ToFilterExpressionDescriptors() }, returnValue: !IsDevelopment))
 		{
@@ -254,7 +223,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		CancellationToken cancellationToken,
 		Func<TEntityKey, bool, IncludeMap<TEntity>?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<TEntity?>>? loadReadEntityAsyncDelegate = null,
 		Func<TEntity, TModel>? mapperCallback = null,
-		Func<TEntity, TModel, Task<IActionResult?>>? afterReadEntityCallback = null,
+		Func<TEntity, TModel, Task<IOperationResult?>>? afterReadEntityCallback = null,
 		bool trackChanges = false,
 		IncludeMap<TEntity>? map = null,
 		TRepositoryOptions? options = null,
@@ -269,60 +238,28 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(repository);
 
-		ISynchronizationRoot? syncRoot = null;
-
 		try
 		{
-			if (synchronizeAccess && id.ToString() is string syncKey)
-				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
+			IOperationResult result = await DataAccessService.ReadAsync(
+				id,
+				repository,
+				cancellationToken,
+				loadReadEntityAsyncDelegate,
+				mapperCallback,
+				afterReadEntityCallback,
+				trackChanges,
+				map,
+				options,
+				childOptions,
+				enableAuthorizationChecks,
+				synchronizeAccess)
+				.ConfigureAwait(false);
 
-			TEntity? item = loadReadEntityAsyncDelegate is not null
-				? await loadReadEntityAsyncDelegate(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false)
-				: await repository.Value.FindByIdAsync(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
-
-			if (item is null)
-				return NotFound("The item could not be found. Please go back to the listing screen and try again.");
-
-			// Ensure the current user has Read permissions.
-			if (enableAuthorizationChecks)
-			{
-				AuthorizationResult authResult = await AuthorizationService.AuthorizeAsync(User, item, Options.ReadPolicyName).ConfigureAwait(false);
-
-				if (!authResult.Succeeded)
-					return Forbidden("You do not have permission to access the specified item.");
-			}
-
-			TModel model = mapperCallback is null
-				? await Mapper.MapAsync<TModel>(item, cancellationToken).ConfigureAwait(false)
-				: mapperCallback(item);
-
-			if (afterReadEntityCallback is not null)
-			{
-				IActionResult? result = await afterReadEntityCallback(item, model).ConfigureAwait(false);
-
-				if (result is not null)
-					return result;
-			}
-
-			return Ok(model);
-		}
-		catch (Exception exc) when (Options.ReadExceptionFilter(exc))
-		{
-			IActionResult? result = await Options.HandleReadExceptionAsync(exc).ConfigureAwait(false);
-
-			if (result is not null)
-				return result;
-
-			throw;
+			return OperationResult<TModel>(result);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: !IsDevelopment))
 		{
 			return InternalServerError("There has been a problem getting the specified item.");
-		}
-		finally
-		{
-			if (syncRoot is not null)
-				await syncRoot.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
@@ -378,7 +315,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
 		Func<TModel, TEntity>? mapperInputCallback = null,
-		Func<TEntity, Task<IActionResult?>>? beforeCreateEntityCallback = null,
+		Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null,
 		Func<TEntity, TResultModel>? mapperOutputCallback = null,
 		Func<TEntity, TResultModel, Task>? afterCreateEntityCallback = null,
 		TRepositoryOptions? options = null,
@@ -395,90 +332,29 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(repository);
 
-		ISynchronizationRoot? syncRoot = null;
-
 		try
 		{
-			if (model is null)
-				return BadRequest("The request body has not been provided.");
+			IOperationResult result = await DataAccessService.CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
+				model,
+				repository,
+				cancellationToken,
+				mapperInputCallback,
+				beforeCreateEntityCallback,
+				mapperOutputCallback,
+				afterCreateEntityCallback,
+				options,
+				childOptions,
+				enableAuthorizationChecks,
+				synchronizeAccess,
+				GetCreateSynchronizationRootKey,
+				enableOutputMapping)
+				.ConfigureAwait(false);
 
-			if (synchronizeAccess)
-			{
-				(Type type, string key)? syncKey = GetCreateSynchronizationRootKey(model!);
-
-				if (syncKey.HasValue)
-					syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync(syncKey.Value.type, syncKey.Value.key, cancellationToken).ConfigureAwait(false);
-			}
-
-			var entity = mapperInputCallback is null
-				? await Mapper.MapAsync<TEntity>(model, cancellationToken).ConfigureAwait(false)
-				: mapperInputCallback(model);
-
-			if (beforeCreateEntityCallback is not null)
-			{
-				IActionResult? beforeResult = await beforeCreateEntityCallback(entity).ConfigureAwait(false);
-
-				if (beforeResult is not null)
-					return beforeResult;
-			}
-
-			// Ensure the current user has Create permissions.
-			if (enableAuthorizationChecks)
-			{
-				AuthorizationResult authResult = await AuthorizationService.AuthorizeAsync(User, entity, Options.CreatePolicyName).ConfigureAwait(false);
-
-				if (!authResult.Succeeded)
-					return Forbidden("You do not have permission to access the specified item.");
-			}
-
-			OperationResult<TEntity> saveResult = await repository.Value.SaveEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
-			await DataAccessUnitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
-
-			if (saveResult.Status is OperationResultStatus.Success)
-			{
-				TResultModel? result = default;
-
-				if (enableOutputMapping)
-				{
-					result = mapperOutputCallback is null
-						? await Mapper.MapAsync<TResultModel>(entity, cancellationToken).ConfigureAwait(false)
-						: mapperOutputCallback(entity);
-				}
-				else
-				{
-					result = new TResultModel { Id = entity.Id };
-
-					if (result is IConcurrencyStamp concurrencyStampResult && entity is IConcurrencyStamp concurrencyStampEntity)
-						concurrencyStampResult.ConcurrencyStamp = concurrencyStampEntity.ConcurrencyStamp;
-				}
-
-				if (afterCreateEntityCallback is not null)
-					await afterCreateEntityCallback(entity, result).ConfigureAwait(false);
-
-				return Created(result);
-			}
-
-			return saveResult.ValidationResults?.Count > 0
-				? ValidationProblem(saveResult.ValidationResults.ToModelStateDictionary())
-				: (IActionResult)BadRequest("There was a problem saving the item. Please try again.");
-		}
-		catch (Exception exc) when (Options.CreateExceptionFilter(exc))
-		{
-			IActionResult? result = await Options.HandleCreateExceptionAsync(exc).ConfigureAwait(false);
-
-			if (result is not null)
-				return result;
-
-			throw;
+			return OperationResult<TResultModel>(result);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, returnValue: !IsDevelopment))
 		{
 			return InternalServerError("There has been a problem creating the specified item.");
-		}
-		finally
-		{
-			if (syncRoot is not null)
-				await syncRoot.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
@@ -538,9 +414,9 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
-		Func<TEntity, Task<IActionResult?>>? beforeMappingCallback = null,
+		Func<TEntity, Task<IOperationResult?>>? beforeMappingCallback = null,
 		Func<TModel, TEntity, TEntity>? mapperInputCallback = null,
-		Func<TEntity, Task<IActionResult?>>? beforeUpdateEntityCallback = null,
+		Func<TEntity, Task<IOperationResult?>>? beforeUpdateEntityCallback = null,
 		Func<TEntity, TResultModel>? mapperOutputCallback = null,
 		Func<TEntity, TResultModel, Task>? afterUpdateEntityCallback = null,
 		IncludeMap<TEntity>? map = null,
@@ -557,106 +433,32 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		where TResultModel : IUpdateResultModel, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-
-		ISynchronizationRoot? syncRoot = null;
 		Guard.IsNotNull(repository);
 
 		try
 		{
-			if (synchronizeAccess && model.Id.ToString() is string syncKey)
-				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
+			IOperationResult result = await DataAccessService.UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
+				model,
+				repository,
+				cancellationToken,
+				beforeMappingCallback,
+				mapperInputCallback,
+				beforeUpdateEntityCallback,
+				mapperOutputCallback,
+				afterUpdateEntityCallback,
+				map,
+				options,
+				childOptions,
+				enableAuthorizationChecks,
+				synchronizeAccess,
+				enableOutputMapping)
+				.ConfigureAwait(false);
 
-			var entity = await repository.Value.FindByIdAsync(model.Id, true, map, options, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-			if (entity is null)
-				return NotFound("The specified item could not be found.");
-
-			// Check the concurrency stamp. This is done in the repos and again when the database query is executed but good to fail on
-			// this as early as possible.
-			if (entity is IConcurrencyStamp concurrencyStamp && concurrencyStamp.ConcurrencyStamp != model.ConcurrencyStamp)
-				return ConcurrencyConflict(Options.ConcurrencyErrorMessage);
-
-			if (beforeMappingCallback is not null)
-			{
-				var result = await beforeMappingCallback(entity).ConfigureAwait(false);
-
-				if (result is not null)
-					return result;
-			}
-
-			entity = mapperInputCallback is null
-					? await Mapper.MapAsync(model, entity, cancellationToken).ConfigureAwait(false)
-					: mapperInputCallback(model, entity);
-
-			if (beforeUpdateEntityCallback is not null)
-			{
-				IActionResult? beforeResult = await beforeUpdateEntityCallback(entity).ConfigureAwait(false);
-
-				if (beforeResult is not null)
-					return beforeResult;
-			}
-
-			// Ensure the current user has Update permissions.
-			if (enableAuthorizationChecks)
-			{
-				AuthorizationResult authResult = await AuthorizationService.AuthorizeAsync(User, entity, Options.UpdatePolicyName).ConfigureAwait(false);
-
-				if (!authResult.Succeeded)
-					return Forbidden("You do not have the permissions to update the specified item.");
-			}
-
-			OperationResult<TEntity> saveResult = await repository.Value.SaveEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
-			await DataAccessUnitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
-
-			if (saveResult.Status is OperationResultStatus.Success)
-			{
-				TResultModel? result = default;
-
-				if (enableOutputMapping)
-				{
-					result = mapperOutputCallback is null
-						? await Mapper.MapAsync<TResultModel>(entity, cancellationToken).ConfigureAwait(false)
-						: mapperOutputCallback(entity);
-				}
-				else
-				{
-					result = new TResultModel();
-
-					if (entity is IConcurrencyStamp concurrencyStampEntity)
-						result.ConcurrencyStamp = concurrencyStampEntity.ConcurrencyStamp;
-				}
-
-				if (afterUpdateEntityCallback is not null)
-					await afterUpdateEntityCallback(entity, result).ConfigureAwait(false);
-
-				return Ok(result);
-			}
-
-			return saveResult.ValidationResults?.Count > 0
-				? ValidationProblem(saveResult.ValidationResults.ToModelStateDictionary())
-				: (IActionResult)BadRequest("There was a problem updating the item. Please try again.");
-		}
-		catch (UmbrellaConcurrencyException)
-		{
-			return ConcurrencyConflict(Options.ConcurrencyErrorMessage);
-		}
-		catch (Exception exc) when (Options.UpdateExceptionFilter(exc))
-		{
-			IActionResult? result = await Options.HandleUpdateExceptionAsync(exc).ConfigureAwait(false);
-
-			if (result is not null)
-				return result;
-
-			throw;
+			return OperationResult<TResultModel>(result);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, returnValue: !IsDevelopment))
 		{
 			return InternalServerError("There has been a problem updating the specified item.");
-		}
-		finally
-		{
-			if (syncRoot is not null)
-				await syncRoot.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
@@ -696,7 +498,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	protected async Task<IActionResult> DeleteAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
 		TEntityKey id,
 		Lazy<TRepository> repository,
-		Func<TEntity, CancellationToken, Task<IActionResult?>> beforeDeleteEntityAsyncCallback,
+		Func<TEntity, CancellationToken, Task<IOperationResult?>> beforeDeleteEntityAsyncCallback,
 		Func<TEntity, CancellationToken, Task> afterDeleteEntityAsyncCallback,
 		CancellationToken cancellationToken,
 		IncludeMap<TEntity>? map = null,
@@ -714,54 +516,26 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		Guard.IsNotNull(beforeDeleteEntityAsyncCallback);
 		Guard.IsNotNull(afterDeleteEntityAsyncCallback);
 
-		ISynchronizationRoot? syncRoot = null;
-
 		try
 		{
-			if (synchronizeAccess && id.ToString() is string syncKey)
-				syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync<TEntity>(syncKey, cancellationToken).ConfigureAwait(false);
+			IOperationResult result = await DataAccessService.DeleteAsync(
+				id,
+				repository,
+				beforeDeleteEntityAsyncCallback,
+				afterDeleteEntityAsyncCallback,
+				cancellationToken,
+				map,
+				options,
+				childOptions,
+				enableAuthorizationChecks,
+				synchronizeAccess)
+				.ConfigureAwait(false);
 
-			var entity = await repository.Value.FindByIdAsync(id, true, map, options, childOptions, cancellationToken).ConfigureAwait(false);
-
-			if (entity is null)
-				return NotFound("The specified item could not be found.");
-
-			if (enableAuthorizationChecks)
-			{
-				var authResult = await AuthorizationService.AuthorizeAsync(User, entity, Options.DeletePolicyName).ConfigureAwait(false);
-
-				if (!authResult.Succeeded)
-					return Forbidden("The specified item cannot be deleted using your current credentials.");
-			}
-
-			IActionResult? result = await beforeDeleteEntityAsyncCallback(entity, cancellationToken).ConfigureAwait(false);
-
-			if (result is not null)
-				return result;
-
-			await repository.Value.DeleteEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
-			await DataAccessUnitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
-			await afterDeleteEntityAsyncCallback(entity, cancellationToken).ConfigureAwait(false);
-
-			return NoContent();
-		}
-		catch (Exception exc) when (Options.DeleteExceptionFilter(exc))
-		{
-			IActionResult? result = await Options.HandleDeleteExceptionAsync(exc).ConfigureAwait(false);
-
-			if (result is not null)
-				return result;
-
-			throw;
+			return OperationResult(result);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: !IsDevelopment))
 		{
 			return InternalServerError("There has been a problem deleting the specified item.");
-		}
-		finally
-		{
-			if (syncRoot is not null)
-				await syncRoot.DisposeAsync().ConfigureAwait(false);
 		}
 	}
 
@@ -787,23 +561,4 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <param name="model">The incoming model passed into the action method.</param>
 	/// <returns>A tuple containing the type and the key used to performing synchronization.</returns>
 	protected virtual (Type type, string key)? GetCreateSynchronizationRootKey(object model) => null;
-}
-
-// Design
-// We need an UmbrellaDataAccessService
-// This service should have the same async methods as the controller
-// i.e. ReadAsync, ReadAllAsync, CreateAsync, UpdateAsync, DeleteAsync
-// We should inject this service into the controller and use it to perform the operations
-// Can be abstract away the authorization service and use a custom abstraction for authorization checks?
-// The public methods should be simple. Create internal overloads that do a bit more work and take in the repository, options, etc.
-
-// The return types of the public methods should be OperationResult. Change OperationResult to be a record?
-// We need to extend the OperationResult to include any additional information we want to return
-
-// We need an IUmbrellaDataAccessService interface that defines the methods
-// We then need an implementation that use Http endpoints instead of repositories
-
-public abstract class UmbrellaDataAccessService
-{
-
 }

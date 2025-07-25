@@ -7,8 +7,8 @@ using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.FileUpload;
 using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.DynamicImage.Abstractions;
-using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Imaging;
+using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.FileImagePreviewUpload;
 
@@ -63,7 +63,7 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 	/// </summary>
 	[Parameter]
 	[EditorRequired]
-	public Func<UmbrellaFileUploadRequestEventArgs, Task<IHttpCallResult>>? OnRequestUpload { get; set; }
+	public Func<UmbrellaFileUploadRequestEventArgs, Task<IOperationResult>>? OnRequestUpload { get; set; }
 
 	/// <summary>
 	/// Gets or sets the target width of the resized image. The resized image width may be less than this value depending on the width of the uploaded source image.
@@ -151,14 +151,14 @@ public partial class UmbrellaFileImagePreviewUpload : ComponentBase
 		}
 	}
 
-	private async Task<IHttpCallResult?> OnRequestUploadInnerAsync(UmbrellaFileUploadRequestEventArgs args)
+	private async Task<IOperationResult?> OnRequestUploadInnerAsync(UmbrellaFileUploadRequestEventArgs args)
 	{
 		try
 		{
 			if (OnRequestUpload is null)
 				throw new InvalidOperationException($"The {nameof(OnRequestUpload)} property does not have an assigned delegate.");
 
-			IHttpCallResult result = await OnRequestUpload(args);
+			IOperationResult result = await OnRequestUpload(args);
 
 			StateHasChanged();
 

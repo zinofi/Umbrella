@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
-using Umbrella.DataAccess.Remote.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Repositories.Abstractions;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
 
 /// <summary>
-/// A base component to be used with Blazor components that contain a single <see cref="UmbrellaGrid{TItem}"/> component in conjunction
-/// with the <see cref="DataAccess.Remote"/> infrastructure.
+/// A base component to be used with Blazor components that contain a single <see cref="UmbrellaGrid{TItem}"/> component.
 /// </summary>
 /// <typeparam name="TItemModel">The type of the item model.</typeparam>
 /// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
@@ -23,7 +23,7 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericRemoteRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericRemoteRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
 {
 	/// <summary>
 	/// The event handler invoked when an item in the grid is to be deleted.
@@ -31,6 +31,8 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	/// <param name="item">The item.</param>
 	public virtual async Task DeleteItemClickAsync(TItemModel item)
 	{
+		Guard.IsNotNull(item);
+
 		try
 		{
 			string typeDisplayName = typeof(TItemModel).GetDisplayText();
@@ -46,14 +48,14 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 
 				var result = await Repository.DeleteAsync(item.Id);
 
-				if (result.Success)
+				if (result.IsSuccess)
 				{
 					await DialogUtility.ShowSuccessMessageAsync($"The {typeDisplayName} has been successfully deleted.", $"{typeDisplayName} Deleted");
 					await GridInstance.RefreshAsync();
 				}
 				else
 				{
-					await ShowProblemDetailsErrorMessageAsync(result.ProblemDetails, $"Delete {typeDisplayName}");
+					await ShowOperationResultErrorMessageAsync(result, $"Delete {typeDisplayName}");
 				}
 			}
 		}
