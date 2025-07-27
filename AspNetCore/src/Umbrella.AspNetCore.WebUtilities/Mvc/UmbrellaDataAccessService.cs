@@ -3,7 +3,6 @@
 
 using System.Security.Claims;
 using CommunityToolkit.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Shared.Models;
@@ -49,7 +48,7 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 	/// <summary>
 	/// Gets the authorization service.
 	/// </summary>
-	protected IAuthorizationService AuthorizationService { get; }
+	protected IUmbrellaAuthorizationService AuthorizationService { get; }
 
 	/// <summary>
 	/// Gets the synchronization manager.
@@ -81,7 +80,7 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 		IHostEnvironment hostingEnvironment,
 		UmbrellaDataAccessServiceOptions options,
 		IUmbrellaMapper mapper,
-		IAuthorizationService authorizationService,
+		IUmbrellaAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
 		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork)
 	{
@@ -210,9 +209,9 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 			// Ensure the current user has Read permissions.
 			if (enableAuthorizationChecks)
 			{
-				AuthorizationResult authResult = await AuthorizationService.AuthorizeAsync(User, item, Options.ReadPolicyName).ConfigureAwait(false);
+				bool success = await AuthorizationService.AuthorizeAsync(User, item, Options.ReadPolicyName).ConfigureAwait(false);
 
-				if (!authResult.Succeeded)
+				if (!success)
 					return OperationResult.Forbidden("You do not have permission to access the specified item.");
 			}
 
@@ -304,9 +303,9 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 			// Ensure the current user has Create permissions.
 			if (enableAuthorizationChecks)
 			{
-				AuthorizationResult authResult = await AuthorizationService.AuthorizeAsync(User, entity, Options.CreatePolicyName).ConfigureAwait(false);
+				bool success = await AuthorizationService.AuthorizeAsync(User, entity, Options.CreatePolicyName).ConfigureAwait(false);
 
-				if (!authResult.Succeeded)
+				if (!success)
 					return OperationResult.Forbidden("You do not have permission to create the specified item.");
 			}
 
@@ -431,9 +430,9 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 			// Ensure the current user has Update permissions.
 			if (enableAuthorizationChecks)
 			{
-				AuthorizationResult authResult = await AuthorizationService.AuthorizeAsync(User, entity, Options.UpdatePolicyName).ConfigureAwait(false);
+				bool success = await AuthorizationService.AuthorizeAsync(User, entity, Options.UpdatePolicyName).ConfigureAwait(false);
 
-				if (!authResult.Succeeded)
+				if (!success)
 					return OperationResult.Forbidden("You do not have permission to update the specified item.");
 			}
 
@@ -532,9 +531,9 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 
 			if (enableAuthorizationChecks)
 			{
-				var authResult = await AuthorizationService.AuthorizeAsync(User, entity, Options.DeletePolicyName).ConfigureAwait(false);
+				bool success = await AuthorizationService.AuthorizeAsync(User, entity, Options.DeletePolicyName).ConfigureAwait(false);
 
-				if (!authResult.Succeeded)
+				if (!success)
 					return OperationResult.Forbidden("You do not have permission to delete the specified item.");
 			}
 

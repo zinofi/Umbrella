@@ -11,7 +11,7 @@ public static class IAuthorizationServiceExtensions
 	/// <summary>
 	/// Checks if the specified <paramref name="user"/> is permitted to access all specified <paramref name="resources"/> using the provided <paramref name="policyName"/>.
 	/// </summary>
-	/// <typeparam name="TResource">The type of the resource being authorized for access by the specifed user.</typeparam>
+	/// <typeparam name="TResource">The type of the resource being authorized for access by the specified user.</typeparam>
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="user">The user.</param>
 	/// <param name="resources">The resources.</param>
