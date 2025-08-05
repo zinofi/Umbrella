@@ -365,6 +365,23 @@ public abstract class GenericDbRepository<TEntity, TDbContext, TRepoOptions, TEn
 		=> DeleteAsync(entity, false, repoOptions, childOptions, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete
 
+#if NET9_0_OR_GREATER
+	/// <inheritdoc />
+	public virtual async Task DeleteEntityByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			_ = await Items.Where(x => x.Id.Equals(id)).ExecuteDeleteAsync(cancellationToken);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
+		{
+			throw new UmbrellaDataAccessException("There has been a problem deleting the specified entity.", exc);
+		}
+	}
+#endif
+
 	/// <inheritdoc />
 	[Obsolete($"Use the {nameof(DeleteAllEntitiesAsync)} method instead together with the ${nameof(IDataAccessUnitOfWork)} type. This method will be removed in a future version.")]
 	public virtual async Task DeleteAllAsync(IEnumerable<TEntity> entities, bool pushChangesToDb = true, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default)

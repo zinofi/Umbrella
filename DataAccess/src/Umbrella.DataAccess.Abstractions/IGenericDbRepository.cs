@@ -154,4 +154,15 @@ public interface IGenericDbRepository<TEntity, in TRepoOptions, TEntityKey> : IR
 	/// If changes need to be pushed to the database, the <see cref="IDataAccessUnitOfWork.CommitAsync"/> method should be called afterwards.
 	/// </remarks>
 	Task DeleteAllEntitiesAsync(IEnumerable<TEntity> entities, TRepoOptions? repoOptions = null, IEnumerable<RepoOptions>? childOptions = null, CancellationToken cancellationToken = default);
+
+#if NET9_0_OR_GREATER
+	/// <summary>
+	/// Deletes the entity with the specified <paramref name="id"/>
+	/// </summary>
+	/// <param name="id">The id</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An awaitable <see cref="Task"/> that completes when the operation has completed.</returns>
+	/// <remarks>The entity will be removed from the database immediately without <see cref="IDataAccessUnitOfWork.CommitAsync"/> needing to be called.</remarks>
+	Task DeleteEntityByIdAsync(TEntityKey id, CancellationToken cancellationToken = default);
+#endif
 }
