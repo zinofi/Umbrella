@@ -195,7 +195,7 @@ public record UserModel
 ## Usage
 
 1. Install the `Umbrella.Analyzers.ModelStandards` NuGet package
-2. The analyzer will automatically run during builds and show warnings for violations
+2. The analyzer will automatically run during builds and show **compilation errors** for violations
 3. **For .NET 8.0+ projects**: Use the automatic code fixes via IDE quick actions
 4. **For .NET Standard 2.0 projects**: Manually apply fixes based on diagnostic messages
 5. Use opt-out attributes with proper justifications when standards cannot be followed
@@ -217,4 +217,8 @@ public record UserModel
 <PackageReference Include="Umbrella.Analyzers.ModelStandards" Version="1.0.0" PrivateAssets="all" />
 ```
 
-**Note**: The analyzer automatically adapts based on your project's target framework - providing full code fix functionality for .NET 8+ and diagnostics-only support for .NET Standard 2.0
+**Note**: The analyzer automatically adapts based on your project's target framework - providing full code fix functionality for .NET 8+ and diagnostics-only support for .NET Standard 2.0.
+
+## Diagnostic Severity
+
+All analyzer rules are configured with **Error** severity, meaning violations will prevent compilation and must be fixed before the build can succeed. This ensures strict adherence to Umbrella model standards.

@@ -6,54 +6,107 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Umbrella.Analyzers.ModelStandards;
 
+/// <summary>
+/// Roslyn analyzer that enforces coding standards for model classes and view models
+/// following the Umbrella framework conventions for immutability and type safety.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This analyzer enforces the following rules:
+/// </para>
+/// <list type="bullet">
+/// <item><description>UMS001: Model types must be records for better immutability guarantees</description></item>
+/// <item><description>UMS002: Model properties must use the 'required' keyword for initialization safety</description></item>
+/// <item><description>UMS003: Model properties must have getter and be init-only to prevent mutation</description></item>
+/// <item><description>UMS004: Collection properties must use IReadOnlyCollection&lt;T&gt; for immutability</description></item>
+/// </list>
+/// <para>
+/// The analyzer targets types with names ending in: Model, ModelBase, ViewModel, or ViewModelBase.
+/// </para>
+/// <para>
+/// Opt-out attributes are available to bypass specific rules when justified.
+/// </para>
+/// </remarks>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class UmbrellaModelStandardsAnalyzer : DiagnosticAnalyzer
 {
-	// Diagnostics
+	/// <summary>
+	/// Diagnostic rule that requires model types to be defined as records instead of classes.
+	/// </summary>
+	/// <remarks>
+	/// Records provide better immutability guarantees and value-based equality semantics
+	/// which are essential for model types in the Umbrella framework.
+	/// </remarks>
 	public static readonly DiagnosticDescriptor ModelMustBeRecordRule = new(
 		id: "UMS001",
 		title: "Model types must be records",
 		messageFormat: "The model type '{0}' should be defined as a record",
 		category: "UmbrellaModelStandards",
-		defaultSeverity: DiagnosticSeverity.Warning,
+		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true,
 		description: "Per Umbrella standards, model types should be defined as records for better immutability guarantees.");
 
+	/// <summary>
+	/// Diagnostic rule that requires model properties to use the 'required' keyword.
+	/// </summary>
+	/// <remarks>
+	/// The 'required' keyword ensures that properties are initialized at object creation time,
+	/// preventing null reference exceptions and improving type safety.
+	/// </remarks>
 	public static readonly DiagnosticDescriptor PropertiesMustBeRequiredRule = new(
 		id: "UMS002",
 		title: "Model properties must use the required keyword",
 		messageFormat: "Property '{0}' in model type '{1}' should use the 'required' keyword",
 		category: "UmbrellaModelStandards",
-		defaultSeverity: DiagnosticSeverity.Warning,
+		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true,
 		description: "Per Umbrella standards, properties in model types should use the 'required' keyword.");
 
+	/// <summary>
+	/// Diagnostic rule that requires model properties to have a getter and be init-only.
+	/// </summary>
+	/// <remarks>
+	/// Properties should be readable (getter) and only settable during initialization (init)
+	/// to maintain immutability after object creation.
+	/// </remarks>
 	public static readonly DiagnosticDescriptor PropertiesMustBeGetterInitOnlyRule = new(
 		id: "UMS003",
 		title: "Model properties must have getter and be init-only",
 		messageFormat: "Property '{0}' in model type '{1}' should have a getter and be init-only",
 		category: "UmbrellaModelStandards",
-		defaultSeverity: DiagnosticSeverity.Warning,
+		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true,
 		description: "Per Umbrella standards, properties in model types should have a getter and be init-only.");
 
+	/// <summary>
+	/// Diagnostic rule that requires collection properties to use IReadOnlyCollection&lt;T&gt;.
+	/// </summary>
+	/// <remarks>
+	/// Using IReadOnlyCollection&lt;T&gt; prevents external code from modifying the collection
+	/// contents, maintaining immutability and preventing unintended side effects.
+	/// </remarks>
 	public static readonly DiagnosticDescriptor CollectionsMustBeReadOnlyRule = new(
 		id: "UMS004",
 		title: "Collection properties must use IReadOnlyCollection<T>",
 		messageFormat: "Collection property '{0}' in model type '{1}' should be of type IReadOnlyCollection<T>",
 		category: "UmbrellaModelStandards",
-		defaultSeverity: DiagnosticSeverity.Warning,
+		defaultSeverity: DiagnosticSeverity.Error,
 		isEnabledByDefault: true,
 		description: "Per Umbrella standards, collection properties in model types should use IReadOnlyCollection<T> for better immutability.");
 
+	/// <inheritdoc />
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(
 		ModelMustBeRecordRule,
 		PropertiesMustBeRequiredRule,
 		PropertiesMustBeGetterInitOnlyRule,
 		CollectionsMustBeReadOnlyRule);
 
+	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
 	{
+		if (context is null)
+			throw new ArgumentNullException(nameof(context));
+
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 		context.EnableConcurrentExecution();
 
