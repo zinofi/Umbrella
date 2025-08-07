@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -9,6 +9,8 @@
 		<Description>Roslyn analyzer that enforces coding standards for model classes and view models</Description>
 		<DevelopmentDependency>true</DevelopmentDependency>
 		<NoPackageAnalysis>true</NoPackageAnalysis>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,9 +19,9 @@
 	</ItemGroup>
 
 	<!-- CodeFix packages only for .NET 8+ -->
-	<ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
+	<!--<ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" PrivateAssets="all" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
