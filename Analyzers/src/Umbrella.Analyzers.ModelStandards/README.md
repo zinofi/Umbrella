@@ -149,27 +149,72 @@ public record UserModel
 
 ## Code Fixes
 
-**Note:** Automatic code fixes are currently not available in this version of the analyzer. The analyzer provides diagnostics and warnings, but you'll need to manually apply the fixes.
+### ? **Automatic Code Fixes Available!**
 
-### Future Code Fix Support
+When targeting **.NET 8.0 or .NET 9.0**, this analyzer provides automatic code fixes for all violations:
 
-To enable automatic code fixes in a future version, the following would be required:
+- **UMS001**: Convert class to record
+- **UMS002**: Add `required` modifier to properties
+- **UMS003**: Fix property accessors (change `set` to `init`, add missing `get`)
+- **UMS004**: Change collection types to `IReadOnlyCollection<T>`
 
-1. **Target Framework**: The analyzer would need to target **.NET 6.0 or higher** instead of .NET Standard 2.0
-2. **Package Dependencies**: Add `Microsoft.CodeAnalysis.Workspaces.Common` package reference
-3. **Implementation**: Implement a full `CodeFixProvider` with `ExportCodeFixProvider` attribute
+### Target Framework Support
 
-The current version targets .NET Standard 2.0 for maximum compatibility across different development environments and CI/CD scenarios.
+| Target Framework | Analyzer (Diagnostics) | Code Fixes |
+|-----------------|------------------------|------------|
+| .NET Standard 2.0 | ? Full Support | ? Not Available |
+| .NET 8.0 | ? Full Support | ? **Full Support** |
+| .NET 9.0 | ? Full Support | ? **Full Support** |
+
+### How to Use Code Fixes
+
+1. **In Visual Studio**: Click the lightbulb ?? icon that appears when hovering over violations
+2. **Quick Actions**: Use `Ctrl+.` (Windows) or `Cmd+.` (Mac) when cursor is on a violation
+3. **Fix All**: Use "Fix All Occurrences" to fix multiple violations at once
+
+### Example Code Fix in Action
+
+**Before (with violation):**
+```csharp
+public class UserModel  // UMS001 violation
+{
+    public string Name { get; set; }  // UMS002, UMS003 violations
+    public List<string> Tags { get; init; }  // UMS002, UMS004 violations
+}
+```
+
+**After applying code fixes:**
+```csharp
+public record UserModel
+{
+    public required string Name { get; init; }
+    public required IReadOnlyCollection<string> Tags { get; init; }
+}
+```
 
 ## Usage
 
 1. Install the `Umbrella.Analyzers.ModelStandards` NuGet package
 2. The analyzer will automatically run during builds and show warnings for violations
-3. Use the opt-out attributes with proper justifications when standards cannot be followed
-4. Manually apply the suggested fixes based on the diagnostic messages
+3. **For .NET 8.0+ projects**: Use the automatic code fixes via IDE quick actions
+4. **For .NET Standard 2.0 projects**: Manually apply fixes based on diagnostic messages
+5. Use opt-out attributes with proper justifications when standards cannot be followed
 
 ## Requirements
 
+### For Analyzer (Diagnostics):
 - .NET Standard 2.0 or higher
 - Visual Studio 2019+ or equivalent tooling with Roslyn analyzer support
-- For projects using the analyzer: .NET framework supporting `required` keyword and `init` accessors (C# 9.0+/C# 11.0+)
+
+### For Code Fixes:
+- **.NET 8.0 or .NET 9.0** target framework
+- Visual Studio 2022+ with C# 11.0+ support
+- For projects using the analyzer: .NET framework supporting `required` keyword and `init` accessors
+
+## Installation
+
+```xml
+<PackageReference Include="Umbrella.Analyzers.ModelStandards" Version="1.0.0" PrivateAssets="all" />
+```
+
+**Note**: The analyzer automatically adapts based on your project's target framework - providing full code fix functionality for .NET 8+ and diagnostics-only support for .NET Standard 2.0
