@@ -112,24 +112,28 @@ public abstract class AnalyzerTestBase
 
 		Assert.Equal(expectedDiagnostics.Length, actualDiagnostics.Length);
 
-		// Sort both arrays by ID to avoid ordering issues
-		Array.Sort(actualDiagnostics, (a, b) => string.Compare(a.Id, b.Id, StringComparison.Ordinal));
-		Array.Sort(expectedDiagnostics, (a, b) => string.Compare(a.Rule.Id, b.Rule.Id, StringComparison.Ordinal));
+		var unmatchedActual = actualDiagnostics.ToList();
 
-		for (int i = 0; i < expectedDiagnostics.Length; i++)
+		foreach (var expected in expectedDiagnostics)
 		{
-			ExpectedDiagnostic expected = expectedDiagnostics[i];
-			Diagnostic actual = actualDiagnostics[i];
+			var match = unmatchedActual.FirstOrDefault(actual =>
+				actual.Id == expected.Rule.Id &&
+				actual.Location.GetLineSpan().StartLinePosition.Line + 1 == expected.Line &&
+				actual.Location.GetLineSpan().StartLinePosition.Character + 1 == expected.Column &&
+				(expected.Arguments.Count == 0 || string.Format(CultureInfo.InvariantCulture, expected.Rule.MessageFormat.ToString(CultureInfo.InvariantCulture), expected.Arguments.ToArray()) == actual.GetMessage(CultureInfo.InvariantCulture))
+			);
 
-			Assert.Equal(expected.Rule.Id, actual.Id);
-			Assert.Equal(expected.Line, actual.Location.GetLineSpan().StartLinePosition.Line + 1);
-			Assert.Equal(expected.Column, actual.Location.GetLineSpan().StartLinePosition.Character + 1);
-
-			if (expected.Arguments.Count > 0)
+			if (match == null)
 			{
-				string expectedMessage = string.Format(CultureInfo.InvariantCulture, expected.Rule.MessageFormat.ToString(CultureInfo.InvariantCulture), expected.Arguments.ToArray());
-				Assert.Equal(expectedMessage, actual.GetMessage(CultureInfo.InvariantCulture));
+				throw new Xunit.Sdk.XunitException($"Expected diagnostic {expected.Rule.Id} at line {expected.Line}, column {expected.Column} not found.");
 			}
+
+			_ = unmatchedActual.Remove(match);
+		}
+
+		if (unmatchedActual.Count > 0)
+		{
+			throw new Xunit.Sdk.XunitException($"Unexpected diagnostics found: {string.Join(", ", unmatchedActual.Select(d => d.Id))}");
 		}
 	}
 

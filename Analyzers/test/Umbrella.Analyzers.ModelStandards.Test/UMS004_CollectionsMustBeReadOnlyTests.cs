@@ -11,7 +11,7 @@ public record UserModel
 {
     public required List<string> Tags { get; init; }
 }";
-        var expected = Diagnostic(UmbrellaModelStandardsAnalyzer.CollectionsMustBeReadOnlyRule, 5, 32, "Tags", "UserModel");
+        var expected = Diagnostic(UmbrellaModelStandardsAnalyzer.CollectionsMustBeReadOnlyRule, 5, 34, "Tags", "UserModel");
         await VerifyAnalyzerAsync(source, expected);
     }
 

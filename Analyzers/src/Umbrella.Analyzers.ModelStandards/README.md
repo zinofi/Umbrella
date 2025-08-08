@@ -1,4 +1,4 @@
-# Umbrella Model Standards Analyzer
+﻿# Umbrella Model Standards Analyzer
 
 This Roslyn analyzer enforces coding standards for model classes and view models in the Umbrella framework.
 
@@ -7,7 +7,7 @@ This Roslyn analyzer enforces coding standards for model classes and view models
 ### UMS001 - Model types must be records
 Model types (classes ending with "Model", "ModelBase", "ViewModel", or "ViewModelBase") should be defined as records for better immutability guarantees.
 
-**? Bad:**
+**❌ Bad:**
 ```csharp
 public class UserModel
 {
@@ -15,7 +15,7 @@ public class UserModel
 }
 ```
 
-**? Good:**
+**✅ Good:**
 ```csharp
 public record UserModel
 {
@@ -26,7 +26,7 @@ public record UserModel
 ### UMS002 - Model properties must use the required keyword
 Properties in model types should use the `required` keyword to ensure they are initialized.
 
-**? Bad:**
+**❌ Bad:**
 ```csharp
 public record UserModel
 {
@@ -34,7 +34,7 @@ public record UserModel
 }
 ```
 
-**? Good:**
+**✅ Good:**
 ```csharp
 public record UserModel
 {
@@ -45,7 +45,7 @@ public record UserModel
 ### UMS003 - Model properties must have getter and be init-only
 Properties should have a getter and be init-only instead of mutable setters.
 
-**? Bad:**
+**❌ Bad:**
 ```csharp
 public record UserModel
 {
@@ -53,7 +53,7 @@ public record UserModel
 }
 ```
 
-**? Good:**
+**✅ Good:**
 ```csharp
 public record UserModel
 {
@@ -64,7 +64,7 @@ public record UserModel
 ### UMS004 - Collection properties must use IReadOnlyCollection<T>
 Collection properties should use `IReadOnlyCollection<T>` for better immutability.
 
-**? Bad:**
+**❌ Bad:**
 ```csharp
 public record UserModel
 {
@@ -72,7 +72,7 @@ public record UserModel
 }
 ```
 
-**? Good:**
+**✅ Good:**
 ```csharp
 public record UserModel
 {
@@ -149,56 +149,23 @@ public record UserModel
 
 ## Code Fixes
 
-### ? **Automatic Code Fixes Available!**
+**Automatic code fixes are not available in this version.**
 
-When targeting **.NET 8.0 or .NET 9.0**, this analyzer provides automatic code fixes for all violations:
-
-- **UMS001**: Convert class to record
-- **UMS002**: Add `required` modifier to properties
-- **UMS003**: Fix property accessors (change `set` to `init`, add missing `get`)
-- **UMS004**: Change collection types to `IReadOnlyCollection<T>`
+This analyzer provides diagnostics only. You must manually update your code to resolve violations based on the diagnostic messages.
 
 ### Target Framework Support
 
-| Target Framework | Analyzer (Diagnostics) | Code Fixes |
-|-----------------|------------------------|------------|
-| .NET Standard 2.0 | ? Full Support | ? Not Available |
-| .NET 8.0 | ? Full Support | ? **Full Support** |
-| .NET 9.0 | ? Full Support | ? **Full Support** |
-
-### How to Use Code Fixes
-
-1. **In Visual Studio**: Click the lightbulb ?? icon that appears when hovering over violations
-2. **Quick Actions**: Use `Ctrl+.` (Windows) or `Cmd+.` (Mac) when cursor is on a violation
-3. **Fix All**: Use "Fix All Occurrences" to fix multiple violations at once
-
-### Example Code Fix in Action
-
-**Before (with violation):**
-```csharp
-public class UserModel  // UMS001 violation
-{
-    public string Name { get; set; }  // UMS002, UMS003 violations
-    public List<string> Tags { get; init; }  // UMS002, UMS004 violations
-}
-```
-
-**After applying code fixes:**
-```csharp
-public record UserModel
-{
-    public required string Name { get; init; }
-    public required IReadOnlyCollection<string> Tags { get; init; }
-}
-```
+| Target Framework      | Analyzer (Diagnostics) | Code Fixes      |
+|----------------------|------------------------|-----------------|
+| .NET Standard 2.0    | ✔️ Full Support         | ❌ Not Available |
+| .NET 8.0             | ✔️ Full Support         | ❌ Not Available |
+| .NET 9.0             | ✔️ Full Support         | ❌ Not Available |
 
 ## Usage
 
 1. Install the `Umbrella.Analyzers.ModelStandards` NuGet package
 2. The analyzer will automatically run during builds and show **compilation errors** for violations
-3. **For .NET 8.0+ projects**: Use the automatic code fixes via IDE quick actions
-4. **For .NET Standard 2.0 projects**: Manually apply fixes based on diagnostic messages
-5. Use opt-out attributes with proper justifications when standards cannot be followed
+3. Use opt-out attributes with proper justifications when standards cannot be followed
 
 ## Requirements
 
@@ -206,18 +173,13 @@ public record UserModel
 - .NET Standard 2.0 or higher
 - Visual Studio 2019+ or equivalent tooling with Roslyn analyzer support
 
-### For Code Fixes:
-- **.NET 8.0 or .NET 9.0** target framework
-- Visual Studio 2022+ with C# 11.0+ support
-- For projects using the analyzer: .NET framework supporting `required` keyword and `init` accessors
-
 ## Installation
 
 ```xml
 <PackageReference Include="Umbrella.Analyzers.ModelStandards" Version="1.0.0" PrivateAssets="all" />
 ```
 
-**Note**: The analyzer automatically adapts based on your project's target framework - providing full code fix functionality for .NET 8+ and diagnostics-only support for .NET Standard 2.0.
+**Note**: The analyzer automatically adapts based on your project's target framework.
 
 ## Diagnostic Severity
 

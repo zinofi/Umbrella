@@ -9,7 +9,7 @@ public class UMS003_PropertiesMustBeGetterInitOnlyTests : AnalyzerTestBase
 {
     public required string Name { get; set; }
 }";
-        var expected = Diagnostic(UmbrellaModelStandardsAnalyzer.PropertiesMustBeGetterInitOnlyRule, 3, 29, "Name", "UserModel");
+        var expected = Diagnostic(UmbrellaModelStandardsAnalyzer.PropertiesMustBeGetterInitOnlyRule, 3, 28, "Name", "UserModel");
         await VerifyAnalyzerAsync(source, expected);
     }
 

@@ -11,7 +11,12 @@ public class UserModel
 {
     public string Name { get; set; }
 }";
-        var expected = Diagnostic(UmbrellaModelStandardsAnalyzer.ModelMustBeRecordRule, 3, 14, "UserModel");
+        var expected = new[]
+        {
+            Diagnostic(UmbrellaModelStandardsAnalyzer.ModelMustBeRecordRule, 3, 14, "UserModel"),
+            Diagnostic(UmbrellaModelStandardsAnalyzer.PropertiesMustBeRequiredRule, 5, 19, "Name", "UserModel"),
+            Diagnostic(UmbrellaModelStandardsAnalyzer.PropertiesMustBeGetterInitOnlyRule, 5, 19, "Name", "UserModel")
+        };
         await VerifyAnalyzerAsync(source, expected);
     }
 
@@ -33,7 +38,7 @@ public record UserModel
     {
         const string source = @"namespace TestProject;
 
-public class NotAModel
+public class NotAModelType
 {
     public string Name { get; set; }
 }";
