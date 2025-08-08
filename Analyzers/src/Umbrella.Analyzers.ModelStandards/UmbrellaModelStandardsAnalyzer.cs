@@ -240,18 +240,5 @@ public class UmbrellaModelStandardsAnalyzer : DiagnosticAnalyzer
 		return false;
 	}
 
-	private static bool IsReadOnlyCollectionType(ITypeSymbol type)
-	{
-		// Check if the type is IReadOnlyCollection<T> or implements it
-		if (type.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IReadOnlyCollection<T>")
-			return true;
-
-		foreach (var interfaceType in type.AllInterfaces)
-		{
-			if (interfaceType.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IReadOnlyCollection<T>")
-				return true;
-		}
-
-		return false;
-	}
+	private static bool IsReadOnlyCollectionType(ITypeSymbol type) => type.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IReadOnlyCollection<T>";
 }
