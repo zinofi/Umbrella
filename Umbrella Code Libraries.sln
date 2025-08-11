@@ -249,6 +249,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers.ModelSta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers.ModelStandards.Test", "Analyzers\test\Umbrella.Analyzers.ModelStandards.Test\Umbrella.Analyzers.ModelStandards.Test.csproj", "{FBC02206-ADB0-0100-39C6-D2FBE6706E61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers.Test.Shared", "Analyzers\test\Umbrella.Analyzers.Test.Shared\Umbrella.Analyzers.Test.Shared.csproj", "{3915D72C-42E9-440C-9F56-19D5EF4CE995}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -664,6 +666,12 @@ Global
 		{FBC02206-ADB0-0100-39C6-D2FBE6706E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBC02206-ADB0-0100-39C6-D2FBE6706E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBC02206-ADB0-0100-39C6-D2FBE6706E61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -771,6 +779,7 @@ Global
 		{82CC3E9D-232F-41E1-A627-64BFB2E5F16E} = {5520A82E-280B-485D-AF42-0FF5B8E72CB3}
 		{C3F9DC77-ED34-446E-8CEE-28EB3A4A5BF5} = {D8FC59AF-00A0-4187-8622-15AF5457E48F}
 		{FBC02206-ADB0-0100-39C6-D2FBE6706E61} = {82CC3E9D-232F-41E1-A627-64BFB2E5F16E}
+		{3915D72C-42E9-440C-9F56-19D5EF4CE995} = {82CC3E9D-232F-41E1-A627-64BFB2E5F16E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

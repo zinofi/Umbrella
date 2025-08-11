@@ -4,12 +4,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Umbrella.Analyzers.ModelStandards.Test;
+namespace Umbrella.Analyzers.Test.Shared;
 
 /// <summary>
 /// Base test class for analyzer tests with common setup and helper methods.
 /// </summary>
-public abstract class AnalyzerTestBase
+public abstract class AnalyzerTestBase<T>
+	where T : DiagnosticAnalyzer, new()
 {
 	/// <summary>
 	/// Creates an expected diagnostic result for the specified rule at the given location.
@@ -35,7 +36,7 @@ public abstract class AnalyzerTestBase
 		ArgumentNullException.ThrowIfNull(expected);
 
 		CSharpCompilation compilation = CreateCompilation(source);
-		var analyzer = new UmbrellaModelStandardsAnalyzer();
+		var analyzer = new T();
 
 		CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
 		ImmutableArray<Diagnostic> diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync();
@@ -124,17 +125,13 @@ public abstract class AnalyzerTestBase
 			);
 
 			if (match == null)
-			{
 				throw new Xunit.Sdk.XunitException($"Expected diagnostic {expected.Rule.Id} at line {expected.Line}, column {expected.Column} not found.");
-			}
 
 			_ = unmatchedActual.Remove(match);
 		}
 
 		if (unmatchedActual.Count > 0)
-		{
 			throw new Xunit.Sdk.XunitException($"Unexpected diagnostics found: {string.Join(", ", unmatchedActual.Select(d => d.Id))}");
-		}
 	}
 
 	/// <summary>
@@ -145,7 +142,7 @@ public abstract class AnalyzerTestBase
 	protected static async Task DebugAnalyzerAsync(string source)
 	{
 		CSharpCompilation compilation = CreateCompilation(source);
-		var analyzer = new UmbrellaModelStandardsAnalyzer();
+		var analyzer = new T();
 
 		CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
 		ImmutableArray<Diagnostic> allDiagnostics = await compilationWithAnalyzers.GetAllDiagnosticsAsync();

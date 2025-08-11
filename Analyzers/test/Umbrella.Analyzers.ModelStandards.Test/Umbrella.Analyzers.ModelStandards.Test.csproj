@@ -38,10 +38,12 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Umbrella.Analyzers.ModelStandards\Umbrella.Analyzers.ModelStandards.csproj" />
+		<ProjectReference Include="..\Umbrella.Analyzers.Test.Shared\Umbrella.Analyzers.Test.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Using Include="Xunit" />
+		<Using Include="Umbrella.Analyzers.Test.Shared" />
 	</ItemGroup>
 
 </Project>

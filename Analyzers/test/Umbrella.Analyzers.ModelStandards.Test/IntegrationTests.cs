@@ -1,6 +1,6 @@
 ﻿namespace Umbrella.Analyzers.ModelStandards.Test;
 
-public class IntegrationTests : AnalyzerTestBase
+public class IntegrationTests : AnalyzerTestBase<UmbrellaModelStandardsAnalyzer>
 {
     [Fact]
     public async Task MultipleViolations_ShouldTriggerMultipleDiagnostics()

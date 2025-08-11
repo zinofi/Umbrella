@@ -1,6 +1,6 @@
 ﻿namespace Umbrella.Analyzers.ModelStandards.Test;
 
-public class EdgeCaseTests : AnalyzerTestBase
+public class EdgeCaseTests : AnalyzerTestBase<UmbrellaModelStandardsAnalyzer>
 {
     [Fact]
     public async Task EmptyClass_ShouldNotTriggerDiagnostic()

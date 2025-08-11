@@ -1,6 +1,6 @@
 ﻿namespace Umbrella.Analyzers.ModelStandards.Test;
 
-public class UMS001_ModelMustBeRecordTests : AnalyzerTestBase
+public class UMS001_ModelMustBeRecordTests : AnalyzerTestBase<UmbrellaModelStandardsAnalyzer>
 {
     [Fact]
     public async Task ModelClass_ShouldTriggerDiagnostic()
