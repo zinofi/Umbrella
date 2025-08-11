@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Frozen;
+using System.Collections.Immutable;
 using System.Globalization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,6 +13,12 @@ namespace Umbrella.Analyzers.Test.Shared;
 public abstract class AnalyzerTestBase<T>
 	where T : DiagnosticAnalyzer, new()
 {
+	private static readonly FrozenSet<string> _rulePrefixes =
+	[
+		"UMS", // Umbrella Analyzer - Model Standards
+		"UA"  // Umbrella Analyzer
+	];
+
 	/// <summary>
 	/// Creates an expected diagnostic result for the specified rule at the given location.
 	/// </summary>
@@ -38,11 +45,11 @@ public abstract class AnalyzerTestBase<T>
 		CSharpCompilation compilation = CreateCompilation(source);
 		var analyzer = new T();
 
-		CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
+		CompilationWithAnalyzers compilationWithAnalyzers = compilation.WithAnalyzers([analyzer]);
 		ImmutableArray<Diagnostic> diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync();
 
 		// Filter out compiler diagnostics, only keep analyzer diagnostics
-		Diagnostic[] analyzerDiagnostics = diagnostics.Where(d => d.Id.StartsWith("UMS", StringComparison.Ordinal)).ToArray();
+		Diagnostic[] analyzerDiagnostics = [.. diagnostics.Where(d => _rulePrefixes.Any(x => d.Id.StartsWith(x, StringComparison.Ordinal)))];
 
 		VerifyDiagnostics(analyzerDiagnostics, expected);
 	}
