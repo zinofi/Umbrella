@@ -10,7 +10,10 @@ namespace Umbrella.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class AsyncMethodCancellationAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "UA003";
+	/// <summary>
+	/// The diagnostic ID for this analyzer.
+	/// </summary>
+	public const string DiagnosticId = "UA003";
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,
@@ -20,11 +23,16 @@ public class AsyncMethodCancellationAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+	/// <inheritdoc />
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
 
-    public override void Initialize(AnalysisContext context)
+	/// <inheritdoc />
+	public override void Initialize(AnalysisContext context)
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+		if (context is null)
+			throw new ArgumentNullException(nameof(context));
+
+		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
         context.RegisterSymbolAction(AnalyzeMethod, SymbolKind.Method);
     }

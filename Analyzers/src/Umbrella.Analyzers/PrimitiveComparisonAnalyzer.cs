@@ -12,7 +12,10 @@ namespace Umbrella.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class PrimitiveComparisonAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "UA002";
+	/// <summary>
+	/// The diagnostic ID for this analyzer.
+	/// </summary>
+	public const string DiagnosticId = "UA002";
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,
@@ -22,11 +25,16 @@ public class PrimitiveComparisonAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+	/// <inheritdoc />
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
 
-    public override void Initialize(AnalysisContext context)
+	/// <inheritdoc />
+	public override void Initialize(AnalysisContext context)
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+		if (context is null)
+			throw new ArgumentNullException(nameof(context));
+
+		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
         context.RegisterSyntaxNodeAction(AnalyzeBinaryExpression, SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression);
     }
