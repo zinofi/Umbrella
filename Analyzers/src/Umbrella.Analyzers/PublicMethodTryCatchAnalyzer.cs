@@ -1,0 +1,133 @@
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+namespace Umbrella.Analyzers;
+
+/// <summary>
+/// An analyzer that ensures all public methods are wrapped in an outer try...catch block.
+/// If an ILogger instance exists, it ensures the logging pattern matches the specified conventions.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public class PublicMethodTryCatchAnalyzer : DiagnosticAnalyzer
+{
+	/// <summary>
+	/// The diagnostic ID for this analyzer.
+	/// </summary>
+	public const string DiagnosticId = "UA008";
+
+	private static readonly DiagnosticDescriptor _rule = new(
+		DiagnosticId,
+		"Public methods should be wrapped in a try...catch block",
+		"Public method '{0}' should be wrapped in a try...catch block, and logging should follow the specified pattern if ILogger is available",
+		"CodeStyle",
+		DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
+	/// <inheritdoc />
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+
+	/// <inheritdoc />
+	public override void Initialize(AnalysisContext context)
+	{
+		if (context is null)
+			throw new ArgumentNullException(nameof(context));
+
+		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+		context.EnableConcurrentExecution();
+		context.RegisterSymbolAction(AnalyzeMethod, SymbolKind.Method);
+	}
+
+	private static void AnalyzeMethod(SymbolAnalysisContext context)
+	{
+		var methodSymbol = (IMethodSymbol)context.Symbol;
+
+		// Only analyze public methods
+		if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
+			return;
+
+		// Get the syntax node for the method
+		if (methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax(context.CancellationToken) is not MethodDeclarationSyntax methodDeclaration || methodDeclaration.Body is null)
+			return;
+
+		// Check if the method body is wrapped in a try...catch block
+		var firstStatement = methodDeclaration.Body.Statements.FirstOrDefault();
+		if (firstStatement is not TryStatementSyntax tryStatement || tryStatement.Catches.Count == 0)
+		{
+			ReportDiagnostic(context, methodSymbol);
+			return;
+		}
+
+		// Check for ILogger instance in the class or base class
+		var containingType = methodSymbol.ContainingType;
+		var loggerFieldOrProperty = FindLoggerFieldOrProperty(containingType);
+
+		if (loggerFieldOrProperty != null)
+		{
+			// Ensure the catch block contains a logging statement
+			if (!ContainsLoggingStatement(tryStatement, loggerFieldOrProperty.Name))
+			{
+				ReportDiagnostic(context, methodSymbol);
+			}
+		}
+	}
+
+	private static ISymbol? FindLoggerFieldOrProperty(INamedTypeSymbol containingType)
+	{
+		// Check fields and properties in the current type
+		foreach (var member in containingType.GetMembers())
+		{
+			if (member is IFieldSymbol field && field.Type.Name == "ILogger")
+				return field;
+
+			if (member is IPropertySymbol property && property.Type.Name == "ILogger")
+				return property;
+		}
+
+		// Check base types for protected members
+		var baseType = containingType.BaseType;
+		while (baseType != null)
+		{
+			foreach (var member in baseType.GetMembers())
+			{
+				if (member.DeclaredAccessibility == Accessibility.Public || member.DeclaredAccessibility == Accessibility.Protected)
+				{
+					if (member is IFieldSymbol field && field.Type.Name == "ILogger")
+						return field;
+
+					if (member is IPropertySymbol property && property.Type.Name == "ILogger")
+						return property;
+				}
+			}
+
+			baseType = baseType.BaseType;
+		}
+
+		return null;
+	}
+
+	private static bool ContainsLoggingStatement(TryStatementSyntax tryStatement, string loggerName)
+	{
+		foreach (var catchClause in tryStatement.Catches)
+		{
+			if (catchClause.Block.Statements.Any(statement =>
+				statement is ExpressionStatementSyntax expressionStatement &&
+				expressionStatement.Expression is InvocationExpressionSyntax invocation &&
+				invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+				memberAccess.Expression is IdentifierNameSyntax identifier &&
+				identifier.Identifier.Text == loggerName))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static void ReportDiagnostic(SymbolAnalysisContext context, IMethodSymbol methodSymbol)
+	{
+		var diagnostic = Diagnostic.Create(_rule, methodSymbol.Locations[0], methodSymbol.Name);
+		context.ReportDiagnostic(diagnostic);
+	}
+}
