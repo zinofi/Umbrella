@@ -253,6 +253,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers.Test.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers", "Analyzers\src\Umbrella.Analyzers\Umbrella.Analyzers.csproj", "{A74724AE-3EAF-83F5-242D-6B5188B55B41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbrella.Analyzers.Test", "Analyzers\test\Umbrella.Analyzers.Test\Umbrella.Analyzers.Test.csproj", "{68AD11CA-60B5-254F-323A-E4B8C55A62A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureDevOps|Any CPU = AzureDevOps|Any CPU
@@ -680,6 +682,12 @@ Global
 		{A74724AE-3EAF-83F5-242D-6B5188B55B41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A74724AE-3EAF-83F5-242D-6B5188B55B41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A74724AE-3EAF-83F5-242D-6B5188B55B41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4}.AzureDevOps|Any CPU.ActiveCfg = AzureDevOps|Any CPU
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4}.AzureDevOps|Any CPU.Build.0 = AzureDevOps|Any CPU
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -789,6 +797,7 @@ Global
 		{FBC02206-ADB0-0100-39C6-D2FBE6706E61} = {82CC3E9D-232F-41E1-A627-64BFB2E5F16E}
 		{3915D72C-42E9-440C-9F56-19D5EF4CE995} = {82CC3E9D-232F-41E1-A627-64BFB2E5F16E}
 		{A74724AE-3EAF-83F5-242D-6B5188B55B41} = {D8FC59AF-00A0-4187-8622-15AF5457E48F}
+		{68AD11CA-60B5-254F-323A-E4B8C55A62A4} = {82CC3E9D-232F-41E1-A627-64BFB2E5F16E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44122B62-15B4-40B8-86EA-4E3A743B0C7C}

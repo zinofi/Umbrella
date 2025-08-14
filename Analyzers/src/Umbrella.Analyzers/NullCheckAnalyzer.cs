@@ -17,7 +17,10 @@ public class NullCheckAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA001";
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    /// <summary>
+    /// The diagnostic rule for this analyzer.
+    /// </summary>
+    public static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,
         "Use pattern matching for null checks",
         "Use 'is null' or 'is not null' instead of '==' or '!='",
@@ -26,7 +29,7 @@ public class NullCheckAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -46,7 +49,7 @@ public class NullCheckAnalyzer : DiagnosticAnalyzer
         if (binaryExpression.Left.IsKind(SyntaxKind.NullLiteralExpression) ||
             binaryExpression.Right.IsKind(SyntaxKind.NullLiteralExpression))
         {
-            var diagnostic = Diagnostic.Create(_rule, binaryExpression.GetLocation());
+            var diagnostic = Diagnostic.Create(Rule, binaryExpression.GetLocation());
             context.ReportDiagnostic(diagnostic);
         }
     }

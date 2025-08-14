@@ -15,7 +15,7 @@ public class AsyncMethodCancellationAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA003";
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    public static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,
         "Async methods should have a CancellationToken parameter",
         "Async method '{0}' should have a 'CancellationToken cancellationToken = default' parameter",
@@ -24,7 +24,7 @@ public class AsyncMethodCancellationAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -45,7 +45,7 @@ public class AsyncMethodCancellationAnalyzer : DiagnosticAnalyzer
             (methodSymbol.ReturnType.Name == "Task" || methodSymbol.ReturnType.Name == "ValueTask") &&
             !methodSymbol.Parameters.Any(p => p.Type.Name == "CancellationToken"))
         {
-            var diagnostic = Diagnostic.Create(_rule, methodSymbol.Locations[0], methodSymbol.Name);
+            var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name);
             context.ReportDiagnostic(diagnostic);
         }
     }

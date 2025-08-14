@@ -18,7 +18,10 @@ public class AsyncMethodThrowIfCancellationAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA004";
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    /// <summary>
+    /// Gets the diagnostic rule for the analyzer.
+    /// </summary>
+    public static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,
         "Async methods with CancellationToken should call ThrowIfCancellationRequested",
         "Async method '{0}' should call 'cancellationToken.ThrowIfCancellationRequested()' as the first line of the method body",
@@ -27,7 +30,7 @@ public class AsyncMethodThrowIfCancellationAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -66,7 +69,7 @@ public class AsyncMethodThrowIfCancellationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var diagnostic = Diagnostic.Create(_rule, methodDeclaration.Identifier.GetLocation(), methodDeclaration.Identifier.Text);
+        var diagnostic = Diagnostic.Create(Rule, methodDeclaration.Identifier.GetLocation(), methodDeclaration.Identifier.Text);
         context.ReportDiagnostic(diagnostic);
     }
 }

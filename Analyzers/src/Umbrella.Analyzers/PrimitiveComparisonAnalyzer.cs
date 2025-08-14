@@ -17,7 +17,10 @@ public class PrimitiveComparisonAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA002";
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    /// <summary>
+    /// The diagnostic rule for this analyzer.
+    /// </summary>
+    public static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,
         "Use pattern matching for primitive and enum comparisons",
         "Use 'is' or 'is not' instead of '==' or '!=' for primitive and enum comparisons",
@@ -26,7 +29,7 @@ public class PrimitiveComparisonAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -49,7 +52,7 @@ public class PrimitiveComparisonAnalyzer : DiagnosticAnalyzer
             (leftType.IsValueType || leftType.TypeKind == TypeKind.Enum) &&
             SymbolEqualityComparer.Default.Equals(leftType, rightType))
         {
-            var diagnostic = Diagnostic.Create(_rule, binaryExpression.GetLocation());
+            var diagnostic = Diagnostic.Create(Rule, binaryExpression.GetLocation());
             context.ReportDiagnostic(diagnostic);
         }
     }
