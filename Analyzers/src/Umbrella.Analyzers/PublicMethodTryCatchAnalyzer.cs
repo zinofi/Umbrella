@@ -17,7 +17,10 @@ public class PublicMethodTryCatchAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA008";
 
-	private static readonly DiagnosticDescriptor _rule = new(
+	/// <summary>
+	/// Gets the diagnostic rule for the analyzer.
+	/// </summary>
+	public static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
 		"Public methods should be wrapped in a try...catch block",
 		"Public method '{0}' should be wrapped in a try...catch block, and logging should follow the specified pattern if ILogger is available",
@@ -26,7 +29,7 @@ public class PublicMethodTryCatchAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -127,7 +130,7 @@ public class PublicMethodTryCatchAnalyzer : DiagnosticAnalyzer
 
 	private static void ReportDiagnostic(SymbolAnalysisContext context, IMethodSymbol methodSymbol)
 	{
-		var diagnostic = Diagnostic.Create(_rule, methodSymbol.Locations[0], methodSymbol.Name);
+		var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name);
 		context.ReportDiagnostic(diagnostic);
 	}
 }

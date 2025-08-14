@@ -17,7 +17,10 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA006";
 
-	private static readonly DiagnosticDescriptor _rule = new(
+	/// <summary>
+	/// Gets the diagnostic rule for the analyzer.
+	/// </summary>
+	public static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
 		"Method return types should use IReadOnlyCollection<T>",
 		"Method '{0}' should return IReadOnlyCollection<T> instead of {1}",
@@ -26,7 +29,7 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -78,7 +81,7 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 
 	private static void ReportDiagnostic(SymbolAnalysisContext context, IMethodSymbol methodSymbol, string returnTypeDisplay)
 	{
-		var diagnostic = Diagnostic.Create(_rule, methodSymbol.Locations[0], methodSymbol.Name, returnTypeDisplay);
+		var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name, returnTypeDisplay);
 		context.ReportDiagnostic(diagnostic);
 	}
 }

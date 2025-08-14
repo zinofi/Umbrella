@@ -15,7 +15,10 @@ public class EnumerableParameterAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA005";
 
-	private static readonly DiagnosticDescriptor _rule = new(
+	/// <summary>
+	/// Gets the diagnostic rule for the analyzer.
+	/// </summary>
+	public static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
 		"Method parameters should use IEnumerable<T>",
 		"Parameter '{0}' should be specified as IEnumerable<T> instead of {1}",
@@ -24,7 +27,7 @@ public class EnumerableParameterAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -45,10 +48,9 @@ public class EnumerableParameterAnalyzer : DiagnosticAnalyzer
 		{
 			var parameterType = parameter.Type;
 
-			if (parameterType.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IEnumerable<T>") &&
-				parameterType.OriginalDefinition.ToDisplayString() != "System.Collections.Generic.IEnumerable<T>")
+			if (parameterType.OriginalDefinition.ToDisplayString() is not "IEnumerable<>")
 			{
-				var diagnostic = Diagnostic.Create(_rule, parameter.Locations[0], parameter.Name, parameterType.ToDisplayString());
+				var diagnostic = Diagnostic.Create(Rule, parameter.Locations[0], parameter.Name, parameterType.ToDisplayString());
 				context.ReportDiagnostic(diagnostic);
 			}
 		}

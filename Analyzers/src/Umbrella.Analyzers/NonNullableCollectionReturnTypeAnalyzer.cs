@@ -5,26 +5,29 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Umbrella.Analyzers;
 
 /// <summary>
-/// An analyzer that checks if method return types are appropriate collection types and that they are not null.
+/// An analyzer that checks if method return types are collections and if so that they are non-nullable.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class CollectionReturnTypeAnalyzer : DiagnosticAnalyzer
+public class NonNullableCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 {
 	/// <summary>
 	/// The diagnostic ID for this analyzer.
 	/// </summary>
 	public const string DiagnosticId = "UA007";
 
-	private static readonly DiagnosticDescriptor _rule = new(
+	/// <summary>
+	/// Gets the diagnostic rule for the analyzer.
+	/// </summary>
+	public static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
-		"Method return types should use appropriate collection types",
-		"Method '{0}' returns a collection type '{1}' which should be reviewed for consistency",
+		"Method return types should be non-nullable collection types",
+		"Method '{0}' returns a collection type '{1}' which is nullable",
 		"CodeStyle",
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -81,7 +84,7 @@ public class CollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 			// Ensure the collection type is not null
 			if (!type.NullableAnnotation.HasFlag(NullableAnnotation.NotAnnotated))
 			{
-				var diagnostic = Diagnostic.Create(_rule, methodSymbol.Locations[0], methodSymbol.Name, type.ToDisplayString());
+				var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name, type.ToDisplayString());
 				context.ReportDiagnostic(diagnostic);
 			}
 		}

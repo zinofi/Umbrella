@@ -15,7 +15,10 @@ public class AsyncMethodCancellationAnalyzer : DiagnosticAnalyzer
 	/// </summary>
 	public const string DiagnosticId = "UA003";
 
-    public static readonly DiagnosticDescriptor Rule = new(
+	/// <summary>
+	/// Gets the diagnostic rule for the analyzer.
+	/// </summary>
+	public static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,
         "Async methods should have a CancellationToken parameter",
         "Async method '{0}' should have a 'CancellationToken cancellationToken = default' parameter",
