@@ -6,7 +6,7 @@ public class UA006_ReadOnlyCollectionReturnTypeAnalyzerTests : AnalyzerTestBase<
     public async Task ListReturnType_ShouldTriggerDiagnostic()
     {
         const string source = @"public class TestClass { public List<int> M() { return new List<int>(); } }";
-        var expected = Diagnostic(ReadOnlyCollectionReturnTypeAnalyzer.Rule, 1, 55, "List<int>");
+        var expected = Diagnostic(ReadOnlyCollectionReturnTypeAnalyzer.Rule, 1, 43, "List<int>");
         await VerifyAnalyzerAsync(source, expected);
     }
 
@@ -66,7 +66,7 @@ public class UA006_ReadOnlyCollectionReturnTypeAnalyzerTests : AnalyzerTestBase<
     public async Task ValueTaskWithList_ShouldTriggerDiagnostic()
     {
         const string source = @"using System.Threading.Tasks; public class TestClass { public ValueTask<List<int>> M() { return new ValueTask<List<int>>(new List<int>()); } }";
-        var expected = Diagnostic(ReadOnlyCollectionReturnTypeAnalyzer.Rule, 1, 55, "List<int>");
+        var expected = Diagnostic(ReadOnlyCollectionReturnTypeAnalyzer.Rule, 1, 84, "List<int>");
         await VerifyAnalyzerAsync(source, expected);
     }
 

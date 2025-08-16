@@ -57,9 +57,8 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 		// Get the display string once
 		string returnTypeDisplay = returnType.ToDisplayString();
 
-		// Check if the return type implements IReadOnlyCollection<T>
-		if (returnType.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IReadOnlyCollection<T>") &&
-			returnType.OriginalDefinition.ToDisplayString() != "System.Collections.Generic.IReadOnlyCollection<T>")
+		// Check if the return type is IReadOnlyCollection<T>
+		if (returnType.OriginalDefinition.ToDisplayString() != "IReadOnlyCollection<>")
 		{
 			ReportDiagnostic(context, methodSymbol, returnTypeDisplay);
 			return;
