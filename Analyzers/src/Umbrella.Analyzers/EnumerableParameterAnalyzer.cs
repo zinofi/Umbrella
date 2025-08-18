@@ -27,7 +27,7 @@ public class EnumerableParameterAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
@@ -48,7 +48,7 @@ public class EnumerableParameterAnalyzer : DiagnosticAnalyzer
 		{
 			var parameterType = parameter.Type;
 
-			if (parameterType.OriginalDefinition.ToDisplayString() is not "IEnumerable<>")
+			if (parameterType.OriginalDefinition.ToDisplayString() is not "System.Collections.Generic.IEnumerable<T>")
 			{
 				var diagnostic = Diagnostic.Create(Rule, parameter.Locations[0], parameter.Name, parameterType.ToDisplayString());
 				context.ReportDiagnostic(diagnostic);

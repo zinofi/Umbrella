@@ -124,15 +124,23 @@ public abstract class AnalyzerTestBase<T>
 
 		foreach (var expected in expectedDiagnostics)
 		{
+			var partialMatch = unmatchedActual.FirstOrDefault(actual => actual.Id == expected.Rule.Id && (expected.Arguments.Count == 0 || string.Format(CultureInfo.InvariantCulture, expected.Rule.MessageFormat.ToString(CultureInfo.InvariantCulture), expected.Arguments.ToArray()) == actual.GetMessage(CultureInfo.InvariantCulture)));
+
 			var match = unmatchedActual.FirstOrDefault(actual =>
 				actual.Id == expected.Rule.Id &&
+				(expected.Arguments.Count == 0 || string.Format(CultureInfo.InvariantCulture, expected.Rule.MessageFormat.ToString(CultureInfo.InvariantCulture), expected.Arguments.ToArray()) == actual.GetMessage(CultureInfo.InvariantCulture)) &&
 				actual.Location.GetLineSpan().StartLinePosition.Line + 1 == expected.Line &&
-				actual.Location.GetLineSpan().StartLinePosition.Character + 1 == expected.Column &&
-				(expected.Arguments.Count == 0 || string.Format(CultureInfo.InvariantCulture, expected.Rule.MessageFormat.ToString(CultureInfo.InvariantCulture), expected.Arguments.ToArray()) == actual.GetMessage(CultureInfo.InvariantCulture))
+				actual.Location.GetLineSpan().StartLinePosition.Character + 1 == expected.Column
 			);
 
 			if (match == null)
-				throw new Xunit.Sdk.XunitException($"Expected diagnostic {expected.Rule.Id} at line {expected.Line}, column {expected.Column} not found.");
+			{
+				string partialMatchMessage = partialMatch is not null
+					? $" but was found on line {partialMatch.Location.GetLineSpan().StartLinePosition.Line + 1}, column {partialMatch.Location.GetLineSpan().StartLinePosition.Character + 1}."
+					: ".";
+
+				throw new Xunit.Sdk.XunitException($"Expected diagnostic {expected.Rule.Id} at line {expected.Line}, column {expected.Column} not found{partialMatchMessage}");
+			}
 
 			_ = unmatchedActual.Remove(match);
 		}

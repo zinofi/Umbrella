@@ -47,34 +47,45 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 		var methodSymbol = (IMethodSymbol)context.Symbol;
 		var returnType = methodSymbol.ReturnType;
 
+		List<ITypeSymbol> lstReturnTypeToCheck = [];
+		bool isTuple = false;
+
 		// Check for Task<T> or ValueTask<T>
 		if (returnType is INamedTypeSymbol namedType && namedType.IsGenericType &&
 			(namedType.Name == "Task" || namedType.Name == "ValueTask"))
 		{
-			returnType = namedType.TypeArguments[0];
+			lstReturnTypeToCheck.Add(namedType.TypeArguments[0]);
+		}
+		else if (returnType is INamedTypeSymbol tupleType && tupleType.IsTupleType)
+		{
+			lstReturnTypeToCheck.AddRange(tupleType.TupleElements.Select(e => e.Type));
+			isTuple = true;
+		}
+		else if (returnType is INamedTypeSymbol tupleSymbol && tupleSymbol.OriginalDefinition.ToDisplayString().StartsWith("System.Tuple", StringComparison.Ordinal))
+		{
+			lstReturnTypeToCheck.AddRange(tupleSymbol.TypeArguments);
+			isTuple = true;
+		}
+		else
+		{
+			lstReturnTypeToCheck.Add(returnType);
 		}
 
-		// Get the display string once
-		string returnTypeDisplay = returnType.ToDisplayString();
-
-		// Check if the return type is IReadOnlyCollection<T>
-		if (returnType.OriginalDefinition.ToDisplayString() != "IReadOnlyCollection<>")
+		foreach (var type in lstReturnTypeToCheck)
 		{
-			ReportDiagnostic(context, methodSymbol, returnTypeDisplay);
-			return;
-		}
+			// Check if the type is a collection type
+			if (!type.IsCollectionType())
+				continue;
 
-		// Check for language tuples
-		if (returnType is INamedTypeSymbol tupleType && tupleType.IsTupleType)
-		{
-			ReportDiagnostic(context, methodSymbol, "tuple");
-			return;
-		}
+			// Get the display string once
+			string returnTypeDisplay = type.ToDisplayString();
 
-		// Check for System.Tuple<T>
-		if (returnTypeDisplay.StartsWith("System.Tuple", StringComparison.Ordinal))
-		{
-			ReportDiagnostic(context, methodSymbol, returnTypeDisplay);
+			// Check if the return type is IReadOnlyCollection<T>
+			if (type.OriginalDefinition.ToDisplayString() != "System.Collections.Generic.IReadOnlyCollection<T>")
+			{
+				ReportDiagnostic(context, methodSymbol, returnTypeDisplay);
+				return;
+			}
 		}
 	}
 
@@ -84,3 +95,147 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 		context.ReportDiagnostic(diagnostic);
 	}
 }
+
+[SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
+public static class ITypeSymbolExtensions
+{
+	extension(ITypeSymbol? type)
+	{
+		public bool IsCollectionType()
+		{
+			if (type is null)
+				return false;
+
+			// Check if the type implements IEnumerable<T> but is not string
+			if (type.SpecialType == SpecialType.System_String)
+				return false;
+
+			foreach (var interfaceType in type.AllInterfaces)
+			{
+				if (interfaceType.OriginalDefinition.ToDisplayString() == "System.Collections.Generic.IEnumerable<T>")
+					return true;
+			}
+
+			return false;
+		}
+	}
+}
+
+//public static class TypeSymbolExtensions
+//{
+//	public static ImmutableArray<INamedTypeSymbol> GetAllInterfacesRobust(this ITypeSymbol type)
+//	{
+//		// Normal (constructed, non-error) path first
+//		if (type is INamedTypeSymbol named)
+//		{
+//			if (named.IsUnboundGenericType)
+//			{
+//				// Fall back to the generic definition
+//				var def = named.ConstructedFrom; // or named.OriginalDefinition
+//												 // def.AllInterfaces may STILL be empty in unbound form: use Interfaces + closure manually
+//				return CollectAllInterfaces(def);
+//			}
+
+//			if (type.TypeKind != TypeKind.Error && !named.IsUnboundGenericType)
+//			{
+//				return named.AllInterfaces;
+//			}
+//		}
+
+//		// Fallback: manual accumulation (covers error / unusual cases)
+//		return CollectAllInterfaces(type);
+
+//		static ImmutableArray<INamedTypeSymbol> CollectAllInterfaces(ITypeSymbol t)
+//		{
+//			var builder = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
+//			var seen = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
+
+//			void Recurse(ITypeSymbol current)
+//			{
+//				if (!seen.Add(current))
+//					return;
+
+//				if (current is INamedTypeSymbol nts)
+//				{
+//					foreach (var i in nts.Interfaces)
+//					{
+//						if (i is INamedTypeSymbol ni)
+//							builder.Add(ni);
+						
+//						Recurse(i);
+//					}
+
+//					// Climb base type chain
+//					if (nts.BaseType is { } bt)
+//						Recurse(bt);
+//				}
+//			}
+
+//			Recurse(t);
+//			return builder.ToImmutable();
+//		}
+//	}
+
+//	public static bool ImplementsIEnumerable(this ITypeSymbol? type, bool includeString = false)
+//	{
+//		if (type == null)
+//			return false;
+
+//		// Handle string early
+//		if (!includeString && type.SpecialType == SpecialType.System_String)
+//			return false;
+
+//		// Arrays are enumerable
+//		if (type.TypeKind == TypeKind.Array)
+//			return true;
+
+//		// Fast path: try AllInterfaces if available
+//		if (TryMatchAllInterfaces(type, out bool match))
+//			return match;
+
+//		// Fallback: robust interface collection
+//		foreach (var iface in type.GetAllInterfacesRobust())
+//		{
+//			if (IsEnumerableInterface(iface))
+//				return true;
+//		}
+
+//		return false;
+
+//		bool TryMatchAllInterfaces(ITypeSymbol t, out bool result)
+//		{
+//			result = false;
+//			if (t is INamedTypeSymbol nts && !nts.IsUnboundGenericType && t.TypeKind != TypeKind.Error)
+//			{
+//				foreach (var iface in nts.AllInterfaces)
+//				{
+//					if (IsEnumerableInterface(iface))
+//					{
+//						result = true;
+//						return true;
+//					}
+//				}
+
+//				return true; // looked, not found
+//			}
+
+//			return false; // cannot rely on AllInterfaces
+//		}
+
+//		bool IsEnumerableInterface(ITypeSymbol i)
+//		{
+//			// Non-generic IEnumerable
+//			if (i.SpecialType == SpecialType.System_Collections_IEnumerable)
+//				return true;
+
+//			// Generic IEnumerable<T>
+//			if (i is INamedTypeSymbol ni &&
+//				ni.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T)
+//			{
+//				return true;
+//			}
+
+//			return false;
+//		}
+//	}
+//}
