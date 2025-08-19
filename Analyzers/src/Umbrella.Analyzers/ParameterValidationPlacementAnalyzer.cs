@@ -14,8 +14,17 @@ namespace Umbrella.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 {
+	/// <summary>
+	/// Represents the unique identifier for the diagnostic associated with this analyzer.
+	/// </summary>
 	public const string DiagnosticId = "UA009";
 
+	/// <summary>
+	/// Represents a diagnostic rule that enforces parameter validation to occur before the first try...catch block in a
+	/// method.
+	/// </summary>
+	/// <remarks>This rule is used to ensure that parameter validation logic is placed at the beginning of a method,
+	/// prior to any try...catch blocks, to improve code clarity and maintainability.</remarks>
 	public static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
 		"Parameter validation must appear before first try...catch block",
@@ -24,8 +33,10 @@ public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	/// <inheritdoc />
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
+	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
 	{
 		if (context is null)

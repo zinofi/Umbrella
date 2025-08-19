@@ -20,6 +20,7 @@ namespace Umbrella.Utilities.Caching;
 /// The cache includes the option to allow internal errors that occur when adding or retrieving items from the caches to be masked in the event of transient errors.
 /// </summary>
 /// <seealso cref="IHybridCache" />
+[Obsolete("This caching mechanism will be removed at a future date with a version that implements a proper multi-tiered cache. Ask Rich if you have any questions.")]
 public class HybridCache : IHybridCache, IDisposable
 {
 	#region Private Members
@@ -71,7 +72,7 @@ public class HybridCache : IHybridCache, IDisposable
 
 	#region Constructors		
 	/// <summary>
-	/// Initializes a new instance of the <see cref="FixedHybridCache"/> class.
+	/// Initializes a new instance of the <see cref="HybridCache"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="options">The options.</param>

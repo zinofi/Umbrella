@@ -48,7 +48,6 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 		var returnType = methodSymbol.ReturnType;
 
 		List<ITypeSymbol> lstReturnTypeToCheck = [];
-		bool isTuple = false;
 
 		// Check for Task<T> or ValueTask<T>
 		if (returnType is INamedTypeSymbol namedType && namedType.IsGenericType &&
@@ -59,12 +58,10 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 		else if (returnType is INamedTypeSymbol tupleType && tupleType.IsTupleType)
 		{
 			lstReturnTypeToCheck.AddRange(tupleType.TupleElements.Select(e => e.Type));
-			isTuple = true;
 		}
 		else if (returnType is INamedTypeSymbol tupleSymbol && tupleSymbol.OriginalDefinition.ToDisplayString().StartsWith("System.Tuple", StringComparison.Ordinal))
 		{
 			lstReturnTypeToCheck.AddRange(tupleSymbol.TypeArguments);
-			isTuple = true;
 		}
 		else
 		{
@@ -96,11 +93,20 @@ public class ReadOnlyCollectionReturnTypeAnalyzer : DiagnosticAnalyzer
 	}
 }
 
-[SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
+/// <summary>
+/// Extension methods for the <see cref="ITypeSymbol" /> interface.
+/// </summary>
+[SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "False positive.")]
 public static class ITypeSymbolExtensions
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	extension(ITypeSymbol? type)
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 	{
+		/// <summary>
+		/// Checks if the type implements <see cref="IEnumerable{T}" /> or is a collection type.
+		/// </summary>
+		/// <returns></returns>
 		public bool IsCollectionType()
 		{
 			if (type is null)
@@ -120,122 +126,3 @@ public static class ITypeSymbolExtensions
 		}
 	}
 }
-
-//public static class TypeSymbolExtensions
-//{
-//	public static ImmutableArray<INamedTypeSymbol> GetAllInterfacesRobust(this ITypeSymbol type)
-//	{
-//		// Normal (constructed, non-error) path first
-//		if (type is INamedTypeSymbol named)
-//		{
-//			if (named.IsUnboundGenericType)
-//			{
-//				// Fall back to the generic definition
-//				var def = named.ConstructedFrom; // or named.OriginalDefinition
-//												 // def.AllInterfaces may STILL be empty in unbound form: use Interfaces + closure manually
-//				return CollectAllInterfaces(def);
-//			}
-
-//			if (type.TypeKind != TypeKind.Error && !named.IsUnboundGenericType)
-//			{
-//				return named.AllInterfaces;
-//			}
-//		}
-
-//		// Fallback: manual accumulation (covers error / unusual cases)
-//		return CollectAllInterfaces(type);
-
-//		static ImmutableArray<INamedTypeSymbol> CollectAllInterfaces(ITypeSymbol t)
-//		{
-//			var builder = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
-//			var seen = new HashSet<ITypeSymbol>(SymbolEqualityComparer.Default);
-
-//			void Recurse(ITypeSymbol current)
-//			{
-//				if (!seen.Add(current))
-//					return;
-
-//				if (current is INamedTypeSymbol nts)
-//				{
-//					foreach (var i in nts.Interfaces)
-//					{
-//						if (i is INamedTypeSymbol ni)
-//							builder.Add(ni);
-						
-//						Recurse(i);
-//					}
-
-//					// Climb base type chain
-//					if (nts.BaseType is { } bt)
-//						Recurse(bt);
-//				}
-//			}
-
-//			Recurse(t);
-//			return builder.ToImmutable();
-//		}
-//	}
-
-//	public static bool ImplementsIEnumerable(this ITypeSymbol? type, bool includeString = false)
-//	{
-//		if (type == null)
-//			return false;
-
-//		// Handle string early
-//		if (!includeString && type.SpecialType == SpecialType.System_String)
-//			return false;
-
-//		// Arrays are enumerable
-//		if (type.TypeKind == TypeKind.Array)
-//			return true;
-
-//		// Fast path: try AllInterfaces if available
-//		if (TryMatchAllInterfaces(type, out bool match))
-//			return match;
-
-//		// Fallback: robust interface collection
-//		foreach (var iface in type.GetAllInterfacesRobust())
-//		{
-//			if (IsEnumerableInterface(iface))
-//				return true;
-//		}
-
-//		return false;
-
-//		bool TryMatchAllInterfaces(ITypeSymbol t, out bool result)
-//		{
-//			result = false;
-//			if (t is INamedTypeSymbol nts && !nts.IsUnboundGenericType && t.TypeKind != TypeKind.Error)
-//			{
-//				foreach (var iface in nts.AllInterfaces)
-//				{
-//					if (IsEnumerableInterface(iface))
-//					{
-//						result = true;
-//						return true;
-//					}
-//				}
-
-//				return true; // looked, not found
-//			}
-
-//			return false; // cannot rely on AllInterfaces
-//		}
-
-//		bool IsEnumerableInterface(ITypeSymbol i)
-//		{
-//			// Non-generic IEnumerable
-//			if (i.SpecialType == SpecialType.System_Collections_IEnumerable)
-//				return true;
-
-//			// Generic IEnumerable<T>
-//			if (i is INamedTypeSymbol ni &&
-//				ni.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T)
-//			{
-//				return true;
-//			}
-
-//			return false;
-//		}
-//	}
-//}

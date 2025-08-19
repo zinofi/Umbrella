@@ -18,7 +18,7 @@ namespace Umbrella.Analyzers.ModelStandards;
 /// <item><description>UMS001: Model types must be records for better immutability guarantees</description></item>
 /// <item><description>UMS002: Model properties must use the 'required' keyword for initialization safety</description></item>
 /// <item><description>UMS003: Model properties must have getter and be init-only to prevent mutation</description></item>
-/// <item><description>UMS004: Collection properties must use IReadOnlyCollection&lt;T&gt; for immutability</description></item>
+/// <item><description>UMS004: Collection properties must use <see cref="IReadOnlyCollection{T}" /> for immutability</description></item>
 /// </list>
 /// <para>
 /// The analyzer targets types with names ending in: Model, ModelBase, ViewModel, or ViewModelBase.
@@ -79,7 +79,7 @@ public class UmbrellaModelStandardsAnalyzer : DiagnosticAnalyzer
 		description: "Per Umbrella standards, properties in model types should have a getter and be init-only.");
 
 	/// <summary>
-	/// Diagnostic rule that requires collection properties to use IReadOnlyCollection&lt;T&gt;.
+	/// Diagnostic rule that requires collection properties to use <see cref="IReadOnlyCollection{T}" />
 	/// </summary>
 	/// <remarks>
 	/// Using IReadOnlyCollection&lt;T&gt; prevents external code from modifying the collection
@@ -95,11 +95,7 @@ public class UmbrellaModelStandardsAnalyzer : DiagnosticAnalyzer
 		description: "Per Umbrella standards, collection properties in model types should use IReadOnlyCollection<T> for better immutability.");
 
 	/// <inheritdoc />
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(
-		ModelMustBeRecordRule,
-		PropertiesMustBeRequiredRule,
-		PropertiesMustBeGetterInitOnlyRule,
-		CollectionsMustBeReadOnlyRule);
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [ModelMustBeRecordRule, PropertiesMustBeRequiredRule, PropertiesMustBeGetterInitOnlyRule, CollectionsMustBeReadOnlyRule];
 
 	/// <inheritdoc />
 	public override void Initialize(AnalysisContext context)
