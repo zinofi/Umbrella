@@ -98,7 +98,6 @@ public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 				if (IsNodeWithinBlock(node, block))
 					return true;
 			}
-
 		}
 
 		return false;
@@ -107,6 +106,7 @@ public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 	private static bool IsNodeWithinBlock(SyntaxNode node, Microsoft.CodeAnalysis.CSharp.Syntax.BlockSyntax block)
 	{
 		SyntaxNode? current = node;
+		
 		while (current is not null)
 		{
 			if (current == block)
@@ -119,6 +119,7 @@ public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 			current = current.Parent;
 
 		}
+
 		return false;
 	}
 
@@ -138,8 +139,8 @@ public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 				if ((leftText == "ArgumentException" || leftText == "ArgumentNullException" || leftText == "ArgumentOutOfRangeException") && rightText.StartsWith("Throw", StringComparison.Ordinal))
 					return true;
 			}
-
 		}
+
 		if (node is Microsoft.CodeAnalysis.CSharp.Syntax.ThrowStatementSyntax throwStmt && throwStmt.Expression is Microsoft.CodeAnalysis.CSharp.Syntax.ObjectCreationExpressionSyntax objectCreation)
 		{
 			if (objectCreation.Type is Microsoft.CodeAnalysis.CSharp.Syntax.IdentifierNameSyntax typeId)
@@ -155,8 +156,8 @@ public sealed class ParameterValidationPlacementAnalyzer : DiagnosticAnalyzer
 				if (right == "ArgumentException" || right == "ArgumentNullException" || right == "ArgumentOutOfRangeException")
 					return true;
 			}
-
 		}
+
 		return false;
 	}
 

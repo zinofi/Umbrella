@@ -6,7 +6,7 @@ public class UA009_ParameterValidationPlacementAnalyzerTests : AnalyzerTestBase<
 	public async Task GuardCall_AfterTry_ShouldTriggerDiagnostic()
 	{
 		const string source = @"using CommunityToolkit.Diagnostics; class C { void M(string x) { try { } catch { } Guard.IsNotNull(x); } }";
-		var expected = Diagnostic(ParameterValidationPlacementAnalyzer.Rule, 1, 103, "M");
+		var expected = Diagnostic(ParameterValidationPlacementAnalyzer.Rule, 1, 84, "M");
 		await VerifyAnalyzerAsync(source, expected);
 	}
 
@@ -21,7 +21,7 @@ public class UA009_ParameterValidationPlacementAnalyzerTests : AnalyzerTestBase<
 	public async Task ThrowHelper_AfterTry_ShouldTriggerDiagnostic()
 	{
 		const string source = @"class C { void M(string x) { try { } catch { } ArgumentNullException.ThrowIfNull(x); } }";
-		var expected = Diagnostic(ParameterValidationPlacementAnalyzer.Rule, 1, 70, "M");
+		var expected = Diagnostic(ParameterValidationPlacementAnalyzer.Rule, 1, 48, "M");
 		await VerifyAnalyzerAsync(source, expected);
 	}
 
@@ -36,7 +36,7 @@ public class UA009_ParameterValidationPlacementAnalyzerTests : AnalyzerTestBase<
 	public async Task DirectThrow_AfterTry_ShouldTriggerDiagnostic()
 	{
 		const string source = @"class C { void M(string x) { try { } catch { } throw new ArgumentNullException(nameof(x)); } }";
-		var expected = Diagnostic(ParameterValidationPlacementAnalyzer.Rule, 1, 66, "M");
+		var expected = Diagnostic(ParameterValidationPlacementAnalyzer.Rule, 1, 48, "M");
 		await VerifyAnalyzerAsync(source, expected);
 	}
 
