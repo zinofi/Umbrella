@@ -14,3 +14,4 @@ UA006 | CodeStyle | Error | ReadOnlyCollectionReturnTypeAnalyzer
 UA007 | CodeStyle | Error | NonNullableCollectionReturnTypeAnalyzer
 UA008 | CodeStyle | Error | PublicMethodTryCatchAnalyzer
 UA009 | CodeStyle | Error | ParameterValidationPlacementAnalyzer
+UA010 | CodeStyle | Error | PrimaryConstructorUsageAnalyzer
