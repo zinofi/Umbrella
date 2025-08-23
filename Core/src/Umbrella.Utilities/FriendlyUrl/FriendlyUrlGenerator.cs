@@ -16,93 +16,109 @@ namespace Umbrella.Utilities.FriendlyUrl;
 /// <remarks>See: https://www.johanbostrom.se/blog/how-to-create-a-url-and-seo-friendly-string-in-csharp-text-to-slug-generator for more details.</remarks>
 public class FriendlyUrlGenerator : IFriendlyUrlGenerator
 {
-    private readonly ILogger _log;
+	private readonly ILogger _log;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FriendlyUrlGenerator"/> class.
-    /// </summary>
-    /// <param name="logger">The logger.</param>
-    public FriendlyUrlGenerator(ILogger<FriendlyUrlGenerator> logger)
-    {
-        _log = logger;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="FriendlyUrlGenerator"/> class.
+	/// </summary>
+	/// <param name="logger">The logger.</param>
+	public FriendlyUrlGenerator(ILogger<FriendlyUrlGenerator> logger)
+	{
+		_log = logger;
+	}
 
-    /// <summary>
-    /// Generates a friendly URL segment.
-    /// </summary>
-    /// <param name="text">The text to use to generate the URL segment.</param>
-    /// <param name="maxLength">The maximum length of the genrated URL segment.</param>
-    /// <returns>
-    /// The URL segment.
-    /// </returns>
-    /// <exception cref="UmbrellaException">There was a problem generating the URL using the specified parameters.</exception>
-    public string GenerateUrl(string text, int maxLength = 0)
-    {
-        try
-        {
-            if (text is null)
-                return "";
+	/// <summary>
+	/// Generates a friendly URL segment.
+	/// </summary>
+	/// <param name="text">The text to use to generate the URL segment.</param>
+	/// <param name="maxLength">The maximum length of the generated URL segment.</param>
+	/// <param name="replaceAmpersandWithAnd">If true, replaces all '&' characters with the word 'and' before slug generation.</param>
+	/// <returns>
+	/// The URL segment.
+	/// </returns>
+	/// <exception cref="UmbrellaException">There was a problem generating the URL using the specified parameters.</exception>
+	public string GenerateUrl(string text, int maxLength = 0, bool replaceAmpersandWithAnd = false)
+	{
+		try
+		{
+			if (text is null)
+				return string.Empty;
 
-            string normalizedString = text
-                // Make lowercase
-                .ToLowerInvariant()
-                // Normalize the text
-                .Normalize(NormalizationForm.FormD);
+#if NET6_0_OR_GREATER
+			if (replaceAmpersandWithAnd && text.Contains('&', StringComparison.Ordinal))
+#else
+			if (replaceAmpersandWithAnd && text.IndexOf('&') >= 0)
+#endif
+			{
+				// Replace any '&' with the token ' and '. We'll collapse whitespace in the normalization phase.
+				var sb = new StringBuilder(text.Length + 8);
 
-            var stringBuilder = new StringBuilder();
-            int stringLength = normalizedString.Length;
-            bool prevdash = false;
-            int trueLength = 0;
-            char c;
+				foreach (char ch in text)
+				{
+					if (ch == '&')
+					{
+						_ = sb.Append(' ').Append("and").Append(' ');
+					}
+					else
+					{
+						_ = sb.Append(ch);
+					}
+				}
 
-            for (int i = 0; i < stringLength; i++)
-            {
-                c = normalizedString[i];
+				text = sb.ToString();
+			}
 
-                switch (CharUnicodeInfo.GetUnicodeCategory(c))
-                {
-                    // Check if the character is a letter or a digit if the character is a
-                    // international character remap it to an ascii valid character
-                    case UnicodeCategory.LowercaseLetter:
-                    case UnicodeCategory.UppercaseLetter:
-                    case UnicodeCategory.DecimalDigitNumber:
-                        if (c < 128)
-                            _ = stringBuilder.Append(c);
-                        else
+			string normalizedString = text
+				.ToLowerInvariant()
+				.Normalize(NormalizationForm.FormD);
+
+			var stringBuilder = new StringBuilder();
+			int stringLength = normalizedString.Length;
+			bool prevdash = false;
+			int trueLength = 0;
+
+			for (int i = 0; i < stringLength; i++)
+			{
+				char c = normalizedString[i];
+
+				switch (CharUnicodeInfo.GetUnicodeCategory(c))
+				{
+					case UnicodeCategory.LowercaseLetter:
+					case UnicodeCategory.UppercaseLetter:
+					case UnicodeCategory.DecimalDigitNumber:
+						if (c < 128)
+							_ = stringBuilder.Append(c);
+						else
 							_ = stringBuilder.Append(c.RemapInternationalCharacterToAscii());
 						prevdash = false;
-                        trueLength = stringBuilder.Length;
-                        break;
-                    // Check if the character is to be replaced by a hyphen but only if the last character wasn't
-                    case UnicodeCategory.SpaceSeparator:
-                    case UnicodeCategory.ConnectorPunctuation:
-                    case UnicodeCategory.DashPunctuation:
-                    case UnicodeCategory.OtherPunctuation:
-                    case UnicodeCategory.MathSymbol:
-                        if (!prevdash)
-                        {
-                            _ = stringBuilder.Append('-');
-                            prevdash = true;
-                            trueLength = stringBuilder.Length;
-                        }
+						trueLength = stringBuilder.Length;
+						break;
+					case UnicodeCategory.SpaceSeparator:
+					case UnicodeCategory.ConnectorPunctuation:
+					case UnicodeCategory.DashPunctuation:
+					case UnicodeCategory.OtherPunctuation:
+					case UnicodeCategory.MathSymbol:
+						if (!prevdash)
+						{
+							_ = stringBuilder.Append('-');
+							prevdash = true;
+							trueLength = stringBuilder.Length;
+						}
 
-                        break;
-                }
+						break;
+				}
 
-                // If we are at max length, stop parsing
-                if (maxLength > 0 && trueLength >= maxLength)
-                    break;
-            }
+				if (maxLength > 0 && trueLength >= maxLength)
+					break;
+			}
 
-            // Trim excess hyphens
-            string result = stringBuilder.ToString().Trim('-');
+			string result = stringBuilder.ToString().Trim('-');
 
-            // Remove any excess character to meet maxlength criteria
-            return maxLength <= 0 || result.Length <= maxLength ? result : result.Substring(0, maxLength);
-        }
-        catch (Exception exc) when (_log.WriteError(exc, new { text, maxLength }))
-        {
-            throw new UmbrellaException("There was a problem generating the URL using the specified parameters.", exc);
-        }
-    }
+			return maxLength <= 0 || result.Length <= maxLength ? result : result.Substring(0, maxLength);
+		}
+		catch (Exception exc) when (_log.WriteError(exc, new { text, maxLength, replaceAmpersandWithAnd }))
+		{
+			throw new UmbrellaException("There was a problem generating the URL using the specified parameters.", exc);
+		}
+	}
 }

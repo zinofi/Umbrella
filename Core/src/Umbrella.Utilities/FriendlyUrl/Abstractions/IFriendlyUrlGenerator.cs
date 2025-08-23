@@ -9,9 +9,10 @@ public interface IFriendlyUrlGenerator
 	/// Generates a friendly URL segment.
 	/// </summary>
 	/// <param name="text">The text to use to generate the URL segment.</param>
-	/// <param name="maxLength">The maximum length of the genrated URL segment.</param>
+	/// <param name="maxLength">The maximum length of the generated URL segment.</param>
+	/// <param name="replaceAmpersandWithAnd">If true, replaces all '&' characters with the word 'and' before slug generation.</param>
 	/// <returns>
 	/// The URL segment.
 	/// </returns>
-	string GenerateUrl(string text, int maxLength = 0);
+	string GenerateUrl(string text, int maxLength = 0, bool replaceAmpersandWithAnd = false);
 }
