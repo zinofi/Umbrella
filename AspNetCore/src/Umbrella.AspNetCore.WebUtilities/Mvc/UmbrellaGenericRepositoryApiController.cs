@@ -502,6 +502,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			model,
 			Repository,
 			cancellationToken,
+			() => BeforeCreateMappingModelToEntityAsync(model, cancellationToken),
 			null,
 			entity => BeforeCreateEntityAsync(entity, model, cancellationToken),
 			null,
@@ -648,6 +649,14 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
 	protected virtual Task<IOperationResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+
+	/// <summary>
+	/// This is called by the <c>Post</c> endpoint before the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>.
+	/// </summary>
+	/// <param name="model">The model.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An optional <see cref="IActionResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
+	protected virtual Task<IOperationResult?> BeforeCreateMappingModelToEntityAsync(TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
 	/// This is called by the <c>Post</c> endpoint after the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>

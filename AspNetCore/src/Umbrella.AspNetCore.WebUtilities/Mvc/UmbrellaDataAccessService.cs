@@ -254,6 +254,7 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
+		Func<Task<IOperationResult?>>? beforeMappingCallback = null,
 		Func<TModel, TEntity>? mapperInputCallback = null,
 		Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null,
 		Func<TEntity, TResultModel>? mapperOutputCallback = null,
@@ -286,6 +287,14 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 
 				if (syncKey.HasValue)
 					syncRoot = await SynchronizationManager.GetSynchronizationRootAndWaitAsync(syncKey.Value.type, syncKey.Value.key, cancellationToken).ConfigureAwait(false);
+			}
+
+			if (beforeMappingCallback is not null)
+			{
+				var result = await beforeMappingCallback().ConfigureAwait(false);
+
+				if (result is not null)
+					return result;
 			}
 
 			var entity = mapperInputCallback is null

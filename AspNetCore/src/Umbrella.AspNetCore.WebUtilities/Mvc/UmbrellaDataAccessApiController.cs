@@ -271,6 +271,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// The lifecycle of this method internally is as follows:
 	/// <list type="number">
 	/// <item>Synchronize execution of this method if enabled using <paramref name="synchronizeAccess"/>.</item>
+	/// <item>Invokes the <paramref name="beforeMappingCallback"/> to allow execution of custom code before performing mapping.</item>
 	/// <item>Maps the <typeparamref name="TModel"/> to a new instance of <typeparamref name="TEntity"/> using the <paramref name="mapperInputCallback"/> falling back to use the <see cref="Mapper"/> if not specified.</item>
 	/// <item>Invokes the <paramref name="beforeCreateEntityCallback"/> to augment the newly created <typeparamref name="TEntity"/>.</item>
 	/// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on the entity.</item>
@@ -293,6 +294,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <param name="model">The model.</param>
 	/// <param name="repository">The repository.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="beforeMappingCallback"></param>
 	/// <param name="mapperInputCallback">The mapper input callback.</param>
 	/// <param name="beforeCreateEntityCallback">The before create entity callback.</param>
 	/// <param name="mapperOutputCallback">The mapper output callback.</param>
@@ -314,6 +316,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
+		Func<Task<IOperationResult?>>? beforeMappingCallback = null,
 		Func<TModel, TEntity>? mapperInputCallback = null,
 		Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null,
 		Func<TEntity, TResultModel>? mapperOutputCallback = null,
@@ -338,6 +341,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 				model,
 				repository,
 				cancellationToken,
+				beforeMappingCallback,
 				mapperInputCallback,
 				beforeCreateEntityCallback,
 				mapperOutputCallback,

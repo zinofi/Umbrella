@@ -25,6 +25,7 @@ public interface IUmbrellaDataAccessService
 	/// The lifecycle of this method internally is as follows:
 	/// <list type="number">
 	/// <item>Synchronize execution of this method if enabled using <paramref name="synchronizeAccess"/>.</item>
+	/// <item>Invokes the <paramref name="beforeMappingCallback"/> to allow execution of custom code before performing mapping.</item>
 	/// <item>Maps the <typeparamref name="TModel"/> to a new instance of <typeparamref name="TEntity"/> using the <paramref name="mapperInputCallback"/> falling back to use the <see cref="IUmbrellaMapper"/> if not specified.</item>
 	/// <item>Invokes the <paramref name="beforeCreateEntityCallback"/> to augment the newly created <typeparamref name="TEntity"/>.</item>
 	/// <item>Perform authorization, if enabled via the <paramref name="enableAuthorizationChecks"/> property, on the entity.</item>
@@ -47,6 +48,7 @@ public interface IUmbrellaDataAccessService
 	/// <param name="model">The model.</param>
 	/// <param name="repository">The repository.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="beforeMappingCallback">The optional callback invoked before mapping.</param>
 	/// <param name="mapperInputCallback">The mapper input callback.</param>
 	/// <param name="beforeCreateEntityCallback">The before create entity callback.</param>
 	/// <param name="mapperOutputCallback">The mapper output callback.</param>
@@ -62,7 +64,7 @@ public interface IUmbrellaDataAccessService
 	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.
 	/// </param>
 	/// <returns>The operation result</returns>
-	Task<IOperationResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(TModel model, Lazy<TRepository> repository, CancellationToken cancellationToken, Func<TModel, TEntity>? mapperInputCallback = null, Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null, Func<TEntity, TResultModel>? mapperOutputCallback = null, Func<TEntity, TResultModel, Task>? afterCreateEntityCallback = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true, bool synchronizeAccess = false, Func<object, (Type type, string key)?>? synchronizationRootKeyCreator = null, bool enableOutputMapping = true)
+	Task<IOperationResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(TModel model, Lazy<TRepository> repository, CancellationToken cancellationToken, Func<Task<IOperationResult?>>? beforeMappingCallback = null, Func<TModel, TEntity>? mapperInputCallback = null, Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null, Func<TEntity, TResultModel>? mapperOutputCallback = null, Func<TEntity, TResultModel, Task>? afterCreateEntityCallback = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true, bool synchronizeAccess = false, Func<object, (Type type, string key)?>? synchronizationRootKeyCreator = null, bool enableOutputMapping = true)
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
