@@ -329,7 +329,8 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 			{
 				{ nameof(UmbrellaDialog.SubTitle), subTitle ?? "" },
 				{ nameof(UmbrellaDialog.Message), message },
-				{ nameof(UmbrellaDialog.Buttons), buttons }
+				{ nameof(UmbrellaDialog.Buttons), buttons },
+				{ nameof(UmbrellaDialog.ShowCloseButton), showCloseIcon }
 			};
 
 			var options = new ModalOptions
