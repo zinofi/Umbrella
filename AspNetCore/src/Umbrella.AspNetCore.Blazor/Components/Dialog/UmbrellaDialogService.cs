@@ -114,7 +114,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText, bool showCloseIcon = false)
 	{
 		try
 		{
@@ -321,7 +321,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null)
+	public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null, bool showCloseIcon = false)
 	{
 		try
 		{
@@ -336,7 +336,8 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 			{
 				Class = cssClass,
 				DisableBackgroundCancel = true,
-				UseCustomLayout = true
+				UseCustomLayout = true,
+				HideCloseButton = !showCloseIcon
 			};
 
 			IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);
