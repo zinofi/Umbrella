@@ -85,11 +85,8 @@ public class LoadingScreenService : ILoadingScreenService, IDisposable
 		}
 		finally
 		{
-			if (_cancellationTokenSource is not null)
-			{
-				_cancellationTokenSource.Dispose();
-				_cancellationTokenSource = null;
-			}
+			_cancellationTokenSource?.Dispose();
+			_cancellationTokenSource = null;
 		}
 	}
 

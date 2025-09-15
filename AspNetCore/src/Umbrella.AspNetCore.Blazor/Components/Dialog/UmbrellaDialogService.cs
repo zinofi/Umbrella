@@ -127,7 +127,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Primary) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons, showCloseIcon: showCloseIcon);
 
 			_dialogTracker.Close(code);
 		}
