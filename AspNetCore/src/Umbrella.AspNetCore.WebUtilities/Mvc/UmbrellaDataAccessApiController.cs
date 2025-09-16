@@ -65,7 +65,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <summary>
 	/// Gets the data access service used for database operations.
 	/// </summary>
-	protected IUmbrellaRepositoryDataAccessService DataAccessService { get; }
+	protected IUmbrellaRepositoryCoreDataService DataAccessService { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDataAccessApiController"/> class.
@@ -84,7 +84,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
 		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		IUmbrellaRepositoryDataAccessService dataAccessService)
+		IUmbrellaRepositoryCoreDataService dataAccessService)
 		: base(logger, hostingEnvironment)
 	{
 		Mapper = mapper;

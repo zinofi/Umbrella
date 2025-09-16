@@ -405,7 +405,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
 		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		IUmbrellaRepositoryDataAccessService dataAccessService)
+		IUmbrellaRepositoryCoreDataService dataAccessService)
 		: base(logger, hostingEnvironment, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork, dataAccessService)
 	{
 		Repository = repository;

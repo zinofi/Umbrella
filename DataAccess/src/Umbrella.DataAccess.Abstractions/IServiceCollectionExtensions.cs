@@ -28,7 +28,7 @@ public static class IServiceCollectionExtensions
 		_ = services.AddScoped<IUmbrellaDbContextHelper, UmbrellaDbContextHelper>();
 		_ = services.AddScoped(typeof(DbAppTenantSessionContext<>));
 
-		_ = services.AddTransient<IUmbrellaRepositoryDataAccessService, UmbrellaRepositoryDataAccessService>();
+		_ = services.AddTransient<IUmbrellaRepositoryCoreDataService, UmbrellaRepositoryCoreDataService>();
 
 		return services;
 	}

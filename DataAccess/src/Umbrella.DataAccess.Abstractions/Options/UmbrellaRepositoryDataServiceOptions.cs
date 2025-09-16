@@ -9,11 +9,11 @@ using Umbrella.Utilities.Security.Policies;
 namespace Umbrella.DataAccess.Abstractions.Options;
 
 /// <summary>
-/// Options for use with the <see cref="IUmbrellaRepositoryDataAccessService"/>
+/// Options for use with the <see cref="IUmbrellaRepositoryCoreDataService"/>
 /// </summary>
 /// <seealso cref="ISanitizableUmbrellaOptions" />
 /// <seealso cref="IValidatableUmbrellaOptions" />
-public class UmbrellaDataAccessServiceOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
+public class UmbrellaRepositoryDataServiceOptions : ISanitizableUmbrellaOptions, IValidatableUmbrellaOptions
 {
 	/// <summary>
 	/// Gets or sets the concurrency error message returned concurrency error responses for <see cref="OperationResultStatus.Conflict"/> statuses.
@@ -21,7 +21,7 @@ public class UmbrellaDataAccessServiceOptions : ISanitizableUmbrellaOptions, IVa
 	public string ConcurrencyErrorMessage { get; set; } = "This information has been changed elsewhere since this screen was loaded. Please try again.";
 
 	/// <summary>
-	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryDataAccessService.ReadAllAsync"/> method.
+	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryCoreDataService.ReadAllAsync"/> method.
 	/// </summary>
 	/// <remarks>
 	/// If the exception filter returns <see langword="true"/>, the <see cref="HandleReadAllExceptionAsync"/> delegate is invoked, if it has been specified.
@@ -35,7 +35,7 @@ public class UmbrellaDataAccessServiceOptions : ISanitizableUmbrellaOptions, IVa
 	public Func<Exception, Task<OperationResult?>> HandleReadAllExceptionAsync { get; set; } = _ => Task.FromResult<OperationResult?>(null);
 
 	/// <summary>
-	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryDataAccessService.ReadAsync"/> method.
+	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryCoreDataService.ReadAsync"/> method.
 	/// </summary>
 	/// <remarks>
 	/// If the exception filter returns <see langword="true"/>, the <see cref="HandleReadExceptionAsync"/> delegate is invoked, if it has been specified.
@@ -49,7 +49,7 @@ public class UmbrellaDataAccessServiceOptions : ISanitizableUmbrellaOptions, IVa
 	public Func<Exception, Task<OperationResult?>> HandleReadExceptionAsync { get; set; } = _ => Task.FromResult<OperationResult?>(null);
 
 	/// <summary>
-	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryDataAccessService.CreateAsync"/> method.
+	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryCoreDataService.CreateAsync"/> method.
 	/// </summary>
 	/// <remarks>
 	/// If the exception filter returns <see langword="true"/>, the <see cref="HandleCreateExceptionAsync"/> delegate is invoked, if it has been specified.
@@ -63,7 +63,7 @@ public class UmbrellaDataAccessServiceOptions : ISanitizableUmbrellaOptions, IVa
 	public Func<Exception, Task<OperationResult?>> HandleCreateExceptionAsync { get; set; } = _ => Task.FromResult<OperationResult?>(null);
 
 	/// <summary>
-	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryDataAccessService.UpdateAsync"/> method.
+	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryCoreDataService.UpdateAsync"/> method.
 	/// </summary>
 	/// <remarks>
 	/// If the exception filter returns <see langword="true"/>, the <see cref="HandleUpdateExceptionAsync"/> delegate is invoked, if it has been specified.
@@ -77,7 +77,7 @@ public class UmbrellaDataAccessServiceOptions : ISanitizableUmbrellaOptions, IVa
 	public Func<Exception, Task<OperationResult?>> HandleUpdateExceptionAsync { get; set; } = _ => Task.FromResult<OperationResult?>(null);
 
 	/// <summary>
-	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryDataAccessService.DeleteAsync"/> method.
+	/// Gets or sets the exception filter that is invoked when exceptions are thrown inside the <see cref="IUmbrellaRepositoryCoreDataService.DeleteAsync"/> method.
 	/// </summary>
 	/// <remarks>
 	/// If the exception filter returns <see langword="true"/>, the <see cref="HandleDeleteExceptionAsync"/> delegate is invoked, if it has been specified.

@@ -23,7 +23,7 @@ namespace Umbrella.DataAccess.Abstractions;
 /// <summary>
 /// A generic service that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
 /// </summary>
-public class UmbrellaRepositoryDataAccessService : IUmbrellaRepositoryDataAccessService
+public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataService
 {
 	/// <summary>
 	/// Gets the logger.
@@ -38,7 +38,7 @@ public class UmbrellaRepositoryDataAccessService : IUmbrellaRepositoryDataAccess
 	/// <summary>
 	/// Gets the options.
 	/// </summary>
-	protected UmbrellaDataAccessServiceOptions Options { get; }
+	protected UmbrellaRepositoryDataServiceOptions Options { get; }
 
 	/// <summary>
 	/// Gets the mapper.
@@ -58,7 +58,7 @@ public class UmbrellaRepositoryDataAccessService : IUmbrellaRepositoryDataAccess
 	/// <summary>
 	/// Gets the data access unit of work.
 	/// </summary>
-	protected Lazy<IDataAccessUnitOfWork> DataAccessUnitOfWork { get; } // TODO: Lazy
+	protected Lazy<IDataAccessUnitOfWork> DataAccessUnitOfWork { get; }
 
 	/// <summary>
 	/// Gets the current user.
@@ -66,7 +66,7 @@ public class UmbrellaRepositoryDataAccessService : IUmbrellaRepositoryDataAccess
 	protected static ClaimsPrincipal User => ClaimsPrincipal.Current ?? throw new InvalidOperationException("No ClaimsPrincipal found.");
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaRepositoryDataAccessService"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaRepositoryCoreDataService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
@@ -75,10 +75,10 @@ public class UmbrellaRepositoryDataAccessService : IUmbrellaRepositoryDataAccess
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
 	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
-	public UmbrellaRepositoryDataAccessService(
-		ILogger<UmbrellaRepositoryDataAccessService> logger,
+	public UmbrellaRepositoryCoreDataService(
+		ILogger<UmbrellaRepositoryCoreDataService> logger,
 		IHostEnvironment hostingEnvironment,
-		UmbrellaDataAccessServiceOptions options,
+		UmbrellaRepositoryDataServiceOptions options,
 		IUmbrellaMapper mapper,
 		IUmbrellaAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,

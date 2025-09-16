@@ -14,7 +14,7 @@ namespace Umbrella.DataAccess.Abstractions;
 /// <summary>
 /// A service that provides data access operations for entities in a repository.
 /// </summary>
-public interface IUmbrellaRepositoryDataAccessService
+public interface IUmbrellaRepositoryCoreDataService
 {
 	/// <summary>
 	/// Used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns

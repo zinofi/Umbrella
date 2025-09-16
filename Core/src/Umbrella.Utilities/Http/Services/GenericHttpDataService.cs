@@ -15,6 +15,10 @@ using Umbrella.Utilities.Primitives.Abstractions;
 
 namespace Umbrella.Utilities.Http.Services;
 
+// TODO: The base class class should be flattened into this one. Although that would cause issues.
+// I need better names. Maybe GenericHttpCrudDataService or something? No, something more elegant.
+// Maybe 
+
 /// <summary>
 /// A generic repository used to query and update a remote resource over HTTP.
 /// </summary>
