@@ -10,7 +10,7 @@ using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc;
+namespace Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 
 /// <summary>
 /// A service that provides data access operations for entities in a repository.

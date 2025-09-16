@@ -5,7 +5,7 @@ using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Repositories.Abstractions;
+using Umbrella.Utilities.Data.Services.Abstractions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Primitives.Abstractions;
 
@@ -113,7 +113,7 @@ public class UmbrellaGridComponentServiceFactory : IUmbrellaGridComponentService
 		where TItemModel : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
 		where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-		where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
+		where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataService<TIdentifier>
 	{
 		try
 		{

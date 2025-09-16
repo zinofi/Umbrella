@@ -6,7 +6,7 @@ using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.AspNetCore.Blazor.Constants;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Repositories.Abstractions;
+using Umbrella.Utilities.Data.Services.Abstractions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Primitives.Abstractions;
 

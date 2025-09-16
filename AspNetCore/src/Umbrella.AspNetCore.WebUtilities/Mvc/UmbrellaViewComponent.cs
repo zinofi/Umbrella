@@ -8,14 +8,6 @@ namespace Umbrella.AspNetCore.WebUtilities.Mvc;
 /// </summary>
 public abstract class UmbrellaViewComponent : ViewComponent
 {
-	#region Protected Members		
-	/// <summary>
-	/// Gets the logger.
-	/// </summary>
-	protected ILogger Logger { get; }
-	#endregion
-
-	#region Constructors		
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaViewComponent"/> class.
 	/// </summary>
@@ -24,5 +16,9 @@ public abstract class UmbrellaViewComponent : ViewComponent
 	{
 		Logger = logger;
 	}
-	#endregion
+
+	/// <summary>
+	/// Gets the logger.
+	/// </summary>
+	protected ILogger Logger { get; }
 }

@@ -5,9 +5,10 @@ using System.Security.Claims;
 using CommunityToolkit.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 using Umbrella.Utilities.Exceptions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc;
+namespace Umbrella.AspNetCore.WebUtilities.Mvc.Services;
 
 /// <summary>
 /// Checks policy based permissions for a user

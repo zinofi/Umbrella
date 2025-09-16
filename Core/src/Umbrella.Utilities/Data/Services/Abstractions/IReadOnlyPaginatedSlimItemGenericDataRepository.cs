@@ -6,10 +6,10 @@ using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Primitives.Abstractions;
 
-namespace Umbrella.Utilities.Data.Repositories.Abstractions;
+namespace Umbrella.Utilities.Data.Services.Abstractions;
 
 /// <summary>
-/// A generic repository used to query slim paginated resources.
+/// A generic service used to query slim paginated resources.
 /// </summary>
 /// <typeparam name="TSlimItem">The type of the slim item.</typeparam>
 /// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbrella.AppFramework.Shared.Models;
+using Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
@@ -15,6 +16,11 @@ using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
+
+public abstract class UmbrellaGenericDataServiceApiController
+{
+
+}
 
 /// <summary>
 /// A generic API Controller that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Repositories.Abstractions;
+using Umbrella.Utilities.Data.Services.Abstractions;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.AspNetCore.Blazor.Infrastructure;
@@ -23,7 +23,7 @@ public abstract class UmbrellaRemoteDataAccessGridComponentBase<TItemModel, TIde
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataService<TIdentifier>
 {
 	/// <summary>
 	/// The event handler invoked when an item in the grid is to be deleted.

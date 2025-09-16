@@ -3,13 +3,12 @@
 
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.DataAnnotations.Enumerations;
 using Umbrella.Utilities.Primitives.Abstractions;
 
-namespace Umbrella.Utilities.Data.Repositories.Abstractions;
+namespace Umbrella.Utilities.Data.Services.Abstractions;
 
 /// <summary>
-/// A generic repository used to query and update a remote resource.
+/// A generic service used to query and update a resource.
 /// </summary>
 /// <typeparam name="TItem">The type of the item.</typeparam>
 /// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
@@ -19,7 +18,7 @@ namespace Umbrella.Utilities.Data.Repositories.Abstractions;
 /// <typeparam name="TCreateResult">The type of the create result.</typeparam>
 /// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 /// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
-public interface IGenericDataRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : IReadOnlyGenericDataRepository<TItem, TIdentifier>, IReadOnlyPaginatedSlimItemGenericDataRepository<TSlimItem, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
+public interface IGenericDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : IReadOnlyGenericDataService<TItem, TIdentifier>, IReadOnlyPaginatedSlimItemGenericDataRepository<TSlimItem, TPaginatedResultModel>, IDeleteItemGenericDataService<TIdentifier>
 	where TItem : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TSlimItem : class, IKeyedItem<TIdentifier>
@@ -30,19 +29,15 @@ public interface IGenericDataRepository<TItem, TIdentifier, TSlimItem, TPaginate
 	/// Creates the specified resource on the remote server.
 	/// </summary>
 	/// <param name="item">The item.</param>
-	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
-	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default);
+	Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Updates the specified resource on the remote server.
 	/// </summary>
 	/// <param name="item">The item.</param>
-	/// <param name="sanitize">if set to <c>true</c> sanitizes the <paramref name="item"/> before saving.</param>
-	/// <param name="validationType">The type of validation to be performed on the <paramref name="item"/> before saving.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the remote operation.</returns>
-	Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default);
+	Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default);
 }

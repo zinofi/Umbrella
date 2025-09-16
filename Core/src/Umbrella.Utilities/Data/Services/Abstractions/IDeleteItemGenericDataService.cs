@@ -3,20 +3,20 @@
 
 using Umbrella.Utilities.Primitives.Abstractions;
 
-namespace Umbrella.Utilities.Data.Repositories.Abstractions;
+namespace Umbrella.Utilities.Data.Services.Abstractions;
 
 /// <summary>
-/// A generic repository used to delete remote resources.
+/// A generic service used to delete resources.
 /// </summary>
 /// <typeparam name="TIdentifier">The type of the identifier.</typeparam>
-public interface IDeleteItemGenericDataRepository<TIdentifier>
+public interface IDeleteItemGenericDataService<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 {
 	/// <summary>
-	/// Deletes the specified resource from the remote server.
+	/// Deletes the specified resource.
 	/// </summary>
 	/// <param name="id">The identifier.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>The result of the remote operation.</returns>
+	/// <returns>The result of the operation.</returns>
 	Task<IOperationResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default);
 }

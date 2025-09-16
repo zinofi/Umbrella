@@ -5,7 +5,7 @@ using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Repositories.Abstractions;
+using Umbrella.Utilities.Data.Services.Abstractions;
 using Umbrella.Utilities.Exceptions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid;
@@ -23,7 +23,7 @@ public class UmbrellaRemoteDataAccessGridComponentService<TItemModel, TIdentifie
 	where TItemModel : class, IKeyedItem<TIdentifier>
 	where TIdentifier : IEquatable<TIdentifier>
 	where TPaginatedResultModel : PaginatedResultModel<TItemModel>
-	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataRepository<TIdentifier>
+	where TRepository : class, IReadOnlyPaginatedSlimItemGenericDataRepository<TItemModel, TPaginatedResultModel>, IDeleteItemGenericDataService<TIdentifier>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaRemoteDataAccessGridComponentService{TItemModel, TIdentifier, TPaginatedResultModel, TRepository}"/> class.

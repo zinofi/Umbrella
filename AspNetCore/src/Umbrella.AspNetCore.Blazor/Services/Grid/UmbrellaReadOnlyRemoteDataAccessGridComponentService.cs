@@ -3,7 +3,7 @@ using Umbrella.AspNetCore.Blazor.Components.Dialog.Abstractions;
 using Umbrella.AspNetCore.Blazor.Components.Grid;
 using Umbrella.AspNetCore.Blazor.Services.Grid.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Repositories.Abstractions;
+using Umbrella.Utilities.Data.Services.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Services.Grid;
 

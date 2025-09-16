@@ -3,7 +3,7 @@
 
 using System.Security.Claims;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc;
+namespace Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 
 /// <summary>
 /// Checks policy based permissions for a user

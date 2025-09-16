@@ -6,15 +6,14 @@ using Microsoft.Extensions.Logging;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Repositories.Abstractions;
-using Umbrella.Utilities.Data.Repositories.Exceptions;
+using Umbrella.Utilities.Data.Services.Abstractions;
+using Umbrella.Utilities.Data.Services.Exceptions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
-using Umbrella.Utilities.DataAnnotations.Enumerations;
 using Umbrella.Utilities.Http.Abstractions;
 using Umbrella.Utilities.Primitives.Abstractions;
 
-namespace Umbrella.Utilities.Http.Repositories;
+namespace Umbrella.Utilities.Http.Services;
 
 /// <summary>
 /// A generic repository used to query and update a remote resource over HTTP.
@@ -27,7 +26,7 @@ namespace Umbrella.Utilities.Http.Repositories;
 /// <typeparam name="TCreateResult">The type of the create result.</typeparam>
 /// <typeparam name="TUpdateItem">The type of the update item.</typeparam>
 /// <typeparam name="TUpdateResult">The type of the update result.</typeparam>
-public abstract class GenericHttpDataRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : GenericHttpDataService, IGenericDataRepository<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
+public abstract class GenericHttpDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult> : GenericHttpDataServiceBase, IGenericDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
 	where TItem : class, IKeyedItem<TIdentifier>
 	where TSlimItem : class, IKeyedItem<TIdentifier>
 	where TUpdateItem : class, IKeyedItem<TIdentifier>
@@ -44,13 +43,13 @@ public abstract class GenericHttpDataRepository<TItem, TIdentifier, TSlimItem, T
 	protected virtual string FindAllSlimEndpoint { get; } = "/SearchSlim";
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="GenericHttpDataRepository{TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult}"/> class.
+	/// Initializes a new instance of the <see cref="GenericHttpDataService{TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult}"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="httpService">The HTTP service.</param>
 	/// <param name="httpServiceUtility">The HTTP service utility.</param>
 	/// <param name="validator">The validator.</param>
-	protected GenericHttpDataRepository(
+	protected GenericHttpDataService(
 		ILogger logger,
 		IGenericHttpService httpService,
 		IGenericHttpServiceUtility httpServiceUtility,
@@ -77,7 +76,7 @@ public abstract class GenericHttpDataRepository<TItem, TIdentifier, TSlimItem, T
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
-			throw new UmbrellaDataRepositoryException("There was a problem finding the total count.", exc);
+			throw new UmbrellaDataServiceException("There was a problem finding the total count.", exc);
 		}
 	}
 
@@ -103,17 +102,17 @@ public abstract class GenericHttpDataRepository<TItem, TIdentifier, TSlimItem, T
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
-			throw new UmbrellaDataRepositoryException("There was a problem determining if the specified item exists.", exc);
+			throw new UmbrellaDataServiceException("There was a problem determining if the specified item exists.", exc);
 		}
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
-		=> await PostAsync<TCreateItem, TCreateResult>(item, sanitize, validationType, AfterItemCreatedAsync, cancellationToken: cancellationToken);
+	public virtual async Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default)
+		=> await PostAsync<TCreateItem, TCreateResult>(item, AfterItemCreatedAsync, cancellationToken: cancellationToken);
 
 	/// <inheritdoc />
-	public virtual async Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, bool sanitize = true, ValidationType validationType = ValidationType.Shallow, CancellationToken cancellationToken = default)
-		=> await PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, sanitize, validationType, AfterItemUpdatedAsync, cancellationToken: cancellationToken);
+	public virtual async Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default)
+		=> await PutAsync<TUpdateItem, TIdentifier, TUpdateResult>(item, AfterItemUpdatedAsync, cancellationToken: cancellationToken);
 
 	/// <inheritdoc />
 	public virtual async Task<IOperationResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default)
