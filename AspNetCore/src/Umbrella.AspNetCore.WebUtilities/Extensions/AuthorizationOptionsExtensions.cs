@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Umbrella.AspNetCore.WebUtilities.Security.Policies;
+using Umbrella.Utilities.Security.Policies;
 
 #pragma warning disable IDE0130
 namespace Microsoft.AspNetCore.Authorization;

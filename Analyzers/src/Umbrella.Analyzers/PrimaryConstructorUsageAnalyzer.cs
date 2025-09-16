@@ -13,8 +13,17 @@ namespace Umbrella.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class PrimaryConstructorUsageAnalyzer : DiagnosticAnalyzer
 {
+	/// <summary>
+	/// Represents the unique identifier for the analyzer diagnostic UA010.
+	/// </summary>
 	public const string DiagnosticId = "UA010";
 
+	/// <summary>
+	/// Provides a diagnostic rule that enforces the prohibition of primary constructors in types.
+	/// </summary>
+	/// <remarks>This rule triggers an error diagnostic when a type is declared with a primary constructor. It is
+	/// intended for use in code style analyzers to ensure compliance with coding standards that disallow primary
+	/// constructors.</remarks>
 	public static readonly DiagnosticDescriptor Rule = new(
 		DiagnosticId,
 		"Primary constructors are not allowed",
@@ -23,8 +32,10 @@ public sealed class PrimaryConstructorUsageAnalyzer : DiagnosticAnalyzer
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
+	/// <inheritdoc/>
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
+	/// <inheritdoc/>
 	public override void Initialize(AnalysisContext context)
 	{
 		if (context is null)

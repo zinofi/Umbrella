@@ -1,9 +1,6 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
+﻿using Umbrella.Utilities.Data.Concurrency;
 
-using Umbrella.Utilities.Data.Concurrency;
-
-namespace Umbrella.AppFramework.Shared.Models;
+namespace Umbrella.Utilities.Data.Models;
 
 /// <summary>
 /// A result model of the operation to update an item.

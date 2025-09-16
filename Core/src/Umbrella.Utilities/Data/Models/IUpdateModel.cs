@@ -1,10 +1,7 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Umbrella.Utilities.Data.Abstractions;
+﻿using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Concurrency;
 
-namespace Umbrella.AppFramework.Shared.Models;
+namespace Umbrella.Utilities.Data.Models;
 
 /// <summary>
 /// A model that is used to update an item.

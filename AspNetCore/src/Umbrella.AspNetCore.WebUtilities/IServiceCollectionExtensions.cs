@@ -20,8 +20,8 @@ using Umbrella.AspNetCore.WebUtilities.Services;
 using Umbrella.Utilities.Hosting.Abstractions;
 using Umbrella.WebUtilities.Hosting;
 using Umbrella.AspNetCore.WebUtilities.Razor.Options;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 using Umbrella.AspNetCore.WebUtilities.Mvc.Services;
+using Umbrella.Utilities.Security.Abstractions;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -91,7 +91,6 @@ public static class IServiceCollectionExtensions
 
 		// NB: Registering the below as transient because internally they use transient services.
 		_ = services.AddTransient<IUmbrellaAuthorizationService, UmbrellaAspNetAuthorizationService>();
-		_ = services.AddTransient<IUmbrellaDataAccessService, UmbrellaDataAccessService>();
 
 		_ = services.ConfigureUmbrellaOptions(apiIntegrationCookieAuthenticationEventsOptionsBuilder);
 		_ = services.ConfigureUmbrellaOptions(umbrellaScheduledHostedServiceWithViewSupportOptionsBuilder);

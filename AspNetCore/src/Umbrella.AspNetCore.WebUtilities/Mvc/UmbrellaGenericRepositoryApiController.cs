@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Shared.Models;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
@@ -406,7 +405,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
 		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		IUmbrellaDataAccessService dataAccessService)
+		IUmbrellaRepositoryDataAccessService dataAccessService)
 		: base(logger, hostingEnvironment, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork, dataAccessService)
 	{
 		Repository = repository;

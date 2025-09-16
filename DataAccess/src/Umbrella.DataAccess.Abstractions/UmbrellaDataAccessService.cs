@@ -5,26 +5,25 @@ using System.Security.Claims;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Shared.Models;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Options;
-using Umbrella.DataAccess.Abstractions;
+using Umbrella.DataAccess.Abstractions.Options;
 using Umbrella.Utilities.Data.Concurrency;
 using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Exceptions;
 using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Primitives;
 using Umbrella.Utilities.Primitives.Abstractions;
+using Umbrella.Utilities.Security.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.Services;
+namespace Umbrella.DataAccess.Abstractions;
 
 /// <summary>
 /// A generic service that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
 /// </summary>
-public class UmbrellaDataAccessService : IUmbrellaDataAccessService
+public class UmbrellaRepositoryDataAccessService : IUmbrellaRepositoryDataAccessService
 {
 	/// <summary>
 	/// Gets the logger.
@@ -67,7 +66,7 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 	protected static ClaimsPrincipal User => ClaimsPrincipal.Current ?? throw new InvalidOperationException("No ClaimsPrincipal found.");
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaDataAccessService"/> class.
+	/// Initializes a new instance of the <see cref="UmbrellaRepositoryDataAccessService"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="hostingEnvironment">The hosting environment.</param>
@@ -76,8 +75,8 @@ public class UmbrellaDataAccessService : IUmbrellaDataAccessService
 	/// <param name="authorizationService">The authorization service.</param>
 	/// <param name="synchronizationManager">The synchronization manager.</param>
 	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
-	public UmbrellaDataAccessService(
-		ILogger<UmbrellaDataAccessService> logger,
+	public UmbrellaRepositoryDataAccessService(
+		ILogger<UmbrellaRepositoryDataAccessService> logger,
 		IHostEnvironment hostingEnvironment,
 		UmbrellaDataAccessServiceOptions options,
 		IUmbrellaMapper mapper,

@@ -1,21 +1,20 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-using Umbrella.AppFramework.Shared.Models;
-using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
+namespace Umbrella.DataAccess.Abstractions;
 
 /// <summary>
 /// A service that provides data access operations for entities in a repository.
 /// </summary>
-public interface IUmbrellaDataAccessService
+public interface IUmbrellaRepositoryDataAccessService
 {
 	/// <summary>
 	/// Used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns

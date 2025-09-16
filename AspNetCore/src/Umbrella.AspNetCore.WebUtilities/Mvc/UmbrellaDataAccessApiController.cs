@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Umbrella.AppFramework.Shared.Models;
-using Umbrella.AspNetCore.WebUtilities.Mvc.Abstractions;
 using Umbrella.DataAccess.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
@@ -66,7 +65,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 	/// <summary>
 	/// Gets the data access service used for database operations.
 	/// </summary>
-	protected IUmbrellaDataAccessService DataAccessService { get; }
+	protected IUmbrellaRepositoryDataAccessService DataAccessService { get; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UmbrellaDataAccessApiController"/> class.
@@ -85,7 +84,7 @@ public abstract class UmbrellaDataAccessApiController : UmbrellaApiController
 		IAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
 		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		IUmbrellaDataAccessService dataAccessService)
+		IUmbrellaRepositoryDataAccessService dataAccessService)
 		: base(logger, hostingEnvironment)
 	{
 		Mapper = mapper;

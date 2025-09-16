@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
-namespace Umbrella.AspNetCore.WebUtilities.Security.Policies;
+namespace Umbrella.Utilities.Security.Policies;
 
 /// <summary>
 /// Specifies the names for core authorization policies that can be applied to resources.
