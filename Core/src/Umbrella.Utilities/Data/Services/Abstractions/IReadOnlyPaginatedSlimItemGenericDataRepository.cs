@@ -18,7 +18,7 @@ public interface IReadOnlyPaginatedSlimItemGenericDataRepository<TSlimItem, TPag
 	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 {
 	/// <summary>
-	/// Finds all slim results of <typeparamref name="TSlimItem"/> on using the specified parameters.
+	/// Finds all slim results of <typeparamref name="TSlimItem"/> using the specified parameters.
 	/// </summary>
 	/// <param name="pageNumber">The page number.</param>
 	/// <param name="pageSize">Size of the page.</param>

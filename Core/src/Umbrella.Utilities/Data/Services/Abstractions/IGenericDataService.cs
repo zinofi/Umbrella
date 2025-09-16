@@ -1,7 +1,4 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Umbrella.Utilities.Data.Abstractions;
+﻿using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Primitives.Abstractions;
 
@@ -26,18 +23,18 @@ public interface IGenericDataService<TItem, TIdentifier, TSlimItem, TPaginatedRe
 	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 {
 	/// <summary>
-	/// Creates the specified resource on the remote server.
+	/// Creates the specified resource.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>The result of the remote operation.</returns>
+	/// <returns>The result of the operation.</returns>
 	Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default);
 
 	/// <summary>
-	/// Updates the specified resource on the remote server.
+	/// Updates the specified resource.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>The result of the remote operation.</returns>
+	/// <returns>The result of the operation.</returns>
 	Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default);
 }

@@ -1,23 +1,19 @@
-﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
-// Licensed under the MIT License.
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Umbrella.DataAccess.Abstractions;
+using Umbrella.DataAccess.Abstractions.Options;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
-using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
+using Umbrella.Utilities.Data.Services.Abstractions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Primitives.Abstractions;
+using Umbrella.Utilities.Security.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
-namespace Umbrella.AspNetCore.WebUtilities.Mvc;
+namespace Umbrella.DataAccess.Abstractions;
 
-public abstract class UmbrellaGenericRepositoryDataServiceApiController<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey, TRepositoryDataService> : UmbrellaApiController
+public interface IUmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey> : IGenericDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
 	where TItem : class, IKeyedItem<TIdentifier>
 	where TSlimItem : class, IKeyedItem<TIdentifier>
 	where TUpdateItem : class, IKeyedItem<TIdentifier>
@@ -27,86 +23,47 @@ public abstract class UmbrellaGenericRepositoryDataServiceApiController<TItem, T
 	where TEntity : class, IEntity<TEntityKey>
 	where TRepositoryOptions : RepoOptions, new()
 	where TEntityKey : IEquatable<TEntityKey>
-	where TRepositoryDataService : IUmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey>
 {
-	protected UmbrellaGenericRepositoryDataServiceApiController(
-		ILogger logger,
-		IWebHostEnvironment hostingEnvironment,
-		IUmbrellaMapper mapper,
-		IAuthorizationService authorizationService,
-		ISynchronizationManager synchronizationManager,
-		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		Lazy<TRepositoryDataService> repositoryDataService)
-		: base(logger, hostingEnvironment)
-	{
-		Mapper = mapper;
-		AuthorizationService = authorizationService;
-		SynchronizationManager = synchronizationManager;
-		DataAccessUnitOfWork = dataAccessUnitOfWork;
-		RepositoryDataService = repositoryDataService;
-	}
-
-	/// <summary>
-	/// Gets the mapper used to convert between domain entities and data transfer objects.
-	/// </summary>
-	protected IUmbrellaMapper Mapper { get; }
-
-	/// <summary>
-	/// Gets the authorization service.
-	/// </summary>
-	protected IAuthorizationService AuthorizationService { get; }
-
-	/// <summary>
-	/// Gets the synchronization manager used to coordinate thread or task synchronization within the component.
-	/// </summary>
-	protected ISynchronizationManager SynchronizationManager { get; }
-
-	/// <summary>
-	/// Gets the lazy-initialized unit of work for data access operations.
-	/// </summary>
-	/// <remarks>The underlying IDataAccessUnitOfWork instance is created only when first accessed. This property is
-	/// intended for use by derived classes to coordinate data access within a unit of work pattern.</remarks>
-	protected Lazy<IDataAccessUnitOfWork> DataAccessUnitOfWork { get; }
-
-	/// <summary>
-	/// Gets the lazy-initialized repository data service instance.
-	/// </summary>
-	/// <remarks>The repository data service is created only when first accessed. Use this property to access
-	/// repository-related operations without incurring the cost of initialization until needed.</remarks>
-	protected Lazy<TRepositoryDataService> RepositoryDataService { get; }
 }
 
-/// <summary>
-/// A generic API Controller that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
-/// </summary>
-/// <remarks>
-/// This controller extends the <see cref="UmbrellaDataAccessApiController" /> by exposing public API endpoints which call into the base methods
-/// that do the processing using the generic type parameters specified on this controller type. It also simplifies usage by using commonly used default values
-/// for method parameters. <see cref="UmbrellaDataAccessApiController"/> can be used instead of this controller and provides more flexibility, however, this comes at the
-/// expense of simplicity and maintainability of controller that extend that base controller instead of this one.
-/// </remarks>
-/// <typeparam name="TSlimModel">The type of the slim model.</typeparam>
-/// <typeparam name="TPaginatedResultModel">The type of the paginated result model.</typeparam>
-/// <typeparam name="TModel">The type of the model.</typeparam>
-/// <typeparam name="TCreateModel">The type of the create model.</typeparam>
-/// <typeparam name="TCreateResultModel">The type of the create result model.</typeparam>
-/// <typeparam name="TUpdateModel">The type of the update model.</typeparam>
-/// <typeparam name="TUpdateResultModel">The type of the update result model.</typeparam>
-/// <typeparam name="TRepository">The type of the repository.</typeparam>
-/// <typeparam name="TEntity">The type of the entity.</typeparam>
-/// <typeparam name="TRepositoryOptions">The type of the repository options.</typeparam>
-/// <typeparam name="TEntityKey">The type of the entity key.</typeparam>
-/// <seealso cref="UmbrellaDataAccessApiController" />
-public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPaginatedResultModel, TModel, TCreateModel, TCreateResultModel, TUpdateModel, TUpdateResultModel, TRepository, TEntity, TRepositoryOptions, TEntityKey> : UmbrellaDataAccessApiController
-	where TPaginatedResultModel : PaginatedResultModel<TSlimModel>, new()
-	where TCreateResultModel : ICreateResultModel<TEntityKey>, new()
-	where TUpdateModel : IUpdateModel<TEntityKey>
-	where TUpdateResultModel : IUpdateResultModel, new()
+public abstract class UmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey> :
+	UmbrellaRepositoryCoreDataService,
+	IUmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey>
+	where TItem : class, IKeyedItem<TIdentifier>
+	where TSlimItem : class, IKeyedItem<TIdentifier>
+	where TUpdateItem : class, IKeyedItem<TIdentifier>
+	where TIdentifier : IEquatable<TIdentifier>
+	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 	where TEntity : class, IEntity<TEntityKey>
 	where TRepositoryOptions : RepoOptions, new()
 	where TEntityKey : IEquatable<TEntityKey>
 {
+	/// <summary>
+	/// Initializes a new instance of the UmbrellaRepositoryDataService class with the specified dependencies.
+	/// </summary>
+	/// <param name="logger">The logger used to record diagnostic and operational information for the data service.</param>
+	/// <param name="hostingEnvironment">The hosting environment in which the application is running. Used to access environment-specific information.</param>
+	/// <param name="options">The configuration options for the data service. Provides settings that control service behavior.</param>
+	/// <param name="mapper">The mapper used to convert between data entities and domain models.</param>
+	/// <param name="authorizationService">The authorization service used to enforce access control policies for data operations.</param>
+	/// <param name="synchronizationManager">The synchronization manager responsible for coordinating data consistency across operations.</param>
+	/// <param name="dataAccessUnitOfWork">A lazily-initialized unit of work for managing data access transactions.</param>
+	/// <param name="repository">A lazily-initialized repository used to perform data operations on the underlying data store.</param>
+	protected UmbrellaRepositoryDataService(
+		ILogger<UmbrellaRepositoryCoreDataService> logger,
+		IHostEnvironment hostingEnvironment,
+		UmbrellaRepositoryDataServiceOptions options,
+		IUmbrellaMapper mapper,
+		IUmbrellaAuthorizationService authorizationService,
+		ISynchronizationManager synchronizationManager,
+		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
+		Lazy<TRepository> repository)
+		: base(logger, hostingEnvironment, options, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork)
+	{
+		Repository = repository;
+	}
+
 	/// <summary>
 	/// Gets the repository.
 	/// </summary>
@@ -222,7 +179,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 
 	/// <summary>
 	/// Gets a value indicating whether calls to the <c>Post</c> endpoint should be synchronized
-	/// using a synchronization key created by a call to the <see cref="UmbrellaDataAccessApiController.GetCreateSynchronizationRootKey"/> method.
+	/// using a synchronization key created by a call to the <see cref="GetCreateSynchronizationRootKey(object)"/> method.
 	/// </summary>
 	/// <remarks>
 	/// Defaults to <see langword="false"/>.
@@ -249,7 +206,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 
 	/// <summary>
 	/// Gets a value indicating whether result models created when the <c>Post</c> endpoint is called
-	/// should be automatically mapped from the created entity using the <see cref="UmbrellaDataAccessApiController.Mapper"/>.
+	/// should be automatically mapped from the created entity using the <see cref="UmbrellaRepositoryCoreDataService.Mapper"/>.
 	/// </summary>
 	/// <remarks>
 	/// <para>Defaults to <see langword="true"/>.</para>
@@ -263,7 +220,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 
 	/// <summary>
 	/// Gets a value indicating whether result models created when the <c>Put</c> endpoint is called
-	/// should be automatically mapped from the updated entity using the <see cref="UmbrellaDataAccessApiController.Mapper"/>.
+	/// should be automatically mapped from the updated entity using the <see cref="UmbrellaRepositoryCoreDataService.Mapper"/>.
 	/// </summary>
 	/// <remarks>
 	/// <para>Defaults to <see langword="true"/>.</para>
@@ -374,7 +331,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	protected virtual IReadOnlyCollection<RepoOptions> SearchSlimChildRepoOptions { get; } = [];
 
 	/// <summary>
-	/// Gets the child <see cref="RepoOptions"/> used by the <see cref="GetAsync"/> endpoint when loading entities from the repository.
+	/// Gets the child <see cref="RepoOptions"/> used by the <see cref="FindByIdAsync"/> endpoint when loading entities from the repository.
 	/// </summary>
 	/// <remarks>
 	/// <para>
@@ -441,222 +398,43 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// </remarks>
 	protected virtual IReadOnlyCollection<RepoOptions> DeleteChildRepoOptions { get; } = [];
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UmbrellaGenericRepositoryApiController{TSlimModel, TPaginatedResultModel, TModel, TCreateModel, TCreateResultModel, TUpdateModel, TUpdateResultModel, TRepository, TEntity, TRepositoryOptions, TEntityKey}"/> class.
-	/// </summary>
-	/// <param name="logger">The logger.</param>
-	/// <param name="hostingEnvironment">The hosting environment.</param>
-	/// <param name="mapper">The mapper.</param>
-	/// <param name="repository">The repository.</param>
-	/// <param name="authorizationService">The authorization service.</param>
-	/// <param name="synchronizationManager">The synchronization manager.</param>
-	/// <param name="dataAccessUnitOfWork">The data access unit of work.</param>
-	/// <param name="dataAccessService">The data access service.</param>
-	protected UmbrellaGenericRepositoryApiController(
-		ILogger logger,
-		IWebHostEnvironment hostingEnvironment,
-		IUmbrellaMapper mapper,
-		Lazy<TRepository> repository,
-		IAuthorizationService authorizationService,
-		ISynchronizationManager synchronizationManager,
-		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		IUmbrellaRepositoryCoreDataService dataAccessService)
-		: base(logger, hostingEnvironment, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork, dataAccessService)
-	{
-		Repository = repository;
-	}
+	/// <inheritdoc/>
+	public Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc/>
+	public Task<IOperationResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc/>
+	public Task<IOperationResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc/>
+	public Task<IOperationResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc/>
+	public Task<IOperationResult<TItem?>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc/>
+	public Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc/>
+	public Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <summary>
-	/// An API endpoint used to load paginated entities in bulk from the repository based on the specified <paramref name="sorters"/> and <paramref name="filters"/>
-	/// with each result mapped to a collection of <typeparamref name="TSlimModel"/> wrapped in a <typeparamref name="TPaginatedResultModel"/>.
+	/// Loads the paginated results from the <typeparamref name="TRepository"/> using the specified parameters. This method is called internally by the <c>SearchSlim</c> method.
 	/// </summary>
+	/// <remarks>
+	/// This calls the <c>FindAllAsync</c> method on the <typeparamref name="TRepository"/> by default. Override this method to change this behaviour.
+	/// </remarks>
 	/// <param name="pageNumber">The page number.</param>
 	/// <param name="pageSize">Size of the page.</param>
 	/// <param name="sorters">The sorters.</param>
 	/// <param name="filters">The filters.</param>
 	/// <param name="filterCombinator">The filter combinator.</param>
+	/// <param name="options">The options.</param>
+	/// <param name="childOptions">The child options.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TPaginatedResultModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
-	/// <remarks>
-	/// This endpoint calls into the <c>ReadAllAsync</c> base controller method.
-	/// Please see this for further details regarding behaviour.
-	/// </remarks>
-	/// <seealso cref="UmbrellaDataAccessApiController.ReadAllAsync"/>
-	[HttpGet("SearchSlim")]
-	public virtual Task<IActionResult> SearchSlimAsync(int pageNumber, int pageSize, [FromQuery] SortExpression<TEntity>[]? sorters = null, [FromQuery] FilterExpression<TEntity>[]? filters = null, FilterExpressionCombinator? filterCombinator = null, CancellationToken cancellationToken = default)
-		=> SlimReadEndpointEnabled
-		? ReadAllAsync<TEntity, TEntity, TEntityKey, TRepositoryOptions, TSlimModel, TPaginatedResultModel>(
-			pageNumber,
-			pageSize,
-			sorters,
-			filters,
-			filterCombinator,
-			LoadSearchSlimDataAsync,
-			cancellationToken,
-			null,
-			AfterCreateSearchSlimModelAsync,
-			AfterReadSlimEntityAsync,
-			SearchSlimRepoOptions,
-			SearchSlimChildRepoOptions,
-			AuthorizationSlimReadChecksEnabled)
-		: throw new NotSupportedException("Unsupported Endpoint");
-
-	/// <summary>
-	/// An API endpoint used to load a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/> and return a
-	/// mapped <typeparamref name="TModel"/>.
-	/// </summary>
-	/// <param name="id">The identifier.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
-	/// <remarks>
-	/// This endpoint calls into the <c>ReadAsync</c> base controller method.
-	/// Please see this for further details regarding behaviour.
-	/// </remarks>
-	/// <seealso cref="UmbrellaDataAccessApiController.ReadAsync"/>
-	[HttpGet]
-	public virtual Task<IActionResult> GetAsync(TEntityKey id, CancellationToken cancellationToken = default)
-		=> ReadEndpointEnabled
-		? ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
-			id,
-			Repository,
-			cancellationToken,
-			LoadReadEntityAsync,
-			null,
-			(entity, model) => AfterReadEntityAsync(entity, model, cancellationToken),
-			GetTrackChanges,
-			GetIncludeMap,
-			GetRepoOptions,
-			GetChildRepoOptions,
-			AuthorizationReadChecksEnabled,
-			GetLock)
-		: throw new NotSupportedException("Unsupported Endpoint");
-
-	/// <summary>
-	/// An API endpoint used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TCreateModel"/> which returns
-	/// a <typeparamref name="TCreateResultModel"/> if successful.
-	/// </summary>
-	/// <param name="model">The model.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TCreateResultModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
-	/// <remarks>
-	/// This endpoint calls into the <c>CreateAsync</c> base controller method.
-	/// Please see this for further details regarding behaviour.
-	/// </remarks>
-	/// <seealso cref="UmbrellaDataAccessApiController.CreateAsync"/>
-	[HttpPost]
-	public virtual Task<IActionResult> PostAsync(TCreateModel model, CancellationToken cancellationToken = default)
-		=> CreateEndpointEnabled
-		? CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateModel, TCreateResultModel>(
-			model,
-			Repository,
-			cancellationToken,
-			() => BeforeCreateMappingModelToEntityAsync(model, cancellationToken),
-			null,
-			entity => BeforeCreateEntityAsync(entity, model, cancellationToken),
-			null,
-			(entity, result) => AfterCreateEntityAsync(entity, model, result, cancellationToken),
-			PostRepoOptions,
-			PostChildRepoOptions,
-			AuthorizationCreateChecksEnabled,
-			PostLock,
-			EnablePostOutputMapping)
-		: throw new NotSupportedException("Unsupported Endpoint");
-
-	/// <summary>
-	/// An API endpoint used to update an existing <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TUpdateModel"/> which returns
-	/// a <typeparamref name="TUpdateResultModel"/> if successful.
-	/// </summary>
-	/// <param name="model">The model.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <typeparamref name="TUpdateResultModel"/> when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
-	/// <remarks>
-	/// This endpoint calls into the <c>UpdateAsync</c> base controller method.
-	/// Please see this for further details regarding behaviour.
-	/// </remarks>
-	/// <seealso cref="UmbrellaDataAccessApiController.UpdateAsync"/>
-	[HttpPut]
-	public virtual Task<IActionResult> PutAsync(TUpdateModel model, CancellationToken cancellationToken = default)
-		=> UpdateEndpointEnabled
-		? UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TUpdateModel, TUpdateResultModel>(
-			model,
-			Repository,
-			cancellationToken,
-			entity => BeforeUpdateMappingModelToEntityAsync(entity, model, cancellationToken),
-			null,
-			entity => BeforeUpdateEntityAsync(entity, model, cancellationToken),
-			null,
-			(entity, result) => AfterUpdateEntityAsync(entity, model, result, cancellationToken),
-			PutIncludeMap,
-			PutRepoOptions,
-			PutChildRepoOptions,
-			AuthorizationUpdateChecksEnabled,
-			PutLock,
-			EnablePutOutputMapping)
-		: throw new NotSupportedException("Unsupported Endpoint");
-
-	/// <summary>
-	/// An API endpoint used to delete a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/>.
-	/// </summary>
-	/// <param name="id">The identifier.</param>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <returns>
-	/// The action result containing the endpoint response which either be a <c>204</c> status code when successful or
-	/// a <see cref="ProblemDetails"/> response and / or erroneous state code as appropriate.
-	/// </returns>
-	/// <exception cref="NotSupportedException">Unsupported Endpoint</exception>
-	/// <remarks>
-	/// This endpoint calls into the <c>DeleteAsync</c> base controller method.
-	/// Please see this for further details regarding behaviour.
-	/// </remarks>
-	/// <seealso cref="UmbrellaDataAccessApiController.DeleteAsync"/>
-	[HttpDelete]
-	public virtual Task<IActionResult> DeleteAsync(TEntityKey id, CancellationToken cancellationToken = default)
-		=> DeleteEndpointEnabled
-		? DeleteAsync(
-			id,
-			Repository,
-			BeforeDeleteEntityAsync,
-			AfterDeleteEntityAsync,
-			cancellationToken,
-			DeleteIncludeMap,
-			DeleteRepoOptions,
-			DeleteChildRepoOptions,
-			AuthorizationDeleteChecksEnabled,
-			DeleteLock)
-		: throw new NotSupportedException("Unsupported Endpoint");
-
-    /// <summary>
-    /// Loads the paginated results from the <typeparamref name="TRepository"/> using the specified parameters. This method is called internally by the <c>SearchSlim</c> method.
-    /// </summary>
-	/// <remarks>
-	/// This calls the <c>FindAllAsync</c> method on the <typeparamref name="TRepository"/> by default. Override this method to change this behaviour.
-	/// </remarks>
-    /// <param name="pageNumber">The page number.</param>
-    /// <param name="pageSize">Size of the page.</param>
-    /// <param name="sorters">The sorters.</param>
-    /// <param name="filters">The filters.</param>
-    /// <param name="filterCombinator">The filter combinator.</param>
-    /// <param name="options">The options.</param>
-    /// <param name="childOptions">The child options.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The paginated collection of entities from the <typeparamref name="TRepository"/>.</returns>
-    protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
+	/// <returns>The paginated collection of entities from the <typeparamref name="TRepository"/>.</returns>
+	protected virtual Task<PaginatedResultModel<TEntity>> LoadSearchSlimDataAsync(int pageNumber, int pageSize, SortExpression<TEntity>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, TRepositoryOptions? options, IEnumerable<RepoOptions>? childOptions, CancellationToken cancellationToken) => Repository.Value.FindAllAsync(pageNumber, pageSize, false, SearchSlimIncludeMap, sorters, filters, filterCombinator ?? FilterExpressionCombinator.And, options, childOptions, cancellationToken: cancellationToken);
 
 	/// <summary>
 	/// Loads the entity with the specified <paramref name="id"/> from the <typeparamref name="TRepository"/> using the specified parameters.
@@ -672,7 +450,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 
 	/// <summary>
 	/// This is called by the <c>SearchSlim</c> endpoint immediately after the <typeparamref name="TPaginatedResultModel"/> has been created containing the mapped
-	/// entity instances onto <typeparamref name="TSlimModel"/> instances.
+	/// entity instances onto <typeparamref name="TSlimItem"/> instances.
 	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output model.
@@ -696,10 +474,10 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IOperationResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+	protected virtual Task<IOperationResult?> AfterReadSlimEntityAsync(TEntity entity, TSlimItem model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
-	/// This is called by the <c>Get</c> endpoint after the entity has been read, auth checks have been completed, and the entity has been mapped to an <typeparamref name="TModel"/>.
+	/// This is called by the <c>Get</c> endpoint after the entity has been read, auth checks have been completed, and the entity has been mapped to an <typeparamref name="TItem"/>.
 	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output model.
@@ -708,18 +486,18 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IOperationResult?> AfterReadEntityAsync(TEntity entity, TModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+	protected virtual Task<IOperationResult?> AfterReadEntityAsync(TEntity entity, TItem model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
-	/// This is called by the <c>Post</c> endpoint before the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>.
+	/// This is called by the <c>Post</c> endpoint before the <typeparamref name="TItem"/> has been mapped to a new instance of <typeparamref name="TEntity"/>.
 	/// </summary>
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IOperationResult?> BeforeCreateMappingModelToEntityAsync(TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+	protected virtual Task<IOperationResult?> BeforeCreateMappingModelToEntityAsync(TCreateItem model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
-	/// This is called by the <c>Post</c> endpoint after the <typeparamref name="TModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>
+	/// This is called by the <c>Post</c> endpoint after the <typeparamref name="TItem"/> has been mapped to a new instance of <typeparamref name="TEntity"/>
 	/// but before auth checks are performed.
 	/// </summary>
 	/// <remarks>
@@ -729,19 +507,19 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IOperationResult?> BeforeCreateEntityAsync(TEntity entity, TCreateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+	protected virtual Task<IOperationResult?> BeforeCreateEntityAsync(TEntity entity, TCreateItem model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
-	/// This is called by the <c>Put</c> endpoint before the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>.
+	/// This is called by the <c>Put</c> endpoint before the <typeparamref name="TItem"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>.
 	/// </summary>
 	/// <param name="entity">The entity.</param>
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IOperationResult?> BeforeUpdateMappingModelToEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+	protected virtual Task<IOperationResult?> BeforeUpdateMappingModelToEntityAsync(TEntity entity, TUpdateItem model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
-	/// This is called by the <c>Put</c> endpoint after the <typeparamref name="TModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>
+	/// This is called by the <c>Put</c> endpoint after the <typeparamref name="TItem"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>
 	/// but before auth checks are performed.
 	/// </summary>
 	/// <remarks>
@@ -751,7 +529,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <param name="model">The model.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
-	protected virtual Task<IOperationResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateModel model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
+	protected virtual Task<IOperationResult?> BeforeUpdateEntityAsync(TEntity entity, TUpdateItem model, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
 	/// <summary>
 	/// This is called by the <c>Delete</c> endpoint before the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
@@ -765,42 +543,70 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 	/// <returns>An optional <see cref="IOperationResult"/> that can be used to an error result if there is a problem. By default, this should return <see langword="null"/> if processing is successful.</returns>
 	protected virtual Task<IOperationResult?> BeforeDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.FromResult<IOperationResult?>(null);
 
-    /// <summary>
-    /// This is called by the <c>Post</c> endpoint after the <typeparamref name="TCreateModel"/> has been mapped to a new instance of <typeparamref name="TEntity"/>,
-	/// saved to the database and the <typeparamref name="TCreateResultModel"/> has been created.
-    /// </summary>
+	/// <summary>
+	/// This is called by the <c>Post</c> endpoint after the <typeparamref name="TCreateItem"/> has been mapped to a new instance of <typeparamref name="TEntity"/>,
+	/// saved to the database and the <typeparamref name="TCreateResult"/> has been created.
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="result">The result.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An Task that completes when the operation has completed.</returns>
-    protected virtual Task AfterCreateEntityAsync(TEntity entity, TCreateModel model, TCreateResultModel result, CancellationToken cancellationToken) => Task.CompletedTask;
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="result">The result.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An Task that completes when the operation has completed.</returns>
+	protected virtual Task AfterCreateEntityAsync(TEntity entity, TCreateItem model, TCreateResult result, CancellationToken cancellationToken) => Task.CompletedTask;
 
-    /// <summary>
-    /// This is called by the <c>Put</c> endpoint after the <typeparamref name="TUpdateModel"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>,
-	/// saved to the database and the <typeparamref name="TUpdateResultModel"/> has been created.
-    /// </summary>
+	/// <summary>
+	/// This is called by the <c>Put</c> endpoint after the <typeparamref name="TUpdateItem"/> has been mapped to an existing instance of <typeparamref name="TEntity"/>,
+	/// saved to the database and the <typeparamref name="TUpdateResult"/> has been created.
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="model">The model.</param>
-    /// <param name="result">The result.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An Task that completes when the operation has completed.</returns>
-    protected virtual Task AfterUpdateEntityAsync(TEntity entity, TUpdateModel model, TUpdateResultModel result, CancellationToken cancellationToken) => Task.CompletedTask;
+	/// <param name="entity">The entity.</param>
+	/// <param name="model">The model.</param>
+	/// <param name="result">The result.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An Task that completes when the operation has completed.</returns>
+	protected virtual Task AfterUpdateEntityAsync(TEntity entity, TUpdateItem model, TUpdateResult result, CancellationToken cancellationToken) => Task.CompletedTask;
 
-    /// <summary>
-    /// This is called by the <c>Delete</c> endpoint after the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
-    /// </summary>
+	/// <summary>
+	/// This is called by the <c>Delete</c> endpoint after the <typeparamref name="TEntity"/> has been deleted from the <typeparamref name="TRepository"/>.
+	/// </summary>
 	/// <remarks>
 	/// By default, this does nothing. Override this method to add custom behaviour and augment the output models.
 	/// </remarks>
-    /// <param name="entity">The entity.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An Task that completes when the operation has completed.</returns>
-    protected virtual Task AfterDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.CompletedTask;
+	/// <param name="entity">The entity.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>An Task that completes when the operation has completed.</returns>
+	protected virtual Task AfterDeleteEntityAsync(TEntity entity, CancellationToken cancellationToken) => Task.CompletedTask;
+
+	/// <summary>
+	/// Clamps the pagination parameters.
+	/// </summary>
+	/// <param name="pageNumber">The page number.</param>
+	/// <param name="pageSize">Size of the page.</param>
+	/// <remarks>
+	/// By default, this clamps the page number to ensure it has a minimum value of <c>1</c>
+	/// and the page size to ensure it is between <c>1</c> and <c>50</c> inclusive.
+	/// </remarks>
+	protected virtual void ClampPaginationParameters(ref int pageNumber, ref int pageSize)
+	{
+		pageNumber = Math.Max(pageNumber, 1);
+
+#if NET6_0_OR_GREATER
+		pageSize = Math.Clamp(pageSize, 1, 50);
+#else
+		pageSize = Math.Max(1, Math.Min(pageSize, 50));
+#endif
+	}
+
+	/// <summary>
+	/// Gets the synchronization key to be used internally by the <see cref="CreateAsync"/> method. It is important
+	/// that this key is scoped appropriately to ensure correct locking behaviour.
+	/// </summary>
+	/// <param name="model">The incoming model passed into the action method.</param>
+	/// <returns>A tuple containing the type and the key used to performing synchronization.</returns>
+	protected virtual (Type type, string key)? GetCreateSynchronizationRootKey(object model) => null;
 }
