@@ -90,7 +90,7 @@ public class DialogUtility : IDialogService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = "Close")
+	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = "Close", bool showCloseIcon = false)
 	{
 		try
 		{
@@ -103,7 +103,7 @@ public class DialogUtility : IDialogService
 
 			_dialogTracker.Close(code);
 		}
-		catch (Exception exc) when (_logger.WriteError(exc, new { message, title }))
+		catch (Exception exc) when (_logger.WriteError(exc, new { message, title, closeButtonText, showCloseIcon }))
 		{
 			throw new UmbrellaMauiException("There has been a problem showing the dialog.", exc);
 		}

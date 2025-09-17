@@ -116,7 +116,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText)
+	public async ValueTask ShowMessageAsync(string message, string title, string closeButtonText = DialogDefaults.DefaultCloseButtonText, bool showCloseIcon = false)
 	{
 		try
 		{
@@ -129,7 +129,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 				? _defaultMessageButtons
 				: new[] { new UmbrellaDialogButton(closeButtonText, UmbrellaDialogButtonType.Primary) };
 
-			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons);
+			_ = await ShowDialogAsync(message, title, "u-dialog--message", buttons, showCloseIcon: showCloseIcon);
 
 			_dialogTracker.Close(code);
 		}
@@ -323,7 +323,7 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 	}
 
 	/// <inheritdoc />
-	public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null)
+	public async ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null, bool showCloseIcon = false)
 	{
 		try
 		{
@@ -331,14 +331,16 @@ public class UmbrellaDialogService : IUmbrellaDialogService
 			{
 				{ nameof(UmbrellaDialog.SubTitle), subTitle ?? "" },
 				{ nameof(UmbrellaDialog.Message), message },
-				{ nameof(UmbrellaDialog.Buttons), buttons }
+				{ nameof(UmbrellaDialog.Buttons), buttons },
+				{ nameof(UmbrellaDialog.ShowCloseButton), showCloseIcon }
 			};
 
 			var options = new ModalOptions
 			{
 				Class = cssClass,
 				DisableBackgroundCancel = true,
-				UseCustomLayout = true
+				UseCustomLayout = true,
+				HideCloseButton = !showCloseIcon
 			};
 
 			IModalReference modal = _modalService.Show<UmbrellaDialog>(title, parameters, options);

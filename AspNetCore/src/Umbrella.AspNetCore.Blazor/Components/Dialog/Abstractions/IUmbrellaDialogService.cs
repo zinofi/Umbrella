@@ -62,8 +62,9 @@ public interface IUmbrellaDialogService : IDialogService
 	/// <param name="cssClass">The custom css class applied to the dialog container.</param>
 	/// <param name="buttons">The dialog buttons displayed at the bottom of the dialog.</param>
 	/// <param name="subTitle">The sub title.</param>
+	/// <param name="showCloseIcon">If set to <see langword="true"/> the close icon is shown in the top right of the dialog (if supported on the target platform).</param>
 	/// <returns>An awaitable task that completes when the dialog has been actioned</returns>
-	ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null);
+	ValueTask<ModalResult> ShowDialogAsync(string message, string title, string cssClass, IReadOnlyCollection<UmbrellaDialogButton> buttons, string? subTitle = null, bool showCloseIcon = false);
 
 	/// <summary>
 	/// Shows a custom dialog.
