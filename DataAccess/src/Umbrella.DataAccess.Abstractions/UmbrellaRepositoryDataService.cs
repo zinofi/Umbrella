@@ -4,7 +4,6 @@ using Umbrella.DataAccess.Abstractions.Options;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Pagination;
-using Umbrella.Utilities.Data.Services.Abstractions;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
 using Umbrella.Utilities.Primitives.Abstractions;
@@ -13,26 +12,36 @@ using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.DataAccess.Abstractions;
 
-public interface IUmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey> : IGenericDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult>
-	where TItem : class, IKeyedItem<TIdentifier>
-	where TSlimItem : class, IKeyedItem<TIdentifier>
-	where TUpdateItem : class, IKeyedItem<TIdentifier>
-	where TIdentifier : IEquatable<TIdentifier>
-	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
-	where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
-	where TEntity : class, IEntity<TEntityKey>
-	where TRepositoryOptions : RepoOptions, new()
-	where TEntityKey : IEquatable<TEntityKey>
-{
-}
-
-public abstract class UmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey> :
+/// <summary>
+/// Provides a generic, extensible base class for implementing data services that interact with a repository using CRUD
+/// operations, supporting advanced features such as authorization, synchronization, pagination, and entity mapping.
+/// </summary>
+/// <remarks>This base class is designed to be inherited by concrete data service implementations that require
+/// repository-based data access with support for advanced scenarios such as endpoint enablement, authorization checks,
+/// synchronization, and entity mapping. It provides extensibility points for customizing behavior at various stages of
+/// the CRUD lifecycle, including hooks for pre- and post-processing, and options for controlling repository and child
+/// repository behavior. Derived classes can override protected virtual members to tailor the service to specific
+/// requirements, such as disabling endpoints, customizing authorization, or modifying data loading
+/// strategies.</remarks>
+/// <typeparam name="TItem">The type representing the full data model returned by read operations. Must implement <see cref="IKeyedItem{TEntityKey}"/>.</typeparam>
+/// <typeparam name="TSlimItem">The type representing a lightweight or summary version of the data model, typically used for paginated or list
+/// results. Must implement <see cref="IKeyedItem{TEntityKey}"/>.</typeparam>
+/// <typeparam name="TPaginatedResultModel">The type representing a paginated collection of slim items. Must inherit from <see cref="PaginatedResultModel{TItem}"/>.</typeparam>
+/// <typeparam name="TCreateItem">The type representing the model used to create new entities.</typeparam>
+/// <typeparam name="TCreateResult">The type representing the result returned after a successful create operation.</typeparam>
+/// <typeparam name="TUpdateItem">The type representing the model used to update existing entities. Must implement <see cref="IKeyedItem{TEntityKey}"/>.</typeparam>
+/// <typeparam name="TUpdateResult">The type representing the result returned after a successful update operation.</typeparam>
+/// <typeparam name="TRepository">The type of the repository used for data access operations. Must implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.</typeparam>
+/// <typeparam name="TEntity">The type of the entity managed by the repository. Must implement <see cref="IEntity{TEntityKey}"/>.</typeparam>
+/// <typeparam name="TRepositoryOptions">The type representing repository-specific options used to customize data access behavior. Must inherit from
+/// RepoOptions and have a parameterless constructor.</typeparam>
+/// <typeparam name="TEntityKey">The type of the key used to uniquely identify entities. Must implement <see cref="IEquatable{T}"/>.</typeparam>
+public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey> :
 	UmbrellaRepositoryCoreDataService,
-	IUmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey>
-	where TItem : class, IKeyedItem<TIdentifier>
-	where TSlimItem : class, IKeyedItem<TIdentifier>
-	where TUpdateItem : class, IKeyedItem<TIdentifier>
-	where TIdentifier : IEquatable<TIdentifier>
+	IUmbrellaRepositoryDataService<TItem, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey>
+	where TItem : class, IKeyedItem<TEntityKey>
+	where TSlimItem : class, IKeyedItem<TEntityKey>
+	where TUpdateItem : class, IKeyedItem<TEntityKey>
 	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 	where TEntity : class, IEntity<TEntityKey>
@@ -402,16 +411,16 @@ public abstract class UmbrellaRepositoryDataService<TItem, TIdentifier, TSlimIte
 	public Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
-	public Task<IOperationResult> DeleteAsync(TIdentifier id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<IOperationResult> DeleteAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<bool>> ExistsByIdAsync(TIdentifier id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<IOperationResult<bool>> ExistsByIdAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
 	public Task<IOperationResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<TItem?>> FindByIdAsync(TIdentifier id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<IOperationResult<TItem?>> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
 	public Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();

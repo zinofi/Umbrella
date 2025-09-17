@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions;
-using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
 using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
@@ -16,65 +15,6 @@ using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc;
-
-public abstract class UmbrellaGenericRepositoryDataServiceApiController<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey, TRepositoryDataService> : UmbrellaApiController
-	where TItem : class, IKeyedItem<TIdentifier>
-	where TSlimItem : class, IKeyedItem<TIdentifier>
-	where TUpdateItem : class, IKeyedItem<TIdentifier>
-	where TIdentifier : IEquatable<TIdentifier>
-	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
-	where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
-	where TEntity : class, IEntity<TEntityKey>
-	where TRepositoryOptions : RepoOptions, new()
-	where TEntityKey : IEquatable<TEntityKey>
-	where TRepositoryDataService : IUmbrellaRepositoryDataService<TItem, TIdentifier, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey>
-{
-	protected UmbrellaGenericRepositoryDataServiceApiController(
-		ILogger logger,
-		IWebHostEnvironment hostingEnvironment,
-		IUmbrellaMapper mapper,
-		IAuthorizationService authorizationService,
-		ISynchronizationManager synchronizationManager,
-		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		Lazy<TRepositoryDataService> repositoryDataService)
-		: base(logger, hostingEnvironment)
-	{
-		Mapper = mapper;
-		AuthorizationService = authorizationService;
-		SynchronizationManager = synchronizationManager;
-		DataAccessUnitOfWork = dataAccessUnitOfWork;
-		RepositoryDataService = repositoryDataService;
-	}
-
-	/// <summary>
-	/// Gets the mapper used to convert between domain entities and data transfer objects.
-	/// </summary>
-	protected IUmbrellaMapper Mapper { get; }
-
-	/// <summary>
-	/// Gets the authorization service.
-	/// </summary>
-	protected IAuthorizationService AuthorizationService { get; }
-
-	/// <summary>
-	/// Gets the synchronization manager used to coordinate thread or task synchronization within the component.
-	/// </summary>
-	protected ISynchronizationManager SynchronizationManager { get; }
-
-	/// <summary>
-	/// Gets the lazy-initialized unit of work for data access operations.
-	/// </summary>
-	/// <remarks>The underlying IDataAccessUnitOfWork instance is created only when first accessed. This property is
-	/// intended for use by derived classes to coordinate data access within a unit of work pattern.</remarks>
-	protected Lazy<IDataAccessUnitOfWork> DataAccessUnitOfWork { get; }
-
-	/// <summary>
-	/// Gets the lazy-initialized repository data service instance.
-	/// </summary>
-	/// <remarks>The repository data service is created only when first accessed. Use this property to access
-	/// repository-related operations without incurring the cost of initialization until needed.</remarks>
-	protected Lazy<TRepositoryDataService> RepositoryDataService { get; }
-}
 
 /// <summary>
 /// A generic API Controller that can be used to perform CRUD operations on entities that interact with types that implement <see cref="IGenericDbRepository{TEntity, TRepoOptions, TEntityKey}"/>.
