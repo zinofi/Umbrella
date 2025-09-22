@@ -82,6 +82,13 @@ public record OperationResult : IOperationResult
 	/// <inheritdoc />
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? PrimaryValidationMessage => ValidationResults?.FirstOrDefault()?.ErrorMessage;
+
+	/// <inheritdoc />
+	public OperationResult<TResult> ToTypedOperationResult<TResult>() where TResult : class => new()
+	{
+		Status = Status,
+		ValidationResults = ValidationResults
+	};
 }
 
 /// <summary>
@@ -89,28 +96,31 @@ public record OperationResult : IOperationResult
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public record OperationResult<TResult> : OperationResult, IOperationResult<TResult>
+	where TResult : class
 {
+	public OperationResult()
+	{
+	}
+
+	public OperationResult(OperationResultStatus status, TResult? result = null)
+		: base(status)
+	{
+		Result = result;
+	}
+
 	/// <summary>
 	/// Creates an <see cref="OperationResult{TResult}"/> with a <see cref="OperationResult.Status"/> of <see cref="OperationResultStatus.GenericSuccess"/> for the specified <paramref name="item"/>.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <returns>The <see cref="OperationResult{TResult}"/> instance.</returns>
-	public static OperationResult<TResult> Success(TResult item) => new()
-	{
-		Status = OperationResultStatus.GenericSuccess,
-		Result = item,
-	};
+	public static OperationResult<TResult> Success(TResult item) => new(OperationResultStatus.GenericSuccess, item);
 
 	/// <summary>
 	/// Creates an <see cref="OperationResult{TResult}"/> with a <see cref="OperationResult.Status"/> of <see cref="OperationResultStatus.Created"/> for the specified <paramref name="item"/>.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <returns>The <see cref="OperationResult{TResult}"/> instance.</returns>
-	public static OperationResult<TResult> Created(TResult item) => new()
-	{
-		Status = OperationResultStatus.Created,
-		Result = item,
-	};
+	public static OperationResult<TResult> Created(TResult item) => new(OperationResultStatus.Created, item);
 
 	/// <summary>
 	/// Creates an <see cref="OperationResult{TResult}"/> with a <see cref="OperationResult.Status"/> of <see cref="OperationResultStatus.GenericFailure"/> for the specified <paramref name="item"/>.
@@ -144,10 +154,12 @@ public record OperationResult<TResult> : OperationResult, IOperationResult<TResu
 	/// <returns>The <see cref="OperationResult{TResult}"/> instance.</returns>
 	public static OperationResult<TResult> Conflict(string errorMessage, TResult? result = default) => Failure(OperationResultStatus.Conflict, result, [new ValidationResult(errorMessage)]);
 
-	private static OperationResult<TResult> Failure(OperationResultStatus status, TResult? result, ValidationResult[] validationResults) => new()
+	public static OperationResult<TResult> Forbidden(string errorMessage) => Failure(OperationResultStatus.Forbidden, null, [new ValidationResult(errorMessage)]);
+	public static OperationResult<TResult> NoContent() => new(OperationResultStatus.NoContent);
+	public static OperationResult<TResult> InvalidOperation(string errorMessage) => Failure(OperationResultStatus.InvalidOperation, null, [new ValidationResult(errorMessage)]);
+
+	private static OperationResult<TResult> Failure(OperationResultStatus status, TResult? result, ValidationResult[] validationResults) => new(status, result)
 	{
-		Result = result,
-		Status = status,
 		ValidationResults = validationResults
 	};
 
@@ -170,16 +182,16 @@ public enum OperationResultStatus
 	/// </summary>
 	GenericFailure = 500,
 
-    /// <summary>
-    /// Indicates that the operation failed because the target of the operation could not be found.
-    /// </summary>
-    NotFound = 404,
+	/// <summary>
+	/// Indicates that the operation failed because the target of the operation could not be found.
+	/// </summary>
+	NotFound = 404,
 
-    /// <summary>
-    /// Indicates that the operation failed because the target of the operation conflicts with something,
-    /// e.g, when creating a user, another user already exists with the same username.
-    /// </summary>
-    Conflict = 409,
+	/// <summary>
+	/// Indicates that the operation failed because the target of the operation conflicts with something,
+	/// e.g, when creating a user, another user already exists with the same username.
+	/// </summary>
+	Conflict = 409,
 
 	Forbidden = 403,
 
@@ -197,54 +209,54 @@ public enum OperationResultStatus
 [SuppressMessage("Design", "CA1032:Implement standard exception constructors", Justification = "This is a specialized exception.")]
 public class OperationResultException : UmbrellaException
 {
-    /// <summary>
-    /// Gets the status.
-    /// </summary>
-    public OperationResultStatus Status { get; init; }
+	/// <summary>
+	/// Gets the status.
+	/// </summary>
+	public OperationResultStatus Status { get; init; }
 
-    /// <summary>
-    /// Gets the validation results.
-    /// </summary>
-    public IReadOnlyCollection<ValidationResult> ValidationResults { get; init; } = Array.Empty<ValidationResult>();
+	/// <summary>
+	/// Gets the validation results.
+	/// </summary>
+	public IReadOnlyCollection<ValidationResult> ValidationResults { get; init; } = Array.Empty<ValidationResult>();
 
-    /// <summary>
-    /// Gets the primary validation message which is the first message in the <see cref="ValidationResults"/> collection.
-    /// </summary>
-    public string? PrimaryValidationMessage => ValidationResults.FirstOrDefault()?.ErrorMessage;
+	/// <summary>
+	/// Gets the primary validation message which is the first message in the <see cref="ValidationResults"/> collection.
+	/// </summary>
+	public string? PrimaryValidationMessage => ValidationResults.FirstOrDefault()?.ErrorMessage;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OperationResultException"/> class.
-    /// </summary>
-    /// <param name="status">The status.</param>
-    /// <param name="validationResults">The validation results.</param>
-    public OperationResultException(OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null)
-    {
-        Status = status;
-        ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="status">The status.</param>
+	/// <param name="validationResults">The validation results.</param>
+	public OperationResultException(OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null)
+	{
+		Status = status;
+		ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
+	}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OperationResultException"/> class.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    /// <param name="status">The status.</param>
-    /// <param name="validationResults">The validation results.</param>
-    public OperationResultException(string message, OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null) : base(message)
-    {
-        Status = status;
-        ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="message">The message.</param>
+	/// <param name="status">The status.</param>
+	/// <param name="validationResults">The validation results.</param>
+	public OperationResultException(string message, OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null) : base(message)
+	{
+		Status = status;
+		ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
+	}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OperationResultException"/> class.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    /// <param name="innerException">The inner exception.</param>
-    /// <param name="status">The status.</param>
-    /// <param name="validationResults">The validation results.</param>
-    public OperationResultException(string message, Exception innerException, OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null) : base(message, innerException)
-    {
-        Status = status;
-        ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResultException"/> class.
+	/// </summary>
+	/// <param name="message">The message.</param>
+	/// <param name="innerException">The inner exception.</param>
+	/// <param name="status">The status.</param>
+	/// <param name="validationResults">The validation results.</param>
+	public OperationResultException(string message, Exception innerException, OperationResultStatus status, IReadOnlyCollection<ValidationResult>? validationResults = null) : base(message, innerException)
+	{
+		Status = status;
+		ValidationResults = validationResults ?? Array.Empty<ValidationResult>();
+	}
 }

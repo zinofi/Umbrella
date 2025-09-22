@@ -30,6 +30,13 @@ public interface IOperationResult
 	/// A list of validation results that contain messages detailing why it might be the case that the operation could not be completed.
 	/// </summary>
 	IReadOnlyCollection<ValidationResult>? ValidationResults { get;  }
+
+	/// <summary>
+	/// Converts the current operation result to a strongly typed result of the specified reference type.
+	/// </summary>
+	/// <typeparam name="TResult">The reference type to which the operation result is cast. Must be a class.</typeparam>
+	/// <returns>An <see cref="IOperationResult{TResult}"/> representing the result of the operation with the specified type parameter.</returns>
+	OperationResult<TResult> ToTypedOperationResult<TResult>() where TResult : class;
 }
 
 /// <summary>

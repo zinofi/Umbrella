@@ -63,12 +63,12 @@ public interface IUmbrellaRepositoryCoreDataService
 	/// Please leave this set to <see langword="true"/> use a mapping implementation for a richer experience.
 	/// </param>
 	/// <returns>The operation result</returns>
-	Task<IOperationResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(TModel model, Lazy<TRepository> repository, CancellationToken cancellationToken, Func<Task<IOperationResult?>>? beforeMappingCallback = null, Func<TModel, TEntity>? mapperInputCallback = null, Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null, Func<TEntity, TResultModel>? mapperOutputCallback = null, Func<TEntity, TResultModel, Task>? afterCreateEntityCallback = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true, bool synchronizeAccess = false, Func<object, (Type type, string key)?>? synchronizationRootKeyCreator = null, bool enableOutputMapping = true)
+	Task<IOperationResult<TResultModel?>> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(TModel model, Lazy<TRepository> repository, CancellationToken cancellationToken, Func<Task<IOperationResult?>>? beforeMappingCallback = null, Func<TModel, TEntity>? mapperInputCallback = null, Func<TEntity, Task<IOperationResult?>>? beforeCreateEntityCallback = null, Func<TEntity, TResultModel>? mapperOutputCallback = null, Func<TEntity, TResultModel, Task>? afterCreateEntityCallback = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true, bool synchronizeAccess = false, Func<object, (Type type, string key)?>? synchronizationRootKeyCreator = null, bool enableOutputMapping = true)
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
-		where TResultModel : ICreateResultModel<TEntityKey>, new();
+		where TResultModel : class, ICreateResultModel<TEntityKey>, new();
 
 	/// <summary>
 	/// Used to delete an existing <typeparamref name="TEntity"/> in the repository based on the provided <paramref name="id"/> which returns
@@ -183,7 +183,8 @@ public interface IUmbrellaRepositoryCoreDataService
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
-		where TRepositoryOptions : RepoOptions, new();
+		where TRepositoryOptions : RepoOptions, new()
+		where TModel : class;
 
 	/// <summary>
 	/// Used to update an existing <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns
@@ -240,5 +241,5 @@ public interface IUmbrellaRepositoryCoreDataService
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
 		where TModel : IUpdateModel<TEntityKey>
-		where TResultModel : IUpdateResultModel, new();
+		where TResultModel : class, IUpdateResultModel, new();
 }

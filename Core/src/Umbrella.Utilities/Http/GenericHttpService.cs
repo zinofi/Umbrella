@@ -49,6 +49,7 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult<TResult?>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -63,7 +64,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -77,10 +78,11 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult> PostAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
-		=> await PostAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
+		=> await PostAsync<TItem, object>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult<TResult?>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -102,7 +104,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -116,10 +118,11 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult> PutAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
-		=> await PutAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
+		=> await PutAsync<TItem, object>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -141,7 +144,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -155,10 +158,11 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult> PatchAsync<TItem>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
-		=> await PatchAsync<TItem, object?>(url, item, parameters, cancellationToken).ConfigureAwait(false);
+		=> await PatchAsync<TItem, object>(url, item, parameters, cancellationToken).ConfigureAwait(false);
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -180,7 +184,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 
@@ -224,6 +228,7 @@ public class GenericHttpService : IGenericHttpService
 
 	/// <inheritdoc />
 	public virtual async Task<IHttpOperationResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNullOrWhiteSpace(url, nameof(url));
@@ -240,7 +245,7 @@ public class GenericHttpService : IGenericHttpService
 
 			var retVal = processed
 				? result
-				: new HttpOperationResult<TResult?>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
+				: new HttpOperationResult<TResult>(await HttpServiceUtility.GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false));
 
 			ThrowIfConcurrencyStampMismatchResponse(retVal);
 

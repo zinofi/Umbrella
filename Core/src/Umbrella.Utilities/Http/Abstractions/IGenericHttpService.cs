@@ -22,7 +22,8 @@ public interface IGenericHttpService
 	/// <param name="parameters">The parameters.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the operation.</returns>
-	Task<IHttpOperationResult<TResult?>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+	Task<IHttpOperationResult<TResult?>> GetAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class;
 
 	/// <summary>
 	/// POST the resource to the server.
@@ -45,7 +46,8 @@ public interface IGenericHttpService
 	/// <param name="parameters">The parameters.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the operation.</returns>
-	Task<IHttpOperationResult<TResult?>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+	Task<IHttpOperationResult<TResult?>> PostAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class;
 
 	/// <summary>
 	/// PUT the resource to the server.
@@ -68,7 +70,8 @@ public interface IGenericHttpService
 	/// <param name="parameters">The parameters.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the operation.</returns>
-	Task<IHttpOperationResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+	Task<IHttpOperationResult<TResult?>> PutAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class;
 
 	/// <summary>
 	/// PATCH the resource to the server.
@@ -91,7 +94,8 @@ public interface IGenericHttpService
 	/// <param name="parameters">The parameters.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the operation.</returns>
-	Task<IHttpOperationResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+	Task<IHttpOperationResult<TResult?>> PatchAsync<TItem, TResult>(string url, TItem item, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class;
 
 	/// <summary>
 	/// PATCH the resource to the server.
@@ -109,5 +113,6 @@ public interface IGenericHttpService
 	/// <param name="parameters">The parameters.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The result of the operation.</returns>
-	Task<IHttpOperationResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default);
+	Task<IHttpOperationResult<TResult?>> PatchAsync<TResult>(string url, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken cancellationToken = default)
+		where TResult : class;
 }

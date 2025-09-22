@@ -188,6 +188,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
+		where TModel : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(repository);
@@ -250,7 +251,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 	}
 
 	/// <inheritdoc />
-	public async Task<IOperationResult> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
+	public async Task<IOperationResult<TResultModel?>> CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
@@ -269,7 +270,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
-		where TResultModel : ICreateResultModel<TEntityKey>, new()
+		where TResultModel : class, ICreateResultModel<TEntityKey>, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(repository);
@@ -279,7 +280,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		try
 		{
 			if (model is null)
-				return OperationResult.InvalidOperation("The request body has not been provided.");
+				return OperationResult<TResultModel>.InvalidOperation("The request body has not been provided.");
 
 			if (synchronizeAccess && synchronizationRootKeyCreator is not null)
 			{
@@ -294,7 +295,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				var result = await beforeMappingCallback().ConfigureAwait(false);
 
 				if (result is not null)
-					return result;
+					return result.ToTypedOperationResult<TResultModel>();
 			}
 
 			var entity = mapperInputCallback is null
@@ -306,7 +307,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				IOperationResult? beforeResult = await beforeCreateEntityCallback(entity).ConfigureAwait(false);
 
 				if (beforeResult is not null)
-					return beforeResult;
+					return beforeResult.ToTypedOperationResult<TResultModel>();
 			}
 
 			// Ensure the current user has Create permissions.
@@ -315,7 +316,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				bool success = await AuthorizationService.AuthorizeAsync(User, entity, Options.CreatePolicyName).ConfigureAwait(false);
 
 				if (!success)
-					return OperationResult.Forbidden("You do not have permission to create the specified item.");
+					return OperationResult<TResultModel>.Forbidden("You do not have permission to create the specified item.");
 			}
 
 			IOperationResult<TEntity> saveResult = await repository.Value.SaveEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -351,20 +352,20 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 					Status = OperationResultStatus.InvalidOperation,
 					ValidationResults = saveResult.ValidationResults
 				}
-				: OperationResult.InvalidOperation("An error has occurred whilst trying to create the item. Please check the model and try again.");
+				: OperationResult<TResultModel>.InvalidOperation("An error has occurred whilst trying to create the item. Please check the model and try again.");
 		}
 		catch (Exception exc) when (Options.CreateExceptionFilter(exc))
 		{
-			IOperationResult? result = await Options.HandleCreateExceptionAsync(exc).ConfigureAwait(false);
+			OperationResult? result = await Options.HandleCreateExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
-				return result;
+				return result.ToTypedOperationResult<TResultModel>();
 
 			throw;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, returnValue: !HostingEnvironment.IsDevelopment()))
 		{
-			return OperationResult.GenericFailure("An error has occurred whilst trying to create the item.");
+			return OperationResult<TResultModel>.GenericFailure("An error has occurred whilst trying to create the item.");
 		}
 		finally
 		{
@@ -394,7 +395,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
 		where TModel : IUpdateModel<TEntityKey>
-		where TResultModel : IUpdateResultModel, new()
+		where TResultModel : class, IUpdateResultModel, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

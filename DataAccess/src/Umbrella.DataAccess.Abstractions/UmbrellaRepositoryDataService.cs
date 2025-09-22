@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Reflection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Umbrella.DataAccess.Abstractions.Options;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
@@ -408,7 +410,29 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	protected virtual IReadOnlyCollection<RepoOptions> DeleteChildRepoOptions { get; } = [];
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<IOperationResult<TCreateResult?>> CreateAsync(TCreateItem item, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		IOperationResult result = await base.CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
+				item,
+				Repository,
+				cancellationToken,
+				() => BeforeCreateMappingModelToEntityAsync(item, cancellationToken),
+				null,
+				entity => BeforeCreateEntityAsync(entity, item, cancellationToken),
+				null,
+				(entity, result) => AfterCreateEntityAsync(entity, item, result, cancellationToken),
+				PostRepoOptions,
+				PostChildRepoOptions,
+				AuthorizationCreateChecksEnabled,
+				PostLock,
+				GetCreateSynchronizationRootKey,
+				EnablePostOutputMapping)
+				.ConfigureAwait(false);
+
+		return result;
+	}
 
 	/// <inheritdoc/>
 	public Task<IOperationResult> DeleteAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();

@@ -179,6 +179,7 @@ public abstract class GenericHttpDataServiceBase
 		Func<TItem, TPostResult?, CancellationToken, Task>? afterItemSavedCallback = null,
 		string endpointPath = "",
 		CancellationToken cancellationToken = default)
+		where TPostResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(item, nameof(item));
@@ -217,6 +218,7 @@ public abstract class GenericHttpDataServiceBase
 		CancellationToken cancellationToken = default)
 		where TItem : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
+		where TPutResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(item);
@@ -257,6 +259,7 @@ public abstract class GenericHttpDataServiceBase
 		CancellationToken cancellationToken = default)
 		where TItem : class, IKeyedItem<TIdentifier>
 		where TIdentifier : IEquatable<TIdentifier>
+		where TPatchResult : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(item);
@@ -363,6 +366,7 @@ public abstract class GenericHttpDataServiceBase
 		TItem item,
 		Func<TItem, TResult?, CancellationToken, Task>? afterItemSavedCallback,
 		CancellationToken cancellationToken)
+		where TResult : class
 	{
 		if (item is not null)
 		{
