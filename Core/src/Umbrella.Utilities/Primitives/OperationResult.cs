@@ -14,6 +14,10 @@ namespace Umbrella.Utilities.Primitives;
 /// </summary>
 public record OperationResult : IOperationResult
 {
+	/// <summary>
+	/// Initializes a new instance of the OperationResult class with the specified status.
+	/// </summary>
+	/// <param name="status">The status to assign to the operation result. Defaults to <see cref="OperationResultStatus.GenericSuccess"/> if not specified.</param>
 	public OperationResult(OperationResultStatus status = OperationResultStatus.GenericSuccess)
 	{
 		Status = status;
@@ -53,8 +57,25 @@ public record OperationResult : IOperationResult
 	/// <returns>The <see cref="OperationResult"/> instance.</returns>
 	public static OperationResult Conflict(string errorMessage) => Failure(OperationResultStatus.Conflict, errorMessage);
 
+	/// <summary>
+	/// Creates an operation result that indicates the request was forbidden, including a specified error message.
+	/// </summary>
+	/// <param name="errorMessage">The error message that describes the reason the operation was forbidden. Cannot be null or empty.</param>
+	/// <returns>An <see cref="OperationResult"/> representing a forbidden operation, containing the provided error message.</returns>
 	public static OperationResult Forbidden(string errorMessage) => Failure(OperationResultStatus.Forbidden, errorMessage);
+
+	/// <summary>
+	/// Creates an <see cref="OperationResult"/> that represents a response with no content.
+	/// </summary>
+	/// <returns>An <see cref="OperationResult"/> instance with a status indicating that no content is available.</returns>
 	public static OperationResult NoContent() => new(OperationResultStatus.NoContent);
+
+	/// <summary>
+	/// Creates an operation result that indicates an invalid operation error.
+	/// </summary>
+	/// <param name="errorMessage">The error message that describes the reason the operation is considered invalid. Cannot be null or empty.</param>
+	/// <returns>An <see cref="OperationResult"/> representing a failed operation with the status set to invalid operation and the
+	/// specified error message.</returns>
 	public static OperationResult InvalidOperation(string errorMessage) => Failure(OperationResultStatus.InvalidOperation, errorMessage);
 
 	private static OperationResult Failure(OperationResultStatus status, string errorMessage) => new()
@@ -84,7 +105,7 @@ public record OperationResult : IOperationResult
 	public string? PrimaryValidationMessage => ValidationResults?.FirstOrDefault()?.ErrorMessage;
 
 	/// <inheritdoc />
-	public OperationResult<TResult> ToTypedOperationResult<TResult>() where TResult : class => new()
+	public OperationResult<TResult> ToTypedOperationResult<TResult>() => new()
 	{
 		Status = Status,
 		ValidationResults = ValidationResults
@@ -96,13 +117,20 @@ public record OperationResult : IOperationResult
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public record OperationResult<TResult> : OperationResult, IOperationResult<TResult>
-	where TResult : class
 {
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResult{TResult}" /> class.
+	/// </summary>
 	public OperationResult()
 	{
 	}
 
-	public OperationResult(OperationResultStatus status, TResult? result = null)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="OperationResult{TResult}" /> class with the specified status and result value.
+	/// </summary>
+	/// <param name="status">The status indicating the outcome of the operation.</param>
+	/// <param name="result">The result value produced by the operation, or the <see langword="default"/> value for the type if none is provided.</param>
+	public OperationResult(OperationResultStatus status, TResult? result = default)
 		: base(status)
 	{
 		Result = result;
@@ -154,9 +182,29 @@ public record OperationResult<TResult> : OperationResult, IOperationResult<TResu
 	/// <returns>The <see cref="OperationResult{TResult}"/> instance.</returns>
 	public static OperationResult<TResult> Conflict(string errorMessage, TResult? result = default) => Failure(OperationResultStatus.Conflict, result, [new ValidationResult(errorMessage)]);
 
-	public static OperationResult<TResult> Forbidden(string errorMessage) => Failure(OperationResultStatus.Forbidden, null, [new ValidationResult(errorMessage)]);
-	public static OperationResult<TResult> NoContent() => new(OperationResultStatus.NoContent);
-	public static OperationResult<TResult> InvalidOperation(string errorMessage) => Failure(OperationResultStatus.InvalidOperation, null, [new ValidationResult(errorMessage)]);
+	/// <summary>
+	/// Creates an operation result that represents a forbidden action, including a specified error message.
+	/// </summary>
+	/// <param name="errorMessage">The error message that describes the reason the action is forbidden. Cannot be null or empty.</param>
+	/// <returns>An operation result with a status of Forbidden and the provided error message.</returns>
+	public static new OperationResult<TResult> Forbidden(string errorMessage) => Failure(OperationResultStatus.Forbidden, default, [new ValidationResult(errorMessage)]);
+	
+	/// <summary>
+	/// Creates an <see cref="OperationResult{TResult}"/> that indicates no content is available for the requested
+	/// operation.
+	/// </summary>
+	/// <remarks>Use this method to represent operations that complete successfully but do not return any data. The
+	/// result value will be unset or default for the type parameter.</remarks>
+	/// <returns>An <see cref="OperationResult{TResult}"/> with a status of <see cref="OperationResultStatus.NoContent"/> and no
+	/// result value.</returns>
+	public static new OperationResult<TResult> NoContent() => new(OperationResultStatus.NoContent);
+
+	/// <summary>
+	/// Creates an operation result indicating that the requested operation is invalid, with the specified error message.
+	/// </summary>
+	/// <param name="errorMessage">The error message that describes why the operation is considered invalid. Cannot be null or empty.</param>
+	/// <returns>An <see cref="OperationResult{TResult}"/> representing a failed operation with status <see cref="OperationResultStatus.InvalidOperation" /> and the provided error message.</returns>
+	public static new OperationResult<TResult> InvalidOperation(string errorMessage) => Failure(OperationResultStatus.InvalidOperation, default, [new ValidationResult(errorMessage)]);
 
 	private static OperationResult<TResult> Failure(OperationResultStatus status, TResult? result, ValidationResult[] validationResults) => new(status, result)
 	{
@@ -193,12 +241,24 @@ public enum OperationResultStatus
 	/// </summary>
 	Conflict = 409,
 
+	/// <summary>
+	/// Indicates that the operation failed because the context of the operation is forbidden, e.g. the user does not have permission to perform the operation.
+	/// </summary>
 	Forbidden = 403,
 
+	/// <summary>
+	/// Indicates that the operation was successful but there is no content to return.
+	/// </summary>
 	NoContent = 204,
 
+	/// <summary>
+	/// Indicates that the operation is invalid and cannot be completed because of one or more errors.
+	/// </summary>
 	InvalidOperation = 400,
 
+	/// <summary>
+	/// Indicates that the operation has been successful and has resulted in the creation of a new resource.
+	/// </summary>
 	Created = 201
 }
 

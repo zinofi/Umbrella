@@ -366,7 +366,6 @@ public abstract class GenericHttpDataServiceBase
 		TItem item,
 		Func<TItem, TResult?, CancellationToken, Task>? afterItemSavedCallback,
 		CancellationToken cancellationToken)
-		where TResult : class
 	{
 		if (item is not null)
 		{

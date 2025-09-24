@@ -36,7 +36,7 @@ public interface IOperationResult
 	/// </summary>
 	/// <typeparam name="TResult">The reference type to which the operation result is cast. Must be a class.</typeparam>
 	/// <returns>An <see cref="IOperationResult{TResult}"/> representing the result of the operation with the specified type parameter.</returns>
-	OperationResult<TResult> ToTypedOperationResult<TResult>() where TResult : class;
+	OperationResult<TResult> ToTypedOperationResult<TResult>();
 }
 
 /// <summary>

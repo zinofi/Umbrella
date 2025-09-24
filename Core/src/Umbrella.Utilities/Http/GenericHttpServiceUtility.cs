@@ -115,13 +115,13 @@ public class GenericHttpServiceUtility : IGenericHttpServiceUtility
 						_ => throw new NotImplementedException($"Unsupported media type: {response.Content.Headers.ContentType?.MediaType}")
 					};
 
-					return (true, new HttpOperationResult<TResult?>(result));
+					return (true, new HttpOperationResult<TResult>(result));
 				}
 
 				// Now check for a 201 or 204 in cases where we didn't receive content as those are still valid responses.
 				// NB: The ProcessResponseAsync below was added after this method. Need to keep this check here to avoid breaking existing apps.
 				if (response.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.Created)
-					return (true, new HttpOperationResult<TResult?>(await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
+					return (true, new HttpOperationResult<TResult>(await GetProblemDetailsAsync(response, cancellationToken).ConfigureAwait(false)));
 			}
 
 			return default;

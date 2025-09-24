@@ -43,7 +43,6 @@ public record HttpOperationResult : OperationResult, IHttpOperationResult
 /// </summary>
 /// <typeparam name="TResult">The type of the result.</typeparam>
 public record HttpOperationResult<TResult> : OperationResult<TResult>, IHttpOperationResult<TResult>
-	where TResult : class
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HttpOperationResult{TResult}"/> class with a default <see cref="OperationResultStatus.GenericFailure"/> status.
