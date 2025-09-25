@@ -188,7 +188,6 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
-		where TModel : class
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(repository);
@@ -270,7 +269,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
-		where TResultModel : class, ICreateResultModel<TEntityKey>, new()
+		where TResultModel : ICreateResultModel<TEntityKey>, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(repository);
@@ -395,7 +394,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
 		where TModel : IUpdateModel<TEntityKey>
-		where TResultModel : class, IUpdateResultModel, new()
+		where TResultModel : IUpdateResultModel, new()
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 

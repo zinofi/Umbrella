@@ -68,7 +68,7 @@ public interface IUmbrellaRepositoryCoreDataService
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
-		where TResultModel : class, ICreateResultModel<TEntityKey>, new();
+		where TResultModel : ICreateResultModel<TEntityKey>, new();
 
 	/// <summary>
 	/// Used to delete an existing <typeparamref name="TEntity"/> in the repository based on the provided <paramref name="id"/> which returns
@@ -183,8 +183,7 @@ public interface IUmbrellaRepositoryCoreDataService
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
-		where TRepositoryOptions : RepoOptions, new()
-		where TModel : class;
+		where TRepositoryOptions : RepoOptions, new();
 
 	/// <summary>
 	/// Used to update an existing <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TModel"/> which returns
@@ -241,5 +240,5 @@ public interface IUmbrellaRepositoryCoreDataService
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 		where TRepositoryOptions : RepoOptions, new()
 		where TModel : IUpdateModel<TEntityKey>
-		where TResultModel : class, IUpdateResultModel, new();
+		where TResultModel : IUpdateResultModel, new();
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Umbrella.DataAccess.Abstractions.Options;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
+using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
@@ -47,6 +48,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	where TEntity : class, IEntity<TEntityKey>
 	where TRepositoryOptions : RepoOptions, new()
 	where TEntityKey : IEquatable<TEntityKey>
+	where TCreateResult : ICreateResultModel<TEntityKey>, new()
 {
 	/// <summary>
 	/// Initializes a new instance of the UmbrellaRepositoryDataService class with the specified dependencies.
@@ -412,7 +414,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		IOperationResult result = await base.CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
+		var result = await CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
 				item,
 				Repository,
 				cancellationToken,
