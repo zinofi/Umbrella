@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Umbrella.DataAccess.Abstractions.Exceptions;
 using Umbrella.DataAccess.Abstractions.Options;
 using Umbrella.Utilities.Data.Abstractions;
 using Umbrella.Utilities.Data.Filtering;
@@ -414,37 +415,93 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		var result = await CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
-				item,
-				Repository,
-				cancellationToken,
-				() => BeforeCreateMappingModelToEntityAsync(item, cancellationToken),
-				null,
-				entity => BeforeCreateEntityAsync(entity, item, cancellationToken),
-				null,
-				(entity, result) => AfterCreateEntityAsync(entity, item, result, cancellationToken),
-				PostRepoOptions,
-				PostChildRepoOptions,
-				AuthorizationCreateChecksEnabled,
-				PostLock,
-				GetCreateSynchronizationRootKey,
-				EnablePostOutputMapping)
-				.ConfigureAwait(false);
+		try
+		{
+			var result = await CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
+					item,
+					Repository,
+					cancellationToken,
+					() => BeforeCreateMappingModelToEntityAsync(item, cancellationToken),
+					null,
+					entity => BeforeCreateEntityAsync(entity, item, cancellationToken),
+					null,
+					(entity, result) => AfterCreateEntityAsync(entity, item, result, cancellationToken),
+					PostRepoOptions,
+					PostChildRepoOptions,
+					AuthorizationCreateChecksEnabled,
+					PostLock,
+					GetCreateSynchronizationRootKey,
+					EnablePostOutputMapping)
+					.ConfigureAwait(false);
 
-		return result;
+			return result;
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaDataAccessException("There was a problem creating the entity.", exc);
+		}
 	}
 
 	/// <inheritdoc/>
-	public Task<IOperationResult> DeleteAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<IOperationResult> DeleteAsync(TEntityKey id, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return await DeleteAsync(
+				id,
+				Repository,
+				BeforeDeleteEntityAsync,
+				AfterDeleteEntityAsync,
+				cancellationToken,
+				DeleteIncludeMap,
+				DeleteRepoOptions,
+				DeleteChildRepoOptions,
+				AuthorizationDeleteChecksEnabled,
+				DeleteLock)
+				.ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
+		{
+			throw new UmbrellaDataAccessException("There was a problem deleting the entity.", exc);
+		}
+	}
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<bool>> ExistsByIdAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<IOperationResult<bool>> ExistsByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			// TODO: Let's add first class support for Exists and Count endpoints to the base class and then also expose them here and on the controller.
+
+			return true;
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
+		{
+			throw new UmbrellaDataAccessException("There was a problem checking for the existence of the entity.", exc);
+		}
+	}
 
 	/// <inheritdoc/>
 	public Task<IOperationResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<TItem?>> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<IOperationResult<TItem?>> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			return await FindByIdAsync)
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
+		{
+			throw new UmbrellaDataAccessException("There was a problem loading the entity.", exc);
+		}
+	}
 
 	/// <inheritdoc/>
 	public Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
