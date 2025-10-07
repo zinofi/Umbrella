@@ -171,7 +171,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 	}
 
 	/// <inheritdoc />
-	public async Task<IOperationResult> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
+	public async Task<IOperationResult<TModel?>> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(
 		TEntityKey id,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
@@ -204,7 +204,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				: await repository.Value.FindByIdAsync(id, trackChanges, map, options, childOptions, cancellationToken).ConfigureAwait(false);
 
 			if (item is null)
-				return OperationResult.NotFound("The item could not be found. Please try again.");
+				return OperationResult<TModel>.NotFound("The item could not be found. Please try again.");
 
 			// Ensure the current user has Read permissions.
 			if (enableAuthorizationChecks)
@@ -212,7 +212,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				bool success = await AuthorizationService.AuthorizeAsync(User, item, Options.ReadPolicyName).ConfigureAwait(false);
 
 				if (!success)
-					return OperationResult.Forbidden("You do not have permission to access the specified item.");
+					return OperationResult<TModel>.Forbidden("You do not have permission to access the specified item.");
 			}
 
 			TModel model = mapperCallback is null
@@ -224,23 +224,23 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				IOperationResult? result = await afterReadEntityCallback(item, model).ConfigureAwait(false);
 
 				if (result is not null)
-					return result;
+					return result.ToTypedOperationResult<TModel>();
 			}
 
 			return OperationResult<TModel>.Success(model);
 		}
 		catch (Exception exc) when (Options.ReadExceptionFilter(exc))
 		{
-			IOperationResult? result = await Options.HandleReadExceptionAsync(exc).ConfigureAwait(false);
+			var result = await Options.HandleReadExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
-				return result;
+				return result.ToTypedOperationResult<TModel>();
 
 			throw;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: !HostingEnvironment.IsDevelopment()))
 		{
-			return OperationResult.GenericFailure("An error has occurred whilst trying to get the specified item.");
+			return OperationResult<TModel>.GenericFailure("An error has occurred whilst trying to get the specified item.");
 		}
 		finally
 		{
@@ -374,7 +374,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 	}
 
 	/// <inheritdoc />
-	public async Task<IOperationResult> UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
+	public async Task<IOperationResult<TResultModel?>> UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel, TResultModel>(
 		TModel model,
 		Lazy<TRepository> repository,
 		CancellationToken cancellationToken,
@@ -409,19 +409,19 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 			var entity = await repository.Value.FindByIdAsync(model.Id, true, map, options, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (entity is null)
-				return OperationResult.NotFound("The specified item could not be found.");
+				return OperationResult<TResultModel>.NotFound("The specified item could not be found.");
 
 			// Check the concurrency stamp. This is done in the repos and again when the database query is executed but good to fail on
 			// this as early as possible.
 			if (entity is IConcurrencyStamp concurrencyStamp && concurrencyStamp.ConcurrencyStamp != model.ConcurrencyStamp)
-				return OperationResult.Conflict(Options.ConcurrencyErrorMessage);
+				return OperationResult<TResultModel>.Conflict(Options.ConcurrencyErrorMessage);
 
 			if (beforeMappingCallback is not null)
 			{
 				var result = await beforeMappingCallback(entity).ConfigureAwait(false);
 
 				if (result is not null)
-					return result;
+					return result.ToTypedOperationResult<TResultModel>();
 			}
 
 			entity = mapperInputCallback is null
@@ -430,10 +430,10 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 
 			if (beforeUpdateEntityCallback is not null)
 			{
-				IOperationResult? beforeResult = await beforeUpdateEntityCallback(entity).ConfigureAwait(false);
+				var beforeResult = await beforeUpdateEntityCallback(entity).ConfigureAwait(false);
 
 				if (beforeResult is not null)
-					return beforeResult;
+					return beforeResult.ToTypedOperationResult<TResultModel>();
 			}
 
 			// Ensure the current user has Update permissions.
@@ -442,7 +442,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				bool success = await AuthorizationService.AuthorizeAsync(User, entity, Options.UpdatePolicyName).ConfigureAwait(false);
 
 				if (!success)
-					return OperationResult.Forbidden("You do not have permission to update the specified item.");
+					return OperationResult<TResultModel>.Forbidden("You do not have permission to update the specified item.");
 			}
 
 			IOperationResult<TEntity> saveResult = await repository.Value.SaveEntityAsync(entity, repoOptions: options, childOptions: childOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -478,24 +478,24 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 					Status = OperationResultStatus.InvalidOperation,
 					ValidationResults = saveResult.ValidationResults
 				}
-				: OperationResult.InvalidOperation("There was a problem updating the item. Please check the model and try again.");
+				: OperationResult<TResultModel>.InvalidOperation("There was a problem updating the item. Please check the model and try again.");
 		}
 		catch (UmbrellaConcurrencyException)
 		{
-			return OperationResult.Conflict(Options.ConcurrencyErrorMessage);
+			return OperationResult<TResultModel>.Conflict(Options.ConcurrencyErrorMessage);
 		}
 		catch (Exception exc) when (Options.UpdateExceptionFilter(exc))
 		{
-			IOperationResult? result = await Options.HandleUpdateExceptionAsync(exc).ConfigureAwait(false);
+			var result = await Options.HandleUpdateExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
-				return result;
+				return result.ToTypedOperationResult<TResultModel>();
 
 			throw;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, returnValue: !HostingEnvironment.IsDevelopment()))
 		{
-			return OperationResult.GenericFailure("There has been a problem updating the specified item.");
+			return OperationResult<TResultModel>.GenericFailure("There has been a problem updating the specified item.");
 		}
 		finally
 		{

@@ -105,11 +105,13 @@ public record OperationResult : IOperationResult
 	public string? PrimaryValidationMessage => ValidationResults?.FirstOrDefault()?.ErrorMessage;
 
 	/// <inheritdoc />
-	public OperationResult<TResult> ToTypedOperationResult<TResult>() => new()
-	{
-		Status = Status,
-		ValidationResults = ValidationResults
-	};
+	public OperationResult<TResult> ToTypedOperationResult<TResult>() => this is OperationResult<TResult> typedResult
+		? typedResult
+		: new()
+		{
+			Status = Status,
+			ValidationResults = ValidationResults
+		};
 }
 
 /// <summary>

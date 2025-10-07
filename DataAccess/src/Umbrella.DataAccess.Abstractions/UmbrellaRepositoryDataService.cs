@@ -43,7 +43,8 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	IUmbrellaRepositoryDataService<TItem, TSlimItem, TPaginatedResultModel, TCreateItem, TCreateResult, TUpdateItem, TUpdateResult, TRepository, TEntity, TRepositoryOptions, TEntityKey>
 	where TItem : class, IKeyedItem<TEntityKey>
 	where TSlimItem : class, IKeyedItem<TEntityKey>
-	where TUpdateItem : class, IKeyedItem<TEntityKey>
+	where TUpdateItem : class, IKeyedItem<TEntityKey>, IUpdateModel<TEntityKey>
+	where TUpdateResult : IUpdateResultModel, new()
 	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
 	where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 	where TEntity : class, IEntity<TEntityKey>
@@ -417,24 +418,22 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 
 		try
 		{
-			var result = await CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
-					item,
-					Repository,
-					cancellationToken,
-					() => BeforeCreateMappingModelToEntityAsync(item, cancellationToken),
-					null,
-					entity => BeforeCreateEntityAsync(entity, item, cancellationToken),
-					null,
-					(entity, result) => AfterCreateEntityAsync(entity, item, result, cancellationToken),
-					PostRepoOptions,
-					PostChildRepoOptions,
-					AuthorizationCreateChecksEnabled,
-					PostLock,
-					GetCreateSynchronizationRootKey,
-					EnablePostOutputMapping)
-					.ConfigureAwait(false);
-
-			return result;
+			return await CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
+				item,
+				Repository,
+				cancellationToken,
+				() => BeforeCreateMappingModelToEntityAsync(item, cancellationToken),
+				null,
+				entity => BeforeCreateEntityAsync(entity, item, cancellationToken),
+				null,
+				(entity, result) => AfterCreateEntityAsync(entity, item, result, cancellationToken),
+				PostRepoOptions,
+				PostChildRepoOptions,
+				AuthorizationCreateChecksEnabled,
+				PostLock,
+				GetCreateSynchronizationRootKey,
+				EnablePostOutputMapping)
+				.ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -477,7 +476,9 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 		{
 			// TODO: Let's add first class support for Exists and Count endpoints to the base class and then also expose them here and on the controller.
 
-			return true;
+			//return true;
+			//return OperationResult<bool>.Success(true);
+			throw new NotImplementedException("The ExistsByIdAsync method is not implemented. Please implement this method in the derived class.");
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
@@ -495,7 +496,21 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 
 		try
 		{
-			return await FindByIdAsync)
+			var result = await ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TItem>(
+				id,
+				Repository,
+				cancellationToken,
+				LoadReadEntityAsync,
+				null,
+				(entity, model) => AfterReadEntityAsync(entity, model, cancellationToken),
+				GetTrackChanges,
+				GetIncludeMap,
+				GetRepoOptions,
+				GetChildRepoOptions,
+				AuthorizationReadChecksEnabled,
+				GetLock).ConfigureAwait(false);
+
+			return result.ToTypedOperationResult<TItem>();
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
@@ -504,10 +519,36 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	}
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException("The FindTotalCountAsync method is not implemented. Please implement this method in the derived class.");
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		
+		try
+		{
+			return await UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TUpdateItem, TUpdateResult>(
+				item,
+				Repository,
+				cancellationToken,
+				entity => BeforeUpdateMappingModelToEntityAsync(entity, item, cancellationToken),
+				null,
+				entity => BeforeUpdateEntityAsync(entity, item, cancellationToken),
+				null,
+				(entity, result) => AfterUpdateEntityAsync(entity, item, result, cancellationToken),
+				PutIncludeMap,
+				PutRepoOptions,
+				PutChildRepoOptions,
+				AuthorizationUpdateChecksEnabled,
+				PutLock,
+				EnablePutOutputMapping).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { item }))
+		{
+			throw new UmbrellaDataAccessException("There was a problem updating the entity.", exc);
+		}
+	}
 
 	/// <summary>
 	/// Loads the paginated results from the <typeparamref name="TRepository"/> using the specified parameters. This method is called internally by the <c>SearchSlim</c> method.
