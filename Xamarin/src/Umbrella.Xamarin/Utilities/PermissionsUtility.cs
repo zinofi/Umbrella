@@ -142,7 +142,7 @@ public class PermissionsUtility : IPermissionsUtility
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { permissionType }))
 		{
-			throw new UmbrellaXamarinException("There has been a problem checking the specified permission.");
+			throw new UmbrellaXamarinException("There has been a problem checking the specified permission.", exc);
 		}
 	}
 }
