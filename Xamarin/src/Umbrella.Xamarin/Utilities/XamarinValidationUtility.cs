@@ -256,7 +256,7 @@ public class XamarinValidationUtility : IXamarinValidationUtility
 			validatableProperties.Add(errorControlName);
 			validatableProperties.Add(errorControlNameBase);
 		}
-
+		
 		return validatableProperties.Distinct().ToArray();
 	}
 }
