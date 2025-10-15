@@ -192,11 +192,11 @@ public abstract class MultiTenantGenericDbRepository<TEntity, TDbContext, TRepoO
 	}
 
 	/// <inheritdoc />
-	protected override void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew)
+	protected override void PreSaveWork(TEntity entity, bool addToContext, bool forceAdd, out bool isNew, RepoOptions repoOptions)
 	{
 		if (entity is IAppTenantEntity<TAppTenantKey> tenantEntity && AppTenantSessionContext.IsAuthenticated)
 			tenantEntity.AppTenantId = AppTenantSessionContext.AppTenantId ?? default!;
 
-		base.PreSaveWork(entity, addToContext, forceAdd, out isNew);
+		base.PreSaveWork(entity, addToContext, forceAdd, out isNew, repoOptions);
 	}
 }
