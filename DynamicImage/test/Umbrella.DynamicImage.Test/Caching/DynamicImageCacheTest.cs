@@ -67,25 +67,25 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		byte[] sourceBytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] sourceBytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		item.Content = sourceBytes;
 
-		await cache.AddAsync(item);
+		await cache.AddAsync(item, TestContext.Current.CancellationToken);
 
-		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg", TestContext.Current.CancellationToken);
 
 		Assert.NotNull(cachedItem);
 		Assert.Equal(item.ImageOptions, cachedItem!.ImageOptions);
 
-		ReadOnlyMemory<byte> cachedBytes = await cachedItem.GetContentAsync();
+		ReadOnlyMemory<byte> cachedBytes = await cachedItem.GetContentAsync(TestContext.Current.CancellationToken);
 
 		Assert.Equal(sourceBytes.Length, cachedBytes!.Length);
 
 		//Perform cleanup by removing the file from the cache
-		await cache.RemoveAsync(item.ImageOptions, "jpg");
+		await cache.RemoveAsync(item.ImageOptions, "jpg", TestContext.Current.CancellationToken);
 
-		cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+		cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg", TestContext.Current.CancellationToken);
 
 		Assert.Null(cachedItem);
 	}
@@ -104,13 +104,13 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		byte[] sourceBytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] sourceBytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		item.Content = sourceBytes;
 
-		await cache.AddAsync(item);
+		await cache.AddAsync(item, TestContext.Current.CancellationToken);
 
-		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg", TestContext.Current.CancellationToken);
 
 		Assert.NotNull(cachedItem);
 		Assert.Equal(item.ImageOptions, cachedItem!.ImageOptions);
@@ -119,16 +119,16 @@ public class DynamicImageCacheTest
 
 		using (var ms = new MemoryStream())
 		{
-			await cachedItem.WriteContentToStreamAsync(ms);
+			await cachedItem.WriteContentToStreamAsync(ms, TestContext.Current.CancellationToken);
 			cachedBytes = ms.ToArray();
 		}
 
 		Assert.Equal(sourceBytes.Length, cachedBytes.Length);
 
 		//Perform cleanup by removing the file from the cache
-		await cache.RemoveAsync(item.ImageOptions, "jpg");
+		await cache.RemoveAsync(item.ImageOptions, "jpg", TestContext.Current.CancellationToken);
 
-		cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg");
+		cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(-5), "jpg", TestContext.Current.CancellationToken);
 
 		Assert.Null(cachedItem);
 	}
@@ -147,7 +147,7 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.MinValue, "jpg");
+		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.MinValue, "jpg", TestContext.Current.CancellationToken);
 
 		Assert.Null(cachedItem);
 	}
@@ -166,13 +166,13 @@ public class DynamicImageCacheTest
 			LastModified = DateTime.UtcNow
 		};
 
-		byte[] sourceBytes = await File.ReadAllBytesAsync(path);
+		byte[] sourceBytes = await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken);
 
 		item.Content = sourceBytes;
 
-		await cache.AddAsync(item);
+		await cache.AddAsync(item, TestContext.Current.CancellationToken);
 
-		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(5), "jpg");
+		DynamicImageItem? cachedItem = await cache.GetAsync(item.ImageOptions, DateTime.UtcNow.AddMinutes(5), "jpg", TestContext.Current.CancellationToken);
 
 		Assert.Null(cachedItem);
 	}

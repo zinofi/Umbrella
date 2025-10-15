@@ -11,12 +11,12 @@ using Umbrella.Internal.Mocks;
 using Umbrella.Utilities.Compilation;
 using Umbrella.Utilities.Helpers;
 using Xunit;
-using Xunit.Extensions.Ordering;
+using Xunit.v3.Priority;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
-[assembly: TestCaseOrderer("Xunit.Extensions.Ordering.TestCaseOrderer", "Xunit.Extensions.Ordering")]
-[assembly: TestCollectionOrderer("Xunit.Extensions.Ordering.CollectionOrderer", "Xunit.Extensions.Ordering")]
-[assembly: TestFramework("Xunit.Extensions.Ordering.TestFramework", "Xunit.Extensions.Ordering")]
+//[assembly: TestCaseOrderer(typeof(Xunit.v3.Priority.PriorityOrderer))]
+//[assembly: TestCollectionOrderer("Xunit.Extensions.Ordering.CollectionOrderer", "Xunit.Extensions.Ordering")]
+//[assembly: TestFramework("Xunit.Extensions.Ordering.TestFramework", "Xunit.Extensions.Ordering")]
 
 namespace Umbrella.FileSystem.Test;
 
@@ -91,7 +91,7 @@ public class UmbrellaFileProviderTest
 
 		var provider = providerFunc();
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(path).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckPOCOFileType(provider, file);
 		Assert.Equal(-1, file.Length);
@@ -110,18 +110,18 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath).ConfigureAwait(true);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-		IUmbrellaFileInfo file = await provider.CreateAsync($"~/images/{TestFileName}").ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync($"~/images/{TestFileName}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -134,23 +134,23 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath).ConfigureAwait(true);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Create the file
-		IUmbrellaFileInfo file = await provider.CreateAsync(path).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
-		bytes = await file.ReadAsByteArrayAsync().ConfigureAwait(true);
+		bytes = await file.ReadAsByteArrayAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -163,28 +163,28 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
-		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}").ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Get the file
-		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName}").ConfigureAwait(true);
+		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(retrievedFile);
 
 		CheckWrittenFileAssertions(provider, retrievedFile!, bytes.Length, TestFileName);
 
-		_ = await file.ReadAsByteArrayAsync().ConfigureAwait(true);
+		_ = await file.ReadAsByteArrayAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 		Assert.Equal(bytes.Length, retrievedFile!.Length);
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -197,28 +197,28 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath).ConfigureAwait(true);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}").ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		// Get the file but with a different casing
-		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName.ToUpperInvariant()}").ConfigureAwait(true);
+		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName.ToUpperInvariant()}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(retrievedFile);
 
 		CheckWrittenFileAssertions(provider, retrievedFile!, bytes.Length, TestFileName);
 
-		_ = await file.ReadAsByteArrayAsync().ConfigureAwait(true);
+		_ = await file.ReadAsByteArrayAsync(cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 		Assert.Equal(bytes.Length, retrievedFile!.Length);
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -231,27 +231,27 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath).ConfigureAwait(true);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Create the file
-		IUmbrellaFileInfo file = await provider.CreateAsync(path).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		using (var ms = new MemoryStream())
 		{
-			await file.WriteToStreamAsync(ms).ConfigureAwait(true);
+			await file.WriteToStreamAsync(ms, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 			bytes = ms.ToArray();
 		}
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -264,18 +264,18 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
-		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}").ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync($"/images/{TestFileName}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Get the file
-		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName}").ConfigureAwait(true);
+		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/{TestFileName}", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(retrievedFile);
 
@@ -285,14 +285,14 @@ public class UmbrellaFileProviderTest
 
 		using (var ms = new MemoryStream())
 		{
-			await file.WriteToStreamAsync(ms).ConfigureAwait(true);
+			await file.WriteToStreamAsync(ms, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 			retrievedBytes = ms.ToArray();
 		}
 
 		Assert.Equal(bytes.Length, retrievedBytes.Length);
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -303,7 +303,7 @@ public class UmbrellaFileProviderTest
 
 		var provider = providerFunc();
 
-		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/doesnotexist.jpg").ConfigureAwait(true);
+		IUmbrellaFileInfo? retrievedFile = await provider.GetAsync($"/images/doesnotexist.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.Null(retrievedFile);
 	}
@@ -317,11 +317,11 @@ public class UmbrellaFileProviderTest
 		var provider = providerFunc();
 
 		string path = "/images/createbutnowrite.jpg";
-		var file = await provider.CreateAsync(path).ConfigureAwait(true);
+		var file = await provider.CreateAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		IUmbrellaFileInfo? reloadedFile = await provider.GetAsync(path).ConfigureAwait(true);
+		IUmbrellaFileInfo? reloadedFile = await provider.GetAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Should fail as not writing to the file won't push it to blob storage
 		Assert.Null(reloadedFile);
@@ -336,11 +336,11 @@ public class UmbrellaFileProviderTest
 		var provider = providerFunc();
 
 		string path = "/images/createbutnowrite.jpg";
-		var file = await provider.CreateAsync(path).ConfigureAwait(true);
+		var file = await provider.CreateAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		bool exists = await provider.ExistsAsync(path).ConfigureAwait(true);
+		bool exists = await provider.ExistsAsync(path, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Should be false as not calling write shouldn't create anything
 		Assert.False(exists);
@@ -356,24 +356,24 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
-		bool exists = await provider.ExistsAsync(subpath).ConfigureAwait(true);
+		bool exists = await provider.ExistsAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(exists);
 
 		// Cleanup
-		bool deleted = await provider.DeleteAsync(subpath).ConfigureAwait(true);
+		bool deleted = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(deleted);
 	}
@@ -388,22 +388,22 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo fileInfo = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+		IUmbrellaFileInfo fileInfo = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, TestFileName);
 
-		IUmbrellaFileInfo? reloadedFileInfo = await provider.GetAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo? reloadedFileInfo = await provider.GetAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(reloadedFileInfo);
 
 		CheckWrittenFileAssertions(provider, reloadedFileInfo!, bytes.Length, TestFileName);
 
 		//Cleanup
-		bool deleted = await provider.DeleteAsync(subpath).ConfigureAwait(true);
+		bool deleted = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(deleted);
 	}
@@ -423,18 +423,18 @@ public class UmbrellaFileProviderTest
 
 		string subpath = $"/images/{TestFileName}";
 
-		var fileInfo = await provider.SaveAsync(subpath, stream).ConfigureAwait(true);
+		var fileInfo = await provider.SaveAsync(subpath, stream, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, TestFileName);
 
-		IUmbrellaFileInfo? reloadedFileInfo = await provider.GetAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo? reloadedFileInfo = await provider.GetAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(reloadedFileInfo);
 
 		CheckWrittenFileAssertions(provider, reloadedFileInfo!, (int)stream.Length, TestFileName);
 
 		//Cleanup
-		bool deleted = await provider.DeleteAsync(subpath).ConfigureAwait(true);
+		bool deleted = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(deleted);
 	}
@@ -449,20 +449,20 @@ public class UmbrellaFileProviderTest
 
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		var fileInfo = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+		var fileInfo = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, fileInfo, bytes.Length, TestFileName);
 
-		bool exists = await provider.ExistsAsync(subpath).ConfigureAwait(true);
+		bool exists = await provider.ExistsAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(exists);
 
 		//Cleanup
-		bool deleted = await provider.DeleteAsync(subpath).ConfigureAwait(true);
+		bool deleted = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(deleted);
 	}
@@ -482,16 +482,16 @@ public class UmbrellaFileProviderTest
 
 		string subpath = $"/images/{TestFileName}";
 
-		var fileInfo = await provider.SaveAsync(subpath, stream).ConfigureAwait(true);
+		var fileInfo = await provider.SaveAsync(subpath, stream, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, fileInfo, (int)stream.Length, TestFileName);
 
-		bool exists = await provider.ExistsAsync(subpath).ConfigureAwait(true);
+		bool exists = await provider.ExistsAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(exists);
 
 		//Cleanup
-		bool deleted = await provider.DeleteAsync(subpath).ConfigureAwait(true);
+		bool deleted = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(deleted);
 	}
@@ -504,7 +504,7 @@ public class UmbrellaFileProviderTest
 		{
 			var provider = providerFunc();
 
-			_ = await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png").ConfigureAwait(true);
+			_ = await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
@@ -517,16 +517,16 @@ public class UmbrellaFileProviderTest
 
 			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-			byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+			byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 			string subpath = $"/images/{TestFileName}";
 
-			var fileInfo = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+			var fileInfo = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-			_ = await provider.DeleteAsync(fileInfo).ConfigureAwait(true);
+			_ = await provider.DeleteAsync(fileInfo, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 			//At this point the file will not exist
-			_ = await provider.CopyAsync(fileInfo, "~/images/willfail.jpg").ConfigureAwait(true);
+			_ = await provider.CopyAsync(fileInfo, "~/images/willfail.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
@@ -544,12 +544,12 @@ public class UmbrellaFileProviderTest
 
 			string subpath = $"/images/{TestFileName}";
 
-			var fileInfo = await provider.SaveAsync(subpath, stream).ConfigureAwait(true);
+			var fileInfo = await provider.SaveAsync(subpath, stream, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-			_ = await provider.DeleteAsync(fileInfo).ConfigureAwait(true);
+			_ = await provider.DeleteAsync(fileInfo, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 			//At this point the file will not exist
-			_ = await provider.CopyAsync(fileInfo, "~/images/willfail.jpg").ConfigureAwait(true);
+			_ = await provider.CopyAsync(fileInfo, "~/images/willfail.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
@@ -563,20 +563,20 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var copy = await provider.CopyAsync(subpath, "/images/xx/copy.png").ConfigureAwait(true);
+		var copy = await provider.CopyAsync(subpath, "/images/xx/copy.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
@@ -584,8 +584,8 @@ public class UmbrellaFileProviderTest
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(copy).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -599,20 +599,20 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var copy = await provider.CopyAsync(file, "/images/xx/copy.png").ConfigureAwait(true);
+		var copy = await provider.CopyAsync(file, "/images/xx/copy.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
@@ -620,8 +620,8 @@ public class UmbrellaFileProviderTest
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(copy).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -635,23 +635,23 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Create the copy file
-		var copy = await provider.CreateAsync("/images/xx/copy.png").ConfigureAwait(true);
+		var copy = await provider.CreateAsync("/images/xx/copy.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Act
-		_ = await provider.CopyAsync(file, copy).ConfigureAwait(true);
+		_ = await provider.CopyAsync(file, copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
@@ -659,8 +659,8 @@ public class UmbrellaFileProviderTest
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(copy).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -674,36 +674,36 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var copy = await provider.CopyAsync(subpath, "/images/xx/copy.png").ConfigureAwait(true);
+		var copy = await provider.CopyAsync(subpath, "/images/xx/copy.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
-		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
-		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
+		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(copy).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -717,36 +717,36 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var copy = await provider.CopyAsync(file, "/images/xx/copy.png").ConfigureAwait(true);
+		var copy = await provider.CopyAsync(file, "/images/xx/copy.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
-		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
-		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
+		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(copy).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -760,39 +760,39 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Create the copy file
-		var copy = await provider.CreateAsync("/images/xx/copy.png").ConfigureAwait(true);
+		var copy = await provider.CreateAsync("/images/xx/copy.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Act
-		_ = await provider.CopyAsync(file, copy).ConfigureAwait(true);
+		_ = await provider.CopyAsync(file, copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, copy.Length);
-		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
-		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
+		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		CheckWrittenFileAssertions(provider, copy, bytes.Length, "copy.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(copy).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(copy, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -803,9 +803,9 @@ public class UmbrellaFileProviderTest
 			var provider = providerFunc();
 
 			// Should fail because you can't copy a new file
-			var fileInfo = await provider.CreateAsync("~/images/testimage.jpg").ConfigureAwait(true);
+			var fileInfo = await provider.CreateAsync("~/images/testimage.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-			var copy = await provider.CopyAsync(fileInfo, "~/images/copy.jpg").ConfigureAwait(true);
+			var copy = await provider.CopyAsync(fileInfo, "~/images/copy.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 	#endregion
 
@@ -817,7 +817,7 @@ public class UmbrellaFileProviderTest
 		{
 			var provider = providerFunc();
 
-			_ = await provider.MoveAsync("~/images/notexists.jpg", "~/images/willfail.png").ConfigureAwait(true);
+			_ = await provider.MoveAsync("~/images/notexists.jpg", "~/images/willfail.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
@@ -830,16 +830,16 @@ public class UmbrellaFileProviderTest
 
 			string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-			byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+			byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 			string subpath = $"/images/{TestFileName}";
 
-			var fileInfo = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+			var fileInfo = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-			_ = await provider.DeleteAsync(fileInfo).ConfigureAwait(true);
+			_ = await provider.DeleteAsync(fileInfo, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 			//At this point the file will not exist
-			_ = await provider.MoveAsync(fileInfo, "~/images/willfail.jpg").ConfigureAwait(true);
+			_ = await provider.MoveAsync(fileInfo, "~/images/willfail.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
@@ -857,12 +857,12 @@ public class UmbrellaFileProviderTest
 
 			string subpath = $"/images/{TestFileName}";
 
-			var fileInfo = await provider.SaveAsync(subpath, stream).ConfigureAwait(true);
+			var fileInfo = await provider.SaveAsync(subpath, stream, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-			_ = await provider.DeleteAsync(fileInfo).ConfigureAwait(true);
+			_ = await provider.DeleteAsync(fileInfo, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 			//At this point the file will not exist
-			_ = await provider.MoveAsync(fileInfo, "~/images/willfail.jpg").ConfigureAwait(true);
+			_ = await provider.MoveAsync(fileInfo, "~/images/willfail.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
@@ -876,20 +876,20 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var move = await provider.MoveAsync(subpath, "/images/xx/move.png").ConfigureAwait(true);
+		var move = await provider.MoveAsync(subpath, "/images/xx/move.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
@@ -897,8 +897,8 @@ public class UmbrellaFileProviderTest
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(move).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -912,20 +912,20 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var move = await provider.MoveAsync(file, "/images/xx/move.png").ConfigureAwait(true);
+		var move = await provider.MoveAsync(file, "/images/xx/move.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
@@ -933,8 +933,8 @@ public class UmbrellaFileProviderTest
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(move).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -948,23 +948,23 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Create the move file
-		var move = await provider.CreateAsync("/images/xx/move.png").ConfigureAwait(true);
+		var move = await provider.CreateAsync("/images/xx/move.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Act
-		_ = await provider.MoveAsync(file, move).ConfigureAwait(true);
+		_ = await provider.MoveAsync(file, move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
@@ -972,8 +972,8 @@ public class UmbrellaFileProviderTest
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(move).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -987,36 +987,36 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var move = await provider.MoveAsync(subpath, "/images/xx/move.png").ConfigureAwait(true);
+		var move = await provider.MoveAsync(subpath, "/images/xx/move.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
-		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
-		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
+		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(move).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -1030,36 +1030,36 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		//Act
-		var move = await provider.MoveAsync(file, "/images/xx/move.png").ConfigureAwait(true);
+		var move = await provider.MoveAsync(file, "/images/xx/move.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
-		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
-		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
+		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(move).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -1073,39 +1073,39 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Create the move file
-		var move = await provider.CreateAsync("/images/xx/move.png").ConfigureAwait(true);
+		var move = await provider.CreateAsync("/images/xx/move.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Act
-		_ = await provider.MoveAsync(file, move).ConfigureAwait(true);
+		_ = await provider.MoveAsync(file, move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		//Assert
 		Assert.Equal(bytes.Length, move.Length);
-		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name").ConfigureAwait(true));
-		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description").ConfigureAwait(true));
+		Assert.Equal("Magic", await file.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Man", await file.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		CheckWrittenFileAssertions(provider, move, bytes.Length, "move.png");
 
 		//Cleanup
-		_ = await provider.DeleteAsync(file).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(move).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(file, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(move, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -1116,9 +1116,9 @@ public class UmbrellaFileProviderTest
 			var provider = providerFunc();
 
 			// Should fail because you can't move a new file
-			var fileInfo = await provider.CreateAsync("~/images/testimage.jpg").ConfigureAwait(true);
+			var fileInfo = await provider.CreateAsync("~/images/testimage.jpg", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-			var move = await provider.MoveAsync(fileInfo, "~/images/move.jpg").ConfigureAwait(true);
+			var move = await provider.MoveAsync(fileInfo, "~/images/move.jpg", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 	#endregion
 
@@ -1131,7 +1131,7 @@ public class UmbrellaFileProviderTest
 		var provider = providerFunc();
 
 		//Should fail silently
-		bool deleted = await provider.DeleteAsync("/images/notexists.jpg").ConfigureAwait(true);
+		bool deleted = await provider.DeleteAsync("/images/notexists.jpg", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(deleted);
 	}
@@ -1147,36 +1147,36 @@ public class UmbrellaFileProviderTest
 		// Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		CheckWrittenFileAssertions(provider, file, bytes.Length, TestFileName);
 
 		// Act
-		await file.SetMetadataValueAsync("FirstName", "Richard").ConfigureAwait(true);
-		await file.SetMetadataValueAsync("LastName", "Edwards").ConfigureAwait(true);
+		await file.SetMetadataValueAsync("FirstName", "Richard", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("LastName", "Edwards", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Assert
-		IUmbrellaFileInfo? savedFile = await provider.GetAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo? savedFile = await provider.GetAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(savedFile);
 		Assert.False(savedFile!.IsNew);
-		Assert.Equal("Richard", await file.GetMetadataValueAsync<string>("FirstName").ConfigureAwait(true));
-		Assert.Equal("Edwards", await file.GetMetadataValueAsync<string>("LastName").ConfigureAwait(true));
+		Assert.Equal("Richard", await file.GetMetadataValueAsync<string>("FirstName", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.Equal("Edwards", await file.GetMetadataValueAsync<string>("LastName", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		// Cleanup
-		_ = await provider.DeleteAsync(savedFile).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(savedFile, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
-	[Order(100)]
+	[Priority(100)]
 	[MemberData(nameof(ProvidersMemberData))]
 	public async Task Create_DeleteDirectory_TopLevelAsync(Func<IUmbrellaFileStorageProvider> providerFunc)
 	{
@@ -1187,15 +1187,15 @@ public class UmbrellaFileProviderTest
 		// Create a top level file at the root of the directory.
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/tempfolder/{TestFileName}";
-		_ = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-		await provider.DeleteDirectoryAsync("/tempfolder").ConfigureAwait(true);
+		await provider.DeleteDirectoryAsync("/tempfolder", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Assert
-		Assert.False(await provider.ExistsAsync(subpath).ConfigureAwait(true));
+		Assert.False(await provider.ExistsAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true));
 	}
 
 	[Theory]
@@ -1209,37 +1209,37 @@ public class UmbrellaFileProviderTest
 		// Create a top level file at the root of the directory.
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
-		_ = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Now create another 2 file in a nested subdirectories
 		string downLevelSubPath1 = $"/images/sub-images/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath1, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath1, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		string downLevelSubPath2 = $"/images/sub-images/nested/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath2, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath2, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		string downLevelSubPath3 = $"/images/sub-images/nested2/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath3, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath3, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		string downLevelSubPath4 = $"/images/sub-images/nested2/nestedmore/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath4, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath4, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Now delete only the down level file directory, i.e. /images/sub-images
 		// which should also delete the nested directory
-		await provider.DeleteDirectoryAsync("/images/sub-images").ConfigureAwait(true);
+		await provider.DeleteDirectoryAsync("/images/sub-images", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Assert
-		Assert.True(await provider.ExistsAsync(subpath).ConfigureAwait(true));
-		Assert.False(await provider.ExistsAsync(downLevelSubPath1).ConfigureAwait(true));
-		Assert.False(await provider.ExistsAsync(downLevelSubPath2).ConfigureAwait(true));
-		Assert.False(await provider.ExistsAsync(downLevelSubPath3).ConfigureAwait(true));
-		Assert.False(await provider.ExistsAsync(downLevelSubPath4).ConfigureAwait(true));
+		Assert.True(await provider.ExistsAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.False(await provider.ExistsAsync(downLevelSubPath1, TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.False(await provider.ExistsAsync(downLevelSubPath2, TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.False(await provider.ExistsAsync(downLevelSubPath3, TestContext.Current.CancellationToken).ConfigureAwait(true));
+		Assert.False(await provider.ExistsAsync(downLevelSubPath4, TestContext.Current.CancellationToken).ConfigureAwait(true));
 
 		// Cleanup
-		_ = await provider.DeleteAsync(subpath).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -1253,21 +1253,21 @@ public class UmbrellaFileProviderTest
 		// Create a top level file at the root of the directory.
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath).ConfigureAwait(true);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		string subpath = $"/images/{TestFileName}";
-		_ = await provider.SaveAsync(subpath, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(subpath, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Now create another 2 files in a subdirectory
 		string downLevelSubPath1 = $"/images/sub-images/{TestFileName}";
-		_ = await provider.SaveAsync(downLevelSubPath1, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath1, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		string downLevelSubPath2 = $"/images/sub-images/the-other-file.png";
-		_ = await provider.SaveAsync(downLevelSubPath2, bytes).ConfigureAwait(true);
+		_ = await provider.SaveAsync(downLevelSubPath2, bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Now enumerate the files
-		var topLevelResults = await provider.EnumerateDirectoryAsync("/images").ConfigureAwait(true);
-		var downLevelResults = await provider.EnumerateDirectoryAsync("/images/sub-images").ConfigureAwait(true);
+		var topLevelResults = await provider.EnumerateDirectoryAsync("/images", TestContext.Current.CancellationToken).ConfigureAwait(true);
+		var downLevelResults = await provider.EnumerateDirectoryAsync("/images/sub-images", TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Assert
 		_ = Assert.Single(topLevelResults);
@@ -1278,9 +1278,9 @@ public class UmbrellaFileProviderTest
 		Assert.Equal(downLevelSubPath2, downLevelResults.ElementAt(1).SubPath);
 
 		// Cleanup
-		_ = await provider.DeleteAsync(subpath).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(downLevelSubPath1).ConfigureAwait(true);
-		_ = await provider.DeleteAsync(downLevelSubPath2).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(downLevelSubPath1, TestContext.Current.CancellationToken).ConfigureAwait(true);
+		_ = await provider.DeleteAsync(downLevelSubPath2, TestContext.Current.CancellationToken).ConfigureAwait(true);
 	}
 
 	[Theory]
@@ -1294,31 +1294,31 @@ public class UmbrellaFileProviderTest
 		//Arrange
 		string physicalPath = PathHelper.PlatformNormalize($@"{BaseDirectory}\{TestFileName}");
 
-		byte[] bytes = await File.ReadAllBytesAsync(physicalPath);
+		byte[] bytes = await File.ReadAllBytesAsync(physicalPath, TestContext.Current.CancellationToken);
 
 		string subpath = $"/images/{TestFileName}";
 
-		IUmbrellaFileInfo file = await provider.CreateAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo file = await provider.CreateAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.True(file.IsNew);
 
-		await file.WriteFromByteArrayAsync(bytes).ConfigureAwait(true);
+		await file.WriteFromByteArrayAsync(bytes, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Write some metadata
-		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false).ConfigureAwait(true);
-		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false).ConfigureAwait(true);
-		await file.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Name", "Magic", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.SetMetadataValueAsync("Description", "Man", writeChanges: false, cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		await file.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		// Reload the file
-		IUmbrellaFileInfo? reloadedFile = await provider.GetAsync(subpath).ConfigureAwait(true);
+		IUmbrellaFileInfo? reloadedFile = await provider.GetAsync(subpath, TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.NotNull(reloadedFile);
 
 		// Write without loading first
-		await reloadedFile!.WriteMetadataChangesAsync().ConfigureAwait(true);
+		await reloadedFile!.WriteMetadataChangesAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-		string metaName = await reloadedFile.GetMetadataValueAsync<string>("Name").ConfigureAwait(true);
-		string metaDescription = await reloadedFile.GetMetadataValueAsync<string>("Description").ConfigureAwait(true);
+		string metaName = await reloadedFile.GetMetadataValueAsync<string>("Name", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+		string metaDescription = await reloadedFile.GetMetadataValueAsync<string>("Description", cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
 
 		Assert.Equal("Magic", metaName);
 		Assert.Equal("Man", metaDescription);

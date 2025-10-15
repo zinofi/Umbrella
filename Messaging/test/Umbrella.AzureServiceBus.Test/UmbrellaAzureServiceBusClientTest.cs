@@ -51,18 +51,18 @@ public class UmbrellaAzureServiceBusClientTest
 
 		ServiceBusMessage message = new(_smallMessageBody);
 
-		await sender.SendMessageAsync(message);
+		await sender.SendMessageAsync(message, TestContext.Current.CancellationToken);
 
 		Assert.False(message.ApplicationProperties.ContainsKey(BlobMetadataReferenceKey));
 
 		await using UmbrellaAzureServiceBusReceiver receiver = client.CreateReceiver(TestSmallQueueName);
-		ServiceBusReceivedMessage receivedMessage = await receiver.ReceiveMessageAsync();
+		ServiceBusReceivedMessage receivedMessage = await receiver.ReceiveMessageAsync(cancellationToken: TestContext.Current.CancellationToken);
 
 		Assert.Equal(_smallMessageBody.Length, receivedMessage.Body.ToMemory().Length);
 
-		await receiver.CompleteMessageAsync(receivedMessage);
+		await receiver.CompleteMessageAsync(receivedMessage, TestContext.Current.CancellationToken);
 
-		var nextMessage = await receiver.ReceiveMessageAsync();
+		var nextMessage = await receiver.ReceiveMessageAsync(cancellationToken: TestContext.Current.CancellationToken);
 
 		Assert.True(nextMessage is null || nextMessage.MessageId != message.MessageId);
 	}
@@ -75,28 +75,28 @@ public class UmbrellaAzureServiceBusClientTest
 
 		ServiceBusMessage message = new(_largeMessageBody);
 
-		await sender.SendMessageAsync(message);
+		await sender.SendMessageAsync(message, TestContext.Current.CancellationToken);
 
 		Assert.True(message.ApplicationProperties.ContainsKey(BlobMetadataReferenceKey));
 
 		await using UmbrellaAzureServiceBusReceiver receiver = client.CreateReceiver(TestLargeQueueName);
-		ServiceBusReceivedMessage receivedMessage = await receiver.ReceiveMessageAsync();
+		ServiceBusReceivedMessage receivedMessage = await receiver.ReceiveMessageAsync(cancellationToken: TestContext.Current.CancellationToken);
 
 		Assert.Equal(_largeMessageBody.Length, receivedMessage.Body.ToMemory().Length);
 
 		var blobClient = await GetBlobClientAsync((string)receivedMessage.ApplicationProperties[BlobMetadataReferenceKey], CancellationToken.None);
 
-		Assert.True(await blobClient.ExistsAsync());
+		Assert.True(await blobClient.ExistsAsync(TestContext.Current.CancellationToken));
 
-		var blobProperties = await blobClient.GetPropertiesAsync();
+		var blobProperties = await blobClient.GetPropertiesAsync(cancellationToken: TestContext.Current.CancellationToken);
 
 		Assert.Equal(_largeMessageBody.Length, blobProperties.Value.ContentLength);
 
-		await receiver.CompleteMessageAsync(receivedMessage);
+		await receiver.CompleteMessageAsync(receivedMessage, TestContext.Current.CancellationToken);
 
-		Assert.False(await blobClient.ExistsAsync());
+		Assert.False(await blobClient.ExistsAsync(TestContext.Current.CancellationToken));
 
-		var nextMessage = await receiver.ReceiveMessageAsync();
+		var nextMessage = await receiver.ReceiveMessageAsync(cancellationToken: TestContext.Current.CancellationToken);
 
 		Assert.True(nextMessage is null || nextMessage.MessageId != message.MessageId);
 	}

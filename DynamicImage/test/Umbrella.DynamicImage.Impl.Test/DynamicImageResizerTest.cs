@@ -167,9 +167,9 @@ public class DynamicImageResizerTest
 
 		var (options, targetSize) = item;
 
-		DynamicImageItem? result = await resizer.GenerateImageAsync(fileProviderMock.Object, options);
+		DynamicImageItem? result = await resizer.GenerateImageAsync(fileProviderMock.Object, options, CancellationToken.None);
 
-		ReadOnlyMemory<byte> resizedImageBytes = result is not null ? await result.GetContentAsync() : default;
+		ReadOnlyMemory<byte> resizedImageBytes = result is not null ? await result.GetContentAsync(TestContext.Current.CancellationToken) : default;
 
 		Assert.True(resizedImageBytes.Length > 0);
 
@@ -202,8 +202,8 @@ public class DynamicImageResizerTest
 			Assert.Equal(formatToCheck, image.RawFormat);
 		}
 
-		// Only output the images to disk when building in debug mode. This ensure that when running in release mode on the build server this doesn't waste
-		// unneccessary build resources.
+		// Only output the images to disk when building in debug mode. This is to ensure that when running in release mode on the build server this doesn't waste
+		// unneccessary resources.
 		if (DebugUtility.IsDebug && !resizedImageBytes.IsEmpty)
 		{
 			string outputDirectory = PathHelper.PlatformNormalize($@"{BaseDirectory}\Output\{resizer.GetType().Namespace}");
@@ -212,7 +212,7 @@ public class DynamicImageResizerTest
 			_ = Directory.CreateDirectory(outputDirectory);
 
 			using var fs = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
-			await fs.WriteAsync(resizedImageBytes);
+			await fs.WriteAsync(resizedImageBytes, TestContext.Current.CancellationToken);
 		}
 	}
 
