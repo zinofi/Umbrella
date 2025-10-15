@@ -81,10 +81,10 @@ public class PermissionsUtility : IPermissionsUtility
 			{
 				var status = await permission.CheckStatusAsync().ConfigureAwait(false);
 
-				if (status == PermissionStatus.Granted)
+				if (status is PermissionStatus.Granted)
 					continue;
 
-				if ((DeviceInfo.Platform == DevicePlatform.Android && status == PermissionStatus.Denied || DeviceInfo.Platform == DevicePlatform.iOS) && !_previousFailuresMappings.Contains(permission.GetType()))
+				if ((DeviceInfo.Platform == DevicePlatform.Android && status is PermissionStatus.Denied || DeviceInfo.Platform == DevicePlatform.iOS) && !_previousFailuresMappings.Contains(permission.GetType()))
 				{
 					showRationale = true;
 					lstDeniedPermission.Add(permission);
@@ -109,8 +109,10 @@ public class PermissionsUtility : IPermissionsUtility
 
 				foreach (var permission in lstDeniedPermission)
 				{
+					var status = await MainThread.InvokeOnMainThreadAsync(permission.RequestAsync).ConfigureAwait(false);
+
 					// We need all permissions to be granted. Fail on the first one.
-					if (await permission.RequestAsync().ConfigureAwait(false) != PermissionStatus.Granted)
+					if (status is not PermissionStatus.Granted)
 					{
 						await _dialogUtility.ShowDangerMessageAsync("You have not granted the required permissions. Please try again.").ConfigureAwait(false);
 
@@ -143,7 +145,7 @@ public class PermissionsUtility : IPermissionsUtility
 		}
 		catch (Exception exc) when (_logger.WriteError(exc, new { permissionType }))
 		{
-			throw new UmbrellaMauiException("There has been a problem checking the specified permission.");
+			throw new UmbrellaMauiException("There has been a problem checking the specified permission.", exc);
 		}
 	}
 }
