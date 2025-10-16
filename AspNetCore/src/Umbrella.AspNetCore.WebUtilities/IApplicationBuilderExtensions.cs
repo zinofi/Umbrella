@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Security.Claims;
 using Umbrella.AppFramework.Shared.Constants;
@@ -82,20 +83,19 @@ public static class IApplicationBuilderExtensions
 	public static IApplicationBuilder UseUmbrellaFileAccessTokenQueryString(this IApplicationBuilder builder) => builder.UseWhen(ctx => ctx.Request.Query.ContainsKey(AppQueryStringKeys.FileAccessToken), app => app.UseMiddleware<FileAccessTokenQueryStringMiddleware>());
 
 	/// <summary>
-	/// Ensures that the <see cref="IHostingEnvironment.ContentRootPath"/>,
-	/// <see cref="IHostingEnvironment.ContentRootFileProvider"/>
-	/// and <see cref="IHostingEnvironment.WebRootPath"/> have been set correctly
-	/// when developing a Blazor application hosted using ASP.NET Core.
+	/// Ensures that the <see cref="IHostEnvironment.ContentRootPath"/>,
+	/// <see cref="IHostEnvironment.ContentRootFileProvider"/>
+	/// and <see cref="IWebHostEnvironment.WebRootPath"/> have been set correctly
+	/// when developing a Blazor application hosted using ASP.NET Core where the client project contains the primary wwwroot folder.
 	/// </summary>
 	/// <remarks>
-	/// For some reason, only during development, these properties are set incorrectly.
-	/// This may be fixed in a future version but was definitely a problem when developing a .NET Core 3.1 project.
+	/// <c>This is only required for older projects where static assets are hosted in the wwwroot folder in the client project.</c>
 	/// </remarks>
 	/// <param name="app">The application.</param>
 	/// <param name="clientProjectSuffix">The client project suffix.</param>
 	/// <param name="serverProjectSuffix">The server project suffix.</param>
 	/// <returns>The <see cref="WebApplication"/> instance.</returns>
-	[Obsolete("This issue has been fixed in ASP.NET meaning this workaround is no longer required.", true)]
+	[Obsolete("Please do not use this in new projects; only legacy projects that were created in the .NET Core 3.1 days.")]
 	public static WebApplication EnsureBlazorDevelopmentPaths(this WebApplication app, string clientProjectSuffix = "Client", string serverProjectSuffix = "Server")
 	{
 		Guard.IsNotNull(app);
