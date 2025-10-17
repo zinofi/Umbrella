@@ -82,6 +82,18 @@ public partial class UmbrellaDialog
 	public IReadOnlyCollection<UmbrellaDialogButton>? Buttons { get; set; }
 
 	/// <summary>
+	/// Gets or sets the custom content of the dialog.
+	/// </summary>
+	/// <remarks>
+	/// <c>
+	/// Use <see cref="Header" />, <see cref="Body" /> and <see cref="Footer" /> parameters instead. The <see cref="Body" /> parameter directly replaces this property.
+	/// </c>
+	/// </remarks>
+	[Parameter]
+	[Obsolete("Use Header, Body and Footer parameters instead. The Body parameter directly replaces this property.")]
+	public RenderFragment? ChildContent { get; set; }
+
+	/// <summary>
 	/// Gets or sets the custom header content of the dialog.
 	/// </summary>
 	[Parameter]

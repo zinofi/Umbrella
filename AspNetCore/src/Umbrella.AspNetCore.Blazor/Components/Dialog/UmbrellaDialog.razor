@@ -1,65 +1,71 @@
 ﻿<div class="modal-backdrop fade show" @onclick="BackgroundClickAsync"></div>
 <div class="modal fade show d-block u-dialog" tabindex="-1" role="dialog">
-    <div class="modal-dialog @(DialogSizeCssClass) @(ModalInstance.Options.Class) modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            @if (ModalInstance.Options.HideHeader is not true)
-            {
-                @if (Header is null)
-                {
-                    <div class="modal-header">
-                        <h5 class="modal-title">@ModalInstance.Title</h5>
-                        @if (ModalInstance.Options.HideCloseButton is not true)
-                        {
-                            <button type="button" class="close" aria-label="Close the @ModalInstance.Title dialog" @onclick="CloseClickAsync">
-                                @if (RenderCloseButtonIcon)
-                                {
-                                    <i aria-hidden="true" class="@(!string.IsNullOrEmpty(CloseButtonIconCssClassOverride) ? CloseButtonIconCssClassOverride : "fas fa-times-circle")"></i>
-                                }
-                            </button>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="modal-header">
-                        @Header
-                    </div>
-                }
-            }
-            @if (Body is null)
-            {
-                <div class="modal-body">
-                    @if (!string.IsNullOrWhiteSpace(SubTitle))
-                    {
-                        <h4>@SubTitle</h4>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Message))
-                    {
-                        <p>@Message.ReplaceNewLines()</p>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="modal-body">
-                    @Body
-                </div>
-            }
-            @if (Footer is null && Buttons is { Count: > 0 })
-            {
-                <div class="modal-footer">
-                    @foreach (var button in Buttons)
-                    {
-                        <button type="button" class="btn btn-@(button.CssClass) @(button.FlexibleWidth ? "btn--flexible" : "")" @onclick="(e => ButtonClickAsync(button))">@button.Text</button>
-                    }
-                </div>
-            }
-            else if (Footer is not null)
-            {
-                <div class="modal-footer">
-                    @Footer
-                </div>
-            }
-        </div>
-    </div>
+	<div class="modal-dialog @(DialogSizeCssClass) @(ModalInstance.Options.Class) modal-dialog-scrollable" role="document">
+		<div class="modal-content">
+			@if (ModalInstance.Options.HideHeader is not true)
+			{
+				@if (Header is null)
+				{
+					<div class="modal-header">
+						<h5 class="modal-title">@ModalInstance.Title</h5>
+						@if (ModalInstance.Options.HideCloseButton is not true)
+						{
+							<button type="button" class="close" aria-label="Close the @ModalInstance.Title dialog" @onclick="CloseClickAsync">
+								@if (RenderCloseButtonIcon)
+								{
+									<i aria-hidden="true" class="@(!string.IsNullOrEmpty(CloseButtonIconCssClassOverride) ? CloseButtonIconCssClassOverride : "fas fa-times-circle")"></i>
+								}
+							</button>
+						}
+					</div>
+				}
+				else
+				{
+					<div class="modal-header">
+						@Header
+					</div>
+				}
+			}
+			@if (Body is not null)
+			{
+				<div class="modal-body">
+					@Body
+				</div>
+			}
+			else if (ChildContent is not null)
+			{
+				<div class="modal-body">
+					@ChildContent
+				</div>
+			}
+			else
+			{
+				<div class="modal-body">
+					@if (!string.IsNullOrWhiteSpace(SubTitle))
+					{
+						<h4>@SubTitle</h4>
+					}
+					@if (!string.IsNullOrWhiteSpace(Message))
+					{
+						<p>@Message.ReplaceNewLines()</p>
+					}
+				</div>
+			}
+			@if (Footer is null && Buttons is { Count: > 0 })
+			{
+				<div class="modal-footer">
+					@foreach (var button in Buttons)
+					{
+						<button type="button" class="btn btn-@(button.CssClass) @(button.FlexibleWidth ? "btn--flexible" : "")" @onclick="(e => ButtonClickAsync(button))">@button.Text</button>
+					}
+				</div>
+			}
+			else if (Footer is not null)
+			{
+				<div class="modal-footer">
+					@Footer
+				</div>
+			}
+		</div>
+	</div>
 </div>
