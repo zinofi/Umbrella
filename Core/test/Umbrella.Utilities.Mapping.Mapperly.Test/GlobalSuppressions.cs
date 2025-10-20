@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "Unit test project.")]
 [assembly: SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "Unit test project.")]
+[assembly: SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Unit test project.")]

@@ -113,5 +113,18 @@ public partial class UmbrellaDynamicImage : UmbrellaResponsiveImage
 			});
 	}
 
-	protected string StripUrlPrefix(string url) => !string.IsNullOrEmpty(Options.StripPrefix) ? url[Options.StripPrefix.Length..] : url;
+	/// <summary>
+	/// Removes the configured prefix from the specified URL if it is present.
+	/// </summary>
+	/// <remarks>The prefix to remove is specified by the <see cref="UmbrellaDynamicImageOptions.StripPrefix"/> property. The comparison is
+	/// case-insensitive. If the prefix is not set or not present at the start of the URL, the original URL is returned
+	/// unchanged.</remarks>
+	/// <param name="url">The URL string from which to remove the prefix. Cannot be null or empty.</param>
+	/// <returns>A string containing the URL with the prefix removed if it was present; otherwise, the original URL.</returns>
+	protected string StripUrlPrefix(string url)
+	{
+		Guard.IsNotNullOrEmpty(url);
+
+		return !string.IsNullOrEmpty(Options.StripPrefix) && url.StartsWith(Options.StripPrefix, StringComparison.OrdinalIgnoreCase) ? url[Options.StripPrefix.Length..] : url;
+	}
 }

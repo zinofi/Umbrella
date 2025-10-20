@@ -6,6 +6,8 @@
 		<IsTestProject>true</IsTestProject>
 		<NoWarn>CS1591</NoWarn>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,7 +34,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="xunit" Version="2.9.3" />
+		<PackageReference Include="xunit.v3" Version="3.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
