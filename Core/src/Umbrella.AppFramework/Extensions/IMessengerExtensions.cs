@@ -19,7 +19,6 @@ public static class IMessengerExtensions
 	/// <param name="recipient">The recipient that will receive the messages.</param>
 	/// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
 	/// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
-	/// <remarks>This method will use the default channel to perform the requested registration.</remarks>
 	public static void TryRegister<TMessage>(this IMessenger messenger, object recipient, MessageHandler<object, TMessage> handler)
 		where TMessage : class
 	{
