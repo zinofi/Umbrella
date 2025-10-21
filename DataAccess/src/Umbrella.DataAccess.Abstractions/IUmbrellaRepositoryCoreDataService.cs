@@ -107,6 +107,24 @@ public interface IUmbrellaRepositoryCoreDataService
 		where TRepositoryOptions : RepoOptions, new();
 
 	/// <summary>
+	/// Asynchronously determines whether an entity with the specified identifier exists in the repository.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity to check for existence.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity's unique identifier.</typeparam>
+	/// <typeparam name="TRepository">The type of the repository used to access entities.</typeparam>
+	/// <typeparam name="TRepositoryOptions">The type of options used to configure the repository.</typeparam>
+	/// <param name="id">The unique identifier of the entity to check for existence.</param>
+	/// <param name="repository">A lazily initialized repository instance used to perform the existence check. Cannot be null.</param>
+	/// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="IOperationResult" /> indicating whether
+	/// the entity exists.</returns>
+	Task<IOperationResult> ExistsByIdAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(TEntityKey id, Lazy<TRepository> repository, CancellationToken cancellationToken)
+		where TEntity : class, IEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
+		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
+		where TRepositoryOptions : RepoOptions, new();
+
+	/// <summary>
 	/// Used to load paginated entities in bulk from the repository based on the specified <paramref name="sorters"/> and <paramref name="filters"/>
 	/// with each result mapped to a collection of <typeparamref name="TItemModel"/> wrapped in a <typeparamref name="TPaginatedResultModel"/>.
 	/// </summary>
@@ -140,7 +158,7 @@ public interface IUmbrellaRepositoryCoreDataService
 	/// <param name="childOptions">The child repository options.</param>
 	/// <param name="enableAuthorizationChecks">Specifies whether imperative authorization checks are performed on entities loaded from the repository.</param>
 	/// <returns>The operation result</returns>
-	Task<IOperationResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(int pageNumber, int pageSize, SortExpression<TEntityResult>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, Func<int, int, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<PaginatedResultModel<TEntityResult>>> loadReadAllDataAsyncDelegate, CancellationToken cancellationToken, Func<IReadOnlyCollection<TEntityResult>, TItemModel[]>? mapReadAllEntitiesDelegate = null, Func<PaginatedResultModel<TEntityResult>, TPaginatedResultModel, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, CancellationToken, Task>? afterCreateSearchSlimPaginatedModelAsyncDelegate = null, Func<TEntityResult, TItemModel, CancellationToken, Task<IOperationResult?>>? afterCreateSlimModelAsyncDelegate = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true)
+	Task<IOperationResult<TPaginatedResultModel?>> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(int pageNumber, int pageSize, SortExpression<TEntityResult>[]? sorters, FilterExpression<TEntity>[]? filters, FilterExpressionCombinator? filterCombinator, Func<int, int, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<PaginatedResultModel<TEntityResult>>> loadReadAllDataAsyncDelegate, CancellationToken cancellationToken, Func<IReadOnlyCollection<TEntityResult>, TItemModel[]>? mapReadAllEntitiesDelegate = null, Func<PaginatedResultModel<TEntityResult>, TPaginatedResultModel, SortExpression<TEntityResult>[]?, FilterExpression<TEntity>[]?, FilterExpressionCombinator?, CancellationToken, Task>? afterCreateSearchSlimPaginatedModelAsyncDelegate = null, Func<TEntityResult, TItemModel, CancellationToken, Task<IOperationResult?>>? afterCreateSlimModelAsyncDelegate = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true)
 		where TEntityResult : class, IEntity<TEntityKey>
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
@@ -180,6 +198,25 @@ public interface IUmbrellaRepositoryCoreDataService
 	/// <param name="synchronizeAccess">Specifies whether exclusive access should be enabled using code that synchronizes using the <paramref name="id"/> and type name of the entity.</param>
 	/// <returns>The operation result</returns>
 	Task<IOperationResult<TModel?>> ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TModel>(TEntityKey id, Lazy<TRepository> repository, CancellationToken cancellationToken, Func<TEntityKey, bool, IncludeMap<TEntity>?, TRepositoryOptions?, IEnumerable<RepoOptions>?, CancellationToken, Task<TEntity?>>? loadReadEntityAsyncDelegate = null, Func<TEntity, TModel>? mapperCallback = null, Func<TEntity, TModel, Task<IOperationResult?>>? afterReadEntityCallback = null, bool trackChanges = false, IncludeMap<TEntity>? map = null, TRepositoryOptions? options = null, IEnumerable<RepoOptions>? childOptions = null, bool enableAuthorizationChecks = true, bool synchronizeAccess = false)
+		where TEntity : class, IEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
+		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
+		where TRepositoryOptions : RepoOptions, new();
+
+	/// <summary>
+	/// Asynchronously retrieves the total number of entities in the repository.
+	/// </summary>
+	/// <typeparam name="TEntity">The type of the entity to count.</typeparam>
+	/// <typeparam name="TEntityKey">The type of the entity's key.</typeparam>
+	/// <typeparam name="TRepository">The type of the repository used to access entities.</typeparam>
+	/// <typeparam name="TRepositoryOptions">The type of options used to configure the repository.</typeparam>
+	/// <param name="repository">A lazily initialized repository instance used to access the entities.</param>
+	/// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+	/// <returns>
+	/// A task that represents the asynchronous operation. The task result contains an <see cref="IOperationResult" /> with the total
+	/// count of entities.
+	/// </returns>
+	Task<IOperationResult<int>> TotalCountAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(Lazy<TRepository> repository, CancellationToken cancellationToken)
 		where TEntity : class, IEntity<TEntityKey>
 		where TEntityKey : IEquatable<TEntityKey>
 		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>

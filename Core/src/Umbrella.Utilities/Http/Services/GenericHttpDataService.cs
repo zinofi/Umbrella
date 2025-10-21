@@ -76,7 +76,7 @@ public abstract class GenericHttpDataService<TItem, TIdentifier, TSlimItem, TPag
 
 		try
 		{
-			return await RemoteService.GetAsync<int>(ApiUrl + "/Count", cancellationToken: cancellationToken).ConfigureAwait(false);
+			return await RemoteService.GetAsync<int>(ApiUrl + "/TotalCount", cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc))
 		{
@@ -102,7 +102,7 @@ public abstract class GenericHttpDataService<TItem, TIdentifier, TSlimItem, TPag
 				["id"] = strId
 			};
 
-			return await RemoteService.GetAsync<bool>(ApiUrl + "/Exists", parameters, cancellationToken).ConfigureAwait(false);
+			return await RemoteService.GetAsync<bool>(ApiUrl + "/ExistsById", parameters, cancellationToken).ConfigureAwait(false);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{

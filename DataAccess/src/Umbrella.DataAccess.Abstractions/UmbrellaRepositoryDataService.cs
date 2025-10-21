@@ -8,6 +8,7 @@ using Umbrella.Utilities.Data.Models;
 using Umbrella.Utilities.Data.Pagination;
 using Umbrella.Utilities.Data.Sorting;
 using Umbrella.Utilities.Mapping.Abstractions;
+using Umbrella.Utilities.Primitives;
 using Umbrella.Utilities.Primitives.Abstractions;
 using Umbrella.Utilities.Security.Abstractions;
 using Umbrella.Utilities.Threading.Abstractions;
@@ -45,7 +46,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	where TSlimItem : class, IKeyedItem<TEntityKey>
 	where TUpdateItem : class, IKeyedItem<TEntityKey>, IUpdateModel<TEntityKey>
 	where TUpdateResult : IUpdateResultModel, new()
-	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>
+	where TPaginatedResultModel : PaginatedResultModel<TSlimItem>, new()
 	where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
 	where TEntity : class, IEntity<TEntityKey>
 	where TRepositoryOptions : RepoOptions, new()
@@ -87,7 +88,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
-	/// controllers that should not allow the endpoint to be accessed if it is not needed.
+	/// services that should not allow the endpoint to be accessed if it is not needed.
 	/// </remarks>
 	protected virtual bool SlimReadEndpointEnabled { get; } = true;
 
@@ -96,7 +97,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
-	/// controllers that should not allow the endpoint to be accessed if it is not needed.
+	/// services that should not allow the endpoint to be accessed if it is not needed.
 	/// </remarks>
 	protected virtual bool ReadEndpointEnabled { get; } = true;
 
@@ -105,7 +106,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
-	/// controllers that should not allow the endpoint to be accessed if it is not needed.
+	/// services that should not allow the endpoint to be accessed if it is not needed.
 	/// </remarks>
 	protected virtual bool CreateEndpointEnabled { get; } = true;
 
@@ -114,7 +115,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
-	/// controllers that should not allow the endpoint to be accessed if it is not needed.
+	/// services that should not allow the endpoint to be accessed if it is not needed.
 	/// </remarks>
 	protected virtual bool UpdateEndpointEnabled { get; } = true;
 
@@ -123,9 +124,27 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	/// </summary>
 	/// <remarks>
 	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
-	/// controllers that should not allow the endpoint to be accessed if it is not needed.
+	/// services that should not allow the endpoint to be accessed if it is not needed.
 	/// </remarks>
 	protected virtual bool DeleteEndpointEnabled { get; } = true;
+
+	/// <summary>
+	/// Gets a value indicating whether the endpoint for checking the existence of an entity by its identifier is enabled.
+	/// </summary>
+	/// <remarks>
+	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
+	/// services that should not allow the endpoint to be accessed if it is not needed.
+	/// </remarks>
+	protected virtual bool ExistsByIdEndpointEnabled { get; } = true;
+
+	/// <summary>
+	/// Gets a value indicating whether the total count endpoint is enabled for the resource.
+	/// </summary>
+	/// <remarks>
+	/// This defaults to <see langword="true" /> but should be overridden and set to <see langword="false" /> in derived
+	/// services that should not allow the endpoint to be accessed if it is not needed.
+	/// </remarks>
+	protected virtual bool TotalCountEndpointEnabled { get; } = true;
 
 	/// <summary>
 	/// Gets a value indicating whether imperative authorization checks are performed when the <c>SearchSlim</c> endpoint is executed.
@@ -416,6 +435,9 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
+		if (!CreateEndpointEnabled)
+			return OperationResult<TCreateResult?>.NotAllowed("The create endpoint is not enabled.");
+
 		try
 		{
 			return await CreateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TCreateItem, TCreateResult>(
@@ -446,6 +468,9 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
+		if (!DeleteEndpointEnabled)
+			return OperationResult.NotAllowed("The delete endpoint is not enabled.");
+
 		try
 		{
 			return await DeleteAsync(
@@ -472,13 +497,22 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
+		if (!ExistsByIdEndpointEnabled)
+			return OperationResult<bool>.NotAllowed("The exists by ID endpoint is not enabled.");
+
 		try
 		{
-			// TODO: Let's add first class support for Exists and Count endpoints to the base class and then also expose them here and on the controller.
+			var result = await ExistsByIdAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
+				id,
+				Repository,
+				cancellationToken).ConfigureAwait(false);
 
-			//return true;
-			//return OperationResult<bool>.Success(true);
-			throw new NotImplementedException("The ExistsByIdAsync method is not implemented. Please implement this method in the derived class.");
+			return result.Status switch
+			{
+				OperationResultStatus.GenericSuccess => OperationResult<bool>.Success(true),
+				OperationResultStatus.NotFound => OperationResult<bool>.Success(false),
+				_ => throw new InvalidOperationException($"Unexpected {nameof(OperationResultStatus)} value '{result.Status}' returned from repository.")
+			};
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
@@ -487,16 +521,49 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	}
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<IOperationResult<TPaginatedResultModel?>> FindAllSlimAsync(int pageNumber = 0, int pageSize = 20, IEnumerable<SortExpressionDescriptor>? sorters = null, IEnumerable<FilterExpressionDescriptor>? filters = null, FilterExpressionCombinator filterCombinator = FilterExpressionCombinator.And, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		if (!SlimReadEndpointEnabled)
+			return OperationResult<TPaginatedResultModel?>.NotAllowed("The slim read endpoint is not enabled.");
+
+		try
+		{
+			ClampPaginationParameters(ref pageNumber, ref pageSize);
+
+			return await base.ReadAllAsync<TEntity, TEntity, TEntityKey, TRepositoryOptions, TSlimItem, TPaginatedResultModel>(
+				pageNumber,
+				pageSize,
+				null,
+				null,
+				filterCombinator,
+				LoadSearchSlimDataAsync,
+				cancellationToken,
+				null,
+				AfterCreateSearchSlimModelAsync,
+				AfterReadSlimEntityAsync,
+				SearchSlimRepoOptions,
+				SearchSlimChildRepoOptions,
+				SlimReadEndpointEnabled).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, sorters, filters, filterCombinator }))
+		{
+			throw new UmbrellaDataAccessException("There was a problem loading the paginated collection of entities.", exc);
+		}
+	}
 
 	/// <inheritdoc/>
 	public async Task<IOperationResult<TItem?>> FindByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
+		if (!ReadEndpointEnabled)
+			return OperationResult<TItem?>.NotAllowed("The read endpoint is not enabled.");
+
 		try
 		{
-			var result = await ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TItem>(
+			return await ReadAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TItem>(
 				id,
 				Repository,
 				cancellationToken,
@@ -509,8 +576,6 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 				GetChildRepoOptions,
 				AuthorizationReadChecksEnabled,
 				GetLock).ConfigureAwait(false);
-
-			return result.ToTypedOperationResult<TItem>();
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { id }))
 		{
@@ -519,13 +584,33 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	}
 
 	/// <inheritdoc/>
-	public Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException("The FindTotalCountAsync method is not implemented. Please implement this method in the derived class.");
+	public async Task<IOperationResult<int>> FindTotalCountAsync(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		if (!TotalCountEndpointEnabled)
+			return OperationResult<int>.NotAllowed("The total count endpoint is not enabled.");
+
+		try
+		{
+			return await TotalCountAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
+				Repository,
+				cancellationToken).ConfigureAwait(false);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc))
+		{
+			throw new UmbrellaDataAccessException("There was a problem retrieving the total count of entities.", exc);
+		}
+	}
 
 	/// <inheritdoc/>
 	public async Task<IOperationResult<TUpdateResult?>> UpdateAsync(TUpdateItem item, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
-		
+
+		if (!UpdateEndpointEnabled)
+			return OperationResult<TUpdateResult?>.NotAllowed("The update endpoint is not enabled.");
+
 		try
 		{
 			return await UpdateAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions, TUpdateItem, TUpdateResult>(

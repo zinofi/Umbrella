@@ -94,7 +94,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 	}
 
 	/// <inheritdoc />
-	public virtual async Task<IOperationResult> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(
+	public virtual async Task<IOperationResult<TPaginatedResultModel?>> ReadAllAsync<TEntityResult, TEntity, TEntityKey, TRepositoryOptions, TItemModel, TPaginatedResultModel>(
 		int pageNumber,
 		int pageSize,
 		SortExpression<TEntityResult>[]? sorters,
@@ -127,7 +127,7 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 				bool authorized = await AuthorizationService.AuthorizeAllAsync(User, result.Items, Options.ReadPolicyName, cancellationToken).ConfigureAwait(false);
 
 				if (!authorized)
-					return OperationResult.Forbidden("You do not have permission to access one or more of the items in the results.");
+					return OperationResult<TPaginatedResultModel?>.Forbidden("You do not have permission to access one or more of the items in the results.");
 			}
 
 			var model = new TPaginatedResultModel
@@ -146,10 +146,10 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 			{
 				for (int i = 0; i < model.Items.Count; i++)
 				{
-					IOperationResult? actionResult = await afterCreateSlimModelAsyncDelegate(result.Items.ElementAt(i), model.Items.ElementAt(i), cancellationToken).ConfigureAwait(false);
+					var actionResult = await afterCreateSlimModelAsyncDelegate(result.Items.ElementAt(i), model.Items.ElementAt(i), cancellationToken).ConfigureAwait(false);
 
 					if (actionResult is not null)
-						return actionResult;
+						return actionResult.ToTypedOperationResult<TPaginatedResultModel>();
 				}
 			}
 
@@ -157,16 +157,16 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		}
 		catch (Exception exc) when (Options.ReadAllExceptionFilter(exc))
 		{
-			IOperationResult? result = await Options.HandleReadAllExceptionAsync(exc).ConfigureAwait(false);
+			var result = await Options.HandleReadAllExceptionAsync(exc).ConfigureAwait(false);
 
 			if (result is not null)
-				return result;
+				return result.ToTypedOperationResult<TPaginatedResultModel>();
 
 			throw;
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { pageNumber, pageSize, sorters = sorters?.ToSortExpressionDescriptors(), filters = filters?.ToFilterExpressionDescriptors() }, returnValue: !HostingEnvironment.IsDevelopment()))
 		{
-			return OperationResult.GenericFailure("An error has occurred whilst trying to get the list of items.");
+			return OperationResult<TPaginatedResultModel>.GenericFailure("An error has occurred whilst trying to get the list of items.");
 		}
 	}
 
@@ -574,6 +574,57 @@ public class UmbrellaRepositoryCoreDataService : IUmbrellaRepositoryCoreDataServ
 		{
 			if (syncRoot is not null)
 				await syncRoot.DisposeAsync().ConfigureAwait(false);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<IOperationResult> ExistsByIdAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
+		TEntityKey id,
+		Lazy<TRepository> repository,
+		CancellationToken cancellationToken)
+		where TEntity : class, IEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
+		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
+		where TRepositoryOptions : RepoOptions, new()
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(repository);
+
+		try
+		{
+			bool exists = await repository.Value.ExistsByIdAsync(id, cancellationToken).ConfigureAwait(false);
+
+			return exists
+				? OperationResult.NoContent()
+				: OperationResult.NotFound("The specified item could not be found.");
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: !HostingEnvironment.IsDevelopment()))
+		{
+			return OperationResult.GenericFailure("An error has occurred whilst trying to get the specified item.");
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<IOperationResult<int>> TotalCountAsync<TEntity, TEntityKey, TRepository, TRepositoryOptions>(
+		Lazy<TRepository> repository,
+		CancellationToken cancellationToken)
+		where TEntity : class, IEntity<TEntityKey>
+		where TEntityKey : IEquatable<TEntityKey>
+		where TRepository : class, IGenericDbRepository<TEntity, TRepositoryOptions, TEntityKey>
+		where TRepositoryOptions : RepoOptions, new()
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(repository);
+
+		try
+		{
+			int count = await repository.Value.FindTotalCountAsync(cancellationToken).ConfigureAwait(false);
+
+			return OperationResult<int>.Success(count);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, returnValue: !HostingEnvironment.IsDevelopment()))
+		{
+			return OperationResult<int>.GenericFailure("An error has occurred whilst trying to get the specified item.");
 		}
 	}
 }

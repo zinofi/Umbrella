@@ -71,6 +71,14 @@ public record OperationResult : IOperationResult
 	public static OperationResult NoContent() => new(OperationResultStatus.NoContent);
 
 	/// <summary>
+	/// Creates an operation result that indicates the requested action is not allowed.
+	/// </summary>
+	/// <param name="errorMessage">A message that describes the reason the operation is not allowed. Cannot be null or empty.</param>
+	/// <returns>An <see cref="OperationResult"/> representing a failed operation with a status of NotAllowed and the specified
+	/// error message.</returns>
+	public static OperationResult NotAllowed(string errorMessage) => Failure(OperationResultStatus.NotAllowed, errorMessage);
+
+	/// <summary>
 	/// Creates an operation result that indicates an invalid operation error.
 	/// </summary>
 	/// <param name="errorMessage">The error message that describes the reason the operation is considered invalid. Cannot be null or empty.</param>
@@ -202,6 +210,13 @@ public record OperationResult<TResult> : OperationResult, IOperationResult<TResu
 	public static new OperationResult<TResult> NoContent() => new(OperationResultStatus.NoContent);
 
 	/// <summary>
+	/// Creates a failed operation result with a status of NotAllowed and the specified error message.
+	/// </summary>
+	/// <param name="errorMessage">The error message that explains why the operation is not allowed. Cannot be null or empty.</param>
+	/// <returns>An operation result with a status of NotAllowed and the provided error message.</returns>
+	public static new OperationResult<TResult> NotAllowed(string errorMessage) => Failure(OperationResultStatus.NotAllowed, default, [new ValidationResult(errorMessage)]);
+
+	/// <summary>
 	/// Creates an operation result indicating that the requested operation is invalid, with the specified error message.
 	/// </summary>
 	/// <param name="errorMessage">The error message that describes why the operation is considered invalid. Cannot be null or empty.</param>
@@ -247,6 +262,11 @@ public enum OperationResultStatus
 	/// Indicates that the operation failed because the context of the operation is forbidden, e.g. the user does not have permission to perform the operation.
 	/// </summary>
 	Forbidden = 403,
+
+	/// <summary>
+	/// Indicates that the request method is not allowed for the specified resource.
+	/// </summary>
+	NotAllowed = 405,
 
 	/// <summary>
 	/// Indicates that the operation was successful but there is no content to return.

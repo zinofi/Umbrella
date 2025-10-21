@@ -443,7 +443,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			SearchSlimRepoOptions,
 			SearchSlimChildRepoOptions,
 			AuthorizationSlimReadChecksEnabled)
-		: throw new NotSupportedException("Unsupported Endpoint");
+		: Task.FromResult<IActionResult>(MethodNotAllowed("Unsupported Endpoint"));
 
 	/// <summary>
 	/// An API endpoint used to load a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/> and return a
@@ -477,7 +477,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			GetChildRepoOptions,
 			AuthorizationReadChecksEnabled,
 			GetLock)
-		: throw new NotSupportedException("Unsupported Endpoint");
+		: Task.FromResult<IActionResult>(MethodNotAllowed("Unsupported Endpoint"));
 
 	/// <summary>
 	/// An API endpoint used to create a new <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TCreateModel"/> which returns
@@ -512,7 +512,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			AuthorizationCreateChecksEnabled,
 			PostLock,
 			EnablePostOutputMapping)
-		: throw new NotSupportedException("Unsupported Endpoint");
+		: Task.FromResult<IActionResult>(MethodNotAllowed("Unsupported Endpoint"));
 
 	/// <summary>
 	/// An API endpoint used to update an existing <typeparamref name="TEntity"/> in the repository based on the provided <typeparamref name="TUpdateModel"/> which returns
@@ -548,7 +548,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			AuthorizationUpdateChecksEnabled,
 			PutLock,
 			EnablePutOutputMapping)
-		: throw new NotSupportedException("Unsupported Endpoint");
+		: Task.FromResult<IActionResult>(MethodNotAllowed("Unsupported Endpoint"));
 
 	/// <summary>
 	/// An API endpoint used to delete a single <typeparamref name="TEntity"/> in from the repository based on the specified <paramref name="id"/>.
@@ -579,7 +579,7 @@ public abstract class UmbrellaGenericRepositoryApiController<TSlimModel, TPagina
 			DeleteChildRepoOptions,
 			AuthorizationDeleteChecksEnabled,
 			DeleteLock)
-		: throw new NotSupportedException("Unsupported Endpoint");
+		: Task.FromResult<IActionResult>(MethodNotAllowed("Unsupported Endpoint"));
 
     /// <summary>
     /// Loads the paginated results from the <typeparamref name="TRepository"/> using the specified parameters. This method is called internally by the <c>SearchSlim</c> method.

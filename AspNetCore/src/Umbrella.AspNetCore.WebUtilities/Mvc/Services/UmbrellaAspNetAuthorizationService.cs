@@ -10,6 +10,9 @@ using Umbrella.Utilities.Security.Abstractions;
 
 namespace Umbrella.AspNetCore.WebUtilities.Mvc.Services;
 
+// TODO: Investigate if we can change the authorization for the File System to build on top of this instead of
+// using a custom implementation.
+
 /// <summary>
 /// Checks policy based permissions for a user
 /// </summary>
