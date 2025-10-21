@@ -236,4 +236,49 @@ public abstract class UmbrellaGenericRepositoryDataServiceApiController<TItem, T
 			return InternalServerError("An error occurred while attempting to delete the requested resource.");
 		}
 	}
+
+	/// <summary>
+	/// Checks whether an entity with the specified identifier exists.
+	/// </summary>
+	/// <param name="id">The unique identifier of the entity to check for existence.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+	/// <returns>An <see cref="IActionResult"/> containing a boolean value indicating whether the entity exists. The result is <see langword="true"/> if the entity exists; otherwise, <see langword="false"/>.</returns>
+	[HttpGet("ExistsById")]
+	public virtual async Task<IActionResult> ExistsByIdAsync(TEntityKey id, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			var result = await RepositoryDataService.Value.ExistsByIdAsync(id, cancellationToken);
+
+			return OperationResult(result);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { id }, returnValue: !IsDevelopment))
+		{
+			return InternalServerError("An error occurred while attempting to check for the existence of the requested resource.");
+		}
+	}
+
+	/// <summary>
+	/// Handles an HTTP GET request to retrieve the total count of resources asynchronously.
+	/// </summary>
+	/// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+	/// <returns>An <see cref="IActionResult"/> containing the total count of resources if successful; otherwise, an error response.</returns>
+	[HttpGet("TotalCount")]
+	public virtual async Task<IActionResult> TotalCountAsync(CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+
+		try
+		{
+			var result = await RepositoryDataService.Value.FindTotalCountAsync(cancellationToken);
+
+			return OperationResult(result);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, returnValue: !IsDevelopment))
+		{
+			return InternalServerError("An error occurred while attempting to retrieve the total count of resources.");
+		}
+	}
 }
