@@ -74,7 +74,7 @@ public abstract class UmbrellaScheduledHostedServiceWithViewSupportBase : Umbrel
 		Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Options.DefaultLanguageUICultureCode);
 
 		if (CurrentUser is not null)
-			httpContext.User = CurrentUser;
+			Thread.CurrentPrincipal = httpContext.User = CurrentUser;
 
 		serviceScope.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext = httpContext;
 
