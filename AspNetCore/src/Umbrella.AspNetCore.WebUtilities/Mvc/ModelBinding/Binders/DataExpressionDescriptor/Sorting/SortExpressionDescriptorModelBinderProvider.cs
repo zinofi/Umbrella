@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Umbrella.Utilities.Data.Sorting;
 
@@ -13,6 +14,8 @@ public class SortExpressionDescriptorModelBinderProvider : IModelBinderProvider
 	/// <inheritdoc />
 	public IModelBinder? GetBinder(ModelBinderProviderContext context)
 	{
+		Guard.IsNotNull(context);
+
 		if (context.Metadata.UnderlyingOrModelType == DataExpressionDescriptorModelBinderHelper<SortExpressionDescriptor>.DescriptorType || DataExpressionDescriptorModelBinderHelper<SortExpressionDescriptor>.EnumerableDescriptorType.IsAssignableFrom(context.Metadata.ModelType))
 			return new BinderTypeModelBinder(typeof(SortExpressionDescriptorModelBinder));
 

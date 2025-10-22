@@ -38,7 +38,9 @@ public static class MvcOptionsExtensions
 		options.ModelBinderProviders.Insert(++startIndex, new FilterExpressionModelBinderProvider());
 
 		SortExpressionModelBinder.DescriptorTransformer = sortExpressionTransformer;
+		SortExpressionDescriptorModelBinder.DescriptorTransformer = sortExpressionTransformer;
 		FilterExpressionModelBinder.DescriptorTransformer = filterExpressionTransformer;
+		FilterExpressionDescriptorModelBinder.DescriptorTransformer = filterExpressionTransformer;
 
 		return startIndex;
 	}

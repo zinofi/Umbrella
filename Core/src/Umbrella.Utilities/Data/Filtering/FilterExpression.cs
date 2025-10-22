@@ -46,7 +46,7 @@ public readonly record struct FilterExpression<TItem> : IDataExpression<TItem>
 	/// <param name="isPrimary">Specifies whether this is a primary filter.</param>
 	public FilterExpression(Expression<Func<TItem, object>> expression, object? value, FilterType type = FilterType.Contains, bool isPrimary = false)
 	{
-		Guard.IsNotNull(expression, nameof(expression));
+		Guard.IsNotNull(expression);
 
 		Expression = expression;
 		Value = value;
@@ -80,9 +80,6 @@ public readonly record struct FilterExpression<TItem> : IDataExpression<TItem>
 
 	/// <inheritdoc />
 	public Func<TItem, object>? GetDelegate() => _lazyFunc?.Value;
-
-	/// <inheritdoc />
-	public override string ToString() => $"{MemberPath} - {Value} - {Type} - {IsPrimary}";
 
 	/// <summary>
 	/// Converts to this instance to a <see cref="FilterExpressionDescriptor"/>.

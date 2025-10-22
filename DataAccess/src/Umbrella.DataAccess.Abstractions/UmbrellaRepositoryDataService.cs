@@ -64,6 +64,7 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 	/// <param name="synchronizationManager">The synchronization manager responsible for coordinating data consistency across operations.</param>
 	/// <param name="dataAccessUnitOfWork">A lazily-initialized unit of work for managing data access transactions.</param>
 	/// <param name="repository">A lazily-initialized repository used to perform data operations on the underlying data store.</param>
+	/// <param name="dataExpressionFactory">The factory used to create data expression instances for sorting and filtering.</param>
 	protected UmbrellaRepositoryDataService(
 		ILogger<UmbrellaRepositoryCoreDataService> logger,
 		IHostEnvironment hostingEnvironment,
@@ -72,16 +73,23 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 		IUmbrellaAuthorizationService authorizationService,
 		ISynchronizationManager synchronizationManager,
 		Lazy<IDataAccessUnitOfWork> dataAccessUnitOfWork,
-		Lazy<TRepository> repository)
+		Lazy<TRepository> repository,
+		IDataExpressionFactory dataExpressionFactory)
 		: base(logger, hostingEnvironment, options, mapper, authorizationService, synchronizationManager, dataAccessUnitOfWork)
 	{
 		Repository = repository;
+		DataExpressionFactory = dataExpressionFactory;
 	}
 
 	/// <summary>
 	/// Gets the repository.
 	/// </summary>
 	protected Lazy<TRepository> Repository { get; }
+
+	/// <summary>
+	/// Gets the factory used to create data expression instances for sorting and filtering.
+	/// </summary>
+	protected IDataExpressionFactory DataExpressionFactory { get; }
 
 	/// <summary>
 	/// Gets a value indicating whether the <c>SearchSlim</c> endpoint is enabled.
@@ -532,11 +540,44 @@ public abstract class UmbrellaRepositoryDataService<TItem, TSlimItem, TPaginated
 		{
 			ClampPaginationParameters(ref pageNumber, ref pageSize);
 
+			// Convert the sorter and filter descriptors into expressions
+			List<SortExpression<TEntity>>? sortExpressions = null;
+
+			if (sorters is not null)
+			{
+				foreach (SortExpressionDescriptor sorter in sorters)
+				{
+					var sortExpression = DataExpressionFactory.Create(typeof(SortExpression<TEntity>), sorter);
+
+					if (sortExpression is SortExpression<TEntity> typedExpression)
+					{
+						sortExpressions ??= [];
+						sortExpressions.Add(typedExpression);
+					}
+				}
+			}
+
+			List<FilterExpression<TEntity>>? filterExpressions = null;
+
+			if (filters is not null)
+			{
+				foreach (FilterExpressionDescriptor filter in filters)
+				{
+					var filterExpression = DataExpressionFactory.Create(typeof(FilterExpression<TEntity>), filter);
+
+					if (filterExpression is FilterExpression<TEntity> typedExpression)
+					{
+						filterExpressions ??= [];
+						filterExpressions.Add(typedExpression);
+					}
+				}
+			}
+
 			return await base.ReadAllAsync<TEntity, TEntity, TEntityKey, TRepositoryOptions, TSlimItem, TPaginatedResultModel>(
 				pageNumber,
 				pageSize,
-				null,
-				null,
+				sortExpressions?.ToArray(),
+				filterExpressions?.ToArray(),
 				filterCombinator,
 				LoadSearchSlimDataAsync,
 				cancellationToken,

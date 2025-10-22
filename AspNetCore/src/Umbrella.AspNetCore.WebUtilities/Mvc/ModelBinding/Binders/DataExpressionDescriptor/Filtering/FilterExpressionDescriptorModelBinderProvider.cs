@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Umbrella.Utilities.Data.Filtering;
 
@@ -13,6 +14,8 @@ public class FilterExpressionDescriptorModelBinderProvider : IModelBinderProvide
 	/// <inheritdoc />
 	public IModelBinder? GetBinder(ModelBinderProviderContext context)
 	{
+		Guard.IsNotNull(context);
+
 		if (context.Metadata.UnderlyingOrModelType == DataExpressionDescriptorModelBinderHelper<FilterExpressionDescriptor>.DescriptorType || DataExpressionDescriptorModelBinderHelper<FilterExpressionDescriptor>.EnumerableDescriptorType.IsAssignableFrom(context.Metadata.ModelType))
 			return new BinderTypeModelBinder(typeof(FilterExpressionDescriptorModelBinder));
 
