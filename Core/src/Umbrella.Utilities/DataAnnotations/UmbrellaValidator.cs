@@ -16,12 +16,15 @@ public class UmbrellaValidator : IUmbrellaValidator
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="objectGraphValidator">The object graph validator.</param>
+	/// <param name="serviceProvider">The service provider.</param>
 	public UmbrellaValidator(
 		ILogger<UmbrellaValidator> logger,
-		IObjectGraphValidator objectGraphValidator)
+		IObjectGraphValidator objectGraphValidator,
+		IServiceProvider serviceProvider)
 	{
 		Logger = logger;
 		ObjectGraphValidator = objectGraphValidator;
+		ServiceProvider = serviceProvider;
 	}
 
 	/// <summary>
@@ -34,13 +37,18 @@ public class UmbrellaValidator : IUmbrellaValidator
 	/// </summary>
 	protected IObjectGraphValidator ObjectGraphValidator { get; }
 
+	/// <summary>
+	/// Gets the service provider used to resolve application services.
+	/// </summary>
+	public IServiceProvider ServiceProvider { get; }
+
 	/// <inheritdoc />
 	public (bool isValid, IReadOnlyCollection<ValidationResult> results) ValidateItem(object item, ValidationType validationType)
 	{
 		if (validationType is ValidationType.None)
 			return (true, Array.Empty<ValidationResult>());
 
-		var ctx = new ValidationContext(item);
+		var ctx = new ValidationContext(item, ServiceProvider, null);
 
 		if (validationType is ValidationType.Deep)
 			return ObjectGraphValidator.TryValidateObject(item, ctx, true);

@@ -29,16 +29,24 @@ public class ObjectGraphValidator : IObjectGraphValidator
 	protected ObjectGraphValidatorOptions Options { get; set; }
 
 	/// <summary>
+	/// Gets the service provider used to resolve application services.
+	/// </summary>
+	protected IServiceProvider ServiceProvider { get; }
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="ObjectGraphValidator"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
 	/// <param name="options">The options.</param>
+	/// <param name="serviceProvider">The service provider.</param>
 	public ObjectGraphValidator(
 		ILogger<ObjectGraphValidator> logger,
-		ObjectGraphValidatorOptions options)
+		ObjectGraphValidatorOptions options,
+		IServiceProvider serviceProvider)
 	{
 		Logger = logger;
 		Options = options;
+		ServiceProvider = serviceProvider;
 	}
 
 	/// <inheritdoc />
@@ -77,7 +85,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				// Validate the object
 				List<ValidationResult> lstInnerValidationResult = [];
 
-				_ = Validator.TryValidateObject(value, context ?? new ValidationContext(value), lstInnerValidationResult, validateAllProperties);
+				_ = Validator.TryValidateObject(value, context ?? new ValidationContext(value, ServiceProvider, null), lstInnerValidationResult, validateAllProperties);
 
 				lstValidationResult.AddRange(lstInnerValidationResult.Select(x => new ObjectGraphValidationResult(x, value)));
 

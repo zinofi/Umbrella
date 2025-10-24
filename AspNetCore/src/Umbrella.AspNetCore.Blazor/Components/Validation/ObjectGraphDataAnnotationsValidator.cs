@@ -19,6 +19,9 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	[Inject]
 	private IObjectGraphValidator ObjectGraphValidator { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
+	[Inject]
+	private IServiceProvider ServiceProvider { get; set; } = null!;
+
 	[CascadingParameter]
 	private EditContext? EditContext { get; set; }
 
@@ -61,7 +64,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		}
 	}
 
-	private static void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier)
+	private void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier)
 	{
 		// DataAnnotations only validates public properties, so that's all we'll look for
 		var propertyInfo = fieldIdentifier.Model.GetType().GetProperty(fieldIdentifier.FieldName);
@@ -70,7 +73,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		{
 			object? propertyValue = propertyInfo.GetValue(fieldIdentifier.Model);
 
-			var validationContext = new ValidationContext(fieldIdentifier.Model)
+			var validationContext = new ValidationContext(fieldIdentifier.Model, ServiceProvider, null)
 			{
 				MemberName = propertyInfo.Name
 			};
