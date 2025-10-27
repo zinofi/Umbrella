@@ -1,4 +1,5 @@
-﻿using Microsoft.Net.Http.Headers;
+﻿using CommunityToolkit.Diagnostics;
+using Microsoft.Net.Http.Headers;
 using Umbrella.WebUtilities.Middleware.Options;
 
 namespace Umbrella.AspNetCore.WebUtilities.Extensions;
@@ -15,6 +16,8 @@ public static class CacheControlHeaderValueExtensions
 	/// <param name="httpCacheability">The HTTP cacheability.</param>
 	public static void SetFrontEndCompressionMiddlewareHttpCacheability(this CacheControlHeaderValue cacheControlHeaderValue, MiddlewareHttpCacheability httpCacheability)
 	{
+		Guard.IsNotNull(cacheControlHeaderValue);
+
 		switch (httpCacheability)
 		{
 			case MiddlewareHttpCacheability.NoCache:

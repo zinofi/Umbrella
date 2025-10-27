@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Zinofi Digital Ltd. All Rights Reserved.
 // Licensed under the MIT License.
 
+using CommunityToolkit.Diagnostics;
 using Umbrella.AspNetCore.WebUtilities.Security.Policies;
 using Umbrella.Utilities.Security.Policies;
 
@@ -18,6 +19,8 @@ public static class AuthorizationOptionsExtensions
 	/// <param name="options">The options.</param>
 	public static void AddCorePolicies(this AuthorizationOptions options)
 	{
+		Guard.IsNotNull(options);
+
 		options.AddPolicy(CorePolicyNames.Create, x => x.Requirements.Add(CoreItemOperations.Create));
 		options.AddPolicy(CorePolicyNames.Read, x => x.Requirements.Add(CoreItemOperations.Read));
 		options.AddPolicy(CorePolicyNames.Update, x => x.Requirements.Add(CoreItemOperations.Update));
