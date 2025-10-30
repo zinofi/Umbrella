@@ -63,6 +63,11 @@ public abstract class BundleStyleTagHelper<TBundleUtility> : TagHelper
 	public bool RenderInline { get; set; }
 
 	/// <summary>
+	/// Gets or sets a value indicating whether the style bundle should be loaded asynchronously.
+	/// </summary>
+	public bool AsyncPreload { get; set; }
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="BundleStyleTagHelper{TBundleUtility}"/> class.
 	/// </summary>
 	/// <param name="logger">The logger.</param>
@@ -126,8 +131,20 @@ public abstract class BundleStyleTagHelper<TBundleUtility> : TagHelper
 				output.TagName = "link";
 				output.TagMode = TagMode.SelfClosing;
 
-				output.Attributes.Add("rel", "stylesheet");
 				output.Attributes.Add("href", path);
+
+				if (AsyncPreload)
+				{
+					output.Attributes.Add("rel", "preload");
+					output.Attributes.Add("data-preload", "true");
+					output.Attributes.Add("as", "style");
+
+					_ = output.PostContent.SetHtmlContent($"<noscript><link rel=\"stylesheet\" href=\"{path}\"></noscript>");
+				}
+				else
+				{
+					output.Attributes.Add("rel", "stylesheet");
+				}
 			}
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { Name, RenderInline }))
