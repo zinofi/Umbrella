@@ -1,4 +1,4 @@
-﻿using Umbrella.DataAnnotations.Utilities;
+﻿using Umbrella.DataAnnotations.Helpers;
 
 namespace Umbrella.DataAnnotations;
 

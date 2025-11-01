@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using Umbrella.DataAnnotations.BaseClasses;
-using Umbrella.DataAnnotations.Utilities;
+using Umbrella.DataAnnotations.Helpers;
 
 namespace Umbrella.DataAnnotations;
 

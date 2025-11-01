@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Globalization;
-using Umbrella.DataAnnotations.Utilities;
+using Umbrella.DataAnnotations.Helpers;
 
 namespace Umbrella.DataAnnotations;
 
