@@ -42,7 +42,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 	private void ValidateObject(object value)
 	{
-		if (value is null)
+		if (value is null || _validationMessageStore is null)
 			return;
 
 		var (_, results) = ObjectGraphValidator.TryValidateObject(value, validateAllProperties: true);
@@ -52,20 +52,23 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		{
 			if (!validationResult.MemberNames.Any())
 			{
-				_validationMessageStore?.Add(new FieldIdentifier(value, string.Empty), validationResult.ErrorMessage ?? "Validation Error.");
+				_validationMessageStore.Add(new FieldIdentifier(value, string.Empty), validationResult.ErrorMessage ?? "Validation Error.");
 				continue;
 			}
 
 			foreach (string memberName in validationResult.MemberNames)
 			{
 				var fieldIdentifier = new FieldIdentifier(validationResult.Model, memberName);
-				_validationMessageStore?.Add(fieldIdentifier, validationResult.ErrorMessage ?? "Validation Error.");
+				_validationMessageStore.Add(fieldIdentifier, validationResult.ErrorMessage ?? "Validation Error.");
 			}
 		}
 	}
 
-	private void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier)
+	private void ValidateField(in FieldIdentifier fieldIdentifier)
 	{
+		if (EditContext is null || _validationMessageStore is null)
+			return;
+
 		// DataAnnotations only validates public properties, so that's all we'll look for
 		var propertyInfo = fieldIdentifier.Model.GetType().GetProperty(fieldIdentifier.FieldName);
 
@@ -82,12 +85,12 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 			_ = Validator.TryValidateProperty(propertyValue, validationContext, results);
 
-			messages.Clear(fieldIdentifier);
-			messages.Add(fieldIdentifier, results.Select(result => result.ErrorMessage ?? "Error Message."));
+			_validationMessageStore.Clear(fieldIdentifier);
+			_validationMessageStore.Add(fieldIdentifier, results.Select(result => result.ErrorMessage ?? "Error Message."));
 
 			// We have to notify even if there were no messages before and are still no messages now,
 			// because the "state" that changed might be the completion of some async validation task
-			editContext.NotifyValidationStateChanged();
+			EditContext.NotifyValidationStateChanged();
 		}
 	}
 
@@ -98,15 +101,14 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		if (EditContext is not null)
 		{
 			ValidateObject(EditContext.Model);
+
+			// We have to notify even if there were no messages before and are still no messages now,
+			// because the "state" that changed might be the completion of some async validation task
 			EditContext.NotifyValidationStateChanged();
 		}
 	}
 
-	private void HandleOnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
-	{
-		if (EditContext is not null && _validationMessageStore is not null)
-			ValidateField(EditContext, _validationMessageStore, eventArgs.FieldIdentifier);
-	}
+	private void HandleOnFieldChanged(object? sender, FieldChangedEventArgs eventArgs) => ValidateField(eventArgs.FieldIdentifier);
 
 	/// <summary>
 	/// Disposes of this instance.
