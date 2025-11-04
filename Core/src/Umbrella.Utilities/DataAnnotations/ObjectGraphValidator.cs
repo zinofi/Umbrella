@@ -73,10 +73,18 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				}
 
 				// Check if we are dealing with a collection first as we will want to dig into it and validate each item recursively.
-				if (value is IEnumerable enumerable)
+				if (value is IEnumerable enumerable and not string)
 				{
 					foreach (object item in enumerable)
 					{
+						// Skip any properties we shouldn't be dealing with
+						var type = item.GetType();
+						
+						if (item is string s || type.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(type) ?? false))
+						{
+							continue;
+						}
+
 						ValidateObject(item);
 					}
 
@@ -141,10 +149,18 @@ public class ObjectGraphValidator : IObjectGraphValidator
 					return;
 				}
 
-				if (value is IEnumerable enumerable)
+				if (value is IEnumerable enumerable and not string)
 				{
 					foreach (object item in enumerable)
 					{
+						// Skip any properties we shouldn't be dealing with
+						var type = item.GetType();
+
+						if (item is string s || type.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(type) ?? false))
+						{
+							continue;
+						}
+
 						await ValidateObjectAsync(item).ConfigureAwait(false);
 					}
 
@@ -152,9 +168,9 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				}
 
 				List<ValidationResult> lstInnerValidationResult = [];
-				
+
 				var ctx = context ?? new ValidationContext(value, ServiceProvider, null);
-				
+
 				_ = await AsyncValidator.TryValidateObjectAsync(value, ctx, lstInnerValidationResult, validateAllProperties, cancellationToken).ConfigureAwait(false);
 				
 				lstValidationResult.AddRange(lstInnerValidationResult.Select(x => new ObjectGraphValidationResult(x, value)));
