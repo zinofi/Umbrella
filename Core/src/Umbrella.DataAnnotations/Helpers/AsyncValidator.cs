@@ -1,10 +1,7 @@
-﻿#pragma warning disable IDE0005 // Using directive is unnecessary
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-#pragma warning restore IDE0005
 
 namespace Umbrella.DataAnnotations.Helpers;
 
