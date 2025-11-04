@@ -18,4 +18,17 @@ public interface IObjectGraphValidator
 	/// </param>
 	/// <returns>A tuple containing value indicating if the object graph is valid together with a flatted collection of <see cref="ValidationResult"/> instances representing any errors.</returns>
 	(bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false);
+
+	/// <summary>
+	/// Asynchronously tries to validate object.
+	/// </summary>
+	/// <param name="instance">The instance.</param>
+	/// <param name="validationContext">The validation context.</param>
+	/// <param name="validateAllProperties">
+	/// If <see langword="true"/> will validate all types of attribute.
+	/// Otherwise it will only validate <see cref="RequiredAttribute"/>s. Defaults to <see langword="false"/> to keep things consistent with the <see cref="Validator.TryValidateObject(object, ValidationContext, ICollection{ValidationResult}, bool)" /> method.
+	/// </param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A tuple containing value indicating if the object graph is valid together with a flatted collection of <see cref="ValidationResult"/> instances representing any errors.</returns>
+	Task<(bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results)> TryValidateObjectAsync(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false, CancellationToken cancellationToken = default);
 }

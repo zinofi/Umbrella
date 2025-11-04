@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Umbrella.DataAnnotations.Helpers; // Reference AsyncValidator
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 using Umbrella.Utilities.DataAnnotations.Options;
 using Umbrella.Utilities.Exceptions;
@@ -100,7 +101,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 
 					object? child = pi.GetValue(value);
 
-					if(child is not null)
+					if (child is not null)
 						ValidateObject(child);
 				}
 			}
@@ -112,6 +113,75 @@ public class ObjectGraphValidator : IObjectGraphValidator
 		catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }))
 		{
 			throw new UmbrellaException("An error has been encountered whilst validating the object graph.", exc);
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task<(bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results)> TryValidateObjectAsync(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false, CancellationToken cancellationToken = default)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		Guard.IsNotNull(instance, nameof(instance));
+
+		try
+		{
+			var lstVisited = new HashSet<object>();
+			var lstValidationResult = new List<ObjectGraphValidationResult>();
+
+			async Task ValidateObjectAsync(object value, ValidationContext? context = null)
+			{
+				cancellationToken.ThrowIfCancellationRequested();
+
+				if (value is null)
+				{
+					return;
+				}
+
+				if (!lstVisited.Add(value))
+				{
+					return;
+				}
+
+				if (value is IEnumerable enumerable)
+				{
+					foreach (object item in enumerable)
+					{
+						await ValidateObjectAsync(item).ConfigureAwait(false);
+					}
+
+					return;
+				}
+
+				List<ValidationResult> lstInnerValidationResult = [];
+				
+				var ctx = context ?? new ValidationContext(value, ServiceProvider, null);
+				
+				_ = await AsyncValidator.TryValidateObjectAsync(value, ctx, lstInnerValidationResult, validateAllProperties, cancellationToken).ConfigureAwait(false);
+				
+				lstValidationResult.AddRange(lstInnerValidationResult.Select(x => new ObjectGraphValidationResult(x, value)));
+				
+				foreach (PropertyInfo pi in value.GetType().GetProperties())
+				{
+					if (pi.PropertyType == typeof(string) || pi.PropertyType.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(pi.PropertyType) ?? false))
+					{
+						continue;
+					}
+
+					object? child = pi.GetValue(value);
+					
+					if (child is not null)
+					{
+						await ValidateObjectAsync(child).ConfigureAwait(false);
+					}
+				}
+			}
+
+			await ValidateObjectAsync(instance, validationContext).ConfigureAwait(false);
+			
+			return (lstValidationResult.Count is 0, lstValidationResult);
+		}
+		catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }))
+		{
+			throw new UmbrellaException("An error has been encountered whilst validating the object graph asynchronously.", exc);
 		}
 	}
 }

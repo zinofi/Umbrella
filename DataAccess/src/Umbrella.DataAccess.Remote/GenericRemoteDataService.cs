@@ -358,18 +358,18 @@ public abstract class GenericRemoteDataService
 	}
 
 	/// <summary>
-	/// By defaults this calls into <see cref="IUmbrellaValidator.ValidateItem(object, ValidationType)" />.
+	/// By defaults this calls into <see cref="IUmbrellaValidator.ValidateItemAsync(object, ValidationType)" />.
 	/// Overriding this method allows you to perform custom validation on the item.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <param name="validationType">The type of validation to perform.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, ValidationType validationType, CancellationToken cancellationToken)
+	protected virtual async Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, ValidationType validationType, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return Task.FromResult(Validator.ValidateItem(item, validationType));
+		return await Validator.ValidateItemAsync(item, validationType);
 	}
 
 	private async Task<(IHttpCallResult<TResult?> result, IReadOnlyCollection<ValidationResult> validationResults)> SaveCoreAsync<TItem, TResult>(

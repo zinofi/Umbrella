@@ -43,7 +43,7 @@ public class UmbrellaValidator : IUmbrellaValidator
 	public IServiceProvider ServiceProvider { get; }
 
 	/// <inheritdoc />
-	public (bool isValid, IReadOnlyCollection<ValidationResult> results) ValidateItem(object item, ValidationType validationType)
+	public async Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, ValidationType validationType)
 	{
 		if (validationType is ValidationType.None)
 			return (true, Array.Empty<ValidationResult>());
@@ -51,7 +51,7 @@ public class UmbrellaValidator : IUmbrellaValidator
 		var ctx = new ValidationContext(item, ServiceProvider, null);
 
 		if (validationType is ValidationType.Deep)
-			return ObjectGraphValidator.TryValidateObject(item, ctx, true);
+			return await ObjectGraphValidator.TryValidateObjectAsync(item, ctx, true);
 
 		if (validationType is ValidationType.Shallow)
 		{

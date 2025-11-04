@@ -17,5 +17,5 @@ public interface IUmbrellaValidator
 	/// <param name="item">The item.</param>
 	/// <param name="validationType">The type of validation to perform.</param>
 	/// <returns>The result of the validation.</returns>
-	(bool isValid, IReadOnlyCollection<ValidationResult> results) ValidateItem(object item, ValidationType validationType);
+	Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, ValidationType validationType);
 }

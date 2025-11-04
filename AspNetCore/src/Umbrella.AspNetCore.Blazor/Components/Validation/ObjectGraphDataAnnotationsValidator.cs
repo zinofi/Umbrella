@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Constants;
+using Umbrella.DataAnnotations.Helpers;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Validation;
@@ -40,12 +41,12 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		EditContext.OnFieldChanged += HandleOnFieldChanged;
 	}
 
-	private void ValidateObject(object value)
+	private async Task ValidateObjectAsync(object value)
 	{
 		if (value is null || _validationMessageStore is null)
 			return;
 
-		var (_, results) = ObjectGraphValidator.TryValidateObject(value, validateAllProperties: true);
+		var (_, results) = await ObjectGraphValidator.TryValidateObjectAsync(value, validateAllProperties: true);
 
 		// Transfer results to the ValidationMessageStore
 		foreach (var validationResult in results)
@@ -64,7 +65,8 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		}
 	}
 
-	private void ValidateField(in FieldIdentifier fieldIdentifier)
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Fine for event handlers.")]
+	private async void ValidateField(FieldIdentifier fieldIdentifier)
 	{
 		if (EditContext is null || _validationMessageStore is null)
 			return;
@@ -83,7 +85,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 			var results = new List<ValidationResult>();
 
-			_ = Validator.TryValidateProperty(propertyValue, validationContext, results);
+			_ = await AsyncValidator.TryValidatePropertyAsync(propertyValue, validationContext, results);
 
 			_validationMessageStore.Clear(fieldIdentifier);
 			_validationMessageStore.Add(fieldIdentifier, results.Select(result => result.ErrorMessage ?? "Error Message."));
@@ -94,13 +96,14 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		}
 	}
 
-	private void HandleOnValidationRequested(object? sender, ValidationRequestedEventArgs eventArgs)
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Fine for event handlers.")]
+	private async void HandleOnValidationRequested(object? sender, ValidationRequestedEventArgs eventArgs)
 	{
 		_validationMessageStore?.Clear();
 
 		if (EditContext is not null)
 		{
-			ValidateObject(EditContext.Model);
+			await ValidateObjectAsync(EditContext.Model);
 
 			// We have to notify even if there were no messages before and are still no messages now,
 			// because the "state" that changed might be the completion of some async validation task
