@@ -16,30 +16,24 @@ namespace Umbrella.Utilities.DataAnnotations;
 /// <summary>
 /// A validator used to recursively validate an object graph which uses <see cref="ValidationAttribute"/>s.
 /// </summary>
-/// <seealso cref="IObjectGraphValidator" />
 public class ObjectGraphValidator : IObjectGraphValidator
 {
-	/// <summary>
-	/// Gets the logger.
-	/// </summary>
+	/// <summary>Gets the logger.</summary>
 	protected ILogger Logger { get; }
 
-	/// <summary>
-	/// Gets or sets the options.
-	/// </summary>
+	/// <summary>Gets or sets the options.</summary>
 	protected ObjectGraphValidatorOptions Options { get; set; }
 
-	/// <summary>
-	/// Gets the service provider used to resolve application services.
-	/// </summary>
+	/// <summary>Gets the service provider used to resolve application services.</summary>
 	protected IServiceProvider ServiceProvider { get; }
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ObjectGraphValidator"/> class.
+	/// Initializes a new instance of the ObjectGraphValidator class with the specified logger, options, and service
+	/// provider.
 	/// </summary>
-	/// <param name="logger">The logger.</param>
-	/// <param name="options">The options.</param>
-	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="logger">The logger used to record diagnostic and validation information during object graph validation. Cannot be null.</param>
+	/// <param name="options">The configuration options that control the behavior of the object graph validator. Cannot be null.</param>
+	/// <param name="serviceProvider">The service provider used to resolve dependencies required during validation. Cannot be null.</param>
 	public ObjectGraphValidator(
 		ILogger<ObjectGraphValidator> logger,
 		ObjectGraphValidatorOptions options,
@@ -57,66 +51,81 @@ public class ObjectGraphValidator : IObjectGraphValidator
 
 		try
 		{
-			var lstVisited = new HashSet<object>();
-			var lstValidationResult = new List<ObjectGraphValidationResult>();
+			var visited = new HashSet<object>();
+			var allResults = new List<ObjectGraphValidationResult>();
 
-			void ValidateObject(object value, ValidationContext? context = null)
+			void ValidateObject(object value, ValidationContext? parentContext, string? memberName)
 			{
 				if (value is null)
-				{
 					return;
-				}
 
-				if (!lstVisited.Add(value))
-				{
+				// Prevent infinite loops on cyclic graphs
+				if (!visited.Add(value))
 					return;
-				}
 
-				// Check if we are dealing with a collection first as we will want to dig into it and validate each item recursively.
+				// Build a fresh context that ALWAYS uses the DI service provider (never the null-fallback).
+				ValidationContext currentContext = CreateValidationContext(value, parentContext, memberName);
+
+				// Collections
 				if (value is IEnumerable enumerable and not string)
 				{
-					foreach (object item in enumerable)
+					int index = 0;
+
+					foreach (object? item in enumerable)
 					{
-						// Skip any properties we shouldn't be dealing with
-						var type = item.GetType();
-						
-						if (item is string s || type.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(type) ?? false))
+						if (item is null)
 						{
+							index++;
 							continue;
 						}
 
-						ValidateObject(item);
+						var type = item.GetType();
+						if (ShouldSkipType(type))
+						{
+							index++;
+							continue;
+						}
+
+						string itemMemberName = memberName is null
+							? $"[{index}]"
+							: $"{memberName}[{index}]";
+
+						ValidateObject(item, currentContext, itemMemberName);
+						index++;
 					}
 
 					return;
 				}
 
-				// Validate the object
-				List<ValidationResult> lstInnerValidationResult = [];
+				// Validate current object
+				var innerResults = new List<ValidationResult>();
+				_ = Validator.TryValidateObject(
+					value,
+					currentContext,
+					innerResults,
+					validateAllProperties);
 
-				_ = Validator.TryValidateObject(value, context ?? new ValidationContext(value, ServiceProvider, null), lstInnerValidationResult, validateAllProperties);
+				if (innerResults.Count > 0)
+					allResults.AddRange(innerResults.Select(r => new ObjectGraphValidationResult(r, value)));
 
-				lstValidationResult.AddRange(lstInnerValidationResult.Select(x => new ObjectGraphValidationResult(x, value)));
-
-				// Now go through each public property on the object and apply validation
-				foreach (PropertyInfo pi in value.GetType().GetProperties())
+				// Recurse into properties
+				foreach (PropertyInfo pi in value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
 				{
-					// Skip any properties we shouldn't be dealing with
-					if (pi.PropertyType == typeof(string) || pi.PropertyType.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(pi.PropertyType) ?? false))
-					{
+					var propType = pi.PropertyType;
+					if (ShouldSkipType(propType))
 						continue;
-					}
 
 					object? child = pi.GetValue(value);
+					if (child is null)
+						continue;
 
-					if (child is not null)
-						ValidateObject(child);
+					ValidateObject(child, currentContext, pi.Name);
 				}
 			}
 
-			ValidateObject(instance, validationContext);
+			ValidateObject(instance, validationContext, validationContext?.MemberName);
 
-			return (lstValidationResult.Count is 0, lstValidationResult);
+			return (allResults.Count == 0, allResults);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }))
 		{
@@ -132,72 +141,110 @@ public class ObjectGraphValidator : IObjectGraphValidator
 
 		try
 		{
-			var lstVisited = new HashSet<object>();
-			var lstValidationResult = new List<ObjectGraphValidationResult>();
+			var visited = new HashSet<object>();
+			var allResults = new List<ObjectGraphValidationResult>();
 
-			async Task ValidateObjectAsync(object value, ValidationContext? context = null)
+			async Task ValidateObjectAsync(object value, ValidationContext? parentContext, string? memberName)
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 
 				if (value is null)
-				{
 					return;
-				}
 
-				if (!lstVisited.Add(value))
-				{
+				if (!visited.Add(value))
 					return;
-				}
+
+				var currentContext = CreateValidationContext(value, parentContext, memberName);
 
 				if (value is IEnumerable enumerable and not string)
 				{
-					foreach (object item in enumerable)
-					{
-						// Skip any properties we shouldn't be dealing with
-						var type = item.GetType();
+					int index = 0;
 
-						if (item is string s || type.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(type) ?? false))
+					foreach (object? item in enumerable)
+					{
+						cancellationToken.ThrowIfCancellationRequested();
+
+						if (item is null)
 						{
+							index++;
 							continue;
 						}
 
-						await ValidateObjectAsync(item).ConfigureAwait(false);
+						var type = item.GetType();
+						if (ShouldSkipType(type))
+						{
+							index++;
+							continue;
+						}
+
+						string itemMemberName = memberName is null
+							? $"[{index}]"
+							: $"{memberName}[{index}]";
+
+						await ValidateObjectAsync(item, currentContext, itemMemberName).ConfigureAwait(false);
+						index++;
 					}
 
 					return;
 				}
 
-				List<ValidationResult> lstInnerValidationResult = [];
+				var innerResults = new List<ValidationResult>();
+				_ = await AsyncValidator.TryValidateObjectAsync(
+					value,
+					currentContext,
+					innerResults,
+					validateAllProperties,
+					cancellationToken).ConfigureAwait(false);
 
-				var ctx = context ?? new ValidationContext(value, ServiceProvider, null);
+				if (innerResults.Count > 0)
+					allResults.AddRange(innerResults.Select(r => new ObjectGraphValidationResult(r, value)));
 
-				_ = await AsyncValidator.TryValidateObjectAsync(value, ctx, lstInnerValidationResult, validateAllProperties, cancellationToken).ConfigureAwait(false);
-				
-				lstValidationResult.AddRange(lstInnerValidationResult.Select(x => new ObjectGraphValidationResult(x, value)));
-				
-				foreach (PropertyInfo pi in value.GetType().GetProperties())
+				foreach (PropertyInfo pi in value.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
 				{
-					if (pi.PropertyType == typeof(string) || pi.PropertyType.IsPrimitive || (Options.IgnorePropertyFilter?.Invoke(pi.PropertyType) ?? false))
-					{
+					cancellationToken.ThrowIfCancellationRequested();
+
+					var propType = pi.PropertyType;
+					if (ShouldSkipType(propType))
 						continue;
-					}
 
 					object? child = pi.GetValue(value);
-					
-					if (child is not null)
-					{
-						await ValidateObjectAsync(child).ConfigureAwait(false);
-					}
+					if (child is null)
+						continue;
+
+					await ValidateObjectAsync(child, currentContext, pi.Name).ConfigureAwait(false);
 				}
 			}
 
-			await ValidateObjectAsync(instance, validationContext).ConfigureAwait(false);
-			
-			return (lstValidationResult.Count is 0, lstValidationResult);
+			await ValidateObjectAsync(instance, validationContext, validationContext?.MemberName).ConfigureAwait(false);
+
+			return (allResults.Count == 0, allResults);
 		}
 		catch (Exception exc) when (Logger.WriteError(exc, new { validateAllProperties }))
 		{
 			throw new UmbrellaException("An error has been encountered whilst validating the object graph asynchronously.", exc);
 		}
+	}
+
+	private bool ShouldSkipType(Type type) =>
+		type == typeof(string) ||
+		type.IsPrimitive ||
+		(Options.IgnorePropertyFilter?.Invoke(type) ?? false);
+
+	private ValidationContext CreateValidationContext(object instance, ValidationContext? parentContext, string? memberName)
+	{
+		// Copy items defensively to avoid unintended mutations propagating.
+		IDictionary<object, object?>? items = parentContext?.Items;
+		if (items is not null && items.Count > 0)
+			items = new Dictionary<object, object?>(items);
+
+		var ctx = new ValidationContext(instance, ServiceProvider, items);
+
+		if (!string.IsNullOrEmpty(memberName))
+		{
+			ctx.MemberName = memberName;
+			ctx.DisplayName = memberName;
+		}
+
+		return ctx;
 	}
 }
