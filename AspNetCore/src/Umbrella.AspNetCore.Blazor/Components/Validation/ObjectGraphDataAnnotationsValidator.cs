@@ -26,12 +26,20 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	[CascadingParameter]
 	private EditContext? EditContext { get; set; }
 
+	/// <summary>
+	/// Occurs when the validation process for an object has completed.
+	/// </summary>
+	/// <remarks>Subscribers can use this event to perform actions or respond after object validation is finished.
+	/// The event is raised regardless of whether validation succeeded or failed.
+	/// </remarks>
+	public event EventHandler<EventArgs>? OnObjectValidationCompleted;
+
 	/// <inheritdoc />
 	protected override void OnInitialized()
 	{
 		if (EditContext is null)
 			return;
-
+		
 		_validationMessageStore = new ValidationMessageStore(EditContext);
 
 		// Perform object-level validation (starting from the root model) on request
@@ -39,6 +47,9 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 		// Perform per-field validation on each field edit
 		EditContext.OnFieldChanged += HandleOnFieldChanged;
+
+		// Register this validator instance in the EditContext for potential use by other components
+		EditContext.Properties[nameof(ObjectGraphDataAnnotationsValidator)] = this;
 	}
 
 	private async Task ValidateObjectAsync(object value)
@@ -48,6 +59,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 		// Construct a root ValidationContext similar to UmbrellaValidator usage.
 		var validationContext = new ValidationContext(value, ServiceProvider, null);
+
 		var (_, results) = await ObjectGraphValidator.TryValidateObjectAsync(value, validationContext, validateAllProperties: true, serviceProvider: ServiceProvider);
 
 		// Transfer results to the ValidationMessageStore
@@ -65,6 +77,8 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 				_validationMessageStore.Add(fieldIdentifier, validationResult.ErrorMessage ?? "Validation Error.");
 			}
 		}
+
+		OnObjectValidationCompleted?.Invoke(this, EventArgs.Empty);
 	}
 
 	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Fine for event handlers.")]
