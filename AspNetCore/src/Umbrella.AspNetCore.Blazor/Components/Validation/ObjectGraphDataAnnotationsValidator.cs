@@ -46,7 +46,9 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		if (value is null || _validationMessageStore is null)
 			return;
 
-		var (_, results) = await ObjectGraphValidator.TryValidateObjectAsync(value, validateAllProperties: true);
+		// Construct a root ValidationContext similar to UmbrellaValidator usage.
+		var validationContext = new ValidationContext(value, ServiceProvider, null);
+		var (_, results) = await ObjectGraphValidator.TryValidateObjectAsync(value, validationContext, validateAllProperties: true, serviceProvider: ServiceProvider);
 
 		// Transfer results to the ValidationMessageStore
 		foreach (var validationResult in results)

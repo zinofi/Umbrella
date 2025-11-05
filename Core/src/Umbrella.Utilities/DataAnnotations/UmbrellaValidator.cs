@@ -51,7 +51,7 @@ public class UmbrellaValidator : IUmbrellaValidator
 		var ctx = new ValidationContext(item, ServiceProvider, null);
 
 		if (validationType is ValidationType.Deep)
-			return await ObjectGraphValidator.TryValidateObjectAsync(item, ctx, true);
+			return await ObjectGraphValidator.TryValidateObjectAsync(item, ctx, true, serviceProvider: ServiceProvider);
 
 		if (validationType is ValidationType.Shallow)
 		{

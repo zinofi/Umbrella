@@ -45,7 +45,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 	}
 
 	/// <inheritdoc />
-	public (bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false)
+	public (bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results) TryValidateObject(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false, IServiceProvider? serviceProvider = null)
 	{
 		Guard.IsNotNull(instance, nameof(instance));
 
@@ -54,7 +54,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 			var visited = new HashSet<object>();
 			var allResults = new List<ObjectGraphValidationResult>();
 
-			void ValidateObject(object value, ValidationContext? parentContext, string? memberName)
+			void ValidateObject(object value, ValidationContext? parentContext, string? memberName, IServiceProvider? overrideProvider)
 			{
 				if (value is null)
 					return;
@@ -63,8 +63,8 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				if (!visited.Add(value))
 					return;
 
-				// Build a fresh context that ALWAYS uses the DI service provider (never the null-fallback).
-				ValidationContext currentContext = CreateValidationContext(value, parentContext, memberName);
+				// Build a fresh context that ALWAYS prefers the provided service provider override (falling back to root ServiceProvider).
+				ValidationContext currentContext = CreateValidationContext(value, parentContext, memberName, overrideProvider ?? serviceProvider ?? ServiceProvider);
 
 				// Collections
 				if (value is IEnumerable enumerable and not string)
@@ -90,7 +90,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 							? $"[{index}]"
 							: $"{memberName}[{index}]";
 
-						ValidateObject(item, currentContext, itemMemberName);
+						ValidateObject(item, currentContext, itemMemberName, overrideProvider);
 						index++;
 					}
 
@@ -119,11 +119,11 @@ public class ObjectGraphValidator : IObjectGraphValidator
 					if (child is null)
 						continue;
 
-					ValidateObject(child, currentContext, pi.Name);
+					ValidateObject(child, currentContext, pi.Name, overrideProvider);
 				}
 			}
 
-			ValidateObject(instance, validationContext, validationContext?.MemberName);
+			ValidateObject(instance, validationContext, validationContext?.MemberName, serviceProvider);
 
 			return (allResults.Count == 0, allResults);
 		}
@@ -134,7 +134,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 	}
 
 	/// <inheritdoc />
-	public async Task<(bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results)> TryValidateObjectAsync(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false, CancellationToken cancellationToken = default)
+	public async Task<(bool isValid, IReadOnlyCollection<ObjectGraphValidationResult> results)> TryValidateObjectAsync(object instance, ValidationContext? validationContext = null, bool validateAllProperties = false, IServiceProvider? serviceProvider = null, CancellationToken cancellationToken = default)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 		Guard.IsNotNull(instance, nameof(instance));
@@ -144,7 +144,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 			var visited = new HashSet<object>();
 			var allResults = new List<ObjectGraphValidationResult>();
 
-			async Task ValidateObjectAsync(object value, ValidationContext? parentContext, string? memberName)
+			async Task ValidateObjectAsync(object value, ValidationContext? parentContext, string? memberName, IServiceProvider? overrideProvider)
 			{
 				cancellationToken.ThrowIfCancellationRequested();
 
@@ -154,7 +154,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				if (!visited.Add(value))
 					return;
 
-				var currentContext = CreateValidationContext(value, parentContext, memberName);
+				var currentContext = CreateValidationContext(value, parentContext, memberName, overrideProvider ?? serviceProvider ?? ServiceProvider);
 
 				if (value is IEnumerable enumerable and not string)
 				{
@@ -181,7 +181,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 							? $"[{index}]"
 							: $"{memberName}[{index}]";
 
-						await ValidateObjectAsync(item, currentContext, itemMemberName).ConfigureAwait(false);
+						await ValidateObjectAsync(item, currentContext, itemMemberName, overrideProvider).ConfigureAwait(false);
 						index++;
 					}
 
@@ -211,11 +211,11 @@ public class ObjectGraphValidator : IObjectGraphValidator
 					if (child is null)
 						continue;
 
-					await ValidateObjectAsync(child, currentContext, pi.Name).ConfigureAwait(false);
+					await ValidateObjectAsync(child, currentContext, pi.Name, overrideProvider).ConfigureAwait(false);
 				}
 			}
 
-			await ValidateObjectAsync(instance, validationContext, validationContext?.MemberName).ConfigureAwait(false);
+			await ValidateObjectAsync(instance, validationContext, validationContext?.MemberName, serviceProvider).ConfigureAwait(false);
 
 			return (allResults.Count == 0, allResults);
 		}
@@ -230,14 +230,14 @@ public class ObjectGraphValidator : IObjectGraphValidator
 		type.IsPrimitive ||
 		(Options.IgnorePropertyFilter?.Invoke(type) ?? false);
 
-	private ValidationContext CreateValidationContext(object instance, ValidationContext? parentContext, string? memberName)
+	private static ValidationContext CreateValidationContext(object instance, ValidationContext? parentContext, string? memberName, IServiceProvider provider)
 	{
 		// Copy items defensively to avoid unintended mutations propagating.
 		IDictionary<object, object?>? items = parentContext?.Items;
 		if (items is not null && items.Count > 0)
 			items = new Dictionary<object, object?>(items);
 
-		var ctx = new ValidationContext(instance, ServiceProvider, items);
+		var ctx = new ValidationContext(instance, provider, items);
 
 		if (!string.IsNullOrEmpty(memberName))
 		{
