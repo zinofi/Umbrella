@@ -56,6 +56,8 @@ public class AsyncEditForm : EditForm, IDisposable
 		if (EditContext is null)
 			throw new InvalidOperationException("EditContext cannot be null.");
 
+		EditContext.NotifyValidationStateChanged();
+
 		bool isValid = !EditContext.GetValidationMessages().Any();
 
 		if (isValid && OnValidSubmit.HasDelegate)
