@@ -54,7 +54,7 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 	private async Task ValidateObjectAsync(object value)
 	{
-		if (value is null || _validationMessageStore is null)
+		if (value is null || _validationMessageStore is null || EditContext is null)
 			return;
 
 		// Construct a root ValidationContext similar to UmbrellaValidator usage.
@@ -77,6 +77,10 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 				_validationMessageStore.Add(fieldIdentifier, validationResult.ErrorMessage ?? "Validation Error.");
 			}
 		}
+
+		// We have to notify even if there were no messages before and are still no messages now,
+		// because the "state" that changed might be the completion of some async validation task
+		EditContext.NotifyValidationStateChanged();
 
 		OnObjectValidationCompleted?.Invoke(this, EventArgs.Empty);
 	}
@@ -120,10 +124,6 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		if (EditContext is not null)
 		{
 			await ValidateObjectAsync(EditContext.Model);
-
-			// We have to notify even if there were no messages before and are still no messages now,
-			// because the "state" that changed might be the completion of some async validation task
-			EditContext.NotifyValidationStateChanged();
 		}
 	}
 
