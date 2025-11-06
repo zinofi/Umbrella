@@ -171,6 +171,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 						}
 
 						var type = item.GetType();
+
 						if (ShouldSkipType(type))
 						{
 							index++;
@@ -189,6 +190,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 				}
 
 				var innerResults = new List<ValidationResult>();
+
 				_ = await AsyncValidator.TryValidateObjectAsync(
 					value,
 					currentContext,
@@ -204,10 +206,12 @@ public class ObjectGraphValidator : IObjectGraphValidator
 					cancellationToken.ThrowIfCancellationRequested();
 
 					var propType = pi.PropertyType;
+
 					if (ShouldSkipType(propType))
 						continue;
 
 					object? child = pi.GetValue(value);
+
 					if (child is null)
 						continue;
 
@@ -234,6 +238,7 @@ public class ObjectGraphValidator : IObjectGraphValidator
 	{
 		// Copy items defensively to avoid unintended mutations propagating.
 		IDictionary<object, object?>? items = parentContext?.Items;
+		
 		if (items is not null && items.Count > 0)
 			items = new Dictionary<object, object?>(items);
 

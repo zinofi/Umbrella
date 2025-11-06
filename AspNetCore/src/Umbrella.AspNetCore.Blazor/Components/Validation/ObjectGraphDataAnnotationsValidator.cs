@@ -62,8 +62,6 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 		var (_, results) = await ObjectGraphValidator.TryValidateObjectAsync(value, validationContext, validateAllProperties: true, serviceProvider: ServiceProvider);
 
-		List<string> lstDiagnostic = [];
-
 		// Transfer results to the ValidationMessageStore
 		foreach (var validationResult in results)
 		{
@@ -72,7 +70,6 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 			if (!validationResult.MemberNames.Any())
 			{
 				_validationMessageStore.Add(new FieldIdentifier(value, string.Empty), errorMessage);
-				lstDiagnostic.Add($"Field '' failed validation: {errorMessage}");
 
 				continue;
 			}
@@ -81,11 +78,8 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 			{
 				var fieldIdentifier = new FieldIdentifier(validationResult.Model, memberName);
 				_validationMessageStore.Add(fieldIdentifier, errorMessage);
-				lstDiagnostic.Add($"Field '{memberName}' failed validation: {errorMessage}");
 			}
 		}
-
-		Console.WriteLine(string.Join(Environment.NewLine, lstDiagnostic));
 
 		// We have to notify even if there were no messages before and are still no messages now,
 		// because the "state" that changed might be the completion of some async validation task
