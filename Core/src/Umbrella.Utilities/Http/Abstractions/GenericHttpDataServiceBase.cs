@@ -351,11 +351,11 @@ public abstract class GenericHttpDataServiceBase
 	/// <param name="item">The item.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, CancellationToken cancellationToken)
+	protected async virtual Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return await Validator.ValidateItemAsync(item, validationType);
+		return await Validator.ValidateItemAsync(item, ValidationType.Deep);
 	}
 
 	private async Task<IHttpOperationResult<TResult?>> SaveCoreAsync<TItem, TResult>(
