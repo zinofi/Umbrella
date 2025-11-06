@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Umbrella.DataAnnotations.Utilities;
+namespace Umbrella.DataAnnotations.Helpers;
 
 internal static class ValidationHelper
 {

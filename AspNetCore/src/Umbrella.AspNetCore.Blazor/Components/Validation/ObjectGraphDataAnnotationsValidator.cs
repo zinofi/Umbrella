@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Umbrella.AspNetCore.Blazor.Constants;
+using Umbrella.DataAnnotations.Helpers;
 using Umbrella.Utilities.DataAnnotations.Abstractions;
 
 namespace Umbrella.AspNetCore.Blazor.Components.Validation;
@@ -19,8 +20,19 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 	[Inject]
 	private IObjectGraphValidator ObjectGraphValidator { get; [RequiresUnreferencedCode(TrimConstants.DI)] set; } = null!;
 
+	[Inject]
+	private IServiceProvider ServiceProvider { get; set; } = null!;
+
 	[CascadingParameter]
 	private EditContext? EditContext { get; set; }
+
+	/// <summary>
+	/// Occurs when the validation process for an object has completed.
+	/// </summary>
+	/// <remarks>Subscribers can use this event to perform actions or respond after object validation is finished.
+	/// The event is raised regardless of whether validation succeeded or failed.
+	/// </remarks>
+	public event EventHandler<EventArgs>? OnObjectValidationCompleted;
 
 	/// <inheritdoc />
 	protected override void OnInitialized()
@@ -35,34 +47,53 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 
 		// Perform per-field validation on each field edit
 		EditContext.OnFieldChanged += HandleOnFieldChanged;
+
+		// Register this validator instance in the EditContext for potential use by other components
+		EditContext.Properties[nameof(ObjectGraphDataAnnotationsValidator)] = this;
 	}
 
-	private void ValidateObject(object value)
+	private async Task ValidateObjectAsync(object value)
 	{
-		if (value is null)
+		if (value is null || _validationMessageStore is null || EditContext is null)
 			return;
 
-		var (_, results) = ObjectGraphValidator.TryValidateObject(value, validateAllProperties: true);
+		// Construct a root ValidationContext similar to UmbrellaValidator usage.
+		var validationContext = new ValidationContext(value, ServiceProvider, null);
+
+		var (_, results) = await ObjectGraphValidator.TryValidateObjectAsync(value, validationContext, validateAllProperties: true, serviceProvider: ServiceProvider);
 
 		// Transfer results to the ValidationMessageStore
 		foreach (var validationResult in results)
 		{
+			string errorMessage = validationResult.ErrorMessage ?? "Validation Error.";
+
 			if (!validationResult.MemberNames.Any())
 			{
-				_validationMessageStore?.Add(new FieldIdentifier(value, string.Empty), validationResult.ErrorMessage ?? "Validation Error.");
+				_validationMessageStore.Add(new FieldIdentifier(value, string.Empty), errorMessage);
+
 				continue;
 			}
 
 			foreach (string memberName in validationResult.MemberNames)
 			{
 				var fieldIdentifier = new FieldIdentifier(validationResult.Model, memberName);
-				_validationMessageStore?.Add(fieldIdentifier, validationResult.ErrorMessage ?? "Validation Error.");
+				_validationMessageStore.Add(fieldIdentifier, errorMessage);
 			}
 		}
+
+		// We have to notify even if there were no messages before and are still no messages now,
+		// because the "state" that changed might be the completion of some async validation task
+		EditContext.NotifyValidationStateChanged();
+
+		OnObjectValidationCompleted?.Invoke(this, EventArgs.Empty);
 	}
 
-	private static void ValidateField(EditContext editContext, ValidationMessageStore messages, in FieldIdentifier fieldIdentifier)
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Fine for event handlers.")]
+	private async void ValidateField(FieldIdentifier fieldIdentifier)
 	{
+		if (EditContext is null || _validationMessageStore is null)
+			return;
+
 		// DataAnnotations only validates public properties, so that's all we'll look for
 		var propertyInfo = fieldIdentifier.Model.GetType().GetProperty(fieldIdentifier.FieldName);
 
@@ -70,40 +101,36 @@ public class ObjectGraphDataAnnotationsValidator : ComponentBase, IDisposable
 		{
 			object? propertyValue = propertyInfo.GetValue(fieldIdentifier.Model);
 
-			var validationContext = new ValidationContext(fieldIdentifier.Model)
+			var validationContext = new ValidationContext(fieldIdentifier.Model, ServiceProvider, null)
 			{
 				MemberName = propertyInfo.Name
 			};
 
 			var results = new List<ValidationResult>();
 
-			_ = Validator.TryValidateProperty(propertyValue, validationContext, results);
+			_ = await AsyncValidator.TryValidatePropertyAsync(propertyValue, validationContext, results);
 
-			messages.Clear(fieldIdentifier);
-			messages.Add(fieldIdentifier, results.Select(result => result.ErrorMessage ?? "Error Message."));
+			_validationMessageStore.Clear(fieldIdentifier);
+			_validationMessageStore.Add(fieldIdentifier, results.Select(result => result.ErrorMessage ?? "Error Message."));
 
 			// We have to notify even if there were no messages before and are still no messages now,
 			// because the "state" that changed might be the completion of some async validation task
-			editContext.NotifyValidationStateChanged();
+			EditContext.NotifyValidationStateChanged();
 		}
 	}
 
-	private void HandleOnValidationRequested(object? sender, ValidationRequestedEventArgs eventArgs)
+	[SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Fine for event handlers.")]
+	private async void HandleOnValidationRequested(object? sender, ValidationRequestedEventArgs eventArgs)
 	{
 		_validationMessageStore?.Clear();
 
 		if (EditContext is not null)
 		{
-			ValidateObject(EditContext.Model);
-			EditContext.NotifyValidationStateChanged();
+			await ValidateObjectAsync(EditContext.Model);
 		}
 	}
 
-	private void HandleOnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
-	{
-		if (EditContext is not null && _validationMessageStore is not null)
-			ValidateField(EditContext, _validationMessageStore, eventArgs.FieldIdentifier);
-	}
+	private void HandleOnFieldChanged(object? sender, FieldChangedEventArgs eventArgs) => ValidateField(eventArgs.FieldIdentifier);
 
 	/// <summary>
 	/// Disposes of this instance.
