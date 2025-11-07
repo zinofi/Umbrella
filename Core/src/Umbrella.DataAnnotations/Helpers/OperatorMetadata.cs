@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Umbrella.DataAnnotations.BaseClasses;
 
-namespace Umbrella.DataAnnotations.Utilities;
+namespace Umbrella.DataAnnotations.Helpers;
 
 /// <summary>
 /// Defines the metadata for contingent validation operations.

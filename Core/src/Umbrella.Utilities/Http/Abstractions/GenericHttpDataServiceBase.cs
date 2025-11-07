@@ -345,17 +345,17 @@ public abstract class GenericHttpDataServiceBase
 	}
 
 	/// <summary>
-	/// By defaults this calls into <see cref="IUmbrellaValidator.ValidateItem(object, ValidationType)" />.
+	/// By defaults this calls into <see cref="IUmbrellaValidator.ValidateItemAsync(object, ValidationType)" />.
 	/// Overriding this method allows you to perform custom validation on the item.
 	/// </summary>
 	/// <param name="item">The item.</param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>A <see cref="Task"/> used to await completion of this operation.</returns>
-	protected virtual Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, CancellationToken cancellationToken)
+	protected async virtual Task<(bool isValid, IReadOnlyCollection<ValidationResult> results)> ValidateItemAsync(object item, CancellationToken cancellationToken)
 	{
 		cancellationToken.ThrowIfCancellationRequested();
 
-		return Task.FromResult(Validator.ValidateItem(item, ValidationType.Deep));
+		return await Validator.ValidateItemAsync(item, ValidationType.Deep);
 	}
 
 	private async Task<IHttpOperationResult<TResult?>> SaveCoreAsync<TItem, TResult>(
