@@ -4,6 +4,7 @@
 		<TargetFrameworks>net9.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 		<NoWarn>CS1591</NoWarn>
+		<WarningsAsErrors>xUnit1051</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

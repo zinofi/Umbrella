@@ -12,12 +12,11 @@
 		<ImplicitUsings>false</ImplicitUsings>
 		
 		<!-- NuGet settings -->
-		<Authors>Zinofi Digital Ltd</Authors>
-		<Company>Zinofi Digital Ltd</Company>
-		<Copyright>Zinofi Digital Ltd $([System.DateTime]::Now.Year)</Copyright>
+		<Authors>Richard Edwards</Authors>
+		<Copyright>Richard Edwards $([System.DateTime]::Now.Year)</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/zinofi/Umbrella</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/zinofi/Umbrella</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/umbrella-libraries/Umbrella</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/umbrella-libraries/Umbrella</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageIcon>icon.png</PackageIcon>
 		

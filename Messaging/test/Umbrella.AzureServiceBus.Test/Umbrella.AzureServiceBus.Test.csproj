@@ -9,6 +9,7 @@
 		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
 		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
 		<UserSecretsId>bc0ff87b-21dd-4f67-9fb7-a1e58161fc46</UserSecretsId>
+		<WarningsAsErrors>xUnit1051</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

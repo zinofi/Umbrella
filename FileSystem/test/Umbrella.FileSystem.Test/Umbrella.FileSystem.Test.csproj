@@ -8,6 +8,7 @@
 		<PreserveCompilationContext>true</PreserveCompilationContext>
 		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
 		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+		<WarningsAsErrors>xUnit1051</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

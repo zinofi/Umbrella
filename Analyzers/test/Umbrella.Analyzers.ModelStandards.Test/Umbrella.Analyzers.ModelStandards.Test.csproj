@@ -6,6 +6,7 @@
 		<IsTestProject>true</IsTestProject>
 		<NoWarn>CS1591</NoWarn>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<WarningsAsErrors>xUnit1051</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
