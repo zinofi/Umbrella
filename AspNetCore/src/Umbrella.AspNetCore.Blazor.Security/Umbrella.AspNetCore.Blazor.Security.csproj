@@ -1,18 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>Umbrella.AspNetCore.Blazor.Security</PackageId>
 		<Description>This package contains security code to be used with Blazor projects.</Description>
 	</PropertyGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.36" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.36" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.21" />

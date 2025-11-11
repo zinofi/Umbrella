@@ -145,7 +145,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// Creates a 201 Created <see cref="StatusCodeResult"/>.
 	/// </summary>
 	/// <returns>A <see cref="StatusCodeResult"/> of 201.</returns>
-	protected virtual StatusCodeResult Created() => StatusCode(201);
+	protected virtual new StatusCodeResult Created() => StatusCode(201);
 
 	/// <summary>
 	/// Creates a 201 Created <see cref="CreatedResult"/> with the specified content.
@@ -160,7 +160,7 @@ public abstract class UmbrellaApiController : ControllerBase
 	/// <param name="reason">The reason.</param>
 	/// <param name="code">The error code.</param>
 	/// <returns>A <see cref="ObjectResult"/> of 400.</returns>
-	protected virtual ObjectResult BadRequest(string reason, string? code = null) => UmbrellaProblem(reason, statusCode: 400, title: "BadRequest", code: code);
+	protected virtual ObjectResult BadRequest(string reason, string? code = null) => UmbrellaValidationProblem(reason, statusCode: 400, title: "BadRequest", code: code);
 
 	/// <summary>
 	/// Creates a 401 Unauthorized <see cref="ObjectResult"/> with the specified reason.
@@ -246,6 +246,48 @@ public abstract class UmbrellaApiController : ControllerBase
 			Title = title,
 			Type = type,
 			CorrelationId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+		};
+
+		return new ObjectResult(problemDetails)
+		{
+			ContentTypes = { "application/problem+json" },
+			StatusCode = statusCode
+		};
+	}
+
+	/// <summary>
+	/// Creates an ObjectResult that produces a validation problem response using the UmbrellaValidationProblemDetails
+	/// format.
+	/// </summary>
+	/// <remarks>The returned response conforms to the RFC 7807 problem details specification, with additional
+	/// fields for application-specific error codes and validation errors. The 'TraceId' property is set to the current
+	/// activity ID or the HTTP context trace identifier to assist with request tracing.</remarks>
+	/// <param name="detail">A detailed description of the validation problem. This value is included in the response's 'detail' field. Can be
+	/// null.</param>
+	/// <param name="instance">A URI reference that identifies the specific occurrence of the problem. This value is included in the response's
+	/// 'instance' field. Can be null.</param>
+	/// <param name="statusCode">The HTTP status code to set for the response. If null, a default status code may be used.</param>
+	/// <param name="title">A short, human-readable summary of the problem type. This value is included in the response's 'title' field. Can be
+	/// null.</param>
+	/// <param name="type">A URI reference that identifies the problem type. This value is included in the response's 'type' field. Can be
+	/// null.</param>
+	/// <param name="code">An application-specific error code that provides additional information about the validation problem. Can be null.</param>
+	/// <param name="errors">A dictionary containing validation errors, where each key is the name of a field and the value is an array of error
+	/// messages for that field. If null, an empty dictionary is used.</param>
+	/// <returns>An ObjectResult containing an UmbrellaValidationProblemDetails object with the specified details, formatted as
+	/// 'application/problem+json'.</returns>
+	protected virtual ObjectResult UmbrellaValidationProblem(string? detail = null, string? instance = null, int? statusCode = null, string? title = null, string? type = null, string? code = null, Dictionary<string, string[]>? errors = null)
+	{
+		var problemDetails = new UmbrellaValidationProblemDetails
+		{
+			Code = code,
+			Detail = detail,
+			Errors = errors ?? [],
+			Instance = instance,
+			Status = statusCode,
+			Title = title,
+			Type = type,
+			TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
 		};
 
 		return new ObjectResult(problemDetails)
