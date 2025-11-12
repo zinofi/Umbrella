@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using CommunityToolkit.Diagnostics;
+using Umbrella.FileSystem.Abstractions;
 using Umbrella.WebUtilities.FileSystem.Middleware.Options;
 
 #pragma warning disable IDE0130
@@ -27,6 +28,42 @@ public static class IServiceCollectionExtensions
 		Guard.IsNotNull(services);
 
 		// Options
+		_ = services.ConfigureUmbrellaOptions(optionsBuilder);
+
+		return services;
+	}
+
+	/// <summary>
+	/// Adds Umbrella Web Utilities file system middleware and related services to the specified service collection.
+	/// </summary>
+	/// <remarks>This method configures the file system middleware to use the specified path prefix and directory
+	/// mappings. It should be called during application startup as part of service registration.</remarks>
+	/// <param name="services">The service collection to which the file system middleware and related services will be added. Cannot be null.</param>
+	/// <param name="fileSystemPathPrefix">The path prefix to use for file system middleware routing. This value determines the base URL segment for file
+	/// system requests.</param>
+	/// <param name="directoryNames">A collection of directory names to be mapped for file system access. Each directory name will be included in the
+	/// middleware's file provider mapping.</param>
+	/// <returns>The same instance of <see cref="IServiceCollection"/> that was provided, to support method chaining.</returns>
+	public static IServiceCollection AddUmbrellaWebUtilitiesFileSystem(
+		this IServiceCollection services,
+		string fileSystemPathPrefix,
+		IEnumerable<string> directoryNames)
+	{
+		Guard.IsNotNull(services);
+
+		// Options
+		Action<IServiceProvider, FileSystemMiddlewareOptions> optionsBuilder = (services, options) =>
+		{
+			options.FileSystemPathPrefix = fileSystemPathPrefix;
+			options.Mappings =
+			[
+				new FileSystemMiddlewareMapping
+				{
+					FileProviderMapping = new UmbrellaFileStorageProviderMapping(services.GetRequiredService<IUmbrellaFileStorageProvider>(), [.. directoryNames])
+				}
+			];
+		};
+
 		_ = services.ConfigureUmbrellaOptions(optionsBuilder);
 
 		return services;
