@@ -40,7 +40,7 @@ public class UmbrellaFileProviderTest
 			if (string.IsNullOrEmpty(_baseDirectory))
 			{
 				string baseDirectory = AppContext.BaseDirectory.ToLowerInvariant();
-				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net9.0"), StringComparison.Ordinal);
+				int indexToEndAt = baseDirectory.IndexOf(PathHelper.PlatformNormalize($@"\bin\{DebugUtility.BuildConfiguration}\net10.0"), StringComparison.Ordinal);
 				_baseDirectory = baseDirectory.Remove(indexToEndAt, baseDirectory.Length - indexToEndAt);
 			}
 
@@ -504,7 +504,7 @@ public class UmbrellaFileProviderTest
 		{
 			var provider = providerFunc();
 
-			_ = await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png", TestContext.Current.CancellationToken).ConfigureAwait(true);
+			_ = await provider.CopyAsync("~/images/notexists.jpg", "~/images/willfail.png", CancellationToken.None).ConfigureAwait(true);
 		}).ConfigureAwait(true);
 
 	[Theory]
