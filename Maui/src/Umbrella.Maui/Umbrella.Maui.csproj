@@ -10,14 +10,13 @@
 		<PackageId>Umbrella.Maui</PackageId>
 		<Description>This package contains various utilities and controls for use with .NET Maui projects.</Description>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.3.0" />
-	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="CommunityToolkit.Maui" Version="12.3.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.120" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.10" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.10" />
 	</ItemGroup>
